@@ -5,6 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -37,22 +40,30 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "CTables.findAll", query = "SELECT c FROM CTables c")})
 public class CTables implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_TABLE")
+    @JsonView(JsonViews.Root.class)
     private Integer idTable;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "TABLE_NAME")
+    @JsonView(JsonViews.Root.class)
     private String tableName;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonView(JsonViews.Root.class)
     private Date creationDate;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTable")
+    @JsonView(JsonViews.Embedded.class)
     private List<TablesField> tablesFieldList;
 
     public CTables() {

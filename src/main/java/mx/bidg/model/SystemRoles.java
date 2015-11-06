@@ -6,6 +6,9 @@
 package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -39,42 +42,55 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "SystemRoles.findAll", query = "SELECT s FROM SystemRoles s")})
 public class SystemRoles implements Serializable {
-    @Column(name = "PARENT_ROLE")
-    private Integer parentRole;
-    
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_SYSTEM_ROLE")
+    @JsonView(JsonViews.Root.class)
     private Integer idSystemRole;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "SYSTEM_ROLE_NAME")
+    @JsonView(JsonViews.Root.class)
     private String systemRoleName;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonView(JsonViews.Root.class)
     private Date creationDate;
-    @JsonIgnore
+
+    @Column(name = "PARENT_ROLE")
+    @JsonView(JsonViews.Root.class)
+    private Integer parentRole;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSystemRole")
+    @JsonView(JsonViews.Embedded.class)
     private List<ViewsRole> viewsRoleList;
-    @JsonIgnore
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSystemRole")
+    @JsonView(JsonViews.Embedded.class)
     private List<UsersRole> usersRoleList;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSystemRole")
-    @JsonIgnore
+    @JsonView(JsonViews.Embedded.class)
     private List<TasksRole> tasksRoleList;
-    @JsonIgnore
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSystemRole")
+    @JsonView(JsonViews.Embedded.class)
     private List<AccessLevelsRole> accessLevelsRoleList;
-    @JsonIgnore
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSystemRole")
+    @JsonView(JsonViews.Embedded.class)
     private List<ViewsComponentsRole> viewsComponentsRoleList;
-    @JsonIgnore
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSystemRole")
+    @JsonView(JsonViews.Embedded.class)
     private List<TablesFieldsRole> tablesFieldsRoleList;
 
     public SystemRoles() {

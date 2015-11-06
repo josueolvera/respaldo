@@ -5,6 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -39,28 +42,40 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "TablesField.findAll", query = "SELECT t FROM TablesField t")})
 public class TablesField implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_TABLE_FIELD")
+    @JsonView(JsonViews.Root.class)
     private Integer idTableField;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "TABLE_FIELD_NAME")
+    @JsonView(JsonViews.Root.class)
     private String tableFieldName;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
+    @JsonView(JsonViews.Root.class)
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
+
     @JoinColumn(name = "ID_TABLE", referencedColumnName = "ID_TABLE")
+    @JsonView(JsonViews.Embedded.class)
     @ManyToOne(optional = false)
     private CTables idTable;
+
     @JoinColumn(name = "ID_FIELD", referencedColumnName = "ID_FIELD")
+    @JsonView(JsonViews.Embedded.class)
     @ManyToOne(optional = false)
     private CFields idField;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTableField")
+    @JsonView(JsonViews.Embedded.class)
     private List<TablesFieldsRole> tablesFieldsRoleList;
 
     public TablesField() {

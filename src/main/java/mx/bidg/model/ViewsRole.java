@@ -5,6 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
+
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -34,21 +37,29 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ViewsRole.findAll", query = "SELECT v FROM ViewsRole v")})
 public class ViewsRole implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_VIEW_ROLE")
+    @JsonView(JsonViews.Root.class)
     private Integer idViewRole;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonView(JsonViews.Root.class)
     private Date creationDate;
+
     @JoinColumn(name = "ID_VIEW", referencedColumnName = "ID_VIEW")
     @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
     private CViews idView;
+
     @JoinColumn(name = "ID_SYSTEM_ROLE", referencedColumnName = "ID_SYSTEM_ROLE")
     @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
     private SystemRoles idSystemRole;
 
     public ViewsRole() {

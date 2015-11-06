@@ -5,6 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
+
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -30,16 +33,22 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TablesFieldsRole.findAll", query = "SELECT t FROM TablesFieldsRole t")})
 public class TablesFieldsRole implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_TABLE_FIELD_ROLE")
+    @JsonView(JsonViews.Root.class)
     private Integer idTableFieldRole;
+
     @JoinColumn(name = "ID_TABLE_FIELD", referencedColumnName = "ID_TABLE_FIELD")
     @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
     private TablesField idTableField;
+
     @JoinColumn(name = "ID_SYSTEM_ROLE", referencedColumnName = "ID_SYSTEM_ROLE")
     @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
     private SystemRoles idSystemRole;
 
     public TablesFieldsRole() {

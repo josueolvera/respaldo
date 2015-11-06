@@ -5,6 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
+
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -34,21 +37,29 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "AccessLevelsRole.findAll", query = "SELECT a FROM AccessLevelsRole a")})
 public class AccessLevelsRole implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_ACCESS_LEVEL_ROLE")
+    @JsonView(JsonViews.Root.class)
     private Integer idAccessLevelRole;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonView(JsonViews.Root.class)
     private Date creationDate;
+
     @JoinColumn(name = "ID_ACCESS_LEVEL", referencedColumnName = "ID_ACCESS_LEVEL")
     @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
     private AccessLevel idAccessLevel;
+
     @JoinColumn(name = "ID_SYSTEM_ROLE", referencedColumnName = "ID_SYSTEM_ROLE")
     @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
     private SystemRoles idSystemRole;
 
     public AccessLevelsRole() {

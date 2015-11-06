@@ -5,6 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -37,27 +40,37 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "CSystems.findAll", query = "SELECT c FROM CSystems c")})
 public class CSystems implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_SYSTEM")
+    @JsonView(JsonViews.Root.class)
     private Integer idSystem;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 200)
     @Column(name = "SYSTEM_NAME")
+    @JsonView(JsonViews.Root.class)
     private String systemName;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 300)
     @Column(name = "DESCRIPTION_SYSTEM")
+    @JsonView(JsonViews.Root.class)
     private String descriptionSystem;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonView(JsonViews.Root.class)
     private Date creationDate;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSystem")
+    @JsonView(JsonViews.Embedded.class)
     private List<CModules> cModulesList;
 
     public CSystems() {

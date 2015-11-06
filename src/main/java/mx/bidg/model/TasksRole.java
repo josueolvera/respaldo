@@ -6,6 +6,9 @@
 package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
+
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
@@ -35,22 +38,29 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "TasksRole.findAll", query = "SELECT t FROM TasksRole t")})
 public class TasksRole implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_TASK_ROLE")
+    @JsonView(JsonViews.Root.class)
     private Integer idTaskRole;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonView(JsonViews.Root.class)
     private Date creationDate;
+
     @JoinColumn(name = "ID_TASK", referencedColumnName = "ID_TASK")
     @ManyToOne(optional = false)
-    @JsonIgnore
+    @JsonView(JsonViews.Embedded.class)
     private CTasks idTask;
+
     @JoinColumn(name = "ID_SYSTEM_ROLE", referencedColumnName = "ID_SYSTEM_ROLE")
     @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
     private SystemRoles idSystemRole;
 
     public TasksRole() {

@@ -5,6 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -38,22 +41,32 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "ViewsComponent.findAll", query = "SELECT v FROM ViewsComponent v")})
 public class ViewsComponent implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_VIEW_COMPONENT")
+    @JsonView(JsonViews.Root.class)
     private Integer idViewComponent;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
+    @JsonView(JsonViews.Root.class)
     @Temporal(TemporalType.TIMESTAMP)
     private Date creationDate;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idViewComponent")
+    @JsonView(JsonViews.Embedded.class)
     private List<ViewsComponentsRole> viewsComponentsRoleList;
+
     @JoinColumn(name = "ID_VIEW", referencedColumnName = "ID_VIEW")
+    @JsonView(JsonViews.Embedded.class)
     @ManyToOne(optional = false)
     private CViews idView;
+
     @JoinColumn(name = "ID_COMPONENT", referencedColumnName = "ID_COMPONENT")
+    @JsonView(JsonViews.Embedded.class)
     @ManyToOne(optional = false)
     private CComponents idComponent;
 

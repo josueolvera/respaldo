@@ -5,6 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -32,78 +35,109 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "USERS")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u")})
 public class Users implements Serializable {
     private static final long serialVersionUID = 1L;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ID_COMPANY")
-    private int idCompany;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ID_REGION")
-    private int idRegion;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ID_BRANCH")
-    private int idBranch;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ID_GROUP")
-    private int idGroup;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ID_ROLE")
-    private int idRole;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_USER")
+    @JsonView(JsonViews.Root.class)
     private Integer idUser;
-    @Column(name = "ID_EMPLOYEE")
-    private Integer idEmployee;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "USERNAME")
+    @JsonView(JsonViews.Root.class)
     private String username;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 35)
     @Column(name = "PASSWORD")
+    @JsonView(JsonViews.Root.class)
     private String password;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "MAIL")
+    @JsonView(JsonViews.Root.class)
     private String mail;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "STATUS")
+    @JsonView(JsonViews.Root.class)
     private int status;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ACTIVE_SESSION")
+    @JsonView(JsonViews.Root.class)
     private int activeSession;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "TIME_SESSION")
+    @JsonView(JsonViews.Root.class)
     @Temporal(TemporalType.TIME)
     private Date timeSession;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "HIGH_DATE")
+    @JsonView(JsonViews.Root.class)
     @Temporal(TemporalType.TIMESTAMP)
     private Date highDate;
+
     @Column(name = "MODIFICATION_DATE")
+    @JsonView(JsonViews.Root.class)
     @Temporal(TemporalType.TIMESTAMP)
     private Date modificationDate;
+
     @Column(name = "LOW_DATE")
+    @JsonView(JsonViews.Root.class)
     @Temporal(TemporalType.TIMESTAMP)
     private Date lowDate;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "ID_COMPANY")
+    @JsonView(JsonViews.Embedded.class)
+    private int idCompany;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "ID_REGION")
+    @JsonView(JsonViews.Embedded.class)
+    private int idRegion;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "ID_BRANCH")
+    @JsonView(JsonViews.Embedded.class)
+    private int idBranch;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "ID_GROUP")
+    @JsonView(JsonViews.Embedded.class)
+    private int idGroup;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "ID_ROLE")
+    @JsonView(JsonViews.Embedded.class)
+    private int idRole;
+
+    @Column(name = "ID_EMPLOYEE")
+    @JsonView(JsonViews.Embedded.class)
+    private Integer idEmployee;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUser")
+    @JsonView(JsonViews.Embedded.class)
     private List<UsersRole> usersRoleList;
 
     public Users() {

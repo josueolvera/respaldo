@@ -5,6 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
+
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -26,16 +29,22 @@ import javax.persistence.Table;
 @Table(name = "VIEWS_COMPONENTS_ROLE")
 public class ViewsComponentsRole implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_VIEW_COMPONENT_ROLE")
+    @JsonView(JsonViews.Root.class)
     private Integer idViewComponentRole;
+
     @JoinColumn(name = "ID_VIEW_COMPONENT", referencedColumnName = "ID_VIEW_COMPONENT")
     @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
     private ViewsComponent idViewComponent;
+
     @JoinColumn(name = "ID_SYSTEM_ROLE", referencedColumnName = "ID_SYSTEM_ROLE")
     @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
     private SystemRoles idSystemRole;
 
     public ViewsComponentsRole() {

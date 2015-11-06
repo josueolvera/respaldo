@@ -5,6 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -39,30 +42,44 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "CViews.findAll", query = "SELECT c FROM CViews c")})
 public class CViews implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_VIEW")
+    @JsonView(JsonViews.Root.class)
     private Integer idView;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "VIEW_NAME")
+    @JsonView(JsonViews.Root.class)
     private String viewName;
+
     @Size(max = 100)
     @Column(name = "VIEW")
+    @JsonView(JsonViews.Root.class)
     private String view;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonView(JsonViews.Root.class)
     private Date creationDate;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idView")
+    @JsonView(JsonViews.Embedded.class)
     private List<ViewsRole> viewsRoleList;
+
     @JoinColumn(name = "ID_MODULE", referencedColumnName = "ID_MODULE")
     @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
     private CModules idModule;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idView")
+    @JsonView(JsonViews.Embedded.class)
     private List<ViewsComponent> viewsComponentList;
 
     public CViews() {
