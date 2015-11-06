@@ -12,7 +12,7 @@ import mx.bidg.model.CTasks;
  *
  * @author sistemask
  */
-public interface PruebaService {
+public interface CTasksService {
     
     public List<CTasks> findAll();
     

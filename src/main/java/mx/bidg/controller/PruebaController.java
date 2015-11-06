@@ -5,12 +5,12 @@
  */
 package mx.bidg.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import mx.bidg.config.Permissions;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import mx.bidg.dao.CTasksDao;
-import mx.bidg.dao.CTasksDaoImpl;
 import mx.bidg.model.CTasks;
-import mx.bidg.service.PruebaService;
+import mx.bidg.service.CTasksService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +26,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class PruebaController {
     
     @Autowired
-    PruebaService pruebaService;
+    CTasksService pruebaService;
+    @Autowired
+    Permissions permissions;
     
     @RequestMapping( method = RequestMethod.GET)
     public @ResponseBody List<CTasks> prueba() throws Exception {
@@ -35,5 +37,15 @@ public class PruebaController {
         return tasks;
     }
     
+    @RequestMapping(value = "/newHashmap", method = RequestMethod.GET)
+    public @ResponseBody String newHashMap(){
+        permissions.buildTasksPermissions();
+        return "Muchos Exito";
+    }
+    
+    @RequestMapping(value = "/hashmap", method = RequestMethod.GET)
+    public @ResponseBody HashMap<String, ArrayList<Integer>> hashMap() {
+        return permissions.getMap();
+    }
     
 }

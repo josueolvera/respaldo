@@ -3,9 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mx.bidg.dao;
+package mx.bidg.dao.impl;
 
 import java.util.List;
+import mx.bidg.dao.AbstractDao;
+import mx.bidg.dao.CTasksDao;
+import mx.bidg.dao.InterfaceDao;
 import mx.bidg.model.CTasks;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
@@ -30,14 +33,12 @@ public class CTasksDaoImpl extends AbstractDao<Integer, CTasks> implements Inter
         return getByKey(id);
     }
 
-    //@Transactional
     @Override
     public List<CTasks> findAll() {
-//        Criteria criteria = createEntityCriteria().
-//                setFetchMode("tasksRoleList", FetchMode.JOIN)
-//                .setFetchMode("tasksRoleList.idSystemRole", FetchMode.SELECT);
-        
-        Criteria criteria = createEntityCriteria().setResultTransformer(CriteriaSpecification.ROOT_ENTITY);
+        Criteria criteria = createEntityCriteria().
+                setFetchMode("tasksRoleList", FetchMode.JOIN)
+                .setFetchMode("tasksRoleList.idSystemRole", FetchMode.SELECT)
+                .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         
         return (List<CTasks>) criteria.list();
     }

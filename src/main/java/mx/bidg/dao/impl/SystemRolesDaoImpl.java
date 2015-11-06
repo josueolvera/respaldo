@@ -3,10 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mx.bidg.dao;
+package mx.bidg.dao.impl;
 
 import java.io.Serializable;
 import java.util.List;
+import mx.bidg.dao.AbstractDao;
+import mx.bidg.dao.InterfaceDao;
+import mx.bidg.dao.SystemRolesDao;
 import mx.bidg.model.SystemRoles;
 
 /**
