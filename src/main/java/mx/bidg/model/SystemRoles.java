@@ -5,8 +5,10 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
@@ -38,9 +40,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "SYSTEM_ROLES")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "SystemRoles.findAll", query = "SELECT s FROM SystemRoles s")})
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class SystemRoles implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -70,33 +70,27 @@ public class SystemRoles implements Serializable {
     private Integer parentRole;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSystemRole")
-//    @JsonView(JsonViews.Other.class)
-    @JsonIgnore
+    @JsonView(JsonViews.Embedded.class)
     private List<ViewsRole> viewsRoleList;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSystemRole")
-//    @JsonView(JsonViews.Other.class)
-    @JsonIgnore
+    @JsonView(JsonViews.Embedded.class)
     private List<UsersRole> usersRoleList;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSystemRole")
-//    @JsonView(JsonViews.Other.class)
-    @JsonIgnore
+    @JsonView(JsonViews.Embedded.class)
     private List<TasksRole> tasksRoleList;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSystemRole")
-//    @JsonView(JsonViews.Other.class)
-    @JsonIgnore
+    @JsonView(JsonViews.Embedded.class)
     private List<AccessLevelsRole> accessLevelsRoleList;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSystemRole")
-//    @JsonView(JsonViews.Other.class)
-    @JsonIgnore
+    @JsonView(JsonViews.Embedded.class)
     private List<ViewsComponentsRole> viewsComponentsRoleList;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSystemRole")
-//    @JsonView(JsonViews.Other.class)
-    @JsonIgnore
+    @JsonView(JsonViews.Embedded.class)
     private List<TablesFieldsRole> tablesFieldsRoleList;
 
     public SystemRoles() {
@@ -136,7 +130,6 @@ public class SystemRoles implements Serializable {
         this.creationDate = creationDate;
     }
 
-    @XmlTransient
     public List<ViewsRole> getViewsRoleList() {
         return viewsRoleList;
     }
@@ -145,7 +138,6 @@ public class SystemRoles implements Serializable {
         this.viewsRoleList = viewsRoleList;
     }
 
-    @XmlTransient
     public List<UsersRole> getUsersRoleList() {
         return usersRoleList;
     }
@@ -154,7 +146,6 @@ public class SystemRoles implements Serializable {
         this.usersRoleList = usersRoleList;
     }
 
-    @XmlTransient
     public List<TasksRole> getTasksRoleList() {
         return tasksRoleList;
     }
@@ -163,7 +154,6 @@ public class SystemRoles implements Serializable {
         this.tasksRoleList = tasksRoleList;
     }
 
-    @XmlTransient
     public List<AccessLevelsRole> getAccessLevelsRoleList() {
         return accessLevelsRoleList;
     }
@@ -172,7 +162,6 @@ public class SystemRoles implements Serializable {
         this.accessLevelsRoleList = accessLevelsRoleList;
     }
 
-    @XmlTransient
     public List<ViewsComponentsRole> getViewsComponentsRoleList() {
         return viewsComponentsRoleList;
     }
@@ -181,7 +170,6 @@ public class SystemRoles implements Serializable {
         this.viewsComponentsRoleList = viewsComponentsRoleList;
     }
 
-    @XmlTransient
     public List<TablesFieldsRole> getTablesFieldsRoleList() {
         return tablesFieldsRoleList;
     }

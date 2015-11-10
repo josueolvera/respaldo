@@ -5,7 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
@@ -36,9 +38,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "VIEWS_COMPONENT")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "ViewsComponent.findAll", query = "SELECT v FROM ViewsComponent v")})
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class ViewsComponent implements Serializable {
     private static final long serialVersionUID = 1L;
 

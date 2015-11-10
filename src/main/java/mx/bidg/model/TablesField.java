@@ -5,7 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
@@ -37,9 +39,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "TABLES_FIELD")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "TablesField.findAll", query = "SELECT t FROM TablesField t")})
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class TablesField implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -131,7 +131,6 @@ public class TablesField implements Serializable {
         this.idField = idField;
     }
 
-    @XmlTransient
     public List<TablesFieldsRole> getTablesFieldsRoleList() {
         return tablesFieldsRoleList;
     }
