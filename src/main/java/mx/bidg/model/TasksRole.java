@@ -55,7 +55,8 @@ public class TasksRole implements Serializable {
 
     @JoinColumn(name = "ID_TASK", referencedColumnName = "ID_TASK")
     @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
+//    @JsonView(JsonViews.Embedded.class)
+    @JsonIgnore
     private CTasks idTask;
 
     @JoinColumn(name = "ID_SYSTEM_ROLE", referencedColumnName = "ID_SYSTEM_ROLE")

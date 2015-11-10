@@ -70,27 +70,33 @@ public class SystemRoles implements Serializable {
     private Integer parentRole;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSystemRole")
-    @JsonView(JsonViews.Embedded.class)
+//    @JsonView(JsonViews.Other.class)
+    @JsonIgnore
     private List<ViewsRole> viewsRoleList;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSystemRole")
-    @JsonView(JsonViews.Embedded.class)
+//    @JsonView(JsonViews.Other.class)
+    @JsonIgnore
     private List<UsersRole> usersRoleList;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSystemRole")
-    @JsonView(JsonViews.Embedded.class)
+//    @JsonView(JsonViews.Other.class)
+    @JsonIgnore
     private List<TasksRole> tasksRoleList;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSystemRole")
-    @JsonView(JsonViews.Embedded.class)
+//    @JsonView(JsonViews.Other.class)
+    @JsonIgnore
     private List<AccessLevelsRole> accessLevelsRoleList;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSystemRole")
-    @JsonView(JsonViews.Embedded.class)
+//    @JsonView(JsonViews.Other.class)
+    @JsonIgnore
     private List<ViewsComponentsRole> viewsComponentsRoleList;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSystemRole")
-    @JsonView(JsonViews.Embedded.class)
+//    @JsonView(JsonViews.Other.class)
+    @JsonIgnore
     private List<TablesFieldsRole> tablesFieldsRoleList;
 
     public SystemRoles() {
