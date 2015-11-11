@@ -5,7 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
@@ -37,6 +39,7 @@ import org.hibernate.annotations.SelectBeforeUpdate;
 @Table(name = "USERS")
 @DynamicUpdate
 @SelectBeforeUpdate
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Users implements Serializable {
     private static final long serialVersionUID = 1L;
 

@@ -5,8 +5,10 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
@@ -33,9 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name = "TASKS_ROLE")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "TasksRole.findAll", query = "SELECT t FROM TasksRole t")})
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class TasksRole implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -55,8 +55,7 @@ public class TasksRole implements Serializable {
 
     @JoinColumn(name = "ID_TASK", referencedColumnName = "ID_TASK")
     @ManyToOne(optional = false)
-//    @JsonView(JsonViews.Embedded.class)
-    @JsonIgnore
+    @JsonView(JsonViews.Embedded.class)
     private CTasks idTask;
 
     @JoinColumn(name = "ID_SYSTEM_ROLE", referencedColumnName = "ID_SYSTEM_ROLE")

@@ -26,7 +26,9 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 
 /**
@@ -35,29 +37,31 @@ import mx.bidg.config.JsonViews;
  */
 @Entity
 @Table(name = "C_TASKS")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "CTasks.findAll", query = "SELECT c FROM CTasks c")})
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CTasks implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @JsonView(JsonViews.Root.class)
     @Column(name = "ID_TASK")
     private Integer idTask;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @JsonView(JsonViews.Root.class)
     @Column(name = "TASK_NAME")
     private String taskName;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     @JsonView(JsonViews.Root.class)
     private Date creationDate;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTask")
     @JsonView(JsonViews.Embedded.class)
     private List<TasksRole> tasksRoleList;

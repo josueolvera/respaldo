@@ -5,7 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
@@ -35,9 +37,7 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "ACCESS_LEVEL")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "AccessLevel.findAll", query = "SELECT a FROM AccessLevel a")})
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class AccessLevel implements Serializable {
     private static final long serialVersionUID = 1L;
 

@@ -5,7 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
@@ -32,9 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name = "ACCESS_LEVELS_ROLE")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "AccessLevelsRole.findAll", query = "SELECT a FROM AccessLevelsRole a")})
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class AccessLevelsRole implements Serializable {
     private static final long serialVersionUID = 1L;
 
