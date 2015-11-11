@@ -9,26 +9,14 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
@@ -58,9 +46,9 @@ public class AccessLevel implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
-    private Date creationDate;
+    private LocalDateTime creationDate;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAccessLevel")
     @JsonView(JsonViews.Embedded.class)
@@ -73,7 +61,7 @@ public class AccessLevel implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public AccessLevel(Integer idAccessLevel, String accessName, Date creationDate) {
+    public AccessLevel(Integer idAccessLevel, String accessName, LocalDateTime creationDate) {
         this.idAccessLevel = idAccessLevel;
         this.accessName = accessName;
         this.creationDate = creationDate;
@@ -95,11 +83,11 @@ public class AccessLevel implements Serializable {
         this.accessName = accessName;
     }
 
-    public Date getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 

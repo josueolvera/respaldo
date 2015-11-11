@@ -6,28 +6,15 @@
 package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 
 import java.io.Serializable;
-import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import java.time.LocalDateTime;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -49,9 +36,9 @@ public class TasksRole implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
     @JsonView(JsonViews.Root.class)
-    private Date creationDate;
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime creationDate;
 
     @JoinColumn(name = "ID_TASK", referencedColumnName = "ID_TASK")
     @ManyToOne(optional = false)
@@ -70,7 +57,7 @@ public class TasksRole implements Serializable {
         this.idTaskRole = idTaskRole;
     }
 
-    public TasksRole(Integer idTaskRole, Date creationDate) {
+    public TasksRole(Integer idTaskRole, LocalDateTime creationDate) {
         this.idTaskRole = idTaskRole;
         this.creationDate = creationDate;
     }
@@ -83,11 +70,11 @@ public class TasksRole implements Serializable {
         this.idTaskRole = idTaskRole;
     }
 
-    public Date getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
