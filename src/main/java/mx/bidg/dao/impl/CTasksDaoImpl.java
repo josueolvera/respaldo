@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author sistemask
  */
 @Repository
-public class CTasksDaoImpl extends AbstractDao<Integer, CTasks> implements InterfaceDao<CTasks>, CTasksDao{
+public class CTasksDaoImpl extends AbstractDao<Integer, CTasks> implements CTasksDao{
 
     @Override
     public CTasks save(CTasks entity) {

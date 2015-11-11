@@ -16,7 +16,7 @@ import mx.bidg.model.SystemRoles;
  *
  * @author sistemask
  */
-public class SystemRolesDaoImpl extends AbstractDao<Integer, SystemRoles> implements SystemRolesDao, InterfaceDao<SystemRoles> {
+public class SystemRolesDaoImpl extends AbstractDao<Integer, SystemRoles> implements SystemRolesDao {
 
     @Override
     public SystemRoles findById(int id) {

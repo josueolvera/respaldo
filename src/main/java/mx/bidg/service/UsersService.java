@@ -3,16 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mx.bidg.dao;
+package mx.bidg.service;
 
-import mx.bidg.model.SystemRoles;
+import mx.bidg.model.Users;
 
 /**
  *
  * @author sistemask
  */
-public interface SystemRolesDao extends InterfaceDao<SystemRoles>{
+public interface UsersService {
     
+    public Users findByUserName(String username);
     
+    public Users verifyUserLogin(Users user);
     
+    public boolean logout(Users user);
+            
 }

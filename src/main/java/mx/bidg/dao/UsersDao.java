@@ -5,14 +5,14 @@
  */
 package mx.bidg.dao;
 
-import mx.bidg.model.SystemRoles;
+import mx.bidg.model.Users;
 
 /**
  *
  * @author sistemask
  */
-public interface SystemRolesDao extends InterfaceDao<SystemRoles>{
+public interface UsersDao extends InterfaceDao<Users> {
     
-    
+    public Users findByUsername(String username);
     
 }

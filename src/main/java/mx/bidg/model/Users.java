@@ -9,25 +9,25 @@ import com.fasterxml.jackson.annotation.JsonView;
 import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import mx.bidg.utils.DateTimeConverter;
+import mx.bidg.utils.TimeConverter;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.SelectBeforeUpdate;
 
 /**
  *
@@ -35,6 +35,8 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @Table(name = "USERS")
+@DynamicUpdate
+@SelectBeforeUpdate
 public class Users implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -82,25 +84,25 @@ public class Users implements Serializable {
     @NotNull
     @Column(name = "TIME_SESSION")
     @JsonView(JsonViews.Root.class)
-    @Temporal(TemporalType.TIME)
-    private Date timeSession;
+    @Convert(converter = TimeConverter.class)
+    private LocalTime timeSession;
 
     @Basic(optional = false)
     @NotNull
     @Column(name = "HIGH_DATE")
     @JsonView(JsonViews.Root.class)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date highDate;
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime highDate;
 
     @Column(name = "MODIFICATION_DATE")
     @JsonView(JsonViews.Root.class)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date modificationDate;
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime modificationDate;
 
     @Column(name = "LOW_DATE")
     @JsonView(JsonViews.Root.class)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lowDate;
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime lowDate;
 
     @Basic(optional = false)
     @NotNull
@@ -147,7 +149,7 @@ public class Users implements Serializable {
         this.idUser = idUser;
     }
 
-    public Users(Integer idUser, int idCompany, int idRegion, int idBranch, int idGroup, int idRole, String username, String password, String mail, int status, int activeSession, Date timeSession, Date highDate) {
+    public Users(Integer idUser, int idCompany, int idRegion, int idBranch, int idGroup, int idRole, String username, String password, String mail, int status, int activeSession, LocalTime timeSession, LocalDateTime highDate) {
         this.idUser = idUser;
         this.idCompany = idCompany;
         this.idRegion = idRegion;
@@ -259,39 +261,38 @@ public class Users implements Serializable {
         this.activeSession = activeSession;
     }
 
-    public Date getTimeSession() {
+    public LocalTime getTimeSession() {
         return timeSession;
     }
 
-    public void setTimeSession(Date timeSession) {
+    public void setTimeSession(LocalTime timeSession) {
         this.timeSession = timeSession;
     }
 
-    public Date getHighDate() {
+    public LocalDateTime getHighDate() {
         return highDate;
     }
 
-    public void setHighDate(Date highDate) {
+    public void setHighDate(LocalDateTime highDate) {
         this.highDate = highDate;
     }
 
-    public Date getModificationDate() {
+    public LocalDateTime getModificationDate() {
         return modificationDate;
     }
 
-    public void setModificationDate(Date modificationDate) {
+    public void setModificationDate(LocalDateTime modificationDate) {
         this.modificationDate = modificationDate;
     }
 
-    public Date getLowDate() {
+    public LocalDateTime getLowDate() {
         return lowDate;
     }
 
-    public void setLowDate(Date lowDate) {
+    public void setLowDate(LocalDateTime lowDate) {
         this.lowDate = lowDate;
     }
 
-    @XmlTransient
     public List<UsersRole> getUsersRoleList() {
         return usersRoleList;
     }
@@ -322,7 +323,7 @@ public class Users implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.Users[ idUser=" + idUser + " ]";
+        return "Users{" + "idUser=" + idUser + ", username=" + username + ", password=" + password + ", mail=" + mail + ", status=" + status + ", activeSession=" + activeSession + ", timeSession=" + timeSession + ", highDate=" + highDate + ", modificationDate=" + modificationDate + ", lowDate=" + lowDate + ", idCompany=" + idCompany + ", idRegion=" + idRegion + ", idBranch=" + idBranch + ", idGroup=" + idGroup + ", idRole=" + idRole + ", idEmployee=" + idEmployee + '}';
     }
     
 }

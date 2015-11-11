@@ -26,7 +26,7 @@ import org.springframework.web.servlet.View;
  * @author sistemask
  */
 @Controller
-@RequestMapping("/")
+@RequestMapping("/prueba")
 public class PruebaController {
     
     @Autowired
@@ -34,7 +34,6 @@ public class PruebaController {
     @Autowired
     Permissions permissions;
     
-    @JsonView(JsonViews.Root.class)
     @RequestMapping( method = RequestMethod.GET)
     public @ResponseBody String prueba() throws Exception {
         

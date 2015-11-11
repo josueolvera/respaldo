@@ -3,16 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mx.bidg.dao;
-
-import mx.bidg.model.SystemRoles;
+package mx.bidg.exceptions;
 
 /**
  *
  * @author sistemask
  */
-public interface SystemRolesDao extends InterfaceDao<SystemRoles>{
+public class ValidationException extends RuntimeException {
     
+    public ValidationException(String message) {
+        super(message);
+    }
     
+    public ValidationException() {
+        
+    }
     
 }
