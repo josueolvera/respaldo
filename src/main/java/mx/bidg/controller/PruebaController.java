@@ -39,7 +39,7 @@ public class PruebaController {
         
         List<CTasks> tasks = pruebaService.findAll();
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.writeValueAsString(tasks);
+        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(tasks);
     }
     
     @RequestMapping(value = "/newHashmap", method = RequestMethod.GET)
