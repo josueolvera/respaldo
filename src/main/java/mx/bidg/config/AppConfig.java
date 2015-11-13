@@ -5,6 +5,8 @@
  */
 package mx.bidg.config;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpSessionListener;
 import mx.bidg.interceptor.ControllerInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;

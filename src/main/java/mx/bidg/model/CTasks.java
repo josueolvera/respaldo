@@ -43,13 +43,18 @@ public class CTasks implements Serializable {
     @Column(name = "TASK_NAME")
     private String taskName;
 
+    @Size(max = 10)
+    @Column(name = "HTTP_METHOD")
+    @JsonView(JsonViews.Root.class)
+    private String httpMethod;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
-
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTask")
     @JsonView(JsonViews.Embedded.class)
     private List<TasksRole> tasksRoleList;
@@ -98,6 +103,14 @@ public class CTasks implements Serializable {
 
     public void setTasksRoleList(List<TasksRole> tasksRoleList) {
         this.tasksRoleList = tasksRoleList;
+    }
+    
+    public String getHttpMethod() {
+        return httpMethod;
+    }
+
+    public void setHttpMethod(String httpMethod) {
+        this.httpMethod = httpMethod;
     }
 
     @Override

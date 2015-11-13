@@ -35,7 +35,7 @@ public class Permissions {
                roles.add(taskRole.getIdSystemRole().getIdSystemRole());
            }
            
-           map.put(task.getTaskName(), roles);
+           map.put(task.getHttpMethod().toLowerCase() + ":" + task.getTaskName().toLowerCase(), roles);
         }
         
     }

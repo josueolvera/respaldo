@@ -7,6 +7,7 @@ package mx.bidg.service.impl;
 
 import mx.bidg.dao.UsersDao;
 import mx.bidg.exceptions.ActiveSessionException;
+import mx.bidg.exceptions.InactiveUserException;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.Users;
 import mx.bidg.service.UsersService;
@@ -40,8 +41,11 @@ public class UsersServiceImpl implements UsersService {
         }
         
         if(userDB.getActiveSession() == 1) {
-            System.out.println("Aqui entro");
-            throw new ActiveSessionException("El usuario ya tiene una sesion activa");
+            throw new ActiveSessionException("El usuario ya tiene una sesion activa. Username: " + user.getUsername());
+        }
+        
+        if(userDB.getStatus() == 0) {
+            throw new InactiveUserException("Usuario con status inactivo. Username: " + user.getUsername());
         }
         
         if(userDB.getPassword().equals(user.getPassword())) {
@@ -55,8 +59,6 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public boolean logout(Users user) {
-        
-//        Users userDB = usersDao.findByUsername(user.getUsername());
         
         user.setActiveSession(0);
         usersDao.update(user);
