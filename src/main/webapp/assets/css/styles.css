@@ -1,0 +1,40 @@
+body {
+    background: #E4E8E8;
+}
+
+.login-form {
+    margin: 1rem;
+    padding: 4rem;
+    border-radius: 2rem;
+    background: #F2F4F4;
+    border: 2px solid #DFE3E3;
+}
+
+.login-form label {
+    text-align: center;
+    font-weight: normal;
+}
+
+.login-form-wrapper {
+    float: none;
+    margin: 0 auto;
+}
+
+.login-form-links {
+    font-size: 1.3rem;
+    margin-top: 2rem;
+}
+
+.form-signin-heading {
+    text-align: center;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #DFE3E3;
+}
+
+.login-button {
+    background: url("../img/login-button.png");
+}
+
+.login-button:hover {
+    background: url("../img/login-button-active.png");
+}
