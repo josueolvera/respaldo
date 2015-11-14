@@ -7,6 +7,7 @@ package mx.bidg.service.impl;
 
 import java.util.List;
 import mx.bidg.dao.UsersRoleDao;
+import mx.bidg.model.Users;
 import mx.bidg.model.UsersRole;
 import mx.bidg.service.UsersRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class UsersRoleServiceImpl implements UsersRoleService {
     UsersRoleDao usersRoleDao;
 
     @Override
-    public List<UsersRole> findAllByUserId(int idUser) {
+    public List<UsersRole> findAllByUserId(Users idUser) {
         return usersRoleDao.findAllByUserId(idUser);
     }
     

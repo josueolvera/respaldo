@@ -5,27 +5,22 @@
  */
 package mx.bidg.interceptor;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 import mx.bidg.model.Users;
 import mx.bidg.service.UsersService;
-import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 
 /**
  *
  * @author sistemask
  */
-@Component
+//@Component
 public class MySessionListener implements HttpSessionListener {
     
-    @Autowired
+//    @Autowired
     UsersService usersService;
 
     @Override
@@ -40,7 +35,7 @@ public class MySessionListener implements HttpSessionListener {
         
         if(user != null) {
             
-            usersService.logout(user);
+//            usersService.logout(user);
             
         }
         System.out.println("Sesion destruida");

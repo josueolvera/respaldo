@@ -8,6 +8,7 @@ package mx.bidg.dao.impl;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.UsersRoleDao;
+import mx.bidg.model.Users;
 import mx.bidg.model.UsersRole;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -21,9 +22,9 @@ import org.springframework.stereotype.Repository;
 public class UsersRoleDaoImpl extends AbstractDao<Integer, UsersRole> implements UsersRoleDao {
 
     @Override
-    public List<UsersRole> findAllByUserId(int idUser) {
+    public List<UsersRole> findAllByUserId(Users idUser) {
         Criteria criteria = createEntityCriteria();
-        criteria.add(Restrictions.eq("idUserRole", idUser));
+        criteria.add(Restrictions.eq("idUser", idUser));
         return (List<UsersRole>) criteria.list();
     }
 

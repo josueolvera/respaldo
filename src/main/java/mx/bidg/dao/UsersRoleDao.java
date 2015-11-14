@@ -6,6 +6,7 @@
 package mx.bidg.dao;
 
 import java.util.List;
+import mx.bidg.model.Users;
 import mx.bidg.model.UsersRole;
 
 /**
@@ -14,6 +15,6 @@ import mx.bidg.model.UsersRole;
  */
 public interface UsersRoleDao extends InterfaceDao<UsersRole> {
     
-    public List<UsersRole> findAllByUserId(int idUser);
+    public List<UsersRole> findAllByUserId(Users idUser);
     
 }

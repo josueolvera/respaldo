@@ -14,13 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import mx.bidg.config.Permissions;
-import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.Users;
 import mx.bidg.model.UsersRole;
 import mx.bidg.service.UsersRoleService;
-import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -35,13 +32,13 @@ public class ControllerInterceptor extends HandlerInterceptorAdapter {
     Permissions permissions;
     @Autowired
     UsersRoleService usersRoleService;
-    Logger logger = Logger.getLogger(ControllerInterceptor.class.getName());
+    static final Logger logger = Logger.getLogger(ControllerInterceptor.class.getName());
     
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception{
         
         HttpSession session = request.getSession(false);
-        
+
         if(session == null) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Es necesario inciar sesion");
             logger.log(Level.WARNING, "Sesion nula");
@@ -57,7 +54,7 @@ public class ControllerInterceptor extends HandlerInterceptorAdapter {
         }
         
         String uri = request.getRequestURI();
-        String method = request.getMethod();
+        String method = request.getMethod().toLowerCase();
         
         String[] cadenas = uri.split("/");
         String key;
@@ -75,10 +72,10 @@ public class ControllerInterceptor extends HandlerInterceptorAdapter {
         
         if(idRoles == null) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Acceso denegado");
-            throw new ValidationException("No hay roles para este request. KEY: " + key);
+            logger.log(Level.WARNING, "No hay roles para este request. KEY: " + key);
         }
         
-        List<UsersRole> userRoles = usersRoleService.findAllByUserId(user.getIdUser());
+        List<UsersRole> userRoles = usersRoleService.findAllByUserId(user);
         
         for(UsersRole userRol : userRoles) {
             

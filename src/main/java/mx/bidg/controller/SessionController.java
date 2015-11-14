@@ -46,7 +46,6 @@ public class SessionController {
         
         HttpSession session = request.getSession();
         session.setAttribute("user", userSession);
-        session.setMaxInactiveInterval(10);
         
         return new ResponseEntity<>(HttpStatus.OK );
     }
