@@ -5,6 +5,7 @@
 
 <%@tag description="User Page template" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@attribute name="pageTitle" required="true"%>
 <%@attribute name="scripts" fragment="true" %>
 <%@attribute name="styles" fragment="true" %>
@@ -16,10 +17,33 @@
     <title>${pageTitle}</title>
     <link rel="stylesheet" href="BIDGroup/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="BIDGroup/assets/css/styles.css">
+    <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users" />
     <jsp:invoke fragment="styles" />
 </head>
     <body>
-        <jsp:doBody />
+        <div class="container-fluid">
+            <c:if test="${user.username == null}">
+                <div class="row">
+                    <div class='header-wrapper'>
+                        <div class="header"></div>
+                    </div>
+                </div>
+            </c:if>
+
+            <c:if test="${user.username != null}">
+                <div class="row">
+                    <div class='header-wrapper'>
+                        <div class="header">
+                            <form action="/BIDGroup/logout" method="post">
+                                <input type="submit" value="Cerrar sesión">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </c:if>
+
+            <jsp:doBody />
+        </div>
         <script src="BIDGroup/assets/js/jquery-2.1.4.min.js"></script>
         <script src="BIDGroup/assets/js/bootstrap.min.js"></script>
         <script src="BIDGroup/assets/js/vue-1.0.7.js"></script>

@@ -2,6 +2,20 @@ body {
     background: #E4E8E8;
 }
 
+.header-wrapper{
+    background: url("../img/header_bg.png") repeat-x top;
+}
+
+.header {
+    width: 267px;
+    margin: 0 auto;
+    padding-top: 10px;
+    height: 120px;
+    top: 100px;
+    float: none;
+    background: url("../img/BID_Blanco.png") no-repeat 0 10px;
+}
+
 .login-form {
     margin: 1rem;
     padding: 4rem;
@@ -13,6 +27,12 @@ body {
 .login-form label {
     text-align: center;
     font-weight: normal;
+    margin-top: 1.2rem;
+}
+
+.login-form .form-control {
+    border: 2px solid #e0e4e4;
+    padding: 2rem;
 }
 
 .login-form-wrapper {
@@ -36,5 +56,6 @@ body {
 }
 
 .login-button:hover {
+    color: #fff;
     background: url("../img/login-button-active.png");
 }

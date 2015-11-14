@@ -6,7 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users" />
 
 <t:template pageTitle="BID Group: Login">
@@ -16,12 +16,14 @@
             var vm = new Vue({
                 el: '#content',
                 data: {
+                    loginInProgress: false,
                     username: '',
                     password: '',
                     mayusActive: false
                 },
                 methods: {
-                    submitLogin: function () {
+                    submitLogin: function (event) {
+                        event.preventDefault();
                         this.$http.post(ROOT_URL + '/login', {
                             username: this.username,
                             password: this.password
@@ -40,23 +42,13 @@
     </jsp:attribute>
 
     <jsp:body>
-        <div id="content" class="container-fluid">
-
-            <div class="row">
-                <div class='container-header'>
-                    <div class="header">
-
-                    </div>
-                </div>
-            </div>
-            ${user}
+        <div id="content">
 
             <c:if test="${user.username == null}">
                 <div class="row">
                     <div class="login-form-wrapper col-md-6 col-xs-8 col-sm-6 col-lg-4">
-                        <div class="login-form form-signin">
+                        <form v-on:submit="submitLogin" class="login-form form-signin" action="/login" method="post">
                             <h4 class="form-signin-heading"><strong>Bienvenido</strong></h4>
-
                             <p class="text-center"><label>Usuario:</label></p>
                             <input v-model="username" type="text" name="username"  class="form-control" placeholder="usuario o email" required autofocus>
                             <p class="text-center"><label>Password:</label></p>
@@ -65,18 +57,19 @@
                                 <div class="alert alert-danger" role="alert">Mayusculas Activadas</div>
                             </div>
                             <br/>
-                            <p class="text-center"><button v-on:click="submitLogin" class="login-button btn btn-default" type="submit">Iniciar Sesión</button></p>
+                            <p class="text-center"><input class="login-button btn btn-default" type="submit" value="Iniciar Sesión" /></p>
 
                             <p class="login-form-links text-center"><span><a href="#">¿No puedes acceder a tu cuenta?</a></span></p>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </c:if>
 
             <c:if test="${user.username != null}">
-                <p>Bienbenido ${user.username}</p>
+                <p>Bienvenido ${user.username}</p>
                 <p><button v-on:click="submitLogout">Logout</button></p>
             </c:if>
+            ${user}
         </div>
     </jsp:body>
 </t:template>
