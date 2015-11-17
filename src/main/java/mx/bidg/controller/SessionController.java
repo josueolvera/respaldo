@@ -7,8 +7,11 @@ package mx.bidg.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import mx.bidg.config.ActiveSessionsList;
 import mx.bidg.exceptions.ValidationException;
+import mx.bidg.model.ActiveSession;
 import mx.bidg.model.Users;
+import mx.bidg.service.ActiveSessionService;
 import mx.bidg.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +32,10 @@ public class SessionController {
     
     @Autowired
     UsersService usersService;
+    @Autowired
+    ActiveSessionsList activeSessionsList;
+    @Autowired
+    ActiveSessionService activeSessionService;
     
     @RequestMapping(produces = {"text/html;charset=UTF-8"})
     public String home(Model model) {
@@ -47,21 +54,30 @@ public class SessionController {
         HttpSession session = request.getSession();
         session.setAttribute("user", userSession);
         
+        activeSessionService.save(new ActiveSession(userSession.getIdUser(), session.getId()));
+        activeSessionsList.addSession(session);
+        
         return new ResponseEntity<>(HttpStatus.OK );
     }
     
     @RequestMapping(value = "/logout", method = RequestMethod.POST, produces = "text/html;charset=UTF-8")
     public ResponseEntity<String> logout(HttpServletRequest request) throws Exception {
         
-        Users user = (Users) request.getSession(false).getAttribute("user");
+        HttpSession session = request.getSession(false);
+        
+        if(session == null) {
+            throw new ValidationException("Sesion invalida");
+        }
+        
+        Users user = (Users) session.getAttribute("user");
         
         if(user == null) {
-            throw new ValidationException("Error de sesion");
+            throw new ValidationException("Usuario inválido");
         }
         
-        if(usersService.logout(user)) {
-            request.getSession(false).invalidate();
-        }
+        activeSessionsList.removeSession(session.getId());
+        activeSessionService.delete(new ActiveSession(user.getIdUser(), session.getId()));
+        session.invalidate();
         
         return new ResponseEntity<>("La sesión se ha cerrado con éxito", HttpStatus.OK);
         

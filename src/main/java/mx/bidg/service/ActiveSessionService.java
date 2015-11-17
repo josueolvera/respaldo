@@ -5,16 +5,16 @@
  */
 package mx.bidg.service;
 
-import mx.bidg.model.Users;
+import mx.bidg.model.ActiveSession;
 
 /**
  *
  * @author sistemask
  */
-public interface UsersService {
+public interface ActiveSessionService {
     
-    public Users findByUserName(String username);
+    public ActiveSession save(ActiveSession activeSession);
+    public ActiveSession findById(int id);
+    public boolean delete(ActiveSession activeSession);
     
-    public Users verifyUserLogin(Users user);
-            
 }

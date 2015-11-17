@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  * @author sistemask
  */
-@ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "El usuario ya tiene una sesion activa")
+@ResponseStatus(value = HttpStatus.PRECONDITION_FAILED, reason = "El usuario ya tiene una sesion activa")
 public class ActiveSessionException extends ValidationException {
     
     public ActiveSessionException() {

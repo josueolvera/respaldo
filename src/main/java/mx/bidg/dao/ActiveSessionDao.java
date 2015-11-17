@@ -3,18 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mx.bidg.service;
+package mx.bidg.dao;
 
-import mx.bidg.model.Users;
+import mx.bidg.model.ActiveSession;
 
 /**
  *
  * @author sistemask
  */
-public interface UsersService {
+public interface ActiveSessionDao extends InterfaceDao<ActiveSession> {
     
-    public Users findByUserName(String username);
-    
-    public Users verifyUserLogin(Users user);
-            
 }
