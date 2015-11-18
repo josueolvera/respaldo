@@ -17,7 +17,6 @@ import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -27,7 +26,19 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "C_TABLES")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CTables implements Serializable {
+    
     private static final long serialVersionUID = 1L;
+    
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "CREATION_DATE")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime creationDate;
+    
+    @JsonView(JsonViews.Embedded.class)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTable")
+    private List<CBudgetTypes> cBudgetTypesList;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,13 +53,6 @@ public class CTables implements Serializable {
     @Column(name = "TABLE_NAME")
     @JsonView(JsonViews.Root.class)
     private String tableName;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "CREATION_DATE")
-    @JsonView(JsonViews.Root.class)
-    @Convert(converter = DateTimeConverter.class)
-    private LocalDateTime creationDate;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTable")
     @JsonView(JsonViews.Embedded.class)
@@ -91,13 +95,20 @@ public class CTables implements Serializable {
         this.creationDate = creationDate;
     }
 
-    @XmlTransient
     public List<TablesField> getTablesFieldList() {
         return tablesFieldList;
     }
 
     public void setTablesFieldList(List<TablesField> tablesFieldList) {
         this.tablesFieldList = tablesFieldList;
+    }
+    
+        public List<CBudgetTypes> getCBudgetTypesList() {
+        return cBudgetTypesList;
+    }
+
+    public void setCBudgetTypesList(List<CBudgetTypes> cBudgetTypesList) {
+        this.cBudgetTypesList = cBudgetTypesList;
     }
 
     @Override
