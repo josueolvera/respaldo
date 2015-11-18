@@ -42,7 +42,7 @@ public class PruebaController {
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(tasks);
     }
     
-    @RequestMapping(value = "/newHashmap", method = RequestMethod.GET)
+    @RequestMapping(value = "/build-permissions", method = RequestMethod.GET)
     public @ResponseBody String newHashMap(){
         permissions.buildTasksPermissions();
         return "Muchos Exito";
