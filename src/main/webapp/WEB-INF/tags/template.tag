@@ -17,6 +17,9 @@
     <title>${pageTitle}</title>
     <link rel="stylesheet" href="BIDGroup/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="BIDGroup/assets/css/styles.css">
+    <link rel="stylesheet" href="BIDGroup/assets/css/messenger.css">
+    <link rel="stylesheet" href="BIDGroup/assets/css/messenger-theme-air.css">
+    <link rel="stylesheet" href="BIDGroup/assets/css/messenger-spinner.css">
     <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users" />
     <jsp:invoke fragment="styles" />
 </head>
@@ -48,6 +51,8 @@
         <script src="BIDGroup/assets/js/bootstrap.min.js"></script>
         <script src="BIDGroup/assets/js/vue-1.0.7.js"></script>
         <script src="BIDGroup/assets/js/vue-resource-0.1.17.min.js"></script>
+        <script src="BIDGroup/assets/js/messenger.min.js"></script>
+        <script src="BIDGroup/assets/js/alerts.js"></script>
         <script type="text/javascript">
             var ROOT_URL = "http://localhost:8080/BIDGroup";
         </script>

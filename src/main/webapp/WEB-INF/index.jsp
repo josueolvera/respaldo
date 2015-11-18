@@ -29,12 +29,20 @@
                             password: this.password
                         }).success(function (data, status, request) {
                             location.reload();
+                        }).error(function (data, status, request) {
+                            if (status == 412) {
+                                $('#active-session-modal').modal('show');
+                            }
                         });
                     },
-                    submitLogout: function () {
-                        this.$http.post(ROOT_URL + '/logout').success(function (data, status, request) {
+                    closeActiveSession: function () {
+                        this.$http.post(ROOT_URL + '/close-active-session', {
+                            username: this.username
+                        }).success(function (data,  status, request) {
                             location.reload();
-                        });
+                        }).error(function () {
+                            showAlert("Ha habido un problema con su solicitud, intente nuevamente");
+                        })
                     }
                 }
             });
@@ -52,7 +60,7 @@
                             <p class="text-center"><label>Usuario:</label></p>
                             <input v-model="username" type="text" name="username"  class="form-control" placeholder="usuario o email" required autofocus>
                             <p class="text-center"><label>Password:</label></p>
-                            <input v-model="password" type="password" v-on:keydown.20="mayusActive = ! mayusActive" name="password" class="form-control" required>
+                            <input v-model="password" type="password" name="password" class="form-control" required>
                             <div v-if="mayusActive">
                                 <div class="alert alert-danger" role="alert">Mayusculas Activadas</div>
                             </div>
@@ -63,13 +71,29 @@
                         </form>
                     </div>
                 </div>
+
+                <div id="active-session-modal" class="modal fade">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4>Ya tiene una sesión activa</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>¿Desea cerrar su sesión anterior?</p>
+                                <p>
+                                    <button v-on:click="closeActiveSession" class="btn btn-success">Cerrar sesión</button>
+                                    <button class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                                </p>
+                            </div>
+                            <div class="modal-footer"></div>
+                        </div>
+                    </div>
+                </div>
             </c:if>
 
             <c:if test="${user.username != null}">
                 <p>Bienvenido ${user.username}</p>
-                <p><button v-on:click="submitLogout">Logout</button></p>
             </c:if>
-            ${user}
         </div>
     </jsp:body>
 </t:template>

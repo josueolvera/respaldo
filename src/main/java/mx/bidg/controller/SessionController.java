@@ -82,5 +82,19 @@ public class SessionController {
         return new ResponseEntity<>("La sesión se ha cerrado con éxito", HttpStatus.OK);
         
     }
+
+    @RequestMapping(value = "/close-active-session", method = RequestMethod.POST, produces = "text/html;charset=UTF-8")
+    public ResponseEntity<String> closeActiveSession(@RequestBody Users user, HttpServletRequest request) throws Exception {
+        Users userDB = usersService.findByUserName(user.getUsername());
+        ActiveSession activeSession = activeSessionService.findById(userDB.getIdUser());
+        HttpSession session = activeSessionsList.getSession(activeSession.getIdSession());
+
+        activeSessionsList.removeSession(activeSession.getIdSession());
+        activeSessionService.delete(activeSession);
+
+        session.invalidate();
+
+        return new ResponseEntity<>("La sesión activa se ha cerrado con éxito" , HttpStatus.OK);
+    }
     
 }

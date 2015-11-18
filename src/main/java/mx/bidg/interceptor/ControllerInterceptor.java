@@ -47,7 +47,7 @@ public class ControllerInterceptor extends HandlerInterceptorAdapter {
         
         Users user = (Users) session.getAttribute("user");
         
-        if(user == null) {
+        if(user == null || user.getIdUser() == null) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Es necesario inciar sesion");
             logger.log(Level.WARNING, "Usuario nulo");
             return false;
@@ -65,21 +65,20 @@ public class ControllerInterceptor extends HandlerInterceptorAdapter {
             key = method + ":" + cadenas[2];
         }
         
-        System.out.println(key);
-        
         HashMap<String, ArrayList<Integer>> mapPermissions = permissions.getMap();
         ArrayList<Integer> idRoles = mapPermissions.get(key);
         
         if(idRoles == null) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Acceso denegado");
             logger.log(Level.WARNING, "No hay roles para este request. KEY: " + key);
+            return false;
         }
         
         List<UsersRole> userRoles = usersRoleService.findAllByUserId(user);
         
         for(UsersRole userRol : userRoles) {
-            
-            if(idRoles.contains(userRol.getIdSystemRole().getIdSystemRole())) {
+            Integer id = userRol.getIdSystemRole().getIdSystemRole();
+            if(idRoles.contains(id)) {
                 return true;
             }
             

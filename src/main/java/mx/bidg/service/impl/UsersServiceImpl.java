@@ -32,7 +32,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public Users findByUserName(String username) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return usersDao.findByUsername(username);
     }
 
     @Override
