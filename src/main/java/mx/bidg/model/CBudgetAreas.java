@@ -55,6 +55,10 @@ public class CBudgetAreas implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private List<Budgets> budgetsList;
 
+    @OneToMany(mappedBy = "idBudgetArea")
+    @JsonView(JsonViews.Embedded.class)
+    private List<CRequestTypes> cRequestTypesList;
+
     public CBudgetAreas() {
     }
 
@@ -117,6 +121,14 @@ public class CBudgetAreas implements Serializable {
             return false;
         }
         return true;
+    }
+
+    public List<CRequestTypes> getCRequestTypesList() {
+        return cRequestTypesList;
+    }
+
+    public void setCRequestTypesList(List<CRequestTypes> cRequestTypesList) {
+        this.cRequestTypesList = cRequestTypesList;
     }
 
     @Override
