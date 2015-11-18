@@ -5,6 +5,11 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import mx.bidg.config.JsonViews;
+
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
@@ -14,8 +19,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -27,27 +30,36 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "C_BUDGET_PERIODS")
-@NamedQueries({
-    @NamedQuery(name = "CBudgetPeriods.findAll", query = "SELECT c FROM CBudgetPeriods c")})
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CBudgetPeriods implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_BUDGET_PERIOD")
+    @JsonView(JsonViews.Root.class)
     private Integer idBudgetPeriod;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 45)
     @Column(name = "PERIOD")
+    @JsonView(JsonViews.Root.class)
     private String period;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetPeriod")
+    @JsonView(JsonViews.Embedded.class)
     private List<Budgets> budgetsList;
+
     @OneToMany(mappedBy = "idBudgetPeriod")
+    @JsonView(JsonViews.Embedded.class)
     private List<BudgetPeriodMonths> budgetPeriodMonthsList;
 
     public CBudgetPeriods() {

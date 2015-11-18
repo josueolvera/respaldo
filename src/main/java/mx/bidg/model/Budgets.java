@@ -5,6 +5,11 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import mx.bidg.config.JsonViews;
+
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
@@ -16,8 +21,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -28,37 +31,52 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "BUDGETS")
-@NamedQueries({
-    @NamedQuery(name = "Budgets.findAll", query = "SELECT b FROM Budgets b")})
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Budgets implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_BUDGET")
+    @JsonView(JsonViews.Root.class)
     private Integer idBudget;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_REG_TABLE")
+    @JsonView(JsonViews.Root.class)
     private int idRegTable;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "YEAR")
+    @JsonView(JsonViews.Root.class)
     private int year;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudget")
+    @JsonView(JsonViews.Embedded.class)
     private List<BudgetMonth> budgetMonthList;
+
     @JoinColumn(name = "ID_BUDGET_AREA", referencedColumnName = "ID_BUDGET_AREA")
     @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
     private CBudgetAreas idBudgetArea;
+
     @JoinColumn(name = "ID_BUDGET_TYPE", referencedColumnName = "ID_BUDGET_TYPE")
     @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
     private CBudgetTypes idBudgetType;
+
     @JoinColumn(name = "ID_BUDGET_PERIOD", referencedColumnName = "ID_BUDGET_PERIOD")
     @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
     private CBudgetPeriods idBudgetPeriod;
 
     public Budgets() {

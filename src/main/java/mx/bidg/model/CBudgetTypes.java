@@ -5,6 +5,11 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import mx.bidg.config.JsonViews;
+
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
@@ -16,8 +21,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
@@ -28,23 +31,32 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "C_BUDGET_TYPES")
-@NamedQueries({
-    @NamedQuery(name = "CBudgetTypes.findAll", query = "SELECT c FROM CBudgetTypes c")})
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CBudgetTypes implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_BUDGET_TYPE")
+    @JsonView(JsonViews.Root.class)
     private Integer idBudgetType;
+
     @Size(max = 100)
     @Column(name = "BUDGET_TYPE")
+    @JsonView(JsonViews.Root.class)
     private String budgetType;
+
     @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetType")
+    @JsonView(JsonViews.Embedded.class)
     private List<Budgets> budgetsList;
+
     @JoinColumn(name = "ID_TABLE", referencedColumnName = "ID_TABLE")
+    @JsonView(JsonViews.Embedded.class)
     @ManyToOne(optional = false)
     private CTables idTable;
 

@@ -5,6 +5,11 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import mx.bidg.config.JsonViews;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import javax.persistence.Basic;
@@ -15,8 +20,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -26,27 +29,37 @@ import javax.validation.constraints.NotNull;
  */
 @Entity
 @Table(name = "BUDGET_MONTH")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class BudgetMonth implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_BUDGET_MONTH")
+    @JsonView(JsonViews.Root.class)
     private Integer idBudgetMonth;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "AMOUNT")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal amount;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
+
     @JoinColumn(name = "ID_BUDGET", referencedColumnName = "ID_BUDGET")
     @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
     private Budgets idBudget;
+
     @JoinColumn(name = "ID_MONTH", referencedColumnName = "ID_MONTH")
     @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
     private CMonths idMonth;
 
     public BudgetMonth() {

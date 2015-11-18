@@ -17,8 +17,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -34,21 +32,25 @@ import mx.bidg.config.JsonViews;
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CBudgetAreas implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_BUDGET_AREA")
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetArea;
+
     @Size(max = 100)
     @Column(name = "BUDGET_AREA")
     @JsonView(JsonViews.Root.class)
     private String budgetArea;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetArea")
     @JsonView(JsonViews.Embedded.class)
     private List<Budgets> budgetsList;

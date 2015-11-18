@@ -5,13 +5,16 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import mx.bidg.config.JsonViews;
+
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -22,19 +25,22 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "ACTIVE_SESSION")
-@NamedQueries({
-    @NamedQuery(name = "ActiveSession.findAll", query = "SELECT a FROM ActiveSession a")})
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class ActiveSession implements Serializable {
     private static final long serialVersionUID = 1L;
+
     @Id
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_USER")
+    @JsonView(JsonViews.Root.class)
     private Integer idUser;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "ID_SESSION")
+    @JsonView(JsonViews.Root.class)
     private String idSession;
 
     public ActiveSession() {
