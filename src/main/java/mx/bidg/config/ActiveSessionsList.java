@@ -33,5 +33,9 @@ public class ActiveSessionsList {
     public void removeSession(String idSession) {
         listSessions.remove(idSession);
     }
+
+    public HashMap<String, HttpSession> getSessionList() {
+        return listSessions;
+    }
     
 }

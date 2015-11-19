@@ -5,12 +5,18 @@
  */
 package mx.bidg.controller;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import mx.bidg.config.ActiveSessionsList;
 import mx.bidg.config.Permissions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.CTasks;
 import mx.bidg.service.CTasksService;
@@ -33,24 +39,29 @@ public class PruebaController {
     CTasksService pruebaService;
     @Autowired
     Permissions permissions;
+    @Autowired
+    ActiveSessionsList activeSessions;
+
+    ObjectMapper mapper = new ObjectMapper();
     
     @RequestMapping( method = RequestMethod.GET)
     public @ResponseBody String prueba() throws Exception {
-        
         List<CTasks> tasks = pruebaService.findAll();
-        ObjectMapper mapper = new ObjectMapper();
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(tasks);
     }
     
     @RequestMapping(value = "/build-permissions", method = RequestMethod.GET)
-    public @ResponseBody String newHashMap(){
+    public @ResponseBody String newHashMap() {
         permissions.buildTasksPermissions();
         return "Muchos Exito";
     }
     
-    @RequestMapping(value = "/hashmap", method = RequestMethod.GET)
-    public @ResponseBody HashMap<String, ArrayList<Integer>> hashMap() {
-        return permissions.getMap();
+    @RequestMapping(value = "/hashmap", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody String hashMap() throws Exception {
+        HashMap<String, Object> response = new HashMap<>();
+        response.put("permissions", permissions.getMap());
+        response.put("sessions", activeSessions.getSessionList().keySet());
+        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(response);
     }
     
     @RequestMapping(value = "/ctasks", produces = "Application/json")
