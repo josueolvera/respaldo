@@ -24,4 +24,9 @@ public class CRequestTypesServiceImpl implements CRequestTypesService {
     public List<CRequestTypes> findAll() {
         return requestTypesDao.findAll();
     }
+
+    @Override
+    public CRequestTypes findById(Integer id) {
+        return requestTypesDao.findById(id);
+    }
 }

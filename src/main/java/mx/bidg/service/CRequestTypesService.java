@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface CRequestTypesService {
     public List<CRequestTypes> findAll();
+    public CRequestTypes findById(Integer id);
 }
