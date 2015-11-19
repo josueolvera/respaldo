@@ -3,6 +3,7 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CRequestCategoriesDao;
 import mx.bidg.model.CRequestsCategories;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public class CRequestCategoriesDaoImpl extends AbstractDao<Integer, CRequestsCat
 
     @Override
     public CRequestsCategories findById(int id) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return (CRequestsCategories) createEntityCriteria().add(Restrictions.eq("idRequestCategorie", id)).uniqueResult();
     }
 
     @Override

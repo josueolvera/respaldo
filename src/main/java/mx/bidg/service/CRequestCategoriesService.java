@@ -9,5 +9,6 @@ import java.util.List;
  * Created on 19/11/15.
  */
 public interface CRequestCategoriesService {
+    public CRequestsCategories findById(Integer id);
     public List<CRequestsCategories> findAll();
 }

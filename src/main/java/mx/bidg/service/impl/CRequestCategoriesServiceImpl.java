@@ -21,6 +21,11 @@ public class CRequestCategoriesServiceImpl implements CRequestCategoriesService 
     CRequestCategoriesDao dao;
 
     @Override
+    public CRequestsCategories findById(Integer id) {
+        return dao.findById(id);
+    }
+
+    @Override
     public List<CRequestsCategories> findAll() {
         return dao.findAll();
     }
