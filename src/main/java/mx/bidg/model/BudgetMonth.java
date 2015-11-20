@@ -75,6 +75,14 @@ public class BudgetMonth implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
+    public BudgetMonth(Integer idBudgetMonth, BigDecimal amount, int idAccessLevel, Budgets idBudget, CMonths idMonth) {
+        this.idBudgetMonth = idBudgetMonth;
+        this.amount = amount;
+        this.idAccessLevel = idAccessLevel;
+        this.idBudget = idBudget;
+        this.idMonth = idMonth;
+    }
+
     public Integer getIdBudgetMonth() {
         return idBudgetMonth;
     }

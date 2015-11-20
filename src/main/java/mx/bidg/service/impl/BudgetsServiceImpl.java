@@ -5,10 +5,9 @@
  */
 package mx.bidg.service.impl;
 
-import java.util.List;
-import mx.bidg.dao.CBudgetTypesDao;
-import mx.bidg.model.CBudgetTypes;
-import mx.bidg.service.CBudgetTypesService;
+import mx.bidg.dao.BudgetsDao;
+import mx.bidg.model.Budgets;
+import mx.bidg.service.BudgetsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,19 +18,14 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
-public class CBudgetTypesServiceImpl implements CBudgetTypesService {
+public class BudgetsServiceImpl implements BudgetsService {
     
     @Autowired
-    CBudgetTypesDao dao;
+    BudgetsDao dao;
 
     @Override
-    public List<CBudgetTypes> findAll() {
-        return dao.findAll();
-    }
-
-    @Override
-    public CBudgetTypes findById(int id) {
-        return dao.findById(id);
+    public Budgets saveBudget(Budgets budgets) {
+        return dao.save(budgets);
     }
     
 }

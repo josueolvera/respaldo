@@ -7,10 +7,9 @@ package mx.bidg.dao.impl;
 
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
-import mx.bidg.dao.CBudgetTypesDao;
-import mx.bidg.model.CBudgetTypes;
+import mx.bidg.dao.CMonthsDao;
+import mx.bidg.model.CMonths;
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -18,32 +17,31 @@ import org.springframework.stereotype.Repository;
  * @author sistemask
  */
 @Repository
-public class CBudgetTypesDaoImpl extends AbstractDao<Integer, CBudgetTypes> implements CBudgetTypesDao {
+public class CMonthsDaoImpl extends AbstractDao<Integer, CMonths> implements CMonthsDao {
 
     @Override
-    public CBudgetTypes save(CBudgetTypes entity) {
+    public CMonths save(CMonths entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public CBudgetTypes findById(int id) {
-        return getByKey(id);
-    }
-
-    @Override
-    public List<CBudgetTypes> findAll() {
-        Criteria criteria = createEntityCriteria().
-                setFetchMode("idTable", FetchMode.JOIN);
-        return (List<CBudgetTypes>) criteria.list();
-    }
-
-    @Override
-    public CBudgetTypes update(CBudgetTypes entity) {
+    public CMonths findById(int id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean delete(CBudgetTypes entity) {
+    public List<CMonths> findAll() {
+        Criteria criteria = createEntityCriteria();
+        return (List<CMonths>) criteria.list();
+    }
+
+    @Override
+    public CMonths update(CMonths entity) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean delete(CMonths entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

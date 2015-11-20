@@ -93,6 +93,17 @@ public class Budgets implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
+    public Budgets(Integer idBudget, int idRegTable, int year, int idAccessLevel, List<BudgetMonth> budgetMonthList, CBudgetAreas idBudgetArea, CBudgetTypes idBudgetType, CBudgetPeriods idBudgetPeriod) {
+        this.idBudget = idBudget;
+        this.idRegTable = idRegTable;
+        this.year = year;
+        this.idAccessLevel = idAccessLevel;
+        this.budgetMonthList = budgetMonthList;
+        this.idBudgetArea = idBudgetArea;
+        this.idBudgetType = idBudgetType;
+        this.idBudgetPeriod = idBudgetPeriod;
+    }
+
     public Integer getIdBudget() {
         return idBudget;
     }

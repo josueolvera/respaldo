@@ -6,15 +6,14 @@
 package mx.bidg.service;
 
 import java.util.List;
-import mx.bidg.model.CBudgetTypes;
+import mx.bidg.model.CBranchs;
 
 /**
  *
  * @author sistemask
  */
-public interface CBudgetTypesService {
+public interface CBranchsService {
     
-    public List<CBudgetTypes> findAll();
-    public CBudgetTypes findById(int id);
+    public List<CBranchs> findAll();
     
 }

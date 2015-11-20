@@ -3,18 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mx.bidg.service;
+package mx.bidg.dao;
 
-import java.util.List;
-import mx.bidg.model.CBudgetTypes;
+import mx.bidg.model.CTables;
 
 /**
  *
  * @author sistemask
  */
-public interface CBudgetTypesService {
-    
-    public List<CBudgetTypes> findAll();
-    public CBudgetTypes findById(int id);
+public interface  CTablesDao extends InterfaceDao<CTables> {
     
 }

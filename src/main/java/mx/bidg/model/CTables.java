@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,19 +25,8 @@ import javax.validation.constraints.Size;
 @Table(name = "C_TABLES")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CTables implements Serializable {
-    
+        
     private static final long serialVersionUID = 1L;
-    
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "CREATION_DATE")
-    @JsonView(JsonViews.Root.class)
-    @Convert(converter = DateTimeConverter.class)
-    private LocalDateTime creationDate;
-    
-    @JsonView(JsonViews.Embedded.class)
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTable")
-    private List<CBudgetTypes> cBudgetTypesList;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,10 +41,22 @@ public class CTables implements Serializable {
     @Column(name = "TABLE_NAME")
     @JsonView(JsonViews.Root.class)
     private String tableName;
+    
+    @Size(max = 200)
+    @Column(name = "URI")
+    @JsonView(JsonViews.Root.class)
+    private String uri;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTable")
     @JsonView(JsonViews.Embedded.class)
     private List<TablesField> tablesFieldList;
+    
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "CREATION_DATE")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime creationDate;
 
     public CTables() {
     }
@@ -86,6 +86,14 @@ public class CTables implements Serializable {
     public void setTableName(String tableName) {
         this.tableName = tableName;
     }
+    
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
 
     public LocalDateTime getCreationDate() {
         return creationDate;
@@ -101,14 +109,6 @@ public class CTables implements Serializable {
 
     public void setTablesFieldList(List<TablesField> tablesFieldList) {
         this.tablesFieldList = tablesFieldList;
-    }
-    
-        public List<CBudgetTypes> getCBudgetTypesList() {
-        return cBudgetTypesList;
-    }
-
-    public void setCBudgetTypesList(List<CBudgetTypes> cBudgetTypesList) {
-        this.cBudgetTypesList = cBudgetTypesList;
     }
 
     @Override
@@ -135,5 +135,5 @@ public class CTables implements Serializable {
     public String toString() {
         return "mx.bidg.model.CTables[ idTable=" + idTable + " ]";
     }
-    
+
 }

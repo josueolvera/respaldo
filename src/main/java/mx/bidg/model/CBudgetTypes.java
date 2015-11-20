@@ -56,7 +56,7 @@ public class CBudgetTypes implements Serializable {
     private List<Budgets> budgetsList;
 
     @JoinColumn(name = "ID_TABLE", referencedColumnName = "ID_TABLE")
-    @JsonView(JsonViews.Embedded.class)
+    @JsonView({JsonViews.RootExtras.class, JsonViews.Embedded.class})
     @ManyToOne(optional = false)
     private CTables idTable;
 

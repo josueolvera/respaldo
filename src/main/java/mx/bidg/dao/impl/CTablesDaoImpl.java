@@ -7,10 +7,9 @@ package mx.bidg.dao.impl;
 
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
-import mx.bidg.dao.CBudgetTypesDao;
-import mx.bidg.model.CBudgetTypes;
+import mx.bidg.dao.CTablesDao;
+import mx.bidg.model.CTables;
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -18,32 +17,31 @@ import org.springframework.stereotype.Repository;
  * @author sistemask
  */
 @Repository
-public class CBudgetTypesDaoImpl extends AbstractDao<Integer, CBudgetTypes> implements CBudgetTypesDao {
+public class CTablesDaoImpl extends AbstractDao<Integer, CTables> implements CTablesDao {
 
     @Override
-    public CBudgetTypes save(CBudgetTypes entity) {
+    public CTables save(CTables entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public CBudgetTypes findById(int id) {
+    public CTables findById(int id) {
         return getByKey(id);
     }
 
     @Override
-    public List<CBudgetTypes> findAll() {
-        Criteria criteria = createEntityCriteria().
-                setFetchMode("idTable", FetchMode.JOIN);
-        return (List<CBudgetTypes>) criteria.list();
+    public List<CTables> findAll() {
+        Criteria criteria = createEntityCriteria();
+        return (List<CTables>) criteria.list();
     }
 
     @Override
-    public CBudgetTypes update(CBudgetTypes entity) {
+    public CTables update(CTables entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean delete(CBudgetTypes entity) {
+    public boolean delete(CTables entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
