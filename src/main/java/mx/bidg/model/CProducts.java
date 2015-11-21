@@ -96,7 +96,7 @@ public class CProducts implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.CProducts[ idProduct=" + idProduct + " ]";
+        return "mx.bidg.model.CProductsDao[ idProduct=" + idProduct + " ]";
     }
     
 }
