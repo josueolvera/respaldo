@@ -16,6 +16,7 @@ import mx.bidg.model.CBudgetTypes;
 import mx.bidg.model.CMonths;
 import mx.bidg.service.BudgetsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,7 +37,7 @@ public class BudgetController {
     
     ObjectMapper map = new ObjectMapper();
     
-    @RequestMapping(value = "/save-budget", method = RequestMethod.POST, headers = {"Accept=application/json; charset=UTF-8"})
+    @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json; charset=UTF-8"})
     public @ResponseBody ResponseEntity<String> saveBudget(@RequestBody String data) throws Exception {
         
         JsonNode jsonRequest = map.readTree(data);
@@ -58,13 +59,12 @@ public class BudgetController {
             budgetMonthList.add(budgetMonth);
         }
         
+        budget.setIdAccessLevel(1);
         budget.setBudgetMonthList(budgetMonthList);
+        budget.setIdRegTable(jsonRequest.get("idReg").asInt());
+        budgetsService.saveBudget(budget);
         
-        
-        
-//        budget.setIdRegTable(idRegTable);
-        
-        return null;
+        return new ResponseEntity<>("Presupuesto guardado con éxito", HttpStatus.OK);
     }
     
 }
