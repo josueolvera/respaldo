@@ -52,6 +52,7 @@ public class SessionController {
         }
         
         HttpSession session = request.getSession();
+        session.setMaxInactiveInterval(-1);
         session.setAttribute("user", userSession);
         
         activeSessionService.save(new ActiveSession(userSession.getIdUser(), session.getId()));
