@@ -33,6 +33,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "BUDGETS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Budgets implements Serializable {
+    
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -41,12 +42,31 @@ public class Budgets implements Serializable {
     @Column(name = "ID_BUDGET")
     @JsonView(JsonViews.Root.class)
     private Integer idBudget;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ID_REG_TABLE")
+    
+    @JoinColumn(name = "ID_GROUP", referencedColumnName = "ID_GROUP")
+    @ManyToOne
     @JsonView(JsonViews.Root.class)
-    private int idRegTable;
+    private CGroups idGroup;
+    
+    @JoinColumn(name = "ID_DISTRIBUTOR", referencedColumnName = "ID_DISTRIBUTOR")
+    @ManyToOne
+    @JsonView(JsonViews.Root.class)
+    private CDistributors idDistributor;
+    
+    @JoinColumn(name = "ID_AREA", referencedColumnName = "ID_AREA")
+    @ManyToOne
+    @JsonView(JsonViews.Root.class)
+    private CAreas idArea;
+    
+    @JoinColumn(name = "ID_BUDGET_CATEGORY", referencedColumnName = "ID_BUDGET_CATEGORY")
+    @ManyToOne
+    @JsonView(JsonViews.Root.class)
+    private CBudgetCategories idBudgetCategory;
+    
+    @JoinColumn(name = "ID_BUDGET_SUBCATEGORY", referencedColumnName = "ID_BUDGET_SUBCATEGORY")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Root.class)
+    private CBudgetSubcategories idBudgetSubcategory;
 
     @Basic(optional = false)
     @NotNull
@@ -59,25 +79,14 @@ public class Budgets implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
-
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudget")
     @JsonView(JsonViews.Embedded.class)
     private List<BudgetMonth> budgetMonthList;
-
-    @JoinColumn(name = "ID_BUDGET_AREA", referencedColumnName = "ID_BUDGET_AREA")
-    @ManyToOne(optional = false)
+    
+    @OneToMany(mappedBy = "idBudget")
     @JsonView(JsonViews.Embedded.class)
-    private CBudgetAreas idBudgetArea;
-
-    @JoinColumn(name = "ID_BUDGET_TYPE", referencedColumnName = "ID_BUDGET_TYPE")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private CBudgetTypes idBudgetType;
-
-    @JoinColumn(name = "ID_BUDGET_PERIOD", referencedColumnName = "ID_BUDGET_PERIOD")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private CBudgetPeriods idBudgetPeriod;
+    private List<CRequestTypes> cRequestTypesList;
 
     public Budgets() {
     }
@@ -86,22 +95,41 @@ public class Budgets implements Serializable {
         this.idBudget = idBudget;
     }
 
-    public Budgets(Integer idBudget, int idRegTable, int year, int idAccessLevel) {
+    public Budgets(Integer idBudget, int year, int idAccessLevel) {
         this.idBudget = idBudget;
-        this.idRegTable = idRegTable;
         this.year = year;
         this.idAccessLevel = idAccessLevel;
     }
 
-    public Budgets(Integer idBudget, int idRegTable, int year, int idAccessLevel, List<BudgetMonth> budgetMonthList, CBudgetAreas idBudgetArea, CBudgetTypes idBudgetType, CBudgetPeriods idBudgetPeriod) {
+    public Budgets(Integer idBudget, int year, int idAccessLevel, List<BudgetMonth> budgetMonthList) {
         this.idBudget = idBudget;
-        this.idRegTable = idRegTable;
         this.year = year;
         this.idAccessLevel = idAccessLevel;
         this.budgetMonthList = budgetMonthList;
-        this.idBudgetArea = idBudgetArea;
-        this.idBudgetType = idBudgetType;
-        this.idBudgetPeriod = idBudgetPeriod;
+    }
+
+    public Budgets(Integer idBudget, CGroups idGroup, CDistributors idDistributor, CAreas idArea, CBudgetCategories idBudgetCategory, CBudgetSubcategories idBudgetSubcategory, int year, int idAccessLevel, List<BudgetMonth> budgetMonthList, List<CRequestTypes> cRequestTypesList) {
+        this.idBudget = idBudget;
+        this.idGroup = idGroup;
+        this.idDistributor = idDistributor;
+        this.idArea = idArea;
+        this.idBudgetCategory = idBudgetCategory;
+        this.idBudgetSubcategory = idBudgetSubcategory;
+        this.year = year;
+        this.idAccessLevel = idAccessLevel;
+        this.budgetMonthList = budgetMonthList;
+        this.cRequestTypesList = cRequestTypesList;
+    }
+
+    public Budgets(Integer idBudget, CGroups idGroup, CDistributors idDistributor, CAreas idArea, CBudgetCategories idBudgetCategory, CBudgetSubcategories idBudgetSubcategory, int year, int idAccessLevel) {
+        this.idBudget = idBudget;
+        this.idGroup = idGroup;
+        this.idDistributor = idDistributor;
+        this.idArea = idArea;
+        this.idBudgetCategory = idBudgetCategory;
+        this.idBudgetSubcategory = idBudgetSubcategory;
+        this.year = year;
+        this.idAccessLevel = idAccessLevel;
     }
 
     public Integer getIdBudget() {
@@ -110,14 +138,6 @@ public class Budgets implements Serializable {
 
     public void setIdBudget(Integer idBudget) {
         this.idBudget = idBudget;
-    }
-
-    public int getIdRegTable() {
-        return idRegTable;
-    }
-
-    public void setIdRegTable(int idRegTable) {
-        this.idRegTable = idRegTable;
     }
 
     public int getYear() {
@@ -143,29 +163,53 @@ public class Budgets implements Serializable {
     public void setBudgetMonthList(List<BudgetMonth> budgetMonthList) {
         this.budgetMonthList = budgetMonthList;
     }
-
-    public CBudgetAreas getIdBudgetArea() {
-        return idBudgetArea;
+    
+    public List<CRequestTypes> getCRequestTypesList() {
+        return cRequestTypesList;
     }
 
-    public void setIdBudgetArea(CBudgetAreas idBudgetArea) {
-        this.idBudgetArea = idBudgetArea;
+    public void setCRequestTypesList(List<CRequestTypes> cRequestTypesList) {
+        this.cRequestTypesList = cRequestTypesList;
     }
 
-    public CBudgetTypes getIdBudgetType() {
-        return idBudgetType;
+    public CGroups getIdGroup() {
+        return idGroup;
     }
 
-    public void setIdBudgetType(CBudgetTypes idBudgetType) {
-        this.idBudgetType = idBudgetType;
+    public void setIdGroup(CGroups idGroup) {
+        this.idGroup = idGroup;
     }
 
-    public CBudgetPeriods getIdBudgetPeriod() {
-        return idBudgetPeriod;
+    public CBudgetSubcategories getIdBudgetSubcategory() {
+        return idBudgetSubcategory;
     }
 
-    public void setIdBudgetPeriod(CBudgetPeriods idBudgetPeriod) {
-        this.idBudgetPeriod = idBudgetPeriod;
+    public void setIdBudgetSubcategory(CBudgetSubcategories idBudgetSubcategory) {
+        this.idBudgetSubcategory = idBudgetSubcategory;
+    }
+
+    public CBudgetCategories getIdBudgetCategory() {
+        return idBudgetCategory;
+    }
+
+    public void setIdBudgetCategory(CBudgetCategories idBudgetCategory) {
+        this.idBudgetCategory = idBudgetCategory;
+    }
+
+    public CDistributors getIdDistributor() {
+        return idDistributor;
+    }
+
+    public void setIdDistributor(CDistributors idDistributor) {
+        this.idDistributor = idDistributor;
+    }
+
+    public CAreas getIdArea() {
+        return idArea;
+    }
+
+    public void setIdArea(CAreas idArea) {
+        this.idArea = idArea;
     }
 
     @Override

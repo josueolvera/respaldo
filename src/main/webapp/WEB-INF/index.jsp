@@ -32,6 +32,8 @@
                         }).error(function (data, status, request) {
                             if (status == 412) {
                                 $('#active-session-modal').modal('show');
+                            } else {
+                                showAlert("Ha habido un problema con su solicitud, intente nuevamente");
                             }
                         });
                     },
@@ -93,6 +95,8 @@
 
             <c:if test="${user.username != null}">
                 <p>Bienvenido ${user.username}</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic modi odit sapiente sequi veritatis. Alias, amet beatae culpa deleniti distinctio eligendi iusto, obcaecati provident quia quibusdam quis repellat repellendus sequi!</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad labore nobis officiis perferendis quas sapiente sint. Aperiam assumenda at aut blanditiis consectetur corporis cumque dolor dolores dolorum earum eius eligendi esse et ex, explicabo, facere facilis fugit impedit inventore magnam, minima modi molestias nesciunt nihil odit omnis porro praesentium quibusdam quos recusandae reprehenderit repudiandae totam veniam veritatis voluptatem voluptates voluptatibus? Ab ad amet aperiam consequatur corporis culpa cumque debitis delectus deserunt dolorum eos eum, eveniet expedita harum id iste itaque iure modi neque nisi nobis nulla possimus quaerat quam quo ratione repellendus sed sunt tenetur unde! Ad adipisci, dolores eveniet fugit harum ipsum iure natus non omnis quam quibusdam quis repudiandae, tempora ullam vitae voluptates voluptatibus? Ab accusamus accusantium aliquam aliquid consectetur corporis cumque dolore dolorem doloremque eius enim est eum exercitationem, fugiat fugit harum iste labore libero non omnis optio quo quos ratione sequi sit ut vero? Aliquid aut cupiditate debitis, dicta dolor id maiores nobis perspiciatis quibusdam, quod ratione reiciendis veniam. Accusantium consequuntur culpa cupiditate distinctio dolor dolore exercitationem, facere, fugiat iste natus nesciunt nisi nostrum officia pariatur placeat porro praesentium quasi qui quibusdam quis quo repellendus sequi sit tempora, tempore ullam veniam voluptatibus. Fuga incidunt provident qui?</p>
             </c:if>
         </div>
     </jsp:body>

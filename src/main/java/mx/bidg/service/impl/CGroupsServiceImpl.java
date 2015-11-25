@@ -6,9 +6,9 @@
 package mx.bidg.service.impl;
 
 import java.util.List;
-import mx.bidg.model.CBudgetAreas;
-import mx.bidg.dao.CBudgetAreasDao;
-import mx.bidg.service.CBudgetAreasService;
+import mx.bidg.dao.CGroupsDao;
+import mx.bidg.model.CGroups;
+import mx.bidg.service.CGroupsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,13 +19,13 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
-public class CBudgetAreasServiceImpl implements CBudgetAreasService {
+public class CGroupsServiceImpl implements CGroupsService {
     
     @Autowired
-    CBudgetAreasDao dao;
+    CGroupsDao dao;
 
     @Override
-    public List<CBudgetAreas> findAll() {
+    public List<CGroups> findAll() {
         return dao.findAll();
     }
     

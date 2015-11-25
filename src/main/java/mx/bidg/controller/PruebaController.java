@@ -19,6 +19,7 @@ import java.util.Map;
 
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.CTasks;
+import mx.bidg.model.Users;
 import mx.bidg.service.CTasksService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.View;
+
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -60,7 +63,12 @@ public class PruebaController {
     public @ResponseBody String hashMap() throws Exception {
         HashMap<String, Object> response = new HashMap<>();
         response.put("permissions", permissions.getMap());
-        response.put("sessions", activeSessions.getSessionList().keySet());
+
+        HashMap<String, Users> usersSessions = new HashMap<>();
+        for (Map.Entry<String, HttpSession> sessionEntry : activeSessions.getSessionList().entrySet()) {
+            usersSessions.put(sessionEntry.getKey(), (Users) sessionEntry.getValue().getAttribute("user"));
+        }
+        response.put("sessions", usersSessions);
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(response);
     }
     

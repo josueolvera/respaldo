@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,63 +27,60 @@ import mx.bidg.config.JsonViews;
  * @author sistemask
  */
 @Entity
-@Table(name = "C_BUDGET_AREAS")
+@Table(name = "C_BUDGET_CATEGORIES")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
-public class CBudgetAreas implements Serializable {
+public class CBudgetCategories implements Serializable {
+    
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID_BUDGET_AREA")
+    @Column(name = "ID_BUDGET_CATEGORY")
     @JsonView(JsonViews.Root.class)
-    private Integer idBudgetArea;
-
+    private Integer idBudgetCategory;
+    
     @Size(max = 100)
-    @Column(name = "BUDGET_AREA")
+    @Column(name = "BUDGET_CATEGORY")
     @JsonView(JsonViews.Root.class)
-    private String budgetArea;
-
+    private String budgetCategory;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetArea")
+    
+    @OneToMany(mappedBy = "idBudgetCategory")
     @JsonView(JsonViews.Embedded.class)
     private List<Budgets> budgetsList;
 
-    @OneToMany(mappedBy = "idBudgetArea")
-    @JsonView(JsonViews.Embedded.class)
-    private List<CRequestTypes> cRequestTypesList;
-
-    public CBudgetAreas() {
+    public CBudgetCategories() {
     }
 
-    public CBudgetAreas(Integer idBudgetArea) {
-        this.idBudgetArea = idBudgetArea;
+    public CBudgetCategories(Integer idBudgetCategory) {
+        this.idBudgetCategory = idBudgetCategory;
     }
 
-    public CBudgetAreas(Integer idBudgetArea, int idAccessLevel) {
-        this.idBudgetArea = idBudgetArea;
+    public CBudgetCategories(Integer idBudgetCategory, int idAccessLevel) {
+        this.idBudgetCategory = idBudgetCategory;
         this.idAccessLevel = idAccessLevel;
     }
 
-    public Integer getIdBudgetArea() {
-        return idBudgetArea;
+    public Integer getIdBudgetCategory() {
+        return idBudgetCategory;
     }
 
-    public void setIdBudgetArea(Integer idBudgetArea) {
-        this.idBudgetArea = idBudgetArea;
+    public void setIdBudgetCategory(Integer idBudgetCategory) {
+        this.idBudgetCategory = idBudgetCategory;
     }
 
-    public String getBudgetArea() {
-        return budgetArea;
+    public String getBudgetCategory() {
+        return budgetCategory;
     }
 
-    public void setBudgetArea(String budgetArea) {
-        this.budgetArea = budgetArea;
+    public void setBudgetCategory(String budgetCategory) {
+        this.budgetCategory = budgetCategory;
     }
 
     public int getIdAccessLevel() {
@@ -106,34 +102,26 @@ public class CBudgetAreas implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idBudgetArea != null ? idBudgetArea.hashCode() : 0);
+        hash += (idBudgetCategory != null ? idBudgetCategory.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CBudgetAreas)) {
+        if (!(object instanceof CBudgetCategories)) {
             return false;
         }
-        CBudgetAreas other = (CBudgetAreas) object;
-        if ((this.idBudgetArea == null && other.idBudgetArea != null) || (this.idBudgetArea != null && !this.idBudgetArea.equals(other.idBudgetArea))) {
+        CBudgetCategories other = (CBudgetCategories) object;
+        if ((this.idBudgetCategory == null && other.idBudgetCategory != null) || (this.idBudgetCategory != null && !this.idBudgetCategory.equals(other.idBudgetCategory))) {
             return false;
         }
         return true;
     }
 
-    public List<CRequestTypes> getCRequestTypesList() {
-        return cRequestTypesList;
-    }
-
-    public void setCRequestTypesList(List<CRequestTypes> cRequestTypesList) {
-        this.cRequestTypesList = cRequestTypesList;
-    }
-
     @Override
     public String toString() {
-        return "mx.bidg.model.CBudgetAreas[ idBudgetArea=" + idBudgetArea + " ]";
+        return "mx.bidg.model.CBudgetCategories[ idBudgetCategory=" + idBudgetCategory + " ]";
     }
     
 }

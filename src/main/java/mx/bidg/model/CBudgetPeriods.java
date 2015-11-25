@@ -13,7 +13,6 @@ import mx.bidg.config.JsonViews;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -54,10 +53,6 @@ public class CBudgetPeriods implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetPeriod")
-    @JsonView(JsonViews.Embedded.class)
-    private List<Budgets> budgetsList;
-
     @OneToMany(mappedBy = "idBudgetPeriod")
     @JsonView(JsonViews.Embedded.class)
     private List<BudgetPeriodMonths> budgetPeriodMonthsList;
@@ -97,14 +92,6 @@ public class CBudgetPeriods implements Serializable {
 
     public void setIdAccessLevel(int idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
-    }
-
-    public List<Budgets> getBudgetsList() {
-        return budgetsList;
-    }
-
-    public void setBudgetsList(List<Budgets> budgetsList) {
-        this.budgetsList = budgetsList;
     }
 
     public List<BudgetPeriodMonths> getBudgetPeriodMonthsList() {
