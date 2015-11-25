@@ -51,10 +51,6 @@ public class CBudgetTypes implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetType")
-    @JsonView(JsonViews.Embedded.class)
-    private List<Budgets> budgetsList;
-
     @JoinColumn(name = "ID_TABLE", referencedColumnName = "ID_TABLE")
     @JsonView({JsonViews.RootExtras.class, JsonViews.Embedded.class})
     @ManyToOne(optional = false)
@@ -89,14 +85,6 @@ public class CBudgetTypes implements Serializable {
 
     public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
-    }
-
-    public List<Budgets> getBudgetsList() {
-        return budgetsList;
-    }
-
-    public void setBudgetsList(List<Budgets> budgetsList) {
-        this.budgetsList = budgetsList;
     }
 
     public CTables getIdTable() {

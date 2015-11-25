@@ -19,8 +19,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -32,6 +30,7 @@ import javax.validation.constraints.Size;
 @Table(name = "C_REQUEST_TYPES")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CRequestTypes implements Serializable {
+    
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -49,11 +48,11 @@ public class CRequestTypes implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
-
-    @JoinColumn(name = "ID_BUDGET_AREA", referencedColumnName = "ID_BUDGET_AREA")
+    
+    @JoinColumn(name = "ID_BUDGET", referencedColumnName = "ID_BUDGET")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private CBudgetAreas idBudgetArea;
+    private Budgets idBudget;
 
     public CRequestTypes() {
     }
@@ -86,14 +85,6 @@ public class CRequestTypes implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public CBudgetAreas getIdBudgetArea() {
-        return idBudgetArea;
-    }
-
-    public void setIdBudgetArea(CBudgetAreas idBudgetArea) {
-        this.idBudgetArea = idBudgetArea;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -117,6 +108,14 @@ public class CRequestTypes implements Serializable {
     @Override
     public String toString() {
         return "mx.bidg.model.CRequestTypes[ idRequestType=" + idRequestType + " ]";
+    }
+
+    public Budgets getIdBudget() {
+        return idBudget;
+    }
+
+    public void setIdBudget(Budgets idBudget) {
+        this.idBudget = idBudget;
     }
     
 }

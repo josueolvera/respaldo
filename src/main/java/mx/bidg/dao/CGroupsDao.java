@@ -5,12 +5,12 @@
  */
 package mx.bidg.dao;
 
-import mx.bidg.model.CBudgetAreas;
+import mx.bidg.model.CGroups;
 
 /**
  *
  * @author sistemask
  */
-public interface CBudgetAreasDao extends InterfaceDao<CBudgetAreas> {
+public interface CGroupsDao extends InterfaceDao<CGroups> {
     
 }

@@ -27,81 +27,69 @@ import mx.bidg.config.JsonViews;
  * @author sistemask
  */
 @Entity
-@Table(name = "C_AREAS")
+@Table(name = "C_GROUPS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
-public class CAreas implements Serializable {
-        
+public class CGroups implements Serializable {
+    
     private static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID_AREA")
+    @Column(name = "ID_GROUP")
     @JsonView(JsonViews.Root.class)
-    private Integer idArea;
+    private Integer idGroup;
     
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 50)
-    @Column(name = "AREA_NAME")
+    @Size(min = 1, max = 25)
+    @Column(name = "GROUP_NAME")
     @JsonView(JsonViews.Root.class)
-    private String areaName;
+    private String groupName;
     
-    @OneToMany(mappedBy = "idArea")
+    @Size(max = 15)
+    @Column(name = "ACRONYMS")
+    @JsonView(JsonViews.Root.class)
+    private String acronyms;
+    
+    @OneToMany(mappedBy = "idGroup")
     @JsonView(JsonViews.Embedded.class)
     private List<Budgets> budgetsList;
-    
-    public CAreas() {
+
+    public CGroups() {
     }
 
-    public CAreas(Integer idArea) {
-        this.idArea = idArea;
+    public CGroups(Integer idGroup) {
+        this.idGroup = idGroup;
     }
 
-    public CAreas(Integer idArea, String areaName) {
-        this.idArea = idArea;
-        this.areaName = areaName;
+    public CGroups(Integer idGroup, String groupName) {
+        this.idGroup = idGroup;
+        this.groupName = groupName;
     }
 
-    public Integer getIdArea() {
-        return idArea;
+    public Integer getIdGroup() {
+        return idGroup;
     }
 
-    public void setIdArea(Integer idArea) {
-        this.idArea = idArea;
+    public void setIdGroup(Integer idGroup) {
+        this.idGroup = idGroup;
     }
 
-    public String getAreaName() {
-        return areaName;
+    public String getGroupName() {
+        return groupName;
     }
 
-    public void setAreaName(String areaName) {
-        this.areaName = areaName;
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idArea != null ? idArea.hashCode() : 0);
-        return hash;
+    public String getAcronyms() {
+        return acronyms;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CAreas)) {
-            return false;
-        }
-        CAreas other = (CAreas) object;
-        if ((this.idArea == null && other.idArea != null) || (this.idArea != null && !this.idArea.equals(other.idArea))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "mx.bidg.model.CAreas[ idArea=" + idArea + " ]";
+    public void setAcronyms(String acronyms) {
+        this.acronyms = acronyms;
     }
 
     public List<Budgets> getBudgetsList() {
@@ -110,6 +98,31 @@ public class CAreas implements Serializable {
 
     public void setBudgetsList(List<Budgets> budgetsList) {
         this.budgetsList = budgetsList;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (idGroup != null ? idGroup.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof CGroups)) {
+            return false;
+        }
+        CGroups other = (CGroups) object;
+        if ((this.idGroup == null && other.idGroup != null) || (this.idGroup != null && !this.idGroup.equals(other.idGroup))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "mx.bidg.model.CGroups[ idGroup=" + idGroup + " ]";
     }
     
 }

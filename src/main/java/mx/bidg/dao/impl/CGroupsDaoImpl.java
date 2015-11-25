@@ -7,8 +7,8 @@ package mx.bidg.dao.impl;
 
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
-import mx.bidg.dao.CBudgetAreasDao;
-import mx.bidg.model.CBudgetAreas;
+import mx.bidg.dao.CGroupsDao;
+import mx.bidg.model.CGroups;
 import org.hibernate.Criteria;
 import org.springframework.stereotype.Repository;
 
@@ -17,31 +17,31 @@ import org.springframework.stereotype.Repository;
  * @author sistemask
  */
 @Repository
-public class CBudgetAreasDaoImpl extends AbstractDao<Integer, CBudgetAreas> implements CBudgetAreasDao {
+public class CGroupsDaoImpl extends AbstractDao<Integer, CGroups> implements CGroupsDao {
 
     @Override
-    public CBudgetAreas save(CBudgetAreas entity) {
+    public CGroups save(CGroups entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public CBudgetAreas findById(int id) {
+    public CGroups findById(int id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<CBudgetAreas> findAll() {
+    public List<CGroups> findAll() {
         Criteria criteria = createEntityCriteria();
-        return (List<CBudgetAreas>) criteria.list();
+        return (List<CGroups>) criteria.list();
     }
 
     @Override
-    public CBudgetAreas update(CBudgetAreas entity) {
+    public CGroups update(CGroups entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean delete(CBudgetAreas entity) {
+    public boolean delete(CGroups entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

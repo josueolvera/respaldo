@@ -10,9 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import mx.bidg.model.BudgetMonth;
 import mx.bidg.model.Budgets;
-import mx.bidg.model.CBudgetAreas;
-import mx.bidg.model.CBudgetPeriods;
-import mx.bidg.model.CBudgetTypes;
 import mx.bidg.model.CMonths;
 import mx.bidg.service.BudgetsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +40,7 @@ public class BudgetController {
         JsonNode jsonRequest = map.readTree(data);
                 
         Budgets budget = new Budgets();
-        budget.setIdBudgetArea(new CBudgetAreas(jsonRequest.get("budgetArea").asInt()));
-        budget.setIdBudgetPeriod(new CBudgetPeriods(jsonRequest.get("budgetPeriod").asInt()));
-        budget.setIdBudgetType(new CBudgetTypes(jsonRequest.get("budgetType").asInt()));
+        
         budget.setYear(jsonRequest.get("year").asInt());
         
         ArrayList<BudgetMonth> budgetMonthList = new ArrayList<>();
@@ -61,7 +56,6 @@ public class BudgetController {
         
         budget.setIdAccessLevel(1);
         budget.setBudgetMonthList(budgetMonthList);
-        budget.setIdRegTable(jsonRequest.get("idReg").asInt());
         budgetsService.saveBudget(budget);
         
         return new ResponseEntity<>("Presupuesto guardado con éxito", HttpStatus.OK);

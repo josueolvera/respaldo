@@ -3,17 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mx.bidg.service;
+package mx.bidg.dao;
 
-import java.util.List;
-import mx.bidg.model.CBudgetAreas;
+import mx.bidg.model.CDistributors;
 
 /**
  *
  * @author sistemask
  */
-public interface CBudgetAreasService {
-    
-    public List<CBudgetAreas> findAll();
+public interface CDistributorsDao extends InterfaceDao<CDistributors> {
     
 }
