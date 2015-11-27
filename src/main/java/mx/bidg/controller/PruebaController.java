@@ -23,6 +23,7 @@ import mx.bidg.model.Users;
 import mx.bidg.service.CTasksService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -77,5 +78,9 @@ public class PruebaController {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(pruebaService.findAll());
     }
-    
+
+    @RequestMapping(value = "/{uno}/{dos}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody String dobleVariable (@PathVariable int uno, @PathVariable int dos) {
+        return uno + ":" + dos;
+    }
 }
