@@ -9,13 +9,20 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import mx.bidg.model.BudgetMonth;
+import mx.bidg.model.BudgetMonthConcepts;
 import mx.bidg.model.Budgets;
+import mx.bidg.model.CAreas;
+import mx.bidg.model.CBudgetCategories;
+import mx.bidg.model.CBudgetConcepts;
+import mx.bidg.model.CBudgetSubcategories;
+import mx.bidg.model.CGroups;
 import mx.bidg.model.CMonths;
 import mx.bidg.service.BudgetsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -41,6 +48,10 @@ public class BudgetController {
                 
         Budgets budget = new Budgets();
         
+        budget.setIdGroup(new CGroups(jsonRequest.get("group").asInt()));
+        budget.setIdArea(new CAreas(jsonRequest.get("area").asInt()));
+        budget.setIdBudgetCategory(new CBudgetCategories(jsonRequest.get("category").asInt()));
+        budget.setIdBudgetSubcategory(new CBudgetSubcategories(jsonRequest.get("subcategory").asInt()));
         budget.setYear(jsonRequest.get("year").asInt());
         
         ArrayList<BudgetMonth> budgetMonthList = new ArrayList<>();
@@ -48,9 +59,24 @@ public class BudgetController {
         
         for(JsonNode jsonBudgetMonth : jsonRequest.get("budgetMonthList")) {
             budgetMonth = new BudgetMonth();
-            budgetMonth.setAmount(jsonBudgetMonth.get("amount").decimalValue());
+            
+            ArrayList<BudgetMonthConcepts> budgetMonthConceptsList = new ArrayList<>();
+            BudgetMonthConcepts budgetMonthConcept;
+            
+            for(JsonNode jsonBudgetMonthConcept : jsonBudgetMonth.get("budgetMonthConceptList")) {
+                budgetMonthConcept = new BudgetMonthConcepts();
+                budgetMonthConcept.setAmount(jsonBudgetMonthConcept.get("amountConcept").decimalValue());
+                budgetMonthConcept.setIdBudgetMonth(budgetMonth);
+                budgetMonthConcept.setIdBudgetConcept(new CBudgetConcepts(jsonBudgetMonthConcept.get("budgetConcept").asInt()));
+                budgetMonthConcept.setIdAccessLevel(1);
+                budgetMonthConceptsList.add(budgetMonthConcept);
+            }
+            
+            budgetMonth.setBudgetMonthConceptsList(budgetMonthConceptsList);
+            budgetMonth.setAmount(jsonBudgetMonth.get("amountMonth").decimalValue());
             budgetMonth.setIdBudget(budget);
             budgetMonth.setIdMonth(new CMonths(jsonBudgetMonth.get("cMonth").asInt()));
+            budgetMonth.setIdAccessLevel(1);
             budgetMonthList.add(budgetMonth);
         }
         
@@ -60,5 +86,14 @@ public class BudgetController {
         
         return new ResponseEntity<>("Presupuesto guardado con éxito", HttpStatus.OK);
     }
+    
+    @RequestMapping(value = "/combination/{idGroup}/{idArea}/{idCategory}/{idSubcategory}", produces = "application/json")
+    public @ResponseBody ResponseEntity<String> getByCombination(@PathVariable int idGroup, @PathVariable int idArea, 
+            @PathVariable int idCategory, @PathVariable int idSubcategory){
+        
+        
+        return null;
+    }
+    
     
 }

@@ -33,7 +33,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "BUDGETS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Budgets implements Serializable {
-    
+        
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -47,11 +47,6 @@ public class Budgets implements Serializable {
     @ManyToOne
     @JsonView(JsonViews.Root.class)
     private CGroups idGroup;
-    
-    @JoinColumn(name = "ID_DISTRIBUTOR", referencedColumnName = "ID_DISTRIBUTOR")
-    @ManyToOne
-    @JsonView(JsonViews.Root.class)
-    private CDistributors idDistributor;
     
     @JoinColumn(name = "ID_AREA", referencedColumnName = "ID_AREA")
     @ManyToOne
@@ -84,9 +79,9 @@ public class Budgets implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private List<BudgetMonth> budgetMonthList;
     
-    @OneToMany(mappedBy = "idBudget")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudget")
     @JsonView(JsonViews.Embedded.class)
-    private List<CRequestTypes> cRequestTypesList;
+    private List<RequestTypesBudgets> requestTypesBudgetsList;
 
     public Budgets() {
     }
@@ -108,23 +103,21 @@ public class Budgets implements Serializable {
         this.budgetMonthList = budgetMonthList;
     }
 
-    public Budgets(Integer idBudget, CGroups idGroup, CDistributors idDistributor, CAreas idArea, CBudgetCategories idBudgetCategory, CBudgetSubcategories idBudgetSubcategory, int year, int idAccessLevel, List<BudgetMonth> budgetMonthList, List<CRequestTypes> cRequestTypesList) {
+    public Budgets(Integer idBudget, CGroups idGroup, CAreas idArea, CBudgetCategories idBudgetCategory, CBudgetSubcategories idBudgetSubcategory, int year, int idAccessLevel, List<BudgetMonth> budgetMonthList, List<RequestTypesBudgets> requestTypesBudgetsList) {
         this.idBudget = idBudget;
         this.idGroup = idGroup;
-        this.idDistributor = idDistributor;
         this.idArea = idArea;
         this.idBudgetCategory = idBudgetCategory;
         this.idBudgetSubcategory = idBudgetSubcategory;
         this.year = year;
         this.idAccessLevel = idAccessLevel;
         this.budgetMonthList = budgetMonthList;
-        this.cRequestTypesList = cRequestTypesList;
+        this.requestTypesBudgetsList = requestTypesBudgetsList;
     }
 
-    public Budgets(Integer idBudget, CGroups idGroup, CDistributors idDistributor, CAreas idArea, CBudgetCategories idBudgetCategory, CBudgetSubcategories idBudgetSubcategory, int year, int idAccessLevel) {
+    public Budgets(Integer idBudget, CGroups idGroup, CAreas idArea, CBudgetCategories idBudgetCategory, CBudgetSubcategories idBudgetSubcategory, int year, int idAccessLevel) {
         this.idBudget = idBudget;
         this.idGroup = idGroup;
-        this.idDistributor = idDistributor;
         this.idArea = idArea;
         this.idBudgetCategory = idBudgetCategory;
         this.idBudgetSubcategory = idBudgetSubcategory;
@@ -163,14 +156,6 @@ public class Budgets implements Serializable {
     public void setBudgetMonthList(List<BudgetMonth> budgetMonthList) {
         this.budgetMonthList = budgetMonthList;
     }
-    
-    public List<CRequestTypes> getCRequestTypesList() {
-        return cRequestTypesList;
-    }
-
-    public void setCRequestTypesList(List<CRequestTypes> cRequestTypesList) {
-        this.cRequestTypesList = cRequestTypesList;
-    }
 
     public CGroups getIdGroup() {
         return idGroup;
@@ -196,20 +181,20 @@ public class Budgets implements Serializable {
         this.idBudgetCategory = idBudgetCategory;
     }
 
-    public CDistributors getIdDistributor() {
-        return idDistributor;
-    }
-
-    public void setIdDistributor(CDistributors idDistributor) {
-        this.idDistributor = idDistributor;
-    }
-
     public CAreas getIdArea() {
         return idArea;
     }
 
     public void setIdArea(CAreas idArea) {
         this.idArea = idArea;
+    }
+    
+    public List<RequestTypesBudgets> getRequestTypesBudgetsList() {
+        return requestTypesBudgetsList;
+    }
+
+    public void setRequestTypesBudgetsList(List<RequestTypesBudgets> requestTypesBudgetsList) {
+        this.requestTypesBudgetsList = requestTypesBudgetsList;
     }
 
     @Override

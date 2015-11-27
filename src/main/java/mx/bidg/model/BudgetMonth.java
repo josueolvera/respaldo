@@ -12,7 +12,9 @@ import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,6 +22,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -31,6 +34,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "BUDGET_MONTH")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class BudgetMonth implements Serializable {
+    
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -61,6 +65,10 @@ public class BudgetMonth implements Serializable {
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private CMonths idMonth;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetMonth")
+    @JsonView(JsonViews.Embedded.class)
+    private List<BudgetMonthConcepts> budgetMonthConceptsList;
 
     public BudgetMonth() {
     }
@@ -121,6 +129,14 @@ public class BudgetMonth implements Serializable {
 
     public void setIdMonth(CMonths idMonth) {
         this.idMonth = idMonth;
+    }
+    
+    public List<BudgetMonthConcepts> getBudgetMonthConceptsList() {
+        return budgetMonthConceptsList;
+    }
+
+    public void setBudgetMonthConceptsList(List<BudgetMonthConcepts> budgetMonthConceptsList) {
+        this.budgetMonthConceptsList = budgetMonthConceptsList;
     }
 
     @Override

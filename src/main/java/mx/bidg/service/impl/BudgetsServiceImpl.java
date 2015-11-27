@@ -7,6 +7,10 @@ package mx.bidg.service.impl;
 
 import mx.bidg.dao.BudgetsDao;
 import mx.bidg.model.Budgets;
+import mx.bidg.model.CAreas;
+import mx.bidg.model.CBudgetCategories;
+import mx.bidg.model.CBudgetSubcategories;
+import mx.bidg.model.CGroups;
 import mx.bidg.service.BudgetsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +30,11 @@ public class BudgetsServiceImpl implements BudgetsService {
     @Override
     public Budgets saveBudget(Budgets budgets) {
         return dao.save(budgets);
+    }
+
+    @Override
+    public Budgets findByCombination(CGroups idGroup, CAreas idArea, CBudgetCategories idCategory, CBudgetSubcategories idSubcategory) {
+        return dao.findByCombination(idGroup, idArea, idCategory, idSubcategory);
     }
     
 }
