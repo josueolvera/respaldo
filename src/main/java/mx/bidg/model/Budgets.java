@@ -43,25 +43,21 @@ public class Budgets implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idBudget;
     
-    @JoinColumn(name = "ID_GROUP", referencedColumnName = "ID_GROUP")
-    @ManyToOne
+    @Column(name = "ID_GROUP")
     @JsonView(JsonViews.Root.class)
-    private CGroups idGroup;
+    private Integer idGroup;
     
-    @JoinColumn(name = "ID_AREA", referencedColumnName = "ID_AREA")
-    @ManyToOne
+    @Column(name = "ID_AREA")
     @JsonView(JsonViews.Root.class)
-    private CAreas idArea;
+    private Integer idArea;
     
-    @JoinColumn(name = "ID_BUDGET_CATEGORY", referencedColumnName = "ID_BUDGET_CATEGORY")
-    @ManyToOne
+    @Column(name = "ID_BUDGET_CATEGORY")
     @JsonView(JsonViews.Root.class)
-    private CBudgetCategories idBudgetCategory;
+    private Integer idBudgetCategory;
     
-    @JoinColumn(name = "ID_BUDGET_SUBCATEGORY", referencedColumnName = "ID_BUDGET_SUBCATEGORY")
-    @ManyToOne(optional = false)
+    @Column(name = "ID_BUDGET_SUBCATEGORY")
     @JsonView(JsonViews.Root.class)
-    private CBudgetSubcategories idBudgetSubcategory;
+    private Integer idBudgetSubcategory;
 
     @Basic(optional = false)
     @NotNull
@@ -74,6 +70,26 @@ public class Budgets implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
+    
+    @JoinColumn(name = "ID_GROUP", referencedColumnName = "ID_GROUP")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CGroups group;
+    
+    @JoinColumn(name = "ID_AREA", referencedColumnName = "ID_AREA")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CAreas area;
+    
+    @JoinColumn(name = "ID_BUDGET_CATEGORY", referencedColumnName = "ID_BUDGET_CATEGORY")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CBudgetCategories budgetCategory;
+    
+    @JoinColumn(name = "ID_BUDGET_SUBCATEGORY", referencedColumnName = "ID_BUDGET_SUBCATEGORY")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private CBudgetSubcategories budgetSubcategory;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudget")
     @JsonView(JsonViews.Embedded.class)
@@ -103,7 +119,7 @@ public class Budgets implements Serializable {
         this.budgetMonthList = budgetMonthList;
     }
 
-    public Budgets(Integer idBudget, CGroups idGroup, CAreas idArea, CBudgetCategories idBudgetCategory, CBudgetSubcategories idBudgetSubcategory, int year, int idAccessLevel, List<BudgetMonth> budgetMonthList, List<RequestTypesBudgets> requestTypesBudgetsList) {
+    public Budgets(Integer idBudget, Integer idGroup, Integer idArea, Integer idBudgetCategory, Integer idBudgetSubcategory, int year, int idAccessLevel, List<BudgetMonth> budgetMonthList, List<RequestTypesBudgets> requestTypesBudgetsList) {
         this.idBudget = idBudget;
         this.idGroup = idGroup;
         this.idArea = idArea;
@@ -115,7 +131,7 @@ public class Budgets implements Serializable {
         this.requestTypesBudgetsList = requestTypesBudgetsList;
     }
 
-    public Budgets(Integer idBudget, CGroups idGroup, CAreas idArea, CBudgetCategories idBudgetCategory, CBudgetSubcategories idBudgetSubcategory, int year, int idAccessLevel) {
+    public Budgets(Integer idBudget, Integer idGroup, Integer idArea, Integer idBudgetCategory, Integer idBudgetSubcategory, int year, int idAccessLevel) {
         this.idBudget = idBudget;
         this.idGroup = idGroup;
         this.idArea = idArea;
@@ -157,35 +173,35 @@ public class Budgets implements Serializable {
         this.budgetMonthList = budgetMonthList;
     }
 
-    public CGroups getIdGroup() {
+    public Integer getIdGroup() {
         return idGroup;
     }
 
-    public void setIdGroup(CGroups idGroup) {
+    public void setIdGroup(Integer idGroup) {
         this.idGroup = idGroup;
     }
 
-    public CBudgetSubcategories getIdBudgetSubcategory() {
+    public Integer getIdBudgetSubcategory() {
         return idBudgetSubcategory;
     }
 
-    public void setIdBudgetSubcategory(CBudgetSubcategories idBudgetSubcategory) {
+    public void setIdBudgetSubcategory(Integer idBudgetSubcategory) {
         this.idBudgetSubcategory = idBudgetSubcategory;
     }
 
-    public CBudgetCategories getIdBudgetCategory() {
+    public Integer getIdBudgetCategory() {
         return idBudgetCategory;
     }
 
-    public void setIdBudgetCategory(CBudgetCategories idBudgetCategory) {
+    public void setIdBudgetCategory(Integer idBudgetCategory) {
         this.idBudgetCategory = idBudgetCategory;
     }
 
-    public CAreas getIdArea() {
+    public Integer getIdArea() {
         return idArea;
     }
 
-    public void setIdArea(CAreas idArea) {
+    public void setIdArea(Integer idArea) {
         this.idArea = idArea;
     }
     
@@ -195,6 +211,38 @@ public class Budgets implements Serializable {
 
     public void setRequestTypesBudgetsList(List<RequestTypesBudgets> requestTypesBudgetsList) {
         this.requestTypesBudgetsList = requestTypesBudgetsList;
+    }
+
+    public CGroups getGroup() {
+        return group;
+    }
+
+    public void setGroup(CGroups group) {
+        this.group = group;
+    }
+
+    public CAreas getArea() {
+        return area;
+    }
+
+    public void setArea(CAreas area) {
+        this.area = area;
+    }
+
+    public CBudgetCategories getBudgetCategory() {
+        return budgetCategory;
+    }
+
+    public void setBudgetCategory(CBudgetCategories budgetCategory) {
+        this.budgetCategory = budgetCategory;
+    }
+
+    public CBudgetSubcategories getBudgetSubcategory() {
+        return budgetSubcategory;
+    }
+
+    public void setBudgetSubcategory(CBudgetSubcategories budgetSubcategory) {
+        this.budgetSubcategory = budgetSubcategory;
     }
 
     @Override

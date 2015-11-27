@@ -60,8 +60,8 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
         HashMap<String, Object> map = new HashMap<>();
         map.put("idGroup", idGroup);
         map.put("idArea", idArea);
-        map.put("idCategory", idCategory);
-        map.put("idSubcategory", idSubcategory);
+        map.put("idBudgetCategory", idCategory);
+        map.put("idBudgetSubcategory", idSubcategory);
         
         Budgets budget = (Budgets) criteria.add(Restrictions.allEq(map)).uniqueResult();
         return budget;

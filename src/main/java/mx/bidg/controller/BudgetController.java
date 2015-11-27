@@ -8,6 +8,7 @@ package mx.bidg.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
+import mx.bidg.config.JsonViews;
 import mx.bidg.model.BudgetMonth;
 import mx.bidg.model.BudgetMonthConcepts;
 import mx.bidg.model.Budgets;
@@ -48,10 +49,10 @@ public class BudgetController {
                 
         Budgets budget = new Budgets();
         
-        budget.setIdGroup(new CGroups(jsonRequest.get("group").asInt()));
-        budget.setIdArea(new CAreas(jsonRequest.get("area").asInt()));
-        budget.setIdBudgetCategory(new CBudgetCategories(jsonRequest.get("category").asInt()));
-        budget.setIdBudgetSubcategory(new CBudgetSubcategories(jsonRequest.get("subcategory").asInt()));
+        budget.setGroup(new CGroups(jsonRequest.get("group").asInt()));
+        budget.setArea(new CAreas(jsonRequest.get("area").asInt()));
+        budget.setBudgetCategory(new CBudgetCategories(jsonRequest.get("category").asInt()));
+        budget.setBudgetSubcategory(new CBudgetSubcategories(jsonRequest.get("subcategory").asInt()));
         budget.setYear(jsonRequest.get("year").asInt());
         
         ArrayList<BudgetMonth> budgetMonthList = new ArrayList<>();
@@ -87,12 +88,13 @@ public class BudgetController {
         return new ResponseEntity<>("Presupuesto guardado con éxito", HttpStatus.OK);
     }
     
-    @RequestMapping(value = "/combination/{idGroup}/{idArea}/{idCategory}/{idSubcategory}", produces = "application/json")
+    @RequestMapping(value = "/{idGroup}/{idArea}/{idCategory}/{idSubcategory}", produces = "application/json")
     public @ResponseBody ResponseEntity<String> getByCombination(@PathVariable int idGroup, @PathVariable int idArea, 
-            @PathVariable int idCategory, @PathVariable int idSubcategory){
+            @PathVariable int idCategory, @PathVariable int idSubcategory) throws Exception {
         
-        
-        return null;
+        Budgets budget = budgetsService.findByCombination(idGroup, idArea, idCategory, idSubcategory);
+        System.out.println(budget);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Root.class).writeValueAsString(budget), HttpStatus.OK);
     }
     
     

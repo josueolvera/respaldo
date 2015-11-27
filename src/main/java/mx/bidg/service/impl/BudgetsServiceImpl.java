@@ -33,8 +33,9 @@ public class BudgetsServiceImpl implements BudgetsService {
     }
 
     @Override
-    public Budgets findByCombination(CGroups idGroup, CAreas idArea, CBudgetCategories idCategory, CBudgetSubcategories idSubcategory) {
-        return dao.findByCombination(idGroup, idArea, idCategory, idSubcategory);
+    public Budgets findByCombination(int idGroup, int idArea, int idCategory, int idSubcategory) {
+        return dao.findByCombination(new CGroups(idGroup), new CAreas(idArea), 
+                new CBudgetCategories(idCategory), new CBudgetSubcategories(idSubcategory));
     }
     
 }
