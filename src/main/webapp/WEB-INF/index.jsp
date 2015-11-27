@@ -60,9 +60,9 @@
                         <form v-on:submit="submitLogin" class="login-form form-signin" action="/login" method="post">
                             <h4 class="form-signin-heading"><strong>Bienvenido</strong></h4>
                             <p class="text-center"><label>Usuario:</label></p>
-                            <input v-model="username" type="text" name="username"  class="form-control" placeholder="usuario o email" required autofocus>
+                            <input v-model="username" type="text" name="username"  class="form-control text-center" placeholder="usuario o email" required autofocus>
                             <p class="text-center"><label>Password:</label></p>
-                            <input v-model="password" type="password" name="password" class="form-control" required>
+                            <input v-model="password" type="password" name="password" class="form-control text-center" required>
                             <div v-if="mayusActive">
                                 <div class="alert alert-danger" role="alert">Mayusculas Activadas</div>
                             </div>
