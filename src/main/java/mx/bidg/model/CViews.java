@@ -43,11 +43,6 @@ public class CViews implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String viewName;
 
-    @Size(max = 100)
-    @Column(name = "VIEW")
-    @JsonView(JsonViews.Root.class)
-    private String view;
-
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
@@ -63,6 +58,11 @@ public class CViews implements Serializable {
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private CModules idModule;
+
+    @OneToOne
+    @JoinColumn(name = "ID_TASK", referencedColumnName = "ID_TASK")
+    @JsonView(JsonViews.Embedded.class)
+    private CTasks cTasks;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idView")
     @JsonView(JsonViews.Embedded.class)
@@ -97,14 +97,6 @@ public class CViews implements Serializable {
         this.viewName = viewName;
     }
 
-    public String getView() {
-        return view;
-    }
-
-    public void setView(String view) {
-        this.view = view;
-    }
-
     public LocalDateTime getCreationDate() {
         return creationDate;
     }
@@ -113,7 +105,6 @@ public class CViews implements Serializable {
         this.creationDate = creationDate;
     }
 
-    @XmlTransient
     public List<ViewsRole> getViewsRoleList() {
         return viewsRoleList;
     }
@@ -130,13 +121,20 @@ public class CViews implements Serializable {
         this.idModule = idModule;
     }
 
-    @XmlTransient
     public List<ViewsComponent> getViewsComponentList() {
         return viewsComponentList;
     }
 
     public void setViewsComponentList(List<ViewsComponent> viewsComponentList) {
         this.viewsComponentList = viewsComponentList;
+    }
+
+    public CTasks getcTasks() {
+        return cTasks;
+    }
+
+    public void setcTasks(CTasks cTasks) {
+        this.cTasks = cTasks;
     }
 
     @Override
