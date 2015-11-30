@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.dao.InterfaceDao;
 import mx.bidg.utils.DateTimeConverter;
 
 import java.io.Serializable;
@@ -17,7 +18,6 @@ import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -35,6 +35,10 @@ public class CViews implements Serializable {
     @Column(name = "ID_VIEW")
     @JsonView(JsonViews.Root.class)
     private Integer idView;
+
+    @Column(name = "ID_MODULE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idModule;
 
     @Basic(optional = false)
     @NotNull
@@ -57,11 +61,11 @@ public class CViews implements Serializable {
     @JoinColumn(name = "ID_MODULE", referencedColumnName = "ID_MODULE")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CModules idModule;
+    private CModules module;
 
     @OneToOne
     @JoinColumn(name = "ID_TASK", referencedColumnName = "ID_TASK")
-    @JsonView(JsonViews.Embedded.class)
+    @JsonView(JsonViews.Root.class)
     private CTasks cTasks;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idView")
@@ -89,6 +93,14 @@ public class CViews implements Serializable {
         this.idView = idView;
     }
 
+    public Integer getIdModule() {
+        return idModule;
+    }
+
+    public void setIdModule(Integer idModule) {
+        this.idModule = idModule;
+    }
+
     public String getViewName() {
         return viewName;
     }
@@ -113,12 +125,12 @@ public class CViews implements Serializable {
         this.viewsRoleList = viewsRoleList;
     }
 
-    public CModules getIdModule() {
-        return idModule;
+    public CModules getModule() {
+        return module;
     }
 
-    public void setIdModule(CModules idModule) {
-        this.idModule = idModule;
+    public void setModule(CModules idModule) {
+        this.module = idModule;
     }
 
     public List<ViewsComponent> getViewsComponentList() {

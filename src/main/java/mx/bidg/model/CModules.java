@@ -55,7 +55,7 @@ public class CModules implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CSystems idSystem;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idModule")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "module")
     @JsonView(JsonViews.Embedded.class)
     private List<CViews> cViewsList;
 
