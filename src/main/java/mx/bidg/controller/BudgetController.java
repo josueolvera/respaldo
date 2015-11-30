@@ -53,7 +53,6 @@ public class BudgetController {
         budget.setArea(new CAreas(jsonRequest.get("area").asInt()));
         budget.setBudgetCategory(new CBudgetCategories(jsonRequest.get("category").asInt()));
         budget.setBudgetSubcategory(new CBudgetSubcategories(jsonRequest.get("subcategory").asInt()));
-        budget.setYear(jsonRequest.get("year").asInt());
         
         ArrayList<BudgetMonth> budgetMonthList = new ArrayList<>();
         BudgetMonth budgetMonth;
@@ -75,6 +74,7 @@ public class BudgetController {
             
             budgetMonth.setBudgetMonthConceptsList(budgetMonthConceptsList);
             budgetMonth.setAmount(jsonBudgetMonth.get("amountMonth").decimalValue());
+            budgetMonth.setYear(jsonRequest.get("year").asInt());
             budgetMonth.setIdBudget(budget);
             budgetMonth.setIdMonth(new CMonths(jsonBudgetMonth.get("cMonth").asInt()));
             budgetMonth.setIdAccessLevel(1);

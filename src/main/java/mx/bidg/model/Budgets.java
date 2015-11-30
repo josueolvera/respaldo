@@ -61,12 +61,6 @@ public class Budgets implements Serializable {
 
     @Basic(optional = false)
     @NotNull
-    @Column(name = "YEAR")
-    @JsonView(JsonViews.Root.class)
-    private int year;
-
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
@@ -106,38 +100,34 @@ public class Budgets implements Serializable {
         this.idBudget = idBudget;
     }
 
-    public Budgets(Integer idBudget, int year, int idAccessLevel) {
+    public Budgets(Integer idBudget, int idAccessLevel) {
         this.idBudget = idBudget;
-        this.year = year;
         this.idAccessLevel = idAccessLevel;
     }
 
-    public Budgets(Integer idBudget, int year, int idAccessLevel, List<BudgetMonth> budgetMonthList) {
+    public Budgets(Integer idBudget, int idAccessLevel, List<BudgetMonth> budgetMonthList) {
         this.idBudget = idBudget;
-        this.year = year;
         this.idAccessLevel = idAccessLevel;
         this.budgetMonthList = budgetMonthList;
     }
 
-    public Budgets(Integer idBudget, Integer idGroup, Integer idArea, Integer idBudgetCategory, Integer idBudgetSubcategory, int year, int idAccessLevel, List<BudgetMonth> budgetMonthList, List<RequestTypesBudgets> requestTypesBudgetsList) {
+    public Budgets(Integer idBudget, Integer idGroup, Integer idArea, Integer idBudgetCategory, Integer idBudgetSubcategory, int idAccessLevel, List<BudgetMonth> budgetMonthList, List<RequestTypesBudgets> requestTypesBudgetsList) {
         this.idBudget = idBudget;
         this.idGroup = idGroup;
         this.idArea = idArea;
         this.idBudgetCategory = idBudgetCategory;
         this.idBudgetSubcategory = idBudgetSubcategory;
-        this.year = year;
         this.idAccessLevel = idAccessLevel;
         this.budgetMonthList = budgetMonthList;
         this.requestTypesBudgetsList = requestTypesBudgetsList;
     }
 
-    public Budgets(Integer idBudget, Integer idGroup, Integer idArea, Integer idBudgetCategory, Integer idBudgetSubcategory, int year, int idAccessLevel) {
+    public Budgets(Integer idBudget, Integer idGroup, Integer idArea, Integer idBudgetCategory, Integer idBudgetSubcategory, int idAccessLevel) {
         this.idBudget = idBudget;
         this.idGroup = idGroup;
         this.idArea = idArea;
         this.idBudgetCategory = idBudgetCategory;
         this.idBudgetSubcategory = idBudgetSubcategory;
-        this.year = year;
         this.idAccessLevel = idAccessLevel;
     }
 
@@ -147,14 +137,6 @@ public class Budgets implements Serializable {
 
     public void setIdBudget(Integer idBudget) {
         this.idBudget = idBudget;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
     }
 
     public int getIdAccessLevel() {

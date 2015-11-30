@@ -49,6 +49,12 @@ public class BudgetMonth implements Serializable {
     @Column(name = "AMOUNT")
     @JsonView(JsonViews.Root.class)
     private BigDecimal amount;
+    
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "YEAR")
+    @JsonView(JsonViews.Root.class)
+    private int year;
 
     @Basic(optional = false)
     @NotNull
@@ -77,18 +83,28 @@ public class BudgetMonth implements Serializable {
         this.idBudgetMonth = idBudgetMonth;
     }
 
-    public BudgetMonth(Integer idBudgetMonth, BigDecimal amount, int idAccessLevel) {
+    public BudgetMonth(Integer idBudgetMonth, BigDecimal amount, int year, int idAccessLevel) {
         this.idBudgetMonth = idBudgetMonth;
         this.amount = amount;
+        this.year = year;
         this.idAccessLevel = idAccessLevel;
     }
 
-    public BudgetMonth(Integer idBudgetMonth, BigDecimal amount, int idAccessLevel, Budgets idBudget, CMonths idMonth) {
+    public BudgetMonth(Integer idBudgetMonth, BigDecimal amount, int year, int idAccessLevel, Budgets idBudget, CMonths idMonth) {
         this.idBudgetMonth = idBudgetMonth;
         this.amount = amount;
+        this.year = year;
         this.idAccessLevel = idAccessLevel;
         this.idBudget = idBudget;
         this.idMonth = idMonth;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 
     public Integer getIdBudgetMonth() {
