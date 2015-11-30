@@ -6,11 +6,18 @@
 package mx.bidg.dao;
 
 import mx.bidg.model.Budgets;
+import mx.bidg.model.CAreas;
+import mx.bidg.model.CBudgetCategories;
+import mx.bidg.model.CBudgetSubcategories;
+import mx.bidg.model.CGroups;
 
 /**
  *
  * @author sistemask
  */
 public interface BudgetsDao extends InterfaceDao<Budgets> {
+    
+    public Budgets findByCombination(CGroups idGroup, CAreas idArea, CBudgetCategories idCategory, 
+            CBudgetSubcategories idSubcategory);
     
 }

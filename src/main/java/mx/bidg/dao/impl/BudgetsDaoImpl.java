@@ -5,10 +5,18 @@
  */
 package mx.bidg.dao.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.BudgetsDao;
 import mx.bidg.model.Budgets;
+import mx.bidg.model.CAreas;
+import mx.bidg.model.CBudgetCategories;
+import mx.bidg.model.CBudgetSubcategories;
+import mx.bidg.model.CGroups;
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -42,6 +50,21 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
     @Override
     public boolean delete(Budgets entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Budgets findByCombination(CGroups idGroup, CAreas idArea, CBudgetCategories idCategory, 
+            CBudgetSubcategories idSubcategory) {
+        
+        Criteria criteria = createEntityCriteria();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("group", idGroup);
+        map.put("area", idArea);
+        map.put("budgetCategory", idCategory);
+        map.put("budgetSubcategory", idSubcategory);
+        
+        Budgets budget = (Budgets) criteria.add(Restrictions.allEq(map)).uniqueResult();
+        return budget;
     }
     
 }

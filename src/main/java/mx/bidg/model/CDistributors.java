@@ -51,10 +51,6 @@ public class CDistributors implements Serializable {
     @Column(name = "ACRONYMS")
     @JsonView(JsonViews.Root.class)
     private String acronyms;
-    
-    @OneToMany(mappedBy = "idDistributor")
-    @JsonView(JsonViews.Embedded.class)
-    private List<Budgets> budgetsList;
 
     public CDistributors() {
     }
@@ -90,14 +86,6 @@ public class CDistributors implements Serializable {
 
     public void setAcronyms(String acronyms) {
         this.acronyms = acronyms;
-    }
-
-    public List<Budgets> getBudgetsList() {
-        return budgetsList;
-    }
-
-    public void setBudgetsList(List<Budgets> budgetsList) {
-        this.budgetsList = budgetsList;
     }
 
     @Override

@@ -15,5 +15,6 @@ import mx.bidg.model.CGroups;
 public interface CGroupsService {
     
     public List<CGroups> findAll();
+    public CGroups getByIdBudgetsCatalogs(Integer idGroup);
     
 }

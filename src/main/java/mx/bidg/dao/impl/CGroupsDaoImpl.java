@@ -10,6 +10,8 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CGroupsDao;
 import mx.bidg.model.CGroups;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -43,6 +45,16 @@ public class CGroupsDaoImpl extends AbstractDao<Integer, CGroups> implements CGr
     @Override
     public boolean delete(CGroups entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public CGroups getByIdBudgetsCatalogs(Integer idGroup) {
+        Criteria criteria = createEntityCriteria()
+                .setFetchMode("budgetsList", FetchMode.JOIN)
+                .setFetchMode("budgetsList.idBudget", FetchMode.SELECT)
+                .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
+        
+        return (CGroups) criteria.uniqueResult();
     }
     
 }

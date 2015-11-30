@@ -6,6 +6,10 @@
 package mx.bidg.service;
 
 import mx.bidg.model.Budgets;
+import mx.bidg.model.CAreas;
+import mx.bidg.model.CBudgetCategories;
+import mx.bidg.model.CBudgetSubcategories;
+import mx.bidg.model.CGroups;
 
 /**
  *
@@ -14,5 +18,7 @@ import mx.bidg.model.Budgets;
 public interface BudgetsService {
     
     public Budgets saveBudget(Budgets budgets);
+    public Budgets findByCombination(Integer idGroup, Integer idArea, Integer idCategory, 
+            Integer idSubcategory);
     
 }

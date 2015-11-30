@@ -28,5 +28,10 @@ public class CGroupsServiceImpl implements CGroupsService {
     public List<CGroups> findAll() {
         return dao.findAll();
     }
+
+    @Override
+    public CGroups getByIdBudgetsCatalogs(Integer idGroup) {
+        return dao.getByIdBudgetsCatalogs(idGroup);
+    }
     
 }

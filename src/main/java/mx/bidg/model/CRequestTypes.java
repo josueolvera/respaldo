@@ -11,14 +11,15 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -30,6 +31,7 @@ import javax.validation.constraints.Size;
 @Table(name = "C_REQUEST_TYPES")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CRequestTypes implements Serializable {
+    
     
     private static final long serialVersionUID = 1L;
 
@@ -49,10 +51,9 @@ public class CRequestTypes implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
     
-    @JoinColumn(name = "ID_BUDGET", referencedColumnName = "ID_BUDGET")
-    @ManyToOne
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idRequestType")
     @JsonView(JsonViews.Embedded.class)
-    private Budgets idBudget;
+    private List<RequestTypesBudgets> requestTypesBudgetsList;
 
     public CRequestTypes() {
     }
@@ -84,6 +85,14 @@ public class CRequestTypes implements Serializable {
     public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
     }
+    
+    public List<RequestTypesBudgets> getRequestTypesBudgetsList() {
+        return requestTypesBudgetsList;
+    }
+
+    public void setRequestTypesBudgetsList(List<RequestTypesBudgets> requestTypesBudgetsList) {
+        this.requestTypesBudgetsList = requestTypesBudgetsList;
+    }
 
     @Override
     public int hashCode() {
@@ -108,14 +117,6 @@ public class CRequestTypes implements Serializable {
     @Override
     public String toString() {
         return "mx.bidg.model.CRequestTypes[ idRequestType=" + idRequestType + " ]";
-    }
-
-    public Budgets getIdBudget() {
-        return idBudget;
-    }
-
-    public void setIdBudget(Budgets idBudget) {
-        this.idBudget = idBudget;
     }
     
 }

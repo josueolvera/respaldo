@@ -52,18 +52,8 @@ public class ControllerInterceptor extends HandlerInterceptorAdapter {
             logger.log(Level.WARNING, "Usuario nulo");
             return false;
         }
-        
-        String uri = request.getRequestURI();
-        String method = request.getMethod().toLowerCase();
-        
-        String[] cadenas = uri.split("/");
-        String key;
-        
-        if(cadenas.length > 3) {
-            key = method + ":" + cadenas[2] + "/" + cadenas[3];
-        } else {
-            key = method + ":" + cadenas[2];
-        }
+
+        String key = buildURIkey(request.getRequestURI(), request.getMethod().toLowerCase());
         
         HashMap<String, ArrayList<Integer>> mapPermissions = permissions.getMap();
         ArrayList<Integer> idRoles = mapPermissions.get(key);
@@ -86,7 +76,13 @@ public class ControllerInterceptor extends HandlerInterceptorAdapter {
         
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Acceso denegado");
         return false;
-        
     }
-    
+
+    private String buildURIkey(String requestURI, String requestMethod) {
+        String key;
+        key = requestURI.replaceFirst("/([a-zA-Z]+)/", "");
+        key = key.replaceAll("([0-9]+)", "#");
+
+        return requestMethod + ":" + key;
+    }
 }

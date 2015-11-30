@@ -35,25 +35,57 @@
             </c:if>
 
             <c:if test="${user.username != null}">
-                <div class="row">
-                    <div class="sidebar-wrapper col-xs-3 col-md-2 col-lg-2">
-                        <div id="logout-form" class='header-wrapper'>
-                            <div class="header sidebar-header">
-                            </div>
-                            <div class="close-session-link col-xs-6">
-                                <p><span class="glyphicon glyphicon-user"></span></p>
-                                <p>${user.username}</p>
-                            </div>
-                            <div class="close-session-link col-xs-6">
-                                <a @click.prevent="closeSession" href="#">
-                                    <p><span class="glyphicon glyphicon-off"></span></p>
-                                    <p>Salir</p>
+                <div id="main-sidebar" class="sidebar">
+                    <nav class="main-menu">
+                        <ul>
+                            <li>
+                                <a href="/BIDGroup">
+                                    <span class="fa fa-home fa-2x glyphicon glyphicon-bidg"></span>
+                                    <span class="nav-text"><img height="40" src="/BIDGroup/assets/img/BID_Blanco_nombre.png" /></span>
                                 </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-9 col-md-10 col-lg-10"><jsp:doBody /></div>
+                            </li>
+                        </ul>
+                        <ul class="top-menu">
+                            <li class="has-subnav">
+                                <a href="#">
+                                    <span class="fa fa-list fa-2x glyphicon glyphicon-stats"></span>
+                                    <span class="nav-text">SIAD</span>
+                                </a>
+                                <ul>
+                                    <li><a href="#"><span class="nav-text">Solicitudes</span></a></li>
+                                    <li><a href="#"><span class="nav-text">Solicitudes</span></a></li>
+                                    <li><a href="#"><span class="nav-text">Solicitudes</span></a></li>
+                                </ul>
+                            </li>
+                            <li class="has-subnav">
+                                <a href="#">
+                                    <span class="fa fa-list fa-2x glyphicon glyphicon-user"></span>
+                                    <span class="nav-text">SAUS</span>
+                                </a>
+                            </li>
+                            <li class="has-subnav">
+                                <a href="#">
+                                    <span class="glyphicon glyphicon-calendar fa fa-list fa-2x"></span>
+                                    <span class="nav-text">AGENDA</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="logout">
+                            <li>
+                                <a href="#">
+                                    <span class="fa fa-list fa-2x glyphicon glyphicon-user"></span>
+                                    <span class="nav-text">${user.username}</span>
+                                </a>
+                            </li><li>
+                                <a @click.prevent="closeSession" href="#">
+                                    <span class="fa fa-list fa-2x glyphicon glyphicon-off"></span>
+                                    <span class="nav-text">Salir</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
                 </div>
+                <div class="col-xs-push-2 col-xs-10 col-md-push-1 col-md-11 col-lg-push-1 col-lg-11"><jsp:doBody /></div>
             </c:if>
         </div>
         <script src="/BIDGroup/assets/js/jquery-2.1.4.min.js"></script>
@@ -66,7 +98,7 @@
             var ROOT_URL = "http://localhost:8080/BIDGroup";
 
             var USER_VM = new Vue({
-                el: '#logout-form',
+                el: '#main-sidebar',
                 methods: {
                     closeSession: function () {
                         this.$http.post(ROOT_URL + '/logout').success(function () {
