@@ -7,7 +7,6 @@ package mx.bidg.dao.impl;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.BudgetsDao;
 import mx.bidg.model.Budgets;
@@ -16,6 +15,7 @@ import mx.bidg.model.CBudgetCategories;
 import mx.bidg.model.CBudgetSubcategories;
 import mx.bidg.model.CGroups;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -58,10 +58,10 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
         
         Criteria criteria = createEntityCriteria();
         HashMap<String, Object> map = new HashMap<>();
-        map.put("idGroup", idGroup);
-        map.put("idArea", idArea);
-        map.put("idBudgetCategory", idCategory);
-        map.put("idBudgetSubcategory", idSubcategory);
+        map.put("group", idGroup);
+        map.put("area", idArea);
+        map.put("budgetCategory", idCategory);
+        map.put("budgetSubcategory", idSubcategory);
         
         Budgets budget = (Budgets) criteria.add(Restrictions.allEq(map)).uniqueResult();
         return budget;

@@ -18,6 +18,7 @@ import mx.bidg.model.CGroups;
 public interface BudgetsService {
     
     public Budgets saveBudget(Budgets budgets);
-    public Budgets findByCombination(int idGroup, int idArea, int idCategory, int idSubcategory);
+    public Budgets findByCombination(Integer idGroup, Integer idArea, Integer idCategory, 
+            Integer idSubcategory);
     
 }

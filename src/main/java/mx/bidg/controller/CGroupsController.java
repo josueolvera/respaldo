@@ -11,8 +11,12 @@ import mx.bidg.config.JsonViews;
 import mx.bidg.model.CGroups;
 import mx.bidg.service.CGroupsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -29,9 +33,18 @@ public class CGroupsController {
     ObjectMapper map = new ObjectMapper();
     
     @RequestMapping(produces = "application/json;charset=UTF-8")
-    public @ResponseBody String getCGroups()throws Exception {
+    public @ResponseBody ResponseEntity<String> getCGroups() 
+            throws Exception {
         List<CGroups> list = cGroupsService.findAll();
-        return map.writerWithView(JsonViews.Root.class).writeValueAsString(list);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Root.class).writeValueAsString(list), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/{idGroup}", produces = "application/json;charset=UTF-8")
+    public @ResponseBody ResponseEntity<String> getCGroupsParams(
+        @PathVariable Integer idGroup) throws Exception {
+        
+        CGroups cGroup = cGroupsService.getByIdBudgetsCatalogs(idGroup);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.EmbeddedBudget.class).writeValueAsString(cGroup), HttpStatus.OK);
     }
     
 }

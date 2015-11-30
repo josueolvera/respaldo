@@ -13,4 +13,6 @@ import mx.bidg.model.CGroups;
  */
 public interface CGroupsDao extends InterfaceDao<CGroups> {
     
+    public CGroups getByIdBudgetsCatalogs(Integer idGroup);
+    
 }

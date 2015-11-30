@@ -43,19 +43,19 @@ public class Budgets implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idBudget;
     
-    @Column(name = "ID_GROUP")
+    @Column(name = "ID_GROUP", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idGroup;
     
-    @Column(name = "ID_AREA")
+    @Column(name = "ID_AREA", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idArea;
     
-    @Column(name = "ID_BUDGET_CATEGORY")
+    @Column(name = "ID_BUDGET_CATEGORY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetCategory;
     
-    @Column(name = "ID_BUDGET_SUBCATEGORY")
+    @Column(name = "ID_BUDGET_SUBCATEGORY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetSubcategory;
 
@@ -73,22 +73,22 @@ public class Budgets implements Serializable {
     
     @JoinColumn(name = "ID_GROUP", referencedColumnName = "ID_GROUP")
     @ManyToOne
-    @JsonView(JsonViews.Embedded.class)
+    @JsonView({JsonViews.Embedded.class})
     private CGroups group;
     
     @JoinColumn(name = "ID_AREA", referencedColumnName = "ID_AREA")
     @ManyToOne
-    @JsonView(JsonViews.Embedded.class)
+    @JsonView({JsonViews.Embedded.class})
     private CAreas area;
     
     @JoinColumn(name = "ID_BUDGET_CATEGORY", referencedColumnName = "ID_BUDGET_CATEGORY")
     @ManyToOne
-    @JsonView(JsonViews.Embedded.class)
+    @JsonView({JsonViews.Embedded.class})
     private CBudgetCategories budgetCategory;
     
     @JoinColumn(name = "ID_BUDGET_SUBCATEGORY", referencedColumnName = "ID_BUDGET_SUBCATEGORY")
     @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
+    @JsonView({JsonViews.Embedded.class})
     private CBudgetSubcategories budgetSubcategory;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudget")

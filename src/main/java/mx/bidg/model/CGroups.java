@@ -53,7 +53,7 @@ public class CGroups implements Serializable {
     private String acronyms;
     
     @OneToMany(mappedBy = "idGroup")
-    @JsonView(JsonViews.Embedded.class)
+    @JsonView(JsonViews.EmbeddedBudget.class)
     private List<Budgets> budgetsList;
 
     public CGroups() {
