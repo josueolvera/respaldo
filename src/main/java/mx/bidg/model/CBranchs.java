@@ -10,19 +10,17 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
@@ -36,46 +34,59 @@ import mx.bidg.utils.DateTimeConverter;
 @Table(name = "C_BRANCHS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CBranchs implements Serializable {
+    
     private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_BRANCH")
     @JsonView(JsonViews.Root.class)
     private Integer idBranch;
+    
     @Size(max = 50)
     @Column(name = "BRANCH_NAME")
     @JsonView(JsonViews.Root.class)
     private String branchName;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 30)
     @Column(name = "BRANCH_SHORT")
     @JsonView(JsonViews.Root.class)
     private String branchShort;
+    
     @Size(max = 50)
     @Column(name = "LOCATION")
     @JsonView(JsonViews.Root.class)
     private String location;
+    
     @Size(max = 400)
     @Column(name = "ADDRESS")
     @JsonView(JsonViews.Root.class)
     private String address;
+    
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "STATUS")
+    @JsonView(JsonViews.Root.class)
+    private int status;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "UPLOADED_DATE")
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime uploadedDate;
+    
     @Column(name = "LOW_DATE")
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime lowDate;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "STATUS")
-    @JsonView(JsonViews.Root.class)
-    private int status;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBranch")
+    @JsonView(JsonViews.Embedded.class)
+    private List<BudgetMonthBranch> budgetMonthBranchList;
 
     public CBranchs() {
     }
@@ -153,6 +164,14 @@ public class CBranchs implements Serializable {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+    
+    public List<BudgetMonthBranch> getBudgetMonthBranchList() {
+        return budgetMonthBranchList;
+    }
+
+    public void setBudgetMonthBranchList(List<BudgetMonthBranch> budgetMonthBranchList) {
+        this.budgetMonthBranchList = budgetMonthBranchList;
     }
 
     @Override

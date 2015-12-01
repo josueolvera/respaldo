@@ -10,9 +10,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.BudgetMonth;
+import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.BudgetMonthConcepts;
 import mx.bidg.model.Budgets;
 import mx.bidg.model.CAreas;
+import mx.bidg.model.CBranchs;
 import mx.bidg.model.CBudgetCategories;
 import mx.bidg.model.CBudgetConcepts;
 import mx.bidg.model.CBudgetSubcategories;
@@ -45,40 +47,54 @@ public class BudgetController {
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json; charset=UTF-8"})
     public @ResponseBody ResponseEntity<String> saveBudget(@RequestBody String data) throws Exception {
         
-        JsonNode jsonRequest = map.readTree(data);
+        JsonNode json = map.readTree(data);
                 
         Budgets budget = new Budgets();
         
-        budget.setGroup(new CGroups(jsonRequest.get("group").asInt()));
-        budget.setArea(new CAreas(jsonRequest.get("area").asInt()));
-        budget.setBudgetCategory(new CBudgetCategories(jsonRequest.get("category").asInt()));
-        budget.setBudgetSubcategory(new CBudgetSubcategories(jsonRequest.get("subcategory").asInt()));
+        budget.setGroup(new CGroups(json.get("group").asInt()));
+        budget.setArea(new CAreas(json.get("area").asInt()));
+        budget.setBudgetCategory(new CBudgetCategories(json.get("category").asInt()));
+        budget.setBudgetSubcategory(new CBudgetSubcategories(json.get("subcategory").asInt()));
         
         ArrayList<BudgetMonth> budgetMonthList = new ArrayList<>();
         BudgetMonth budgetMonth;
         
-        for(JsonNode jsonBudgetMonth : jsonRequest.get("budgetMonthList")) {
+        for(JsonNode jsonRequest : json.get("budgetMonthList")) {
             budgetMonth = new BudgetMonth();
             
-            ArrayList<BudgetMonthConcepts> budgetMonthConceptsList = new ArrayList<>();
-            BudgetMonthConcepts budgetMonthConcept;
-            
-            for(JsonNode jsonBudgetMonthConcept : jsonBudgetMonth.get("budgetMonthConceptList")) {
-                budgetMonthConcept = new BudgetMonthConcepts();
-                budgetMonthConcept.setAmount(jsonBudgetMonthConcept.get("amountConcept").decimalValue());
-                budgetMonthConcept.setIdBudgetMonth(budgetMonth);
-                budgetMonthConcept.setIdBudgetConcept(new CBudgetConcepts(jsonBudgetMonthConcept.get("budgetConcept").asInt()));
-                budgetMonthConcept.setIdAccessLevel(1);
-                budgetMonthConceptsList.add(budgetMonthConcept);
+            ArrayList<BudgetMonthBranch> budgetMonthBranchList = new ArrayList<>();
+            BudgetMonthBranch budgetMonthBranch;
+
+            for(JsonNode jsonBudgetMonthBranch : jsonRequest.get("budgetMonthBranchList")) {
+
+                budgetMonthBranch = new BudgetMonthBranch();
+                ArrayList<BudgetMonthConcepts> budgetMonthConceptsList = new ArrayList<>();
+                BudgetMonthConcepts budgetMonthConcept;
+
+                for(JsonNode jsonBudgetMonthConcept : jsonBudgetMonthBranch.get("budgetMonthConceptList")) {
+                    budgetMonthConcept = new BudgetMonthConcepts();
+                    budgetMonthConcept.setAmount(jsonBudgetMonthConcept.get("amountConcept").decimalValue());
+                    budgetMonthConcept.setIdBudgetConcept(new CBudgetConcepts(jsonBudgetMonthConcept.get("budgetConcept").asInt()));
+                    budgetMonthConcept.setIdAccessLevel(1);
+                    budgetMonthConcept.setIdBudgetMonthBranch(budgetMonthBranch);
+                    budgetMonthConceptsList.add(budgetMonthConcept);
+                }
+
+                budgetMonthBranch.setIdBudgetMonth(budgetMonth);
+                budgetMonthBranch.setIdBranch(new CBranchs(jsonBudgetMonthBranch.get("branch").asInt()));
+                budgetMonthBranch.setBudgetMonthConceptsList(budgetMonthConceptsList);
+                
+
             }
-            
-            budgetMonth.setBudgetMonthConceptsList(budgetMonthConceptsList);
-            budgetMonth.setAmount(jsonBudgetMonth.get("amountMonth").decimalValue());
+        
+            budgetMonth.setBudgetMonthBranchList(budgetMonthBranchList);
+            budgetMonth.setIdBudget(new Budgets(jsonRequest.get("budget").asInt()));
+            budgetMonth.setIdMonth(new CMonths(jsonRequest.get("month").asInt()));
+            budgetMonth.setAmount(jsonRequest.get("amountMonth").decimalValue());
             budgetMonth.setYear(jsonRequest.get("year").asInt());
-            budgetMonth.setIdBudget(budget);
-            budgetMonth.setIdMonth(new CMonths(jsonBudgetMonth.get("cMonth").asInt()));
             budgetMonth.setIdAccessLevel(1);
             budgetMonthList.add(budgetMonth);
+            
         }
         
         budget.setIdAccessLevel(1);

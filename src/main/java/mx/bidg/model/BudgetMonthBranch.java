@@ -17,10 +17,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
 
 /**
@@ -28,43 +28,46 @@ import mx.bidg.config.JsonViews;
  * @author sistemask
  */
 @Entity
-@Table(name = "C_BUDGET_CONCEPTS")
+@Table(name = "BUDGET_MONTH_BRANCH")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
-public class CBudgetConcepts implements Serializable {
+public class BudgetMonthBranch implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID_BUDGET_CONCEPT")
+    @Column(name = "ID_BUDGET_MONTH_BRANCH")
     @JsonView(JsonViews.Root.class)
-    private Integer idBudgetConcept;
+    private Integer idBudgetMonthBranch;
     
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 50)
-    @Column(name = "BUDGET_CONCEPT")
+    @JoinColumn(name = "ID_BUDGET_MONTH", referencedColumnName = "ID_BUDGET_MONTH")
+    @ManyToOne(optional = false)
     @JsonView(JsonViews.Root.class)
-    private String budgetConcept;
+    private BudgetMonth idBudgetMonth;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetConcept")
+    @JoinColumn(name = "ID_BRANCH", referencedColumnName = "ID_BRANCH")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Root.class)
+    private CBranchs idBranch;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetMonthBranch")
     @JsonView(JsonViews.Embedded.class)
     private List<BudgetMonthConcepts> budgetMonthConceptsList;
 
-    public CBudgetConcepts() {
+    public BudgetMonthBranch() {
     }
 
-    public CBudgetConcepts(Integer idBudgetConcept) {
-        this.idBudgetConcept = idBudgetConcept;
+    public BudgetMonthBranch(Integer idBudgetMonthBranch) {
+        this.idBudgetMonthBranch = idBudgetMonthBranch;
     }
 
-    public Integer getIdBudgetConcept() {
-        return idBudgetConcept;
+    public Integer getIdBudgetMonthBranch() {
+        return idBudgetMonthBranch;
     }
 
-    public void setIdBudgetConcept(Integer idBudgetConcept) {
-        this.idBudgetConcept = idBudgetConcept;
+    public void setIdBudgetMonthBranch(Integer idBudgetMonthBranch) {
+        this.idBudgetMonthBranch = idBudgetMonthBranch;
     }
 
     public List<BudgetMonthConcepts> getBudgetMonthConceptsList() {
@@ -75,21 +78,37 @@ public class CBudgetConcepts implements Serializable {
         this.budgetMonthConceptsList = budgetMonthConceptsList;
     }
 
+    public BudgetMonth getIdBudgetMonth() {
+        return idBudgetMonth;
+    }
+
+    public void setIdBudgetMonth(BudgetMonth idBudgetMonth) {
+        this.idBudgetMonth = idBudgetMonth;
+    }
+
+    public CBranchs getIdBranch() {
+        return idBranch;
+    }
+
+    public void setIdBranch(CBranchs idBranch) {
+        this.idBranch = idBranch;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idBudgetConcept != null ? idBudgetConcept.hashCode() : 0);
+        hash += (idBudgetMonthBranch != null ? idBudgetMonthBranch.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CBudgetConcepts)) {
+        if (!(object instanceof BudgetMonthBranch)) {
             return false;
         }
-        CBudgetConcepts other = (CBudgetConcepts) object;
-        if ((this.idBudgetConcept == null && other.idBudgetConcept != null) || (this.idBudgetConcept != null && !this.idBudgetConcept.equals(other.idBudgetConcept))) {
+        BudgetMonthBranch other = (BudgetMonthBranch) object;
+        if ((this.idBudgetMonthBranch == null && other.idBudgetMonthBranch != null) || (this.idBudgetMonthBranch != null && !this.idBudgetMonthBranch.equals(other.idBudgetMonthBranch))) {
             return false;
         }
         return true;
@@ -97,15 +116,7 @@ public class CBudgetConcepts implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.CBudgetConcepts[ idBudgetConcept=" + idBudgetConcept + " ]";
-    }
-
-    public String getBudgetConcept() {
-        return budgetConcept;
-    }
-
-    public void setBudgetConcept(String budgetConcept) {
-        this.budgetConcept = budgetConcept;
+        return "mx.bidg.model.BudgetMonthBranch[ idBudgetMonthBranch=" + idBudgetMonthBranch + " ]";
     }
     
 }

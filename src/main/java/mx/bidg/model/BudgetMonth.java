@@ -74,7 +74,7 @@ public class BudgetMonth implements Serializable {
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetMonth")
     @JsonView(JsonViews.Embedded.class)
-    private List<BudgetMonthConcepts> budgetMonthConceptsList;
+    private List<BudgetMonthBranch> budgetMonthBranchList;
 
     public BudgetMonth() {
     }
@@ -147,12 +147,12 @@ public class BudgetMonth implements Serializable {
         this.idMonth = idMonth;
     }
     
-    public List<BudgetMonthConcepts> getBudgetMonthConceptsList() {
-        return budgetMonthConceptsList;
+    public List<BudgetMonthBranch> getBudgetMonthBranchList() {
+        return budgetMonthBranchList;
     }
 
-    public void setBudgetMonthConceptsList(List<BudgetMonthConcepts> budgetMonthConceptsList) {
-        this.budgetMonthConceptsList = budgetMonthConceptsList;
+    public void setBudgetMonthBranchList(List<BudgetMonthBranch> budgetMonthBranchList) {
+        this.budgetMonthBranchList = budgetMonthBranchList;
     }
 
     @Override
