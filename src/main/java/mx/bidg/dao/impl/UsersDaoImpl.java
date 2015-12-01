@@ -11,6 +11,7 @@ import mx.bidg.dao.InterfaceDao;
 import mx.bidg.dao.UsersDao;
 import mx.bidg.model.Users;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -50,7 +51,9 @@ public class UsersDaoImpl extends AbstractDao<Integer, Users> implements UsersDa
     @Override
     public Users findByUsername(String username) {
         Criteria criteria = createEntityCriteria();
-        criteria.add(Restrictions.eq("username", username));
+        criteria.add(Restrictions.eq("username", username))
+                .setFetchMode("usersRoleList", FetchMode.JOIN)
+                .setFetchMode("usersRoleList.idSystemRole", FetchMode.JOIN);
         return (Users) criteria.uniqueResult();
     }
     
