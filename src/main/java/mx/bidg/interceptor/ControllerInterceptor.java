@@ -64,8 +64,8 @@ public class ControllerInterceptor extends HandlerInterceptorAdapter {
             return false;
         }
         
-        List<UsersRole> userRoles = usersRoleService.findAllByUserId(user);
-        
+        List<UsersRole> userRoles = user.getUsersRoleList();
+
         for(UsersRole userRol : userRoles) {
             Integer id = userRol.getIdSystemRole().getIdSystemRole();
             if(idRoles.contains(id)) {
