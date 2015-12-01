@@ -6,6 +6,7 @@
 package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
@@ -57,7 +58,8 @@ public class CSystems implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSystem")
+    @JsonProperty("modules")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "system")
     @JsonView(JsonViews.Embedded.class)
     private List<CModules> cModulesList;
 
@@ -107,7 +109,7 @@ public class CSystems implements Serializable {
         this.creationDate = creationDate;
     }
 
-    @XmlTransient
+    @JsonProperty("modules")
     public List<CModules> getCModulesList() {
         return cModulesList;
     }

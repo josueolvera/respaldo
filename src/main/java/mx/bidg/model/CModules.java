@@ -6,6 +6,7 @@
 package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
@@ -36,6 +37,10 @@ public class CModules implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idModule;
 
+    @Column(name = "ID_SYSTEM", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idSystem;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
@@ -53,8 +58,9 @@ public class CModules implements Serializable {
     @JoinColumn(name = "ID_SYSTEM", referencedColumnName = "ID_SYSTEM")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CSystems idSystem;
+    private CSystems system;
 
+    @JsonProperty("views")
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "module")
     @JsonView(JsonViews.Embedded.class)
     private List<CViews> cViewsList;
@@ -80,6 +86,14 @@ public class CModules implements Serializable {
         this.idModule = idModule;
     }
 
+    public Integer getIdSystem() {
+        return idSystem;
+    }
+
+    public void setIdSystem(Integer idSystem) {
+        this.idSystem = idSystem;
+    }
+
     public String getModuleName() {
         return moduleName;
     }
@@ -96,15 +110,15 @@ public class CModules implements Serializable {
         this.creationDate = creationDate;
     }
 
-    public CSystems getIdSystem() {
-        return idSystem;
+    public CSystems getSystem() {
+        return system;
     }
 
-    public void setIdSystem(CSystems idSystem) {
-        this.idSystem = idSystem;
+    public void setSystem(CSystems idSystem) {
+        this.system = idSystem;
     }
 
-    @XmlTransient
+    @JsonProperty("views")
     public List<CViews> getCViewsList() {
         return cViewsList;
     }
