@@ -53,7 +53,7 @@ public class SystemRoles implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer parentRole;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSystemRole")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "systemRole")
     @JsonView(JsonViews.Embedded.class)
     private List<ViewsRole> viewsRoleList;
 

@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
-import mx.bidg.dao.InterfaceDao;
 import mx.bidg.utils.DateTimeConverter;
 
 import java.io.Serializable;
@@ -54,7 +53,7 @@ public class CViews implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idView")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "view")
     @JsonView(JsonViews.Embedded.class)
     private List<ViewsRole> viewsRoleList;
 
