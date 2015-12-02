@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import mx.bidg.config.JsonViews;
-import mx.bidg.model.BudgetMonth;
 import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.BudgetMonthConcepts;
 import mx.bidg.model.Budgets;
@@ -47,7 +46,7 @@ public class BudgetController {
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json; charset=UTF-8"})
     public @ResponseBody ResponseEntity<String> saveBudget(@RequestBody String data) throws Exception {
         
-        JsonNode json = map.readTree(data);
+        /*JsonNode json = map.readTree(data);
                 
         Budgets budget = new Budgets();
         
@@ -101,7 +100,8 @@ public class BudgetController {
         budget.setBudgetMonthList(budgetMonthList);
         budgetsService.saveBudget(budget);
         
-        return new ResponseEntity<>("Presupuesto guardado con éxito", HttpStatus.OK);
+        return new ResponseEntity<>("Presupuesto guardado con éxito", HttpStatus.OK);*/
+        return null;
     }
     
     @RequestMapping(value = "/{idGroup}/{idArea}/{idCategory}/{idSubcategory}", produces = "application/json")
@@ -111,6 +111,14 @@ public class BudgetController {
         Budgets budget = budgetsService.findByCombination(idGroup, idArea, idCategory, idSubcategory);
         System.out.println(budget);
         return new ResponseEntity<>(map.writerWithView(JsonViews.Root.class).writeValueAsString(budget), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/{idGroup}/{idArea}", produces = "application/json")
+    public @ResponseBody ResponseEntity<String> getByGroupArea(@PathVariable int idGroup, @PathVariable int idArea) 
+            throws Exception {
+        
+        ArrayList<Budgets> list = budgetsService.findByGroupArea(new CGroups(idGroup), new CAreas(idArea));
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Root.class).writeValueAsString(list), HttpStatus.OK);
     }
     
     

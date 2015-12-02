@@ -9,14 +9,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
-import mx.bidg.model.BudgetMonth;
 import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.BudgetMonthConcepts;
 import mx.bidg.model.Budgets;
 import mx.bidg.model.CBranchs;
 import mx.bidg.model.CBudgetConcepts;
 import mx.bidg.model.CMonths;
-import mx.bidg.service.BudgetMonthService;
+import mx.bidg.service.BudgetMonthBranchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,25 +30,25 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author sistemask
  */
 @Controller
-@RequestMapping("/budget-month")
-public class BudgetMonthController {
+@RequestMapping("/budget-month-branch")
+public class BudgetMonthBranchController {
     
     @Autowired
-    BudgetMonthService budgetMonthService;
+    BudgetMonthBranchService budgetMonthBranchService;
     
     ObjectMapper map = new ObjectMapper();
     
     @RequestMapping(produces = "application/json;charset=UTF-8")
-    public @ResponseBody String getBudgetMonths() {
-        List<BudgetMonth> list;
+    public @ResponseBody String getBudgetMonthBranchs() {
+        List<BudgetMonthBranch> list;
         return null;
     }
     
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"})
     public @ResponseBody ResponseEntity<String> saveBudgetMonths(@RequestBody String data) throws Exception {
         
-        JsonNode jsonRequest = map.readTree(data);
-        BudgetMonth budgetMonth = new BudgetMonth();
+        /*JsonNode jsonRequest = map.readTree(data);
+        BudgetMonthBranch budgetMonthBranch = new BudgetMonthBranch();
         
         ArrayList<BudgetMonthBranch> budgetMonthBranchList = new ArrayList<>();
         BudgetMonthBranch budgetMonthBranch;
@@ -81,9 +80,10 @@ public class BudgetMonthController {
         budgetMonth.setAmount(jsonRequest.get("amountMonth").decimalValue());
         budgetMonth.setYear(jsonRequest.get("year").asInt());
         budgetMonth.setIdAccessLevel(1);
-        budgetMonthService.saveBudgetMonth(budgetMonth);
+        budgetMonthBranchService.save(budgetMonth);
         
-        return new ResponseEntity<>("Presupuesto guardado con éxito", HttpStatus.OK);
+        return new ResponseEntity<>("Presupuesto guardado con éxito", HttpStatus.OK);*/
+        return null;
     }
     
 }

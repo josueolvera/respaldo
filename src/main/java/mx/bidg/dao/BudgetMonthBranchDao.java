@@ -5,12 +5,12 @@
  */
 package mx.bidg.dao;
 
-import mx.bidg.model.BudgetMonth;
+import mx.bidg.model.BudgetMonthBranch;
 
 /**
  *
  * @author sistemask
  */
-public interface BudgetMonthDao extends InterfaceDao<BudgetMonth> {
+public interface BudgetMonthBranchDao extends InterfaceDao<BudgetMonthBranch> {
     
 }

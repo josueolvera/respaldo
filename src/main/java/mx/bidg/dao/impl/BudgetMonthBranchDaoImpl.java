@@ -7,8 +7,8 @@ package mx.bidg.dao.impl;
 
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
-import mx.bidg.dao.BudgetMonthDao;
-import mx.bidg.model.BudgetMonth;
+import mx.bidg.dao.BudgetMonthBranchDao;
+import mx.bidg.model.BudgetMonthBranch;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -16,31 +16,31 @@ import org.springframework.stereotype.Repository;
  * @author sistemask
  */
 @Repository
-public class BudgetMonthDaoImpl extends AbstractDao<Integer, BudgetMonth> implements BudgetMonthDao {
+public class BudgetMonthBranchDaoImpl extends AbstractDao<Integer, BudgetMonthBranch> implements BudgetMonthBranchDao{
 
     @Override
-    public BudgetMonth save(BudgetMonth entity) {
+    public BudgetMonthBranch save(BudgetMonthBranch entity) {
         persist(entity);
         return entity;
     }
 
     @Override
-    public BudgetMonth findById(int id) {
+    public BudgetMonthBranch findById(int id) {
+        return getByKey(id);
+    }
+
+    @Override
+    public List<BudgetMonthBranch> findAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<BudgetMonth> findAll() {
+    public BudgetMonthBranch update(BudgetMonthBranch entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public BudgetMonth update(BudgetMonth entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean delete(BudgetMonth entity) {
+    public boolean delete(BudgetMonthBranch entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

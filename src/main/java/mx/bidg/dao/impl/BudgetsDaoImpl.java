@@ -5,6 +5,7 @@
  */
 package mx.bidg.dao.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
@@ -65,6 +66,15 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
         
         Budgets budget = (Budgets) criteria.add(Restrictions.allEq(map)).uniqueResult();
         return budget;
+    }
+
+    @Override
+    public ArrayList<Budgets> findByGroupArea(CGroups idGroup, CAreas idArea) {
+        Criteria criteria = createEntityCriteria();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("group", idGroup);
+        map.put("area", idArea);
+        return (ArrayList<Budgets>) criteria.add(Restrictions.allEq(map)).list();
     }
     
 }
