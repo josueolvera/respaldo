@@ -17,11 +17,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
 
 /**
@@ -44,9 +43,10 @@ public class CBudgetConcepts implements Serializable {
     
     @Basic(optional = false)
     @NotNull
+    @Size(min = 1, max = 50)
     @Column(name = "BUDGET_CONCEPT")
     @JsonView(JsonViews.Root.class)
-    private int budgetConcept;
+    private String budgetConcept;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetConcept")
     @JsonView(JsonViews.Embedded.class)
@@ -59,25 +59,12 @@ public class CBudgetConcepts implements Serializable {
         this.idBudgetConcept = idBudgetConcept;
     }
 
-    public CBudgetConcepts(Integer idBudgetConcept, int budgetConcept) {
-        this.idBudgetConcept = idBudgetConcept;
-        this.budgetConcept = budgetConcept;
-    }
-
     public Integer getIdBudgetConcept() {
         return idBudgetConcept;
     }
 
     public void setIdBudgetConcept(Integer idBudgetConcept) {
         this.idBudgetConcept = idBudgetConcept;
-    }
-
-    public int getBudgetConcept() {
-        return budgetConcept;
-    }
-
-    public void setBudgetConcept(int budgetConcept) {
-        this.budgetConcept = budgetConcept;
     }
 
     public List<BudgetMonthConcepts> getBudgetMonthConceptsList() {
@@ -111,6 +98,14 @@ public class CBudgetConcepts implements Serializable {
     @Override
     public String toString() {
         return "mx.bidg.model.CBudgetConcepts[ idBudgetConcept=" + idBudgetConcept + " ]";
+    }
+
+    public String getBudgetConcept() {
+        return budgetConcept;
+    }
+
+    public void setBudgetConcept(String budgetConcept) {
+        this.budgetConcept = budgetConcept;
     }
     
 }

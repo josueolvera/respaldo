@@ -33,6 +33,12 @@ public class ViewsRole implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idViewRole;
 
+    @Column(name = "ID_VIEW", insertable = false, updatable = false)
+    private Integer idView;
+
+    @Column(name = "ID_SYSTEM_ROLE", insertable = false, updatable = false)
+    private Integer idSystemRole;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
@@ -43,12 +49,12 @@ public class ViewsRole implements Serializable {
     @JoinColumn(name = "ID_VIEW", referencedColumnName = "ID_VIEW")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CViews idView;
+    private CViews view;
 
     @JoinColumn(name = "ID_SYSTEM_ROLE", referencedColumnName = "ID_SYSTEM_ROLE")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private SystemRoles idSystemRole;
+    private SystemRoles systemRole;
 
     public ViewsRole() {
     }
@@ -70,6 +76,22 @@ public class ViewsRole implements Serializable {
         this.idViewRole = idViewRole;
     }
 
+    public Integer getIdView() {
+        return idView;
+    }
+
+    public void setIdView(Integer idView) {
+        this.idView = idView;
+    }
+
+    public Integer getIdSystemRole() {
+        return idSystemRole;
+    }
+
+    public void setIdSystemRole(Integer idSystemRole) {
+        this.idSystemRole = idSystemRole;
+    }
+
     public LocalDateTime getCreationDate() {
         return creationDate;
     }
@@ -78,20 +100,20 @@ public class ViewsRole implements Serializable {
         this.creationDate = creationDate;
     }
 
-    public CViews getIdView() {
-        return idView;
+    public CViews getView() {
+        return view;
     }
 
-    public void setIdView(CViews idView) {
-        this.idView = idView;
+    public void setView(CViews idView) {
+        this.view = idView;
     }
 
-    public SystemRoles getIdSystemRole() {
-        return idSystemRole;
+    public SystemRoles getSystemRole() {
+        return systemRole;
     }
 
-    public void setIdSystemRole(SystemRoles idSystemRole) {
-        this.idSystemRole = idSystemRole;
+    public void setSystemRole(SystemRoles idSystemRole) {
+        this.systemRole = idSystemRole;
     }
 
     @Override

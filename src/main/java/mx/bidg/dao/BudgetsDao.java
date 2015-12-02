@@ -5,6 +5,7 @@
  */
 package mx.bidg.dao;
 
+import java.util.ArrayList;
 import mx.bidg.model.Budgets;
 import mx.bidg.model.CAreas;
 import mx.bidg.model.CBudgetCategories;
@@ -19,5 +20,7 @@ public interface BudgetsDao extends InterfaceDao<Budgets> {
     
     public Budgets findByCombination(CGroups idGroup, CAreas idArea, CBudgetCategories idCategory, 
             CBudgetSubcategories idSubcategory);
+    
+    public ArrayList<Budgets> findByGroupArea(CGroups idGroup, CAreas idArea);
     
 }

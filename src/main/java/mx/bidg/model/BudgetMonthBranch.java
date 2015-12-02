@@ -8,8 +8,6 @@ package mx.bidg.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import mx.bidg.config.JsonViews;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
@@ -25,24 +23,25 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import mx.bidg.config.JsonViews;
 
 /**
  *
  * @author sistemask
  */
 @Entity
-@Table(name = "BUDGET_MONTH")
+@Table(name = "BUDGET_MONTH_BRANCH")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
-public class BudgetMonth implements Serializable {
+public class BudgetMonthBranch implements Serializable {
     
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID_BUDGET_MONTH")
+    @Column(name = "ID_BUDGET_MONTH_BRANCH")
     @JsonView(JsonViews.Root.class)
-    private Integer idBudgetMonth;
+    private Integer idBudgetMonthBranch;
 
     @Basic(optional = false)
     @NotNull
@@ -72,26 +71,31 @@ public class BudgetMonth implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CMonths idMonth;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetMonth")
+    @JoinColumn(name = "ID_BRANCH", referencedColumnName = "ID_BRANCH")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Root.class)
+    private CBranchs idBranch;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetMonthBranch")
     @JsonView(JsonViews.Embedded.class)
     private List<BudgetMonthConcepts> budgetMonthConceptsList;
 
-    public BudgetMonth() {
+    public BudgetMonthBranch() {
     }
 
-    public BudgetMonth(Integer idBudgetMonth) {
-        this.idBudgetMonth = idBudgetMonth;
+    public BudgetMonthBranch(Integer idBudgetMonthBranch) {
+        this.idBudgetMonthBranch = idBudgetMonthBranch;
     }
 
-    public BudgetMonth(Integer idBudgetMonth, BigDecimal amount, int year, int idAccessLevel) {
-        this.idBudgetMonth = idBudgetMonth;
+    public BudgetMonthBranch(Integer idBudgetMonthBranch, BigDecimal amount, int year, int idAccessLevel) {
+        this.idBudgetMonthBranch = idBudgetMonthBranch;
         this.amount = amount;
         this.year = year;
         this.idAccessLevel = idAccessLevel;
     }
 
-    public BudgetMonth(Integer idBudgetMonth, BigDecimal amount, int year, int idAccessLevel, Budgets idBudget, CMonths idMonth) {
-        this.idBudgetMonth = idBudgetMonth;
+    public BudgetMonthBranch(Integer idBudgetMonthBranch, BigDecimal amount, int year, int idAccessLevel, Budgets idBudget, CMonths idMonth) {
+        this.idBudgetMonthBranch = idBudgetMonthBranch;
         this.amount = amount;
         this.year = year;
         this.idAccessLevel = idAccessLevel;
@@ -107,12 +111,12 @@ public class BudgetMonth implements Serializable {
         this.year = year;
     }
 
-    public Integer getIdBudgetMonth() {
-        return idBudgetMonth;
+    public Integer getIdBudgetMonthBranch() {
+        return idBudgetMonthBranch;
     }
 
-    public void setIdBudgetMonth(Integer idBudgetMonth) {
-        this.idBudgetMonth = idBudgetMonth;
+    public void setIdBudgetMonthBranch(Integer idBudgetMonthBranch) {
+        this.idBudgetMonthBranch = idBudgetMonthBranch;
     }
 
     public BigDecimal getAmount() {
@@ -146,7 +150,15 @@ public class BudgetMonth implements Serializable {
     public void setIdMonth(CMonths idMonth) {
         this.idMonth = idMonth;
     }
-    
+
+    public CBranchs getIdBranch() {
+        return idBranch;
+    }
+
+    public void setIdBranch(CBranchs idBranch) {
+        this.idBranch = idBranch;
+    }
+
     public List<BudgetMonthConcepts> getBudgetMonthConceptsList() {
         return budgetMonthConceptsList;
     }
@@ -158,18 +170,18 @@ public class BudgetMonth implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idBudgetMonth != null ? idBudgetMonth.hashCode() : 0);
+        hash += (idBudgetMonthBranch != null ? idBudgetMonthBranch.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof BudgetMonth)) {
+        if (!(object instanceof BudgetMonthBranch)) {
             return false;
         }
-        BudgetMonth other = (BudgetMonth) object;
-        if ((this.idBudgetMonth == null && other.idBudgetMonth != null) || (this.idBudgetMonth != null && !this.idBudgetMonth.equals(other.idBudgetMonth))) {
+        BudgetMonthBranch other = (BudgetMonthBranch) object;
+        if ((this.idBudgetMonthBranch == null && other.idBudgetMonthBranch != null) || (this.idBudgetMonthBranch != null && !this.idBudgetMonthBranch.equals(other.idBudgetMonthBranch))) {
             return false;
         }
         return true;
@@ -177,7 +189,7 @@ public class BudgetMonth implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.BudgetMonth[ idBudgetMonth=" + idBudgetMonth + " ]";
+        return "mx.bidg.model.BudgetMonth[ idBudgetMonth=" + idBudgetMonthBranch + " ]";
     }
     
 }

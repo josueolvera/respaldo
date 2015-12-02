@@ -5,6 +5,7 @@
  */
 package mx.bidg.service.impl;
 
+import java.util.ArrayList;
 import mx.bidg.dao.BudgetsDao;
 import mx.bidg.model.Budgets;
 import mx.bidg.model.CAreas;
@@ -37,6 +38,11 @@ public class BudgetsServiceImpl implements BudgetsService {
             Integer idSubcategory) {
         return dao.findByCombination(new CGroups(idGroup), new CAreas(idArea), 
                 new CBudgetCategories(idCategory), new CBudgetSubcategories(idSubcategory));
+    }
+
+    @Override
+    public ArrayList<Budgets> findByGroupArea(CGroups idGroup, CAreas idArea) {
+        return dao.findByGroupArea(idGroup, idArea);
     }
     
 }

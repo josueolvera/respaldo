@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.ActiveSessionsList;
 import mx.bidg.config.Permissions;
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class PruebaController {
     @Autowired
     ActiveSessionsList activeSessions;
 
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
     
     @RequestMapping( method = RequestMethod.GET)
     public @ResponseBody String prueba() throws Exception {
@@ -70,7 +71,7 @@ public class PruebaController {
             usersSessions.put(sessionEntry.getKey(), (Users) sessionEntry.getValue().getAttribute("user"));
         }
         response.put("sessions", usersSessions);
-        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(response);
+        return mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(response);
     }
     
     @RequestMapping(value = "/ctasks", produces = "Application/json")

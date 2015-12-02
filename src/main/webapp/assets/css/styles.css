@@ -20,7 +20,7 @@ body {
 /* Sidebar */
 
 .fa-2x {
-    font-size: 1.4em;
+    font-size: 2rem;
 }
 
 .fa {
@@ -38,7 +38,7 @@ body {
 }
 
 .main-menu:hover,nav.main-menu.expanded {
-    width:20rem;
+    width:30rem;
     overflow:hidden;
 }
 
@@ -58,9 +58,22 @@ body {
     z-index:1000;
 }
 
-.has-subnav ul {
+.has-sub-nav ul {
     display: none;
-    margin-left: 7rem;
+    margin-left: 3rem;
+    padding: 0 0 2rem 0;
+}
+
+.has-sub-nav:hover > ul {
+    display: block;
+}
+
+.menu-sub-nav .has-sub-nav:hover ul {
+    display: block;
+}
+
+.menu-sub-nav .nav-text {
+    padding: 1rem;
 }
 
 .main-menu .top-menu {
@@ -140,7 +153,11 @@ nav ul,nav li {
     margin:0;
     padding:0;
 }
-.main-menu li:hover>a,nav.main-menu li.active>a,.dropdown-menu>li>a:hover,.dropdown-menu>li>a:focus,.dropdown-menu>.active>a,.dropdown-menu>.active>a:hover,.dropdown-menu>.active>a:focus,.no-touch .dashboard-page nav.dashboard-menu ul li:hover a,.dashboard-page nav.dashboard-menu ul li.active a {
+.main-menu li:hover>a,nav.main-menu li.active>a,
+.dropdown-menu>li>a:hover,.dropdown-menu>li>a:focus,
+.dropdown-menu>.active>a,.dropdown-menu>.active>a:hover,
+.dropdown-menu>.active>a:focus,.no-touch .dashboard-page nav.dashboard-menu ul li:hover a,
+.dashboard-page nav.dashboard-menu ul li.active a {
     color:#fff;
     background-color:#5fa2db;
 }

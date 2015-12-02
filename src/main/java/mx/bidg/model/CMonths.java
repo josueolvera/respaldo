@@ -51,7 +51,7 @@ public class CMonths implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idMonth")
     @JsonView(JsonViews.Root.class)
-    private List<BudgetMonth> budgetMonthList;
+    private List<BudgetMonthBranch> budgetMonthBranchList;
 
     @OneToMany(mappedBy = "idMonthFirst")
     @JsonView(JsonViews.Root.class)
@@ -92,12 +92,12 @@ public class CMonths implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public List<BudgetMonth> getBudgetMonthList() {
-        return budgetMonthList;
+    public List<BudgetMonthBranch> getBudgetMonthBranchList() {
+        return budgetMonthBranchList;
     }
 
-    public void setBudgetMonthList(List<BudgetMonth> budgetMonthList) {
-        this.budgetMonthList = budgetMonthList;
+    public void setBudgetMonthBranchList(List<BudgetMonthBranch> budgetMonthBranchList) {
+        this.budgetMonthBranchList = budgetMonthBranchList;
     }
 
     public List<BudgetPeriodMonths> getBudgetPeriodMonthsList() {

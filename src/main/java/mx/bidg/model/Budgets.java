@@ -87,7 +87,7 @@ public class Budgets implements Serializable {
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudget")
     @JsonView(JsonViews.Embedded.class)
-    private List<BudgetMonth> budgetMonthList;
+    private List<BudgetMonthBranch> budgetMonthBranchList;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudget")
     @JsonView(JsonViews.Embedded.class)
@@ -105,20 +105,20 @@ public class Budgets implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public Budgets(Integer idBudget, int idAccessLevel, List<BudgetMonth> budgetMonthList) {
+    public Budgets(Integer idBudget, int idAccessLevel, List<BudgetMonthBranch> budgetMonthBranchList) {
         this.idBudget = idBudget;
         this.idAccessLevel = idAccessLevel;
-        this.budgetMonthList = budgetMonthList;
+        this.budgetMonthBranchList = budgetMonthBranchList;
     }
 
-    public Budgets(Integer idBudget, Integer idGroup, Integer idArea, Integer idBudgetCategory, Integer idBudgetSubcategory, int idAccessLevel, List<BudgetMonth> budgetMonthList, List<RequestTypesBudgets> requestTypesBudgetsList) {
+    public Budgets(Integer idBudget, Integer idGroup, Integer idArea, Integer idBudgetCategory, Integer idBudgetSubcategory, int idAccessLevel, List<BudgetMonthBranch> budgetMonthBranchList, List<RequestTypesBudgets> requestTypesBudgetsList) {
         this.idBudget = idBudget;
         this.idGroup = idGroup;
         this.idArea = idArea;
         this.idBudgetCategory = idBudgetCategory;
         this.idBudgetSubcategory = idBudgetSubcategory;
         this.idAccessLevel = idAccessLevel;
-        this.budgetMonthList = budgetMonthList;
+        this.budgetMonthBranchList = budgetMonthBranchList;
         this.requestTypesBudgetsList = requestTypesBudgetsList;
     }
 
@@ -147,12 +147,12 @@ public class Budgets implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public List<BudgetMonth> getBudgetMonthList() {
-        return budgetMonthList;
+    public List<BudgetMonthBranch> getBudgetMonthBranchList() {
+        return budgetMonthBranchList;
     }
 
-    public void setBudgetMonthList(List<BudgetMonth> budgetMonthList) {
-        this.budgetMonthList = budgetMonthList;
+    public void setBudgetMonthBranchList(List<BudgetMonthBranch> budgetMonthBranchList) {
+        this.budgetMonthBranchList = budgetMonthBranchList;
     }
 
     public Integer getIdGroup() {

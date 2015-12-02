@@ -7,11 +7,9 @@ package mx.bidg.dao.impl;
 
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
-import mx.bidg.dao.InterfaceDao;
-import mx.bidg.dao.UsersDao;
-import mx.bidg.model.Users;
-import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
+import mx.bidg.dao.RequestTypesBudgetsDao;
+import mx.bidg.model.CRequestTypes;
+import mx.bidg.model.RequestTypesBudgets;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -20,43 +18,36 @@ import org.springframework.stereotype.Repository;
  * @author sistemask
  */
 @Repository
-public class UsersDaoImpl extends AbstractDao<Integer, Users> implements UsersDao {
+public class RequestTypesBudgetsDaoImpl extends AbstractDao<Integer, RequestTypesBudgets> implements RequestTypesBudgetsDao {
 
     @Override
-    public Users save(Users entity) {
+    public RequestTypesBudgets save(RequestTypesBudgets entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Users findById(int id) {
+    public RequestTypesBudgets findById(int id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<Users> findAll() {
+    public List<RequestTypesBudgets> findAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Users update(Users entity) {
-        getSession().update(entity);
-        return entity;
-    }
-
-    @Override
-    public boolean delete(Users entity) {
+    public RequestTypesBudgets update(RequestTypesBudgets entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Users findByUsername(String username) {
-        Criteria criteria = createEntityCriteria();
-        criteria.add(Restrictions.eq("username", username))
-                .setFetchMode("usersRoleList", FetchMode.JOIN)
-                .setFetchMode("usersRoleList.idSystemRole", FetchMode.JOIN);
-        return (Users) criteria.uniqueResult();
+    public boolean delete(RequestTypesBudgets entity) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    
+
+    @Override
+    public List<RequestTypesBudgets> findByRequestType(CRequestTypes idRequestType) {
+        return (List<RequestTypesBudgets>) createEntityCriteria().add(Restrictions.eq("idRequestType", idRequestType)).list();
+    }
     
 }

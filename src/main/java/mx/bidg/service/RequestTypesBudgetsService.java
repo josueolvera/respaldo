@@ -5,14 +5,16 @@
  */
 package mx.bidg.service;
 
-import mx.bidg.model.BudgetMonth;
+import java.util.List;
+import mx.bidg.model.CRequestTypes;
+import mx.bidg.model.RequestTypesBudgets;
 
 /**
  *
  * @author sistemask
  */
-public interface BudgetMonthService {
+public interface RequestTypesBudgetsService {
     
-    public BudgetMonth saveBudgetMonth(BudgetMonth budgetMonth);
+    public List<RequestTypesBudgets> findByRequestType(CRequestTypes idRequestType);
     
 }

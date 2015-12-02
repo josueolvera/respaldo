@@ -44,10 +44,10 @@ public class BudgetMonthConcepts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private BigDecimal amount;
     
-    @JoinColumn(name = "ID_BUDGET_MONTH", referencedColumnName = "ID_BUDGET_MONTH")
+    @JoinColumn(name = "ID_BUDGET_MONTH_BRANCH", referencedColumnName = "ID_BUDGET_MONTH_BRANCH")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private BudgetMonth idBudgetMonth;
+    private BudgetMonthBranch idBudgetMonthBranch;
     
     @JoinColumn(name = "ID_BUDGET_CONCEPT", referencedColumnName = "ID_BUDGET_CONCEPT")
     @ManyToOne(optional = false)
@@ -57,6 +57,8 @@ public class BudgetMonthConcepts implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
+    
+    
 
     public BudgetMonthConcepts() {
     }
@@ -81,14 +83,6 @@ public class BudgetMonthConcepts implements Serializable {
         this.amount = amount;
     }
 
-    public BudgetMonth getIdBudgetMonth() {
-        return idBudgetMonth;
-    }
-
-    public void setIdBudgetMonth(BudgetMonth idBudgetMonth) {
-        this.idBudgetMonth = idBudgetMonth;
-    }
-
     public CBudgetConcepts getIdBudgetConcept() {
         return idBudgetConcept;
     }
@@ -103,6 +97,14 @@ public class BudgetMonthConcepts implements Serializable {
 
     public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
+    }
+    
+    public BudgetMonthBranch getIdBudgetMonthBranch() {
+        return idBudgetMonthBranch;
+    }
+
+    public void setIdBudgetMonthBranch(BudgetMonthBranch idBudgetMonthBranch) {
+        this.idBudgetMonthBranch = idBudgetMonthBranch;
     }
 
     @Override

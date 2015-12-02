@@ -5,6 +5,7 @@
  */
 package mx.bidg.service;
 
+import java.util.ArrayList;
 import mx.bidg.model.Budgets;
 import mx.bidg.model.CAreas;
 import mx.bidg.model.CBudgetCategories;
@@ -20,5 +21,6 @@ public interface BudgetsService {
     public Budgets saveBudget(Budgets budgets);
     public Budgets findByCombination(Integer idGroup, Integer idArea, Integer idCategory, 
             Integer idSubcategory);
+    public ArrayList<Budgets> findByGroupArea(CGroups idGroup, CAreas idArea);
     
 }
