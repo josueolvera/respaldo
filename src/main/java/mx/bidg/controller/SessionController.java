@@ -10,8 +10,10 @@ import javax.servlet.http.HttpSession;
 import mx.bidg.config.ActiveSessionsList;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.ActiveSession;
+import mx.bidg.model.CSystems;
 import mx.bidg.model.Users;
 import mx.bidg.service.ActiveSessionService;
+import mx.bidg.service.ApplicationMenuService;
 import mx.bidg.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.List;
 
 /**
  *
@@ -36,6 +40,8 @@ public class SessionController {
     ActiveSessionsList activeSessionsList;
     @Autowired
     ActiveSessionService activeSessionService;
+    @Autowired
+    ApplicationMenuService appMenuService;
     
     @RequestMapping(produces = {"text/html;charset=UTF-8"})
     public String home(Model model) {
@@ -54,7 +60,10 @@ public class SessionController {
         HttpSession session = request.getSession();
         session.setMaxInactiveInterval(-1);
         session.setAttribute("user", userSession);
-        
+
+        List<CSystems> systems = appMenuService.buildMenuForRoles(userSession.getUsersRoleList());
+        session.setAttribute("appMenu", systems);
+
         activeSessionService.save(new ActiveSession(userSession.getIdUser(), session.getId()));
         activeSessionsList.addSession(session);
         

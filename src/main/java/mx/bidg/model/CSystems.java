@@ -18,7 +18,6 @@ import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -50,6 +49,11 @@ public class CSystems implements Serializable {
     @Column(name = "DESCRIPTION_SYSTEM")
     @JsonView(JsonViews.Root.class)
     private String descriptionSystem;
+
+    @Basic(optional = false)
+    @Column(name = "ICON_CLASS")
+    @JsonView(JsonViews.Root.class)
+    private String iconClass;
 
     @Basic(optional = false)
     @NotNull
@@ -99,6 +103,14 @@ public class CSystems implements Serializable {
 
     public void setDescriptionSystem(String descriptionSystem) {
         this.descriptionSystem = descriptionSystem;
+    }
+
+    public String getIconClass() {
+        return iconClass;
+    }
+
+    public void setIconClass(String iconClass) {
+        this.iconClass = iconClass;
     }
 
     public LocalDateTime getCreationDate() {

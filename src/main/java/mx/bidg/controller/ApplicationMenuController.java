@@ -35,11 +35,11 @@ public class ApplicationMenuController {
     public ResponseEntity<String> getAppMenu(HttpServletRequest request) throws IOException {
         HttpSession session = request.getSession(false);
         Users user = (Users) session.getAttribute("user");
-        List<CSystems> systems = (List<CSystems>) session.getAttribute("app-menu");
+        List<CSystems> systems = (List<CSystems>) session.getAttribute("appMenu");
 
         if (systems == null) {
             systems = appMenuService.buildMenuForRoles(user.getUsersRoleList());
-            session.setAttribute("app-menu", systems);
+            session.setAttribute("appMenu", systems);
         }
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(systems), HttpStatus.OK);

@@ -46,28 +46,23 @@
                             </li>
                         </ul>
                         <ul class="top-menu">
-                            <li class="has-subnav">
+                            <li v-for="menuSystem in menu" class="has-sub-nav">
                                 <a href="#">
-                                    <span class="fa fa-list fa-2x glyphicon glyphicon-stats"></span>
-                                    <span class="nav-text">SIAD</span>
+                                    <span class="fa fa-list fa-2x glyphicon {{ menuSystem.iconClass }}"></span>
+                                    <span class="nav-text">{{ menuSystem.systemName }}</span>
                                 </a>
-                                <ul>
-                                    <li><a href="#"><span class="nav-text">Solicitudes</span></a></li>
-                                    <li><a href="#"><span class="nav-text">Solicitudes</span></a></li>
-                                    <li><a href="#"><span class="nav-text">Solicitudes</span></a></li>
+                                <ul class="menu-sub-nav">
+                                    <li v-for="moduleSystem in menuSystem.modules" class="has-sub-nav">
+                                        <a href="#"><span class="nav-text">{{ moduleSystem.moduleName }}</span></a>
+                                        <ul class="menu-sub-nav">
+                                            <li v-for="viewModule in moduleSystem.views">
+                                                <a href="/BIDGroup/{{ viewModule.cTasks.taskName }}">
+                                                    <span class="nav-text">{{ viewModule.viewName }}</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
                                 </ul>
-                            </li>
-                            <li class="has-subnav">
-                                <a href="#">
-                                    <span class="fa fa-list fa-2x glyphicon glyphicon-user"></span>
-                                    <span class="nav-text">SAUS</span>
-                                </a>
-                            </li>
-                            <li class="has-subnav">
-                                <a href="#">
-                                    <span class="glyphicon glyphicon-calendar fa fa-list fa-2x"></span>
-                                    <span class="nav-text">AGENDA</span>
-                                </a>
                             </li>
                         </ul>
                         <ul class="logout">
@@ -99,6 +94,14 @@
 
             var USER_VM = new Vue({
                 el: '#main-sidebar',
+                ready: function () {
+                    this.$http.get(ROOT_URL + '/app-menu').success(function (data) {
+                        this.menu = data;
+                    });
+                },
+                data: {
+                    menu: {}
+                },
                 methods: {
                     closeSession: function () {
                         this.$http.post(ROOT_URL + '/logout').success(function () {
