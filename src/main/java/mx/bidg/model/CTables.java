@@ -25,12 +25,11 @@ import javax.validation.constraints.Size;
 @Table(name = "C_TABLES")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CTables implements Serializable {
-        
+
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_TABLE")
     @JsonView(JsonViews.Root.class)
     private Integer idTable;
@@ -41,22 +40,26 @@ public class CTables implements Serializable {
     @Column(name = "TABLE_NAME")
     @JsonView(JsonViews.Root.class)
     private String tableName;
-    
+
     @Size(max = 200)
     @Column(name = "URI")
     @JsonView(JsonViews.Root.class)
     private String uri;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTable")
-    @JsonView(JsonViews.Embedded.class)
-    private List<TablesField> tablesFieldList;
-    
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTable")
+    @JsonView(JsonViews.Embedded.class)
+    private List<TablesField> tablesFieldList;
+
+    @OneToMany(mappedBy = "cTables")
+    @JsonView(JsonViews.Embedded.class)
+    private List<CFolios> cFoliosList;
 
     public CTables() {
     }
@@ -109,6 +112,14 @@ public class CTables implements Serializable {
 
     public void setTablesFieldList(List<TablesField> tablesFieldList) {
         this.tablesFieldList = tablesFieldList;
+    }
+
+    public List<CFolios> getCFoliosList() {
+        return cFoliosList;
+    }
+
+    public void setCFoliosList(List<CFolios> cFoliosList) {
+        this.cFoliosList = cFoliosList;
     }
 
     @Override

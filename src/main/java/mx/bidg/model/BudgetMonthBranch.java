@@ -73,7 +73,7 @@ public class BudgetMonthBranch implements Serializable {
     
     @JoinColumn(name = "ID_BRANCH", referencedColumnName = "ID_BRANCH")
     @ManyToOne(optional = false)
-    @JsonView(JsonViews.Root.class)
+    @JsonView(JsonViews.Embedded.class)
     private CBranchs idBranch;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetMonthBranch")
