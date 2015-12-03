@@ -50,15 +50,15 @@ public class CMonths implements Serializable {
     private Integer idAccessLevel;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idMonth")
-    @JsonView(JsonViews.Root.class)
+    @JsonView(JsonViews.Embedded.class)
     private List<BudgetMonthBranch> budgetMonthBranchList;
 
     @OneToMany(mappedBy = "idMonthFirst")
-    @JsonView(JsonViews.Root.class)
+    @JsonView(JsonViews.Embedded.class)
     private List<BudgetPeriodMonths> budgetPeriodMonthsList;
 
     @OneToMany(mappedBy = "idMonthLast")
-    @JsonView(JsonViews.Root.class)
+    @JsonView(JsonViews.Embedded.class)
     private List<BudgetPeriodMonths> budgetPeriodMonthsList1;
 
     public CMonths() {
