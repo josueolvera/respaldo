@@ -19,6 +19,7 @@ import mx.bidg.model.CBudgetConcepts;
 import mx.bidg.model.CBudgetSubcategories;
 import mx.bidg.model.CGroups;
 import mx.bidg.model.CMonths;
+import mx.bidg.model.DwEnterprises;
 import mx.bidg.service.BudgetsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -76,8 +77,9 @@ public class BudgetController {
             budgetMonthBranch.setBudgetMonthConceptsList(budgetMonthConceptsList);
             budgetMonthBranch.setIdBudget(new Budgets(jsonRequest.get("budget").asInt()));
             budgetMonthBranch.setIdMonth(new CMonths(jsonRequest.get("month").asInt()));
-            budgetMonthBranch.setIdBranch(new CBranchs(jsonRequest.get("branch").asInt()));
+            budgetMonthBranch.setIdDwEnterprise(new DwEnterprises(jsonRequest.get("dwEnterprise").asInt()));
             budgetMonthBranch.setAmount(jsonRequest.get("amountMonth").decimalValue());
+            budgetMonthBranch.setExpendedAmount(jsonRequest.get("expendedAmount").decimalValue());
             budgetMonthBranch.setYear(jsonRequest.get("year").asInt());
             budgetMonthBranch.setIdAccessLevel(1);
             

@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,19 +38,23 @@ public class CAreas implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_AREA")
-    @JsonView(JsonViews.Root.class)
+    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private Integer idArea;
     
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "AREA_NAME")
-    @JsonView(JsonViews.Root.class)
+    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private String areaName;
     
     @OneToMany(mappedBy = "idArea")
     @JsonView(JsonViews.Embedded.class)
     private List<Budgets> budgetsList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idArea")
+    @JsonView(JsonViews.Embedded.class)
+    private List<DwEnterprises> dwEnterprisesList;
     
     public CAreas() {
     }
@@ -78,6 +83,22 @@ public class CAreas implements Serializable {
     public void setAreaName(String areaName) {
         this.areaName = areaName;
     }
+    
+    public List<Budgets> getBudgetsList() {
+        return budgetsList;
+    }
+
+    public void setBudgetsList(List<Budgets> budgetsList) {
+        this.budgetsList = budgetsList;
+    }
+
+    public List<DwEnterprises> getDwEnterprisesList() {
+        return dwEnterprisesList;
+    }
+
+    public void setDwEnterprisesList(List<DwEnterprises> dwEnterprisesList) {
+        this.dwEnterprisesList = dwEnterprisesList;
+    }
 
     @Override
     public int hashCode() {
@@ -102,14 +123,6 @@ public class CAreas implements Serializable {
     @Override
     public String toString() {
         return "mx.bidg.model.CAreas[ idArea=" + idArea + " ]";
-    }
-
-    public List<Budgets> getBudgetsList() {
-        return budgetsList;
-    }
-
-    public void setBudgetsList(List<Budgets> budgetsList) {
-        this.budgetsList = budgetsList;
     }
     
 }

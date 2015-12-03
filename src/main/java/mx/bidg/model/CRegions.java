@@ -28,83 +28,58 @@ import mx.bidg.config.JsonViews;
  * @author sistemask
  */
 @Entity
-@Table(name = "C_GROUPS")
+@Table(name = "C_REGIONS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
-public class CGroups implements Serializable {
+public class CRegions implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID_GROUP")
+    @Column(name = "ID_REGION")
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
-    private Integer idGroup;
+    private Integer idRegion;
     
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 25)
-    @Column(name = "GROUP_NAME")
+    @Size(min = 1, max = 30)
+    @Column(name = "REGION_NAME")
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
-    private String groupName;
+    private String regionName;
     
-    @Size(max = 15)
-    @Column(name = "ACRONYMS")
-    @JsonView(JsonViews.Root.class)
-    private String acronyms;
-    
-    @OneToMany(mappedBy = "idGroup")
-    @JsonView(JsonViews.EmbeddedBudget.class)
-    private List<Budgets> budgetsList;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idGroup")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idRegion")
     @JsonView(JsonViews.Embedded.class)
     private List<DwEnterprises> dwEnterprisesList;
 
-    public CGroups() {
+    public CRegions() {
     }
 
-    public CGroups(Integer idGroup) {
-        this.idGroup = idGroup;
+    public CRegions(Integer idRegion) {
+        this.idRegion = idRegion;
     }
 
-    public CGroups(Integer idGroup, String groupName) {
-        this.idGroup = idGroup;
-        this.groupName = groupName;
+    public CRegions(Integer idRegion, String regionName) {
+        this.idRegion = idRegion;
+        this.regionName = regionName;
     }
 
-    public Integer getIdGroup() {
-        return idGroup;
+    public Integer getIdRegion() {
+        return idRegion;
     }
 
-    public void setIdGroup(Integer idGroup) {
-        this.idGroup = idGroup;
+    public void setIdRegion(Integer idRegion) {
+        this.idRegion = idRegion;
     }
 
-    public String getGroupName() {
-        return groupName;
+    public String getRegionName() {
+        return regionName;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public void setRegionName(String regionName) {
+        this.regionName = regionName;
     }
 
-    public String getAcronyms() {
-        return acronyms;
-    }
-
-    public void setAcronyms(String acronyms) {
-        this.acronyms = acronyms;
-    }
-
-    public List<Budgets> getBudgetsList() {
-        return budgetsList;
-    }
-
-    public void setBudgetsList(List<Budgets> budgetsList) {
-        this.budgetsList = budgetsList;
-    }
-    
     public List<DwEnterprises> getDwEnterprisesList() {
         return dwEnterprisesList;
     }
@@ -116,18 +91,18 @@ public class CGroups implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idGroup != null ? idGroup.hashCode() : 0);
+        hash += (idRegion != null ? idRegion.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CGroups)) {
+        if (!(object instanceof CRegions)) {
             return false;
         }
-        CGroups other = (CGroups) object;
-        if ((this.idGroup == null && other.idGroup != null) || (this.idGroup != null && !this.idGroup.equals(other.idGroup))) {
+        CRegions other = (CRegions) object;
+        if ((this.idRegion == null && other.idRegion != null) || (this.idRegion != null && !this.idRegion.equals(other.idRegion))) {
             return false;
         }
         return true;
@@ -135,7 +110,7 @@ public class CGroups implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.CGroups[ idGroup=" + idGroup + " ]";
+        return "mx.bidg.model.CRegions[ idRegion=" + idRegion + " ]";
     }
     
 }

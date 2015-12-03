@@ -51,6 +51,12 @@ public class BudgetMonthBranch implements Serializable {
     
     @Basic(optional = false)
     @NotNull
+    @Column(name = "EXPENDED_AMOUNT")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal expendedAmount;
+    
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "YEAR")
     @JsonView(JsonViews.Root.class)
     private int year;
@@ -71,10 +77,10 @@ public class BudgetMonthBranch implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CMonths idMonth;
     
-    @JoinColumn(name = "ID_BRANCH", referencedColumnName = "ID_BRANCH")
+    @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CBranchs idBranch;
+    private DwEnterprises idDwEnterprise;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetMonthBranch")
     @JsonView(JsonViews.Embedded.class)
@@ -151,20 +157,28 @@ public class BudgetMonthBranch implements Serializable {
         this.idMonth = idMonth;
     }
 
-    public CBranchs getIdBranch() {
-        return idBranch;
-    }
-
-    public void setIdBranch(CBranchs idBranch) {
-        this.idBranch = idBranch;
-    }
-
     public List<BudgetMonthConcepts> getBudgetMonthConceptsList() {
         return budgetMonthConceptsList;
     }
 
     public void setBudgetMonthConceptsList(List<BudgetMonthConcepts> budgetMonthConceptsList) {
         this.budgetMonthConceptsList = budgetMonthConceptsList;
+    }
+    
+    public BigDecimal getExpendedAmount() {
+        return expendedAmount;
+    }
+
+    public void setExpendedAmount(BigDecimal expendedAmount) {
+        this.expendedAmount = expendedAmount;
+    }
+
+    public DwEnterprises getIdDwEnterprise() {
+        return idDwEnterprise;
+    }
+
+    public void setIdDwEnterprise(DwEnterprises idDwEnterprise) {
+        this.idDwEnterprise = idDwEnterprise;
     }
 
     @Override
