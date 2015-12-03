@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,27 +31,31 @@ import mx.bidg.config.JsonViews;
 @Table(name = "C_DISTRIBUTORS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CDistributors implements Serializable {
-    
+        
     private static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_DISTRIBUTOR")
-    @JsonView(JsonViews.Root.class)
+    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private Integer idDistributor;
     
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 25)
     @Column(name = "DISTRIBUTOR_NAME")
-    @JsonView(JsonViews.Root.class)
+    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private String distributorName;
     
     @Size(max = 15)
     @Column(name = "ACRONYMS")
     @JsonView(JsonViews.Root.class)
     private String acronyms;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idDistributor")
+    @JsonView(JsonViews.Embedded.class)
+    private List<DwEnterprises> dwEnterprisesList;
 
     public CDistributors() {
     }
@@ -86,6 +91,14 @@ public class CDistributors implements Serializable {
 
     public void setAcronyms(String acronyms) {
         this.acronyms = acronyms;
+    }
+    
+    public List<DwEnterprises> getDwEnterprisesList() {
+        return dwEnterprisesList;
+    }
+
+    public void setDwEnterprisesList(List<DwEnterprises> dwEnterprisesList) {
+        this.dwEnterprisesList = dwEnterprisesList;
     }
 
     @Override

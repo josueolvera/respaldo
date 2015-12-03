@@ -41,7 +41,7 @@ public class CBranchs implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_BRANCH")
-    @JsonView(JsonViews.Root.class)
+    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private Integer idBranch;
     
     @Size(max = 50)
@@ -53,7 +53,7 @@ public class CBranchs implements Serializable {
     @NotNull
     @Size(min = 1, max = 30)
     @Column(name = "BRANCH_SHORT")
-    @JsonView(JsonViews.Root.class)
+    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private String branchShort;
     
     @Size(max = 50)
@@ -86,7 +86,7 @@ public class CBranchs implements Serializable {
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBranch")
     @JsonView(JsonViews.Embedded.class)
-    private List<BudgetMonthBranch> budgetMonthBranchList;
+    private List<DwEnterprises> dwEnterprisesList;
 
     public CBranchs() {
     }
@@ -166,12 +166,12 @@ public class CBranchs implements Serializable {
         this.status = status;
     }
     
-    public List<BudgetMonthBranch> getBudgetMonthBranchList() {
-        return budgetMonthBranchList;
+    public List<DwEnterprises> getDwEnterprisesList() {
+        return dwEnterprisesList;
     }
 
-    public void setBudgetMonthBranchList(List<BudgetMonthBranch> budgetMonthBranchList) {
-        this.budgetMonthBranchList = budgetMonthBranchList;
+    public void setDwEnterprisesList(List<DwEnterprises> dwEnterprisesList) {
+        this.dwEnterprisesList = dwEnterprisesList;
     }
 
     @Override

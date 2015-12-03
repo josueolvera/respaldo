@@ -9,4 +9,5 @@ public class JsonViews {
     public static class Embedded extends Root {} 
     public static class RootExtras extends Root {}
     public static class EmbeddedBudget extends Root{}
+    public static class EmbeddedDwEnterprises{}
 }
