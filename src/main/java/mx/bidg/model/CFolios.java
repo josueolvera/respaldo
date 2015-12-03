@@ -53,6 +53,13 @@ public class CFolios implements Serializable {
         this.idFolio = idFolio;
     }
 
+    public CFolios(String folio, CTables table) {
+        this.folio = folio;
+        this.idAccessLevel = 1;
+        this.creationDate = LocalDateTime.now();
+        this.cTables = table;
+    }
+
     public CFolios(Integer idFolio, String folio, int idAccessLevel) {
         this.idFolio = idFolio;
         this.folio = folio;

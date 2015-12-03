@@ -1,7 +1,12 @@
 package mx.bidg.service.impl;
 
+import mx.bidg.dao.CFoliosDao;
+import mx.bidg.model.CFolios;
+import mx.bidg.model.CTables;
 import mx.bidg.service.FoliosService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Random;
 
@@ -10,10 +15,28 @@ import java.util.Random;
  * Created on 2/12/15.
  */
 @Service
+@Transactional
 public class FoliosServiceImpl implements FoliosService {
+
+    @Autowired
+    CFoliosDao foliosDao;
+
     @Override
-    public String createNew() {
-        return nextRandomFolio(3, 5);
+    public String createNew(CTables table) {
+        String folio = nextRandomFolio(3, 5);
+
+        while (isDuplicated(folio)) {
+            folio = nextRandomFolio(3, 5);
+        }
+
+        foliosDao.save(new CFolios(folio, table));
+
+        return folio;
+    }
+
+    private boolean isDuplicated(String folio) {
+        CFolios f = foliosDao.findByFolio(folio);
+        return f != null;
     }
 
     private String nextRandomFolio(int lettersLength, int numbersLength) {
