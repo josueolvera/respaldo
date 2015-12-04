@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -32,6 +33,16 @@ public class FoliosServiceImpl implements FoliosService {
         foliosDao.save(new CFolios(folio, table));
 
         return folio;
+    }
+
+    @Override
+    public CFolios findByFolio(String folio) {
+        return foliosDao.findByFolio(folio);
+    }
+
+    @Override
+    public List<CFolios> findAll() {
+        return foliosDao.findAll();
     }
 
     private boolean isDuplicated(String folio) {

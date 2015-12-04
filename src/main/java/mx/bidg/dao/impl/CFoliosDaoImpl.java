@@ -33,8 +33,9 @@ public class CFoliosDaoImpl extends AbstractDao<Integer, CFolios> implements CFo
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<CFolios> findAll() {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return (List<CFolios>) createEntityCriteria().list();
     }
 
     @Override

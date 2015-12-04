@@ -1,6 +1,9 @@
 package mx.bidg.service;
 
+import mx.bidg.model.CFolios;
 import mx.bidg.model.CTables;
+
+import java.util.List;
 
 /**
  * @author Rafael Viveros
@@ -8,4 +11,6 @@ import mx.bidg.model.CTables;
  */
 public interface FoliosService {
     String createNew(CTables table);
+    CFolios findByFolio(String folio);
+    List<CFolios> findAll();
 }
