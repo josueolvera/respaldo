@@ -5,10 +5,16 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -19,32 +25,43 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "C_FOLIOS")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CFolios implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_FOLIO")
+    @JsonView(JsonViews.Root.class)
     private Integer idFolio;
 
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 40)
     @Column(name = "FOLIO")
+    @JsonView(JsonViews.Root.class)
     private String folio;
 
     @Column(name = "CREATION_DATE")
     @Convert(converter = DateTimeConverter.class)
+    @JsonView(JsonViews.Root.class)
     private LocalDateTime creationDate;
 
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
 
     @JoinColumn(name = "ID_TABLE", referencedColumnName = "ID_TABLE")
     @ManyToOne
+    @JsonProperty("cTables")
+    @JsonView(JsonViews.Embedded.class)
     private CTables cTables;
+
+    @OneToMany(mappedBy = "cFolios")
+    @JsonView(JsonViews.Embedded.class)
+    private List<Authorizations> authorizations;
 
     public CFolios() {
     }
@@ -98,12 +115,21 @@ public class CFolios implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
+    @JsonProperty("cTables")
     public CTables getCTables() {
         return cTables;
     }
 
     public void setCTables(CTables cTables) {
         this.cTables = cTables;
+    }
+
+    public List<Authorizations> getAuthorizations() {
+        return authorizations;
+    }
+
+    public void setAuthorizations(List<Authorizations> authorizations) {
+        this.authorizations = authorizations;
     }
 
     @Override

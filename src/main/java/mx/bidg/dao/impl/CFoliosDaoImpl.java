@@ -3,6 +3,7 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CFoliosDao;
 import mx.bidg.model.CFolios;
+import org.hibernate.FetchMode;
 import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -24,7 +25,10 @@ public class CFoliosDaoImpl extends AbstractDao<Integer, CFolios> implements CFo
 
     @Override
     public CFolios findByFolio(String folio) {
-        return (CFolios) createEntityCriteria().add(Restrictions.eq("folio", folio)).uniqueResult();
+        return (CFolios) createEntityCriteria()
+                .add(Restrictions.eq("folio", folio))
+                .setFetchMode("authorizations", FetchMode.JOIN)
+                .uniqueResult();
     }
 
     @Override
