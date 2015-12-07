@@ -16,7 +16,8 @@ import java.util.List;
 public class AuthorizationsDaoImpl extends AbstractDao<Integer, Authorizations> implements AuthorizationsDao {
     @Override
     public Authorizations save(Authorizations entity) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        persist(entity);
+        return entity;
     }
 
     @Override
@@ -32,11 +33,13 @@ public class AuthorizationsDaoImpl extends AbstractDao<Integer, Authorizations> 
 
     @Override
     public Authorizations update(Authorizations entity) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        persist(entity);
+        return entity;
     }
 
     @Override
     public boolean delete(Authorizations entity) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        remove(entity);
+        return true;
     }
 }

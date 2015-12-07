@@ -44,6 +44,14 @@ public class Authorizations implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
 
+    @Column(name = "ID_USER", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idUser;
+
+    @Column(name = "FOLIO", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private String idFolio;
+
     @JoinColumn(name = "ID_AUTHORIZATION_STATUS", referencedColumnName = "ID_AUTHORIZATION_STATUS")
     @ManyToOne
     @JsonProperty("authorizationStatus")
@@ -95,6 +103,22 @@ public class Authorizations implements Serializable {
 
     public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
+    }
+
+    public Integer getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(Integer idUser) {
+        this.idUser = idUser;
+    }
+
+    public String getIdFolio() {
+        return idFolio;
+    }
+
+    public void setIdFolio(String idFolio) {
+        this.idFolio = idFolio;
     }
 
     @JsonProperty("authorizationStatus")

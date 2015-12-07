@@ -29,4 +29,14 @@ public class AuthorizationsServiceImpl implements AuthorizationsService {
     public List<Authorizations> findAll() {
         return authorizationsDao.findAll();
     }
+
+    @Override
+    public Authorizations save(Authorizations entity) {
+        return authorizationsDao.save(entity);
+    }
+
+    @Override
+    public Authorizations update(Authorizations entity) {
+        return authorizationsDao.update(entity);
+    }
 }
