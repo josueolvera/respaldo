@@ -36,7 +36,7 @@ public class DwEnterprisesController {
     @RequestMapping(value = "/{idGroup}/{idArea}", produces = "application/json;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> getByGroupArea(@PathVariable int idGroup, @PathVariable int idArea) throws Exception {
         List<DwEnterprises> list = dwEnterprisesService.findByGroupArea(new CGroups(idGroup), new CAreas(idArea));
-        return new ResponseEntity<>(map.writerWithView(JsonViews.EmbeddedDwEnterprises.class).writeValueAsString(list), HttpStatus.OK);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.IdsEnterprises.class).writeValueAsString(list), HttpStatus.OK);
     }
     
 }

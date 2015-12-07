@@ -25,14 +25,14 @@ DROP TABLE IF EXISTS `C_BANKS`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `C_BANKS` (
-  `ID_BANK` int(11) NOT NULL,
+  `ID_BANK` int(11) NOT NULL AUTO_INCREMENT,
   `CLAVE` varchar(45) DEFAULT NULL,
   `BANK_NAME` varchar(100) DEFAULT NULL,
   `ACRONYMS` varchar(45) DEFAULT NULL,
   `WEB_PAGE` varchar(45) DEFAULT NULL,
   `DEFAULT_BANK` int(11) DEFAULT NULL,
   PRIMARY KEY (`ID_BANK`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -44,4 +44,4 @@ CREATE TABLE `C_BANKS` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-12-02 16:06:31
+-- Dump completed on 2015-12-04 18:43:23
