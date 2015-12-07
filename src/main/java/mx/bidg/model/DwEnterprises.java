@@ -39,7 +39,7 @@ public class DwEnterprises implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_DW_ENTERPRISE")
-    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
+    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class, JsonViews.IdsEnterprises.class})
     private Integer idDwEnterprise;
     
     @Basic(optional = false)
@@ -56,27 +56,27 @@ public class DwEnterprises implements Serializable {
     
     @JoinColumn(name = "ID_GROUP", referencedColumnName = "ID_GROUP")
     @ManyToOne(optional = false)
-    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
+    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class, JsonViews.IdsEnterprises.class})
     private CGroups idGroup;
     
     @JoinColumn(name = "ID_DISTRIBUTOR", referencedColumnName = "ID_DISTRIBUTOR")
     @ManyToOne(optional = false)
-    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
+    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class, JsonViews.IdsEnterprises.class})
     private CDistributors idDistributor;
     
     @JoinColumn(name = "ID_REGION", referencedColumnName = "ID_REGION")
     @ManyToOne(optional = false)
-    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
+    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class, JsonViews.IdsEnterprises.class})
     private CRegions idRegion;
     
     @JoinColumn(name = "ID_BRANCH", referencedColumnName = "ID_BRANCH")
     @ManyToOne(optional = false)
-    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
+    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class, JsonViews.IdsEnterprises.class})
     private CBranchs idBranch;
     
     @JoinColumn(name = "ID_AREA", referencedColumnName = "ID_AREA")
     @ManyToOne(optional = false)
-    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
+    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class, JsonViews.IdsEnterprises.class})
     private CAreas idArea;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idDwEnterprise")
