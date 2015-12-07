@@ -44,6 +44,11 @@ public class Authorizations implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
 
+    @Basic(optional = false)
+    @Column(name = "DETAILS")
+    @JsonView(JsonViews.Root.class)
+    private String details;
+
     @Column(name = "ID_USER", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idUser;
@@ -103,6 +108,14 @@ public class Authorizations implements Serializable {
 
     public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
     }
 
     public Integer getIdUser() {
