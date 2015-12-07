@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "ACCESS_LEVEL")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class AccessLevel implements Serializable {
+    
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -46,9 +47,13 @@ public class AccessLevel implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
-    @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
+    
+    @OneToMany(mappedBy = "idAccessLevel")
+    @JsonView(JsonViews.Embedded.class)
+    private List<CRequestTypes> cRequestTypesList;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAccessLevel")
     @JsonView(JsonViews.Embedded.class)
@@ -98,6 +103,14 @@ public class AccessLevel implements Serializable {
 
     public void setAccessLevelsRoleList(List<AccessLevelsRole> accessLevelsRoleList) {
         this.accessLevelsRoleList = accessLevelsRoleList;
+    }
+    
+    public List<CRequestTypes> getCRequestTypesList() {
+        return cRequestTypesList;
+    }
+
+    public void setCRequestTypesList(List<CRequestTypes> cRequestTypesList) {
+        this.cRequestTypesList = cRequestTypesList;
     }
 
     @Override

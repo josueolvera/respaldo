@@ -11,14 +11,14 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -30,6 +30,7 @@ import javax.validation.constraints.Size;
 @Table(name = "C_PRODUCT_TYPES")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CProductTypes implements Serializable {
+    
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -47,6 +48,10 @@ public class CProductTypes implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
+    
+    @OneToMany(mappedBy = "idProductType")
+    @JsonView(JsonViews.Embedded.class)
+    private List<RequestTypesProduct> requestTypesProductList;
 
     public CProductTypes() {
     }
@@ -77,6 +82,14 @@ public class CProductTypes implements Serializable {
 
     public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
+    }
+    
+    public List<RequestTypesProduct> getRequestTypesProductList() {
+        return requestTypesProductList;
+    }
+
+    public void setRequestTypesProductList(List<RequestTypesProduct> requestTypesProductList) {
+        this.requestTypesProductList = requestTypesProductList;
     }
 
     @Override

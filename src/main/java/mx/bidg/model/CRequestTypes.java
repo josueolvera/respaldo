@@ -19,6 +19,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
@@ -30,8 +32,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "C_REQUEST_TYPES")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
-public class CRequestTypes implements Serializable {
-    
+public class CRequestTypes implements Serializable { 
     
     private static final long serialVersionUID = 1L;
 
@@ -47,9 +48,14 @@ public class CRequestTypes implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String requestType;
 
-    @Column(name = "ID_ACCESS_LEVEL")
-    @JsonView(JsonViews.Root.class)
-    private Integer idAccessLevel;
+    @JoinColumn(name = "ID_ACCESS_LEVEL", referencedColumnName = "ID_ACCESS_LEVEL")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private AccessLevel idAccessLevel;
+    
+    @OneToMany(mappedBy = "idRequestType")
+    @JsonView(JsonViews.Embedded.class)
+    private List<RequestTypesProduct> requestTypesProductList;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idRequestType")
     @JsonView(JsonViews.Embedded.class)
@@ -78,12 +84,20 @@ public class CRequestTypes implements Serializable {
         this.requestType = requestType;
     }
 
-    public Integer getIdAccessLevel() {
+    public AccessLevel getIdAccessLevel() {
         return idAccessLevel;
     }
 
-    public void setIdAccessLevel(Integer idAccessLevel) {
+    public void setIdAccessLevel(AccessLevel idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
+    }
+
+    public List<RequestTypesProduct> getRequestTypesProductList() {
+        return requestTypesProductList;
+    }
+
+    public void setRequestTypesProductList(List<RequestTypesProduct> requestTypesProductList) {
+        this.requestTypesProductList = requestTypesProductList;
     }
     
     public List<RequestTypesBudgets> getRequestTypesBudgetsList() {

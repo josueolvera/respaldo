@@ -4,8 +4,6 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CFoliosDao;
 import mx.bidg.model.CFolios;
 import org.hibernate.FetchMode;
-import org.hibernate.criterion.Projection;
-import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
