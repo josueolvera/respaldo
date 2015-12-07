@@ -54,29 +54,49 @@ public class DwEnterprises implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idGbranch;
     
+    @Column(name = "ID_GROUP", insertable = false, updatable = false)
+    @JsonView({JsonViews.Root.class, JsonViews.IdsEnterprises.class})
+    private int idgroup;
+    
+    @Column(name = "ID_DISTRIBUTOR", insertable = false, updatable = false)
+    @JsonView({JsonViews.Root.class, JsonViews.IdsEnterprises.class})
+    private int iddistributor;
+    
+    @Column(name = "ID_REGION", insertable = false, updatable = false)
+    @JsonView({JsonViews.Root.class, JsonViews.IdsEnterprises.class})
+    private int idregion;
+    
+    @Column(name = "ID_BRANCH", insertable = false, updatable = false)
+    @JsonView({JsonViews.Root.class, JsonViews.IdsEnterprises.class})
+    private int idbranch;
+    
+    @Column(name = "ID_AREA", insertable = false, updatable = false)
+    @JsonView({JsonViews.Root.class, JsonViews.IdsEnterprises.class})
+    private int idarea;
+    
     @JoinColumn(name = "ID_GROUP", referencedColumnName = "ID_GROUP")
     @ManyToOne(optional = false)
-    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class, JsonViews.IdsEnterprises.class})
+    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private CGroups idGroup;
     
     @JoinColumn(name = "ID_DISTRIBUTOR", referencedColumnName = "ID_DISTRIBUTOR")
     @ManyToOne(optional = false)
-    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class, JsonViews.IdsEnterprises.class})
+    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private CDistributors idDistributor;
     
     @JoinColumn(name = "ID_REGION", referencedColumnName = "ID_REGION")
     @ManyToOne(optional = false)
-    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class, JsonViews.IdsEnterprises.class})
+    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private CRegions idRegion;
     
     @JoinColumn(name = "ID_BRANCH", referencedColumnName = "ID_BRANCH")
     @ManyToOne(optional = false)
-    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class, JsonViews.IdsEnterprises.class})
+    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private CBranchs idBranch;
     
     @JoinColumn(name = "ID_AREA", referencedColumnName = "ID_AREA")
     @ManyToOne(optional = false)
-    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class, JsonViews.IdsEnterprises.class})
+    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private CAreas idArea;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idDwEnterprise")
@@ -166,6 +186,46 @@ public class DwEnterprises implements Serializable {
 
     public void setBudgetMonthBranchList(List<BudgetMonthBranch> budgetMonthBranchList) {
         this.budgetMonthBranchList = budgetMonthBranchList;
+    }
+
+    public int getIdgroup() {
+        return idgroup;
+    }
+
+    public void setIdgroup(int idgroup) {
+        this.idgroup = idgroup;
+    }
+
+    public int getIddistributor() {
+        return iddistributor;
+    }
+
+    public void setIddistributor(int iddistributor) {
+        this.iddistributor = iddistributor;
+    }
+
+    public int getIdregion() {
+        return idregion;
+    }
+
+    public void setIdregion(int idregion) {
+        this.idregion = idregion;
+    }
+
+    public int getIdbranch() {
+        return idbranch;
+    }
+
+    public void setIdbranch(int idbranch) {
+        this.idbranch = idbranch;
+    }
+
+    public int getIdarea() {
+        return idarea;
+    }
+
+    public void setIdarea(int idarea) {
+        this.idarea = idarea;
     }
 
     @Override
