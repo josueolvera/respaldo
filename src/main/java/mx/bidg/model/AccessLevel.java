@@ -13,6 +13,7 @@ import mx.bidg.utils.DateTimeConverter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -50,6 +51,22 @@ public class AccessLevel implements Serializable {
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAccessLevel")
+    @JsonView(JsonViews.Embedded.class)
+    private List<BudgetMonthBranch> budgetMonthBranchList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAccessLevel")
+    @JsonView(JsonViews.Embedded.class)
+    private List<EmployeesAccounts> employeesAccountsList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAccessLevel")
+    @JsonView(JsonViews.Embedded.class)
+    private List<Accounts> accountsList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAccessLevel")
+    @JsonView(JsonViews.Embedded.class)
+    private List<Providers> providersList;
     
     @OneToMany(mappedBy = "idAccessLevel")
     @JsonView(JsonViews.Embedded.class)
@@ -111,6 +128,38 @@ public class AccessLevel implements Serializable {
 
     public void setCRequestTypesList(List<CRequestTypes> cRequestTypesList) {
         this.cRequestTypesList = cRequestTypesList;
+    }
+    
+    public List<BudgetMonthBranch> getBudgetMonthBranchList() {
+        return budgetMonthBranchList;
+    }
+
+    public void setBudgetMonthBranchList(List<BudgetMonthBranch> budgetMonthBranchList) {
+        this.budgetMonthBranchList = budgetMonthBranchList;
+    }
+
+    public List<EmployeesAccounts> getEmployeesAccountsList() {
+        return employeesAccountsList;
+    }
+
+    public void setEmployeesAccountsList(List<EmployeesAccounts> employeesAccountsList) {
+        this.employeesAccountsList = employeesAccountsList;
+    }
+
+    public List<Accounts> getAccountsList() {
+        return accountsList;
+    }
+
+    public void setAccountsList(List<Accounts> accountsList) {
+        this.accountsList = accountsList;
+    }
+
+    public List<Providers> getProvidersList() {
+        return providersList;
+    }
+
+    public void setProvidersList(List<Providers> providersList) {
+        this.providersList = providersList;
     }
 
     @Override

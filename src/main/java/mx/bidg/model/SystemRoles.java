@@ -26,6 +26,7 @@ import javax.validation.constraints.Size;
 @Table(name = "SYSTEM_ROLES")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class SystemRoles implements Serializable {
+    
     private static final long serialVersionUID = 1L;
 
     @Id

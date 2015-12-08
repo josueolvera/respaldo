@@ -8,8 +8,6 @@ package mx.bidg.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import mx.bidg.config.JsonViews;
-
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
@@ -23,69 +21,70 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import mx.bidg.config.JsonViews;
 
 /**
  *
- * @author rafael
+ * @author sistemask
  */
 @Entity
-@Table(name = "C_REQUEST_STATUS")
+@Table(name = "C_ESTIMATION_STATUS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
-public class CRequestStatus implements Serializable {
+public class CEstimationStatus implements Serializable {
     
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID_REQUEST_STATUS")
+    @Column(name = "ID_ESTIMATION_STATUS")
     @JsonView(JsonViews.Root.class)
-    private Integer idRequestStatus;
-
+    private Integer idEstimationStatus;
+    
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 40)
-    @Column(name = "REQUEST_STATUS")
+    @Size(min = 1, max = 100)
+    @Column(name = "ESTIMATION_STATUS")
     @JsonView(JsonViews.Root.class)
-    private String requestStatus;
-
+    private String estimationStatus;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idRequestStatus")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEstimationStatus")
     @JsonView(JsonViews.Embedded.class)
-    private List<Requests> requestsList;
+    private List<PriceEstimations> priceEstimationsList;
 
-    public CRequestStatus() {
+    public CEstimationStatus() {
     }
 
-    public CRequestStatus(Integer idRequestStatus) {
-        this.idRequestStatus = idRequestStatus;
+    public CEstimationStatus(Integer idEstimationStatus) {
+        this.idEstimationStatus = idEstimationStatus;
     }
 
-    public CRequestStatus(Integer idRequestStatus, String requestStatus, int idAccessLevel) {
-        this.idRequestStatus = idRequestStatus;
-        this.requestStatus = requestStatus;
+    public CEstimationStatus(Integer idEstimationStatus, String estimationStatus, int idAccessLevel) {
+        this.idEstimationStatus = idEstimationStatus;
+        this.estimationStatus = estimationStatus;
         this.idAccessLevel = idAccessLevel;
     }
 
-    public Integer getIdRequestStatus() {
-        return idRequestStatus;
+    public Integer getIdEstimationStatus() {
+        return idEstimationStatus;
     }
 
-    public void setIdRequestStatus(Integer idRequestStatus) {
-        this.idRequestStatus = idRequestStatus;
+    public void setIdEstimationStatus(Integer idEstimationStatus) {
+        this.idEstimationStatus = idEstimationStatus;
     }
 
-    public String getRequestStatus() {
-        return requestStatus;
+    public String getEstimationStatus() {
+        return estimationStatus;
     }
 
-    public void setRequestStatus(String requestStatus) {
-        this.requestStatus = requestStatus;
+    public void setEstimationStatus(String estimationStatus) {
+        this.estimationStatus = estimationStatus;
     }
 
     public int getIdAccessLevel() {
@@ -96,29 +95,29 @@ public class CRequestStatus implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
     
-    public List<Requests> getRequestsList() {
-        return requestsList;
+    public List<PriceEstimations> getPriceEstimationsList() {
+        return priceEstimationsList;
     }
 
-    public void setRequestsList(List<Requests> requestsList) {
-        this.requestsList = requestsList;
+    public void setPriceEstimationsList(List<PriceEstimations> priceEstimationsList) {
+        this.priceEstimationsList = priceEstimationsList;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idRequestStatus != null ? idRequestStatus.hashCode() : 0);
+        hash += (idEstimationStatus != null ? idEstimationStatus.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CRequestStatus)) {
+        if (!(object instanceof CEstimationStatus)) {
             return false;
         }
-        CRequestStatus other = (CRequestStatus) object;
-        if ((this.idRequestStatus == null && other.idRequestStatus != null) || (this.idRequestStatus != null && !this.idRequestStatus.equals(other.idRequestStatus))) {
+        CEstimationStatus other = (CEstimationStatus) object;
+        if ((this.idEstimationStatus == null && other.idEstimationStatus != null) || (this.idEstimationStatus != null && !this.idEstimationStatus.equals(other.idEstimationStatus))) {
             return false;
         }
         return true;
@@ -126,7 +125,7 @@ public class CRequestStatus implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.CRequestStatus[ idRequestStatus=" + idRequestStatus + " ]";
+        return "mx.bidg.model.CEstimationStatus[ idEstimationStatus=" + idEstimationStatus + " ]";
     }
     
 }

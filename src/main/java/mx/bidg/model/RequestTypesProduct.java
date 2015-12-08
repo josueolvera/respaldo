@@ -9,7 +9,9 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,6 +19,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import mx.bidg.config.JsonViews;
 
@@ -65,6 +68,10 @@ public class RequestTypesProduct implements Serializable {
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private CProducts idProduct;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idRequestTypeProduct")
+    @JsonView(JsonViews.Embedded.class)
+    private List<Requests> requestsList;
 
     public RequestTypesProduct() {
     }
@@ -127,6 +134,14 @@ public class RequestTypesProduct implements Serializable {
 
     public void setIdProduct(CProducts idProduct) {
         this.idProduct = idProduct;
+    }
+    
+    public List<Requests> getRequestsList() {
+        return requestsList;
+    }
+
+    public void setRequestsList(List<Requests> requestsList) {
+        this.requestsList = requestsList;
     }
 
     @Override

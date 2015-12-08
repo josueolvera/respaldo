@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
+import mx.bidg.model.AccessLevel;
 import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.BudgetMonthConcepts;
 import mx.bidg.model.Budgets;
@@ -70,7 +71,7 @@ public class BudgetMonthBranchController {
         budgetMonthBranch.setAmount(jsonRequest.get("amountMonth").decimalValue());
         budgetMonthBranch.setExpendedAmount(jsonRequest.get("expendedAmount").decimalValue());
         budgetMonthBranch.setYear(jsonRequest.get("year").asInt());
-        budgetMonthBranch.setIdAccessLevel(1);
+        budgetMonthBranch.setIdAccessLevel(new AccessLevel(1));
         budgetMonthBranchService.save(budgetMonthBranch);
         
         return new ResponseEntity<>("Presupuesto guardado con éxito", HttpStatus.OK);

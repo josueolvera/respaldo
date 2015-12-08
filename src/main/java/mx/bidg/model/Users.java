@@ -41,6 +41,7 @@ import org.hibernate.annotations.SelectBeforeUpdate;
 @SelectBeforeUpdate
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Users implements Serializable {
+    
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -85,30 +86,6 @@ public class Users implements Serializable {
 
     @Basic(optional = false)
     @NotNull
-    @Column(name = "TIME_SESSION")
-    @JsonView(JsonViews.Root.class)
-    @Convert(converter = TimeConverter.class)
-    private LocalTime timeSession;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "HIGH_DATE")
-    @JsonView(JsonViews.Root.class)
-    @Convert(converter = DateTimeConverter.class)
-    private LocalDateTime highDate;
-
-    @Column(name = "MODIFICATION_DATE")
-    @JsonView(JsonViews.Root.class)
-    @Convert(converter = DateTimeConverter.class)
-    private LocalDateTime modificationDate;
-
-    @Column(name = "LOW_DATE")
-    @JsonView(JsonViews.Root.class)
-    @Convert(converter = DateTimeConverter.class)
-    private LocalDateTime lowDate;
-
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "ID_COMPANY")
     @JsonView(JsonViews.Embedded.class)
     private int idCompany;
@@ -140,6 +117,38 @@ public class Users implements Serializable {
     @Column(name = "ID_EMPLOYEE")
     @JsonView(JsonViews.Embedded.class)
     private Integer idEmployee;
+    
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "TIME_SESSION")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = TimeConverter.class)
+    private LocalTime timeSession;
+    
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "HIGH_DATE")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime highDate;
+    
+    @Column(name = "MODIFICATION_DATE")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime modificationDate;
+    
+    @Column(name = "LOW_DATE")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime lowDate;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userRequest")
+    @JsonView(JsonViews.Embedded.class)
+    private List<Requests> requestsList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userResponsable")
+    @JsonView(JsonViews.Embedded.class)
+    private List<Requests> requestsList1;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUser")
     @JsonView(JsonViews.Embedded.class)
@@ -302,6 +311,22 @@ public class Users implements Serializable {
 
     public void setUsersRoleList(List<UsersRole> usersRoleList) {
         this.usersRoleList = usersRoleList;
+    }
+    
+    public List<Requests> getRequestsList() {
+        return requestsList;
+    }
+
+    public void setRequestsList(List<Requests> requestsList) {
+        this.requestsList = requestsList;
+    }
+
+    public List<Requests> getRequestsList1() {
+        return requestsList1;
+    }
+
+    public void setRequestsList1(List<Requests> requestsList1) {
+        this.requestsList1 = requestsList1;
     }
 
     @Override
