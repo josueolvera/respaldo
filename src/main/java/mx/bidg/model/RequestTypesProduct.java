@@ -21,6 +21,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import mx.bidg.config.JsonViews;
 
 /**
@@ -41,13 +42,11 @@ public class RequestTypesProduct implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idRequestTypeProduct;
     
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "ESTIMATIONS_QUANTITY")
     @JsonView(JsonViews.Root.class)
     private Integer estimationsQuantity;
-    
-    @Column(name = "ID_ACCESS_LEVEL")
-    @JsonView(JsonViews.Root.class)
-    private Integer idAccessLevel;
     
     @JoinColumn(name = "ID_REQUEST_CATEGORY", referencedColumnName = "ID_REQUEST_CATEGORY")
     @ManyToOne
@@ -64,10 +63,11 @@ public class RequestTypesProduct implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CProductTypes idProductType;
     
-    @JoinColumn(name = "ID_PRODUCT", referencedColumnName = "ID_PRODUCT")
-    @ManyToOne
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Embedded.class)
-    private CProducts idProduct;
+    private Integer idAccessLevel;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idRequestTypeProduct")
     @JsonView(JsonViews.Embedded.class)
@@ -126,14 +126,6 @@ public class RequestTypesProduct implements Serializable {
 
     public void setIdProductType(CProductTypes idProductType) {
         this.idProductType = idProductType;
-    }
-
-    public CProducts getIdProduct() {
-        return idProduct;
-    }
-
-    public void setIdProduct(CProducts idProduct) {
-        this.idProduct = idProduct;
     }
     
     public List<Requests> getRequestsList() {

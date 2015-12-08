@@ -13,7 +13,6 @@ import mx.bidg.utils.DateTimeConverter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -75,6 +74,14 @@ public class AccessLevel implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAccessLevel")
     @JsonView(JsonViews.Embedded.class)
     private List<AccessLevelsRole> accessLevelsRoleList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAccessLevel")
+    @JsonView(JsonViews.Embedded.class)
+    private List<RequestProducts> requestProductsList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAccessLevel")
+    @JsonView(JsonViews.Embedded.class)
+    private List<ProductTypesProduct> productTypesProductList;
 
     public AccessLevel() {
     }
@@ -160,6 +167,22 @@ public class AccessLevel implements Serializable {
 
     public void setProvidersList(List<Providers> providersList) {
         this.providersList = providersList;
+    }
+    
+    public List<RequestProducts> getRequestProductsList() {
+        return requestProductsList;
+    }
+
+    public void setRequestProductsList(List<RequestProducts> requestProductsList) {
+        this.requestProductsList = requestProductsList;
+    }
+
+    public List<ProductTypesProduct> getProductTypesProductList() {
+        return productTypesProductList;
+    }
+
+    public void setProductTypesProductList(List<ProductTypesProduct> productTypesProductList) {
+        this.productTypesProductList = productTypesProductList;
     }
 
     @Override

@@ -20,8 +20,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -100,6 +98,10 @@ public class Requests implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idRequest")
     @JsonView(JsonViews.Embedded.class)
     private List<PriceEstimations> priceEstimationsList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idRequest")
+    @JsonView(JsonViews.Embedded.class)
+    private List<RequestProducts> requestProductsList;
 
     public Requests() {
     }
@@ -194,6 +196,22 @@ public class Requests implements Serializable {
     public void setIdRequestStatus(CRequestStatus idRequestStatus) {
         this.idRequestStatus = idRequestStatus;
     }
+    
+    public List<PriceEstimations> getPriceEstimationsList() {
+        return priceEstimationsList;
+    }
+
+    public void setPriceEstimationsList(List<PriceEstimations> priceEstimationsList) {
+        this.priceEstimationsList = priceEstimationsList;
+    }
+
+    public List<RequestProducts> getRequestProductsList() {
+        return requestProductsList;
+    }
+
+    public void setRequestProductsList(List<RequestProducts> requestProductsList) {
+        this.requestProductsList = requestProductsList;
+    }
 
     @Override
     public int hashCode() {
@@ -218,14 +236,6 @@ public class Requests implements Serializable {
     @Override
     public String toString() {
         return "mx.bidg.model.Requests[ idRequest=" + idRequest + " ]";
-    }
-
-    public List<PriceEstimations> getPriceEstimationsList() {
-        return priceEstimationsList;
-    }
-
-    public void setPriceEstimationsList(List<PriceEstimations> priceEstimationsList) {
-        this.priceEstimationsList = priceEstimationsList;
     }
     
 }

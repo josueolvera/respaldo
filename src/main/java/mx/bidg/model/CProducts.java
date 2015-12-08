@@ -8,6 +8,7 @@ import mx.bidg.config.JsonViews;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -44,9 +45,13 @@ public class CProducts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
     
-    @OneToMany(mappedBy = "idProduct")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProduct")
     @JsonView(JsonViews.Embedded.class)
-    private List<RequestTypesProduct> requestTypesProductList;
+    private List<RequestProducts> requestProductsList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProduct")
+    @JsonView(JsonViews.Embedded.class)
+    private List<ProductTypesProduct> productTypesProductList;
 
     public CProducts() {
     }
@@ -79,12 +84,20 @@ public class CProducts implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
     
-    public List<RequestTypesProduct> getRequestTypesProductList() {
-        return requestTypesProductList;
+    public List<RequestProducts> getRequestProductsList() {
+        return requestProductsList;
     }
 
-    public void setRequestTypesProductList(List<RequestTypesProduct> requestTypesProductList) {
-        this.requestTypesProductList = requestTypesProductList;
+    public void setRequestProductsList(List<RequestProducts> requestProductsList) {
+        this.requestProductsList = requestProductsList;
+    }
+
+    public List<ProductTypesProduct> getProductTypesProductList() {
+        return productTypesProductList;
+    }
+
+    public void setProductTypesProductList(List<ProductTypesProduct> productTypesProductList) {
+        this.productTypesProductList = productTypesProductList;
     }
 
     @Override

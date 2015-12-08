@@ -13,6 +13,7 @@ import mx.bidg.config.JsonViews;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -52,6 +53,10 @@ public class CProductTypes implements Serializable {
     @OneToMany(mappedBy = "idProductType")
     @JsonView(JsonViews.Embedded.class)
     private List<RequestTypesProduct> requestTypesProductList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProductType")
+    @JsonView(JsonViews.Embedded.class)
+    private List<ProductTypesProduct> productTypesProductList;
 
     public CProductTypes() {
     }
@@ -90,6 +95,14 @@ public class CProductTypes implements Serializable {
 
     public void setRequestTypesProductList(List<RequestTypesProduct> requestTypesProductList) {
         this.requestTypesProductList = requestTypesProductList;
+    }
+    
+    public List<ProductTypesProduct> getProductTypesProductList() {
+        return productTypesProductList;
+    }
+
+    public void setProductTypesProductList(List<ProductTypesProduct> productTypesProductList) {
+        this.productTypesProductList = productTypesProductList;
     }
 
     @Override
