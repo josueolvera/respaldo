@@ -49,6 +49,14 @@ public class Stocks implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idArticle;
 
+    @Column(name = "ID_ARTICLE_STATUS", insertable = false, updatable = false)
+    private Integer idArticleStatus;
+
+    @JoinColumn(name = "ID_ARTICLE_STATUS", referencedColumnName = "ID_ARTICLE_STATUS")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private CArticleStatus articleStatus;
+
     @JoinColumn(name = "ID_ARTICLE", referencedColumnName = "ID_ARTICLE")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
@@ -102,6 +110,14 @@ public class Stocks implements Serializable {
         this.purchasePrice = purchasePrice;
     }
 
+    public Integer getIdArticleStatus() {
+        return idArticleStatus;
+    }
+
+    public void setIdArticleStatus(Integer idArticleStatus) {
+        this.idArticleStatus = idArticleStatus;
+    }
+
     public Integer getIdArticle() {
         return idArticle;
     }
@@ -110,12 +126,28 @@ public class Stocks implements Serializable {
         this.idArticle = idArticle;
     }
 
+    public CArticleStatus getArticleStatus() {
+        return articleStatus;
+    }
+
+    public void setArticleStatus(CArticleStatus articleStatus) {
+        this.articleStatus = articleStatus;
+    }
+
     public CArticles getArticles() {
         return articles;
     }
 
     public void setArticles(CArticles cArticles) {
         this.articles = cArticles;
+    }
+
+    public List<Properties> getPropertiesList() {
+        return propertiesList;
+    }
+
+    public void setPropertiesList(List<Properties> propertiesList) {
+        this.propertiesList = propertiesList;
     }
 
     @Override
