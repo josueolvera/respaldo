@@ -1,13 +1,15 @@
 package mx.bidg.service.impl;
 
 import mx.bidg.dao.StockDao;
-import mx.bidg.model.Requests;
-import mx.bidg.model.Stocks;
+import mx.bidg.model.*;
+import mx.bidg.service.CArticlesService;
 import mx.bidg.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,9 +23,13 @@ public class StockServiceImpl implements StockService {
     @Autowired
     private StockDao stockDao;
 
+    @Autowired
+    private CArticlesService articlesService;
+
     @Override
     public Stocks save(Stocks article) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        stockDao.save(article);
+        return article;
     }
 
     @Override
@@ -38,6 +44,18 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public List<Stocks> addStockArticlesFromRequest(Requests request) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        List<Stocks> stocksList = new ArrayList<>();
+
+        for (RequestProducts product : request.getRequestProductsList()) {
+            Stocks stockArticle = new Stocks();
+            stockArticle.setArticle(articlesService.findByProduct(product.getIdProduct()));
+            stockArticle.setArticleStatus(new CArticleStatus(1));
+            stockArticle.setCreationDate(LocalDateTime.now());
+            stockArticle.setFolio(request.getFolio());
+            this.save(stockArticle);
+            stocksList.add(stockArticle);
+        }
+
+        return stocksList;
     }
 }

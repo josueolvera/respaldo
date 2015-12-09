@@ -30,6 +30,10 @@ public class CArticles implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String articleName;
 
+    @Column(name = "ID_PRODUCT", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idProduct;
+
     @OneToOne
     @JoinColumn(name = "ID_PRODUCT")
     @JsonView(JsonViews.Embedded.class)
@@ -61,6 +65,14 @@ public class CArticles implements Serializable {
 
     public void setArticleName(String articleName) {
         this.articleName = articleName;
+    }
+
+    public Integer getIdProduct() {
+        return idProduct;
+    }
+
+    public void setIdProduct(Integer idProduct) {
+        this.idProduct = idProduct;
     }
 
     public CProducts getProduct() {
