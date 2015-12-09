@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -38,6 +39,7 @@ public class Stocks implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
+    @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
     private LocalDateTime creationDate;
 
@@ -60,7 +62,7 @@ public class Stocks implements Serializable {
     @JoinColumn(name = "ID_ARTICLE", referencedColumnName = "ID_ARTICLE")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CArticles articles;
+    private CArticles article;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "stocks")
     @JsonView(JsonViews.Embedded.class)
@@ -134,12 +136,12 @@ public class Stocks implements Serializable {
         this.articleStatus = articleStatus;
     }
 
-    public CArticles getArticles() {
-        return articles;
+    public CArticles getArticle() {
+        return article;
     }
 
-    public void setArticles(CArticles cArticles) {
-        this.articles = cArticles;
+    public void setArticle(CArticles cArticles) {
+        this.article = cArticles;
     }
 
     public List<Properties> getPropertiesList() {

@@ -33,7 +33,6 @@ public class RequestProducts implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_REQUEST_PRODUCT")
     @JsonView(JsonViews.Root.class)
     private Integer idRequestProduct;

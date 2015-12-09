@@ -38,7 +38,6 @@ public class Requests implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_REQUEST")
     @JsonView(JsonViews.Root.class)
     private Integer idRequest;
