@@ -9,8 +9,10 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -54,6 +56,10 @@ public class CBudgetCategories implements Serializable {
     @OneToMany(mappedBy = "idBudgetCategory")
     @JsonView(JsonViews.Embedded.class)
     private List<Budgets> budgetsList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetCategory")
+    @JsonView(JsonViews.Embedded.class)
+    private List<CRequestTypes> cRequestTypesCollection;
 
     public CBudgetCategories() {
     }
@@ -97,6 +103,14 @@ public class CBudgetCategories implements Serializable {
 
     public void setBudgetsList(List<Budgets> budgetsList) {
         this.budgetsList = budgetsList;
+    }
+    
+    public List<CRequestTypes> getCRequestTypesCollection() {
+        return cRequestTypesCollection;
+    }
+
+    public void setCRequestTypesCollection(List<CRequestTypes> cRequestTypesCollection) {
+        this.cRequestTypesCollection = cRequestTypesCollection;
     }
 
     @Override

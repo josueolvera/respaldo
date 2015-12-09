@@ -19,6 +19,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
@@ -49,6 +51,11 @@ public class CProductTypes implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
+    
+    @JoinColumn(name = "ID_BUDGET_SUBCATEGORY", referencedColumnName = "ID_BUDGET_SUBCATEGORY")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private CBudgetSubcategories idBudgetSubcategory;
     
     @OneToMany(mappedBy = "idProductType")
     @JsonView(JsonViews.Embedded.class)
@@ -103,6 +110,14 @@ public class CProductTypes implements Serializable {
 
     public void setProductTypesProductList(List<ProductTypesProduct> productTypesProductList) {
         this.productTypesProductList = productTypesProductList;
+    }
+    
+    public CBudgetSubcategories getIdBudgetSubcategory() {
+        return idBudgetSubcategory;
+    }
+
+    public void setIdBudgetSubcategory(CBudgetSubcategories idBudgetSubcategory) {
+        this.idBudgetSubcategory = idBudgetSubcategory;
     }
 
     @Override

@@ -53,6 +53,11 @@ public class CRequestTypes implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private AccessLevel idAccessLevel;
     
+    @JoinColumn(name = "ID_BUDGET_CATEGORY", referencedColumnName = "ID_BUDGET_CATEGORY")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private CBudgetCategories idBudgetCategory;
+    
     @OneToMany(mappedBy = "idRequestType")
     @JsonView(JsonViews.Embedded.class)
     private List<RequestTypesProduct> requestTypesProductList;
@@ -106,6 +111,14 @@ public class CRequestTypes implements Serializable {
 
     public void setRequestTypesBudgetsList(List<RequestTypesBudgets> requestTypesBudgetsList) {
         this.requestTypesBudgetsList = requestTypesBudgetsList;
+    }
+    
+    public CBudgetCategories getIdBudgetCategory() {
+        return idBudgetCategory;
+    }
+
+    public void setIdBudgetCategory(CBudgetCategories idBudgetCategory) {
+        this.idBudgetCategory = idBudgetCategory;
     }
 
     @Override
