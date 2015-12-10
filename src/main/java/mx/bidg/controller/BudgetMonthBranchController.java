@@ -49,30 +49,11 @@ public class BudgetMonthBranchController {
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"})
     public @ResponseBody ResponseEntity<String> saveBudgetMonthBranchs(@RequestBody String data) throws Exception {
         
-        JsonNode jsonRequest = map.readTree(data);
-        BudgetMonthBranch budgetMonthBranch = new BudgetMonthBranch();
+        BudgetMonthBranch budgetMonthBranch = budgetMonthBranchService.save(data);
         
-        ArrayList<BudgetMonthConcepts> budgetMonthConceptsList = new ArrayList<>();
-        BudgetMonthConcepts budgetMonthConcept;
-
-        for(JsonNode jsonBudgetMonthConcept : jsonRequest.get("budgetMonthConceptList")) {
-            budgetMonthConcept = new BudgetMonthConcepts();
-            budgetMonthConcept.setAmount(jsonBudgetMonthConcept.get("amountConcept").decimalValue());
-            budgetMonthConcept.setIdBudgetConcept(new CBudgetConcepts(jsonBudgetMonthConcept.get("budgetConcept").asInt()));
-            budgetMonthConcept.setIdAccessLevel(1);
-            budgetMonthConcept.setIdBudgetMonthBranch(budgetMonthBranch);
-            budgetMonthConceptsList.add(budgetMonthConcept);
+        if(budgetMonthBranch == null) {
+            return new ResponseEntity<>("Error al guardar la solicitud", HttpStatus.CONFLICT);
         }
-        
-        budgetMonthBranch.setBudgetMonthConceptsList(budgetMonthConceptsList);
-        budgetMonthBranch.setIdBudget(new Budgets(jsonRequest.get("budget").asInt()));
-        budgetMonthBranch.setIdMonth(new CMonths(jsonRequest.get("month").asInt()));
-        budgetMonthBranch.setIdDwEnterprise(new DwEnterprises(jsonRequest.get("dwEnterprise").asInt()));
-        budgetMonthBranch.setAmount(jsonRequest.get("amountMonth").decimalValue());
-        budgetMonthBranch.setExpendedAmount(jsonRequest.get("expendedAmount").decimalValue());
-        budgetMonthBranch.setYear(jsonRequest.get("year").asInt());
-        budgetMonthBranch.setIdAccessLevel(new AccessLevel(1));
-        budgetMonthBranchService.save(budgetMonthBranch);
         
         return new ResponseEntity<>("Presupuesto guardado con éxito", HttpStatus.OK);
     }

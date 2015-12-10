@@ -82,6 +82,7 @@ public class BudgetMonthBranch implements Serializable {
     private AccessLevel idAccessLevel;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetMonthBranch")
+    @JsonView(JsonViews.Embedded.class)
     private List<Requests> requestsList;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetMonthBranch")

@@ -19,9 +19,11 @@ import mx.bidg.model.CRequestTypes;
  */
 public interface BudgetMonthBranchService {
     
-    public BudgetMonthBranch save(BudgetMonthBranch budgetMonthBranch);
+    public BudgetMonthBranch save(String data) throws Exception;
     
     public BudgetMonthBranch getByRequestType(CRequestTypes cRequestTypes, Integer idGroup, Integer idArea, 
             Integer idBudgetCategories, Integer idBudgetSubcategories, Integer idBranchs);
+    
+    public BudgetMonthBranch findByCombination(Integer budget, Integer month, Integer dwEnterprise, Integer year);
     
 }
