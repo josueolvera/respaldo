@@ -25,7 +25,7 @@ public class Properties implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idProperty;
 
-    @Size(max = 255)
+    @Size(max = 65530)
     @Column(name = "VALUE")
     @JsonView(JsonViews.Root.class)
     private String value;

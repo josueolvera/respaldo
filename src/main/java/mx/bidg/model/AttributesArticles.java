@@ -15,7 +15,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "ATTRIBUTES_ARTICLES")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class AttributesArticles implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -51,9 +51,9 @@ public class AttributesArticles implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CAttributes attributes;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "attributesArticles")
-    @JsonView(JsonViews.Embedded.class)
-    private List<Properties> propertiesList;
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "attributesArticles")
+//    @JsonView(JsonViews.Embedded.class)
+//    private List<Properties> propertiesList;
 
     public AttributesArticles() {
     }
@@ -117,14 +117,14 @@ public class AttributesArticles implements Serializable {
     public void setAttributes(CAttributes cAttributes) {
         this.attributes = cAttributes;
     }
-
-    public List<Properties> getPropertiesList() {
-        return propertiesList;
-    }
-
-    public void setPropertiesList(List<Properties> propertiesList) {
-        this.propertiesList = propertiesList;
-    }
+//
+//    public List<Properties> getPropertiesList() {
+//        return propertiesList;
+//    }
+//
+//    public void setPropertiesList(List<Properties> propertiesList) {
+//        this.propertiesList = propertiesList;
+//    }
 
     @Override
     public int hashCode() {

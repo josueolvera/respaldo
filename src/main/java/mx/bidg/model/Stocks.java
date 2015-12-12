@@ -30,6 +30,10 @@ public class Stocks implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idStock;
 
+    @Column(name = "SERIAL_NUMBER")
+    @Basic(optional = true)
+    @JsonView(JsonViews.Root.class)
+    private String serialNumber;
 
     @Size(max = 40)
     @Column(name = "FOLIO")
@@ -51,8 +55,15 @@ public class Stocks implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idArticle;
 
+    @Column(name = "ID_EMPLOYEE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idEmployee;
+
     @Column(name = "ID_ARTICLE_STATUS", insertable = false, updatable = false)
     private Integer idArticleStatus;
+
+    @Column(name = "ID_DW_ENTERPRISE", insertable = false, updatable = false)
+    private Integer idDwEnterprises;
 
     @JoinColumn(name = "ID_ARTICLE_STATUS", referencedColumnName = "ID_ARTICLE_STATUS")
     @ManyToOne(optional = false)
@@ -63,6 +74,11 @@ public class Stocks implements Serializable {
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private CArticles article;
+
+    @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private DwEnterprises dwEnterprises;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "stocks")
     @JsonView(JsonViews.Embedded.class)
@@ -126,6 +142,38 @@ public class Stocks implements Serializable {
 
     public void setIdArticle(Integer idArticle) {
         this.idArticle = idArticle;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
+
+    public Integer getIdEmployee() {
+        return idEmployee;
+    }
+
+    public void setIdEmployee(Integer idEmployee) {
+        this.idEmployee = idEmployee;
+    }
+
+    public Integer getIdDwEnterprises() {
+        return idDwEnterprises;
+    }
+
+    public void setIdDwEnterprises(Integer idDwEnterprises) {
+        this.idDwEnterprises = idDwEnterprises;
+    }
+
+    public DwEnterprises getDwEnterprises() {
+        return dwEnterprises;
+    }
+
+    public void setDwEnterprises(DwEnterprises dwEnterprises) {
+        this.dwEnterprises = dwEnterprises;
     }
 
     public CArticleStatus getArticleStatus() {

@@ -38,6 +38,11 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
+    public List<Stocks> findByDistributor(Integer idDistributor) {
+        return stockDao.findByDistributor(idDistributor);
+    }
+
+    @Override
     public List<Stocks> findAll() {
         return stockDao.findAll();
     }

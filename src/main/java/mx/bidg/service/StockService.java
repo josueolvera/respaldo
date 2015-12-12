@@ -14,4 +14,5 @@ public interface StockService {
     Stocks findById(int id);
     List<Stocks> findAll();
     List<Stocks> addStockArticlesFromRequest(Requests request);
+    List<Stocks> findByDistributor(Integer idDistributor);
 }

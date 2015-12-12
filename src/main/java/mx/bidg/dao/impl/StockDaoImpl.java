@@ -35,6 +35,14 @@ public class StockDaoImpl extends AbstractDao<Integer, Stocks> implements StockD
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public List<Stocks> findByDistributor(Integer idDistributor) {
+        return (List<Stocks>) createEntityCriteria().setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
+                .createCriteria("dwEnterprises")
+                .add(Restrictions.eq("iddistributor", idDistributor)).list();
+    }
+
+    @Override
     public Stocks update(Stocks entity) {
         getSession().update(entity);
         return entity;
