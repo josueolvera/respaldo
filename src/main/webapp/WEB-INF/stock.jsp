@@ -25,21 +25,14 @@
                     dist: {}
                 },
                 methods: {
-                    fetchStock: function () {
-                        this.$http.get(ROOT_URL + "/stock").success(function (data) {
+                    fetchStock: function (distributor) {
+                        this.$http.get(ROOT_URL + "/stock/" + distributor.idDistributor).success(function (data) {
                             this.stock = data;
                         });
                     },
                     fetchDistributors: function () {
                         this.$http.get(ROOT_URL + "/distributors").success(function (data) {
-                            var arr = data.map(function (element) {
-                                return {
-                                    name: element.distributorName,
-                                    value: element.idDistributor
-                                }
-                            });
-                            console.log(arr);
-                            this.selectOptions.distributors = arr;
+                            this.selectOptions.distributors = data;
                         });
                     }
                 }
@@ -54,7 +47,12 @@
             <div class="col-lg-12">
                 <div class="form-group">
                     <label>Distribuidor</label>
-                    <select v-model="dist" name="distribuidor" options="selectOptions.distributors"></select>
+                    <select v-model="dist" @change="fetchStock(dist)" class="form-control">
+                        <option v-for="distributor in selectOptions.distributors"
+                                v-bind:value="distributor">
+                                {{ distributor.distributorName }}
+                        </option>
+                    </select>
                 </div>
             </div>
             <div class="panel-group col-xs-12">
