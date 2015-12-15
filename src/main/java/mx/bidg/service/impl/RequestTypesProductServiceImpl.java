@@ -23,5 +23,10 @@ public class RequestTypesProductServiceImpl implements RequestTypesProductServic
     public RequestTypesProduct findById(int id) {
         return dao.findById(id);
     }
+
+    @Override
+    public RequestTypesProduct findByCombination(int idRequestCategory, int idRequestType, int idProductType) {
+        return dao.findByCombination(idRequestCategory, idRequestType, idProductType);
+    }
     
 }

@@ -14,5 +14,6 @@ import mx.bidg.model.RequestTypesProduct;
 public interface RequestTypesProductService {
     
     public RequestTypesProduct findById(int id);
+    public RequestTypesProduct findByCombination(int idRequestCategory, int idRequestType, int idProductType);
     
 }

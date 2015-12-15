@@ -13,4 +13,6 @@ import mx.bidg.model.RequestTypesProduct;
  */
 public interface RequestTypesProductDao extends InterfaceDao<RequestTypesProduct> {
     
+    public RequestTypesProduct findByCombination(int idRequestCategory, int idRequestType, int idProductType);
+    
 }
