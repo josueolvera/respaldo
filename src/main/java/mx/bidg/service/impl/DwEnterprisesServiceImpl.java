@@ -8,7 +8,10 @@ package mx.bidg.service.impl;
 import java.util.List;
 import mx.bidg.dao.DwEnterprisesDao;
 import mx.bidg.model.CAreas;
+import mx.bidg.model.CBranchs;
+import mx.bidg.model.CDistributors;
 import mx.bidg.model.CGroups;
+import mx.bidg.model.CRegions;
 import mx.bidg.model.DwEnterprises;
 import mx.bidg.service.DwEnterprisesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,16 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
     @Override
     public List<DwEnterprises> findByGroupArea(CGroups idGroup, CAreas idArea) {
         return dao.findByGroupArea(idGroup, idArea);
+    }
+
+    @Override
+    public DwEnterprises findByCombination(int idGroup, int idDistributor, int idRegion, int idBranch, int idArea) {
+        CGroups group = new CGroups(idGroup);
+        CDistributors distributor = new CDistributors(idDistributor);
+        CRegions region = new CRegions(idRegion);
+        CBranchs branch = new CBranchs(idBranch);
+        CAreas area = new CAreas(idArea);
+        return dao.findByCombination(group, distributor, region, branch, area);
     }
     
 }

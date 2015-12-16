@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
+import mx.bidg.config.JsonViews;
 import mx.bidg.model.AccessLevel;
 import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.BudgetMonthConcepts;
@@ -58,6 +59,16 @@ public class BudgetMonthBranchController {
         return new ResponseEntity<>("Presupuesto guardado con éxito", HttpStatus.OK);
     }
     
-//    @RequestMapping(value = "/")
+    @RequestMapping(value = "/request", headers = {"Accept=application/json;charset=UTF-8"})
+    public @ResponseBody ResponseEntity<String> getFromRequest(@RequestBody String data) throws Exception {
+        
+        BudgetMonthBranch budgetMonthBranch = budgetMonthBranchService.findFromRequest(data);
+        
+        if(budgetMonthBranch == null) {
+            return new ResponseEntity<>("Error al guardar la solicitud", HttpStatus.CONFLICT);
+        }
+        
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Root.class).writeValueAsString(budgetMonthBranch), HttpStatus.OK);
+    }
     
 }

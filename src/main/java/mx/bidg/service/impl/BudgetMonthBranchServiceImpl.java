@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import mx.bidg.dao.BudgetMonthBranchDao;
+import mx.bidg.dao.DwEnterprisesDao;
 import mx.bidg.model.AccessLevel;
 import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.BudgetMonthConcepts;
@@ -22,6 +23,7 @@ import mx.bidg.model.DwEnterprises;
 import mx.bidg.model.RequestTypesBudgets;
 import mx.bidg.service.BudgetMonthBranchService;
 import mx.bidg.service.BudgetsService;
+import mx.bidg.service.DwEnterprisesService;
 import mx.bidg.service.RequestTypesBudgetsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,8 +46,12 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
     @Autowired
     BudgetsService budgetsService;
     
+    @Autowired
+    DwEnterprisesService dwEnterprisesService;
+    
     ObjectMapper map = new ObjectMapper();
 
+    //En construccion
     @Override
     public BudgetMonthBranch getByRequestType(CRequestTypes cRequestTypes, Integer idGroup, Integer idArea, 
             Integer idBudgetCategories, Integer idBudgetSubcategories, Integer idBranchs) {
@@ -59,9 +65,6 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
             budgetList.add(rtb.getIdBudget());
         }
         
-        
-        
-            
         return null;
     }
 
@@ -133,7 +136,6 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
                 
             }
             
-            
         }
         
         return budgetMonthBranch;
@@ -143,6 +145,32 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
     public BudgetMonthBranch findByCombination(Integer budget, Integer month, Integer dwEnterprise, Integer year) {
         return budgetMonthBranchDao.findByCombination(new Budgets(budget), 
                 new CMonths(month), new DwEnterprises(dwEnterprise), year);
+    }
+
+    @Override
+    public BudgetMonthBranch findFromRequest(String data) throws Exception {
+        
+        JsonNode jsonRequest = map.readTree(data);
+        int idGroup = jsonRequest.get("idGroup").asInt();
+        int idDistributor = jsonRequest.get("idDistributor").asInt();
+        int idRegion = jsonRequest.get("idRegion").asInt();
+        int idBranch = jsonRequest.get("idBranch").asInt();
+        int idArea = jsonRequest.get("idArea").asInt();
+        int month = jsonRequest.get("idMonth").asInt();
+        int year = jsonRequest.get("year").asInt();
+        int idCategory = jsonRequest.get("idCategory").asInt();
+        int idSubcategory = jsonRequest.get("idSubcategory").asInt();
+        
+        DwEnterprises dwEnterprise = dwEnterprisesService.findByCombination(idGroup, idDistributor, idRegion, idBranch, idArea);
+        Budgets budget = budgetsService.findByCombination(idGroup, idArea, idCategory, idSubcategory);
+        
+        if(dwEnterprise == null || budget == null) {
+            return null;
+        }
+        
+        BudgetMonthBranch budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget, new CMonths(month), dwEnterprise, year);
+        
+        return budgetMonthBranch;
     }
     
 }

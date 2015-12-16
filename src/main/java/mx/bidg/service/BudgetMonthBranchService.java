@@ -26,4 +26,6 @@ public interface BudgetMonthBranchService {
     
     public BudgetMonthBranch findByCombination(Integer budget, Integer month, Integer dwEnterprise, Integer year);
     
+    public BudgetMonthBranch findFromRequest(String data) throws Exception;
+    
 }
