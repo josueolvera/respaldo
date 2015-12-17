@@ -57,14 +57,14 @@ public class Providers implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String rfc;
     
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "ID_ACCESS_LEVEL")
+    private int idAccessLevel;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProvider")
     @JsonView(JsonViews.Embedded.class)
     private List<ProvidersAccounts> providersAccountsList;
-    
-    @JoinColumn(name = "ID_ACCESS_LEVEL", referencedColumnName = "ID_ACCESS_LEVEL")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private AccessLevel idAccessLevel;
 
     public Providers() {
     }
@@ -111,11 +111,11 @@ public class Providers implements Serializable {
         this.providersAccountsList = providersAccountsList;
     }
 
-    public AccessLevel getIdAccessLevel() {
+    public int getIdAccessLevel() {
         return idAccessLevel;
     }
 
-    public void setIdAccessLevel(AccessLevel idAccessLevel) {
+    public void setIdAccessLevel(int idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
     }
 

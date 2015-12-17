@@ -52,15 +52,14 @@ public class Accounts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String accountClabe;
     
+    @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
+    private int idAccessLevel;
+    
     @JoinColumn(name = "ID_BANK", referencedColumnName = "ID_BANK")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private CBanks idBank;
-    
-    @JoinColumn(name = "ID_ACCESS_LEVEL", referencedColumnName = "ID_ACCESS_LEVEL")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private AccessLevel idAccessLevel;
     
     @JoinColumn(name = "ID_ACCOUNT_TYPE", referencedColumnName = "ID_ACCOUNT_TYPE")
     @ManyToOne(optional = false)
@@ -134,11 +133,11 @@ public class Accounts implements Serializable {
         this.idBank = idBank;
     }
 
-    public AccessLevel getIdAccessLevel() {
+    public int getIdAccessLevel() {
         return idAccessLevel;
     }
 
-    public void setIdAccessLevel(AccessLevel idAccessLevel) {
+    public void setIdAccessLevel(int idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
     }
 
