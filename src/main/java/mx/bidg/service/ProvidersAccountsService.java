@@ -5,14 +5,16 @@
  */
 package mx.bidg.service;
 
-import mx.bidg.model.Requests;
+import java.util.List;
+import mx.bidg.model.Providers;
+import mx.bidg.model.ProvidersAccounts;
 
 /**
  *
- * @author sistemask
+ * @author kenneth
  */
-public interface RequestsService {
+public interface ProvidersAccountsService {
     
-    public Requests save(String data) throws Exception;
+    public List<ProvidersAccounts> findByProvider(Providers provider);
     
 }
