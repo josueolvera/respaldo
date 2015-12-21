@@ -16,5 +16,6 @@ import mx.bidg.model.ProvidersAccounts;
 public interface ProvidersAccountsService {
     
     public List<ProvidersAccounts> findByProvider(Providers provider);
+    public ProvidersAccounts save(String data);
     
 }

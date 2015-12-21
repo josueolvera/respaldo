@@ -20,4 +20,6 @@ public interface DwEnterprisesService {
     
     public DwEnterprises findByCombination(int idGroup, int idDistributor, int idRegion, int idBranch, int idArea);
     
+    public DwEnterprises findById(int idDwEnterprise);
+    
 }

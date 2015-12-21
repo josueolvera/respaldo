@@ -41,23 +41,22 @@ public class BudgetMonthBranchController {
     
     ObjectMapper map = new ObjectMapper();
     
+    
     @RequestMapping(produces = "application/json;charset=UTF-8")
     public @ResponseBody String getBudgetMonthBranchs() {
         List<BudgetMonthBranch> list;
         return null;
     }
     
+    
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"})
-    public @ResponseBody ResponseEntity<String> saveBudgetMonthBranchs(@RequestBody String data) throws Exception {
+    public @ResponseBody ResponseEntity<List<BudgetMonthBranch>> saveBudgetMonthBranchList(@RequestBody String data) throws Exception {
         
-        BudgetMonthBranch budgetMonthBranch = budgetMonthBranchService.save(data);
+        List<BudgetMonthBranch> list = budgetMonthBranchService.saveList(data);
         
-        if(budgetMonthBranch == null) {
-            return new ResponseEntity<>("Error al guardar la solicitud", HttpStatus.CONFLICT);
-        }
-        
-        return new ResponseEntity<>("Presupuesto guardado con éxito", HttpStatus.OK);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
+    
     
     @RequestMapping(value = "/request", headers = {"Accept=application/json;charset=UTF-8"})
     public @ResponseBody ResponseEntity<String> getFromRequest(@RequestBody String data) throws Exception {

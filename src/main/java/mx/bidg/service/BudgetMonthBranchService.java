@@ -5,6 +5,7 @@
  */
 package mx.bidg.service;
 
+import java.util.List;
 import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.CAreas;
 import mx.bidg.model.CBranchs;
@@ -19,7 +20,7 @@ import mx.bidg.model.CRequestTypes;
  */
 public interface BudgetMonthBranchService {
     
-    public BudgetMonthBranch save(String data) throws Exception;
+    public List<BudgetMonthBranch> saveList(String data) throws Exception;
     
     public BudgetMonthBranch getByRequestType(CRequestTypes cRequestTypes, Integer idGroup, Integer idArea, 
             Integer idBudgetCategories, Integer idBudgetSubcategories, Integer idBranchs);

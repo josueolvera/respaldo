@@ -39,5 +39,10 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
         CAreas area = new CAreas(idArea);
         return dao.findByCombination(group, distributor, region, branch, area);
     }
+
+    @Override
+    public DwEnterprises findById(int idDwEnterprise) {
+        return dao.findById(idDwEnterprise);
+    }
     
 }

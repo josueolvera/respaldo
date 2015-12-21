@@ -25,5 +25,10 @@ public class ProvidersAccountsServiceImpl implements ProvidersAccountsService {
     public List<ProvidersAccounts> findByProvider(Providers provider) {
         return dao.findByProvider(provider);
     }
+
+    @Override
+    public ProvidersAccounts save(String data) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }

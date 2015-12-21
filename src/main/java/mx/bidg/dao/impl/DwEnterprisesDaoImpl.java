@@ -33,7 +33,7 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
 
     @Override
     public DwEnterprises findById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getByKey(id);
     }
 
     @Override
