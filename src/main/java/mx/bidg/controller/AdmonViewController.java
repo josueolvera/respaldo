@@ -13,4 +13,8 @@ public class AdmonViewController
         return "Budget";
     }
     
+    @RequestMapping(value="/budgets", produces= {"text/html;charset=UTF-8"})
+    public String home2(Model model){
+        return "Budgets";
+    }
 }
