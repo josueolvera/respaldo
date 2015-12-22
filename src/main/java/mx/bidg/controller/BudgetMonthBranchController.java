@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.List;
+import mx.bidg.config.JsonViews;
+import mx.bidg.model.AccessLevel;
 import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.BudgetMonthConcepts;
 import mx.bidg.model.Budgets;
@@ -39,41 +41,33 @@ public class BudgetMonthBranchController {
     
     ObjectMapper map = new ObjectMapper();
     
+    
     @RequestMapping(produces = "application/json;charset=UTF-8")
     public @ResponseBody String getBudgetMonthBranchs() {
         List<BudgetMonthBranch> list;
         return null;
     }
     
+    
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"})
-    public @ResponseBody ResponseEntity<String> saveBudgetMonthBranchs(@RequestBody String data) throws Exception {
+    public @ResponseBody ResponseEntity<List<BudgetMonthBranch>> saveBudgetMonthBranchList(@RequestBody String data) throws Exception {
         
-        JsonNode jsonRequest = map.readTree(data);
-        BudgetMonthBranch budgetMonthBranch = new BudgetMonthBranch();
+        List<BudgetMonthBranch> list = budgetMonthBranchService.saveList(data);
         
-        ArrayList<BudgetMonthConcepts> budgetMonthConceptsList = new ArrayList<>();
-        BudgetMonthConcepts budgetMonthConcept;
-
-        for(JsonNode jsonBudgetMonthConcept : jsonRequest.get("budgetMonthConceptList")) {
-            budgetMonthConcept = new BudgetMonthConcepts();
-            budgetMonthConcept.setAmount(jsonBudgetMonthConcept.get("amountConcept").decimalValue());
-            budgetMonthConcept.setIdBudgetConcept(new CBudgetConcepts(jsonBudgetMonthConcept.get("budgetConcept").asInt()));
-            budgetMonthConcept.setIdAccessLevel(1);
-            budgetMonthConcept.setIdBudgetMonthBranch(budgetMonthBranch);
-            budgetMonthConceptsList.add(budgetMonthConcept);
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+    
+    
+    @RequestMapping(value = "/request", headers = {"Accept=application/json;charset=UTF-8"})
+    public @ResponseBody ResponseEntity<String> getFromRequest(@RequestBody String data) throws Exception {
+        
+        BudgetMonthBranch budgetMonthBranch = budgetMonthBranchService.findFromRequest(data);
+        
+        if(budgetMonthBranch == null) {
+            return new ResponseEntity<>("Error al guardar la solicitud", HttpStatus.CONFLICT);
         }
         
-        budgetMonthBranch.setBudgetMonthConceptsList(budgetMonthConceptsList);
-        budgetMonthBranch.setIdBudget(new Budgets(jsonRequest.get("budget").asInt()));
-        budgetMonthBranch.setIdMonth(new CMonths(jsonRequest.get("month").asInt()));
-        budgetMonthBranch.setIdDwEnterprise(new DwEnterprises(jsonRequest.get("dwEnterprise").asInt()));
-        budgetMonthBranch.setAmount(jsonRequest.get("amountMonth").decimalValue());
-        budgetMonthBranch.setExpendedAmount(jsonRequest.get("expendedAmount").decimalValue());
-        budgetMonthBranch.setYear(jsonRequest.get("year").asInt());
-        budgetMonthBranch.setIdAccessLevel(1);
-        budgetMonthBranchService.save(budgetMonthBranch);
-        
-        return new ResponseEntity<>("Presupuesto guardado con éxito", HttpStatus.OK);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Root.class).writeValueAsString(budgetMonthBranch), HttpStatus.OK);
     }
     
 }

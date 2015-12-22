@@ -31,7 +31,6 @@ public class CFields implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_FIELD")
     @JsonView(JsonViews.Root.class)
     private Integer idField;

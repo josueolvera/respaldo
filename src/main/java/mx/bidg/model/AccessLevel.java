@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "ACCESS_LEVEL")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class AccessLevel implements Serializable {
+    
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -46,13 +47,41 @@ public class AccessLevel implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
-    @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAccessLevel")
+    @JsonView(JsonViews.Embedded.class)
+    private List<BudgetMonthBranch> budgetMonthBranchList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAccessLevel")
+    @JsonView(JsonViews.Embedded.class)
+    private List<EmployeesAccounts> employeesAccountsList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAccessLevel")
+    @JsonView(JsonViews.Embedded.class)
+    private List<Accounts> accountsList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAccessLevel")
+    @JsonView(JsonViews.Embedded.class)
+    private List<Providers> providersList;
+    
+    @OneToMany(mappedBy = "idAccessLevel")
+    @JsonView(JsonViews.Embedded.class)
+    private List<CRequestTypes> cRequestTypesList;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAccessLevel")
     @JsonView(JsonViews.Embedded.class)
     private List<AccessLevelsRole> accessLevelsRoleList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAccessLevel")
+    @JsonView(JsonViews.Embedded.class)
+    private List<RequestProducts> requestProductsList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAccessLevel")
+    @JsonView(JsonViews.Embedded.class)
+    private List<ProductTypesProduct> productTypesProductList;
 
     public AccessLevel() {
     }
@@ -98,6 +127,62 @@ public class AccessLevel implements Serializable {
 
     public void setAccessLevelsRoleList(List<AccessLevelsRole> accessLevelsRoleList) {
         this.accessLevelsRoleList = accessLevelsRoleList;
+    }
+    
+    public List<CRequestTypes> getCRequestTypesList() {
+        return cRequestTypesList;
+    }
+
+    public void setCRequestTypesList(List<CRequestTypes> cRequestTypesList) {
+        this.cRequestTypesList = cRequestTypesList;
+    }
+    
+    public List<BudgetMonthBranch> getBudgetMonthBranchList() {
+        return budgetMonthBranchList;
+    }
+
+    public void setBudgetMonthBranchList(List<BudgetMonthBranch> budgetMonthBranchList) {
+        this.budgetMonthBranchList = budgetMonthBranchList;
+    }
+
+    public List<EmployeesAccounts> getEmployeesAccountsList() {
+        return employeesAccountsList;
+    }
+
+    public void setEmployeesAccountsList(List<EmployeesAccounts> employeesAccountsList) {
+        this.employeesAccountsList = employeesAccountsList;
+    }
+
+    public List<Accounts> getAccountsList() {
+        return accountsList;
+    }
+
+    public void setAccountsList(List<Accounts> accountsList) {
+        this.accountsList = accountsList;
+    }
+
+    public List<Providers> getProvidersList() {
+        return providersList;
+    }
+
+    public void setProvidersList(List<Providers> providersList) {
+        this.providersList = providersList;
+    }
+    
+    public List<RequestProducts> getRequestProductsList() {
+        return requestProductsList;
+    }
+
+    public void setRequestProductsList(List<RequestProducts> requestProductsList) {
+        this.requestProductsList = requestProductsList;
+    }
+
+    public List<ProductTypesProduct> getProductTypesProductList() {
+        return productTypesProductList;
+    }
+
+    public void setProductTypesProductList(List<ProductTypesProduct> productTypesProductList) {
+        this.productTypesProductList = productTypesProductList;
     }
 
     @Override

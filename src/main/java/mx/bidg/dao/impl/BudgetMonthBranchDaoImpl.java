@@ -5,10 +5,15 @@
  */
 package mx.bidg.dao.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.BudgetMonthBranchDao;
 import mx.bidg.model.BudgetMonthBranch;
+import mx.bidg.model.Budgets;
+import mx.bidg.model.CMonths;
+import mx.bidg.model.DwEnterprises;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -36,12 +41,26 @@ public class BudgetMonthBranchDaoImpl extends AbstractDao<Integer, BudgetMonthBr
 
     @Override
     public BudgetMonthBranch update(BudgetMonthBranch entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        getSession().update(entity);
+        return entity;
     }
 
     @Override
     public boolean delete(BudgetMonthBranch entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public BudgetMonthBranch findByCombination(Budgets budget, CMonths month, DwEnterprises dwEnterprise, Integer year) {
+        
+        HashMap<String,Object> map = new HashMap<>();
+        map.put("idBudget", budget);
+        map.put("idMonth", month);
+        map.put("idDwEnterprise", dwEnterprise);
+        map.put("year", year);
+        
+        BudgetMonthBranch budgetMonthBranch = (BudgetMonthBranch) createEntityCriteria().add(Restrictions.allEq(map)).uniqueResult();
+        return budgetMonthBranch;
     }
     
 }

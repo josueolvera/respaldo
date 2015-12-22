@@ -6,14 +6,15 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -25,6 +26,7 @@ import javax.validation.constraints.Size;
 @Table(name = "C_PRODUCTS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CProducts implements Serializable {
+    
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -42,6 +44,14 @@ public class CProducts implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProduct")
+    @JsonView(JsonViews.Embedded.class)
+    private List<RequestProducts> requestProductsList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProduct")
+    @JsonView(JsonViews.Embedded.class)
+    private List<ProductTypesProduct> productTypesProductList;
 
     public CProducts() {
     }
@@ -72,6 +82,22 @@ public class CProducts implements Serializable {
 
     public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
+    }
+    
+    public List<RequestProducts> getRequestProductsList() {
+        return requestProductsList;
+    }
+
+    public void setRequestProductsList(List<RequestProducts> requestProductsList) {
+        this.requestProductsList = requestProductsList;
+    }
+
+    public List<ProductTypesProduct> getProductTypesProductList() {
+        return productTypesProductList;
+    }
+
+    public void setProductTypesProductList(List<ProductTypesProduct> productTypesProductList) {
+        this.productTypesProductList = productTypesProductList;
     }
 
     @Override

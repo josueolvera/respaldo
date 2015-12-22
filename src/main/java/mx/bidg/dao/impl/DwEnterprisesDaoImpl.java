@@ -10,7 +10,10 @@ import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.DwEnterprisesDao;
 import mx.bidg.model.CAreas;
+import mx.bidg.model.CBranchs;
+import mx.bidg.model.CDistributors;
 import mx.bidg.model.CGroups;
+import mx.bidg.model.CRegions;
 import mx.bidg.model.DwEnterprises;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
@@ -30,7 +33,7 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
 
     @Override
     public DwEnterprises findById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getByKey(id);
     }
 
     @Override
@@ -55,6 +58,18 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
         map.put("idGroup", idGroup);
         map.put("idArea", idArea);
         return (List<DwEnterprises>) criteria.add(Restrictions.allEq(map)).list();
+    }
+
+    @Override
+    public DwEnterprises findByCombination(CGroups group, CDistributors distributor, CRegions region, CBranchs branch, CAreas area) {
+        Criteria criteria = createEntityCriteria();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("idGroup", group);
+        map.put("idDistributor", distributor);
+        map.put("idRegion", region);
+        map.put("idBranch", branch);
+        map.put("idArea", area);
+        return (DwEnterprises) criteria.add(Restrictions.allEq(map)).uniqueResult();
     }
     
 }

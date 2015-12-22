@@ -61,12 +61,6 @@ public class BudgetMonthBranch implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int year;
 
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ID_ACCESS_LEVEL")
-    @JsonView(JsonViews.Root.class)
-    private int idAccessLevel;
-
     @JoinColumn(name = "ID_BUDGET", referencedColumnName = "ID_BUDGET")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
@@ -82,6 +76,15 @@ public class BudgetMonthBranch implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private DwEnterprises idDwEnterprise;
     
+    @JoinColumn(name = "ID_ACCESS_LEVEL", referencedColumnName = "ID_ACCESS_LEVEL")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private AccessLevel idAccessLevel;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetMonthBranch")
+    @JsonView(JsonViews.Embedded.class)
+    private List<Requests> requestsList;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetMonthBranch")
     @JsonView(JsonViews.Embedded.class)
     private List<BudgetMonthConcepts> budgetMonthConceptsList;
@@ -93,18 +96,16 @@ public class BudgetMonthBranch implements Serializable {
         this.idBudgetMonthBranch = idBudgetMonthBranch;
     }
 
-    public BudgetMonthBranch(Integer idBudgetMonthBranch, BigDecimal amount, int year, int idAccessLevel) {
+    public BudgetMonthBranch(Integer idBudgetMonthBranch, BigDecimal amount, int year) {
         this.idBudgetMonthBranch = idBudgetMonthBranch;
         this.amount = amount;
         this.year = year;
-        this.idAccessLevel = idAccessLevel;
     }
 
-    public BudgetMonthBranch(Integer idBudgetMonthBranch, BigDecimal amount, int year, int idAccessLevel, Budgets idBudget, CMonths idMonth) {
+    public BudgetMonthBranch(Integer idBudgetMonthBranch, BigDecimal amount, int year, Budgets idBudget, CMonths idMonth) {
         this.idBudgetMonthBranch = idBudgetMonthBranch;
         this.amount = amount;
         this.year = year;
-        this.idAccessLevel = idAccessLevel;
         this.idBudget = idBudget;
         this.idMonth = idMonth;
     }
@@ -131,14 +132,6 @@ public class BudgetMonthBranch implements Serializable {
 
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
-    }
-
-    public int getIdAccessLevel() {
-        return idAccessLevel;
-    }
-
-    public void setIdAccessLevel(int idAccessLevel) {
-        this.idAccessLevel = idAccessLevel;
     }
 
     public Budgets getIdBudget() {
@@ -179,6 +172,22 @@ public class BudgetMonthBranch implements Serializable {
 
     public void setIdDwEnterprise(DwEnterprises idDwEnterprise) {
         this.idDwEnterprise = idDwEnterprise;
+    }
+    
+    public AccessLevel getIdAccessLevel() {
+        return idAccessLevel;
+    }
+
+    public void setIdAccessLevel(AccessLevel idAccessLevel) {
+        this.idAccessLevel = idAccessLevel;
+    }
+
+    public List<Requests> getRequestsList() {
+        return requestsList;
+    }
+
+    public void setRequestsList(List<Requests> requestsList) {
+        this.requestsList = requestsList;
     }
 
     @Override

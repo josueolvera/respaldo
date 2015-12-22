@@ -91,7 +91,7 @@
         <script src="/BIDGroup/assets/js/alerts.js"></script>
         <script src="/BIDGroup/assets/js/accounting.js"></script>
         <script type="text/javascript">
-            var ROOT_URL = "http://localhost:8080/BIDGroup";
+            var ROOT_URL = "/BIDGroup";
 
             var USER_VM = new Vue({
                 el: '#main-sidebar',

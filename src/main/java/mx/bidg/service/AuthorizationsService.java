@@ -11,4 +11,6 @@ import java.util.List;
 public interface AuthorizationsService {
     Authorizations findById(int id);
     List<Authorizations> findAll();
+    Authorizations save(Authorizations entity);
+    Authorizations update(Authorizations entity);
 }

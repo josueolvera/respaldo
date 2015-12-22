@@ -18,4 +18,8 @@ public interface DwEnterprisesService {
     
     public List<DwEnterprises> findByGroupArea(CGroups idGroup, CAreas idArea);
     
+    public DwEnterprises findByCombination(int idGroup, int idDistributor, int idRegion, int idBranch, int idArea);
+    
+    public DwEnterprises findById(int idDwEnterprise);
+    
 }
