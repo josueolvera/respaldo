@@ -10,11 +10,12 @@ import java.text.ParseException;
  */
 public class MoneyConverter {
 
-   public static Long obtainNumber(String value) throws ParseException
+   public static BigDecimal obtainNumber(String value) throws ParseException
    {
        String[] numero = value.split("\\$");
        DecimalFormat df = new DecimalFormat("#,###");
-       return df.parse(numero[1]).longValue();
+       BigDecimal decimal = new BigDecimal(df.parse(numero[1]).longValue());
+       return decimal;
    }
     
 }

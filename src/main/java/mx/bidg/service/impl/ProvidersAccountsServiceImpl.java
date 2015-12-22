@@ -34,6 +34,12 @@ public class ProvidersAccountsServiceImpl implements ProvidersAccountsService {
     public ProvidersAccounts save(String data) throws Exception {
         
         JsonNode jsonRequest = mapper.readTree(data);
+        String provider = jsonRequest.get("provider").asText();
+        String rfc = jsonRequest.get("rfc").asText();
+        Integer idBank = jsonRequest.get("bank").asInt();
+        String account = jsonRequest.get("account").asText();
+        String clabe = jsonRequest.get("clabe").asText();
+        
         
         
         return null;

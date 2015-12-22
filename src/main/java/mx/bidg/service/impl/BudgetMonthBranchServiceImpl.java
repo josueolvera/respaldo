@@ -24,6 +24,7 @@ import mx.bidg.service.BudgetMonthBranchService;
 import mx.bidg.service.BudgetsService;
 import mx.bidg.service.DwEnterprisesService;
 import mx.bidg.service.RequestTypesBudgetsService;
+import mx.bidg.utils.MoneyConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,7 +97,7 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
 
             for (JsonNode conceptMonth : jsonRequest.get("conceptMonth")) {
 
-                amountConcept = conceptMonth.get("amountConcept").decimalValue();
+                amountConcept = MoneyConverter.obtainNumber(conceptMonth.get("amountConcept").asText());
                 budgetMonthConcepts.setAmount(amountConcept);
 
                 idMonth = conceptMonth.get("month").asInt();
