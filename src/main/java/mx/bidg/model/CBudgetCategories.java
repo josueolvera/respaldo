@@ -6,6 +6,7 @@
 package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
@@ -59,7 +60,8 @@ public class CBudgetCategories implements Serializable {
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetCategory")
     @JsonView(JsonViews.Embedded.class)
-    private List<CRequestTypes> cRequestTypesCollection;
+    @JsonProperty("cRequestTypesList")
+    private List<CRequestTypes> cRequestTypesList;
 
     public CBudgetCategories() {
     }
@@ -105,12 +107,13 @@ public class CBudgetCategories implements Serializable {
         this.budgetsList = budgetsList;
     }
     
-    public List<CRequestTypes> getCRequestTypesCollection() {
-        return cRequestTypesCollection;
+    @JsonProperty("cRequestTypesList")
+    public List<CRequestTypes> getCRequestTypesList() {
+        return cRequestTypesList;
     }
 
-    public void setCRequestTypesCollection(List<CRequestTypes> cRequestTypesCollection) {
-        this.cRequestTypesCollection = cRequestTypesCollection;
+    public void setCRequestTypesCollection(List<CRequestTypes> cRequestTypesList) {
+        this.cRequestTypesList = cRequestTypesList;
     }
 
     @Override

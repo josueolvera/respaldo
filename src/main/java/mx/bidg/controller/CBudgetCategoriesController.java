@@ -6,6 +6,7 @@
 package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import java.util.List;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.CBudgetCategories;

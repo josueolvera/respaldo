@@ -5,6 +5,8 @@
  */
 package mx.bidg.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import mx.bidg.dao.ProvidersAccountsDao;
 import mx.bidg.model.Providers;
@@ -20,6 +22,8 @@ public class ProvidersAccountsServiceImpl implements ProvidersAccountsService {
     
     @Autowired
     ProvidersAccountsDao dao;
+    
+    ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public List<ProvidersAccounts> findByProvider(Providers provider) {
@@ -27,8 +31,12 @@ public class ProvidersAccountsServiceImpl implements ProvidersAccountsService {
     }
 
     @Override
-    public ProvidersAccounts save(String data) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ProvidersAccounts save(String data) throws Exception {
+        
+        JsonNode jsonRequest = mapper.readTree(data);
+        
+        
+        return null;
     }
     
 }
