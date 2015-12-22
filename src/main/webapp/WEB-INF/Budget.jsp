@@ -92,6 +92,7 @@
             catalogoGrupo: {},
             concept: '',
             concepts: [],
+            datosRetorno: {},
             catalogoDistribuidor: {},
             catalogoRegion: {},
             catalogoSucursales: {},
@@ -328,7 +329,16 @@
         },
         saveBudget: function(eventoconcepto)
         {
-          console.log(eventoconcepto);
+          $.ajax({
+          url: "http://localhost:8080/BIDGroup/budget-month-branch",
+          type: "POST",
+          data: JSON.stringify(eventoconcepto),
+          contentType: "application/json",
+          success: function(callback)
+          {
+            this.datosRetorno= callback;
+          }
+          });
         }
         },
         filters: {
@@ -555,6 +565,9 @@
                     </div>
                   </div>
                 </div>
+                <pre>
+                  {{$data.datosRetorno | json}}
+                </pre>
                 </div> <!-- /#container-fluid -->
             </div> <!-- /#Page Content -->
         </div> <!-- /#wrapper -->
