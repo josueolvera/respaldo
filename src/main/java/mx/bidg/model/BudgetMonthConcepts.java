@@ -46,12 +46,12 @@ public class BudgetMonthConcepts implements Serializable {
     
     @JoinColumn(name = "ID_BUDGET_MONTH_BRANCH", referencedColumnName = "ID_BUDGET_MONTH_BRANCH")
     @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
+    @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
     private BudgetMonthBranch idBudgetMonthBranch;
     
     @JoinColumn(name = "ID_BUDGET_CONCEPT", referencedColumnName = "ID_BUDGET_CONCEPT")
     @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
+    @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
     private CBudgetConcepts idBudgetConcept;
     
     @Column(name = "ID_ACCESS_LEVEL")

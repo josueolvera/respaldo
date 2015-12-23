@@ -19,6 +19,7 @@ import mx.bidg.model.CBudgetConcepts;
 import mx.bidg.model.CMonths;
 import mx.bidg.model.DwEnterprises;
 import mx.bidg.service.BudgetMonthBranchService;
+import mx.bidg.service.BudgetMonthConceptsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,15 +47,6 @@ public class BudgetMonthBranchController {
     public @ResponseBody String getBudgetMonthBranchs() {
         List<BudgetMonthBranch> list;
         return null;
-    }
-    
-    
-    @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"})
-    public @ResponseBody ResponseEntity<List<BudgetMonthBranch>> saveBudgetMonthBranchList(@RequestBody String data) throws Exception {
-        
-        List<BudgetMonthBranch> list = budgetMonthBranchService.saveList(data);
-        
-        return new ResponseEntity<>(list, HttpStatus.OK);
     }
     
     

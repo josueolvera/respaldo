@@ -48,6 +48,9 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
 
     @Autowired
     DwEnterprisesService dwEnterprisesService;
+    
+    @Autowired
+    CBudgetConceptsService cBudgetConceptsService;
 
     ObjectMapper map = new ObjectMapper();
 
@@ -85,6 +88,8 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
 
             CBudgetConcepts concept = new CBudgetConcepts();
             concept.setBudgetConcept(conceptName);
+            
+            concept = cBudgetConceptsService.save(concept);
 
             BudgetMonthConcepts budgetMonthConcepts = new BudgetMonthConcepts();
             budgetMonthConcepts.setIdAccessLevel(1);
@@ -104,6 +109,7 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
 
                 budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget, new CMonths(idMonth),
                         dwEnterprise, year);
+//                System.out.println("Valor de BudgetMonthBranch findByCombination: " + budgetMonthBranch.toString());
 
                 if (budgetMonthBranch == null) {
 
@@ -113,14 +119,14 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
                     budgetMonthBranch.setIdAccessLevel(new AccessLevel(1));
                     budgetMonthBranch.setIdBudget(budget);
                     budgetMonthBranch.setIdDwEnterprise(dwEnterprise);
-                    budgetMonthBranch.setIdMonth(new CMonths(idMonth));
+                    budgetMonthBranch.setMonth(new CMonths(idMonth));
                     budgetMonthBranch.setYear(year);
+                    budgetMonthBranchDao.save(budgetMonthBranch);
 
                     budgetMonthConcepts.setIdBudgetMonthBranch(budgetMonthBranch);
                     budgetMonthConceptsList.add(budgetMonthConcepts);
-                    budgetMonthBranch.setBudgetMonthConceptsList(budgetMonthConceptsList);
-                    budgetMonthBranchDao.save(budgetMonthBranch);
-
+//                    budgetMonthBranch.setBudgetMonthConceptsList(budgetMonthConceptsList);
+                    
                 } else {
 
                     amount = budgetMonthBranch.getAmount();

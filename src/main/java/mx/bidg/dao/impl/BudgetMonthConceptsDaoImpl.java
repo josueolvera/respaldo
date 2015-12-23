@@ -7,42 +7,36 @@ package mx.bidg.dao.impl;
 
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
-import mx.bidg.dao.CBudgetConceptsDao;
-import mx.bidg.model.CBudgetConcepts;
-import org.hibernate.Criteria;
+import mx.bidg.dao.BudgetMonthConceptsDao;
+import mx.bidg.model.BudgetMonthConcepts;
 import org.springframework.stereotype.Repository;
 
-/**
- *
- * @author sistemask
- */
 @Repository
-public class CBudgetConceptsDaoImpl extends AbstractDao<Integer, CBudgetConcepts> implements CBudgetConceptsDao {
+public class BudgetMonthConceptsDaoImpl extends AbstractDao<Integer, BudgetMonthConcepts> implements BudgetMonthConceptsDao {
 
     @Override
-    public CBudgetConcepts save(CBudgetConcepts entity) {
+    public BudgetMonthConcepts save(BudgetMonthConcepts entity) {
         persist(entity);
         return entity;
     }
 
     @Override
-    public CBudgetConcepts findById(int id) {
+    public BudgetMonthConcepts findById(int id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<CBudgetConcepts> findAll() {
-        Criteria criteria = createEntityCriteria();
-        return (List<CBudgetConcepts>) criteria.list();
-    }
-
-    @Override
-    public CBudgetConcepts update(CBudgetConcepts entity) {
+    public List<BudgetMonthConcepts> findAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean delete(CBudgetConcepts entity) {
+    public BudgetMonthConcepts update(BudgetMonthConcepts entity) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean delete(BudgetMonthConcepts entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
