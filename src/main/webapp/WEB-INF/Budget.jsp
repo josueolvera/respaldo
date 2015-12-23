@@ -329,8 +329,8 @@
         },
         saveBudget: function(eventoconcepto)
         {
-          /*$.ajax({
-          url: "http://localhost:8080/BIDGroup/budget-month-branch",
+          $.ajax({
+          url: "http://localhost:8080/BIDGroup/budget-month-concepts",
           type: "POST",
           data: JSON.stringify(eventoconcepto),
           contentType: "application/json",
@@ -339,8 +339,7 @@
             this.datosRetorno= callback;
           }
 
-        });*/
-        console.log(eventoconcepto);
+        });
         }
         },
         filters: {
