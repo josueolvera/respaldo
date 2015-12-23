@@ -6,6 +6,7 @@
 package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import java.util.List;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.BudgetMonthBranch;
@@ -31,7 +32,7 @@ public class BudgetMonthConceptsController {
     @Autowired
     BudgetMonthConceptsService budgetMonthConceptsService;
     
-    ObjectMapper map = new ObjectMapper();
+    ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
     
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"})
     public @ResponseBody ResponseEntity<String> saveBudgetMonthConceptsList(@RequestBody String data) throws Exception {
