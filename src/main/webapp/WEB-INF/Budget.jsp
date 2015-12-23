@@ -329,7 +329,7 @@
         },
         saveBudget: function(eventoconcepto)
         {
-          $.ajax({
+          /*$.ajax({
           url: "http://localhost:8080/BIDGroup/budget-month-branch",
           type: "POST",
           data: JSON.stringify(eventoconcepto),
@@ -338,7 +338,9 @@
           {
             this.datosRetorno= callback;
           }
-          });
+
+        });*/
+        console.log(eventoconcepto);
         }
         },
         filters: {
@@ -565,9 +567,6 @@
                     </div>
                   </div>
                 </div>
-                <pre>
-                  {{$data.datosRetorno | json}}
-                </pre>
                 </div> <!-- /#container-fluid -->
             </div> <!-- /#Page Content -->
         </div> <!-- /#wrapper -->
