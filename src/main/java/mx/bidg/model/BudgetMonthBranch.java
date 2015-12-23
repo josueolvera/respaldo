@@ -63,17 +63,21 @@ public class BudgetMonthBranch implements Serializable {
 
     @JoinColumn(name = "ID_BUDGET", referencedColumnName = "ID_BUDGET")
     @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
+    @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
     private Budgets idBudget;
 
     @JoinColumn(name = "ID_MONTH", referencedColumnName = "ID_MONTH")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CMonths idMonth;
+    private CMonths month;
+    
+    @Column(name = "ID_MONTH", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private int idMonth;
     
     @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
     @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
+    @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
     private DwEnterprises idDwEnterprise;
     
     @JoinColumn(name = "ID_ACCESS_LEVEL", referencedColumnName = "ID_ACCESS_LEVEL")
@@ -102,7 +106,7 @@ public class BudgetMonthBranch implements Serializable {
         this.year = year;
     }
 
-    public BudgetMonthBranch(Integer idBudgetMonthBranch, BigDecimal amount, int year, Budgets idBudget, CMonths idMonth) {
+    public BudgetMonthBranch(Integer idBudgetMonthBranch, BigDecimal amount, int year, Budgets idBudget, int idMonth) {
         this.idBudgetMonthBranch = idBudgetMonthBranch;
         this.amount = amount;
         this.year = year;
@@ -142,11 +146,11 @@ public class BudgetMonthBranch implements Serializable {
         this.idBudget = idBudget;
     }
 
-    public CMonths getIdMonth() {
+    public int getIdMonth() {
         return idMonth;
     }
 
-    public void setIdMonth(CMonths idMonth) {
+    public void setIdMonth(int idMonth) {
         this.idMonth = idMonth;
     }
 
@@ -189,6 +193,14 @@ public class BudgetMonthBranch implements Serializable {
     public void setRequestsList(List<Requests> requestsList) {
         this.requestsList = requestsList;
     }
+    
+    public CMonths getMonth() {
+        return month;
+    }
+
+    public void setMonth(CMonths month) {
+        this.month = month;
+    }
 
     @Override
     public int hashCode() {
@@ -212,7 +224,7 @@ public class BudgetMonthBranch implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.BudgetMonth[ idBudgetMonth=" + idBudgetMonthBranch + " ]";
+        return "mx.bidg.model.BudgetMonthBranch[ idBudgetMonthBranch=" + idBudgetMonthBranch + " ]";
     }
     
 }
