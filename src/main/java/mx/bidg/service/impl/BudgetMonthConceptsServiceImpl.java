@@ -85,7 +85,7 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
                     budgetMonthBranch.setIdAccessLevel(new AccessLevel(1));
                     budgetMonthBranch.setIdBudget(budget);
                     budgetMonthBranch.setIdDwEnterprise(dwEnterprise);
-                    budgetMonthBranch.setMonth(month);
+                    budgetMonthBranch.setIdMonth(month);
                     budgetMonthBranch.setYear(year);
                     budgetMonthBranch = budgetMonthBranchDao.save(budgetMonthBranch);
                     

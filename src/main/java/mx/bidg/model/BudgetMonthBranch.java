@@ -69,11 +69,11 @@ public class BudgetMonthBranch implements Serializable {
     @JoinColumn(name = "ID_MONTH", referencedColumnName = "ID_MONTH")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CMonths month;
+    private CMonths idMonth;
     
     @Column(name = "ID_MONTH", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private int idMonth;
+    private int idmonth;
     
     @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
     @ManyToOne(optional = false)
@@ -106,7 +106,7 @@ public class BudgetMonthBranch implements Serializable {
         this.year = year;
     }
 
-    public BudgetMonthBranch(Integer idBudgetMonthBranch, BigDecimal amount, int year, Budgets idBudget, int idMonth) {
+    public BudgetMonthBranch(Integer idBudgetMonthBranch, BigDecimal amount, int year, Budgets idBudget, CMonths idMonth) {
         this.idBudgetMonthBranch = idBudgetMonthBranch;
         this.amount = amount;
         this.year = year;
@@ -146,11 +146,11 @@ public class BudgetMonthBranch implements Serializable {
         this.idBudget = idBudget;
     }
 
-    public int getIdMonth() {
+    public CMonths getIdMonth() {
         return idMonth;
     }
 
-    public void setIdMonth(int idMonth) {
+    public void setIdMonth(CMonths idMonth) {
         this.idMonth = idMonth;
     }
 
@@ -194,12 +194,12 @@ public class BudgetMonthBranch implements Serializable {
         this.requestsList = requestsList;
     }
     
-    public CMonths getMonth() {
-        return month;
+    public int getMonth() {
+        return idmonth;
     }
 
-    public void setMonth(CMonths month) {
-        this.month = month;
+    public void setMonth(int idmonth) {
+        this.idmonth = idmonth;
     }
 
     @Override
