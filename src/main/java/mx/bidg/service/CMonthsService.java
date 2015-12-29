@@ -15,5 +15,6 @@ import mx.bidg.model.CMonths;
 public interface CMonthsService {
     
     public List<CMonths> findAll();
+    public CMonths findById(int id);
     
 }

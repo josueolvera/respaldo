@@ -6,6 +6,7 @@ package mx.bidg.config;
  */
 public class JsonViews {
     public static class Root {}
+    public static class ConceptsEmbedded extends Root {} 
     public static class Embedded extends Root {} 
     public static class RootExtras extends Root {}
     public static class EmbeddedBudget extends Root{}

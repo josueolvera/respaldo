@@ -26,7 +26,7 @@ public class CMonthsDaoImpl extends AbstractDao<Integer, CMonths> implements CMo
 
     @Override
     public CMonths findById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getByKey(id);
     }
 
     @Override
