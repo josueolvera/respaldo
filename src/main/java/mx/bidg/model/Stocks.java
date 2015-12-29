@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
 
 import javax.persistence.*;
@@ -64,6 +65,9 @@ public class Stocks implements Serializable {
 
     @Column(name = "ID_DW_ENTERPRISE", insertable = false, updatable = false)
     private Integer idDwEnterprises;
+
+    @Column(name = "ID_ACCESS_LEVEL")
+    private Integer idAccessLevel;
 
     @JoinColumn(name = "ID_ARTICLE_STATUS", referencedColumnName = "ID_ARTICLE_STATUS")
     @ManyToOne(optional = false)
@@ -168,6 +172,14 @@ public class Stocks implements Serializable {
         this.idDwEnterprises = idDwEnterprises;
     }
 
+    public Integer getIdAccessLevel() {
+        return idAccessLevel;
+    }
+
+    public void setIdAccessLevel(Integer idAccessLevel) {
+        this.idAccessLevel = idAccessLevel;
+    }
+
     public DwEnterprises getDwEnterprises() {
         return dwEnterprises;
     }
@@ -198,6 +210,10 @@ public class Stocks implements Serializable {
 
     public void setPropertiesList(List<Properties> propertiesList) {
         this.propertiesList = propertiesList;
+    }
+
+    public DateFormatsPojo getCreationDateFormats() {
+        return new DateFormatsPojo(creationDate);
     }
 
     @Override
