@@ -56,7 +56,6 @@
                        this.catalogoSucursales= data;
                        //this.bandera3ernivel= true;
                     });
-
             this.$http.get("http://localhost:8080/BIDGroup/groups")
                     .success(function (data)
                     {
@@ -566,6 +565,10 @@
                     </div>
                   </div>
                 </div>
+
+                <pre>
+                  {{ $data | json}}
+                </pre>
                 </div> <!-- /#container-fluid -->
             </div> <!-- /#Page Content -->
         </div> <!-- /#wrapper -->
