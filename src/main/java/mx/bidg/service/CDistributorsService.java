@@ -14,6 +14,7 @@ import mx.bidg.model.CDistributors;
  */
 public interface CDistributorsService {
     
-    public List<CDistributors> findAll();
+    List<CDistributors> findAll();
+    List<CDistributors> findAllForStock();
     
 }

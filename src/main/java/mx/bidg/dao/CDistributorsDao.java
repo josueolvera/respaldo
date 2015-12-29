@@ -7,10 +7,12 @@ package mx.bidg.dao;
 
 import mx.bidg.model.CDistributors;
 
+import java.util.List;
+
 /**
  *
  * @author sistemask
  */
 public interface CDistributorsDao extends InterfaceDao<CDistributors> {
-    
+    List<CDistributors> findAllForStock();
 }
