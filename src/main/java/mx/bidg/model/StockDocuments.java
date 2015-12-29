@@ -1,0 +1,131 @@
+package mx.bidg.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
+
+import java.io.Serializable;
+import javax.persistence.*;
+import javax.validation.constraints.Size;
+
+/**
+ *
+ * @author Rafael Viveros
+ */
+@Entity
+@Table(name = "STOCK_DOCUMENTS")
+public class StockDocuments implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID_STOCK_DOCUMENT")
+    @JsonView(JsonViews.Root.class)
+    private Integer idStockDocument;
+
+    @Size(max = 200)
+    @Column(name = "DOCUMENT_URL")
+    @JsonView(JsonViews.Root.class)
+    private String documentUrl;
+
+    @Column(name = "ID_DOCUMENT_TYPE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idDocumentType;
+
+    @Column(name = "ID_STOCK", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idStock;
+
+    @JoinColumn(name = "ID_DOCUMENT_TYPE", referencedColumnName = "ID_DOCUMENT_TYPE")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    @JsonProperty("documentType")
+    private CStockDocumentsTypes cStockDocumentsTypes;
+
+    @JoinColumn(name = "ID_STOCK", referencedColumnName = "ID_STOCK")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private Stocks stock;
+
+    public StockDocuments() {
+    }
+
+    public StockDocuments(Integer idStockDocument) {
+        this.idStockDocument = idStockDocument;
+    }
+
+    public Integer getIdStockDocument() {
+        return idStockDocument;
+    }
+
+    public void setIdStockDocument(Integer idStockDocument) {
+        this.idStockDocument = idStockDocument;
+    }
+
+    public Integer getIdDocumentType() {
+        return idDocumentType;
+    }
+
+    public void setIdDocumentType(Integer idDocumentType) {
+        this.idDocumentType = idDocumentType;
+    }
+
+    public Integer getIdStock() {
+        return idStock;
+    }
+
+    public void setIdStock(Integer idStock) {
+        this.idStock = idStock;
+    }
+
+    public String getDocumentUrl() {
+        return documentUrl;
+    }
+
+    public void setDocumentUrl(String documentUrl) {
+        this.documentUrl = documentUrl;
+    }
+
+    @JsonProperty("documentType")
+    public CStockDocumentsTypes getCStockDocumentsTypes() {
+        return cStockDocumentsTypes;
+    }
+
+    public void setCStockDocumentsTypes(CStockDocumentsTypes cStockDocumentsTypes) {
+        this.cStockDocumentsTypes = cStockDocumentsTypes;
+    }
+
+    public Stocks getStock() {
+        return stock;
+    }
+
+    public void setStock(Stocks stocks) {
+        this.stock = stocks;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (idStockDocument != null ? idStockDocument.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof StockDocuments)) {
+            return false;
+        }
+        StockDocuments other = (StockDocuments) object;
+        if ((this.idStockDocument == null && other.idStockDocument != null) || (this.idStockDocument != null && !this.idStockDocument.equals(other.idStockDocument))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "mx.bidg.model.StockDocuments[ idStockDocument=" + idStockDocument + " ]";
+    }
+    
+}
