@@ -22,11 +22,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class CDistributorsServiceImpl implements CDistributorsService {
     
     @Autowired
-    CDistributorsDao dao;
+    private CDistributorsDao dao;
 
     @Override
     public List<CDistributors> findAll() {
         return dao.findAll();
     }
-    
+
+    @Override
+    public List<CDistributors> findAllForStock() {
+        return dao.findAllForStock();
+    }
 }

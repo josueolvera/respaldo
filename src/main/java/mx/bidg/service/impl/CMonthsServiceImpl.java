@@ -28,5 +28,10 @@ public class CMonthsServiceImpl implements CMonthsService{
     public List<CMonths> findAll() {
         return dao.findAll();
     }
+
+    @Override
+    public CMonths findById(int id) {
+        return dao.findById(id);
+    }
     
 }

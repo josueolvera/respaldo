@@ -10,6 +10,7 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CDistributorsDao;
 import mx.bidg.model.CDistributors;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -44,5 +45,12 @@ public class CDistributorsDaoImpl extends AbstractDao<Integer, CDistributors> im
     public boolean delete(CDistributors entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<CDistributors> findAllForStock() {
+        return (List<CDistributors>) createEntityCriteria()
+                .add(Restrictions.eq("hasStock", 1))
+                .list();
+    }
 }

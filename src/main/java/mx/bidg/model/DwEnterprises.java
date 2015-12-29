@@ -37,7 +37,6 @@ public class DwEnterprises implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_DW_ENTERPRISE")
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class, JsonViews.IdsEnterprises.class})
     private Integer idDwEnterprise;
@@ -73,6 +72,10 @@ public class DwEnterprises implements Serializable {
     @Column(name = "ID_AREA", insertable = false, updatable = false)
     @JsonView({JsonViews.Root.class, JsonViews.IdsEnterprises.class})
     private int idarea;
+
+    @Column(name = "BUDGETABLE")
+    @JsonView(JsonViews.Root.class)
+    private Integer budgetable;
     
     @JoinColumn(name = "ID_GROUP", referencedColumnName = "ID_GROUP")
     @ManyToOne(optional = false)
@@ -138,6 +141,14 @@ public class DwEnterprises implements Serializable {
 
     public void setIdGbranch(int idGbranch) {
         this.idGbranch = idGbranch;
+    }
+
+    public Integer getBudgetable() {
+        return budgetable;
+    }
+
+    public void setBudgetable(Integer budgetable) {
+        this.budgetable = budgetable;
     }
 
     public CGroups getIdGroup() {

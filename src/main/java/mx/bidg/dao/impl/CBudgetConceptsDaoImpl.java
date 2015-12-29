@@ -14,7 +14,6 @@ import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.DistinctRootEntityResultTransformer;
-import org.hibernate.transform.ResultTransformer;
 import org.springframework.stereotype.Repository;
 
 /**

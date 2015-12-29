@@ -150,6 +150,8 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
         return list;
     }
 
+    
+    //En construccion
     @Override
     public List<BudgetMonthConcepts> findByGroupArea(int idGroup, int idArea) throws Exception {
         

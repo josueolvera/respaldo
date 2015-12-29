@@ -52,6 +52,10 @@ public class CDistributors implements Serializable {
     @Column(name = "ACRONYMS")
     @JsonView(JsonViews.Root.class)
     private String acronyms;
+
+    @Column(name = "HAS_STOCK")
+    @JsonView(JsonViews.Root.class)
+    private Integer hasStock;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idDistributor")
     @JsonView(JsonViews.Embedded.class)
@@ -92,7 +96,15 @@ public class CDistributors implements Serializable {
     public void setAcronyms(String acronyms) {
         this.acronyms = acronyms;
     }
-    
+
+    public Integer getHasStock() {
+        return hasStock;
+    }
+
+    public void setHasStock(Integer hasStock) {
+        this.hasStock = hasStock;
+    }
+
     public List<DwEnterprises> getDwEnterprisesList() {
         return dwEnterprisesList;
     }

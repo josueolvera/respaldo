@@ -38,14 +38,14 @@ body {
 }
 
 .main-menu:hover,nav.main-menu.expanded {
-    width:30rem;
-    overflow:hidden;
+    width: 25rem;
+    overflow: hidden;
 }
 
 .main-menu {
     background:#354553;
     border-right:1px solid #e5e5e5;
-    position:absolute;
+    position: fixed;
     top:0;
     bottom:0;
     height:100%;

@@ -13,6 +13,8 @@ import mx.bidg.service.CDistributorsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -24,14 +26,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class CDistributorsController {
     
     @Autowired
-    CDistributorsService cDistributorsService;
+    private CDistributorsService cDistributorsService;
     
     ObjectMapper map = new ObjectMapper();
     
-    @RequestMapping(produces = "application/json;charset=UTF-8")
-    public @ResponseBody String getCDistributors() throws Exception {
-        List<CDistributors> list = cDistributorsService.findAll();
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    public @ResponseBody String getCDistributors(@RequestParam(name = "forStock", required = false) boolean forStock) throws Exception {
+        List<CDistributors> list;
+
+        if (forStock) {
+            list = cDistributorsService.findAllForStock();
+        } else {
+            list = cDistributorsService.findAll();
+        }
+
         return map.writerWithView(JsonViews.Root.class).writeValueAsString(list);
     }
-    
 }
