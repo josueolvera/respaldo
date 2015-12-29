@@ -5,6 +5,7 @@
  */
 package mx.bidg.dao;
 
+import java.util.List;
 import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.Budgets;
 import mx.bidg.model.CMonths;
@@ -17,5 +18,6 @@ import mx.bidg.model.DwEnterprises;
 public interface BudgetMonthBranchDao extends InterfaceDao<BudgetMonthBranch> {
     
     public BudgetMonthBranch findByCombination(Budgets budget, CMonths month, DwEnterprises dwEnterprise, Integer year);
+    public List<BudgetMonthBranch> findByBudget(Budgets budget);
     
 }

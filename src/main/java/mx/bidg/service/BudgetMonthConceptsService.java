@@ -15,5 +15,6 @@ import mx.bidg.model.BudgetMonthConcepts;
 public interface BudgetMonthConceptsService {
     
     public List<BudgetMonthConcepts> saveList(String data) throws Exception;
+    public List<BudgetMonthConcepts> findByGroupArea(int idGroup, int idArea) throws Exception;
     
 }

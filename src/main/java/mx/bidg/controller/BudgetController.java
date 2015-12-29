@@ -7,6 +7,7 @@ package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import java.util.ArrayList;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.AccessLevel;
@@ -43,7 +44,7 @@ public class BudgetController {
     @Autowired
     BudgetsService budgetsService;
     
-    ObjectMapper map = new ObjectMapper();
+    ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
     
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json; charset=UTF-8"})
     public @ResponseBody ResponseEntity<String> saveBudget(@RequestBody String data) throws Exception {

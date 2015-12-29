@@ -5,6 +5,8 @@
  */
 package mx.bidg.dao;
 
+import java.util.List;
+import mx.bidg.model.Budgets;
 import mx.bidg.model.CBudgetConcepts;
 
 /**
@@ -13,4 +15,6 @@ import mx.bidg.model.CBudgetConcepts;
  */
 public interface CBudgetConceptsDao extends InterfaceDao<CBudgetConcepts> {
     
+     public List<CBudgetConcepts> findByBudget(Budgets budget);
+     
 }

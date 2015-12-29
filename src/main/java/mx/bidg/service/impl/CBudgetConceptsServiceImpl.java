@@ -5,7 +5,10 @@
  */
 package mx.bidg.service.impl;
 
+import java.util.List;
+import mx.bidg.service.CBudgetConceptsService;
 import mx.bidg.dao.CBudgetConceptsDao;
+import mx.bidg.model.Budgets;
 import mx.bidg.model.CBudgetConcepts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,21 @@ public class CBudgetConceptsServiceImpl implements CBudgetConceptsService {
     @Override
     public CBudgetConcepts save(CBudgetConcepts cBudgetConcept) {
         return budgetConceptsDao.save(cBudgetConcept);
+    }
+
+    @Override
+    public CBudgetConcepts findById(int idBudgetConcept) {
+        return budgetConceptsDao.findById(idBudgetConcept);
+    }
+
+    @Override
+    public CBudgetConcepts update(CBudgetConcepts cBudgetConcept) {
+        return budgetConceptsDao.update(cBudgetConcept);
+    }
+
+    @Override
+    public List<CBudgetConcepts> findByBudget(Budgets budget) {
+        return budgetConceptsDao.findByBudget(budget);
     }
     
 }

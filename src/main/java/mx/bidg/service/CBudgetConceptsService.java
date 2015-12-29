@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mx.bidg.service.impl;
+package mx.bidg.service;
 
+import java.util.List;
+import mx.bidg.model.Budgets;
 import mx.bidg.model.CBudgetConcepts;
 
 /**
@@ -14,5 +16,8 @@ import mx.bidg.model.CBudgetConcepts;
 public interface CBudgetConceptsService {
     
     public CBudgetConcepts save(CBudgetConcepts cBudgetConcept);
+    public CBudgetConcepts findById(int idBudgetConcept);
+    public CBudgetConcepts update(CBudgetConcepts cBudgetConcept);
+    public List<CBudgetConcepts> findByBudget(Budgets budget);
     
 }
