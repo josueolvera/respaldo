@@ -57,6 +57,7 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
         HashMap<String, Object> map = new HashMap<>();
         map.put("idGroup", idGroup);
         map.put("idArea", idArea);
+        map.put("budgetable", 1);
         return (List<DwEnterprises>) criteria.add(Restrictions.allEq(map)).list();
     }
 
@@ -69,6 +70,7 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
         map.put("idRegion", region);
         map.put("idBranch", branch);
         map.put("idArea", area);
+        map.put("budgetable", 1);
         return (DwEnterprises) criteria.add(Restrictions.allEq(map)).uniqueResult();
     }
     
