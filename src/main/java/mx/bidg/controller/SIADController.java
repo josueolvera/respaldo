@@ -23,8 +23,8 @@ public class SIADController {
         return "stock";
     }
     
-        @RequestMapping(value="/servicerequest", produces= {"text/html;charset=UTF-8"})
+        @RequestMapping(value="/request", produces= {"text/html;charset=UTF-8"})
     public String serviceRequest(Model model){
-        return "ServiceRequest";
+        return "Request";
     }
 }

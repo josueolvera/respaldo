@@ -189,6 +189,7 @@
             {
                   var objeto=
                           {
+                          idConcept: 0,
                           idBudget: 0,
                           dwEnterprise: 0,
                           year: 2015,
@@ -333,11 +334,14 @@
           type: "POST",
           data: JSON.stringify(eventoconcepto),
           contentType: "application/json",
-          success: function(callback)
+          success: function()
           {
-            this.datosRetorno= callback;
+            alert("Concepto almacenado con exito");
+          },
+          error: function()
+          {
+            alert("Ha habido un error con tu solicitud, intenta nuevamente");
           }
-
         });
         }
         },
@@ -565,10 +569,6 @@
                     </div>
                   </div>
                 </div>
-
-                <pre>
-                  {{ $data | json}}
-                </pre>
                 </div> <!-- /#container-fluid -->
             </div> <!-- /#Page Content -->
         </div> <!-- /#wrapper -->
