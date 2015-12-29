@@ -5,12 +5,16 @@
  */
 package mx.bidg.dao;
 
+import java.util.List;
 import mx.bidg.model.BudgetMonthConcepts;
+import mx.bidg.model.CBudgetConcepts;
 
 /**
  *
  * @author sistemask
  */
 public interface BudgetMonthConceptsDao extends InterfaceDao<BudgetMonthConcepts> {
+    
+    public List<BudgetMonthConcepts> findByConcept(CBudgetConcepts budgetConcept);
     
 }

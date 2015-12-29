@@ -8,8 +8,13 @@ package mx.bidg.dao.impl;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CBudgetConceptsDao;
+import mx.bidg.model.Budgets;
 import mx.bidg.model.CBudgetConcepts;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.DistinctRootEntityResultTransformer;
+import org.hibernate.transform.ResultTransformer;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -27,7 +32,7 @@ public class CBudgetConceptsDaoImpl extends AbstractDao<Integer, CBudgetConcepts
 
     @Override
     public CBudgetConcepts findById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getByKey(id);
     }
 
     @Override
@@ -38,12 +43,23 @@ public class CBudgetConceptsDaoImpl extends AbstractDao<Integer, CBudgetConcepts
 
     @Override
     public CBudgetConcepts update(CBudgetConcepts entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        getSession().update(entity);
+        return entity;
     }
 
     @Override
     public boolean delete(CBudgetConcepts entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<CBudgetConcepts> findByBudget(Budgets budget) {
+        Criteria criteria = createEntityCriteria()
+                .setResultTransformer(DistinctRootEntityResultTransformer.INSTANCE)
+                .setFetchMode("budgetMonthConceptsList", FetchMode.JOIN)
+                .setFetchMode("budgetMonthConceptsList.idBudgetMonthBranch", FetchMode.JOIN)
+                .createCriteria("budgetMonthConceptsList.idBudgetMonthBranch").add(Restrictions.eq("idBudget", budget));
+        return (List<CBudgetConcepts>) criteria.list();
     }
     
 }

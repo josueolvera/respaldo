@@ -13,6 +13,7 @@ import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.Budgets;
 import mx.bidg.model.CMonths;
 import mx.bidg.model.DwEnterprises;
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -61,6 +62,12 @@ public class BudgetMonthBranchDaoImpl extends AbstractDao<Integer, BudgetMonthBr
         
         BudgetMonthBranch budgetMonthBranch = (BudgetMonthBranch) createEntityCriteria().add(Restrictions.allEq(map)).uniqueResult();
         return budgetMonthBranch;
+    }
+
+    @Override
+    public List<BudgetMonthBranch> findByBudget(Budgets budget) {
+        Criteria criteria = createEntityCriteria().add(Restrictions.eq("idBudget", budget));
+        return (List<BudgetMonthBranch>) criteria.list();
     }
     
 }

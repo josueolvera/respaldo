@@ -18,6 +18,8 @@ import mx.bidg.model.CGroups;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
+import org.hibernate.transform.DistinctRootEntityResultTransformer;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -74,7 +76,10 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
         HashMap<String, Object> map = new HashMap<>();
         map.put("group", idGroup);
         map.put("area", idArea);
-        return (ArrayList<Budgets>) criteria.add(Restrictions.allEq(map)).list();
+        ArrayList<Budgets> list = (ArrayList<Budgets>) criteria.add(Restrictions.allEq(map))
+                .setResultTransformer(DistinctRootEntityResultTransformer.INSTANCE)
+                .list();
+        return list;
     }
     
 }

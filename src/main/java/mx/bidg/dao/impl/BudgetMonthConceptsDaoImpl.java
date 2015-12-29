@@ -9,6 +9,10 @@ import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.BudgetMonthConceptsDao;
 import mx.bidg.model.BudgetMonthConcepts;
+import mx.bidg.model.CBudgetConcepts;
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -38,6 +42,14 @@ public class BudgetMonthConceptsDaoImpl extends AbstractDao<Integer, BudgetMonth
     @Override
     public boolean delete(BudgetMonthConcepts entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<BudgetMonthConcepts> findByConcept(CBudgetConcepts budgetConcept) {
+        Criteria criteria = createEntityCriteria()
+                .add(Restrictions.eq("idBudgetConcept", budgetConcept))
+                .setFetchMode("idBudgetMonthBranch", FetchMode.JOIN);
+        return (List<BudgetMonthConcepts>) criteria.list();
     }
     
 }
