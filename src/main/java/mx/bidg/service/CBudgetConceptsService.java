@@ -18,6 +18,7 @@ public interface CBudgetConceptsService {
     public CBudgetConcepts save(CBudgetConcepts cBudgetConcept);
     public CBudgetConcepts findById(int idBudgetConcept);
     public CBudgetConcepts update(CBudgetConcepts cBudgetConcept);
+    public boolean delete(CBudgetConcepts cBudgetConcept);
     public List<CBudgetConcepts> findByBudget(Budgets budget);
     
 }

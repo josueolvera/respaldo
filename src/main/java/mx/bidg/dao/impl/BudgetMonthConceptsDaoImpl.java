@@ -41,7 +41,8 @@ public class BudgetMonthConceptsDaoImpl extends AbstractDao<Integer, BudgetMonth
 
     @Override
     public boolean delete(BudgetMonthConcepts entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        remove(entity);
+        return true;
     }
 
     @Override

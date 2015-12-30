@@ -30,6 +30,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -141,6 +142,19 @@ public class CBudgetConceptsController {
 //                .writeValueAsString(list), HttpStatus.OK);
         
         return new ResponseEntity<>(mapper.writeValueAsString(list), HttpStatus.OK);
+        
+    }
+    
+    
+    @RequestMapping(value = "/{idConcept}", method = RequestMethod.DELETE, produces = "application/jeson")
+    public @ResponseBody ResponseEntity<String> delete(@PathVariable int idConcept) throws Exception {
+        
+        CBudgetConcepts budgetConcept = new CBudgetConcepts(idConcept);
+        if(budgetConceptsService.delete(budgetConcept)) {
+            return new ResponseEntity<>("El concepto se elimino correctamente", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Hubo un problema al eliminar el concepto", HttpStatus.CONFLICT);
+        }
         
     }
     

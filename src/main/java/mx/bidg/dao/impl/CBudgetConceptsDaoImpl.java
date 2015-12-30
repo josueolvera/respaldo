@@ -48,7 +48,8 @@ public class CBudgetConceptsDaoImpl extends AbstractDao<Integer, CBudgetConcepts
 
     @Override
     public boolean delete(CBudgetConcepts entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        remove(entity);
+        return true;
     }
 
     @Override

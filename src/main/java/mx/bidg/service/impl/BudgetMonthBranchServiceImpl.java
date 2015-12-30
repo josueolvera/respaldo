@@ -181,4 +181,9 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
         return budgetMonthBranch;
     }
 
+    @Override
+    public BudgetMonthBranch update(BudgetMonthBranch budgetMonthBranch) {
+        return budgetMonthBranchDao.update(budgetMonthBranch);
+    }
+
 }
