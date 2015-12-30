@@ -23,10 +23,15 @@ public class StockDocuments implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idStockDocument;
 
-    @Size(max = 200)
+    @Size(max = 2048)
     @Column(name = "DOCUMENT_URL")
     @JsonView(JsonViews.Root.class)
     private String documentUrl;
+
+    @Size(max = 1024)
+    @Column(name = "DOCUMENT_NAME")
+    @JsonView(JsonViews.Root.class)
+    private String documentName;
 
     @Column(name = "ID_DOCUMENT_TYPE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -43,7 +48,7 @@ public class StockDocuments implements Serializable {
     private CStockDocumentsTypes cStockDocumentsTypes;
 
     @JoinColumn(name = "ID_STOCK", referencedColumnName = "ID_STOCK")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JsonView(JsonViews.Embedded.class)
     private Stocks stock;
 
@@ -84,6 +89,14 @@ public class StockDocuments implements Serializable {
 
     public void setDocumentUrl(String documentUrl) {
         this.documentUrl = documentUrl;
+    }
+
+    public String getDocumentName() {
+        return documentName;
+    }
+
+    public void setDocumentName(String documentName) {
+        this.documentName = documentName;
     }
 
     @JsonProperty("documentType")

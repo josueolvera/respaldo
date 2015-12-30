@@ -1,8 +1,9 @@
+package mx.bidg.model;
+
 /**
  *
- * @author rafael
+ * @author Rafael Viveros
  */
-package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -17,6 +18,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -87,6 +89,10 @@ public class Stocks implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "stocks")
     @JsonView(JsonViews.Embedded.class)
     private List<Properties> propertiesList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "stock", fetch = FetchType.EAGER)
+    @JsonView(JsonViews.Embedded.class)
+    private List<StockDocuments> stockDocumentsList;
 
     public Stocks() {
     }
@@ -210,6 +216,14 @@ public class Stocks implements Serializable {
 
     public void setPropertiesList(List<Properties> propertiesList) {
         this.propertiesList = propertiesList;
+    }
+
+    public List<StockDocuments> getStockDocumentsList() {
+        return stockDocumentsList;
+    }
+
+    public void setStockDocumentsList(List<StockDocuments> stockDocumentsList) {
+        this.stockDocumentsList = stockDocumentsList;
     }
 
     public DateFormatsPojo getCreationDateFormats() {

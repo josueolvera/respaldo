@@ -34,7 +34,7 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public Stocks findById(int id) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return stockDao.findById(id);
     }
 
     @Override
