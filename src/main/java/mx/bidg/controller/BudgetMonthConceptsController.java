@@ -39,7 +39,8 @@ public class BudgetMonthConceptsController {
         
         List<BudgetMonthConcepts> list = budgetMonthConceptsService.saveList(data);
         
-        return new ResponseEntity<>(map.writerWithView(JsonViews.EmbeddedBudget.class).writeValueAsString(list), HttpStatus.OK);
+//        return new ResponseEntity<>(map.writerWithView(JsonViews.EmbeddedBudget.class).writeValueAsString(list), HttpStatus.OK);
+        return new ResponseEntity<>("Concepto(s) guardado(s) con éxito", HttpStatus.OK);
     }
     
 }
