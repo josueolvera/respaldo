@@ -84,6 +84,8 @@
                       });
 
 
+
+
           },
           data: {
             meses: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
@@ -91,7 +93,7 @@
             catalogoGrupo: {},
             concept: '',
             concepts: [],
-            datosRetorno: {},
+            datosPresupuesto: {},
             catalogoDistribuidor: {},
             catalogoRegion: {},
             catalogoSucursales: {},
@@ -170,16 +172,12 @@
                            });
                         });
 
-
-                this.$http.get("http://localhost:8080/BIDGroup/budgets/"+res[0]+"/"+res[1])
-                        .success(function (data)
-                        {
-                            this.contenido = this.groupBy(data, function (item)
-                            {
-                                return item.idBudgetCategory;
-                            });
-                            this.banderacontenido= true;
-                        });
+                        this.$http.get("http://localhost:8080/BIDGroup/budgets/"+res[0]+"/"+res[1])
+                                .success(function (data)
+                                {
+                                  this.contenido = data;
+                                    this.searchConcepts(res[0], res[1]);
+                                });
                       this.lastkeysearch = key;
               }
 
@@ -231,7 +229,28 @@
                         {month: 12,montoConcept: ''}
                       ];
                     return objeto;
-            }
+            },
+              searchConcepts: function(group, area)
+              {
+                var self= this;
+                this.$http.get("http://localhost:8080/BIDGroup/budget-concepts/group-area/"+group+"/"+area)
+                        .success(function (data)
+                        {
+                          this.datosPresupuesto = data;
+
+                          $.each(this.datosPresupuesto, function(index, el)
+                          {
+                            $.each(el.conceptos, function(indexs, ele)
+                            {
+                                $.each(ele.conceptMonth, function(indexss, elem)
+                                {
+                                  self.moneyFormat(elem, ele, el);
+                                });
+                            });
+                          });
+                          this.mixedArrays();
+                        });
+              }
             ,
               seteoInfo: function(idDwEnterprise, budget, event)
             {
@@ -249,9 +268,34 @@
                //budget.totalMonth.push(totalMeses);
              }
              budget.conceptos.push(concepto);
-
-
           },
+            mixedArrays: function()
+            {
+                var self= this;
+                $.each(this.contenido, function(index, el)
+                {
+                  var BudgetTem = el;
+                  $.each(self.datosPresupuesto, function(indexs, ele)
+                  {
+                    if (BudgetTem.idBudget == ele.idBudget)
+                    {
+                      self.contenido.$remove(BudgetTem);
+                      self.contenido.push(ele);
+                    }
+                  });
+                });
+                self.groupArray();
+            }
+           ,
+           groupArray: function()
+           {
+             this.contenido = this.groupBy(this.contenido, function (item)
+             {
+                return item.idBudgetCategory;
+             });
+             this.banderacontenido = true;
+           }
+           ,
           deleteObject: function(budget, concepto)
           {
             budget.conceptos.$remove(concepto);
@@ -337,6 +381,7 @@
           success: function()
           {
             alert("Concepto almacenado con exito");
+
           },
           error: function()
           {
@@ -439,7 +484,7 @@
             <!-- Page Content -->
             <div id="page-content-wrapper">
                 <div class="container-fluid">
-                  <div class="row" v-for="suc in sucursales">
+                  <div class="row" v-for="suc in sucursales" v-if="banderacontenido">
                     <div class="col-xs-12">
                     <div class="row" v-for="sucs in suc">
                       <div class="row" v-for="sucss in sucs" style="margin-left: 0px">
@@ -573,9 +618,5 @@
             </div> <!-- /#Page Content -->
         </div> <!-- /#wrapper -->
       </div> <!-- #contenidos -->
-
-
-
-
     </jsp:body>
 </t:template>

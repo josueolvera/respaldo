@@ -21,19 +21,19 @@ public class ConceptPojo {
     private String conceptName;
     private BigDecimal total;
     private boolean equals;
-    private List<ConceptMonthPojo> conceptMonths;
+    private List<ConceptMonthPojo> conceptMonth;
 
     public ConceptPojo() {
     }
 
-    public ConceptPojo(int idConcept, int idBudget, int dwEnterprise, int year, String conceptName, boolean equals, List<ConceptMonthPojo> conceptMonths) {
+    public ConceptPojo(int idConcept, int idBudget, int dwEnterprise, int year, String conceptName, boolean equals, List<ConceptMonthPojo> conceptMonth) {
         this.idConcept = idConcept;
         this.idBudget = idBudget;
         this.dwEnterprise = dwEnterprise;
         this.year = year;
         this.conceptName = conceptName;
         this.equals = equals;
-        this.conceptMonths = conceptMonths;
+        this.conceptMonth = conceptMonth;
     }
 
     public int getIdConcept() {
@@ -92,12 +92,12 @@ public class ConceptPojo {
         this.equals = equals;
     }
 
-    public List<ConceptMonthPojo> getConceptMonths() {
-        return conceptMonths;
+    public List<ConceptMonthPojo> getConceptMonth() {
+        return conceptMonth;
     }
 
-    public void setConceptMonth(List<ConceptMonthPojo> conceptMonths) {
-        this.conceptMonths = conceptMonths;
+    public void setConceptMonth(List<ConceptMonthPojo> conceptMonth) {
+        this.conceptMonth = conceptMonth;
     }
     
 }

@@ -20,20 +20,20 @@ public class BudgetPojo {
     private int idBudgetCategory;
     private int idBudgetSubcategory;
     private BigDecimal granTotal;
-    private List<ConceptPojo> concepts;
-    private List<TotalMonthPojo> totalMonths;
+    private List<ConceptPojo> conceptos;
+    private List<TotalMonthPojo> totalMonth;
 
     public BudgetPojo() {
     }
 
-    public BudgetPojo(int idBudget, int idGroup, int idArea, int idBudgetCategory, int idBudgetSubcategory, List<ConceptPojo> concepts, List<TotalMonthPojo> totalMonths) {
+    public BudgetPojo(int idBudget, int idGroup, int idArea, int idBudgetCategory, int idBudgetSubcategory, List<ConceptPojo> conceptos, List<TotalMonthPojo> totalMonth) {
         this.idBudget = idBudget;
         this.idGroup = idGroup;
         this.idArea = idArea;
         this.idBudgetCategory = idBudgetCategory;
         this.idBudgetSubcategory = idBudgetSubcategory;
-        this.concepts = concepts;
-        this.totalMonths = totalMonths;
+        this.conceptos = conceptos;
+        this.totalMonth = totalMonth;
     }
 
     public int getIdBudget() {
@@ -84,20 +84,20 @@ public class BudgetPojo {
         this.granTotal = granTotal;
     }
 
-    public List<ConceptPojo> getConcepts() {
-        return concepts;
+    public List<ConceptPojo> getConceptos() {
+        return conceptos;
     }
 
-    public void setConcepts(List<ConceptPojo> concepts) {
-        this.concepts = concepts;
+    public void setConceptos(List<ConceptPojo> conceptos) {
+        this.conceptos = conceptos;
     }
 
-    public List<TotalMonthPojo> getTotalMonths() {
-        return totalMonths;
+    public List<TotalMonthPojo> getTotalMonth() {
+        return totalMonth;
     }
 
-    public void setTotalMonths(List<TotalMonthPojo> totalMonths) {
-        this.totalMonths = totalMonths;
+    public void setTotalMonth(List<TotalMonthPojo> totalMonth) {
+        this.totalMonth = totalMonth;
     }
     
 }
