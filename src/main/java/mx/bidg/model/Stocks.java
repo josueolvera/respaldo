@@ -1,13 +1,15 @@
+package mx.bidg.model;
+
 /**
  *
- * @author rafael
+ * @author Rafael Viveros
  */
-package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
 
 import javax.persistence.*;
@@ -16,6 +18,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -65,6 +68,9 @@ public class Stocks implements Serializable {
     @Column(name = "ID_DW_ENTERPRISE", insertable = false, updatable = false)
     private Integer idDwEnterprises;
 
+    @Column(name = "ID_ACCESS_LEVEL")
+    private Integer idAccessLevel;
+
     @JoinColumn(name = "ID_ARTICLE_STATUS", referencedColumnName = "ID_ARTICLE_STATUS")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
@@ -83,6 +89,10 @@ public class Stocks implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "stocks")
     @JsonView(JsonViews.Embedded.class)
     private List<Properties> propertiesList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "stock", fetch = FetchType.EAGER)
+    @JsonView(JsonViews.Embedded.class)
+    private List<StockDocuments> stockDocumentsList;
 
     public Stocks() {
     }
@@ -168,6 +178,14 @@ public class Stocks implements Serializable {
         this.idDwEnterprises = idDwEnterprises;
     }
 
+    public Integer getIdAccessLevel() {
+        return idAccessLevel;
+    }
+
+    public void setIdAccessLevel(Integer idAccessLevel) {
+        this.idAccessLevel = idAccessLevel;
+    }
+
     public DwEnterprises getDwEnterprises() {
         return dwEnterprises;
     }
@@ -198,6 +216,18 @@ public class Stocks implements Serializable {
 
     public void setPropertiesList(List<Properties> propertiesList) {
         this.propertiesList = propertiesList;
+    }
+
+    public List<StockDocuments> getStockDocumentsList() {
+        return stockDocumentsList;
+    }
+
+    public void setStockDocumentsList(List<StockDocuments> stockDocumentsList) {
+        this.stockDocumentsList = stockDocumentsList;
+    }
+
+    public DateFormatsPojo getCreationDateFormats() {
+        return new DateFormatsPojo(creationDate);
     }
 
     @Override

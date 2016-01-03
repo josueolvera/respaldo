@@ -7,11 +7,6 @@ package mx.bidg.service;
 
 import java.util.List;
 import mx.bidg.model.BudgetMonthBranch;
-import mx.bidg.model.CAreas;
-import mx.bidg.model.CBranchs;
-import mx.bidg.model.CBudgetCategories;
-import mx.bidg.model.CBudgetSubcategories;
-import mx.bidg.model.CGroups;
 import mx.bidg.model.CRequestTypes;
 
 /**
@@ -28,5 +23,7 @@ public interface BudgetMonthBranchService {
     public BudgetMonthBranch findByCombination(Integer budget, Integer month, Integer dwEnterprise, Integer year);
     
     public BudgetMonthBranch findFromRequest(String data) throws Exception;
+    
+    public BudgetMonthBranch update(BudgetMonthBranch budgetMonthBranch);
     
 }

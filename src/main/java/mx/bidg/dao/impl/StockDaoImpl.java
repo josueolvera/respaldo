@@ -39,6 +39,7 @@ public class StockDaoImpl extends AbstractDao<Integer, Stocks> implements StockD
     public List<Stocks> findByDistributor(Integer idDistributor) {
         return (List<Stocks>) createEntityCriteria().setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
                 .setFetchMode("propertiesList", FetchMode.JOIN)
+                .setFetchMode("stockDocumentsList", FetchMode.SELECT)
                 .createCriteria("dwEnterprises")
                     .add(Restrictions.eq("iddistributor", idDistributor))
                 .list();

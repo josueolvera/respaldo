@@ -150,26 +150,16 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
 
         return list;
     }
-
     
-    //En construccion
+
     @Override
-    public List<BudgetMonthConcepts> findByGroupArea(int idGroup, int idArea) throws Exception {
-        
-        List<Budgets> budgetList = budgetsDao.findByGroupArea(new CGroups(idGroup), new CAreas(idArea));
-        
-        for(Budgets budget : budgetList) {
-            
-            List<BudgetMonthBranch> budgetMonthBranchList = budgetMonthBranchDao.findByBudget(budget);
-            
-            for(BudgetMonthBranch budgetMonthBranch : budgetMonthBranchList) {
-                
-                
-                
-            }
-            
-        }
-        return null;
+    public boolean delete(BudgetMonthConcepts budgetMonthConcepts) {
+        return budgetMonthConceptsDao.delete(budgetMonthConcepts);
+    }
+
+    @Override
+    public List<BudgetMonthConcepts> findByConcept(CBudgetConcepts budgetConcept) {
+        return budgetMonthConceptsDao.findByConcept(budgetConcept);
     }
 
 }

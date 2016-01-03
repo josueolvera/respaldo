@@ -7,6 +7,7 @@ package mx.bidg.service;
 
 import java.util.List;
 import mx.bidg.model.BudgetMonthConcepts;
+import mx.bidg.model.CBudgetConcepts;
 
 /**
  *
@@ -15,6 +16,7 @@ import mx.bidg.model.BudgetMonthConcepts;
 public interface BudgetMonthConceptsService {
     
     public List<BudgetMonthConcepts> saveList(String data) throws Exception;
-    public List<BudgetMonthConcepts> findByGroupArea(int idGroup, int idArea) throws Exception;
+    public boolean delete(BudgetMonthConcepts budgetMonthConcepts);
+    public List<BudgetMonthConcepts> findByConcept(CBudgetConcepts budgetConcept);
     
 }
