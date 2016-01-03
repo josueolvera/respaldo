@@ -91,8 +91,6 @@
             meses: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
             'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
             catalogoGrupo: {},
-            concept: '',
-            concepts: [],
             datosPresupuesto: {},
             catalogoDistribuidor: {},
             catalogoRegion: {},
@@ -109,7 +107,9 @@
             bandera3ernivel: false,
             banderacontenido: false,
             group: 0,
-            lastkeysearch: ''
+            lastkeysearch: '',
+            group: '',
+            area: ''
           },
           methods:
           {
@@ -178,6 +178,8 @@
                                   this.contenido = data;
                                     this.searchConcepts(res[0], res[1]);
                                 });
+                      this.group = res[0];
+                      this.area = res[1];
                       this.lastkeysearch = key;
               }
 
@@ -364,6 +366,8 @@
               concepto.total+= parseInt(totals);
             });
 
+            concepto.total= accounting.formatNumber(concepto.total);
+
             $.each(budget.conceptos, function(index, el)
             {
               budget.granTotal += el.total;
@@ -373,6 +377,7 @@
         },
         saveBudget: function(eventoconcepto)
         {
+          var self= this;
           $.ajax({
           url: "http://localhost:8080/BIDGroup/budget-month-concepts",
           type: "POST",
@@ -380,8 +385,14 @@
           contentType: "application/json",
           success: function()
           {
-            alert("Concepto almacenado con exito");
+            showAlert("Concepto almacenado con exito");
 
+            self.$http.get("http://localhost:8080/BIDGroup/budgets/"+self.group+"/"+self.area)
+                    .success(function (data)
+                    {
+                      self.contenido = data;
+                      self.searchConcepts(self.group, self.area);
+                    });
           },
           error: function()
           {
@@ -488,12 +499,16 @@
                     <div class="col-xs-12">
                     <div class="row" v-for="sucs in suc">
                       <div class="row" v-for="sucss in sucs" style="margin-left: 0px">
+
+                        <div class="row" style="margin-left: 0px; margin-right: 0px">
                           <div class="col-xs-6 text-left">
                             <h2 style="font-weight: bold">{{sucss.iddistributor | DistributorFilter}}<small>&nbsp;{{sucss.idbranch | SucursalFilter}}</small></h2>
                           </div>
                           <div class="col-xs-6 text-right">
                             <h3>{{sucss.idarea | areaName}}</h3>
                           </div>
+                        </div>
+
                         <hr>
                       <div class="row" v-for="cont in contenido" style="margin-left: 0px; margin-right: 0px" id="1-{{sucss.idarea}}-{{cont[0].idBudgetCategory}}">
                         <div class="col-xs-12">
@@ -564,7 +579,7 @@
                               </div>
                               <div class="col-xs-1" style="padding-left: 0px; padding-right: 0px">
                                 <div class="col-xs-4" style="padding-left: 0px; padding-right: 0px">
-                                  <label style="font-size: 11px; margin-top: 6px">
+                                  <label style="font-size: 9px; margin-top: 6px">
                                     {{concepto.total}}
                                   </label>
                                 </div>
@@ -614,6 +629,9 @@
                     </div>
                   </div>
                 </div>
+                <pre>
+                  {{$data | json}}
+                </pre>
                 </div> <!-- /#container-fluid -->
             </div> <!-- /#Page Content -->
         </div> <!-- /#wrapper -->
