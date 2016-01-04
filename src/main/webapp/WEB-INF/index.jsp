@@ -33,7 +33,7 @@
                             if (status == 412) {
                                 $('#active-session-modal').modal('show');
                             } else {
-                                showAlert("Ha habido un problema con su solicitud, intente nuevamente");
+                                showAlert("Tu usuario o contraseña son incorrectos, por favor verifícalos");
                             }
                         });
                     },
@@ -41,9 +41,11 @@
                         this.$http.post(ROOT_URL + '/close-active-session', {
                             username: this.username
                         }).success(function (data,  status, request) {
+                            showAlert("Se ha cerrado tu sesión anterior. Inicia nuevamente.");
                             location.reload();
                         }).error(function () {
-                            showAlert("Ha habido un problema con su solicitud, intente nuevamente");
+                            showAlert("Se ha cerrado tu sesión anterior. Inicia nuevamente.");
+                            $('#active-session-modal').modal('close');
                         })
                     }
                 }
