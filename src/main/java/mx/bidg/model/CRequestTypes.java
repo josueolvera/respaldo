@@ -48,10 +48,9 @@ public class CRequestTypes implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String requestType;
 
-    @JoinColumn(name = "ID_ACCESS_LEVEL", referencedColumnName = "ID_ACCESS_LEVEL")
-    @ManyToOne
-    @JsonView(JsonViews.Embedded.class)
-    private AccessLevel idAccessLevel;
+    @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
+    private Integer idAccessLevel;
     
     @JoinColumn(name = "ID_BUDGET_CATEGORY", referencedColumnName = "ID_BUDGET_CATEGORY")
     @ManyToOne(optional = false)
@@ -89,11 +88,11 @@ public class CRequestTypes implements Serializable {
         this.requestType = requestType;
     }
 
-    public AccessLevel getIdAccessLevel() {
+    public Integer getIdAccessLevel() {
         return idAccessLevel;
     }
 
-    public void setIdAccessLevel(AccessLevel idAccessLevel) {
+    public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
     }
 

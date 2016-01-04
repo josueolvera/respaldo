@@ -83,7 +83,7 @@ public class BudgetController {
             budgetMonthBranch.setAmount(jsonRequest.get("amountMonth").decimalValue());
             budgetMonthBranch.setExpendedAmount(jsonRequest.get("expendedAmount").decimalValue());
             budgetMonthBranch.setYear(jsonRequest.get("year").asInt());
-            budgetMonthBranch.setIdAccessLevel(new AccessLevel(1));
+            budgetMonthBranch.setIdAccessLevel(1);
             
         }
         

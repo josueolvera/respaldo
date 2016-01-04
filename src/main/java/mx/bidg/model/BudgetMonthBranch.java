@@ -80,10 +80,9 @@ public class BudgetMonthBranch implements Serializable {
     @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
     private DwEnterprises idDwEnterprise;
     
-    @JoinColumn(name = "ID_ACCESS_LEVEL", referencedColumnName = "ID_ACCESS_LEVEL")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private AccessLevel idAccessLevel;
+    @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
+    private Integer idAccessLevel;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetMonthBranch")
     @JsonView(JsonViews.Embedded.class)
@@ -178,11 +177,11 @@ public class BudgetMonthBranch implements Serializable {
         this.idDwEnterprise = idDwEnterprise;
     }
     
-    public AccessLevel getIdAccessLevel() {
+    public Integer getIdAccessLevel() {
         return idAccessLevel;
     }
 
-    public void setIdAccessLevel(AccessLevel idAccessLevel) {
+    public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
     }
 

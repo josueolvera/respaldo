@@ -47,6 +47,10 @@ public class RequestTypesBudgets implements Serializable {
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Root.class)
     private Budgets idBudget;
+    
+    @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
+    private Integer idAccessLevel;
 
     public RequestTypesBudgets() {
     }
@@ -77,6 +81,14 @@ public class RequestTypesBudgets implements Serializable {
 
     public void setIdBudget(Budgets idBudget) {
         this.idBudget = idBudget;
+    }
+    
+    public Integer getIdAccessLevel() {
+        return idAccessLevel;
+    }
+
+    public void setIdAccessLevel(Integer idAccessLevel) {
+        this.idAccessLevel = idAccessLevel;
     }
 
     @Override
