@@ -106,9 +106,9 @@
                 methods: {
                     closeSession: function () {
                         this.$http.post(ROOT_URL + '/logout').success(function () {
-                            location.reload();
+                            location.replace(ROOT_URL);
                         }).error(function () {
-                            location.reload();
+                            location.replace(ROOT_URL);
                         });
                     }
                 }
