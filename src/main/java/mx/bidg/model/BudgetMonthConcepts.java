@@ -19,6 +19,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import mx.bidg.config.JsonViews;
 
 /**
@@ -54,6 +55,7 @@ public class BudgetMonthConcepts implements Serializable {
     @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
     private CBudgetConcepts idBudgetConcept;
     
+    @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;

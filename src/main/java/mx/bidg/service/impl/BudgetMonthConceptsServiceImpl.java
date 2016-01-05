@@ -74,6 +74,7 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
                 
                 concept = new CBudgetConcepts(idConcept);
                 concept.setBudgetConcept(conceptName);
+                concept.setIdAccessLevel(1);
                 concept = cBudgetConceptsService.update(concept);
                 list = budgetMonthConceptsDao.findByConcept(concept);
                 
