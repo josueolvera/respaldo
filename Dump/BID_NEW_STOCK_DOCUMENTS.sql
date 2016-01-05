@@ -44,7 +44,7 @@ CREATE TABLE `STOCK_DOCUMENTS` (
 
 LOCK TABLES `STOCK_DOCUMENTS` WRITE;
 /*!40000 ALTER TABLE `STOCK_DOCUMENTS` DISABLE KEYS */;
-INSERT INTO `STOCK_DOCUMENTS` VALUES (1,1,1,'responsiva.pdf',NULL),(2,1,2,'ife.pdf',NULL),(3,1,3,'imagen.png',NULL),(4,2,1,'responsiva.pdf',NULL),(5,2,2,'ife.pdf',NULL),(6,2,3,'imagen.png',NULL),(7,3,1,'responsiva.pdf',NULL),(8,3,2,'ife.pdf',NULL),(9,3,3,'imagen.png',NULL),(14,4,1,'autosave.xmi',NULL),(15,4,2,'SkypeFedora.png',NULL),(16,4,3,'diagrama.xmi',NULL);
+INSERT INTO `STOCK_DOCUMENTS` VALUES (1,1,1,'/article_1/Documento.1.1451517612409','SkypeFedora.png'),(2,1,2,'/article_1/Documento.2.1451517612425','diagrama.xmi'),(3,1,3,'/article_1/Documento.3.1451517612438','bid_new.svg'),(4,2,1,'responsiva.pdf',NULL),(5,2,2,'ife.pdf',NULL),(6,2,3,'imagen.png',NULL),(7,3,1,'responsiva.pdf',NULL),(8,3,2,'ife.pdf',NULL),(9,3,3,'imagen.png',NULL),(14,4,1,'/article_4/Documento.1.1451517468962','bid_new.svg'),(15,4,2,'/article_4/Documento.2.1451517469038','bid_new_sc.svg'),(16,4,3,'/article_4/Documento.3.1451517469072','autosave.xmi');
 /*!40000 ALTER TABLE `STOCK_DOCUMENTS` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -57,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-12-30 16:53:20
+-- Dump completed on 2016-01-04 18:44:01

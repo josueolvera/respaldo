@@ -48,10 +48,9 @@ public class ProductTypesProduct implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CProductTypes idProductType;
     
-    @JoinColumn(name = "ID_ACCESS_LEVEL", referencedColumnName = "ID_ACCESS_LEVEL")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private AccessLevel idAccessLevel;
+    @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
+    private Integer idAccessLevel;
 
     public ProductTypesProduct() {
     }
@@ -84,11 +83,11 @@ public class ProductTypesProduct implements Serializable {
         this.idProductType = idProductType;
     }
 
-    public AccessLevel getIdAccessLevel() {
+    public Integer getIdAccessLevel() {
         return idAccessLevel;
     }
 
-    public void setIdAccessLevel(AccessLevel idAccessLevel) {
+    public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
     }
 

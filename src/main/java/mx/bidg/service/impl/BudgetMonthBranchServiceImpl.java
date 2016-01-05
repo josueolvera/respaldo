@@ -12,19 +12,15 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import mx.bidg.dao.BudgetMonthBranchDao;
-import mx.bidg.model.AccessLevel;
 import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.BudgetMonthConcepts;
 import mx.bidg.model.Budgets;
 import mx.bidg.model.CBudgetConcepts;
 import mx.bidg.model.CMonths;
-import mx.bidg.model.CRequestTypes;
 import mx.bidg.model.DwEnterprises;
-import mx.bidg.model.RequestTypesBudgets;
 import mx.bidg.service.BudgetMonthBranchService;
 import mx.bidg.service.BudgetsService;
 import mx.bidg.service.DwEnterprisesService;
-import mx.bidg.service.RequestTypesBudgetsService;
 import mx.bidg.utils.MoneyConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,9 +38,6 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
     BudgetMonthBranchDao budgetMonthBranchDao;
 
     @Autowired
-    RequestTypesBudgetsService requestTypesBudgetsService;
-
-    @Autowired
     BudgetsService budgetsService;
 
     @Autowired
@@ -54,23 +47,6 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
     CBudgetConceptsService cBudgetConceptsService;
 
     ObjectMapper map = new ObjectMapper();
-
-    //En construccion
-    @Override
-    public BudgetMonthBranch getByRequestType(CRequestTypes cRequestTypes, Integer idGroup, Integer idArea,
-            Integer idBudgetCategories, Integer idBudgetSubcategories, Integer idBranchs) {
-
-        List<RequestTypesBudgets> requestTypesBudgetsList = requestTypesBudgetsService.findByRequestType(cRequestTypes);
-        Budgets budget = budgetsService.findByCombination(idGroup, idArea, idBudgetCategories, idBudgetSubcategories);
-
-        List<Budgets> budgetList = new ArrayList<>();
-
-        for (RequestTypesBudgets rtb : requestTypesBudgetsList) {
-            budgetList.add(rtb.getIdBudget());
-        }
-
-        return null;
-    }
 
     @Override
     public List<BudgetMonthBranch> saveList(String data) throws Exception {
@@ -117,7 +93,7 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
                     budgetMonthBranch = new BudgetMonthBranch();
                     budgetMonthBranch.setAmount(amountConcept);
                     budgetMonthBranch.setExpendedAmount(new BigDecimal(0));
-                    budgetMonthBranch.setIdAccessLevel(new AccessLevel(1));
+                    budgetMonthBranch.setIdAccessLevel(1);
                     budgetMonthBranch.setIdBudget(budget);
                     budgetMonthBranch.setIdDwEnterprise(dwEnterprise);
                     budgetMonthBranch.setIdMonth(new CMonths(idMonth));

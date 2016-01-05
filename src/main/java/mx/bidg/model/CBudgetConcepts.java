@@ -48,6 +48,10 @@ public class CBudgetConcepts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String budgetConcept;
     
+    @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
+    private Integer idAccessLevel;
+    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetConcept")
     @JsonView(JsonViews.Embedded.class)
     private List<BudgetMonthConcepts> budgetMonthConceptsList;
@@ -74,6 +78,22 @@ public class CBudgetConcepts implements Serializable {
     public void setBudgetMonthConceptsList(List<BudgetMonthConcepts> budgetMonthConceptsList) {
         this.budgetMonthConceptsList = budgetMonthConceptsList;
     }
+    
+    public String getBudgetConcept() {
+        return budgetConcept;
+    }
+
+    public void setBudgetConcept(String budgetConcept) {
+        this.budgetConcept = budgetConcept;
+    }
+
+    public Integer getIdAccessLevel() {
+        return idAccessLevel;
+    }
+
+    public void setIdAccessLevel(Integer idAccessLevel) {
+        this.idAccessLevel = idAccessLevel;
+    }
 
     @Override
     public int hashCode() {
@@ -98,14 +118,6 @@ public class CBudgetConcepts implements Serializable {
     @Override
     public String toString() {
         return "mx.bidg.model.CBudgetConcepts[ idBudgetConcept=" + idBudgetConcept + " ]";
-    }
-
-    public String getBudgetConcept() {
-        return budgetConcept;
-    }
-
-    public void setBudgetConcept(String budgetConcept) {
-        this.budgetConcept = budgetConcept;
     }
     
 }

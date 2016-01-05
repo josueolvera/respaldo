@@ -17,8 +17,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import mx.bidg.config.JsonViews;
@@ -52,10 +50,9 @@ public class EmployeesAccounts implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private Accounts idAccount;
     
-    @JoinColumn(name = "ID_ACCESS_LEVEL", referencedColumnName = "ID_ACCESS_LEVEL")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private AccessLevel idAccessLevel;
+    @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
+    private Integer idAccessLevel;
 
     public EmployeesAccounts() {
     }
@@ -93,11 +90,11 @@ public class EmployeesAccounts implements Serializable {
         this.idAccount = idAccount;
     }
 
-    public AccessLevel getIdAccessLevel() {
+    public Integer getIdAccessLevel() {
         return idAccessLevel;
     }
 
-    public void setIdAccessLevel(AccessLevel idAccessLevel) {
+    public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
     }
 

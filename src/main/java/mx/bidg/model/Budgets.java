@@ -88,10 +88,6 @@ public class Budgets implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudget")
     @JsonView(JsonViews.Embedded.class)
     private List<BudgetMonthBranch> budgetMonthBranchList;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudget")
-    @JsonView(JsonViews.Embedded.class)
-    private List<RequestTypesBudgets> requestTypesBudgetsList;
 
     public Budgets() {
     }
@@ -111,7 +107,7 @@ public class Budgets implements Serializable {
         this.budgetMonthBranchList = budgetMonthBranchList;
     }
 
-    public Budgets(Integer idBudget, Integer idGroup, Integer idArea, Integer idBudgetCategory, Integer idBudgetSubcategory, int idAccessLevel, List<BudgetMonthBranch> budgetMonthBranchList, List<RequestTypesBudgets> requestTypesBudgetsList) {
+    public Budgets(Integer idBudget, Integer idGroup, Integer idArea, Integer idBudgetCategory, Integer idBudgetSubcategory, int idAccessLevel, List<BudgetMonthBranch> budgetMonthBranchList) {
         this.idBudget = idBudget;
         this.idGroup = idGroup;
         this.idArea = idArea;
@@ -119,7 +115,6 @@ public class Budgets implements Serializable {
         this.idBudgetSubcategory = idBudgetSubcategory;
         this.idAccessLevel = idAccessLevel;
         this.budgetMonthBranchList = budgetMonthBranchList;
-        this.requestTypesBudgetsList = requestTypesBudgetsList;
     }
 
     public Budgets(Integer idBudget, Integer idGroup, Integer idArea, Integer idBudgetCategory, Integer idBudgetSubcategory, int idAccessLevel) {
@@ -185,14 +180,6 @@ public class Budgets implements Serializable {
 
     public void setIdArea(Integer idArea) {
         this.idArea = idArea;
-    }
-    
-    public List<RequestTypesBudgets> getRequestTypesBudgetsList() {
-        return requestTypesBudgetsList;
-    }
-
-    public void setRequestTypesBudgetsList(List<RequestTypesBudgets> requestTypesBudgetsList) {
-        this.requestTypesBudgetsList = requestTypesBudgetsList;
     }
 
     public CGroups getGroup() {
