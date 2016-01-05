@@ -106,7 +106,8 @@
             lastkeysearch: '',
             group: '',
             area: '',
-            totalArea: ''
+            totalArea: '',
+            newSearch: false
           },
           methods:
           {
@@ -151,6 +152,7 @@
 
               if (this.lastkeysearch !== key)
               {
+                this.newSearch= true;
                 this.$http.get("http://localhost:8080/BIDGroup/dw-enterprises/"+res[0]+"/"+res[1])
                         .success(function (data)
                         {
@@ -271,15 +273,15 @@
             mixedArrays: function()
             {
                 var self= this;
-                $.each(this.contenido, function(index, el)
+                $.each(this.datosPresupuesto, function(index, el)
                 {
                   var BudgetTem = el;
-                  $.each(self.datosPresupuesto, function(indexs, ele)
+                  $.each(self.contenido, function(indexs, ele)
                   {
                     if (BudgetTem.idBudget == ele.idBudget)
                     {
-                      self.contenido.$remove(BudgetTem);
-                      self.contenido.push(ele);
+                      self.contenido.$remove(ele);
+                      self.contenido.push(BudgetTem);
                     }
                   });
                 });
@@ -334,7 +336,6 @@
                 {
                   el.amountConcept= concepto.conceptMonth[0].amountConcept;
                 });
-
               }
               else{
                 alert("Debes ingresar un monto en el primer mes para esta acción");
@@ -401,7 +402,6 @@
               if ( typeof budget.granTotal != "undefined")
               {
                 var granTotal= accounting.unformat(budget.granTotal);
-                alert(granTotal);
                 self.totalArea += granTotal;
               }
             });
@@ -411,28 +411,19 @@
         ,
         saveBudget: function(eventoconcepto)
         {
-          var self= this;
-          $.ajax({
-          url: "http://localhost:8080/BIDGroup/budget-month-concepts",
-          type: "POST",
-          data: JSON.stringify(eventoconcepto),
-          contentType: "application/json",
-          success: function()
+          this.$http.post("http://localhost:8080/BIDGroup/budget-month-concepts", JSON.stringify(eventoconcepto)).
+          success(function(data)
           {
-            showAlert("Concepto almacenado con exito");
-
-            self.$http.get("http://localhost:8080/BIDGroup/budgets/"+self.group+"/"+self.area)
+            showAlert(data);
+            this.$http.get("http://localhost:8080/BIDGroup/budgets/"+this.group+"/"+this.area)
                     .success(function (data)
                     {
-                      self.contenido = data;
-                      self.searchConcepts(self.group, self.area);
+                      this.contenido = data;
+                      this.searchConcepts(this.group, this.area);
                     });
-          },
-          error: function()
-          {
-            alert("Ha habido un error con tu solicitud, intenta nuevamente");
-          }
-        });
+          }).error(function(){
+            showAlert("Ha habido un error con la solicitud, intente nuevamente");
+          });
         }
         },
         filters: {
@@ -529,7 +520,7 @@
             <!-- Page Content -->
             <div id="page-content-wrapper">
                 <div class="container-fluid">
-                  <div class="row" v-for="suc in sucursales" v-if="banderacontenido">
+                  <div class="row" v-for="suc in sucursales" v-if="newSearch">
                     <div class="col-xs-12">
                     <div class="row" v-for="sucs in suc">
                       <div class="row" v-for="sucss in sucs" style="margin-left: 0px">
@@ -670,9 +661,6 @@
                     </div>
                   </div>
                 </div>
-                <pre>
-                  {{$data.contenido | json}}
-                </pre>
                 </div> <!-- /#container-fluid -->
             </div> <!-- /#Page Content -->
         </div> <!-- /#wrapper -->
