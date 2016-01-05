@@ -60,10 +60,6 @@ public class CRequestTypes implements Serializable {
     @OneToMany(mappedBy = "idRequestType")
     @JsonView(JsonViews.Embedded.class)
     private List<RequestTypesProduct> requestTypesProductList;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idRequestType")
-    @JsonView(JsonViews.Embedded.class)
-    private List<RequestTypesBudgets> requestTypesBudgetsList;
 
     public CRequestTypes() {
     }
@@ -102,14 +98,6 @@ public class CRequestTypes implements Serializable {
 
     public void setRequestTypesProductList(List<RequestTypesProduct> requestTypesProductList) {
         this.requestTypesProductList = requestTypesProductList;
-    }
-    
-    public List<RequestTypesBudgets> getRequestTypesBudgetsList() {
-        return requestTypesBudgetsList;
-    }
-
-    public void setRequestTypesBudgetsList(List<RequestTypesBudgets> requestTypesBudgetsList) {
-        this.requestTypesBudgetsList = requestTypesBudgetsList;
     }
     
     public CBudgetCategories getIdBudgetCategory() {

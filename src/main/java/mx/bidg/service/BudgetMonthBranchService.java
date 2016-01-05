@@ -17,9 +17,6 @@ public interface BudgetMonthBranchService {
     
     public List<BudgetMonthBranch> saveList(String data) throws Exception;
     
-    public BudgetMonthBranch getByRequestType(CRequestTypes cRequestTypes, Integer idGroup, Integer idArea, 
-            Integer idBudgetCategories, Integer idBudgetSubcategories, Integer idBranchs);
-    
     public BudgetMonthBranch findByCombination(Integer budget, Integer month, Integer dwEnterprise, Integer year);
     
     public BudgetMonthBranch findFromRequest(String data) throws Exception;

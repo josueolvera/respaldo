@@ -28,9 +28,7 @@ CREATE TABLE `C_BUDGET_CONCEPTS` (
   `ID_BUDGET_CONCEPT` int(11) NOT NULL AUTO_INCREMENT,
   `BUDGET_CONCEPT` varchar(50) NOT NULL,
   `ID_ACCESS_LEVEL` int(11) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`ID_BUDGET_CONCEPT`),
-  KEY `FK_BUDGET_CONCEPTS_1_idx` (`ID_ACCESS_LEVEL`),
-  CONSTRAINT `FK_BUDGET_CONCEPTS_1` FOREIGN KEY (`ID_ACCESS_LEVEL`) REFERENCES `ACCESS_LEVEL` (`ID_ACCESS_LEVEL`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  PRIMARY KEY (`ID_BUDGET_CONCEPT`)
 ) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -40,7 +38,7 @@ CREATE TABLE `C_BUDGET_CONCEPTS` (
 
 LOCK TABLES `C_BUDGET_CONCEPTS` WRITE;
 /*!40000 ALTER TABLE `C_BUDGET_CONCEPTS` DISABLE KEYS */;
-INSERT INTO `C_BUDGET_CONCEPTS` VALUES (30,'A',1),(31,'Desarrollador Jr',1),(32,'Prueba',1),(33,'Prueba La Kenneth',1),(34,'Prueba La Rafa',1),(35,'Asistente',1),(36,'Memo Orejas',1),(37,'Laptop Core i5',1),(38,'Magdalena Clavijo',1),(39,'Luis Siniestro',1),(40,'Luis Siniestro',1),(41,'NUevo',1),(42,'NUevo',1),(43,'Otro Nuevo',1),(44,'Celular Telcel',1);
+INSERT INTO `C_BUDGET_CONCEPTS` VALUES (30,'A',1),(31,'Desarrollador Jr',1),(32,'Prueba',1),(33,'Prueba La Kenneth',1),(34,'Prueba La Rafa',1),(35,'Asistente',1),(36,'Memo Orejas',1),(37,'Laptop Core i5',1),(38,'Magdalena Clavijo',1),(39,'Luis Siniestro',1),(40,'Luis Siniestro',1),(41,'NUevo',1),(44,'Celular Telcel',1);
 /*!40000 ALTER TABLE `C_BUDGET_CONCEPTS` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -53,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-12-30 16:53:22
+-- Dump completed on 2016-01-04 18:44:03
