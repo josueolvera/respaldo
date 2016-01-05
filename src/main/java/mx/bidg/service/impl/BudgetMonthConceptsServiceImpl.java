@@ -106,6 +106,7 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
 
                 concept = new CBudgetConcepts();
                 concept.setBudgetConcept(conceptName);
+                concept.setIdAccessLevel(1);
                 concept = cBudgetConceptsService.save(concept);
 
                 for (JsonNode conceptMonth : jsonRequest.get("conceptMonth")) {
