@@ -25,10 +25,9 @@ public class Properties implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idProperty;
 
-    @Size(max = 65530)
-    @Column(name = "VALUE")
+    @Column(name = "ID_VALUE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private String value;
+    private Integer idValue;
 
     @Column(name = "ID_STOCK", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -37,6 +36,11 @@ public class Properties implements Serializable {
     @Column(name = "ID_ATTRIBUTES_ARTICLE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idAttributesArticle;
+
+    @JoinColumn(name = "ID_VALUE", referencedColumnName = "ID_VALUE")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private CValues value;
 
     @JoinColumn(name = "ID_STOCK", referencedColumnName = "ID_STOCK")
     @ManyToOne(optional = false)
@@ -85,12 +89,12 @@ public class Properties implements Serializable {
         this.idAttributesArticle = idAttributesArticle;
     }
 
-    public String getValue() {
-        return value;
+    public Integer getIdValue() {
+        return idValue;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setIdValue(Integer idValue) {
+        this.idValue = idValue;
     }
 
     public Stocks getStocks() {
@@ -107,6 +111,14 @@ public class Properties implements Serializable {
 
     public void setAttributesArticles(AttributesArticles attributesArticles) {
         this.attributesArticles = attributesArticles;
+    }
+
+    public CValues getValue() {
+        return value;
+    }
+
+    public void setValue(CValues value) {
+        this.value = value;
     }
 
     @Override
