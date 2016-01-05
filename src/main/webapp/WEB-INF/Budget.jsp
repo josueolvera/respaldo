@@ -82,10 +82,6 @@
                             });
                           });
                       });
-
-
-
-
           },
           data: {
             meses: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
@@ -109,7 +105,8 @@
             group: 0,
             lastkeysearch: '',
             group: '',
-            area: ''
+            area: '',
+            totalArea: ''
           },
           methods:
           {
@@ -176,7 +173,7 @@
                                 .success(function (data)
                                 {
                                   this.contenido = data;
-                                    this.searchConcepts(res[0], res[1]);
+                                  this.searchConcepts(res[0], res[1]);
                                 });
                       this.group = res[0];
                       this.area = res[1];
@@ -265,7 +262,7 @@
              if (! budget.conceptos)
              {
                Vue.set(budget,"conceptos", []);
-               Vue.set(budget,"granTotal", 0);
+               Vue.set(budget,"granTotal", '');
                Vue.set(budget,"totalMonth", totalMeses);
                //budget.totalMonth.push(totalMeses);
              }
@@ -296,12 +293,29 @@
                 return item.idBudgetCategory;
              });
              this.banderacontenido = true;
+             this.obtainGranTotal();
            }
            ,
           deleteObject: function(budget, concepto)
           {
-            budget.conceptos.$remove(concepto);
-            this.obtainTotalConcept(concepto, budget);
+            if (concepto.idConcept> 0)
+            {
+              this.$http.delete("http://localhost:8080/BIDGroup/budget-concepts/"+concepto.idConcept)
+                      .success(function (data)
+                      {
+                        showAlert(data);
+                        this.$http.get("http://localhost:8080/BIDGroup/budgets/"+this.group+"/"+this.area)
+                                .success(function (data)
+                                {
+                                  this.contenido = data;
+                                  this.searchConcepts(this.group, this.area);
+                                });
+                      });
+            }
+            else{
+              budget.conceptos.$remove(concepto);
+              this.obtainTotalConcept(concepto, budget);
+            }
           },
           moneyFormat: function(mes, concepto, budget)
           {
@@ -370,11 +384,31 @@
 
             $.each(budget.conceptos, function(index, el)
             {
-              budget.granTotal += el.total;
+              var total= accounting.unformat(el.total);
+              budget.granTotal += total;
             });
 
           budget.granTotal= accounting.formatNumber(budget.granTotal);
+          //this.totalArea += budget.granTotal;
+
         },
+        obtainGranTotal: function()
+        {
+          this.totalArea= 0;
+          var self= this;
+          vm.contenido.forEach(function(budgetagrupado){
+            budgetagrupado.forEach(function(budget){
+              if ( typeof budget.granTotal != "undefined")
+              {
+                var granTotal= accounting.unformat(budget.granTotal);
+                alert(granTotal);
+                self.totalArea += granTotal;
+              }
+            });
+          });
+          this.totalArea = accounting.formatNumber(this.totalArea);
+        }
+        ,
         saveBudget: function(eventoconcepto)
         {
           var self= this;
@@ -506,6 +540,13 @@
                           </div>
                           <div class="col-xs-6 text-right">
                             <h3>{{sucss.idarea | areaName}}</h3>
+
+                            <div class="col-xs-6 col-xs-offset-6">
+                              <div class="input-group">
+                                <span class="input-group-addon">$</span>
+                                <input type="text" class="form-control" disabled="true" v-model="totalArea">
+                              </div>
+                            </div>
                           </div>
                         </div>
 
@@ -630,7 +671,7 @@
                   </div>
                 </div>
                 <pre>
-                  {{$data | json}}
+                  {{$data.contenido | json}}
                 </pre>
                 </div> <!-- /#container-fluid -->
             </div> <!-- /#Page Content -->
