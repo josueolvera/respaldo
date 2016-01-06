@@ -7,6 +7,7 @@ package mx.bidg.service.impl;
 
 import java.util.List;
 import mx.bidg.dao.DwEnterprisesDao;
+import mx.bidg.dao.UsersDao;
 import mx.bidg.model.CAreas;
 import mx.bidg.model.CBranchs;
 import mx.bidg.model.CDistributors;
@@ -24,6 +25,9 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
 
     @Autowired
     DwEnterprisesDao dao;
+    
+    @Autowired
+    UsersDao usersDao;
     
     @Override
     public List<DwEnterprises> findByGroupArea(CGroups idGroup, CAreas idArea) {
@@ -43,6 +47,11 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
     @Override
     public DwEnterprises findById(int idDwEnterprise) {
         return dao.findById(idDwEnterprise);
+    }
+
+    @Override
+    public DwEnterprises findByIdUser(int idUser) {
+        return usersDao.findByIdFetchDwEmployee(idUser).getIdDwEmployee().getIdDwEnterprise();
     }
     
 }

@@ -22,4 +22,6 @@ public interface DwEnterprisesService {
     
     public DwEnterprises findById(int idDwEnterprise);
     
+    public DwEnterprises findByIdUser(int idUser);
+    
 }

@@ -18,6 +18,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
@@ -53,6 +55,11 @@ public class CRequestsCategories implements Serializable {
     @Column(name = "INFORMATION")
     @JsonView(JsonViews.Root.class)
     private String information;
+    
+    @JoinColumn(name = "ID_VIEW", referencedColumnName = "ID_VIEW")
+    @ManyToOne
+    @JsonView(JsonViews.EmbeddedRequestCategory.class)
+    private CViews idView;
 
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
@@ -140,6 +147,14 @@ public class CRequestsCategories implements Serializable {
 
     public void setInformation(String information) {
         this.information = information;
+    }
+
+    public CViews getIdView() {
+        return idView;
+    }
+
+    public void setIdView(CViews idView) {
+        this.idView = idView;
     }
     
 }

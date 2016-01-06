@@ -6,11 +6,11 @@
 package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,6 +26,7 @@ import javax.validation.constraints.Size;
 @Table(name = "C_VIEWS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CViews implements Serializable {
+    
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -70,6 +71,11 @@ public class CViews implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idView")
     @JsonView(JsonViews.Embedded.class)
     private List<ViewsComponent> viewsComponentList;
+    
+    @OneToMany(mappedBy = "idView")
+    @JsonView(JsonViews.Embedded.class)
+    @JsonProperty("cRequestCategoriesList")
+    private List<CRequestsCategories> cRequestsCategoriesList;
 
     public CViews() {
     }
@@ -146,6 +152,15 @@ public class CViews implements Serializable {
 
     public void setcTasks(CTasks cTasks) {
         this.cTasks = cTasks;
+    }
+    
+    @JsonProperty("cRequestCategoriesList")
+    public List<CRequestsCategories> getCRequestsCategoriesList() {
+        return cRequestsCategoriesList;
+    }
+
+    public void setCRequestsCategoriesList(List<CRequestsCategories> cRequestsCategoriesList) {
+        this.cRequestsCategoriesList = cRequestsCategoriesList;
     }
 
     @Override

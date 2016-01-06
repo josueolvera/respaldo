@@ -14,5 +14,6 @@ import mx.bidg.model.Users;
 public interface UsersDao extends InterfaceDao<Users> {
     
     public Users findByUsername(String username);
+    public Users findByIdFetchDwEmployee(int id);
     
 }

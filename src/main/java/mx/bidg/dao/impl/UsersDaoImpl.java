@@ -29,7 +29,7 @@ public class UsersDaoImpl extends AbstractDao<Integer, Users> implements UsersDa
 
     @Override
     public Users findById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getByKey(id);
     }
 
     @Override
@@ -54,6 +54,17 @@ public class UsersDaoImpl extends AbstractDao<Integer, Users> implements UsersDa
         criteria.add(Restrictions.eq("username", username))
                 .setFetchMode("usersRoleList", FetchMode.JOIN)
                 .setFetchMode("usersRoleList.idSystemRole", FetchMode.JOIN);
+        return (Users) criteria.uniqueResult();
+    }
+
+    @Override
+    public Users findByIdFetchDwEmployee(int id) {
+        Criteria criteria = createEntityCriteria()
+                .add(Restrictions.idEq(id))
+                .setFetchMode("idDwEmployee", FetchMode.JOIN)
+                .setFetchMode("idDwEmployee.idEmployee", FetchMode.JOIN)
+                .setFetchMode("idDwEmployee.idDwEnterprise", FetchMode.JOIN)
+                .setFetchMode("idDwEmployee.idRole", FetchMode.JOIN);
         return (Users) criteria.uniqueResult();
     }
     

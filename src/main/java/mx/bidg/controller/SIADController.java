@@ -23,8 +23,24 @@ public class SIADController {
         return "stock";
     }
     
-        @RequestMapping(value="/request", produces= {"text/html;charset=UTF-8"})
-    public String serviceRequest(Model model){
+    @RequestMapping(value="/request", method = RequestMethod.GET, produces= {"text/html;charset=UTF-8"})
+    public String serviceRequest(){
         return "Request";
     }
+    
+    @RequestMapping(value = "/cotizable", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public String cotizableRequestType() {
+        return "CotizableRequest";
+    }
+    
+    @RequestMapping(value = "/directa", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public String directaRequestType() {
+        return "DirectRequest";
+    }
+    
+    @RequestMapping(value = "/periodica", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public String periodicRequestType() {
+        return "PeriodicRequest";
+    }
+    
 }

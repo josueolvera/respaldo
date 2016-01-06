@@ -7,6 +7,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import org.hibernate.FetchMode;
 
 /**
  * @author Rafael Viveros
@@ -21,7 +22,11 @@ public class CRequestCategoriesDaoImpl extends AbstractDao<Integer, CRequestsCat
 
     @Override
     public CRequestsCategories findById(int id) {
-        return (CRequestsCategories) createEntityCriteria().add(Restrictions.eq("idRequestCategorie", id)).uniqueResult();
+        return (CRequestsCategories) createEntityCriteria()
+                .add(Restrictions.eq("idRequestCategorie", id))
+                .setFetchMode("idView", FetchMode.JOIN)
+                .setFetchMode("idView.cTasks", FetchMode.JOIN)
+                .uniqueResult();
     }
 
     @Override

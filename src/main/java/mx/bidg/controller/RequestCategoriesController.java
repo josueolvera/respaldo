@@ -1,6 +1,7 @@
 package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.service.CRequestCategoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,12 +22,12 @@ public class RequestCategoriesController {
     @Autowired
     CRequestCategoriesService categoriesService;
 
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     String findAllRequestCategories() throws Exception {
-        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(categoriesService.findAll());
+        return mapper.writerWithView(JsonViews.EmbeddedRequestCategory.class).writeValueAsString(categoriesService.findAll());
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")

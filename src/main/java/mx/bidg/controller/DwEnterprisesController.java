@@ -5,6 +5,7 @@
  */
 package mx.bidg.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import mx.bidg.config.JsonViews;
@@ -37,6 +38,12 @@ public class DwEnterprisesController {
     public @ResponseBody ResponseEntity<String> getByGroupArea(@PathVariable int idGroup, @PathVariable int idArea) throws Exception {
         List<DwEnterprises> list = dwEnterprisesService.findByGroupArea(new CGroups(idGroup), new CAreas(idArea));
         return new ResponseEntity<>(map.writerWithView(JsonViews.IdsEnterprises.class).writeValueAsString(list), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/user/{idUser}", produces = "application/json;charset=UTF-8")
+    public @ResponseBody ResponseEntity<String> getByIdUser(@PathVariable int idUser) throws JsonProcessingException {
+        DwEnterprises dw = dwEnterprisesService.findByIdUser(idUser);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Root.class).writeValueAsString(dw), HttpStatus.OK);
     }
     
 }

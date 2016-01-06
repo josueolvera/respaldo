@@ -99,7 +99,6 @@ public class BudgetController {
             @PathVariable int idCategory, @PathVariable int idSubcategory) throws Exception {
         
         Budgets budget = budgetsService.findByCombination(idGroup, idArea, idCategory, idSubcategory);
-        System.out.println(budget);
         return new ResponseEntity<>(map.writerWithView(JsonViews.Root.class).writeValueAsString(budget), HttpStatus.OK);
     }
     

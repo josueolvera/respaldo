@@ -13,4 +13,5 @@ public class JsonViews {
     public static class EmbeddedDwEnterprises{}
     public static class IdsEnterprises{}
     public static class EmbeddedProvidersAccount extends Root {}
+    public static class EmbeddedRequestCategory extends Root {}
 }
