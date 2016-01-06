@@ -43,7 +43,7 @@ public class Properties implements Serializable {
     private CValues value;
 
     @JoinColumn(name = "ID_STOCK", referencedColumnName = "ID_STOCK")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JsonView(JsonViews.Embedded.class)
     private Stocks stocks;
 

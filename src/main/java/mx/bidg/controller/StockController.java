@@ -1,18 +1,21 @@
 package mx.bidg.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
-import mx.bidg.model.CStockDocumentsTypes;
-import mx.bidg.model.StockDocuments;
-import mx.bidg.model.Stocks;
+import mx.bidg.model.*;
+import mx.bidg.service.PropertiesService;
 import mx.bidg.service.StockDocumentsService;
 import mx.bidg.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -31,16 +34,20 @@ import java.util.regex.Pattern;
  */
 @Controller
 @RequestMapping("stock")
+@PropertySource(value = {"classpath:application.properties"})
 public class StockController {
 
-//    private final String SAVE_PATH = "/run/media/Centos/Storage/SIAD/stock";
-    private final String SAVE_PATH = "/tmp/stock";
+    @Autowired
+    private Environment env;
 
     @Autowired
     private StockService stockService;
 
     @Autowired
     private StockDocumentsService stockDocumentsService;
+
+    @Autowired
+    private PropertiesService propertiesService;
 
     private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
@@ -62,13 +69,49 @@ public class StockController {
         );
     }
 
+    @RequestMapping(value = "/{idStock}/properties", method = RequestMethod.GET, produces = "text/plain;charset=UTF-8")
+    public ResponseEntity<String> getProperties(@PathVariable int idStock) throws IOException {
+        List<Properties> properties = propertiesService.getAllFor(new Stocks(idStock));
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(properties),
+                HttpStatus.OK
+        );
+    }
+
+    @RequestMapping(value = "/{idStock}/properties", method = RequestMethod.POST,
+            consumes = "application/json", produces = "text/plain;charset=UTF-8"
+    )
+    public ResponseEntity<String> saveProperty(@PathVariable int idStock, @RequestBody String data) throws IOException {
+        JsonNode node = mapper.readTree(data);
+        CArticles article = new CArticles(node.get("attributesArticles").get("idArticle").asInt());
+        CValues value = mapper.treeToValue(node.get("value"), CValues.class);
+        CAttributes attribute = mapper.treeToValue(node.get("attributesArticles").get("attributes"), CAttributes.class);
+
+        Properties property = new Properties();
+        property.setStocks(new Stocks(idStock));
+        property.setValue(value);
+
+        propertiesService.save(property, article, attribute);
+
+        return new ResponseEntity<>("Registro almacenado con exito", HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/properties/{idProperty}", method = RequestMethod.DELETE,
+            consumes = "application/json", produces = "text/plain;charset=UTF-8"
+    )
+    public ResponseEntity<String> deleteProperty(@PathVariable int idProperty) {
+        propertiesService.delete(new Properties(idProperty));
+        return new ResponseEntity<>("Registro eliminado con exito", HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/attachments/download/{idStockDocument}", method = RequestMethod.GET)
     public void readFile(@PathVariable int idStockDocument, HttpServletResponse response) throws IOException {
+        String SAVE_PATH = env.getRequiredProperty("stock.documents_dir");
         StockDocuments document = stockDocumentsService.findById(idStockDocument);
         File file = new File(SAVE_PATH + document.getDocumentUrl());
 
         if (! file.canRead()) {
-            throw new IOException("El archivo "+ SAVE_PATH + document.getDocumentName() +" no existe");
+            throw new IOException("El archivo "+ SAVE_PATH + document.getDocumentUrl() +" no existe");
         }
 
         FileInputStream inputStream = new FileInputStream(file);
@@ -92,6 +135,7 @@ public class StockController {
 
     @RequestMapping(value = "/attachments/{idStock}", method = RequestMethod.POST)
     public String attachDocuments(@PathVariable int idStock, HttpServletRequest request) throws Exception {
+        String SAVE_PATH = env.getRequiredProperty("stock.documents_dir");
         List<StockDocuments> documents = stockDocumentsService.findByIdStock(idStock);
         Pattern pattern = Pattern.compile("(\\d+)");
 

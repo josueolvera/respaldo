@@ -4,6 +4,8 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.AttributesArticlesDao;
 import mx.bidg.model.AttributesArticles;
 import mx.bidg.model.CArticles;
+import mx.bidg.model.CAttributes;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -21,6 +23,16 @@ public class AttributesArticlesDaoImpl extends AbstractDao<Integer, AttributesAr
         return (List<AttributesArticles>) createEntityCriteria()
                 .add(Restrictions.eq("idArticle", article.getIdArticle()))
                 .list();
+    }
+
+    @Override
+    public AttributesArticles findBy(CArticles article, CAttributes attribute) {
+        Integer idAttributeArticle = (Integer) createEntityCriteria()
+                .setProjection(Projections.property("idAttributeArticle"))
+                .add(Restrictions.eq("idArticle", article.getIdArticle()))
+                .add(Restrictions.eq("idAttribute", attribute.getIdAttribute()))
+                .uniqueResult();
+        return new AttributesArticles(idAttributeArticle);
     }
 
     @Override

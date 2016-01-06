@@ -19,7 +19,8 @@
     <link rel="stylesheet" href="/BIDGroup/assets/css/styles.css">
     <link rel="stylesheet" href="/BIDGroup/assets/css/messenger.css">
     <link rel="stylesheet" href="/BIDGroup/assets/css/messenger-theme-air.css">
-    <link rel="stylesheet" href="/BIDGroup/assets/css/messenger-spinner.css">
+    <link rel="stylesheet" href="/BIDGroup/assets/css/selectize.css">
+    <link rel="stylesheet" href="/BIDGroup/assets/css/selectize.bootstrap3.css">
     <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users" />
     <jsp:invoke fragment="styles" />
 </head>
@@ -87,6 +88,7 @@
         <script src="/BIDGroup/assets/js/bootstrap.min.js"></script>
         <script src="/BIDGroup/assets/js/vue-1.0.7.js"></script>
         <script src="/BIDGroup/assets/js/vue-resource-0.1.17.min.js"></script>
+        <script src="/BIDGroup/assets/js/selectize.standalone.min.js"></script>
         <script src="/BIDGroup/assets/js/messenger.min.js"></script>
         <script src="/BIDGroup/assets/js/alerts.js"></script>
         <script src="/BIDGroup/assets/js/accounting.js"></script>

@@ -38,7 +38,7 @@ public class AttributesArticles implements Serializable {
     private CDataTypes dataTypes;
 
     @JoinColumn(name = "ID_ARTICLE", referencedColumnName = "ID_ARTICLE")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JsonView(JsonViews.Embedded.class)
     private CArticles articles;
 

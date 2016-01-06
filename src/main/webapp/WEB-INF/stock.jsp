@@ -18,12 +18,16 @@
                     this.fetchDistributors();
                     this.fetchAreas();
                     this.fetchDocumentTypes();
+                    this.fetchValues();
                 },
                 data: {
+                    isSaving: false,
                     stockGroups: {},
                     selectOptions: {
                         distributors: [],
                         areas: [],
+                        attributes: [],
+                        values: [],
                         documentTypes: []
                     },
                     selectedOptions: {
@@ -34,6 +38,11 @@
                         article: null,
                         uploadUrl: ROOT_URL + "/stock/attachments/",
                         fileInput: "file-type-"
+                    },
+                    editModal: {
+                        selectAttr: null,
+                        selectValue: null,
+                        article: null
                     },
                     attachmentsDownloadUrl: ROOT_URL + "/stock/attachments/download/"
                 },
@@ -56,6 +65,11 @@
                             });
                         });
                     },
+                    fetchStockProperties: function (article) {
+                        this.$http.get(ROOT_URL + "/stock/" + article.idStock + "/properties").success(function (data) {
+                            article.propertiesList = data;
+                        });
+                    },
                     fetchDistributors: function () {
                         this.$http.get(ROOT_URL + "/distributors?forStock=true").success(function (data) {
                             this.selectOptions.distributors = data;
@@ -71,6 +85,74 @@
                             this.selectOptions.documentTypes = data;
                         });
                     },
+                    fetchAttributes: function (idArticle) {
+                        this.$http.get(ROOT_URL + "/attributes/" + idArticle).success(function (data) {
+                            this.selectOptions.attributes = data;
+                            this.editModal.selectAttr = $('#select-attribute').selectize({
+                                maxItems: 1,
+                                valueField: 'idAttribute',
+                                labelField: 'attributeName',
+                                searchField: 'attributeName',
+                                options: data,
+                                create: false
+                            });
+                        });
+                    },
+                    fetchValues: function () {
+                        this.$http.get(ROOT_URL + "/values").success(function (data) {
+                            this.selectOptions.values = data;
+                            this.editModal.selectValue = $('#select-value').selectize({
+                                maxItems: 1,
+                                valueField: 'idValue',
+                                labelField: 'value',
+                                searchField: 'value',
+                                options: data,
+                                create: true,
+                                render: {
+                                    option_create: function(data, escape) {
+                                        return '<div data-selectable class="create">' +
+                                                'Agregar <strong>' + escape(data.input) + '</strong>' +
+                                                '</div>'
+                                    }
+                                }
+                            });
+                        });
+                    },
+                    removeProperty: function (article, property) {
+                        this.$http.delete(ROOT_URL + "/stock/properties/" + property.idProperty).success(function () {
+                            article.propertiesList.$remove(property);
+                        }).error(function () {
+                            showAlert("Ha habido un problema con su solicitud, intente nuevamente", {type:3});
+                        });
+                    },
+                    addProperty: function (article) {
+                        this.isSaving = true;
+
+                        var idAttr = this.editModal.selectAttr[0].selectize.getValue();
+                        var idVal = this.editModal.selectValue[0].selectize.getValue();
+                        var property = {
+                            value: {
+                                idValue: idVal,
+                                value: this.editModal.selectValue[0].selectize.getOption(idVal).text()
+                            },
+                            attributesArticles: {
+                                idArticle: article.idArticle,
+                                idAttribute: idAttr,
+                                attributes: {
+                                    idAttribute: idAttr,
+                                    attributeName: this.editModal.selectAttr[0].selectize.getOption(idAttr).text()
+                                }
+                            }
+                        };
+
+                        this.$http.post(ROOT_URL + "/stock/" + article.idStock + "/properties", property).success(function () {
+                            this.editModal.selectAttr[0].selectize.clear();
+                            this.editModal.selectValue[0].selectize.clear();
+                            this.fetchStockProperties(article);
+                        }).error(function () {
+                            showAlert("Ha habido un problema con su solicitud, intente nuevamente", {type:3})
+                        });
+                    },
                     areaFilter: function (item) {
                         if (this.selectedOptions.area == null || this.selectedOptions.area == 0) {
                             return item;
@@ -81,8 +163,19 @@
                     },
                     showAttachmentsModal: function (article) {
                         this.attachmentsModal.article = article;
-                        console.log(article);
                         $("#attachmentsModal").modal("show");
+                    },
+                    showEditArticleModal: function (article) {
+                        this.editModal.article = article;
+                        this.fetchAttributes(article.article.idArticle);
+                        $("#editModal").modal("show");
+                    },
+                    closeEditModal: function () {
+                        this.editModal.selectAttr[0].selectize.destroy();
+                        $("#editModal").modal("hide");
+                    },
+                    saveStockArticle: function (article) {
+                        console.log(article);
                     }
                 }
             });
@@ -93,6 +186,9 @@
         <style>
             .stock-groups {
                 margin-top: 2rem;
+            }
+            .line {
+                margin-bottom: 2rem;
             }
         </style>
     </jsp:attribute>
@@ -159,7 +255,7 @@
                                         <button @click="showAttachmentsModal(article)" class="btn btn-default">
                                             <span class="glyphicon glyphicon-paperclip"></span>
                                         </button>
-                                        <button @click="" class="btn btn-default">
+                                        <button @click="showEditArticleModal(article)" class="btn btn-default">
                                             <span class="glyphicon glyphicon-pencil"></span>
                                         </button>
                                     </div>
@@ -172,8 +268,10 @@
                                     <div class="col-xs-6">
                                         <table class="table table-striped">
                                             <tr v-for="property in article.propertiesList">
-                                                <td>{{ property.attributesArticles.attributes.attributeName }}</td>
-                                                <td>{{ property.value }}</td>
+                                                <td class="col-xs-6">
+                                                    {{ property.attributesArticles.attributes.attributeName }}
+                                                </td>
+                                                <td class="col-xs-6">{{ property.value.value }}</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -181,8 +279,8 @@
                                     <div class="col-xs-6">
                                         <table class="table table-striped">
                                             <tr v-for="document in article.stockDocumentsList">
-                                                <td>{{ document.documentType.documentName }}</td>
-                                                <td>
+                                                <td class="col-xs-6">{{ document.documentType.documentName }}</td>
+                                                <td class="col-xs-6">
                                                     <a :href="attachmentsDownloadUrl + document.idStockDocument">
                                                         {{ document.documentName }}
                                                     </a>
@@ -197,7 +295,7 @@
                 </div>
             </div>
             <%-- Modal para carga de archivos adjuntos --%>
-            <div id="attachmentsModal" class="modal fade">
+            <div id="attachmentsModal" class="modal fade" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -220,6 +318,7 @@
                                     {{ attachmentsModal.article.idEmployee }}
                                 </div>
                             </div>
+                            <hr>
                             <form :action="attachmentsModal.uploadUrl + attachmentsModal.article.idStock"
                                   method="post" enctype="multipart/form-data">
                                 <table class="table table-striped">
@@ -250,6 +349,91 @@
                                     <input type="submit" value="Guardar" class="btn btn-success">
                                 </div>
                             </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <%-- Modal de modificacion de articulo de inventario --%>
+            <div id="editModal" class="modal fade" data-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button class="close" @click="closeEditModal()"><span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title">Modificaciar articulo</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <label>Artículo: </label>
+                                    {{ editModal.article.article.articleName }}
+                                </div>
+                                <div class="col-xs-4">
+                                    <label>No. de Serie: </label>
+                                    {{ editModal.article.serialNumber }}
+                                </div>
+                                <div class="col-xs-4">
+                                    <label>Asignado a: </label>
+                                    {{ editModal.article.idEmployee }}
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row line">
+                                <div class="col-xs-4">
+                                    <label>No. de serie</label>
+                                    <input type="text" class="form-control">
+                                </div>
+                                <div class="col-xs-4">
+                                    <label>Asignar a</label>
+                                    <input type="text" class="form-control">
+                                </div>
+                                <div class="col-xs-4">
+                                    <label>Estado de artículo</label>
+                                    <select class="form-control">
+                                        <option value="1">Activo</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row line">
+                                <div class="text-center line col-xs-12"><strong>Propiedades</strong></div>
+                                <div class="col-xs-8 col-xs-push-2">
+                                    <table class="table table-striped line">
+                                        <tr v-for="property in editModal.article.propertiesList">
+                                            <td class="col-xs-5">
+                                                {{ property.attributesArticles.attributes.attributeName }}
+                                            </td>
+                                            <td class="col-xs-5">{{ property.value.value }}</td>
+                                            <td class="col-xs-2">
+                                                <button @click="removeProperty(editModal.article, property)" class="btn btn-default">
+                                                    <span class="glyphicon glyphicon-remove"></span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-8 col-xs-push-2">
+                                    <div class="col-xs-5">
+                                        <label>Atributo</label>
+                                        <select id="select-attribute" class="form-control"></select>
+                                    </div>
+                                    <div class="col-xs-5">
+                                        <label>Valor</label>
+                                        <select id="select-value" class="form-control"></select>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <button @click="addProperty(editModal.article)"
+                                                class="btn btn-default" style="margin-top: 2.5rem">
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right modal-footer">
+                            <button class="btn btn-default" @click="closeEditModal">Cancelar</button>
+                            <button @click="saveStockArticle(editModal.article)" class="btn btn-success">Guardar</button>
                         </div>
                     </div>
                 </div>
