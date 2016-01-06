@@ -48,6 +48,11 @@ public class CRequestsCategories implements Serializable {
     @Column(name = "PERIODIC")
     @JsonView(JsonViews.Root.class)
     private Integer periodic;
+    
+    @Size(max = 1000)
+    @Column(name = "INFORMATION")
+    @JsonView(JsonViews.Root.class)
+    private String information;
 
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
@@ -127,6 +132,14 @@ public class CRequestsCategories implements Serializable {
     @Override
     public String toString() {
         return "mx.bidg.model.CRequestsCategories[ idRequestCategorie=" + idRequestCategorie + " ]";
+    }
+
+    public String getInformation() {
+        return information;
+    }
+
+    public void setInformation(String information) {
+        this.information = information;
     }
     
 }
