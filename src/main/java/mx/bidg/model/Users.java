@@ -22,6 +22,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -84,39 +86,14 @@ public class Users implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int activeSession;
 
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ID_COMPANY")
+    @Column(name = "ID_DW_EMPLOYEE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer iddwemployee;
+    
+    @JoinColumn(name = "ID_DW_EMPLOYEE", referencedColumnName = "ID_DW_EMPLOYEE")
+    @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private int idCompany;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ID_REGION")
-    @JsonView(JsonViews.Embedded.class)
-    private int idRegion;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ID_BRANCH")
-    @JsonView(JsonViews.Embedded.class)
-    private int idBranch;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ID_GROUP")
-    @JsonView(JsonViews.Embedded.class)
-    private int idGroup;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ID_ROLE")
-    @JsonView(JsonViews.Embedded.class)
-    private int idRole;
-
-    @Column(name = "ID_EMPLOYEE")
-    @JsonView(JsonViews.Embedded.class)
-    private Integer idEmployee;
+    private DwEmployees idDwEmployee;
     
     @Basic(optional = false)
     @NotNull
@@ -161,13 +138,8 @@ public class Users implements Serializable {
         this.idUser = idUser;
     }
 
-    public Users(Integer idUser, int idCompany, int idRegion, int idBranch, int idGroup, int idRole, String username, String password, String mail, int status, int activeSession, LocalTime timeSession, LocalDateTime highDate) {
+    public Users(Integer idUser, String username, String password, String mail, int status, int activeSession, LocalTime timeSession, LocalDateTime highDate) {
         this.idUser = idUser;
-        this.idCompany = idCompany;
-        this.idRegion = idRegion;
-        this.idBranch = idBranch;
-        this.idGroup = idGroup;
-        this.idRole = idRole;
         this.username = username;
         this.password = password;
         this.mail = mail;
@@ -177,60 +149,12 @@ public class Users implements Serializable {
         this.highDate = highDate;
     }
 
-    public int getIdCompany() {
-        return idCompany;
-    }
-
-    public void setIdCompany(int idCompany) {
-        this.idCompany = idCompany;
-    }
-
-    public int getIdRegion() {
-        return idRegion;
-    }
-
-    public void setIdRegion(int idRegion) {
-        this.idRegion = idRegion;
-    }
-
-    public int getIdBranch() {
-        return idBranch;
-    }
-
-    public void setIdBranch(int idBranch) {
-        this.idBranch = idBranch;
-    }
-
-    public int getIdGroup() {
-        return idGroup;
-    }
-
-    public void setIdGroup(int idGroup) {
-        this.idGroup = idGroup;
-    }
-
-    public int getIdRole() {
-        return idRole;
-    }
-
-    public void setIdRole(int idRole) {
-        this.idRole = idRole;
-    }
-
     public Integer getIdUser() {
         return idUser;
     }
 
     public void setIdUser(Integer idUser) {
         this.idUser = idUser;
-    }
-
-    public Integer getIdEmployee() {
-        return idEmployee;
-    }
-
-    public void setIdEmployee(Integer idEmployee) {
-        this.idEmployee = idEmployee;
     }
 
     public String getUsername() {
@@ -304,6 +228,22 @@ public class Users implements Serializable {
     public void setLowDate(LocalDateTime lowDate) {
         this.lowDate = lowDate;
     }
+    
+    public DwEmployees getIdDwEmployee() {
+        return idDwEmployee;
+    }
+
+    public void setIdDwEmployee(DwEmployees idDwEmployee) {
+        this.idDwEmployee = idDwEmployee;
+    }
+
+    public Integer getIddwemployee() {
+        return iddwemployee;
+    }
+
+    public void setIddwemployee(Integer iddwemployee) {
+        this.iddwemployee = iddwemployee;
+    }
 
     public List<UsersRole> getUsersRoleList() {
         return usersRoleList;
@@ -351,7 +291,7 @@ public class Users implements Serializable {
 
     @Override
     public String toString() {
-        return "Users{" + "idUser=" + idUser + ", username=" + username + ", password=" + password + ", mail=" + mail + ", status=" + status + ", activeSession=" + activeSession + ", timeSession=" + timeSession + ", highDate=" + highDate + ", modificationDate=" + modificationDate + ", lowDate=" + lowDate + ", idCompany=" + idCompany + ", idRegion=" + idRegion + ", idBranch=" + idBranch + ", idGroup=" + idGroup + ", idRole=" + idRole + ", idEmployee=" + idEmployee + '}';
+        return "Users{" + "idUser=" + idUser + ", username=" + username + ", password=" + password + ", mail=" + mail + ", status=" + status + ", activeSession=" + activeSession + ", timeSession=" + timeSession + ", highDate=" + highDate + ", modificationDate=" + modificationDate + ", lowDate=" + lowDate + "'}'";
     }
     
 }

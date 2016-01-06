@@ -105,6 +105,10 @@ public class DwEnterprises implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idDwEnterprise")
     @JsonView(JsonViews.Embedded.class)
     private List<BudgetMonthBranch> budgetMonthBranchList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idDwEnterprise")
+    @JsonView(JsonViews.Embedded.class)
+    private List<DwEmployees> dwEmployeesList;
 
     public DwEnterprises() {
     }
@@ -262,6 +266,14 @@ public class DwEnterprises implements Serializable {
     @Override
     public String toString() {
         return "mx.bidg.model.DwEnterprises[ idDwEnterprise=" + idDwEnterprise + " ]";
+    }
+
+    public List<DwEmployees> getDwEmployeesList() {
+        return dwEmployeesList;
+    }
+
+    public void setDwEmployeesList(List<DwEmployees> dwEmployeesList) {
+        this.dwEmployeesList = dwEmployeesList;
     }
     
 }

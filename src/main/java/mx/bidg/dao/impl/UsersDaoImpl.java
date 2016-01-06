@@ -57,6 +57,4 @@ public class UsersDaoImpl extends AbstractDao<Integer, Users> implements UsersDa
         return (Users) criteria.uniqueResult();
     }
     
-    
-    
 }
