@@ -25,7 +25,7 @@ public class GlobalControllerExceptionHandler {
     @ResponseStatus(value = HttpStatus.CONFLICT, reason = "Ha habido un problema "
             + "con su solicitud, intente nuevamente")
     public void exceptionHandler(Exception e) throws Exception{
-        Logger.getLogger(e.getStackTrace()[0].getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
+        Logger.getLogger(e.getStackTrace()[0].getClassName()).log(Level.SEVERE, e.getMessage(), e);
         if (AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class) != null)
             throw e;
         
@@ -33,7 +33,7 @@ public class GlobalControllerExceptionHandler {
     
     @ExceptionHandler(ValidationException.class)
     public void validationExceptionHandler(Exception e) throws Exception {
-        Logger.getLogger(e.getStackTrace()[0].getClass().getName()).log(Level.SEVERE, e.getMessage(), e);
+        Logger.getLogger(e.getStackTrace()[0].getClassName()).log(Level.SEVERE, e.getMessage(), e);
         throw e;
     }
     
