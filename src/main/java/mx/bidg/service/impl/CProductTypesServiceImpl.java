@@ -43,7 +43,8 @@ public class CProductTypesServiceImpl implements CProductTypesService {
             CRequestTypes cRequestTypes) {
         
         List<CProductTypes> list = new ArrayList<>();
-        List<RequestTypesProduct> requestTypesProducts = requestTypesProductDao.findByRequestCategory(cRequestsCategory);
+        List<RequestTypesProduct> requestTypesProducts = requestTypesProductDao
+                .findByRequestCategoryRequestType(cRequestsCategory, cRequestTypes);
         if(requestTypesProducts.isEmpty()) {
             return null;
         }

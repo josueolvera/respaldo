@@ -8,6 +8,8 @@ package mx.bidg.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import mx.bidg.dao.BudgetMonthBranchDao;
 import mx.bidg.dao.BudgetsDao;
 import mx.bidg.dao.CMonthsDao;
@@ -21,6 +23,7 @@ import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.Budgets;
 import mx.bidg.model.CMonths;
 import mx.bidg.model.CProductTypes;
+import mx.bidg.model.CProducts;
 import mx.bidg.model.CRequestStatus;
 import mx.bidg.model.CRequestTypes;
 import mx.bidg.model.CRequestsCategories;
@@ -82,6 +85,7 @@ public class RequestsServiceImpl implements RequestsService {
         CProductTypes cProductType = cProductTypesDao
                 .findById(jsonRequest.get("idProductType").asInt());
         Users userResponsable = usersDao.findByIdFetchDwEmployee(jsonRequest.get("idUser").asInt());
+        List<CProducts> products = new ArrayList<>();
         LocalDate date = LocalDate.now();
         
         CMonths month = cMonthsDao.findById(date.getMonthValue());
@@ -117,6 +121,10 @@ public class RequestsServiceImpl implements RequestsService {
         request.setIdRequestStatus(new CRequestStatus(1));
         request.setIdAccessLevel(1);
         request = requestsDao.save(request);
+        
+        for(JsonNode jsonProducts : jsonRequest.get("products")) {
+            
+        }
         
         return request;
     }
