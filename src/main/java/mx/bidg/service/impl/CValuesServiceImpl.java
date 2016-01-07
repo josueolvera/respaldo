@@ -24,4 +24,9 @@ public class CValuesServiceImpl implements CValuesService {
     public List<CValues> findAll() {
         return valuesDao.findAll();
     }
+
+    @Override
+    public CValues save(CValues value) {
+        return valuesDao.save(value);
+    }
 }

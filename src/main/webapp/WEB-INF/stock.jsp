@@ -100,6 +100,7 @@
                     },
                     fetchValues: function () {
                         this.$http.get(ROOT_URL + "/values").success(function (data) {
+                            var self = this;
                             this.selectOptions.values = data;
                             this.editModal.selectValue = $('#select-value').selectize({
                                 maxItems: 1,
@@ -107,7 +108,15 @@
                                 labelField: 'value',
                                 searchField: 'value',
                                 options: data,
-                                create: true,
+                                create: function (input, callback) {
+                                    self.$http.post(ROOT_URL + "/values", {
+                                        value: input
+                                    }).success(function (data){
+                                        callback(data);
+                                    }).error(function (){
+                                        callback();
+                                    });
+                                },
                                 render: {
                                     option_create: function(data, escape) {
                                         return '<div data-selectable class="create">' +

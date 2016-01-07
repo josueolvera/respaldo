@@ -15,7 +15,8 @@ import java.util.List;
 public class CValuesDaoImpl extends AbstractDao<Integer, CValues> implements CValuesDao {
     @Override
     public CValues save(CValues entity) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        persist(entity);
+        return entity;
     }
 
     @Override
