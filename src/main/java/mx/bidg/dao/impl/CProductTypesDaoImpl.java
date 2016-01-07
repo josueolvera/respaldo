@@ -21,7 +21,7 @@ public class CProductTypesDaoImpl extends AbstractDao<Integer, CProductTypes> im
 
     @Override
     public CProductTypes findById(int id) {
-        return (CProductTypes) createEntityCriteria().add(Restrictions.eq("idProductType", id)).uniqueResult();
+        return getByKey(id);
     }
 
     @Override

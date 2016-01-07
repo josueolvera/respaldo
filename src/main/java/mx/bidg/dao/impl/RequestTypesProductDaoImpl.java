@@ -50,13 +50,29 @@ public class RequestTypesProductDaoImpl extends AbstractDao<Integer, RequestType
     }
 
     @Override
-    public RequestTypesProduct findByCombination(int idRequestCategory, int idRequestType, int idProductType) {
+    public RequestTypesProduct findByCombination(CRequestsCategories requestCategory, CRequestTypes requestType, 
+            CProductTypes productType) {
         Criteria criteria = createEntityCriteria();
         HashMap<String, Object> map = new HashMap<>();
-        map.put("idRequestCategory", new CRequestsCategories(idRequestCategory));
-        map.put("idRequestType", new CRequestTypes(idRequestType));
-        map.put("idProductType", new CProductTypes(idProductType));
+        map.put("idRequestCategory", requestCategory);
+        map.put("idRequestType", requestType);
+        map.put("idProductType", productType);
         return (RequestTypesProduct) criteria.add(Restrictions.allEq(map)).uniqueResult();
+    }
+
+    @Override
+    public List<RequestTypesProduct> findByRequestCategory(CRequestsCategories requestCategory) {
+        Criteria criteria = createEntityCriteria().add(Restrictions.eq("idRequestCategory", requestCategory));
+        return (List<RequestTypesProduct>) criteria.list();
+    }
+
+    @Override
+    public List<RequestTypesProduct> findByRequestCategoryRequestType(CRequestsCategories requestCategory, CRequestTypes requestType) {
+        Criteria criteria = createEntityCriteria();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("idRequestCategory", requestCategory);
+        map.put("idRequestType", requestType);
+        return (List<RequestTypesProduct>) criteria.add(Restrictions.allEq(map)).list();
     }
     
 }

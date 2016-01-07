@@ -2,6 +2,7 @@ package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.config.JsonViews;
+import mx.bidg.model.CRequestsCategories;
 import mx.bidg.service.CRequestTypesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,5 +34,11 @@ public class RequestTypesController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody String findRequestById(@PathVariable int id) throws Exception {
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(requestTypesService.findById(id));
+    }
+    
+    @RequestMapping(value = "/request-category/{idRequestCategory}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody String getListByRequestCategory(@PathVariable int idRequestCategory) throws Exception {
+        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(requestTypesService
+            .findByRequestCategory(new CRequestsCategories(idRequestCategory)));
     }
 }

@@ -7,8 +7,29 @@ package mx.bidg.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.LocalDate;
+import mx.bidg.dao.BudgetMonthBranchDao;
+import mx.bidg.dao.BudgetsDao;
+import mx.bidg.dao.CMonthsDao;
+import mx.bidg.dao.CProductTypesDao;
+import mx.bidg.dao.CRequestCategoriesDao;
+import mx.bidg.dao.CRequestTypesDao;
+import mx.bidg.dao.RequestTypesProductDao;
 import mx.bidg.dao.RequestsDao;
+import mx.bidg.dao.UsersDao;
+import mx.bidg.model.BudgetMonthBranch;
+import mx.bidg.model.Budgets;
+import mx.bidg.model.CMonths;
+import mx.bidg.model.CProductTypes;
+import mx.bidg.model.CRequestStatus;
+import mx.bidg.model.CRequestTypes;
+import mx.bidg.model.CRequestsCategories;
+import mx.bidg.model.CTables;
+import mx.bidg.model.DwEnterprises;
+import mx.bidg.model.RequestTypesProduct;
 import mx.bidg.model.Requests;
+import mx.bidg.model.Users;
+import mx.bidg.service.FoliosService;
 import mx.bidg.service.RequestsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,14 +42,83 @@ public class RequestsServiceImpl implements RequestsService {
     @Autowired
     RequestsDao requestsDao;
     
+    @Autowired
+    RequestTypesProductDao requestTypesProductDao;
+    
+    @Autowired
+    CRequestCategoriesDao cRequestCategoriesDao;
+    
+    @Autowired
+    CRequestTypesDao cRequestTypesDao;
+    
+    @Autowired
+    CProductTypesDao cProductTypesDao;
+    
+    @Autowired
+    UsersDao usersDao;
+    
+    @Autowired
+    BudgetsDao budgetsDao;
+    
+    @Autowired
+    BudgetMonthBranchDao budgetMonthBranchDao;
+    
+    @Autowired
+    CMonthsDao cMonthsDao;
+    
+    @Autowired
+    FoliosService foliosService;
+    
     ObjectMapper map = new ObjectMapper();
 
     @Override
-    public Requests save(String data) throws Exception {
+    public Requests save(String data, Users user) throws Exception {
         
         JsonNode jsonRequest = map.readTree(data);
+        CRequestsCategories cRequestsCategory = cRequestCategoriesDao
+                .findById(jsonRequest.get("idRequestCategory").asInt());
+        CRequestTypes cRequestType = cRequestTypesDao
+                .findById(jsonRequest.get("idRequestType").asInt());
+        CProductTypes cProductType = cProductTypesDao
+                .findById(jsonRequest.get("idProductType").asInt());
+        Users userResponsable = usersDao.findByIdFetchDwEmployee(jsonRequest.get("idUser").asInt());
+        LocalDate date = LocalDate.now();
         
-        return null;
+        CMonths month = cMonthsDao.findById(date.getMonthValue());
+        
+        DwEnterprises dwEnterprise = userResponsable.getIdDwEmployee().getIdDwEnterprise();
+        
+        Budgets budget = budgetsDao.findByCombination(dwEnterprise.getIdGroup(), dwEnterprise.getIdArea(), 
+                cRequestType.getIdBudgetCategory(), cProductType.getIdBudgetSubcategory());
+        
+        RequestTypesProduct requestTypesProduct = requestTypesProductDao.findByCombination(cRequestsCategory, 
+                cRequestType, cProductType);
+        
+        if(requestTypesProduct == null || budget == null || month == null) {
+            return null;
+        }
+        
+        BudgetMonthBranch budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget, month, dwEnterprise, date.getYear());
+        
+        if(budgetMonthBranch == null) {
+            return null;
+        }
+        
+        Requests request = new Requests();
+        request.setIdRequestTypeProduct(requestTypesProduct);
+        request.setIdBudgetMonthBranch(budgetMonthBranch);
+        //51 es el id de Requests en CTables
+        request.setFolio(foliosService.createNew(new CTables(51)));
+        request.setUserRequest(user);
+        request.setUserResponsable(userResponsable);
+        request.setDescription(jsonRequest.get("description").asText());
+        request.setPurpose(jsonRequest.get("purpose").asText());
+        //1 es el id de Pendiente en CRequestStatus
+        request.setIdRequestStatus(new CRequestStatus(1));
+        request.setIdAccessLevel(1);
+        request = requestsDao.save(request);
+        
+        return request;
     }
     
 }

@@ -3,6 +3,7 @@ package mx.bidg.service;
 import mx.bidg.model.CRequestTypes;
 
 import java.util.List;
+import mx.bidg.model.CRequestsCategories;
 
 /**
  * @author Rafael Viveros
@@ -10,5 +11,6 @@ import java.util.List;
  */
 public interface CRequestTypesService {
     public List<CRequestTypes> findAll();
+    public List<CRequestTypes> findByRequestCategory(CRequestsCategories cRequestsCategory);
     public CRequestTypes findById(Integer id);
 }

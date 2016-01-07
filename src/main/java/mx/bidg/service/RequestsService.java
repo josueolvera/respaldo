@@ -6,6 +6,7 @@
 package mx.bidg.service;
 
 import mx.bidg.model.Requests;
+import mx.bidg.model.Users;
 
 /**
  *
@@ -13,6 +14,6 @@ import mx.bidg.model.Requests;
  */
 public interface RequestsService {
     
-    public Requests save(String data) throws Exception;
+    public Requests save(String data, Users user) throws Exception;
     
 }

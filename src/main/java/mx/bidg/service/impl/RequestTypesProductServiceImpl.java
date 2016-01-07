@@ -6,6 +6,9 @@
 package mx.bidg.service.impl;
 
 import mx.bidg.dao.RequestTypesProductDao;
+import mx.bidg.model.CProductTypes;
+import mx.bidg.model.CRequestTypes;
+import mx.bidg.model.CRequestsCategories;
 import mx.bidg.model.RequestTypesProduct;
 import mx.bidg.service.RequestTypesProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +29,8 @@ public class RequestTypesProductServiceImpl implements RequestTypesProductServic
 
     @Override
     public RequestTypesProduct findByCombination(int idRequestCategory, int idRequestType, int idProductType) {
-        return dao.findByCombination(idRequestCategory, idRequestType, idProductType);
+        return dao.findByCombination(new CRequestsCategories(idRequestCategory), new CRequestTypes(idRequestType), 
+                new CProductTypes(idProductType));
     }
     
 }

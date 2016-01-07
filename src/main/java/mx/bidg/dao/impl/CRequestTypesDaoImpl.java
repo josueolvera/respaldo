@@ -21,7 +21,7 @@ public class CRequestTypesDaoImpl extends AbstractDao<Integer, CRequestTypes> im
 
     @Override
     public CRequestTypes findById(int id) {
-        return (CRequestTypes) createEntityCriteria().add(Restrictions.eq("idRequestType", id)).uniqueResult();
+        return getByKey(id);
     }
 
     @Override

@@ -5,6 +5,10 @@
  */
 package mx.bidg.dao;
 
+import java.util.List;
+import mx.bidg.model.CProductTypes;
+import mx.bidg.model.CRequestTypes;
+import mx.bidg.model.CRequestsCategories;
 import mx.bidg.model.RequestTypesProduct;
 
 /**
@@ -13,6 +17,11 @@ import mx.bidg.model.RequestTypesProduct;
  */
 public interface RequestTypesProductDao extends InterfaceDao<RequestTypesProduct> {
     
-    public RequestTypesProduct findByCombination(int idRequestCategory, int idRequestType, int idProductType);
+    public RequestTypesProduct findByCombination(CRequestsCategories requestCategory, CRequestTypes requestType, 
+            CProductTypes productType);
+    
+    public List<RequestTypesProduct> findByRequestCategory(CRequestsCategories requestCategory);
+    
+    public List<RequestTypesProduct> findByRequestCategoryRequestType(CRequestsCategories requestCategory, CRequestTypes requestType);
     
 }
