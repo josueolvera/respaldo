@@ -42,7 +42,6 @@ public class Employees implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_EMPLOYEE")
     @JsonView(JsonViews.Root.class)
     private Integer idEmployee;
@@ -108,9 +107,6 @@ public class Employees implements Serializable {
     @Column(name = "SALARY")
     private BigDecimal salary;
     
-    @Column(name = "MOVEMENT_TYPE")
-    private Integer movementType;
-    
     @Basic(optional = false)
     @NotNull
     @Column(name = "HIGH_DATE")
@@ -123,15 +119,7 @@ public class Employees implements Serializable {
     @Column(name = "STATUS")
     @JsonView(JsonViews.Root.class)
     private int status;
-    
-    @Column(name = "SCORE_SISTARTH")
-    @JsonView(JsonViews.Root.class)
-    private Integer scoreSistarth;
-    
-    @Column(name = "GENDER")
-    @JsonView(JsonViews.Root.class)
-    private Integer gender;
-    
+
     @Size(max = 50)
     @Column(name = "BIRTHPLACE")
     @JsonView(JsonViews.Root.class)
@@ -181,20 +169,6 @@ public class Employees implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String cellPhone;
     
-    @Size(max = 25)
-    @Column(name = "HOME_PHONE")
-    @JsonView(JsonViews.Root.class)
-    private String homePhone;
-    
-    @Size(max = 3)
-    @Column(name = "SIZE")
-    @JsonView(JsonViews.Root.class)
-    private String size;
-    
-    @Column(name = "SIZE_NUMBER")
-    @JsonView(JsonViews.Root.class)
-    private Integer sizeNumber;
-    
     @Size(max = 150)
     @Column(name = "FATHER_NAME")
     @JsonView(JsonViews.Root.class)
@@ -204,10 +178,6 @@ public class Employees implements Serializable {
     @Column(name = "MOTHER_NAME")
     @JsonView(JsonViews.Root.class)
     private String motherName;
-    
-    @Column(name = "SCORE_CIRCULO_LABORAL")
-    @JsonView(JsonViews.Root.class)
-    private Integer scoreCirculoLaboral;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEmployee")
     @JsonView(JsonViews.Embedded.class)
@@ -349,14 +319,6 @@ public class Employees implements Serializable {
         this.salary = salary;
     }
 
-    public Integer getMovementType() {
-        return movementType;
-    }
-
-    public void setMovementType(Integer movementType) {
-        this.movementType = movementType;
-    }
-
     public Date getHighDate() {
         return highDate;
     }
@@ -371,22 +333,6 @@ public class Employees implements Serializable {
 
     public void setStatus(int status) {
         this.status = status;
-    }
-
-    public Integer getScoreSistarth() {
-        return scoreSistarth;
-    }
-
-    public void setScoreSistarth(Integer scoreSistarth) {
-        this.scoreSistarth = scoreSistarth;
-    }
-
-    public Integer getGender() {
-        return gender;
-    }
-
-    public void setGender(Integer gender) {
-        this.gender = gender;
     }
 
     public String getBirthplace() {
@@ -469,30 +415,6 @@ public class Employees implements Serializable {
         this.cellPhone = cellPhone;
     }
 
-    public String getHomePhone() {
-        return homePhone;
-    }
-
-    public void setHomePhone(String homePhone) {
-        this.homePhone = homePhone;
-    }
-
-    public String getSize() {
-        return size;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
-    }
-
-    public Integer getSizeNumber() {
-        return sizeNumber;
-    }
-
-    public void setSizeNumber(Integer sizeNumber) {
-        this.sizeNumber = sizeNumber;
-    }
-
     public String getFatherName() {
         return fatherName;
     }
@@ -507,14 +429,6 @@ public class Employees implements Serializable {
 
     public void setMotherName(String motherName) {
         this.motherName = motherName;
-    }
-
-    public Integer getScoreCirculoLaboral() {
-        return scoreCirculoLaboral;
-    }
-
-    public void setScoreCirculoLaboral(Integer scoreCirculoLaboral) {
-        this.scoreCirculoLaboral = scoreCirculoLaboral;
     }
 
     public List<DwEmployees> getDwEmployeesList() {
