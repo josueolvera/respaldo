@@ -17,7 +17,8 @@ public class ProvidersDaoImpl extends AbstractDao<Integer, Providers> implements
 
     @Override
     public Providers save(Providers entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        persist(entity);
+        return entity;
     }
 
     @Override

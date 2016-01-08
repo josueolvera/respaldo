@@ -5,6 +5,7 @@
  */
 package mx.bidg.service.impl;
 
+import java.util.List;
 import mx.bidg.dao.UsersDao;
 import mx.bidg.exceptions.ActiveSessionException;
 import mx.bidg.exceptions.InactiveUserException;
@@ -58,6 +59,11 @@ public class UsersServiceImpl implements UsersService {
         } else {
             throw new ValidationException("Contraseña incorrecta. Username: " + user.getUsername());
         }
+    }
+
+    @Override
+    public List<Users> findAll() {
+        return usersDao.findAll();
     }
     
 }

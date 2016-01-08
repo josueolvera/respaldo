@@ -52,6 +52,7 @@ public class ProvidersAccountsServiceImpl implements ProvidersAccountsService {
         account.setAccountClabe(clabe);
         account.setAccountNumber(accountNumber);
         account.setIdAccessLevel(1);
+        //Tipo de cuenta definitiva
         account.setIdAccountType(new CAccountsTypes(1));
         account.setIdBank(new CBanks(idBank));
         

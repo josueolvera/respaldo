@@ -7,49 +7,37 @@ package mx.bidg.dao.impl;
 
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
-import mx.bidg.dao.ProvidersAccountsDao;
-import mx.bidg.model.Providers;
-import mx.bidg.model.ProvidersAccounts;
-import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
-import org.hibernate.criterion.Restrictions;
+import mx.bidg.dao.AccountsDao;
+import mx.bidg.model.Accounts;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ProvidersAccountsDaoImpl extends AbstractDao<Integer, ProvidersAccounts> implements ProvidersAccountsDao {
+public class AccountsDaoImpl extends AbstractDao<Integer, Accounts> implements AccountsDao {
 
     @Override
-    public ProvidersAccounts save(ProvidersAccounts entity) {
+    public Accounts save(Accounts entity) {
         persist(entity);
         return entity;
     }
 
     @Override
-    public ProvidersAccounts findById(int id) {
+    public Accounts findById(int id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<ProvidersAccounts> findAll() {
+    public List<Accounts> findAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public ProvidersAccounts update(ProvidersAccounts entity) {
+    public Accounts update(Accounts entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean delete(ProvidersAccounts entity) {
+    public boolean delete(Accounts entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public List<ProvidersAccounts> findByProvider(Providers p) {
-        Criteria criteria = createEntityCriteria()
-                .add(Restrictions.eq("idProvider", p))
-                .setFetchMode("idAccount", FetchMode.JOIN);
-        return (List<ProvidersAccounts>) criteria.list();
     }
     
 }

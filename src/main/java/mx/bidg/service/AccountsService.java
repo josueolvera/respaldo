@@ -6,18 +6,18 @@
 package mx.bidg.service;
 
 import java.util.List;
+import mx.bidg.model.Accounts;
+import mx.bidg.model.Providers;
 import mx.bidg.model.Users;
 
 /**
  *
  * @author sistemask
  */
-public interface UsersService {
+public interface AccountsService {
     
-    public Users findByUserName(String username);
+    public List<Accounts> findByProvider(Providers provider);
     
-    public Users verifyUserLogin(Users user);
+    public List<Accounts> findByUser(Users user);
     
-    public List<Users> findAll();
-            
 }

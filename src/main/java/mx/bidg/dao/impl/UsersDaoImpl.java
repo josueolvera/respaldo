@@ -34,7 +34,7 @@ public class UsersDaoImpl extends AbstractDao<Integer, Users> implements UsersDa
 
     @Override
     public List<Users> findAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return (List<Users>) createEntityCriteria().list();
     }
 
     @Override

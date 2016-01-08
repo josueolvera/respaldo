@@ -16,6 +16,7 @@ import mx.bidg.dao.CMonthsDao;
 import mx.bidg.dao.CProductTypesDao;
 import mx.bidg.dao.CRequestCategoriesDao;
 import mx.bidg.dao.CRequestTypesDao;
+import mx.bidg.dao.RequestProductsDao;
 import mx.bidg.dao.RequestTypesProductDao;
 import mx.bidg.dao.RequestsDao;
 import mx.bidg.dao.UsersDao;
@@ -29,6 +30,7 @@ import mx.bidg.model.CRequestTypes;
 import mx.bidg.model.CRequestsCategories;
 import mx.bidg.model.CTables;
 import mx.bidg.model.DwEnterprises;
+import mx.bidg.model.RequestProducts;
 import mx.bidg.model.RequestTypesProduct;
 import mx.bidg.model.Requests;
 import mx.bidg.model.Users;
@@ -72,6 +74,9 @@ public class RequestsServiceImpl implements RequestsService {
     @Autowired
     FoliosService foliosService;
     
+    @Autowired
+    RequestProductsDao requestProductsDao;
+    
     ObjectMapper map = new ObjectMapper();
 
     @Override
@@ -85,7 +90,6 @@ public class RequestsServiceImpl implements RequestsService {
         CProductTypes cProductType = cProductTypesDao
                 .findById(jsonRequest.get("idProductType").asInt());
         Users userResponsable = usersDao.findByIdFetchDwEmployee(jsonRequest.get("idUser").asInt());
-        List<CProducts> products = new ArrayList<>();
         LocalDate date = LocalDate.now();
         
         CMonths month = cMonthsDao.findById(date.getMonthValue());
@@ -123,7 +127,11 @@ public class RequestsServiceImpl implements RequestsService {
         request = requestsDao.save(request);
         
         for(JsonNode jsonProducts : jsonRequest.get("products")) {
-            
+            CProducts product = new CProducts(jsonProducts.get("idProduct").asInt());
+            RequestProducts requestProduct = new RequestProducts();
+            requestProduct.setIdProduct(product);
+            requestProduct.setIdRequest(request);
+            requestProduct = requestProductsDao.save(requestProduct);
         }
         
         return request;

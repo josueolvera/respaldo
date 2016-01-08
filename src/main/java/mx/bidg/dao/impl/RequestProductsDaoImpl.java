@@ -7,49 +7,37 @@ package mx.bidg.dao.impl;
 
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
-import mx.bidg.dao.ProvidersAccountsDao;
-import mx.bidg.model.Providers;
-import mx.bidg.model.ProvidersAccounts;
-import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
-import org.hibernate.criterion.Restrictions;
+import mx.bidg.dao.RequestProductsDao;
+import mx.bidg.model.RequestProducts;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ProvidersAccountsDaoImpl extends AbstractDao<Integer, ProvidersAccounts> implements ProvidersAccountsDao {
+public class RequestProductsDaoImpl extends AbstractDao<Integer, RequestProducts> implements RequestProductsDao {
 
     @Override
-    public ProvidersAccounts save(ProvidersAccounts entity) {
+    public RequestProducts save(RequestProducts entity) {
         persist(entity);
         return entity;
     }
 
     @Override
-    public ProvidersAccounts findById(int id) {
+    public RequestProducts findById(int id) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<ProvidersAccounts> findAll() {
+    public List<RequestProducts> findAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public ProvidersAccounts update(ProvidersAccounts entity) {
+    public RequestProducts update(RequestProducts entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean delete(ProvidersAccounts entity) {
+    public boolean delete(RequestProducts entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public List<ProvidersAccounts> findByProvider(Providers p) {
-        Criteria criteria = createEntityCriteria()
-                .add(Restrictions.eq("idProvider", p))
-                .setFetchMode("idAccount", FetchMode.JOIN);
-        return (List<ProvidersAccounts>) criteria.list();
     }
     
 }
