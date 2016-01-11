@@ -182,6 +182,10 @@ public class Employees implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEmployee")
     @JsonView(JsonViews.Embedded.class)
     private List<DwEmployees> dwEmployeesList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEmployee")
+    @JsonView(JsonViews.Embedded.class)
+    private List<EmployeesAccounts> employeesAccountsList;
 
     public Employees() {
     }
@@ -462,6 +466,14 @@ public class Employees implements Serializable {
     @Override
     public String toString() {
         return "mx.bidg.model.Employees[ idEmployee=" + idEmployee + " ]";
+    }
+
+    public List<EmployeesAccounts> getEmployeesAccountsList() {
+        return employeesAccountsList;
+    }
+
+    public void setEmployeesAccountsList(List<EmployeesAccounts> employeesAccountsList) {
+        this.employeesAccountsList = employeesAccountsList;
     }
     
 }

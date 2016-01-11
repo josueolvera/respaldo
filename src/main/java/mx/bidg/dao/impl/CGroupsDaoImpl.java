@@ -12,6 +12,7 @@ import mx.bidg.model.CGroups;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.CriteriaSpecification;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -28,7 +29,7 @@ public class CGroupsDaoImpl extends AbstractDao<Integer, CGroups> implements CGr
 
     @Override
     public CGroups findById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getByKey(id);
     }
 
     @Override
@@ -50,8 +51,9 @@ public class CGroupsDaoImpl extends AbstractDao<Integer, CGroups> implements CGr
     @Override
     public CGroups getByIdBudgetsCatalogs(Integer idGroup) {
         Criteria criteria = createEntityCriteria()
+                .add(Restrictions.idEq(idGroup))
                 .setFetchMode("budgetsList", FetchMode.JOIN)
-                .setFetchMode("budgetsList.idBudget", FetchMode.SELECT)
+//                .setFetchMode("budgetsList.idBudget", FetchMode.SELECT)
                 .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
         
         return (CGroups) criteria.uniqueResult();

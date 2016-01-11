@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -39,11 +38,18 @@ public class CGroupsController {
         return new ResponseEntity<>(map.writerWithView(JsonViews.Root.class).writeValueAsString(list), HttpStatus.OK);
     }
     
-        @RequestMapping(value = "/{idGroup}", produces = "application/json;charset=UTF-8")
-        public @ResponseBody ResponseEntity<String> getCGroupsParams(
-         @PathVariable Integer idGroup) throws Exception {        
-         CGroups cGroup = cGroupsService.getByIdBudgetsCatalogs(idGroup);
-         return new ResponseEntity<>(map.writerWithView(JsonViews.EmbeddedBudget.class).writeValueAsString(cGroup), HttpStatus.OK);
-      }
+    @RequestMapping(value = "/{idGroup}", produces = "application/json;charset=UTF-8")
+    public @ResponseBody ResponseEntity<String> getCGroupsParams(
+        @PathVariable Integer idGroup) throws Exception {        
+        CGroups cGroup = cGroupsService.getByIdBudgetsCatalogs(idGroup);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.EmbeddedBudget.class).writeValueAsString(cGroup), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "group-area/{idGroup}/{idArea}", produces = "application/json;charset=UTF-8")
+    public @ResponseBody ResponseEntity<String> getBudgetListByGroupArea(
+        @PathVariable Integer idGroup, @PathVariable Integer idArea) throws Exception {        
+        CGroups cGroup = cGroupsService.getBudgetListByGroupsArea(idGroup, idArea);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.EmbeddedBudget.class).writeValueAsString(cGroup), HttpStatus.OK);
+    }
     
 }

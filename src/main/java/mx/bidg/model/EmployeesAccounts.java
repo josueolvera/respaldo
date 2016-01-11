@@ -39,31 +39,25 @@ public class EmployeesAccounts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idEmployeeAccount;
     
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ID_EMPLOYEE")
-    @JsonView(JsonViews.Root.class)
-    private int idEmployee;
+    @JoinColumn(name = "ID_EMPLOYEE", referencedColumnName = "ID_EMPLOYEE")
+    @ManyToOne(optional = false)
+    private Employees idEmployee;
     
     @JoinColumn(name = "ID_ACCOUNT", referencedColumnName = "ID_ACCOUNT")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private Accounts idAccount;
     
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
-    @JsonView(JsonViews.Root.class)
-    private Integer idAccessLevel;
+    private int idAccessLevel;
 
     public EmployeesAccounts() {
     }
 
     public EmployeesAccounts(Integer idEmployeeAccount) {
         this.idEmployeeAccount = idEmployeeAccount;
-    }
-
-    public EmployeesAccounts(Integer idEmployeeAccount, int idEmployee) {
-        this.idEmployeeAccount = idEmployeeAccount;
-        this.idEmployee = idEmployee;
     }
 
     public Integer getIdEmployeeAccount() {
@@ -74,14 +68,6 @@ public class EmployeesAccounts implements Serializable {
         this.idEmployeeAccount = idEmployeeAccount;
     }
 
-    public int getIdEmployee() {
-        return idEmployee;
-    }
-
-    public void setIdEmployee(int idEmployee) {
-        this.idEmployee = idEmployee;
-    }
-
     public Accounts getIdAccount() {
         return idAccount;
     }
@@ -90,12 +76,20 @@ public class EmployeesAccounts implements Serializable {
         this.idAccount = idAccount;
     }
 
-    public Integer getIdAccessLevel() {
+    public int getIdAccessLevel() {
         return idAccessLevel;
     }
 
-    public void setIdAccessLevel(Integer idAccessLevel) {
+    public void setIdAccessLevel(int idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
+    }
+
+    public Employees getIdEmployee() {
+        return idEmployee;
+    }
+
+    public void setIdEmployee(Employees idEmployee) {
+        this.idEmployee = idEmployee;
     }
 
     @Override

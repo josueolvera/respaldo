@@ -16,5 +16,6 @@ public interface CGroupsService {
     
     public List<CGroups> findAll();
     public CGroups getByIdBudgetsCatalogs(Integer idGroup);
+    public CGroups getBudgetListByGroupsArea(Integer idGroup, Integer idArea);
     
 }

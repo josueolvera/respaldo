@@ -6,7 +6,10 @@
 package mx.bidg.service.impl;
 
 import java.util.List;
+import mx.bidg.dao.BudgetsDao;
 import mx.bidg.dao.CGroupsDao;
+import mx.bidg.model.Budgets;
+import mx.bidg.model.CAreas;
 import mx.bidg.model.CGroups;
 import mx.bidg.service.CGroupsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,9 @@ public class CGroupsServiceImpl implements CGroupsService {
     
     @Autowired
     CGroupsDao dao;
+    
+    @Autowired
+    BudgetsDao budgetsDao;
 
     @Override
     public List<CGroups> findAll() {
@@ -32,6 +38,15 @@ public class CGroupsServiceImpl implements CGroupsService {
     @Override
     public CGroups getByIdBudgetsCatalogs(Integer idGroup) {
         return dao.getByIdBudgetsCatalogs(idGroup);
+    }
+
+    @Override
+    public CGroups getBudgetListByGroupsArea(Integer idGroup, Integer idArea) {
+        CGroups group = dao.findById(idGroup);
+        CAreas area = new CAreas(idArea);
+        List<Budgets> budgets = budgetsDao.findByGroupArea(group, area);
+        group.setBudgetsList(budgets);
+        return group;
     }
     
 }
