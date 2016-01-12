@@ -88,12 +88,12 @@ public class Users implements Serializable {
 
     @Column(name = "ID_DW_EMPLOYEE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer iddwemployee;
+    private Integer idDwemployee;
     
     @JoinColumn(name = "ID_DW_EMPLOYEE", referencedColumnName = "ID_DW_EMPLOYEE")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private DwEmployees idDwEmployee;
+    private DwEmployees dwEmployee;
     
     @Basic(optional = false)
     @NotNull
@@ -229,20 +229,20 @@ public class Users implements Serializable {
         this.lowDate = lowDate;
     }
     
-    public DwEmployees getIdDwEmployee() {
-        return idDwEmployee;
+    public DwEmployees getDwEmployee() {
+        return dwEmployee;
     }
 
-    public void setIdDwEmployee(DwEmployees idDwEmployee) {
-        this.idDwEmployee = idDwEmployee;
+    public void setDwEmployee(DwEmployees dwEmployee) {
+        this.dwEmployee = dwEmployee;
     }
 
-    public Integer getIddwemployee() {
-        return iddwemployee;
+    public Integer getIdDwemployee() {
+        return idDwemployee;
     }
 
-    public void setIddwemployee(Integer iddwemployee) {
-        this.iddwemployee = iddwemployee;
+    public void setIdDwemployee(Integer idDwemployee) {
+        this.idDwemployee = idDwemployee;
     }
 
     public List<UsersRole> getUsersRoleList() {

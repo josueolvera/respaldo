@@ -51,7 +51,7 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
 
     @Override
     public DwEnterprises findByIdUser(int idUser) {
-        return usersDao.findByIdFetchDwEmployee(idUser).getIdDwEmployee().getIdDwEnterprise();
+        return usersDao.findByIdFetchDwEmployee(idUser).getDwEmployee().getDwEnterprise();
     }
     
 }

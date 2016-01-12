@@ -55,8 +55,8 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
     public List<DwEnterprises> findByGroupArea(CGroups idGroup, CAreas idArea) {
         Criteria criteria = createEntityCriteria();
         HashMap<String, Object> map = new HashMap<>();
-        map.put("idGroup", idGroup);
-        map.put("idArea", idArea);
+        map.put("group", idGroup);
+        map.put("area", idArea);
         map.put("budgetable", 1);
         return (List<DwEnterprises>) criteria.add(Restrictions.allEq(map)).list();
     }
@@ -65,11 +65,11 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
     public DwEnterprises findByCombination(CGroups group, CDistributors distributor, CRegions region, CBranchs branch, CAreas area) {
         Criteria criteria = createEntityCriteria();
         HashMap<String, Object> map = new HashMap<>();
-        map.put("idGroup", group);
-        map.put("idDistributor", distributor);
-        map.put("idRegion", region);
-        map.put("idBranch", branch);
-        map.put("idArea", area);
+        map.put("group", group);
+        map.put("distributor", distributor);
+        map.put("region", region);
+        map.put("branch", branch);
+        map.put("area", area);
         map.put("budgetable", 1);
         return (DwEnterprises) criteria.add(Restrictions.allEq(map)).uniqueResult();
     }

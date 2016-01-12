@@ -8,6 +8,8 @@ package mx.bidg.model;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -112,7 +114,7 @@ public class Employees implements Serializable {
     @Column(name = "HIGH_DATE")
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
-    private Date highDate;
+    private LocalDateTime highDate;
     
     @Basic(optional = false)
     @NotNull
@@ -128,7 +130,7 @@ public class Employees implements Serializable {
     @Column(name = "BIRTHDATE")
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateConverter.class)
-    private Date birthdate;
+    private LocalDate birthdate;
     
     @Size(max = 50)
     @Column(name = "STATE")
@@ -194,12 +196,11 @@ public class Employees implements Serializable {
         this.idEmployee = idEmployee;
     }
 
-    public Employees(Integer idEmployee, String firstName, String rfc, String claveSap, Date highDate, int status) {
+    public Employees(Integer idEmployee, String firstName, String rfc, String claveSap, int status) {
         this.idEmployee = idEmployee;
         this.firstName = firstName;
         this.rfc = rfc;
         this.claveSap = claveSap;
-        this.highDate = highDate;
         this.status = status;
     }
 
@@ -323,11 +324,11 @@ public class Employees implements Serializable {
         this.salary = salary;
     }
 
-    public Date getHighDate() {
+    public LocalDateTime getHighDate() {
         return highDate;
     }
 
-    public void setHighDate(Date highDate) {
+    public void setHighDate(LocalDateTime highDate) {
         this.highDate = highDate;
     }
 
@@ -347,11 +348,11 @@ public class Employees implements Serializable {
         this.birthplace = birthplace;
     }
 
-    public Date getBirthdate() {
+    public LocalDate getBirthdate() {
         return birthdate;
     }
 
-    public void setBirthdate(Date birthdate) {
+    public void setBirthdate(LocalDate birthdate) {
         this.birthdate = birthdate;
     }
 

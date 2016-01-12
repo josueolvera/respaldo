@@ -53,32 +53,32 @@ public class DwEmployees implements Serializable {
     
     @Column(name = "ID_EMPLOYEE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idemployee;
+    private Integer idEmployee;
     
     @Column(name = "ID_DW_ENTERPRISE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer iddwemployee;
+    private Integer idDwEnterprise;
     
     @Column(name = "ID_ROLE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idrole;
+    private Integer idRole;
     
     @JoinColumn(name = "ID_EMPLOYEE", referencedColumnName = "ID_EMPLOYEE")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private Employees idEmployee;
+    private Employees employee;
     
     @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private DwEnterprises idDwEnterprise;
+    private DwEnterprises dwEnterprise;
     
     @JoinColumn(name = "ID_ROLE", referencedColumnName = "ID_ROLE")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CRoles idRole;
+    private CRoles role;
     
-    @OneToMany(mappedBy = "idDwEmployee")
+    @OneToMany(mappedBy = "dwEmployee")
     @JsonView(JsonViews.Embedded.class)
     private List<Users> usersList;
 
@@ -105,52 +105,52 @@ public class DwEmployees implements Serializable {
         this.creationDate = creationDate;
     }
 
-    public Employees getIdEmployee() {
+    public Integer getIdEmployee() {
         return idEmployee;
     }
 
-    public void setIdEmployee(Employees idEmployee) {
+    public void setIdEmployee(Integer idEmployee) {
         this.idEmployee = idEmployee;
     }
 
-    public DwEnterprises getIdDwEnterprise() {
+    public Integer getIdDwEnterprise() {
         return idDwEnterprise;
     }
 
-    public void setIdDwEnterprise(DwEnterprises idDwEnterprise) {
+    public void setIdDwEnterprise(Integer idDwEnterprise) {
         this.idDwEnterprise = idDwEnterprise;
     }
-    
-    public CRoles getIdRole() {
+
+    public Integer getIdRole() {
         return idRole;
     }
 
-    public void setIdRole(CRoles idRole) {
+    public void setIdRole(Integer idRole) {
         this.idRole = idRole;
     }
 
-    public Integer getIdemployee() {
-        return idemployee;
+    public Employees getEmployee() {
+        return employee;
     }
 
-    public void setIdemployee(Integer idemployee) {
-        this.idemployee = idemployee;
+    public void setEmployee(Employees employee) {
+        this.employee = employee;
     }
 
-    public Integer getIddwemployee() {
-        return iddwemployee;
+    public DwEnterprises getDwEnterprise() {
+        return dwEnterprise;
     }
 
-    public void setIddwemployee(Integer iddwemployee) {
-        this.iddwemployee = iddwemployee;
+    public void setDwEnterprise(DwEnterprises dwEnterprise) {
+        this.dwEnterprise = dwEnterprise;
     }
 
-    public Integer getIdrole() {
-        return idrole;
+    public CRoles getRole() {
+        return role;
     }
 
-    public void setIdrole(Integer idrole) {
-        this.idrole = idrole;
+    public void setRole(CRoles role) {
+        this.role = role;
     }
 
     public List<Users> getUsersList() {

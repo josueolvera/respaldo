@@ -8,8 +8,6 @@ package mx.bidg.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import mx.bidg.dao.BudgetMonthBranchDao;
 import mx.bidg.dao.BudgetsDao;
 import mx.bidg.dao.CMonthsDao;
@@ -94,9 +92,9 @@ public class RequestsServiceImpl implements RequestsService {
         
         CMonths month = cMonthsDao.findById(date.getMonthValue());
         
-        DwEnterprises dwEnterprise = userResponsable.getIdDwEmployee().getIdDwEnterprise();
+        DwEnterprises dwEnterprise = userResponsable.getDwEmployee().getDwEnterprise();
         
-        Budgets budget = budgetsDao.findByCombination(dwEnterprise.getIdGroup(), dwEnterprise.getIdArea(), 
+        Budgets budget = budgetsDao.findByCombination(dwEnterprise.getGroup(), dwEnterprise.getArea(), 
                 cRequestType.getIdBudgetCategory(), cProductType.getIdBudgetSubcategory());
         
         RequestTypesProduct requestTypesProduct = requestTypesProductDao.findByCombination(cRequestsCategory, 

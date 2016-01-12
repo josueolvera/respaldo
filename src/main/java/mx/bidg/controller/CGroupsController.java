@@ -7,8 +7,10 @@ package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
+import javax.servlet.http.HttpSession;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.CGroups;
+import mx.bidg.model.Users;
 import mx.bidg.service.CGroupsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -45,10 +47,11 @@ public class CGroupsController {
         return new ResponseEntity<>(map.writerWithView(JsonViews.EmbeddedBudget.class).writeValueAsString(cGroup), HttpStatus.OK);
     }
     
-    @RequestMapping(value = "group-area/{idGroup}/{idArea}", produces = "application/json;charset=UTF-8")
-    public @ResponseBody ResponseEntity<String> getBudgetListByGroupArea(
-        @PathVariable Integer idGroup, @PathVariable Integer idArea) throws Exception {        
-        CGroups cGroup = cGroupsService.getBudgetListByGroupsArea(idGroup, idArea);
+    @RequestMapping(value = "/area", produces = "application/json;charset=UTF-8")
+    public @ResponseBody ResponseEntity<String> getBudgetListByGroupArea(HttpSession session) throws Exception {
+        Users user = (Users) session.getAttribute("user");
+        CGroups cGroup = cGroupsService.getBudgetListByGroupsArea(user.getDwEmployee().getDwEnterprise().getIdGroup(), 
+                user.getDwEmployee().getDwEnterprise().getIdArea());
         return new ResponseEntity<>(map.writerWithView(JsonViews.EmbeddedBudget.class).writeValueAsString(cGroup), HttpStatus.OK);
     }
     

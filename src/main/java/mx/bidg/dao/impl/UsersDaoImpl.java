@@ -7,7 +7,6 @@ package mx.bidg.dao.impl;
 
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
-import mx.bidg.dao.InterfaceDao;
 import mx.bidg.dao.UsersDao;
 import mx.bidg.model.Users;
 import org.hibernate.Criteria;
@@ -53,7 +52,9 @@ public class UsersDaoImpl extends AbstractDao<Integer, Users> implements UsersDa
         Criteria criteria = createEntityCriteria();
         criteria.add(Restrictions.eq("username", username))
                 .setFetchMode("usersRoleList", FetchMode.JOIN)
-                .setFetchMode("usersRoleList.idSystemRole", FetchMode.JOIN);
+                .setFetchMode("usersRoleList.idSystemRole", FetchMode.JOIN)
+                .setFetchMode("dwEmployee", FetchMode.JOIN)
+                .setFetchMode("dwEmployee.dwEnterprise", FetchMode.JOIN);
         return (Users) criteria.uniqueResult();
     }
 
@@ -61,10 +62,10 @@ public class UsersDaoImpl extends AbstractDao<Integer, Users> implements UsersDa
     public Users findByIdFetchDwEmployee(int id) {
         Criteria criteria = createEntityCriteria()
                 .add(Restrictions.idEq(id))
-                .setFetchMode("idDwEmployee", FetchMode.JOIN)
-                .setFetchMode("idDwEmployee.idEmployee", FetchMode.JOIN)
-                .setFetchMode("idDwEmployee.idDwEnterprise", FetchMode.JOIN)
-                .setFetchMode("idDwEmployee.idRole", FetchMode.JOIN);
+                .setFetchMode("dwEmployee", FetchMode.JOIN)
+                .setFetchMode("dwEmployee.employee", FetchMode.JOIN)
+                .setFetchMode("dwEmployee.dwEnterprise", FetchMode.JOIN)
+                .setFetchMode("dwEmployee.role", FetchMode.JOIN);
         return (Users) criteria.uniqueResult();
     }
     

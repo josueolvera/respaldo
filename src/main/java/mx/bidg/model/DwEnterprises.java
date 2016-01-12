@@ -55,23 +55,23 @@ public class DwEnterprises implements Serializable {
     
     @Column(name = "ID_GROUP", insertable = false, updatable = false)
     @JsonView({JsonViews.Root.class, JsonViews.IdsEnterprises.class})
-    private int idgroup;
+    private int idGroup;
     
     @Column(name = "ID_DISTRIBUTOR", insertable = false, updatable = false)
     @JsonView({JsonViews.Root.class, JsonViews.IdsEnterprises.class})
-    private int iddistributor;
+    private int idDistributor;
     
     @Column(name = "ID_REGION", insertable = false, updatable = false)
     @JsonView({JsonViews.Root.class, JsonViews.IdsEnterprises.class})
-    private int idregion;
+    private int idRegion;
     
     @Column(name = "ID_BRANCH", insertable = false, updatable = false)
     @JsonView({JsonViews.Root.class, JsonViews.IdsEnterprises.class})
-    private int idbranch;
+    private int idBranch;
     
     @Column(name = "ID_AREA", insertable = false, updatable = false)
     @JsonView({JsonViews.Root.class, JsonViews.IdsEnterprises.class})
-    private int idarea;
+    private int idArea;
 
     @Column(name = "BUDGETABLE")
     @JsonView(JsonViews.Root.class)
@@ -80,27 +80,27 @@ public class DwEnterprises implements Serializable {
     @JoinColumn(name = "ID_GROUP", referencedColumnName = "ID_GROUP")
     @ManyToOne(optional = false)
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
-    private CGroups idGroup;
+    private CGroups group;
     
     @JoinColumn(name = "ID_DISTRIBUTOR", referencedColumnName = "ID_DISTRIBUTOR")
     @ManyToOne(optional = false)
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
-    private CDistributors idDistributor;
+    private CDistributors distributor;
     
     @JoinColumn(name = "ID_REGION", referencedColumnName = "ID_REGION")
     @ManyToOne(optional = false)
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
-    private CRegions idRegion;
+    private CRegions region;
     
     @JoinColumn(name = "ID_BRANCH", referencedColumnName = "ID_BRANCH")
     @ManyToOne(optional = false)
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
-    private CBranchs idBranch;
+    private CBranchs branch;
     
     @JoinColumn(name = "ID_AREA", referencedColumnName = "ID_AREA")
     @ManyToOne(optional = false)
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
-    private CAreas idArea;
+    private CAreas area;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idDwEnterprise")
     @JsonView(JsonViews.Embedded.class)
@@ -122,7 +122,7 @@ public class DwEnterprises implements Serializable {
         this.idBrand = idBrand;
         this.idGbranch = idGbranch;
     }
-
+    
     public Integer getIdDwEnterprise() {
         return idDwEnterprise;
     }
@@ -147,6 +147,46 @@ public class DwEnterprises implements Serializable {
         this.idGbranch = idGbranch;
     }
 
+    public int getIdGroup() {
+        return idGroup;
+    }
+
+    public void setIdGroup(int idGroup) {
+        this.idGroup = idGroup;
+    }
+
+    public int getIdDistributor() {
+        return idDistributor;
+    }
+
+    public void setIdDistributor(int idDistributor) {
+        this.idDistributor = idDistributor;
+    }
+
+    public int getIdRegion() {
+        return idRegion;
+    }
+
+    public void setIdRegion(int idRegion) {
+        this.idRegion = idRegion;
+    }
+
+    public int getIdBranch() {
+        return idBranch;
+    }
+
+    public void setIdBranch(int idBranch) {
+        this.idBranch = idBranch;
+    }
+
+    public int getIdArea() {
+        return idArea;
+    }
+
+    public void setIdArea(int idArea) {
+        this.idArea = idArea;
+    }
+
     public Integer getBudgetable() {
         return budgetable;
     }
@@ -155,44 +195,44 @@ public class DwEnterprises implements Serializable {
         this.budgetable = budgetable;
     }
 
-    public CGroups getIdGroup() {
-        return idGroup;
+    public CGroups getGroup() {
+        return group;
     }
 
-    public void setIdGroup(CGroups idGroup) {
-        this.idGroup = idGroup;
+    public void setGroup(CGroups group) {
+        this.group = group;
     }
 
-    public CDistributors getIdDistributor() {
-        return idDistributor;
+    public CDistributors getDistributor() {
+        return distributor;
     }
 
-    public void setIdDistributor(CDistributors idDistributor) {
-        this.idDistributor = idDistributor;
+    public void setDistributor(CDistributors distributor) {
+        this.distributor = distributor;
     }
 
-    public CRegions getIdRegion() {
-        return idRegion;
+    public CRegions getRegion() {
+        return region;
     }
 
-    public void setIdRegion(CRegions idRegion) {
-        this.idRegion = idRegion;
+    public void setRegion(CRegions region) {
+        this.region = region;
     }
 
-    public CBranchs getIdBranch() {
-        return idBranch;
+    public CBranchs getBranch() {
+        return branch;
     }
 
-    public void setIdBranch(CBranchs idBranch) {
-        this.idBranch = idBranch;
+    public void setBranch(CBranchs branch) {
+        this.branch = branch;
     }
 
-    public CAreas getIdArea() {
-        return idArea;
+    public CAreas getArea() {
+        return area;
     }
 
-    public void setIdArea(CAreas idArea) {
-        this.idArea = idArea;
+    public void setArea(CAreas area) {
+        this.area = area;
     }
 
     public List<BudgetMonthBranch> getBudgetMonthBranchList() {
@@ -203,44 +243,12 @@ public class DwEnterprises implements Serializable {
         this.budgetMonthBranchList = budgetMonthBranchList;
     }
 
-    public int getIdgroup() {
-        return idgroup;
+    public List<DwEmployees> getDwEmployeesList() {
+        return dwEmployeesList;
     }
 
-    public void setIdgroup(int idgroup) {
-        this.idgroup = idgroup;
-    }
-
-    public int getIddistributor() {
-        return iddistributor;
-    }
-
-    public void setIddistributor(int iddistributor) {
-        this.iddistributor = iddistributor;
-    }
-
-    public int getIdregion() {
-        return idregion;
-    }
-
-    public void setIdregion(int idregion) {
-        this.idregion = idregion;
-    }
-
-    public int getIdbranch() {
-        return idbranch;
-    }
-
-    public void setIdbranch(int idbranch) {
-        this.idbranch = idbranch;
-    }
-
-    public int getIdarea() {
-        return idarea;
-    }
-
-    public void setIdarea(int idarea) {
-        this.idarea = idarea;
+    public void setDwEmployeesList(List<DwEmployees> dwEmployeesList) {
+        this.dwEmployeesList = dwEmployeesList;
     }
 
     @Override
@@ -266,14 +274,6 @@ public class DwEnterprises implements Serializable {
     @Override
     public String toString() {
         return "mx.bidg.model.DwEnterprises[ idDwEnterprise=" + idDwEnterprise + " ]";
-    }
-
-    public List<DwEmployees> getDwEmployeesList() {
-        return dwEmployeesList;
-    }
-
-    public void setDwEmployeesList(List<DwEmployees> dwEmployeesList) {
-        this.dwEmployeesList = dwEmployeesList;
     }
     
 }
