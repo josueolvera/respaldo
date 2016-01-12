@@ -3,8 +3,10 @@ package mx.bidg.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 
@@ -40,6 +42,11 @@ public class StockDocuments implements Serializable {
     @Column(name = "ID_STOCK", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idStock;
+
+    @Column(name = "UPLOADING_DATE")
+    @Convert(converter = DateTimeConverter.class)
+    @JsonView(JsonViews.Root.class)
+    private LocalDateTime uploadingDate;
 
     @JoinColumn(name = "ID_DOCUMENT_TYPE", referencedColumnName = "ID_DOCUMENT_TYPE")
     @ManyToOne(optional = false)
@@ -97,6 +104,14 @@ public class StockDocuments implements Serializable {
 
     public void setDocumentName(String documentName) {
         this.documentName = documentName;
+    }
+
+    public LocalDateTime getUploadingDate() {
+        return uploadingDate;
+    }
+
+    public void setUploadingDate(LocalDateTime uploadingDate) {
+        this.uploadingDate = uploadingDate;
     }
 
     @JsonProperty("documentType")

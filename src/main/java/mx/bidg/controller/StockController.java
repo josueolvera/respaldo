@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -133,8 +135,17 @@ public class StockController {
         inputStream.close();
     }
 
-    @RequestMapping(value = "/attachments/{idStock}", method = RequestMethod.POST)
-    public String attachDocuments(@PathVariable int idStock, HttpServletRequest request) throws Exception {
+    @RequestMapping(value = "{idStock}/attachments", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getAttachedDocuments(@PathVariable int idStock) throws IOException {
+        List<StockDocuments> documents = stockDocumentsService.findByIdStock(idStock);
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(documents),
+                HttpStatus.OK
+        );
+    }
+
+    @RequestMapping(value = "{idStock}/attachments", method = RequestMethod.POST)
+    public ResponseEntity<String> attachDocuments(@PathVariable int idStock, HttpServletRequest request) throws Exception {
         String SAVE_PATH = env.getRequiredProperty("stock.documents_dir");
         List<StockDocuments> documents = stockDocumentsService.findByIdStock(idStock);
         Pattern pattern = Pattern.compile("(\\d+)");
@@ -179,17 +190,19 @@ public class StockController {
                 document.setCStockDocumentsTypes(new CStockDocumentsTypes(idDocumentType));
                 document.setDocumentUrl(destFile);
                 document.setDocumentName(filePart.getSubmittedFileName());
+                document.setUploadingDate(LocalDateTime.now());
                 stockDocumentsService.save(document);
             } else {
                 document.setStock(new Stocks(idStock));
                 document.setCStockDocumentsTypes(new CStockDocumentsTypes(idDocumentType));
                 document.setDocumentUrl(destFile);
                 document.setDocumentName(filePart.getSubmittedFileName());
+                document.setUploadingDate(LocalDateTime.now());
                 stockDocumentsService.update(document);
             }
         }
 
-        return "redirect:" + request.getHeader("Referer");
+        return new ResponseEntity<>("Registro exitoso", HttpStatus.OK);
     }
 
     private StockDocuments findDocument(Integer idDocumentType, List<StockDocuments> documents) {

@@ -128,9 +128,12 @@
                         });
                     },
                     removeProperty: function (article, property) {
+                        this.isSaving = true;
                         this.$http.delete(ROOT_URL + "/stock/properties/" + property.idProperty).success(function () {
                             article.propertiesList.$remove(property);
+                            this.isSaving = false;
                         }).error(function () {
+                            this.isSaving = false;
                             showAlert("Ha habido un problema con su solicitud, intente nuevamente", {type:3});
                         });
                     },
@@ -158,7 +161,24 @@
                             this.editModal.selectAttr[0].selectize.clear();
                             this.editModal.selectValue[0].selectize.clear();
                             this.fetchStockProperties(article);
+                            this.isSaving = false;
                         }).error(function () {
+                            this.isSaving = false;
+                            showAlert("Ha habido un problema con su solicitud, intente nuevamente", {type:3})
+                        });
+                    },
+                    uploadAttachments: function (article) {
+                        this.isSaving = true;
+                        var form = document.getElementById("attachments-form");
+                        this.$http.post(ROOT_URL + "/stock/" + article.idStock + "/attachments", new FormData(form)).success(function () {
+                            showAlert("Registro exitoso");
+                            form.reset();
+                            this.$http.get(ROOT_URL + "/stock/" + article.idStock + "/attachments").success(function (data) {
+                                article.stockDocumentsList = data;
+                                this.isSaving = false;
+                            });
+                        }).error(function () {
+                            this.isSaving = false;
                             showAlert("Ha habido un problema con su solicitud, intente nuevamente", {type:3})
                         });
                     },
@@ -183,7 +203,12 @@
                         this.editModal.selectAttr[0].selectize.destroy();
                         $("#editModal").modal("hide");
                     },
+                    closeAttachmentsModal: function () {
+                        document.getElementById("attachments-form").reset();
+                        $("#attachmentsModal").modal("hide");
+                    },
                     saveStockArticle: function (article) {
+                        this.isSaving = true;
                         console.log(article);
                     }
                 }
@@ -308,7 +333,7 @@
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span>
+                            <button @click.prevent="closeAttachmentsModal" class="close"><span aria-hidden="true">&times;</span>
                             </button>
                             <h4 class="modal-title">Documentos adjuntos</h4>
                         </div>
@@ -328,8 +353,9 @@
                                 </div>
                             </div>
                             <hr>
-                            <form :action="attachmentsModal.uploadUrl + attachmentsModal.article.idStock"
+                            <form id="attachments-form"
                                   method="post" enctype="multipart/form-data">
+                                <input type="hidden" name="MAX_FILE_SIZE" value="2" />
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
@@ -348,14 +374,22 @@
                                         </td>
                                         <td>
                                             <input type="file" class="form-control"
+                                                   :disabled="isSaving"
                                                    :name="attachmentsModal.fileInput + docType.idDocumentType">
                                         </td>
                                     </tr>
                                 </table>
+                                <div v-if="isSaving" class="progress">
+                                    <div class="progress-bar progress-bar-striped active" style="width: 100%"></div>
+                                </div>
                                 <hr />
                                 <div class="text-right">
-                                    <button class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                                    <input type="submit" value="Guardar" class="btn btn-success">
+                                    <button @click.prevent="closeAttachmentsModal" :disabled="isSaving" class="btn btn-default">Cancelar</button>
+                                    <button @click.prevent="uploadAttachments(attachmentsModal.article)"
+                                            :disabled="isSaving"
+                                            class="btn btn-success">
+                                        Guardar
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -390,15 +424,15 @@
                             <div class="row line">
                                 <div class="col-xs-4">
                                     <label>No. de serie</label>
-                                    <input type="text" class="form-control">
+                                    <input :disabled="isSaving" type="text" class="form-control">
                                 </div>
                                 <div class="col-xs-4">
                                     <label>Asignar a</label>
-                                    <input type="text" class="form-control">
+                                    <input :disabled="isSaving" type="text" class="form-control">
                                 </div>
                                 <div class="col-xs-4">
                                     <label>Estado de artículo</label>
-                                    <select class="form-control">
+                                    <select :disabled="isSaving" class="form-control">
                                         <option value="1">Activo</option>
                                     </select>
                                 </div>
@@ -413,7 +447,9 @@
                                             </td>
                                             <td class="col-xs-5">{{ property.value.value }}</td>
                                             <td class="col-xs-2">
-                                                <button @click="removeProperty(editModal.article, property)" class="btn btn-default">
+                                                <button @click="removeProperty(editModal.article, property)"
+                                                        :disabled="isSaving"
+                                                        class="btn btn-default">
                                                     <span class="glyphicon glyphicon-remove"></span>
                                                 </button>
                                             </td>
@@ -433,6 +469,7 @@
                                     </div>
                                     <div class="col-xs-2">
                                         <button @click="addProperty(editModal.article)"
+                                                :disabled="isSaving"
                                                 class="btn btn-default" style="margin-top: 2.5rem">
                                             <span class="glyphicon glyphicon-plus"></span>
                                         </button>
@@ -441,8 +478,12 @@
                             </div>
                         </div>
                         <div class="text-right modal-footer">
-                            <button class="btn btn-default" @click="closeEditModal">Cancelar</button>
-                            <button @click="saveStockArticle(editModal.article)" class="btn btn-success">Guardar</button>
+                            <button :disabled="isSaving" class="btn btn-default" @click="closeEditModal">Cancelar</button>
+                            <button @click="saveStockArticle(editModal.article)"
+                                    :disabled="isSaving"
+                                    class="btn btn-success">
+                                Guardar
+                            </button>
                         </div>
                     </div>
                 </div>
