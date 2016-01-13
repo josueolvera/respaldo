@@ -36,7 +36,6 @@
                     },
                     attachmentsModal: {
                         article: null,
-                        uploadUrl: ROOT_URL + "/stock/attachments/",
                         fileInput: "file-type-"
                     },
                     editModal: {
@@ -179,8 +178,15 @@
                             });
                         }).error(function () {
                             this.isSaving = false;
+                            form.reset();
                             showAlert("Ha habido un problema con su solicitud, intente nuevamente", {type:3})
                         });
+                    },
+                    validateFile: function (event) {
+                        if (! event.target.files[0].name.match(/(\.jpg|\.jpeg|\.pdf|\.png)$/i)) {
+                            event.target.value = null;
+                            showAlert("Tipo de archivo no admitido", {type:3});
+                        }
                     },
                     areaFilter: function (item) {
                         if (this.selectedOptions.area == null || this.selectedOptions.area == 0) {
@@ -286,11 +292,14 @@
                                         <div class="col-xs-3">{{ article.idEmployee }}</div>
                                     </div>
                                     <div class="text-right col-xs-2">
+                                        <button @click="showEditArticleModal(article)" class="btn btn-default">
+                                            <span class="glyphicon glyphicon-pencil"></span>
+                                        </button>
                                         <button @click="showAttachmentsModal(article)" class="btn btn-default">
                                             <span class="glyphicon glyphicon-paperclip"></span>
                                         </button>
-                                        <button @click="showEditArticleModal(article)" class="btn btn-default">
-                                            <span class="glyphicon glyphicon-pencil"></span>
+                                        <button @click="showAttachmentsModal(article)" class="btn btn-default">
+                                            <span class="glyphicon glyphicon-user"></span>
                                         </button>
                                     </div>
                                 </div>
@@ -355,7 +364,6 @@
                             <hr>
                             <form id="attachments-form"
                                   method="post" enctype="multipart/form-data">
-                                <input type="hidden" name="MAX_FILE_SIZE" value="2" />
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
@@ -373,7 +381,7 @@
                                             </a>
                                         </td>
                                         <td>
-                                            <input type="file" class="form-control"
+                                            <input @change="validateFile($event)" type="file" class="form-control"
                                                    :disabled="isSaving"
                                                    :name="attachmentsModal.fileInput + docType.idDocumentType">
                                         </td>
@@ -427,7 +435,7 @@
                                     <input :disabled="isSaving" type="text" class="form-control">
                                 </div>
                                 <div class="col-xs-4">
-                                    <label>Asignar a</label>
+                                    <label>Folio de Inventario</label>
                                     <input :disabled="isSaving" type="text" class="form-control">
                                 </div>
                                 <div class="col-xs-4">

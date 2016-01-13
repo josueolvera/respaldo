@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
+import mx.bidg.exceptions.InvalidFileException;
+import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
 import mx.bidg.service.PropertiesService;
 import mx.bidg.service.StockDocumentsService;
@@ -147,15 +149,29 @@ public class StockController {
     @RequestMapping(value = "{idStock}/attachments", method = RequestMethod.POST)
     public ResponseEntity<String> attachDocuments(@PathVariable int idStock, HttpServletRequest request) throws Exception {
         String SAVE_PATH = env.getRequiredProperty("stock.documents_dir");
+        String[] fileMediaTypes = env.getRequiredProperty("stock.attachments.media_types").split(",");
         List<StockDocuments> documents = stockDocumentsService.findByIdStock(idStock);
         Pattern pattern = Pattern.compile("(\\d+)");
 
         for (Part filePart: request.getParts()) {
+            boolean isValidMediaType = false;
+
             if (! filePart.getName().matches("^file-type-[0-9]+$")) {
                 continue;
             }
             if (filePart.getSize() <= 0) {
                 continue;
+            }
+
+            for (String mediaType : fileMediaTypes) {
+                if (filePart.getContentType().equals(mediaType)) {
+                    isValidMediaType = true;
+                    break;
+                }
+            }
+
+            if (! isValidMediaType) {
+                throw new InvalidFileException("Tipo de archivo no admitido");
             }
 
             Matcher matcher = pattern.matcher(filePart.getName());
