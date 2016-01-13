@@ -43,6 +43,11 @@ public class Stocks implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String folio;
 
+    @Size(max = 2048)
+    @Column(name = "STOCK_FOLIO")
+    @JsonView(JsonViews.Root.class)
+    private String stockFolio;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
@@ -58,15 +63,8 @@ public class Stocks implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idArticle;
 
-    @Column(name = "ID_EMPLOYEE", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idEmployee;
-
     @Column(name = "ID_ARTICLE_STATUS", insertable = false, updatable = false)
     private Integer idArticleStatus;
-
-    @Column(name = "ID_DW_ENTERPRISE", insertable = false, updatable = false)
-    private Integer idDwEnterprises;
 
     @Column(name = "ID_ACCESS_LEVEL")
     private Integer idAccessLevel;
@@ -80,11 +78,6 @@ public class Stocks implements Serializable {
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private CArticles article;
-
-    @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private DwEnterprises dwEnterprises;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "stocks")
     @JsonView(JsonViews.Embedded.class)
@@ -130,6 +123,14 @@ public class Stocks implements Serializable {
         this.folio = folio;
     }
 
+    public String getStockFolio() {
+        return stockFolio;
+    }
+
+    public void setStockFolio(String stockFolio) {
+        this.stockFolio = stockFolio;
+    }
+
     public BigDecimal getPurchasePrice() {
         return purchasePrice;
     }
@@ -162,36 +163,12 @@ public class Stocks implements Serializable {
         this.serialNumber = serialNumber;
     }
 
-    public Integer getIdEmployee() {
-        return idEmployee;
-    }
-
-    public void setIdEmployee(Integer idEmployee) {
-        this.idEmployee = idEmployee;
-    }
-
-    public Integer getIdDwEnterprises() {
-        return idDwEnterprises;
-    }
-
-    public void setIdDwEnterprises(Integer idDwEnterprises) {
-        this.idDwEnterprises = idDwEnterprises;
-    }
-
     public Integer getIdAccessLevel() {
         return idAccessLevel;
     }
 
     public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
-    }
-
-    public DwEnterprises getDwEnterprises() {
-        return dwEnterprises;
-    }
-
-    public void setDwEnterprises(DwEnterprises dwEnterprises) {
-        this.dwEnterprises = dwEnterprises;
     }
 
     public CArticleStatus getArticleStatus() {

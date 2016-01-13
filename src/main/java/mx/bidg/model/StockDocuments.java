@@ -48,6 +48,10 @@ public class StockDocuments implements Serializable {
     @JsonView(JsonViews.Root.class)
     private LocalDateTime uploadingDate;
 
+    @Column(name = "CURRENT_DOCUMENT")
+    @JsonView(JsonViews.Root.class)
+    private Integer currentDocument;
+
     @JoinColumn(name = "ID_DOCUMENT_TYPE", referencedColumnName = "ID_DOCUMENT_TYPE")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
@@ -104,6 +108,14 @@ public class StockDocuments implements Serializable {
 
     public void setDocumentName(String documentName) {
         this.documentName = documentName;
+    }
+
+    public Integer getCurrentDocument() {
+        return currentDocument;
+    }
+
+    public void setCurrentDocument(Integer currentDocument) {
+        this.currentDocument = currentDocument;
     }
 
     public LocalDateTime getUploadingDate() {
