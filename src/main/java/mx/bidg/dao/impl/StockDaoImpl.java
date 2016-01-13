@@ -41,7 +41,7 @@ public class StockDaoImpl extends AbstractDao<Integer, Stocks> implements StockD
                 .setFetchMode("propertiesList", FetchMode.JOIN)
                 .setFetchMode("stockDocumentsList", FetchMode.SELECT)
                 .createCriteria("dwEnterprises")
-                    .add(Restrictions.eq("iddistributor", idDistributor))
+                    .add(Restrictions.eq("idDistributor", idDistributor))
                 .list();
     }
 
