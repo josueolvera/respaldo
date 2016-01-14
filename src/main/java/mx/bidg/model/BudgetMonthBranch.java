@@ -69,11 +69,11 @@ public class BudgetMonthBranch implements Serializable {
     @JoinColumn(name = "ID_MONTH", referencedColumnName = "ID_MONTH")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CMonths idMonth;
+    private CMonths month;
     
     @Column(name = "ID_MONTH", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private int idmonth;
+    private int idMonth;
     
     @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
     @ManyToOne(optional = false)
@@ -83,6 +83,17 @@ public class BudgetMonthBranch implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
+    
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "IS_AUTHORIZED")
+    @JsonView(JsonViews.Root.class)
+    private Integer isAuthorized;
+    
+    @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
+    @ManyToOne(optional = false)
+    @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
+    private CCurrencies currency;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetMonthBranch")
     @JsonView(JsonViews.Embedded.class)
@@ -105,12 +116,12 @@ public class BudgetMonthBranch implements Serializable {
         this.year = year;
     }
 
-    public BudgetMonthBranch(Integer idBudgetMonthBranch, BigDecimal amount, int year, Budgets idBudget, CMonths idMonth) {
+    public BudgetMonthBranch(Integer idBudgetMonthBranch, BigDecimal amount, int year, Budgets idBudget, CMonths month) {
         this.idBudgetMonthBranch = idBudgetMonthBranch;
         this.amount = amount;
         this.year = year;
         this.idBudget = idBudget;
-        this.idMonth = idMonth;
+        this.month = month;
     }
 
     public int getYear() {
@@ -143,14 +154,6 @@ public class BudgetMonthBranch implements Serializable {
 
     public void setIdBudget(Budgets idBudget) {
         this.idBudget = idBudget;
-    }
-
-    public CMonths getIdMonth() {
-        return idMonth;
-    }
-
-    public void setIdMonth(CMonths idMonth) {
-        this.idMonth = idMonth;
     }
 
     public List<BudgetMonthConcepts> getBudgetMonthConceptsList() {
@@ -192,13 +195,37 @@ public class BudgetMonthBranch implements Serializable {
     public void setRequestsList(List<Requests> requestsList) {
         this.requestsList = requestsList;
     }
-    
-    public int getMonth() {
-        return idmonth;
+
+    public Integer getIsAuthorized() {
+        return isAuthorized;
     }
 
-    public void setMonth(int idmonth) {
-        this.idmonth = idmonth;
+    public void setIsAuthorized(Integer isAuthorized) {
+        this.isAuthorized = isAuthorized;
+    }
+
+    public CMonths getMonth() {
+        return month;
+    }
+
+    public void setMonth(CMonths month) {
+        this.month = month;
+    }
+
+    public int getIdMonth() {
+        return idMonth;
+    }
+
+    public void setIdMonth(int idMonth) {
+        this.idMonth = idMonth;
+    }
+
+    public CCurrencies getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(CCurrencies currency) {
+        this.currency = currency;
     }
 
     @Override

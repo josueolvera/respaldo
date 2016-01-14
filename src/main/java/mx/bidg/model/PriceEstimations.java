@@ -18,8 +18,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -80,6 +78,11 @@ public class PriceEstimations implements Serializable {
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private Accounts idAccount;
+    
+    @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private CCurrencies currency;
 
     public PriceEstimations() {
     }
@@ -156,6 +159,14 @@ public class PriceEstimations implements Serializable {
 
     public void setIdAccount(Accounts idAccount) {
         this.idAccount = idAccount;
+    }
+
+    public CCurrencies getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(CCurrencies currency) {
+        this.currency = currency;
     }
 
     @Override

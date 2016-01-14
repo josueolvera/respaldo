@@ -55,9 +55,9 @@ public class BudgetMonthBranchDaoImpl extends AbstractDao<Integer, BudgetMonthBr
     public BudgetMonthBranch findByCombination(Budgets budget, CMonths month, DwEnterprises dwEnterprise, Integer year) {
         
         HashMap<String,Object> map = new HashMap<>();
-        map.put("idBudget", budget);
-        map.put("idMonth", month);
-        map.put("idDwEnterprise", dwEnterprise);
+        map.put("budget", budget);
+        map.put("month", month);
+        map.put("dwEnterprise", dwEnterprise);
         map.put("year", year);
         
         BudgetMonthBranch budgetMonthBranch = (BudgetMonthBranch) createEntityCriteria().add(Restrictions.allEq(map)).uniqueResult();
@@ -66,7 +66,7 @@ public class BudgetMonthBranchDaoImpl extends AbstractDao<Integer, BudgetMonthBr
 
     @Override
     public List<BudgetMonthBranch> findByBudget(Budgets budget) {
-        Criteria criteria = createEntityCriteria().add(Restrictions.eq("idBudget", budget));
+        Criteria criteria = createEntityCriteria().add(Restrictions.eq("budget", budget));
         return (List<BudgetMonthBranch>) criteria.list();
     }
     

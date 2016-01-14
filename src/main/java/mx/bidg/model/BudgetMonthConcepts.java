@@ -60,7 +60,10 @@ public class BudgetMonthConcepts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
     
-    
+    @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
+    @ManyToOne(optional = false)
+    @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
+    private CCurrencies currency;
 
     public BudgetMonthConcepts() {
     }
@@ -107,6 +110,14 @@ public class BudgetMonthConcepts implements Serializable {
 
     public void setIdBudgetMonthBranch(BudgetMonthBranch idBudgetMonthBranch) {
         this.idBudgetMonthBranch = idBudgetMonthBranch;
+    }
+
+    public CCurrencies getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(CCurrencies currency) {
+        this.currency = currency;
     }
 
     @Override

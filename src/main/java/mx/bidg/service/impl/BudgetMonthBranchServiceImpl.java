@@ -96,7 +96,7 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
                     budgetMonthBranch.setIdAccessLevel(1);
                     budgetMonthBranch.setIdBudget(budget);
                     budgetMonthBranch.setIdDwEnterprise(dwEnterprise);
-                    budgetMonthBranch.setIdMonth(new CMonths(idMonth));
+                    budgetMonthBranch.setMonth(new CMonths(idMonth));
                     budgetMonthBranch.setYear(year);
                     budgetMonthBranchDao.save(budgetMonthBranch);
 

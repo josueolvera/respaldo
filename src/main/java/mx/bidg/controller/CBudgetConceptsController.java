@@ -90,7 +90,7 @@ public class CBudgetConceptsController {
                     for(BudgetMonthConcepts budgetMonthConcept : budgetMonthConceptList) {
                         
                         BudgetMonthBranch budgetMonthBranch = budgetMonthConcept.getIdBudgetMonthBranch();
-                        cMonth = monthsService.findById(budgetMonthBranch.getMonth());
+                        cMonth = monthsService.findById(budgetMonthBranch.getIdMonth());
                         
                         conceptMonthPojo = new ConceptMonthPojo(
                                 cMonth.getIdMonth(),
