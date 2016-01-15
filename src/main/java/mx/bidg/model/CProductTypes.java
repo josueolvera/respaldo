@@ -47,6 +47,11 @@ public class CProductTypes implements Serializable {
     @Column(name = "PRODUCT_TYPE")
     @JsonView(JsonViews.Root.class)
     private String productType;
+    
+    @JoinColumn(name = "ID_PROVIDER", referencedColumnName = "ID_PROVIDER")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private Providers idProvider;
 
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
@@ -118,6 +123,14 @@ public class CProductTypes implements Serializable {
 
     public void setIdBudgetSubcategory(CBudgetSubcategories idBudgetSubcategory) {
         this.idBudgetSubcategory = idBudgetSubcategory;
+    }
+
+    public Providers getIdProvider() {
+        return idProvider;
+    }
+
+    public void setIdProvider(Providers idProvider) {
+        this.idProvider = idProvider;
     }
 
     @Override

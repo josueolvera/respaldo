@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
  * created on 18/11/15.
  */
 @Controller
-@RequestMapping("/request")
+@RequestMapping("/requests")
 public class RequestsController {
     
     @Autowired
