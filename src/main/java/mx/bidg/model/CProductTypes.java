@@ -49,7 +49,7 @@ public class CProductTypes implements Serializable {
     private String productType;
     
     @JoinColumn(name = "ID_PROVIDER", referencedColumnName = "ID_PROVIDER")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     @JsonView(JsonViews.Embedded.class)
     private Providers idProvider;
 

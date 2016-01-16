@@ -47,7 +47,7 @@ public class ProvidersAccounts implements Serializable {
     
     @JoinColumn(name = "ID_ACCOUNT", referencedColumnName = "ID_ACCOUNT")
     @ManyToOne(optional = false)
-    @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedProvidersAccount.class})
+    @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedAccounts.class})
     private Accounts idAccount;
     
     @JoinColumn(name = "ID_PROVIDER", referencedColumnName = "ID_PROVIDER")

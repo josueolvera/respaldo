@@ -48,7 +48,8 @@ public class CProductTypesServiceImpl implements CProductTypesService {
         if(requestTypesProducts.isEmpty()) {
             return null;
         }
-        List<CProductTypes> productTypes = productTypesDao.findAll();
+        
+        List<CProductTypes> productTypes = productTypesDao.findAll();System.out.println(productTypes);
         
         for(RequestTypesProduct requestTypesProduct : requestTypesProducts) {
             if(productTypes.contains(requestTypesProduct.getIdProductType()) && 

@@ -41,6 +41,7 @@ public class EmployeesAccounts implements Serializable {
     
     @JoinColumn(name = "ID_EMPLOYEE", referencedColumnName = "ID_EMPLOYEE")
     @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
     private Employees idEmployee;
     
     @JoinColumn(name = "ID_ACCOUNT", referencedColumnName = "ID_ACCOUNT")
@@ -51,6 +52,7 @@ public class EmployeesAccounts implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
 
     public EmployeesAccounts() {

@@ -44,7 +44,7 @@ public class ProvidersAccountsController {
     @RequestMapping(value = "/provider/{idProvider}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> getByProvider(@PathVariable int idProvider) throws Exception {
         List<ProvidersAccounts> list = providersAccountsService.findByProvider(new Providers(idProvider));
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.EmbeddedProvidersAccount.class)
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.EmbeddedAccounts.class)
                 .writeValueAsString(list), HttpStatus.OK);
     }
     
