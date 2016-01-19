@@ -54,6 +54,10 @@ public class PriceEstimations implements Serializable {
     private String filePath;
     
     @Size(max = 45)
+    @Column(name = "FILE_NAME")
+    private String fileName;
+    
+    @Size(max = 45)
     @Column(name = "SKU")
     @JsonView(JsonViews.Root.class)
     private String sku;
@@ -167,6 +171,14 @@ public class PriceEstimations implements Serializable {
 
     public void setCurrency(CCurrencies currency) {
         this.currency = currency;
+    }
+    
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     @Override

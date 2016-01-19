@@ -13,6 +13,10 @@ import mx.bidg.model.PriceEstimations;
  */
 public interface PriceEstimationsService {
     
-    public PriceEstimations saveData(String data, String filePath) throws Exception;
+    public PriceEstimations saveData(String data) throws Exception;
+    
+    public PriceEstimations findById(int id);
+    
+    public PriceEstimations update(PriceEstimations pe);
     
 }

@@ -29,7 +29,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    public PriceEstimations saveData(String data, String filePath) throws Exception {
+    public PriceEstimations saveData(String data) throws Exception {
         
         JsonNode json = mapper.readTree(data);
         int idRequest = json.get("idRequest").asInt();
@@ -43,7 +43,8 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         estimation.setIdAccount(new Accounts(idAccount));
         estimation.setCurrency(new CCurrencies(idCurrency));
         estimation.setAmount(amount);
-        estimation.setFilePath(filePath);
+        estimation.setFilePath("");
+        estimation.setFileName("");
         estimation.setIdAccessLevel(1);
         //Por defecto, las cotizaciones se guardan como pendientes (1)
         estimation.setIdEstimationStatus(new CEstimationStatus(1));
@@ -51,6 +52,16 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         estimation = priceEstimationsDao.save(estimation);
         return estimation;
         
+    }
+
+    @Override
+    public PriceEstimations findById(int id) {
+        return priceEstimationsDao.findById(id);
+    }
+
+    @Override
+    public PriceEstimations update(PriceEstimations pe) {
+        return priceEstimationsDao.update(pe);
     }
     
 }

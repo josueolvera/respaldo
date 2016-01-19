@@ -22,7 +22,7 @@ public class PriceEstimationsDaoImpl extends AbstractDao<Integer, PriceEstimatio
 
     @Override
     public PriceEstimations findById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getByKey(id);
     }
 
     @Override
@@ -32,7 +32,8 @@ public class PriceEstimationsDaoImpl extends AbstractDao<Integer, PriceEstimatio
 
     @Override
     public PriceEstimations update(PriceEstimations entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        getSession().update(entity);
+        return entity;
     }
 
     @Override
