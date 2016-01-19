@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.exceptions.InvalidFileException;
-import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
 import mx.bidg.service.PropertiesService;
 import mx.bidg.service.StockDocumentsService;
+import mx.bidg.service.StockEmployeeAssignmentsService;
 import mx.bidg.service.StockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -52,6 +52,9 @@ public class StockController {
 
     @Autowired
     private PropertiesService propertiesService;
+
+    @Autowired
+    private StockEmployeeAssignmentsService assignmentsService;
 
     private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
@@ -219,6 +222,49 @@ public class StockController {
         }
 
         return new ResponseEntity<>("Registro exitoso", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "{idStock}/attachments/record", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getAttachedDocumentsRecord(@PathVariable int idStock) throws IOException {
+        List<StockDocuments> documents = stockDocumentsService.findRecordBy(new Stocks(idStock));
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(documents),
+                HttpStatus.OK
+        );
+    }
+
+    @RequestMapping(value = "/{idStock}/assignments", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getAssignments(@PathVariable int idStock) throws IOException {
+        List<StockEmployeeAssignments> assignments = assignmentsService.getAssignmentsFor(new Stocks(idStock));
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(assignments),
+                HttpStatus.OK
+        );
+    }
+
+    @RequestMapping(value = "/{idStock}/assignments/record", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getAssignmentsRecord(@PathVariable int idStock) throws IOException {
+        List<StockEmployeeAssignments> assignments = assignmentsService.getAssignmentsRecordFor(new Stocks(idStock));
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(assignments),
+                HttpStatus.OK
+        );
+    }
+
+    @RequestMapping(value = "/{idStock}/assignments", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> saveAssignment(@PathVariable int idStock) throws IOException {
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(""),
+                HttpStatus.CREATED
+        );
+    }
+
+    @RequestMapping(value = "/{idStock}/assignments", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> deleteAssignment(@PathVariable int idStock) throws IOException {
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(""),
+                HttpStatus.CREATED
+        );
     }
 
     private StockDocuments findDocument(Integer idDocumentType, List<StockDocuments> documents) {

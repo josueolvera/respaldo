@@ -13,4 +13,5 @@ import java.util.List;
 public interface StockDocumentsDao extends InterfaceDao<StockDocuments> {
     List<StockDocuments> findByIdStock(Integer idStock);
     StockDocuments findBy(Stocks stocks, CStockDocumentsTypes documentType);
+    List<StockDocuments> findRecordBy(Stocks stock);
 }

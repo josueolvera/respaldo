@@ -86,6 +86,7 @@
         </div>
         <script src="/BIDGroup/assets/js/jquery-2.1.4.min.js"></script>
         <script src="/BIDGroup/assets/js/bootstrap.min.js"></script>
+        <script src="/BIDGroup/assets/js/jquery.onscreen.min.js"></script>
         <script src="/BIDGroup/assets/js/vue-1.0.7.js"></script>
         <script src="/BIDGroup/assets/js/vue-resource-0.1.17.min.js"></script>
         <script src="/BIDGroup/assets/js/selectize.standalone.min.js"></script>

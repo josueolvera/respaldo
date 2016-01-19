@@ -90,9 +90,12 @@ public class Stocks implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private List<Properties> propertiesList;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "stock", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "stock")
     @JsonView(JsonViews.Embedded.class)
     private List<StockDocuments> stockDocumentsList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "stocks")
+    private List<StockEmployeeAssignments> stockEmployeeAssignmentsList;
 
     public Stocks() {
     }
@@ -228,6 +231,14 @@ public class Stocks implements Serializable {
 
     public DateFormatsPojo getCreationDateFormats() {
         return new DateFormatsPojo(creationDate);
+    }
+
+    public List<StockEmployeeAssignments> getStockEmployeeAssignmentsList() {
+        return stockEmployeeAssignmentsList;
+    }
+
+    public void setStockEmployeeAssignmentsList(List<StockEmployeeAssignments> stockEmployeeAssignmentsList) {
+        this.stockEmployeeAssignmentsList = stockEmployeeAssignmentsList;
     }
 
     @Override

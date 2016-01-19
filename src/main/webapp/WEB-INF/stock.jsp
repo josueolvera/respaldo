@@ -57,16 +57,42 @@
                             return groups[group];
                         });
                     },
+                    attachOnScreen: function () {
+                        $('.lazy').onScreen({
+                            container: window,
+                            direction: 'vertical',
+                            doIn: function() {
+                                this.dispatchEvent(new Event('build'));
+                            },
+                            tolerance: 0,
+                            throttle: 50,
+                            debug: true
+                        });
+                    },
                     fetchStock: function (distributor) {
                         this.$http.get(ROOT_URL + "/stock/" + distributor.idDistributor).success(function (data) {
                             this.stockGroups = this.groupBy(data, function (item) {
                                 return item.idDwEnterprises;
+                            });
+                            this.$nextTick(function () {
+                                this.attachOnScreen();
                             });
                         });
                     },
                     fetchStockProperties: function (article) {
                         this.$http.get(ROOT_URL + "/stock/" + article.idStock + "/properties").success(function (data) {
                             article.propertiesList = data;
+                        });
+                    },
+                    fetchStockDocuments: function (article) {
+                        this.$http.get(ROOT_URL + "/stock/" + article.idStock + "/attachments").success(function (data) {
+                            article.stockDocumentsList = data;
+                            this.isSaving = false;
+                        });
+                    },
+                    fetchStockAssignments: function (article) {
+                        this.$http.get(ROOT_URL + "/stock/" + article.idStock + "/assignments").success(function(data) {
+                            article.stockEmployeeAssignmentsList = data;
                         });
                     },
                     fetchDistributors: function () {
@@ -126,6 +152,17 @@
                             });
                         });
                     },
+                    buildArticle: function (article) {
+                        if (article.propertiesList == null) {
+                            this.fetchStockProperties(article);
+                        }
+                        if (article.stockDocumentsList == null) {
+                            this.fetchStockDocuments(article);
+                        }
+                        if (article.stockEmployeeAssignmentsList == null) {
+                            this.fetchStockAssignments(article);
+                        }
+                    },
                     removeProperty: function (article, property) {
                         this.isSaving = true;
                         this.$http.delete(ROOT_URL + "/stock/properties/" + property.idProperty).success(function () {
@@ -172,10 +209,7 @@
                         this.$http.post(ROOT_URL + "/stock/" + article.idStock + "/attachments", new FormData(form)).success(function () {
                             showAlert("Registro exitoso");
                             form.reset();
-                            this.$http.get(ROOT_URL + "/stock/" + article.idStock + "/attachments").success(function (data) {
-                                article.stockDocumentsList = data;
-                                this.isSaving = false;
-                            });
+                            this.fetchStockDocuments(article);
                         }).error(function () {
                             this.isSaving = false;
                             form.reset();
@@ -192,7 +226,7 @@
                         if (this.selectedOptions.area == null || this.selectedOptions.area == 0) {
                             return item;
                         }
-                        if (item[0].dwEnterprises.idarea == this.selectedOptions.area.idArea) {
+                        if (item[0].dwEnterprises.idArea == this.selectedOptions.area.idArea) {
                             return item;
                         }
                     },
@@ -205,6 +239,9 @@
                         this.fetchAttributes(article.article.idArticle);
                         $("#editModal").modal("show");
                     },
+                    showAssignmentsModal: function (article) {
+                        $("#assignmentsModal").modal("show");
+                    },
                     closeEditModal: function () {
                         this.editModal.selectAttr[0].selectize.destroy();
                         $("#editModal").modal("hide");
@@ -212,6 +249,9 @@
                     closeAttachmentsModal: function () {
                         document.getElementById("attachments-form").reset();
                         $("#attachmentsModal").modal("hide");
+                    },
+                    closeAssignmentsModal: function () {
+                        $("#assignmentsModal").modal("hide");
                     },
                     saveStockArticle: function (article) {
                         this.isSaving = true;
@@ -250,6 +290,7 @@
                 <div class="col-lg-3">
                     <label>Area</label>
                     <select v-model="selectedOptions.area" class="form-control"
+                            @change="attachOnScreen"
                             :disabled="selectOptions.areas.length < 2">
                         <option value="0" selected>Todas</option>
                         <option v-for="area in selectOptions.areas"
@@ -271,7 +312,8 @@
                 <div v-for="stock in stockGroups | filterBy areaFilter" class="">
                     <div class="text-center col-xs-12"><h4>{{ stock[0].dwEnterprises.area.areaName }}</h4></div>
                     <div class="col-xs-12 panel-group">
-                        <div v-for="article in stock" class="panel panel-default">
+                        <div v-for="article in stock" @build="buildArticle(article)" data-loader="stockElementsLoader"
+                             class="lazy panel panel-default">
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="text-center col-xs-10">
@@ -289,7 +331,12 @@
                                         <div class="col-xs-3">
                                             {{ article.creationDateFormats.dateNumber }}
                                         </div>
-                                        <div class="col-xs-3">{{ article.idEmployee }}</div>
+                                        <div class="col-xs-3">
+                                            {{ article.stockEmployeeAssignmentsList[0].employee.firstName }}
+                                            {{ article.stockEmployeeAssignmentsList[0].employee.middleName }}
+                                            {{ article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
+                                            {{ article.stockEmployeeAssignmentsList[0].employee.motherLast }}
+                                        </div>
                                     </div>
                                     <div class="text-right col-xs-2">
                                         <button @click="showEditArticleModal(article)" class="btn btn-default">
@@ -298,7 +345,7 @@
                                         <button @click="showAttachmentsModal(article)" class="btn btn-default">
                                             <span class="glyphicon glyphicon-paperclip"></span>
                                         </button>
-                                        <button @click="showAttachmentsModal(article)" class="btn btn-default">
+                                        <button @click="showAssignmentsModal(article)" class="btn btn-default">
                                             <span class="glyphicon glyphicon-user"></span>
                                         </button>
                                     </div>
@@ -307,7 +354,11 @@
                             <%-- Panel Interno --%>
                             <div class="panel-collapse">
                                 <div class="panel-body">
-                                    <%-- Atributos --%>
+                                <%-- Atributos --%>
+                                    <div v-if="article.propertiesList == null" class="col-xs-12"
+                                         style="height: 4rem; padding: 2rem 0;">
+                                        <div class="loader">Cargando...</div>
+                                    </div>
                                     <div class="col-xs-6">
                                         <table class="table table-striped">
                                             <tr v-for="property in article.propertiesList">
@@ -488,6 +539,28 @@
                         <div class="text-right modal-footer">
                             <button :disabled="isSaving" class="btn btn-default" @click="closeEditModal">Cancelar</button>
                             <button @click="saveStockArticle(editModal.article)"
+                                    :disabled="isSaving"
+                                    class="btn btn-success">
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <%-- Modal de asignaciones --%>
+            <div id="assignmentsModal" class="modal fade" data-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button class="close" @click="closeAssignmentsModal"><span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title">Modificaciar asignacion</h4>
+                        </div>
+                        <div class="modal-body">
+                        </div>
+                        <div class="text-right modal-footer">
+                            <button :disabled="isSaving" class="btn btn-default" @click="closeAssignmentsModal">Cancelar</button>
+                            <button @click=""
                                     :disabled="isSaving"
                                     class="btn btn-success">
                                 Guardar

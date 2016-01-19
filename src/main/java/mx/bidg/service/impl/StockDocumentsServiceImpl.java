@@ -28,6 +28,11 @@ public class StockDocumentsServiceImpl implements StockDocumentsService {
     }
 
     @Override
+    public List<StockDocuments> findRecordBy(Stocks stock) {
+        return stockDocumentsDao.findRecordBy(stock);
+    }
+
+    @Override
     public StockDocuments findBy(Stocks stocks, CStockDocumentsTypes documentType) {
         return stockDocumentsDao.findBy(stocks, documentType);
     }

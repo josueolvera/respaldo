@@ -21,6 +21,15 @@ public class StockDocumentsDaoImpl extends AbstractDao<Integer, StockDocuments> 
     public List<StockDocuments> findByIdStock(Integer idStock) {
         return (List<StockDocuments>) createEntityCriteria()
                 .add(Restrictions.eq("idStock", idStock))
+                .add(Restrictions.eq("currentDocument", 1))
+                .list();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<StockDocuments> findRecordBy(Stocks stock) {
+        return (List<StockDocuments>) createEntityCriteria()
+                .add(Restrictions.eq("idStock", stock.getIdStock()))
                 .list();
     }
 

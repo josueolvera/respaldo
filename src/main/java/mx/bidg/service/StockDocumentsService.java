@@ -13,6 +13,7 @@ import java.util.List;
 public interface StockDocumentsService {
     List<StockDocuments> findByIdStock(Integer idStock);
     StockDocuments findBy(Stocks stocks, CStockDocumentsTypes documentType);
+    List<StockDocuments> findRecordBy(Stocks stock);
     StockDocuments save(StockDocuments entity);
     StockDocuments findById(int id);
     List<StockDocuments> findAll();
