@@ -32,12 +32,16 @@ public class HibernateConfiguration {
     @Autowired
     private Environment environment;
     
+    @Autowired
+    private AuditInterceptor auditInterceptor;
+    
     @Bean
     public LocalSessionFactoryBean sessionFactory(){
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
         sessionFactory.setPackagesToScan(new String[] {"mx.bidg.model"});
         sessionFactory.setHibernateProperties(hibernateProperties());
+        sessionFactory.setEntityInterceptor(auditInterceptor);
         return sessionFactory;
     }
     

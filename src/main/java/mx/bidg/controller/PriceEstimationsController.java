@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import mx.bidg.config.JsonViews;
 import mx.bidg.exceptions.InvalidFileException;
 import mx.bidg.model.PriceEstimations;
-import mx.bidg.model.StockDocuments;
 import mx.bidg.service.PriceEstimationsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
