@@ -169,4 +169,11 @@ public class PriceEstimationsController {
         return "Cotizacion autorizada";
     }
     
+    
+    @RequestMapping(value = "/modify", method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"})
+    public @ResponseBody String modify(@RequestBody PriceEstimations estimation) {
+        estimationsService.update(estimation);
+        return "Modificacion exitosa";
+    }
+    
 }
