@@ -10,8 +10,11 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,9 +22,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 
 /**
  *
@@ -87,6 +93,28 @@ public class PriceEstimations implements Serializable {
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private CCurrencies currency;
+    
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "CREATION_DATE")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime creationDate;
+    
+    @Column(name = "AUTHORIZATION_DATE")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime authorizationDate;
+    
+    @JoinColumn(name = "USER_AUTHORIZATION", referencedColumnName = "ID_USER")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private Users userAuthorization;
+    
+    @JoinColumn(name = "USER_ESTIMATION", referencedColumnName = "ID_USER")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private Users userEstimation;
 
     public PriceEstimations() {
     }
@@ -179,6 +207,38 @@ public class PriceEstimations implements Serializable {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+    
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public LocalDateTime getAuthorizationDate() {
+        return authorizationDate;
+    }
+
+    public void setAuthorizationDate(LocalDateTime authorizationDate) {
+        this.authorizationDate = authorizationDate;
+    }
+
+    public Users getUserAuthorization() {
+        return userAuthorization;
+    }
+
+    public void setUserAuthorization(Users userAuthorization) {
+        this.userAuthorization = userAuthorization;
+    }
+
+    public Users getUserEstimation() {
+        return userEstimation;
+    }
+
+    public void setUserEstimation(Users userEstimation) {
+        this.userEstimation = userEstimation;
     }
 
     @Override

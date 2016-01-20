@@ -5,6 +5,7 @@
  */
 package mx.bidg.dao;
 
+import java.util.List;
 import mx.bidg.model.PriceEstimations;
 
 /**
@@ -12,5 +13,9 @@ import mx.bidg.model.PriceEstimations;
  * @author sistemask
  */
 public interface PriceEstimationsDao extends InterfaceDao<PriceEstimations> {
+    
+    public List<PriceEstimations> findByIdRequest(int idRequest);
+    
+    public PriceEstimations findByIdFetchRequest(int idEstimation);
     
 }

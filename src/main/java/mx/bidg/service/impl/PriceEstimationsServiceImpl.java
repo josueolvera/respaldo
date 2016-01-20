@@ -8,12 +8,15 @@ package mx.bidg.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 import mx.bidg.dao.PriceEstimationsDao;
 import mx.bidg.model.Accounts;
 import mx.bidg.model.CCurrencies;
 import mx.bidg.model.CEstimationStatus;
 import mx.bidg.model.PriceEstimations;
 import mx.bidg.model.Requests;
+import mx.bidg.model.Users;
 import mx.bidg.service.PriceEstimationsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +32,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    public PriceEstimations saveData(String data) throws Exception {
+    public PriceEstimations saveData(String data, Users user) throws Exception {
         
         JsonNode json = mapper.readTree(data);
         int idRequest = json.get("idRequest").asInt();
@@ -45,6 +48,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         estimation.setAmount(amount);
         estimation.setFilePath("");
         estimation.setFileName("");
+        estimation.setUserEstimation(user);
         estimation.setIdAccessLevel(1);
         //Por defecto, las cotizaciones se guardan como pendientes (1)
         estimation.setIdEstimationStatus(new CEstimationStatus(1));
@@ -62,6 +66,32 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     @Override
     public PriceEstimations update(PriceEstimations pe) {
         return priceEstimationsDao.update(pe);
+    }
+
+    @Override
+    public List<PriceEstimations> findByIdRequest(int idRequest) {
+        return priceEstimationsDao.findByIdRequest(idRequest);
+    }
+
+    @Override
+    public void estimationAuthorization(int idEstimation, Users user) {
+        PriceEstimations estimation = priceEstimationsDao.findByIdFetchRequest(idEstimation);
+        List<PriceEstimations> list = priceEstimationsDao.findByIdRequest(estimation.getIdRequest().getIdRequest());
+        
+        //Rechazar todas las cotizaciones de la solicitud
+        for(PriceEstimations e : list) {
+            e.setUserAuthorization(user);
+            e.setAuthorizationDate(LocalDateTime.now());
+            
+            if (e.getIdEstimation().equals(idEstimation)) {
+                //Cotizacion Aceptada = 2
+                e.setIdEstimationStatus(new CEstimationStatus(2));
+            } else {
+                //Cotizacion Rechazada = 3
+                e.setIdEstimationStatus(new CEstimationStatus(3));
+            }
+        }
+        
     }
     
 }

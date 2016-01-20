@@ -5,6 +5,7 @@
  */
 package mx.bidg.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,10 +14,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Calendar;
+import java.util.List;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import mx.bidg.config.JsonViews;
 import mx.bidg.exceptions.InvalidFileException;
 import mx.bidg.model.PriceEstimations;
+import mx.bidg.model.Users;
 import mx.bidg.service.PriceEstimationsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
@@ -51,9 +55,10 @@ public class PriceEstimationsController {
     
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=aplication/json; charset=UTF-8"}, 
             produces = "aplication/json; charset=UTF-8")
-    public @ResponseBody ResponseEntity<String> save(@RequestBody String data) throws Exception {
+    public @ResponseBody ResponseEntity<String> save(@RequestBody String data, HttpSession session) throws Exception {
         
-        PriceEstimations estimation = estimationsService.saveData(data);
+        Users user = (Users) session.getAttribute("user");
+        PriceEstimations estimation = estimationsService.saveData(data, user);
         
         if(estimation == null)
             return new ResponseEntity<>("Error al guardar la cotizacion", HttpStatus.CONFLICT);
@@ -147,6 +152,21 @@ public class PriceEstimationsController {
         outputStream.flush();
         outputStream.close();
         inputStream.close();
+    }
+    
+    
+    @RequestMapping(value = "/request/{idRequest}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    public @ResponseBody ResponseEntity<String> getEstimationsByRequest(@PathVariable int idRequest) throws Exception {
+        List<PriceEstimations> list = estimationsService.findByIdRequest(idRequest);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(list), HttpStatus.OK);
+    }
+    
+    
+    @RequestMapping(value = "/authorization/{idEstimation}", method = RequestMethod.POST)
+    public @ResponseBody String estimationAuthorization(@PathVariable int idEstimation, HttpSession session) {
+        Users user = (Users) session.getAttribute("user");
+        estimationsService.estimationAuthorization(idEstimation, user);
+        return "Cotizacion autorizada";
     }
     
 }

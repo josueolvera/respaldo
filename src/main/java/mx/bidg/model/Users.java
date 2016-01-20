@@ -130,6 +130,14 @@ public class Users implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUser")
     @JsonView(JsonViews.Embedded.class)
     private List<UsersRole> usersRoleList;
+    
+    @OneToMany(mappedBy = "userAuthorization")
+    @JsonView(JsonViews.Embedded.class)
+    private List<PriceEstimations> priceEstimationsList;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userEstimation")
+    @JsonView(JsonViews.Embedded.class)
+    private List<PriceEstimations> priceEstimationsList1;
 
     public Users() {
     }
@@ -267,6 +275,22 @@ public class Users implements Serializable {
 
     public void setRequestsList1(List<Requests> requestsList1) {
         this.requestsList1 = requestsList1;
+    }
+    
+    public List<PriceEstimations> getPriceEstimationsList() {
+        return priceEstimationsList;
+    }
+
+    public void setPriceEstimationsList(List<PriceEstimations> priceEstimationsList) {
+        this.priceEstimationsList = priceEstimationsList;
+    }
+
+    public List<PriceEstimations> getPriceEstimationsList1() {
+        return priceEstimationsList1;
+    }
+
+    public void setPriceEstimationsList1(List<PriceEstimations> priceEstimationsList1) {
+        this.priceEstimationsList1 = priceEstimationsList1;
     }
 
     @Override

@@ -9,6 +9,10 @@ import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.PriceEstimationsDao;
 import mx.bidg.model.PriceEstimations;
+import mx.bidg.model.Requests;
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -39,6 +43,22 @@ public class PriceEstimationsDaoImpl extends AbstractDao<Integer, PriceEstimatio
     @Override
     public boolean delete(PriceEstimations entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<PriceEstimations> findByIdRequest(int idRequest) {
+        Criteria criteria = createEntityCriteria()
+                .add(Restrictions.eq("idRequest", new Requests(idRequest)))
+                .setFetchMode("idRequest", FetchMode.JOIN);
+        return (List<PriceEstimations>) criteria.list();
+    }
+
+    @Override
+    public PriceEstimations findByIdFetchRequest(int idEstimation) {
+        Criteria criteria = createEntityCriteria()
+                .add(Restrictions.idEq(idEstimation))
+                .setFetchMode("idRequest", FetchMode.JOIN);
+        return (PriceEstimations) criteria.uniqueResult();
     }
     
 }
