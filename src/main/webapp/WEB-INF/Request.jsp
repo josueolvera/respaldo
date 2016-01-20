@@ -14,14 +14,23 @@
           },
           ready: function ()
           {
+            this.obtainRequestInfo();
 
           },
           data:
           {
-
+            requestCategories: {}
           },
           methods:
           {
+            obtainRequestInfo: function()
+            {
+              this.$http.get(ROOT_URL+"/request-categories")
+              .success(function (data)
+              {
+                this.requestCategories= data;
+              });
+            }
 
 
 
@@ -42,16 +51,18 @@
             <div class="row">
               <div class="col-xs-4 col-xs-offset-3">
 
-                <div class="list-group">
-                    <a href="#" class="list-group-item">
-                    <h4 class="list-group-item-heading">List group item heading</h4>
-                    <p class="list-group-item-text">...</p>
+                <div class="list-group" v-for="requestCategorie in requestCategories">
+                    <a href="../{{requestCategorie.idView.cTasks.taskName}}?cat={{requestCategorie.idRequestCategorie}}" class="list-group-item">
+                    <h4 class="list-group-item-heading">{{requestCategorie.category}}</h4>
+                    <p class="list-group-item-text">
+                      {{{requestCategorie.information}}}
+                    </p>
                   </a>
                 </div>
 
               </div>
             </div>
-
+            <br>
           </div>
       </div> <!-- #contenidos -->
     </jsp:body>

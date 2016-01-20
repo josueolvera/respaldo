@@ -17,6 +17,12 @@ public class SIADController {
     public String budgetsView() {
         return "Budget";
     }
+    
+    @RequestMapping(value = "/individual-budget", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public String individualBudget() {
+        return "Budgets";
+    }
+    
 
     @RequestMapping(value = "/stock", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public String stockView() {

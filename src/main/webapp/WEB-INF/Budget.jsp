@@ -130,6 +130,7 @@
             {
               $(event.target).toggleClass('expanded');
               $(event.target).children('ul').toggle('medium');
+              alert(event.target.id);
               event.stopPropagation();
               this.navigation(event.target.id);
             },
@@ -527,10 +528,10 @@
 
                         <div class="row" style="margin-left: 0px; margin-right: 0px">
                           <div class="col-xs-6 text-left">
-                            <h2 style="font-weight: bold">{{sucss.iddistributor | DistributorFilter}}<small>&nbsp;{{sucss.idbranch | SucursalFilter}}</small></h2>
+                            <h2 style="font-weight: bold">{{sucss.idDistributor | DistributorFilter}}<small>&nbsp;{{sucss.idBranch | SucursalFilter}}</small></h2>
                           </div>
                           <div class="col-xs-6 text-right">
-                            <h3>{{sucss.idarea | areaName}}</h3>
+                            <h3>{{sucss.idArea | areaName}}</h3>
 
                             <div class="col-xs-6 col-xs-offset-6">
                               <div class="input-group">
@@ -661,6 +662,9 @@
                     </div>
                   </div>
                 </div>
+                <pre>
+                  {{ $data | json}}
+                </pre>
                 </div> <!-- /#container-fluid -->
             </div> <!-- /#Page Content -->
         </div> <!-- /#wrapper -->
