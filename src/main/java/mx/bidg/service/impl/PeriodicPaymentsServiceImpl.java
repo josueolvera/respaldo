@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import mx.bidg.dao.PeriodicPaymentsDao;
 import mx.bidg.dao.RequestsDao;
 import mx.bidg.model.CPeriodicPaymentsStatus;

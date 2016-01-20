@@ -9,8 +9,9 @@ import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.AccountsPayableDao;
 import mx.bidg.model.AccountsPayable;
+import org.springframework.stereotype.Repository;
 
-
+@Repository
 public class AccountsPayableDaoImpl extends AbstractDao<Integer, AccountsPayable> implements AccountsPayableDao {
 
     @Override
@@ -31,12 +32,14 @@ public class AccountsPayableDaoImpl extends AbstractDao<Integer, AccountsPayable
 
     @Override
     public AccountsPayable update(AccountsPayable entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        getSession().update(entity);
+        return entity;
     }
 
     @Override
     public boolean delete(AccountsPayable entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        remove(entity);
+        return true;
     }
     
 }

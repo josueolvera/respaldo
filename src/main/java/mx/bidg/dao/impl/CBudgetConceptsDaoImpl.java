@@ -58,7 +58,7 @@ public class CBudgetConceptsDaoImpl extends AbstractDao<Integer, CBudgetConcepts
                 .setResultTransformer(DistinctRootEntityResultTransformer.INSTANCE)
                 .setFetchMode("budgetMonthConceptsList", FetchMode.JOIN)
                 .setFetchMode("budgetMonthConceptsList.idBudgetMonthBranch", FetchMode.JOIN)
-                .createCriteria("budgetMonthConceptsList.idBudgetMonthBranch").add(Restrictions.eq("idBudget", budget));
+                .createCriteria("budgetMonthConceptsList.idBudgetMonthBranch").add(Restrictions.eq("budget", budget));
         return (List<CBudgetConcepts>) criteria.list();
     }
     
