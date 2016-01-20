@@ -18,6 +18,7 @@ import mx.bidg.dao.RequestProductsDao;
 import mx.bidg.dao.RequestTypesProductDao;
 import mx.bidg.dao.RequestsDao;
 import mx.bidg.dao.UsersDao;
+import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.Budgets;
 import mx.bidg.model.CMonths;
@@ -92,22 +93,30 @@ public class RequestsServiceImpl implements RequestsService {
         
         CMonths month = cMonthsDao.findById(date.getMonthValue());
         
+        if(month == null) {
+            throw new ValidationException("No existe el mes");
+        }
+        
         DwEnterprises dwEnterprise = userResponsable.getDwEmployee().getDwEnterprise();
         
         Budgets budget = budgetsDao.findByCombination(dwEnterprise.getGroup(), dwEnterprise.getArea(), 
                 cRequestType.getIdBudgetCategory(), cProductType.getIdBudgetSubcategory());
         
+        if(budget == null) {
+            throw new ValidationException("No existe el Presupuesto");
+        }
+        
         RequestTypesProduct requestTypesProduct = requestTypesProductDao.findByCombination(cRequestsCategory, 
                 cRequestType, cProductType);
         
-        if(requestTypesProduct == null || budget == null || month == null) {
-            return null;
+        if(requestTypesProduct == null) {
+            throw new ValidationException("No existe el RequestTypesProduct");
         }
         
         BudgetMonthBranch budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget, month, dwEnterprise, date.getYear());
         
         if(budgetMonthBranch == null) {
-            return null;
+            throw new ValidationException("No existe Presupuesto para la fecha solicitada");
         }
         
         Requests request = new Requests();

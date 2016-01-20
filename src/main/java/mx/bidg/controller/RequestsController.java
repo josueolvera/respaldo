@@ -3,6 +3,7 @@ package mx.bidg.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.servlet.http.HttpSession;
 import mx.bidg.config.JsonViews;
+import mx.bidg.model.Requests;
 import mx.bidg.model.Users;
 import mx.bidg.service.RequestsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,15 @@ public class RequestsController {
         throws Exception{
         
         Users user = (Users) session.getAttribute("user");
-        String response = mapper.writerWithView(JsonViews.Root.class)
-                .writeValueAsString(requestsService.save(data, user));
+        Requests request = requestsService.save(data, user);
+        String response;
+        
+        if(request != null) {
+            response = mapper.writerWithView(JsonViews.Root.class).writeValueAsString(request);
+        } else {
+            response = "Error al guardar la Solicitud";
+        }
+        
         return new ResponseEntity<>(response, HttpStatus.OK);
         
     }
