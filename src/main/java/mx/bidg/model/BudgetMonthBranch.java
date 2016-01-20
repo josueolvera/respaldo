@@ -64,21 +64,29 @@ public class BudgetMonthBranch implements Serializable {
     @JoinColumn(name = "ID_BUDGET", referencedColumnName = "ID_BUDGET")
     @ManyToOne(optional = false)
     @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
-    private Budgets idBudget;
+    private Budgets budget;
 
     @JoinColumn(name = "ID_MONTH", referencedColumnName = "ID_MONTH")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private CMonths month;
     
-    @Column(name = "ID_MONTH", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private int idMonth;
-    
     @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
     @ManyToOne(optional = false)
     @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
-    private DwEnterprises idDwEnterprise;
+    private DwEnterprises dwEnterprise;
+    
+    @Column(name = "ID_BUDGET", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idBudget;
+    
+    @Column(name = "ID_DW_ENTERPRISE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idDwEnterprise;
+    
+    @Column(name = "ID_MONTH", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idMonth;
     
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
@@ -116,20 +124,12 @@ public class BudgetMonthBranch implements Serializable {
         this.year = year;
     }
 
-    public BudgetMonthBranch(Integer idBudgetMonthBranch, BigDecimal amount, int year, Budgets idBudget, CMonths month) {
+    public BudgetMonthBranch(Integer idBudgetMonthBranch, BigDecimal amount, int year, Budgets budget, CMonths month) {
         this.idBudgetMonthBranch = idBudgetMonthBranch;
         this.amount = amount;
         this.year = year;
-        this.idBudget = idBudget;
+        this.budget = budget;
         this.month = month;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
     }
 
     public Integer getIdBudgetMonthBranch() {
@@ -148,22 +148,6 @@ public class BudgetMonthBranch implements Serializable {
         this.amount = amount;
     }
 
-    public Budgets getIdBudget() {
-        return idBudget;
-    }
-
-    public void setIdBudget(Budgets idBudget) {
-        this.idBudget = idBudget;
-    }
-
-    public List<BudgetMonthConcepts> getBudgetMonthConceptsList() {
-        return budgetMonthConceptsList;
-    }
-
-    public void setBudgetMonthConceptsList(List<BudgetMonthConcepts> budgetMonthConceptsList) {
-        this.budgetMonthConceptsList = budgetMonthConceptsList;
-    }
-    
     public BigDecimal getExpendedAmount() {
         return expendedAmount;
     }
@@ -172,36 +156,20 @@ public class BudgetMonthBranch implements Serializable {
         this.expendedAmount = expendedAmount;
     }
 
-    public DwEnterprises getIdDwEnterprise() {
-        return idDwEnterprise;
+    public int getYear() {
+        return year;
     }
 
-    public void setIdDwEnterprise(DwEnterprises idDwEnterprise) {
-        this.idDwEnterprise = idDwEnterprise;
-    }
-    
-    public Integer getIdAccessLevel() {
-        return idAccessLevel;
+    public void setYear(int year) {
+        this.year = year;
     }
 
-    public void setIdAccessLevel(Integer idAccessLevel) {
-        this.idAccessLevel = idAccessLevel;
+    public Budgets getBudget() {
+        return budget;
     }
 
-    public List<Requests> getRequestsList() {
-        return requestsList;
-    }
-
-    public void setRequestsList(List<Requests> requestsList) {
-        this.requestsList = requestsList;
-    }
-
-    public Integer getIsAuthorized() {
-        return isAuthorized;
-    }
-
-    public void setIsAuthorized(Integer isAuthorized) {
-        this.isAuthorized = isAuthorized;
+    public void setBudget(Budgets budget) {
+        this.budget = budget;
     }
 
     public CMonths getMonth() {
@@ -212,12 +180,52 @@ public class BudgetMonthBranch implements Serializable {
         this.month = month;
     }
 
-    public int getIdMonth() {
+    public DwEnterprises getDwEnterprise() {
+        return dwEnterprise;
+    }
+
+    public void setDwEnterprise(DwEnterprises dwEnterprise) {
+        this.dwEnterprise = dwEnterprise;
+    }
+
+    public Integer getIdBudget() {
+        return idBudget;
+    }
+
+    public void setIdBudget(Integer idBudget) {
+        this.idBudget = idBudget;
+    }
+
+    public Integer getIdDwEnterprise() {
+        return idDwEnterprise;
+    }
+
+    public void setIdDwEnterprise(Integer idDwEnterprise) {
+        this.idDwEnterprise = idDwEnterprise;
+    }
+
+    public Integer getIdMonth() {
         return idMonth;
     }
 
-    public void setIdMonth(int idMonth) {
+    public void setIdMonth(Integer idMonth) {
         this.idMonth = idMonth;
+    }
+
+    public Integer getIdAccessLevel() {
+        return idAccessLevel;
+    }
+
+    public void setIdAccessLevel(Integer idAccessLevel) {
+        this.idAccessLevel = idAccessLevel;
+    }
+
+    public Integer getIsAuthorized() {
+        return isAuthorized;
+    }
+
+    public void setIsAuthorized(Integer isAuthorized) {
+        this.isAuthorized = isAuthorized;
     }
 
     public CCurrencies getCurrency() {
@@ -226,6 +234,22 @@ public class BudgetMonthBranch implements Serializable {
 
     public void setCurrency(CCurrencies currency) {
         this.currency = currency;
+    }
+
+    public List<Requests> getRequestsList() {
+        return requestsList;
+    }
+
+    public void setRequestsList(List<Requests> requestsList) {
+        this.requestsList = requestsList;
+    }
+
+    public List<BudgetMonthConcepts> getBudgetMonthConceptsList() {
+        return budgetMonthConceptsList;
+    }
+
+    public void setBudgetMonthConceptsList(List<BudgetMonthConcepts> budgetMonthConceptsList) {
+        this.budgetMonthConceptsList = budgetMonthConceptsList;
     }
 
     @Override

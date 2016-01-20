@@ -27,74 +27,49 @@ import mx.bidg.config.JsonViews;
  * @author sistemask
  */
 @Entity
-@Table(name = "C_CURRENCIES")
+@Table(name = "C_OPERATION_TYPES")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
-public class CCurrencies implements Serializable {
+public class COperationTypes implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID_CURRENCY")
+    @Column(name = "ID_OPERATION_TYPE")
     @JsonView(JsonViews.Root.class)
-    private Integer idCurrency;
+    private Integer idOperationType;
     
-    @Size(max = 50)
-    @Column(name = "CURRENCY")
+    @Size(max = 45)
+    @Column(name = "OPERATION_TYPE")
     @JsonView(JsonViews.Root.class)
-    private String currency;
+    private String operationType;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idCurrency")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idOperationType")
     @JsonView(JsonViews.Embedded.class)
     private List<AccountsPayable> accountsPayableList;
 
-    public CCurrencies() {
+    public COperationTypes() {
     }
 
-    public CCurrencies(Integer idCurrency) {
-        this.idCurrency = idCurrency;
+    public COperationTypes(Integer idOperationType) {
+        this.idOperationType = idOperationType;
     }
 
-    public Integer getIdCurrency() {
-        return idCurrency;
+    public Integer getIdOperationType() {
+        return idOperationType;
     }
 
-    public void setIdCurrency(Integer idCurrency) {
-        this.idCurrency = idCurrency;
+    public void setIdOperationType(Integer idOperationType) {
+        this.idOperationType = idOperationType;
     }
 
-    public String getCurrency() {
-        return currency;
+    public String getOperationType() {
+        return operationType;
     }
 
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idCurrency != null ? idCurrency.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CCurrencies)) {
-            return false;
-        }
-        CCurrencies other = (CCurrencies) object;
-        if ((this.idCurrency == null && other.idCurrency != null) || (this.idCurrency != null && !this.idCurrency.equals(other.idCurrency))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "mx.bidg.model.CCurrencies[ idCurrency=" + idCurrency + " ]";
+    public void setOperationType(String operationType) {
+        this.operationType = operationType;
     }
 
     public List<AccountsPayable> getAccountsPayableList() {
@@ -103,6 +78,31 @@ public class CCurrencies implements Serializable {
 
     public void setAccountsPayableList(List<AccountsPayable> accountsPayableList) {
         this.accountsPayableList = accountsPayableList;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (idOperationType != null ? idOperationType.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof COperationTypes)) {
+            return false;
+        }
+        COperationTypes other = (COperationTypes) object;
+        if ((this.idOperationType == null && other.idOperationType != null) || (this.idOperationType != null && !this.idOperationType.equals(other.idOperationType))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "mx.bidg.model.COperationTypes[ idOperationType=" + idOperationType + " ]";
     }
     
 }

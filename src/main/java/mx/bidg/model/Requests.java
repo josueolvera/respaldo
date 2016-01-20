@@ -9,10 +9,12 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,6 +27,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 
 /**
  *
@@ -62,6 +65,13 @@ public class Requests implements Serializable {
     @Column(name = "PURPOSE")
     @JsonView(JsonViews.Root.class)
     private String purpose;
+    
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "CREATION_DATE")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime creationDate;
     
     @Basic(optional = false)
     @NotNull
@@ -194,6 +204,14 @@ public class Requests implements Serializable {
 
     public void setIdRequestStatus(CRequestStatus idRequestStatus) {
         this.idRequestStatus = idRequestStatus;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
     }
     
     public List<PriceEstimations> getPriceEstimationsList() {

@@ -104,7 +104,7 @@ public class CBudgetConceptsController {
                         
                         conceptMonthPojoList.add(conceptMonthPojo);
                         totalMonthPojoList.add(totalMonthPojo);
-                        conceptPojo.setDwEnterprise(budgetMonthBranch.getIdDwEnterprise().getIdDwEnterprise());
+                        conceptPojo.setDwEnterprise(budgetMonthBranch.getDwEnterprise().getIdDwEnterprise());
                         conceptPojo.setYear(budgetMonthBranch.getYear());
                     }
                     
