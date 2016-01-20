@@ -83,9 +83,9 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
                     for(BudgetMonthConcepts budgetMonthConcepts : list) {
 
                         budgetMonthBranch = budgetMonthConcepts.getIdBudgetMonthBranch();
-                        if(budgetMonthBranch.getIdBudget().getIdBudget().equals(budget.getIdBudget()) && 
+                        if(budgetMonthBranch.getBudget().getIdBudget().equals(budget.getIdBudget()) && 
                                 budgetMonthBranch.getMonth().getIdMonth().equals(month.getIdMonth()) && 
-                                budgetMonthBranch.getIdDwEnterprise().getIdDwEnterprise().equals(
+                                budgetMonthBranch.getDwEnterprise().getIdDwEnterprise().equals(
                                 dwEnterprise.getIdDwEnterprise()) && 
                                 budgetMonthBranch.getYear() == year) {
                             
@@ -121,8 +121,8 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
                         budgetMonthBranch.setAmount(amountConcept);
                         budgetMonthBranch.setExpendedAmount(new BigDecimal(0));
                         budgetMonthBranch.setIdAccessLevel(1);
-                        budgetMonthBranch.setIdBudget(budget);
-                        budgetMonthBranch.setIdDwEnterprise(dwEnterprise);
+                        budgetMonthBranch.setBudget(budget);
+                        budgetMonthBranch.setDwEnterprise(dwEnterprise);
                         budgetMonthBranch.setMonth(month);
                         budgetMonthBranch.setYear(year);
                         budgetMonthBranch.setIsAuthorized(0);

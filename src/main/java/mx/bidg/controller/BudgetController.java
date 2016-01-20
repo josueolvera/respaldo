@@ -75,9 +75,9 @@ public class BudgetController {
             }
 
             budgetMonthBranch.setBudgetMonthConceptsList(budgetMonthConceptsList);
-            budgetMonthBranch.setIdBudget(new Budgets(jsonRequest.get("budget").asInt()));
+            budgetMonthBranch.setBudget(new Budgets(jsonRequest.get("budget").asInt()));
             budgetMonthBranch.setMonth(new CMonths(jsonRequest.get("month").asInt()));
-            budgetMonthBranch.setIdDwEnterprise(new DwEnterprises(jsonRequest.get("dwEnterprise").asInt()));
+            budgetMonthBranch.setDwEnterprise(new DwEnterprises(jsonRequest.get("dwEnterprise").asInt()));
             budgetMonthBranch.setAmount(jsonRequest.get("amountMonth").decimalValue());
             budgetMonthBranch.setExpendedAmount(jsonRequest.get("expendedAmount").decimalValue());
             budgetMonthBranch.setYear(jsonRequest.get("year").asInt());

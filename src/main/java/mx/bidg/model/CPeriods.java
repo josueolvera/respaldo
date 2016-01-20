@@ -5,7 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
@@ -27,6 +29,7 @@ import mx.bidg.config.JsonViews;
  */
 @Entity
 @Table(name = "C_PERIODS")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CPeriods implements Serializable {
     
     private static final long serialVersionUID = 1L;

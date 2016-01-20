@@ -5,11 +5,12 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -31,6 +32,7 @@ import mx.bidg.utils.DateTimeConverter;
  */
 @Entity
 @Table(name = "PERIODICS_PAYMENTS")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class PeriodicsPayments implements Serializable {
     
     private static final long serialVersionUID = 1L;
