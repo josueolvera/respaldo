@@ -5,6 +5,7 @@ import mx.bidg.dao.StockDocumentsDao;
 import mx.bidg.model.CStockDocumentsTypes;
 import mx.bidg.model.StockDocuments;
 import mx.bidg.model.Stocks;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -22,6 +23,7 @@ public class StockDocumentsDaoImpl extends AbstractDao<Integer, StockDocuments> 
         return (List<StockDocuments>) createEntityCriteria()
                 .add(Restrictions.eq("idStock", idStock))
                 .add(Restrictions.eq("currentDocument", 1))
+                .addOrder(Order.asc("idDocumentType"))
                 .list();
     }
 
@@ -30,6 +32,9 @@ public class StockDocumentsDaoImpl extends AbstractDao<Integer, StockDocuments> 
     public List<StockDocuments> findRecordBy(Stocks stock) {
         return (List<StockDocuments>) createEntityCriteria()
                 .add(Restrictions.eq("idStock", stock.getIdStock()))
+                .add(Restrictions.eq("currentDocument", 0))
+                .addOrder(Order.asc("idDocumentType"))
+                .addOrder(Order.desc("uploadingDate"))
                 .list();
     }
 

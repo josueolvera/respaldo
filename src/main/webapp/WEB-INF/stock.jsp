@@ -90,6 +90,17 @@
                             this.isSaving = false;
                         });
                     },
+                    fetchStockDocumentsRecord: function (article) {
+                        this.$http.get(
+                                ROOT_URL + "/stock/" + article.idStock + "/attachments/record"
+                        ).success(function (data) {
+                            Vue.set(article, "documentsRecord", data);
+                            $("#attachmentsModal").modal("show");
+                            this.isSaving = false;
+                        }).error(function () {
+                            showAlert("Permiso denegado", {type: 3});
+                        });
+                    },
                     fetchStockAssignments: function (article) {
                         this.$http.get(ROOT_URL + "/stock/" + article.idStock + "/assignments").success(function(data) {
                             article.stockEmployeeAssignmentsList = data;
@@ -210,6 +221,7 @@
                             showAlert("Registro exitoso");
                             form.reset();
                             this.fetchStockDocuments(article);
+                            this.fetchStockDocumentsRecord(article);
                         }).error(function () {
                             this.isSaving = false;
                             form.reset();
@@ -232,7 +244,7 @@
                     },
                     showAttachmentsModal: function (article) {
                         this.attachmentsModal.article = article;
-                        $("#attachmentsModal").modal("show");
+                        this.fetchStockDocumentsRecord(article);
                     },
                     showEditArticleModal: function (article) {
                         this.editModal.article = article;
@@ -277,7 +289,7 @@
         <div id="content">
             <div class="col-lg-12"><h2 class="text-center">Inventario</h2></div>
             <div class="col-lg-12">
-                <div class="col-lg-3">
+                <div class="col-md-3 col-xs-6">
                     <label>Distribuidor</label>
                     <select v-model="selectedOptions.distributor" class="form-control"
                             @change="fetchStock(selectedOptions.distributor)">
@@ -287,7 +299,7 @@
                         </option>
                     </select>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-md-3 col-xs-6">
                     <label>Area</label>
                     <select v-model="selectedOptions.area" class="form-control"
                             @change="attachOnScreen"
@@ -299,11 +311,11 @@
                         </option>
                     </select>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-md-3 col-xs-6">
                     <label>Region</label>
                     <select class="form-control"></select>
                 </div>
-                <div class="col-lg-3">
+                <div class="col-md-3 col-xs-6">
                     <label>Sucursal</label>
                     <select class="form-control"></select>
                 </div>
@@ -317,28 +329,29 @@
                             <div class="panel-heading">
                                 <div class="row">
                                     <div class="text-center col-xs-10">
-                                        <div class="col-xs-3"><strong>Artículo</strong></div>
-                                        <div class="col-xs-3"><strong>No. de serie</strong></div>
-                                        <div class="col-xs-3"><strong>Fecha de ingreso</strong></div>
-                                        <div class="col-xs-3"><strong>Asignado a</strong></div>
-                                    </div>
-                                    <div class="col-xs-2"><strong></strong></div>
-                                </div>
-                                <div class="row">
-                                    <div class="text-center col-xs-10">
-                                        <div class="col-xs-3">{{ article.article.articleName }}</div>
-                                        <div class="col-xs-3">{{ article.serialNumber }}</div>
-                                        <div class="col-xs-3">
-                                            {{ article.creationDateFormats.dateNumber }}
+                                        <div class="col-md-3 col-xs-6">
+                                            <p><strong>Artículo</strong></p>
+                                            <p>{{ article.article.articleName }}</p>
                                         </div>
-                                        <div class="col-xs-3">
-                                            {{ article.stockEmployeeAssignmentsList[0].employee.firstName }}
-                                            {{ article.stockEmployeeAssignmentsList[0].employee.middleName }}
-                                            {{ article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
-                                            {{ article.stockEmployeeAssignmentsList[0].employee.motherLast }}
+                                        <div class="col-md-3 col-xs-6">
+                                            <p><strong>No. de serie</strong></p>
+                                            <p>{{ article.serialNumber }}</p>
+                                        </div>
+                                        <div class="col-md-3 col-xs-6">
+                                            <p><strong>Fecha de ingreso</strong></p>
+                                            <p>{{ article.creationDateFormats.dateNumber }}</p>
+                                        </div>
+                                        <div class="col-md-3 col-xs-6">
+                                            <p><strong>Asignado a</strong></p>
+                                            <p>
+                                                {{ article.stockEmployeeAssignmentsList[0].employee.firstName }}
+                                                {{ article.stockEmployeeAssignmentsList[0].employee.middleName }}
+                                                {{ article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
+                                                {{ article.stockEmployeeAssignmentsList[0].employee.motherLast }}
+                                            </p>
                                         </div>
                                     </div>
-                                    <div class="text-right col-xs-2">
+                                    <div class="col-xs-2">
                                         <button @click="showEditArticleModal(article)" class="btn btn-default">
                                             <span class="glyphicon glyphicon-pencil"></span>
                                         </button>
@@ -356,11 +369,16 @@
                                 <div class="panel-body">
                                 <%-- Atributos --%>
                                     <div v-if="article.propertiesList == null" class="col-xs-12"
-                                         style="height: 4rem; padding: 2rem 0;">
+                                         style="height: 6rem; padding: 2rem 0;">
                                         <div class="loader">Cargando...</div>
                                     </div>
-                                    <div class="col-xs-6">
+                                    <div v-if="article.propertiesList != null" class="col-md-6 col-xs-12">
+                                        <h5 class="text-center">Propiedades</h5>
                                         <table class="table table-striped">
+                                            <tr>
+                                                <td>Folio de inventario</td>
+                                                <td>{{ article.stockFolio }}</td>
+                                            </tr>
                                             <tr v-for="property in article.propertiesList">
                                                 <td class="col-xs-6">
                                                     {{ property.attributesArticles.attributes.attributeName }}
@@ -370,7 +388,8 @@
                                         </table>
                                     </div>
                                     <%-- Documentos Adjuntos --%>
-                                    <div class="col-xs-6">
+                                    <div v-if="article.propertiesList != null" class="col-md-6 col-xs-12">
+                                        <h5 class="text-center">Documentos</h5>
                                         <table class="table table-striped">
                                             <tr v-for="document in article.stockDocumentsList">
                                                 <td class="col-xs-6">{{ document.documentType.documentName }}</td>
@@ -399,17 +418,20 @@
                         </div>
                         <div class="modal-body">
                             <div class="row">
-                                <div class="col-xs-4">
+                                <div class="col-md-4 col-xs-6">
                                     <label>Artículo: </label>
                                     {{ attachmentsModal.article.article.articleName }}
                                 </div>
-                                <div class="col-xs-4">
+                                <div class="col-md-4 col-xs-6">
                                     <label>No. de Serie: </label>
                                     {{ attachmentsModal.article.serialNumber }}
                                 </div>
-                                <div class="col-xs-4">
+                                <div class="col-md-4 col-xs-12">
                                     <label>Asignado a: </label>
-                                    {{ attachmentsModal.article.idEmployee }}
+                                    {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
+                                    {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
+                                    {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
+                                    {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}
                                 </div>
                             </div>
                             <hr>
@@ -420,6 +442,7 @@
                                         <tr>
                                             <th>Documento</th>
                                             <th>Documento actual</th>
+                                            <th>Fecha de envío</th>
                                             <th>Nuevo documento</th>
                                         </tr>
                                     </thead>
@@ -430,6 +453,10 @@
                                                :href="attachmentsDownloadUrl + attachmentsModal.article.stockDocumentsList[$index].idStockDocument">
                                                 {{ attachmentsModal.article.stockDocumentsList[$index].documentName }}
                                             </a>
+                                        </td>
+                                        <td>
+                                            {{ attachmentsModal.article.stockDocumentsList[$index].uploadingDateFormats.dateNumber }},
+                                            {{ attachmentsModal.article.stockDocumentsList[$index].uploadingDateFormats.time12 }}
                                         </td>
                                         <td>
                                             <input @change="validateFile($event)" type="file" class="form-control"
@@ -451,6 +478,31 @@
                                     </button>
                                 </div>
                             </form>
+                        </div>
+                        <div class="modal-footer">
+                            <h4 class="text-left">Historial de Documentos</h4>
+                            <table class="table table-striped text-left">
+                                <thead>
+                                    <tr>
+                                        <th>Documento</th>
+                                        <th>Archivo</th>
+                                        <th>Fecha de envío</th>
+                                    </tr>
+                                </thead>
+                                <tr v-for="document in attachmentsModal.article.documentsRecord"
+                                    v-if="document.currentDocument == 0">
+                                    <td>{{ document.documentType.documentName }}</td>
+                                    <td>
+                                        <a :href="attachmentsDownloadUrl + document.idStockDocument">
+                                            {{ document.documentName }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        {{ document.uploadingDateFormats.dateNumber }},
+                                        {{ document.uploadingDateFormats.time12 }}
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>

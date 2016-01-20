@@ -3,6 +3,7 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CStockDocumentsTypesDao;
 import mx.bidg.model.CStockDocumentsTypes;
+import org.hibernate.criterion.Order;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,7 +27,9 @@ public class CStockDocumentsTypesDaoImpl extends AbstractDao<Integer, CStockDocu
     @Override
     @SuppressWarnings("unchecked")
     public List<CStockDocumentsTypes> findAll() {
-        return (List<CStockDocumentsTypes>) createEntityCriteria().list();
+        return (List<CStockDocumentsTypes>) createEntityCriteria()
+                .addOrder(Order.asc("idDocumentType"))
+                .list();
     }
 
     @Override
