@@ -379,6 +379,10 @@
                                                 <td>Folio de inventario</td>
                                                 <td>{{ article.stockFolio }}</td>
                                             </tr>
+                                            <tr>
+                                                <td>Solicitud</td>
+                                                <td>{{ article.folio }}</td>
+                                            </tr>
                                             <tr v-for="property in article.propertiesList">
                                                 <td class="col-xs-6">
                                                     {{ property.attributesArticles.attributes.attributeName }}
