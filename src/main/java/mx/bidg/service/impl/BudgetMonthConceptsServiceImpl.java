@@ -18,6 +18,7 @@ import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.BudgetMonthConcepts;
 import mx.bidg.model.Budgets;
 import mx.bidg.model.CBudgetConcepts;
+import mx.bidg.model.CCurrencies;
 import mx.bidg.model.CMonths;
 import mx.bidg.model.DwEnterprises;
 import mx.bidg.service.BudgetMonthConceptsService;
@@ -121,6 +122,7 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
                         budgetMonthBranch.setAmount(amountConcept);
                         budgetMonthBranch.setExpendedAmount(new BigDecimal(0));
                         budgetMonthBranch.setIdAccessLevel(1);
+                        budgetMonthBranch.setCurrency(new CCurrencies(1));
                         budgetMonthBranch.setBudget(budget);
                         budgetMonthBranch.setDwEnterprise(dwEnterprise);
                         budgetMonthBranch.setMonth(month);
@@ -139,6 +141,7 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
                     budgetMonthConcepts.setIdBudgetMonthBranch(budgetMonthBranch);
                     budgetMonthConcepts.setIdBudgetConcept(concept);
                     budgetMonthConcepts.setIdAccessLevel(1);
+                    budgetMonthConcepts.setCurrency(new CCurrencies(1));
                     budgetMonthConcepts.setAmount(amountConcept);
                     budgetMonthConcepts = budgetMonthConceptsDao.save(budgetMonthConcepts);
                     list.add(budgetMonthConcepts);

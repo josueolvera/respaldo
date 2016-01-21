@@ -130,7 +130,6 @@
             {
               $(event.target).toggleClass('expanded');
               $(event.target).children('ul').toggle('medium');
-              alert(event.target.id);
               event.stopPropagation();
               this.navigation(event.target.id);
             },
@@ -543,11 +542,11 @@
                         </div>
 
                         <hr>
-                      <div class="row" v-for="cont in contenido" style="margin-left: 0px; margin-right: 0px" id="1-{{sucss.idarea}}-{{cont[0].idBudgetCategory}}">
+                      <div class="row" v-for="cont in contenido" style="margin-left: 0px; margin-right: 0px" id="1-{{sucss.idArea}}-{{cont[0].idBudgetCategory}}">
                         <div class="col-xs-12">
                           <div class="bs-callout bs-callout-default">
                           <h4>{{cont[0].idBudgetCategory | budgetCategory }}</h4>
-                          <div class="row" v-for="conte in cont" id="1-{{sucss.idarea}}-{{cont[0].idBudgetCategory}}-{{conte.idBudgetSubcategory}}"
+                          <div class="row" v-for="conte in cont" id="1-{{sucss.idArea}}-{{cont[0].idBudgetCategory}}-{{conte.idBudgetSubcategory}}"
                              style="margin-left: 0px; margin-right: 0px">
                             <div class="row" style="margin-left: 0px; margin-right: 0px">
                               <div class="col-xs-4">
@@ -662,9 +661,6 @@
                     </div>
                   </div>
                 </div>
-                <pre>
-                  {{ $data | json}}
-                </pre>
                 </div> <!-- /#container-fluid -->
             </div> <!-- /#Page Content -->
         </div> <!-- /#wrapper -->
