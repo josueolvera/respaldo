@@ -1,6 +1,7 @@
 package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import javax.servlet.http.HttpSession;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.Requests;
@@ -23,7 +24,7 @@ public class RequestsController {
     @Autowired
     RequestsService requestsService;
     
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
     
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"})
     public @ResponseBody ResponseEntity<String> saveRequest(@RequestBody String data, HttpSession session) 
@@ -34,7 +35,7 @@ public class RequestsController {
         String response;
         
         if(request != null) {
-            response = mapper.writerWithView(JsonViews.Root.class).writeValueAsString(request);
+            response = mapper.writeValueAsString(request);
         } else {
             response = "Error al guardar la Solicitud";
         }

@@ -132,6 +132,7 @@ public class RequestsServiceImpl implements RequestsService {
         request.setIdRequestStatus(new CRequestStatus(1));
         request.setIdAccessLevel(1);
         request = requestsDao.save(request);
+        request = requestsDao.findByIdFetchBudgetMonthBranch(request.getIdRequest());
         
         for(JsonNode jsonProducts : jsonRequest.get("products")) {
             CProducts product = new CProducts(jsonProducts.get("idProduct").asInt());

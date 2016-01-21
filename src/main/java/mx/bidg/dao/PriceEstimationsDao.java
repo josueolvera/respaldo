@@ -16,6 +16,6 @@ public interface PriceEstimationsDao extends InterfaceDao<PriceEstimations> {
     
     public List<PriceEstimations> findByIdRequest(int idRequest);
     
-    public PriceEstimations findByIdFetchRequest(int idEstimation);
+    public PriceEstimations findByIdFetchRequestStatus(int idEstimation);
     
 }

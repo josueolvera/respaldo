@@ -5,6 +5,7 @@
  */
 package mx.bidg.dao;
 
+import java.util.List;
 import mx.bidg.model.AccountsPayable;
 
 /**
@@ -12,5 +13,7 @@ import mx.bidg.model.AccountsPayable;
  * @author sistemask
  */
 public interface AccountsPayableDao extends InterfaceDao<AccountsPayable> {
+    
+    public List<AccountsPayable> findByFolio(String folio);
     
 }

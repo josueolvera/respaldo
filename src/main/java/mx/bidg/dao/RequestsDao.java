@@ -11,6 +11,8 @@ import mx.bidg.model.Requests;
  *
  * @author sistemask
  */
-public interface RequestsDao extends InterfaceDao<Requests>{
+public interface RequestsDao extends InterfaceDao<Requests> {
+    
+    public Requests findByIdFetchBudgetMonthBranch(Integer idRequest);
     
 }
