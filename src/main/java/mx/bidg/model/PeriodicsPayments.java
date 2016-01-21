@@ -94,6 +94,11 @@ public class PeriodicsPayments implements Serializable {
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private CPeriodicPaymentsStatus idPeriodicPaymentStatus;
+    
+    @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private CCurrencies idCurrency;
 
     public PeriodicsPayments() {
     }
@@ -188,6 +193,14 @@ public class PeriodicsPayments implements Serializable {
 
     public void setIdPeriodicPaymentStatus(CPeriodicPaymentsStatus idPeriodicPaymentStatus) {
         this.idPeriodicPaymentStatus = idPeriodicPaymentStatus;
+    }
+
+    public CCurrencies getIdCurrency() {
+        return idCurrency;
+    }
+
+    public void setIdCurrency(CCurrencies idCurrency) {
+        this.idCurrency = idCurrency;
     }
 
     @Override

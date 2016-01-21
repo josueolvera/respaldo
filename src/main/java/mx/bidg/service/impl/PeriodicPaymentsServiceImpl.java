@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import mx.bidg.dao.PeriodicPaymentsDao;
 import mx.bidg.dao.RequestsDao;
+import mx.bidg.model.CCurrencies;
 import mx.bidg.model.CPeriodicPaymentsStatus;
 import mx.bidg.model.CPeriods;
 import mx.bidg.model.PeriodicsPayments;
@@ -37,6 +38,7 @@ public class PeriodicPaymentsServiceImpl implements PeriodicPaymentsService {
         JsonNode json = mapper.readTree(data);
         String folio = requestsDao.findById(idRequest).getFolio();
         CPeriods period = new CPeriods(json.get("period").asInt());
+        CCurrencies currency = new CCurrencies(json.get("currency").asInt());
         BigDecimal amount = json.get("amount").decimalValue();
         LocalDateTime initialDate = LocalDateTime.parse(json.get("initialDate").asText());
         LocalDateTime dueDate = (json.get("dueDate").asText() != null)? 
@@ -53,6 +55,7 @@ public class PeriodicPaymentsServiceImpl implements PeriodicPaymentsService {
         //Se crea el PeriodicsPayment con Status 1 = Inactivo
         periodicsPayment.setIdPeriodicPaymentStatus(new CPeriodicPaymentsStatus(1));
         periodicsPayment.setIdAccessLevel(1);
+        periodicsPayment.setIdCurrency(currency);
         periodicsPayment = periodicPaymentsDao.save(periodicsPayment);
         
         return periodicsPayment;
