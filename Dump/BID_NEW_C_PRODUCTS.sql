@@ -29,7 +29,7 @@ CREATE TABLE `C_PRODUCTS` (
   `PRODUCT` varchar(100) DEFAULT NULL,
   `ID_ACCESS_LEVEL` int(11) DEFAULT '1',
   PRIMARY KEY (`ID_PRODUCT`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -38,7 +38,7 @@ CREATE TABLE `C_PRODUCTS` (
 
 LOCK TABLES `C_PRODUCTS` WRITE;
 /*!40000 ALTER TABLE `C_PRODUCTS` DISABLE KEYS */;
-INSERT INTO `C_PRODUCTS` VALUES (1,'Computadora',1),(2,'Telefono',1),(3,'Silla',1),(4,'Escritorio',1),(5,'Escoba',1),(6,'Recogedor',1),(7,'Taxi',1),(8,'Avion',1),(9,'Hotel',1),(10,'Linea Telefonica',1),(11,'Agua',1),(12,'Renta',1),(13,'Monitor',1);
+INSERT INTO `C_PRODUCTS` VALUES (1,'Computadora',1),(2,'Telefono',1),(3,'Silla',1),(4,'Escritorio',1),(5,'Escoba',1),(6,'Recogedor',1),(7,'Taxi',1),(8,'Avion',1),(9,'Hotel',1),(10,'Linea Telefonica',1),(11,'Agua',1),(12,'Renta',1),(13,'Monitor',1),(14,'Luz',1);
 /*!40000 ALTER TABLE `C_PRODUCTS` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -51,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-01-04 18:44:02
+-- Dump completed on 2016-01-21 17:37:06

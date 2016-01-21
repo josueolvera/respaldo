@@ -71,6 +71,12 @@ public class PriceEstimations implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
     
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "OUT_OF_BUDGET")
+    @JsonView(JsonViews.Root.class)
+    private int outOfBudget;
+    
     @JoinColumn(name = "ID_REQUEST", referencedColumnName = "ID_REQUEST")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
@@ -164,6 +170,14 @@ public class PriceEstimations implements Serializable {
 
     public void setIdAccessLevel(int idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
+    }
+
+    public int getOutOfBudget() {
+        return outOfBudget;
+    }
+
+    public void setOutOfBudget(int outOfBudget) {
+        this.outOfBudget = outOfBudget;
     }
 
     public Requests getIdRequest() {

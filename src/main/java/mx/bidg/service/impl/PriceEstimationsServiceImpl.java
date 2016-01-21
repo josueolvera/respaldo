@@ -14,6 +14,7 @@ import java.util.List;
 import mx.bidg.dao.AccountsPayableDao;
 import mx.bidg.dao.PeriodicPaymentsDao;
 import mx.bidg.dao.PriceEstimationsDao;
+import mx.bidg.dao.RequestsDao;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.Accounts;
 import mx.bidg.model.AccountsPayable;
@@ -40,6 +41,9 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
     @Autowired
     AccountsPayableDao accountsPayableDao;
+    
+    @Autowired
+    RequestsDao requestsDao;
 
     ObjectMapper mapper = new ObjectMapper();
 
@@ -50,14 +54,16 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         List<PriceEstimations> estimations = new ArrayList<>();
 
         for (JsonNode json : jsonList.get("estimations")) {
-            int idRequest = json.get("idRequest").asInt();
+            Integer idRequest = json.get("idRequest").asInt();
+            Requests request = requestsDao.findByIdFetchBudgetMonthBranch(idRequest);
+            BigDecimal budgetAmount = request.getIdBudgetMonthBranch().getAmount();
             int idAccount = json.get("idAccount").asInt();
             int idCurrency = json.get("idCurrency").asInt();
             BigDecimal amount = json.get("amount").decimalValue();
             String sku = json.get("sku").asText();
 
             PriceEstimations estimation = new PriceEstimations();
-            estimation.setIdRequest(new Requests(idRequest));
+            estimation.setIdRequest(request);
             estimation.setIdAccount(new Accounts(idAccount));
             estimation.setCurrency(new CCurrencies(idCurrency));
             estimation.setAmount(amount);
@@ -68,6 +74,8 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             //Por defecto, las cotizaciones se guardan como pendientes (1)
             estimation.setIdEstimationStatus(new CEstimationStatus(1));
             estimation.setSku(sku);
+            //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
+            estimation.setOutOfBudget((budgetAmount.compareTo(amount) == -1)? 1 : 0);
             estimation = priceEstimationsDao.save(estimation);
             estimations.add(estimation);
         }
