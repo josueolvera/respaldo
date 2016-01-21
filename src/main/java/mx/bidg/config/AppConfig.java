@@ -60,7 +60,7 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(controllerInterceptor).addPathPatterns("/**").excludePathPatterns("/")
-                .excludePathPatterns("/login").excludePathPatterns("/logout")
+                .excludePathPatterns("/login").excludePathPatterns("/logout").excludePathPatterns("/error/*")
                 .excludePathPatterns("/close-active-session");
     }
 
