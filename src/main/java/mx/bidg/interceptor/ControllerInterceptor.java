@@ -59,7 +59,7 @@ public class ControllerInterceptor extends HandlerInterceptorAdapter {
         ArrayList<Integer> idRoles = mapPermissions.get(key);
         
         if(idRoles == null) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Acceso denegado");
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Acceso denegado");
             logger.log(Level.WARNING, "No hay roles para este request. KEY: " + key);
             return false;
         }
