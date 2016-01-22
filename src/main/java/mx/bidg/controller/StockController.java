@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.exceptions.InvalidFileException;
+import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
 import mx.bidg.service.PropertiesService;
 import mx.bidg.service.StockDocumentsService;
@@ -118,7 +119,10 @@ public class StockController {
         File file = new File(SAVE_PATH + document.getDocumentUrl());
 
         if (! file.canRead()) {
-            throw new IOException("El archivo "+ SAVE_PATH + document.getDocumentUrl() +" no existe");
+            throw new ValidationException(
+                    "El archivo "+ SAVE_PATH + document.getDocumentUrl() +" no existe",
+                    "El documento solicitado no existe"
+            );
         }
 
         FileInputStream inputStream = new FileInputStream(file);
@@ -174,7 +178,7 @@ public class StockController {
             }
 
             if (! isValidMediaType) {
-                throw new InvalidFileException("Tipo de archivo no admitido");
+                throw new ValidationException("Tipo de archivo no admitido", "Tipo de archivo no admitido");
             }
 
             Matcher matcher = pattern.matcher(filePart.getName());

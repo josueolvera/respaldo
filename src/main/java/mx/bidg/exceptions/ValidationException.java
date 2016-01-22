@@ -33,7 +33,9 @@ public class ValidationException extends RuntimeException {
         this.loggerMessage = loggerMessage;
         this.clientMessage = clientMessage;
         this.status = HttpStatus.BAD_REQUEST;
-        this.errorField = new ErrorField(clientMessage);
+        ErrorField errorField = new ErrorField(clientMessage);
+        errorField.getError().setCode(status.value());
+        this.errorField = errorField;
     }
 
     public ValidationException(String loggerMessage, String clientMessage, HttpStatus status) {
@@ -41,7 +43,9 @@ public class ValidationException extends RuntimeException {
         this.loggerMessage = loggerMessage;
         this.clientMessage = clientMessage;
         this.status = status;
-        this.errorField = new ErrorField(clientMessage);
+        ErrorField errorField = new ErrorField(clientMessage);
+        errorField.getError().setCode(status.value());
+        this.errorField = errorField;
     }
 
     public HttpStatus getStatus() {
