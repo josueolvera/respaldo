@@ -170,7 +170,7 @@ public class PriceEstimationsController {
     
     
     @RequestMapping(value = "/modify", method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"})
-    public @ResponseBody String modify(@RequestBody PriceEstimations estimation) {
+    public @ResponseBody String modify(@RequestBody PriceEstimations estimation) throws Exception {
         estimationsService.update(estimation);
         return "Modificacion exitosa";
     }

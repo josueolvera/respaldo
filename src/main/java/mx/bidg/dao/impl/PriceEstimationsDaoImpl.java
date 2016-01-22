@@ -48,8 +48,8 @@ public class PriceEstimationsDaoImpl extends AbstractDao<Integer, PriceEstimatio
     @Override
     public List<PriceEstimations> findByIdRequest(int idRequest) {
         Criteria criteria = createEntityCriteria()
-                .add(Restrictions.eq("idRequest", new Requests(idRequest)))
-                .setFetchMode("idRequest", FetchMode.JOIN);
+                .add(Restrictions.eq("request", new Requests(idRequest)))
+                .setFetchMode("request", FetchMode.JOIN);
         return (List<PriceEstimations>) criteria.list();
     }
 
@@ -57,8 +57,8 @@ public class PriceEstimationsDaoImpl extends AbstractDao<Integer, PriceEstimatio
     public PriceEstimations findByIdFetchRequestStatus(int idEstimation) {
         Criteria criteria = createEntityCriteria()
                 .add(Restrictions.idEq(idEstimation))
-                .setFetchMode("idRequest", FetchMode.JOIN)
-                .setFetchMode("idRequest.idRequestStatus", FetchMode.JOIN);
+                .setFetchMode("request", FetchMode.JOIN)
+                .setFetchMode("request.requestStatus", FetchMode.JOIN);
         return (PriceEstimations) criteria.uniqueResult();
     }
     

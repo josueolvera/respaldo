@@ -79,6 +79,26 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
     
+    @Column(name = "USER_REQUEST", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idUserRequest;
+    
+    @Column(name = "USER_RESPONSABLE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idUserResponsable;
+    
+    @Column(name = "ID_BUDGET_MONTH_BRANCH", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idBudgetMonthBranch;
+    
+    @Column(name = "ID_REQUEST_TYPE_PRODUCT", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRequestTypeProduct;
+    
+    @Column(name = "ID_REQUEST_STATUS", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRequestStatus;
+    
     @JoinColumn(name = "USER_REQUEST", referencedColumnName = "ID_USER")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
@@ -92,19 +112,19 @@ public class Requests implements Serializable {
     @JoinColumn(name = "ID_BUDGET_MONTH_BRANCH", referencedColumnName = "ID_BUDGET_MONTH_BRANCH")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private BudgetMonthBranch idBudgetMonthBranch;
+    private BudgetMonthBranch budgetMonthBranch;
     
     @JoinColumn(name = "ID_REQUEST_TYPE_PRODUCT", referencedColumnName = "ID_REQUEST_TYPE_PRODUCT")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private RequestTypesProduct idRequestTypeProduct;
+    private RequestTypesProduct requestTypeProduct;
     
     @JoinColumn(name = "ID_REQUEST_STATUS", referencedColumnName = "ID_REQUEST_STATUS")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CRequestStatus idRequestStatus;
+    private CRequestStatus requestStatus;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idRequest")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "request")
     @JsonView(JsonViews.Embedded.class)
     private List<PriceEstimations> priceEstimationsList;
     
@@ -142,22 +162,6 @@ public class Requests implements Serializable {
         this.folio = folio;
     }
 
-    public Users getUserRequest() {
-        return userRequest;
-    }
-
-    public void setUserRequest(Users userRequest) {
-        this.userRequest = userRequest;
-    }
-
-    public Users getUserResponsable() {
-        return userResponsable;
-    }
-
-    public void setUserResponsable(Users userResponsable) {
-        this.userResponsable = userResponsable;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -174,6 +178,14 @@ public class Requests implements Serializable {
         this.purpose = purpose;
     }
 
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
     public int getIdAccessLevel() {
         return idAccessLevel;
     }
@@ -182,38 +194,86 @@ public class Requests implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public BudgetMonthBranch getIdBudgetMonthBranch() {
+    public Integer getIdUserRequest() {
+        return idUserRequest;
+    }
+
+    public void setIdUserRequest(Integer idUserRequest) {
+        this.idUserRequest = idUserRequest;
+    }
+
+    public Integer getIdUserResponsable() {
+        return idUserResponsable;
+    }
+
+    public void setIdUserResponsable(Integer idUserResponsable) {
+        this.idUserResponsable = idUserResponsable;
+    }
+
+    public Integer getIdBudgetMonthBranch() {
         return idBudgetMonthBranch;
     }
 
-    public void setIdBudgetMonthBranch(BudgetMonthBranch idBudgetMonthBranch) {
+    public void setIdBudgetMonthBranch(Integer idBudgetMonthBranch) {
         this.idBudgetMonthBranch = idBudgetMonthBranch;
     }
 
-    public RequestTypesProduct getIdRequestTypeProduct() {
+    public Integer getIdRequestTypeProduct() {
         return idRequestTypeProduct;
     }
 
-    public void setIdRequestTypeProduct(RequestTypesProduct idRequestTypeProduct) {
+    public void setIdRequestTypeProduct(Integer idRequestTypeProduct) {
         this.idRequestTypeProduct = idRequestTypeProduct;
     }
 
-    public CRequestStatus getIdRequestStatus() {
+    public Integer getIdRequestStatus() {
         return idRequestStatus;
     }
 
-    public void setIdRequestStatus(CRequestStatus idRequestStatus) {
+    public void setIdRequestStatus(Integer idRequestStatus) {
         this.idRequestStatus = idRequestStatus;
     }
 
-    public LocalDateTime getCreationDate() {
-        return creationDate;
+    public Users getUserRequest() {
+        return userRequest;
     }
 
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.creationDate = creationDate;
+    public void setUserRequest(Users userRequest) {
+        this.userRequest = userRequest;
     }
-    
+
+    public Users getUserResponsable() {
+        return userResponsable;
+    }
+
+    public void setUserResponsable(Users userResponsable) {
+        this.userResponsable = userResponsable;
+    }
+
+    public BudgetMonthBranch getBudgetMonthBranch() {
+        return budgetMonthBranch;
+    }
+
+    public void setBudgetMonthBranch(BudgetMonthBranch budgetMonthBranch) {
+        this.budgetMonthBranch = budgetMonthBranch;
+    }
+
+    public RequestTypesProduct getRequestTypeProduct() {
+        return requestTypeProduct;
+    }
+
+    public void setRequestTypeProduct(RequestTypesProduct requestTypeProduct) {
+        this.requestTypeProduct = requestTypeProduct;
+    }
+
+    public CRequestStatus getRequestStatus() {
+        return requestStatus;
+    }
+
+    public void setRequestStatus(CRequestStatus requestStatus) {
+        this.requestStatus = requestStatus;
+    }
+
     public List<PriceEstimations> getPriceEstimationsList() {
         return priceEstimationsList;
     }

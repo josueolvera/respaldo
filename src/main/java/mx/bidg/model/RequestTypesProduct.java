@@ -69,7 +69,7 @@ public class RequestTypesProduct implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private Integer idAccessLevel;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idRequestTypeProduct")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "requestTypeProduct")
     @JsonView(JsonViews.Embedded.class)
     private List<Requests> requestsList;
 

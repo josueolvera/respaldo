@@ -77,20 +77,36 @@ public class PriceEstimations implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int outOfBudget;
     
+    @Column(name = "ID_REQUEST", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private int idRequest;
+    
+    @Column(name = "ID_ESTIMATION_STATUS", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private int idEstimationStatus;
+    
+    @Column(name = "ID_ACCOUNT", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private int idAccount;
+    
+    @Column(name = "ID_CURRENCY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private int idCurrency;
+    
     @JoinColumn(name = "ID_REQUEST", referencedColumnName = "ID_REQUEST")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private Requests idRequest;
+    private Requests request;
     
     @JoinColumn(name = "ID_ESTIMATION_STATUS", referencedColumnName = "ID_ESTIMATION_STATUS")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CEstimationStatus idEstimationStatus;
+    private CEstimationStatus estimationStatus;
     
     @JoinColumn(name = "ID_ACCOUNT", referencedColumnName = "ID_ACCOUNT")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private Accounts idAccount;
+    private Accounts account;
     
     @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
     @ManyToOne(optional = false)
@@ -156,6 +172,14 @@ public class PriceEstimations implements Serializable {
         this.filePath = filePath;
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
     public String getSku() {
         return sku;
     }
@@ -180,28 +204,60 @@ public class PriceEstimations implements Serializable {
         this.outOfBudget = outOfBudget;
     }
 
-    public Requests getIdRequest() {
+    public int getIdRequest() {
         return idRequest;
     }
 
-    public void setIdRequest(Requests idRequest) {
+    public void setIdRequest(int idRequest) {
         this.idRequest = idRequest;
     }
 
-    public CEstimationStatus getIdEstimationStatus() {
+    public int getIdEstimationStatus() {
         return idEstimationStatus;
     }
 
-    public void setIdEstimationStatus(CEstimationStatus idEstimationStatus) {
+    public void setIdEstimationStatus(int idEstimationStatus) {
         this.idEstimationStatus = idEstimationStatus;
     }
 
-    public Accounts getIdAccount() {
+    public int getIdAccount() {
         return idAccount;
     }
 
-    public void setIdAccount(Accounts idAccount) {
+    public void setIdAccount(int idAccount) {
         this.idAccount = idAccount;
+    }
+
+    public int getIdCurrency() {
+        return idCurrency;
+    }
+
+    public void setIdCurrency(int idCurrency) {
+        this.idCurrency = idCurrency;
+    }
+
+    public Requests getRequest() {
+        return request;
+    }
+
+    public void setRequest(Requests request) {
+        this.request = request;
+    }
+
+    public CEstimationStatus getEstimationStatus() {
+        return estimationStatus;
+    }
+
+    public void setEstimationStatus(CEstimationStatus estimationStatus) {
+        this.estimationStatus = estimationStatus;
+    }
+
+    public Accounts getAccount() {
+        return account;
+    }
+
+    public void setAccount(Accounts account) {
+        this.account = account;
     }
 
     public CCurrencies getCurrency() {
@@ -211,15 +267,7 @@ public class PriceEstimations implements Serializable {
     public void setCurrency(CCurrencies currency) {
         this.currency = currency;
     }
-    
-    public String getFileName() {
-        return fileName;
-    }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-    
     public LocalDateTime getCreationDate() {
         return creationDate;
     }

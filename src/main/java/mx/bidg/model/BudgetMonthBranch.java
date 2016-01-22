@@ -103,7 +103,7 @@ public class BudgetMonthBranch implements Serializable {
     @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
     private CCurrencies currency;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetMonthBranch")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "budgetMonthBranch")
     @JsonView(JsonViews.Embedded.class)
     private List<Requests> requestsList;
     

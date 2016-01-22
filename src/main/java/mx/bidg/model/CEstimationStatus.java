@@ -54,7 +54,7 @@ public class CEstimationStatus implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEstimationStatus")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "estimationStatus")
     @JsonView(JsonViews.Embedded.class)
     private List<PriceEstimations> priceEstimationsList;
 

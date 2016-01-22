@@ -55,7 +55,7 @@ public class CRequestStatus implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idRequestStatus")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "requestStatus")
     @JsonView(JsonViews.Embedded.class)
     private List<Requests> requestsList;
 

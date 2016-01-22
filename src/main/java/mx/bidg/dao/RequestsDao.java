@@ -15,4 +15,6 @@ public interface RequestsDao extends InterfaceDao<Requests> {
     
     public Requests findByIdFetchBudgetMonthBranch(Integer idRequest);
     
+    public Requests findByIdFetchStatus(Integer idRequest);
+    
 }

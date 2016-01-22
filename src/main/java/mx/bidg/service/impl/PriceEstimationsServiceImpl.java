@@ -56,15 +56,15 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         for (JsonNode json : jsonList.get("estimations")) {
             Integer idRequest = json.get("idRequest").asInt();
             Requests request = requestsDao.findByIdFetchBudgetMonthBranch(idRequest);
-            BigDecimal budgetAmount = request.getIdBudgetMonthBranch().getAmount();
+            BigDecimal budgetAmount = request.getBudgetMonthBranch().getAmount();
             int idAccount = json.get("idAccount").asInt();
             int idCurrency = json.get("idCurrency").asInt();
             BigDecimal amount = json.get("amount").decimalValue();
             String sku = json.get("sku").asText();
 
             PriceEstimations estimation = new PriceEstimations();
-            estimation.setIdRequest(request);
-            estimation.setIdAccount(new Accounts(idAccount));
+            estimation.setRequest(request);
+            estimation.setAccount(new Accounts(idAccount));
             estimation.setCurrency(new CCurrencies(idCurrency));
             estimation.setAmount(amount);
             estimation.setFilePath("");
@@ -72,7 +72,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             estimation.setUserEstimation(user);
             estimation.setIdAccessLevel(1);
             //Por defecto, las cotizaciones se guardan como pendientes (1)
-            estimation.setIdEstimationStatus(new CEstimationStatus(1));
+            estimation.setEstimationStatus(new CEstimationStatus(1));
             estimation.setSku(sku);
             //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
             estimation.setOutOfBudget((budgetAmount.compareTo(amount) == -1)? 1 : 0);
@@ -90,8 +90,12 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     }
 
     @Override
-    public PriceEstimations update(PriceEstimations pe) {
-        return priceEstimationsDao.update(pe);
+    public PriceEstimations update(PriceEstimations pe) throws Exception{
+        Requests request = requestsDao.findByIdFetchStatus(pe.getIdRequest());
+        if(request.getIdRequestStatus().equals(1))
+            return priceEstimationsDao.update(pe);
+        else
+            throw new ValidationException("No se puede modificar una solicitud ya autorizada");
     }
 
     @Override
@@ -102,10 +106,10 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     @Override
     public void estimationAuthorization(int idEstimation, Users user) {
         PriceEstimations estimation = priceEstimationsDao.findByIdFetchRequestStatus(idEstimation);
-        Requests request = estimation.getIdRequest();
+        Requests request = estimation.getRequest();
 
         //Verificar que la solicitud sigue pendiente (status 1) para poder modificar
-        if (request.getIdRequestStatus().getIdRequestStatus().equals(1)) {
+        if (request.getRequestStatus().getIdRequestStatus().equals(1)) {
             
             String folio = request.getFolio();
             //Verificar si hay PeriodicPayments asociados a este request con status Inactivo(1) para eliminarlos
@@ -134,10 +138,10 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
                 if (e.getIdEstimation().equals(idEstimation)) {
                     //Cotizacion Aceptada = 2
-                    e.setIdEstimationStatus(new CEstimationStatus(2));
+                    e.setEstimationStatus(new CEstimationStatus(2));
                 } else {
                     //Cotizacion Rechazada = 3
-                    e.setIdEstimationStatus(new CEstimationStatus(3));
+                    e.setEstimationStatus(new CEstimationStatus(3));
                 }
             }
 

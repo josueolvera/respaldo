@@ -120,8 +120,8 @@ public class RequestsServiceImpl implements RequestsService {
         }
         
         Requests request = new Requests();
-        request.setIdRequestTypeProduct(requestTypesProduct);
-        request.setIdBudgetMonthBranch(budgetMonthBranch);
+        request.setRequestTypeProduct(requestTypesProduct);
+        request.setBudgetMonthBranch(budgetMonthBranch);
         //51 es el id de Requests en CTables
         request.setFolio(foliosService.createNew(new CTables(51)));
         request.setUserRequest(user);
@@ -129,7 +129,7 @@ public class RequestsServiceImpl implements RequestsService {
         request.setDescription(jsonRequest.get("description").asText());
         request.setPurpose(jsonRequest.get("purpose").asText());
         //1 es el id de Pendiente en CRequestStatus
-        request.setIdRequestStatus(new CRequestStatus(1));
+        request.setRequestStatus(new CRequestStatus(1));
         request.setIdAccessLevel(1);
         request = requestsDao.save(request);
         request = requestsDao.findByIdFetchBudgetMonthBranch(request.getIdRequest());

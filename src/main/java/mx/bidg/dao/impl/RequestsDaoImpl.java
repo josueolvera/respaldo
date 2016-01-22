@@ -51,7 +51,15 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
     public Requests findByIdFetchBudgetMonthBranch(Integer idRequest) {
         Criteria criteria = createEntityCriteria()
                 .add(Restrictions.idEq(idRequest))
-                .setFetchMode("idBudgetMonthBranch", FetchMode.JOIN);
+                .setFetchMode("budgetMonthBranch", FetchMode.JOIN);
+        return (Requests) criteria.uniqueResult();
+    }
+
+    @Override
+    public Requests findByIdFetchStatus(Integer idRequest) {
+        Criteria criteria = createEntityCriteria()
+                .add(Restrictions.idEq(idRequest))
+                .setFetchMode("requestStatus", FetchMode.JOIN);
         return (Requests) criteria.uniqueResult();
     }
     
