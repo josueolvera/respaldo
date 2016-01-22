@@ -26,11 +26,14 @@ DROP TABLE IF EXISTS `C_REQUESTS_CATEGORIES`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `C_REQUESTS_CATEGORIES` (
   `ID_REQUEST_CATEGORY` int(11) NOT NULL AUTO_INCREMENT,
+  `ID_VIEW` int(11) DEFAULT NULL,
   `CATEGORY` varchar(100) DEFAULT NULL,
   `PERIODIC` int(11) DEFAULT '0',
   `ID_ACCESS_LEVEL` int(11) DEFAULT '1',
   `INFORMATION` varchar(1000) DEFAULT NULL,
-  PRIMARY KEY (`ID_REQUEST_CATEGORY`)
+  PRIMARY KEY (`ID_REQUEST_CATEGORY`),
+  KEY `fk_C_REQUEST_CATEGORIES_C_VIEWS_idx` (`ID_VIEW`),
+  CONSTRAINT `fk_C_REQUEST_CATEGORIES_C_VIEWS` FOREIGN KEY (`ID_VIEW`) REFERENCES `C_VIEWS` (`ID_VIEW`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -40,7 +43,7 @@ CREATE TABLE `C_REQUESTS_CATEGORIES` (
 
 LOCK TABLES `C_REQUESTS_CATEGORIES` WRITE;
 /*!40000 ALTER TABLE `C_REQUESTS_CATEGORIES` DISABLE KEYS */;
-INSERT INTO `C_REQUESTS_CATEGORIES` VALUES (1,'Cotizable',0,1,NULL),(2,'Directa',0,1,NULL),(3,'Periodica',1,1,NULL);
+INSERT INTO `C_REQUESTS_CATEGORIES` VALUES (1,6,'Cotizable',0,1,'<p>En esta categoria tenemos las siguientes solicitudes:</p><p>Solicitudes de Compra con Cotizaciones.</p><p>Solicitud de Mantenimiento con Cotizaciones</p>'),(2,7,'Directa',0,1,'<p>En esta categoria tenemos las siguientes solicitudes:</p><p>Solicitudes de Compra sin Cotizaciones.</p><p>Solicitud de Mantenimiento sin Cotizaciones</p>'),(3,8,'Periodica',1,1,'<p>En esta categoria tenemos las siguientes solicitudes:</p><p>Solicitudes de Servicio-Agua.</p><p>Solicitudes de Servicio-Luz.</p><p>Solicitudes de Telefonia Fija.</p><p>Solicitudes de Telefonia Movil.</p><p>Solicitudes de Internet.</p><p>Solicitudes de Seguridad-Alarmas</p>');
 /*!40000 ALTER TABLE `C_REQUESTS_CATEGORIES` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -53,4 +56,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-01-04 18:44:03
+-- Dump completed on 2016-01-21 17:37:07

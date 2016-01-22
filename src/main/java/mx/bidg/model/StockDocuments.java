@@ -3,6 +3,7 @@ package mx.bidg.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
 
 import java.io.Serializable;
@@ -141,6 +142,10 @@ public class StockDocuments implements Serializable {
 
     public void setStock(Stocks stocks) {
         this.stock = stocks;
+    }
+
+    public DateFormatsPojo getUploadingDateFormats() {
+        return new DateFormatsPojo(uploadingDate);
     }
 
     @Override

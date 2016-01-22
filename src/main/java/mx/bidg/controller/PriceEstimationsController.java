@@ -57,12 +57,12 @@ public class PriceEstimationsController {
     public @ResponseBody ResponseEntity<String> save(@RequestBody String data, HttpSession session) throws Exception {
         
         Users user = (Users) session.getAttribute("user");
-        PriceEstimations estimation = estimationsService.saveData(data, user);
+        List<PriceEstimations> estimations = estimationsService.saveData(data, user);
         
-        if(estimation == null)
+        if(estimations.isEmpty())
             return new ResponseEntity<>("Error al guardar la cotizacion", HttpStatus.CONFLICT);
         
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(estimation), 
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(estimations), 
                 HttpStatus.OK);
         
     }

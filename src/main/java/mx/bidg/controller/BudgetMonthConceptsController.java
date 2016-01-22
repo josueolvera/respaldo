@@ -36,8 +36,6 @@ public class BudgetMonthConceptsController {
     
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"})
     public @ResponseBody ResponseEntity<String> saveBudgetMonthConceptsList(@RequestBody String data) throws Exception {
-       
-        System.out.println(data);
         
         List<BudgetMonthConcepts> list = budgetMonthConceptsService.saveList(data);
         

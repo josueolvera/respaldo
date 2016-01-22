@@ -9,6 +9,9 @@ import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.RequestsDao;
 import mx.bidg.model.Requests;
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -42,6 +45,14 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
     @Override
     public boolean delete(Requests entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Requests findByIdFetchBudgetMonthBranch(Integer idRequest) {
+        Criteria criteria = createEntityCriteria()
+                .add(Restrictions.idEq(idRequest))
+                .setFetchMode("idBudgetMonthBranch", FetchMode.JOIN);
+        return (Requests) criteria.uniqueResult();
     }
     
 }

@@ -33,7 +33,7 @@ public class PeriodicPaymentsController {
             headers = {"Accept=application/json; charset=UTF-8"})
     public @ResponseBody String save(@PathVariable int idRequest, @RequestBody String data) throws Exception {
         PeriodicsPayments payment = paymentsService.saveData(data, idRequest);
-        return (payment != null)? "Error al guardar el Pago Periodico" : "Pago Periodico guardado";
+        return (payment == null)? "Error al guardar el Pago Periodico" : "Pago Periodico guardado";
     }
     
 }

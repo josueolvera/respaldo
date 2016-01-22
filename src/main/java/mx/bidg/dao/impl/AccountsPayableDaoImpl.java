@@ -9,6 +9,9 @@ import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.AccountsPayableDao;
 import mx.bidg.model.AccountsPayable;
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -40,6 +43,14 @@ public class AccountsPayableDaoImpl extends AbstractDao<Integer, AccountsPayable
     public boolean delete(AccountsPayable entity) {
         remove(entity);
         return true;
+    }
+
+    @Override
+    public List<AccountsPayable> findByFolio(String folio) {
+        Criteria criteria = createEntityCriteria()
+                .add(Restrictions.eq("folio", folio))
+                .setFetchMode("idAccountPayableStatus", FetchMode.JOIN);
+        return (List<AccountsPayable>) criteria.list();
     }
     
 }

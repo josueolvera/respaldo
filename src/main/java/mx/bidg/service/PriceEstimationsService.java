@@ -15,7 +15,7 @@ import mx.bidg.model.Users;
  */
 public interface PriceEstimationsService {
     
-    public PriceEstimations saveData(String data, Users user) throws Exception;
+    public List<PriceEstimations> saveData(String data, Users user) throws Exception;
     
     public PriceEstimations findById(int id);
     

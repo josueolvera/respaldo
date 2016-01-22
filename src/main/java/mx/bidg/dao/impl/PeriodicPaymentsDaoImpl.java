@@ -9,6 +9,9 @@ import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.PeriodicPaymentsDao;
 import mx.bidg.model.PeriodicsPayments;
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -40,6 +43,14 @@ public class PeriodicPaymentsDaoImpl extends AbstractDao<Integer, PeriodicsPayme
     public boolean delete(PeriodicsPayments entity) {
         remove(entity);
         return true;
+    }
+
+    @Override
+    public List<PeriodicsPayments> findByFolio(String folio) {
+        Criteria criteria = createEntityCriteria()
+                .add(Restrictions.eq("folio", folio))
+                .setFetchMode("idPeriodicPaymentStatus", FetchMode.JOIN);
+        return (List<PeriodicsPayments>) criteria.list();
     }
     
 }

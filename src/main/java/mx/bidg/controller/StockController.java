@@ -201,23 +201,19 @@ public class StockController {
             outputStream.close();
             inputStream.close();
 
-            StockDocuments document = this.findDocument(idDocumentType, documents);
+            StockDocuments document = new StockDocuments();
+            document.setStock(new Stocks(idStock));
+            document.setCStockDocumentsTypes(new CStockDocumentsTypes(idDocumentType));
+            document.setDocumentUrl(destFile);
+            document.setDocumentName(filePart.getSubmittedFileName());
+            document.setUploadingDate(LocalDateTime.now());
+            document.setCurrentDocument(1);
+            stockDocumentsService.save(document);
 
-            if (document == null) {
-                document = new StockDocuments();
-                document.setStock(new Stocks(idStock));
-                document.setCStockDocumentsTypes(new CStockDocumentsTypes(idDocumentType));
-                document.setDocumentUrl(destFile);
-                document.setDocumentName(filePart.getSubmittedFileName());
-                document.setUploadingDate(LocalDateTime.now());
-                stockDocumentsService.save(document);
-            } else {
-                document.setStock(new Stocks(idStock));
-                document.setCStockDocumentsTypes(new CStockDocumentsTypes(idDocumentType));
-                document.setDocumentUrl(destFile);
-                document.setDocumentName(filePart.getSubmittedFileName());
-                document.setUploadingDate(LocalDateTime.now());
-                stockDocumentsService.update(document);
+            StockDocuments oldDocument = this.findDocument(idDocumentType, documents);
+            if (oldDocument != null) {
+                oldDocument.setCurrentDocument(0);
+                stockDocumentsService.update(oldDocument);
             }
         }
 

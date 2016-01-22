@@ -5,6 +5,7 @@
  */
 package mx.bidg.dao;
 
+import java.util.List;
 import mx.bidg.model.PeriodicsPayments;
 
 /**
@@ -12,5 +13,7 @@ import mx.bidg.model.PeriodicsPayments;
  * @author sistemask
  */
 public interface PeriodicPaymentsDao extends InterfaceDao<PeriodicsPayments> {
+    
+    public List<PeriodicsPayments> findByFolio(String folio);
     
 }
