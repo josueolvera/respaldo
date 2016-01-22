@@ -44,7 +44,7 @@
               description: '',
               purpose: '',
               products: [],
-                idUser: ''
+              idUser: ''
             },
             idRequestCategory: '',
             optionSelect: [],
@@ -54,7 +54,8 @@
             Users: {},
             idProducto: '',
             desactivarCombos: false,
-            desactivarGuardar: true
+            desactivarGuardar: true,
+            numberOfRequest: 0
           },
           methods:
           {
@@ -133,8 +134,9 @@
               success(function(data)
               {
                 showAlert(data);
-              }).error(function(){
-                showAlert("Ha habido un error con la solicitud, intente nuevamente");
+              }).error(function(data)
+              {
+                showAlert("No se pudo");
               });
             },
             obtainAllUsers: function()
@@ -232,7 +234,6 @@
                  <option value="0">Otro..</option>
                </select>
              </div>
-           -->
 
              <div class="col-xs-2">
                <label>
@@ -246,6 +247,7 @@
                </select>
              </div>
 
+           -->
              <div class="col-xs-2">
                <label>
                  Responsable:
@@ -306,11 +308,22 @@
             </div>
 
           </form>
+          <br>
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title">Cotizacion</h3>
+                </div>
+                <div class="panel-body">
+
+                </div>
+              </div>
+            </div>
+          </div>
+
           </div> <!-- container-fluid -->
 
-          <pre>
-
-          </pre>
       </div> <!-- #contenidos -->
       <!-- Fecha de Termino- Agregar fecha dia de solicitud-->
     </jsp:body>
