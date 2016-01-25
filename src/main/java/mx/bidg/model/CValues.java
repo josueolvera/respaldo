@@ -7,12 +7,14 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  * @author Rafael Viveros
  * Created on 30/12/15.
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_VALUES")
 public class CValues implements Serializable {
     private static final long serialVersionUID = 1L;

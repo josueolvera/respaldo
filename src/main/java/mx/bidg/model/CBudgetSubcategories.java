@@ -26,12 +26,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_BUDGET_SUBCATEGORIES")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CBudgetSubcategories implements Serializable {
@@ -65,11 +67,11 @@ public class CBudgetSubcategories implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetSubcategory")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "budgetSubcategory")
     @JsonView(JsonViews.Embedded.class)
     private List<Budgets> budgetsList;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetSubcategory")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "budgetSubcategory")
     @JsonView(JsonViews.Embedded.class)
     @JsonProperty("cProductTypesList")
     private List<CProductTypes> cProductTypesList;

@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,12 +18,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "REQUEST_PRODUCTS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class RequestProducts implements Serializable {
@@ -37,15 +38,23 @@ public class RequestProducts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idRequestProduct;
     
+    @Column(name = "ID_REQUEST", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRequest;
+    
+    @Column(name = "ID_PRODUCT", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idProduct;
+    
     @JoinColumn(name = "ID_REQUEST", referencedColumnName = "ID_REQUEST")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private Requests idRequest;
+    private Requests request;
     
     @JoinColumn(name = "ID_PRODUCT", referencedColumnName = "ID_PRODUCT")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CProducts idProduct;
+    private CProducts product;
     
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
@@ -66,20 +75,36 @@ public class RequestProducts implements Serializable {
         this.idRequestProduct = idRequestProduct;
     }
 
-    public Requests getIdRequest() {
+    public Integer getIdRequest() {
         return idRequest;
     }
 
-    public void setIdRequest(Requests idRequest) {
+    public void setIdRequest(Integer idRequest) {
         this.idRequest = idRequest;
     }
 
-    public CProducts getIdProduct() {
+    public Integer getIdProduct() {
         return idProduct;
     }
 
-    public void setIdProduct(CProducts idProduct) {
+    public void setIdProduct(Integer idProduct) {
         this.idProduct = idProduct;
+    }
+
+    public Requests getRequest() {
+        return request;
+    }
+
+    public void setRequest(Requests request) {
+        this.request = request;
+    }
+
+    public CProducts getProduct() {
+        return product;
+    }
+
+    public void setProduct(CProducts product) {
+        this.product = product;
     }
 
     public Integer getIdAccessLevel() {

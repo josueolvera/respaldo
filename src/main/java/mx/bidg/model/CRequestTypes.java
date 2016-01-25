@@ -13,7 +13,6 @@ import mx.bidg.config.JsonViews;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,12 +23,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author rafael
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_REQUEST_TYPES")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CRequestTypes implements Serializable { 
@@ -52,12 +53,16 @@ public class CRequestTypes implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
     
+    @Column(name = "ID_BUDGET_CATEGORY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idBudgetCategory;
+    
     @JoinColumn(name = "ID_BUDGET_CATEGORY", referencedColumnName = "ID_BUDGET_CATEGORY")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CBudgetCategories idBudgetCategory;
+    private CBudgetCategories budgetCategory;
     
-    @OneToMany(mappedBy = "idRequestType")
+    @OneToMany(mappedBy = "requestType")
     @JsonView(JsonViews.Embedded.class)
     private List<RequestTypesProduct> requestTypesProductList;
 
@@ -92,20 +97,28 @@ public class CRequestTypes implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
+    public Integer getIdBudgetCategory() {
+        return idBudgetCategory;
+    }
+
+    public void setIdBudgetCategory(Integer idBudgetCategory) {
+        this.idBudgetCategory = idBudgetCategory;
+    }
+
+    public CBudgetCategories getBudgetCategory() {
+        return budgetCategory;
+    }
+
+    public void setBudgetCategory(CBudgetCategories budgetCategory) {
+        this.budgetCategory = budgetCategory;
+    }
+
     public List<RequestTypesProduct> getRequestTypesProductList() {
         return requestTypesProductList;
     }
 
     public void setRequestTypesProductList(List<RequestTypesProduct> requestTypesProductList) {
         this.requestTypesProductList = requestTypesProductList;
-    }
-    
-    public CBudgetCategories getIdBudgetCategory() {
-        return idBudgetCategory;
-    }
-
-    public void setIdBudgetCategory(CBudgetCategories idBudgetCategory) {
-        this.idBudgetCategory = idBudgetCategory;
     }
 
     @Override

@@ -28,12 +28,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "REQUESTS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Requests implements Serializable {
@@ -128,7 +130,7 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private List<PriceEstimations> priceEstimationsList;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idRequest")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "request")
     @JsonView(JsonViews.Embedded.class)
     private List<RequestProducts> requestProductsList;
 

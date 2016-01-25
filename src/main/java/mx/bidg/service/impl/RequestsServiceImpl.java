@@ -100,7 +100,7 @@ public class RequestsServiceImpl implements RequestsService {
         DwEnterprises dwEnterprise = userResponsable.getDwEmployee().getDwEnterprise();
         
         Budgets budget = budgetsDao.findByCombination(dwEnterprise.getGroup(), dwEnterprise.getArea(), 
-                cRequestType.getIdBudgetCategory(), cProductType.getIdBudgetSubcategory());
+                cRequestType.getBudgetCategory(), cProductType.getBudgetSubcategory());
         
         if(budget == null) {
             throw new ValidationException("No existe el Presupuesto");
@@ -137,12 +137,20 @@ public class RequestsServiceImpl implements RequestsService {
         for(JsonNode jsonProducts : jsonRequest.get("products")) {
             CProducts product = new CProducts(jsonProducts.get("idProduct").asInt());
             RequestProducts requestProduct = new RequestProducts();
-            requestProduct.setIdProduct(product);
-            requestProduct.setIdRequest(request);
+            requestProduct.setProduct(product);
+            requestProduct.setRequest(request);
             requestProduct = requestProductsDao.save(requestProduct);
         }
         
         return request;
+    }
+
+    @Override
+    public Requests authorization(Integer idRequest) {
+        
+        Requests request = requestsDao.findByIdFetchStatus(idRequest);
+        
+        return null;
     }
     
 }

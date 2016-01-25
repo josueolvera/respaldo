@@ -56,12 +56,12 @@ public class CBudgetConceptsServiceImpl implements CBudgetConceptsService {
     public boolean delete(CBudgetConcepts cBudgetConcept) {
         
         List<BudgetMonthConcepts> budgetMonthConceptsList = budgetMonthConceptsService.findByConcept(cBudgetConcept);
-        cBudgetConcept = budgetMonthConceptsList.get(0).getIdBudgetConcept();
+        cBudgetConcept = budgetMonthConceptsList.get(0).getBudgetConcept();
         
         for(BudgetMonthConcepts budgetMonthConcept : budgetMonthConceptsList) {
             
             BigDecimal amount = budgetMonthConcept.getAmount();
-            BudgetMonthBranch budgetMonthBranch = budgetMonthConcept.getIdBudgetMonthBranch();
+            BudgetMonthBranch budgetMonthBranch = budgetMonthConcept.getBudgetMonthBranch();
             budgetMonthBranch.setAmount(budgetMonthBranch.getAmount().subtract(amount));
             budgetMonthBranchService.update(budgetMonthBranch);
             budgetMonthConceptsService.delete(budgetMonthConcept);

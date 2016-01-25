@@ -45,7 +45,7 @@ public class CCurrencies implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String currency;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idCurrency")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "currency")
     @JsonView(JsonViews.Embedded.class)
     private List<AccountsPayable> accountsPayableList;
 

@@ -44,4 +44,14 @@ public class RequestsController {
         
     }
     
+    
+    @RequestMapping(value = "/authorization/{idRequest}", method = RequestMethod.POST, 
+            produces = "application/json;charset=UTF-8")
+    public @ResponseBody String authorization(@PathVariable Integer idRequest) throws Exception{
+        
+        Requests request = requestsService.authorization(idRequest);
+        return null;
+        
+    }
+    
 }

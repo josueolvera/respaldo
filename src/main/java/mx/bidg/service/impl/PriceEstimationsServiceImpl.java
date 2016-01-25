@@ -115,7 +115,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             //Verificar si hay PeriodicPayments asociados a este request con status Inactivo(1) para eliminarlos
             List<PeriodicsPayments> periodicPayments = periodicPaymentsDao.findByFolio(folio);
             for (PeriodicsPayments payment : periodicPayments) {
-                if (payment.getIdPeriodicPaymentStatus().getIdPeriodicPaymentStatus().equals(1)) {
+                if (payment.getPeriodicPaymentStatus().getIdPeriodicPaymentStatus().equals(1)) {
                     if(!periodicPaymentsDao.delete(payment))
                         throw new ValidationException("No se pudo eliminar el PeriodicPayment: " + payment);
                 }
@@ -124,7 +124,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             //Verificar si hay AccountsPayable asociados a este request con status Inactivo(1) para eliminarlos
             List<AccountsPayable> accountsPayable = accountsPayableDao.findByFolio(folio);
             for(AccountsPayable account : accountsPayable) {
-                if(account.getIdAccountPayableStatus().getIdAccountPayableStatus().equals(1)) {
+                if(account.getAccountPayableStatus().getIdAccountPayableStatus().equals(1)) {
                     if(!accountsPayableDao.delete(account))
                         throw new ValidationException("No se pudo eliminar el AccountPayable: " + account);
                 }

@@ -22,12 +22,14 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_AREAS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CAreas implements Serializable {
@@ -48,11 +50,11 @@ public class CAreas implements Serializable {
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private String areaName;
     
-    @OneToMany(mappedBy = "idArea")
+    @OneToMany(mappedBy = "area")
     @JsonView(JsonViews.Embedded.class)
     private List<Budgets> budgetsList;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idArea")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "area")
     @JsonView(JsonViews.Embedded.class)
     private List<DwEnterprises> dwEnterprisesList;
     

@@ -23,17 +23,23 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author rafael
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_REQUESTS_CATEGORIES")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CRequestsCategories implements Serializable {
     
     private static final long serialVersionUID = 1L;
+    
+    public static final int COTIZABLE = 1;
+    public static final int DIRECTA = 2;
+    public static final int PERIODICA = 3;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,16 +62,20 @@ public class CRequestsCategories implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String information;
     
-    @JoinColumn(name = "ID_VIEW", referencedColumnName = "ID_VIEW")
-    @ManyToOne
-    @JsonView(JsonViews.EmbeddedRequestCategory.class)
-    private CViews idView;
+    @Column(name = "ID_VIEW", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idView;
 
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
     
-    @OneToMany(mappedBy = "idRequestCategory")
+    @JoinColumn(name = "ID_VIEW", referencedColumnName = "ID_VIEW")
+    @ManyToOne
+    @JsonView(JsonViews.EmbeddedRequestCategory.class)
+    private CViews view;
+    
+    @OneToMany(mappedBy = "requestCategory")
     @JsonView(JsonViews.Embedded.class)
     private List<RequestTypesProduct> requestTypesProductList;
 
@@ -116,6 +126,22 @@ public class CRequestsCategories implements Serializable {
         this.requestTypesProductList = requestTypesProductList;
     }
 
+    public Integer getIdView() {
+        return idView;
+    }
+
+    public void setIdView(Integer idView) {
+        this.idView = idView;
+    }
+
+    public CViews getView() {
+        return view;
+    }
+
+    public void setView(CViews view) {
+        this.view = view;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -147,14 +173,6 @@ public class CRequestsCategories implements Serializable {
 
     public void setInformation(String information) {
         this.information = information;
-    }
-
-    public CViews getIdView() {
-        return idView;
-    }
-
-    public void setIdView(CViews idView) {
-        this.idView = idView;
     }
     
 }

@@ -21,12 +21,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_ACCOUNTS_TYPES")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CAccountsTypes implements Serializable {
@@ -45,7 +47,7 @@ public class CAccountsTypes implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String accountType;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAccountType")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "accountType")
     @JsonView(JsonViews.Embedded.class)
     private List<Accounts> accountsList;
 

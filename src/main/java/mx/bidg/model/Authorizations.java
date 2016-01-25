@@ -16,12 +16,14 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author rafael
  */
 @Entity
+@DynamicUpdate
 @Table(name = "AUTHORIZATIONS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Authorizations implements Serializable {
@@ -53,21 +55,19 @@ public class Authorizations implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idUser;
 
-    @Column(name = "FOLIO", insertable = false, updatable = false)
+    @Column(name = "FOLIO")
     @JsonView(JsonViews.Root.class)
-    private String idFolio;
+    private String folio;
+    
+    @Column(name = "ID_AUTHORIZATION_STATUS", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idAuthorizationStatus;
 
     @JoinColumn(name = "ID_AUTHORIZATION_STATUS", referencedColumnName = "ID_AUTHORIZATION_STATUS")
     @ManyToOne
     @JsonProperty("authorizationStatus")
     @JsonView(JsonViews.Embedded.class)
     private CAuthorizationStatus cAuthorizationStatus;
-
-    @JoinColumn(name = "FOLIO", referencedColumnName = "FOLIO")
-    @ManyToOne(optional = false)
-    @JsonProperty("folio")
-    @JsonView(JsonViews.Embedded.class)
-    private CFolios cFolios;
 
     @JoinColumn(name = "ID_USER", referencedColumnName = "ID_USER")
     @ManyToOne(optional = false)
@@ -126,30 +126,29 @@ public class Authorizations implements Serializable {
         this.idUser = idUser;
     }
 
-    public String getIdFolio() {
-        return idFolio;
+    public String getFolio() {
+        return folio;
     }
 
-    public void setIdFolio(String idFolio) {
-        this.idFolio = idFolio;
+    public void setFolio(String folio) {
+        this.folio = folio;
     }
 
-    @JsonProperty("authorizationStatus")
+    public Integer getIdAuthorizationStatus() {
+        return idAuthorizationStatus;
+    }
+
+    public void setIdAuthorizationStatus(Integer idAuthorizationStatus) {
+        this.idAuthorizationStatus = idAuthorizationStatus;
+    }
+
     public CAuthorizationStatus getCAuthorizationStatus() {
         return cAuthorizationStatus;
     }
 
+    @JsonProperty("authorizationStatus")
     public void setCAuthorizationStatus(CAuthorizationStatus cAuthorizationStatus) {
         this.cAuthorizationStatus = cAuthorizationStatus;
-    }
-
-    @JsonProperty("folio")
-    public CFolios getCFolios() {
-        return cFolios;
-    }
-
-    public void setCFolios(CFolios cFolios) {
-        this.cFolios = cFolios;
     }
 
     public Users getUsers() {

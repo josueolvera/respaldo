@@ -25,12 +25,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_BRANCHS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CBranchs implements Serializable {
@@ -84,7 +86,7 @@ public class CBranchs implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime lowDate;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBranch")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "branch")
     @JsonView(JsonViews.Embedded.class)
     private List<DwEnterprises> dwEnterprisesList;
 

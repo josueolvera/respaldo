@@ -25,12 +25,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "PRICE_ESTIMATIONS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class PriceEstimations implements Serializable {
@@ -92,6 +94,14 @@ public class PriceEstimations implements Serializable {
     @Column(name = "ID_CURRENCY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private int idCurrency;
+    
+    @Column(name = "USER_AUTHORIZATION", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idUserAuthorization;
+    
+    @Column(name = "USER_ESTIMATION", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idUserEstimation;
     
     @JoinColumn(name = "ID_REQUEST", referencedColumnName = "ID_REQUEST")
     @ManyToOne(optional = false)
@@ -298,6 +308,22 @@ public class PriceEstimations implements Serializable {
 
     public void setUserEstimation(Users userEstimation) {
         this.userEstimation = userEstimation;
+    }
+
+    public Integer getIdUserAuthorization() {
+        return idUserAuthorization;
+    }
+
+    public void setIdUserAuthorization(Integer idUserAuthorization) {
+        this.idUserAuthorization = idUserAuthorization;
+    }
+
+    public Integer getIdUserEstimation() {
+        return idUserEstimation;
+    }
+
+    public void setIdUserEstimation(Integer idUserEstimation) {
+        this.idUserEstimation = idUserEstimation;
     }
 
     @Override

@@ -54,9 +54,9 @@ public class RequestTypesProductDaoImpl extends AbstractDao<Integer, RequestType
             CProductTypes productType) {
         Criteria criteria = createEntityCriteria();
         HashMap<String, Object> map = new HashMap<>();
-        map.put("idRequestCategory", requestCategory);
-        map.put("idRequestType", requestType);
-        map.put("idProductType", productType);
+        map.put("requestCategory", requestCategory);
+        map.put("requestType", requestType);
+        map.put("productType", productType);
         return (RequestTypesProduct) criteria.add(Restrictions.allEq(map)).uniqueResult();
     }
 
@@ -70,8 +70,8 @@ public class RequestTypesProductDaoImpl extends AbstractDao<Integer, RequestType
     public List<RequestTypesProduct> findByRequestCategoryRequestType(CRequestsCategories requestCategory, CRequestTypes requestType) {
         Criteria criteria = createEntityCriteria();
         HashMap<String, Object> map = new HashMap<>();
-        map.put("idRequestCategory", requestCategory);
-        map.put("idRequestType", requestType);
+        map.put("requestCategory", requestCategory);
+        map.put("requestType", requestType);
         return (List<RequestTypesProduct>) criteria.add(Restrictions.allEq(map)).list();
     }
     

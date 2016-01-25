@@ -19,12 +19,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "PRODUCT_TYPES_PRODUCT")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class ProductTypesProduct implements Serializable {
@@ -38,19 +40,27 @@ public class ProductTypesProduct implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idProductTypeProduct;
     
-    @JoinColumn(name = "ID_PRODUCT", referencedColumnName = "ID_PRODUCT")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private CProducts idProduct;
+    @Column(name = "ID_PRODUCT", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idProduct;
     
-    @JoinColumn(name = "ID_PRODUCT_TYPE", referencedColumnName = "ID_PRODUCT_TYPE")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private CProductTypes idProductType;
+    @Column(name = "ID_PRODUCT_TYPE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idProductType;
     
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
+    
+    @JoinColumn(name = "ID_PRODUCT", referencedColumnName = "ID_PRODUCT")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private CProducts product;
+    
+    @JoinColumn(name = "ID_PRODUCT_TYPE", referencedColumnName = "ID_PRODUCT_TYPE")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private CProductTypes productType;
 
     public ProductTypesProduct() {
     }
@@ -67,19 +77,19 @@ public class ProductTypesProduct implements Serializable {
         this.idProductTypeProduct = idProductTypeProduct;
     }
 
-    public CProducts getIdProduct() {
+    public Integer getIdProduct() {
         return idProduct;
     }
 
-    public void setIdProduct(CProducts idProduct) {
+    public void setIdProduct(Integer idProduct) {
         this.idProduct = idProduct;
     }
 
-    public CProductTypes getIdProductType() {
+    public Integer getIdProductType() {
         return idProductType;
     }
 
-    public void setIdProductType(CProductTypes idProductType) {
+    public void setIdProductType(Integer idProductType) {
         this.idProductType = idProductType;
     }
 
@@ -89,6 +99,22 @@ public class ProductTypesProduct implements Serializable {
 
     public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
+    }
+
+    public CProducts getProduct() {
+        return product;
+    }
+
+    public void setProduct(CProducts product) {
+        this.product = product;
+    }
+
+    public CProductTypes getProductType() {
+        return productType;
+    }
+
+    public void setProductType(CProductTypes productType) {
+        this.productType = productType;
     }
 
     @Override

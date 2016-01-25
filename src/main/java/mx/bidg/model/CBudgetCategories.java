@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -24,12 +23,14 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_BUDGET_CATEGORIES")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CBudgetCategories implements Serializable {
@@ -54,11 +55,11 @@ public class CBudgetCategories implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
     
-    @OneToMany(mappedBy = "idBudgetCategory")
+    @OneToMany(mappedBy = "budgetCategory")
     @JsonView(JsonViews.Embedded.class)
     private List<Budgets> budgetsList;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetCategory")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "budgetCategory")
     @JsonView(JsonViews.Embedded.class)
     @JsonProperty("cRequestTypesList")
     private List<CRequestTypes> cRequestTypesList;

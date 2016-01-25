@@ -18,12 +18,14 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_FIELDS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CFields implements Serializable {
@@ -49,7 +51,7 @@ public class CFields implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idField")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "field")
     @JsonView(JsonViews.Embedded.class)
     private List<TablesField> tablesFieldList;
 

@@ -15,12 +15,14 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "USERS_ROLE")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class UsersRole implements Serializable {
@@ -39,11 +41,15 @@ public class UsersRole implements Serializable {
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
+    
+    @Column(name = "ID_USER", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idUser;
 
     @JoinColumn(name = "ID_USER", referencedColumnName = "ID_USER")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private Users idUser;
+    private Users user;
 
     @JoinColumn(name = "ID_SYSTEM_ROLE", referencedColumnName = "ID_SYSTEM_ROLE")
     @ManyToOne(optional = false)
@@ -78,12 +84,20 @@ public class UsersRole implements Serializable {
         this.creationDate = creationDate;
     }
 
-    public Users getIdUser() {
+    public Integer getIdUser() {
         return idUser;
     }
 
-    public void setIdUser(Users idUser) {
+    public void setIdUser(Integer idUser) {
         this.idUser = idUser;
+    }
+
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
     }
 
     public SystemRoles getIdSystemRole() {

@@ -62,5 +62,14 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
                 .setFetchMode("requestStatus", FetchMode.JOIN);
         return (Requests) criteria.uniqueResult();
     }
+
+    @Override
+    public Requests findByIdFetchCategory(Integer idRequest) {
+        Criteria criteria = createEntityCriteria()
+                .add(Restrictions.idEq(idRequest))
+                .setFetchMode("requestTypeProduct", FetchMode.JOIN)
+                .setFetchMode("requestTypeProduct.", FetchMode.JOIN);
+        return (Requests) criteria.uniqueResult();
+    }
     
 }

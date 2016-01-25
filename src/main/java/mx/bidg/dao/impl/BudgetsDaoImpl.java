@@ -16,9 +16,7 @@ import mx.bidg.model.CBudgetCategories;
 import mx.bidg.model.CBudgetSubcategories;
 import mx.bidg.model.CGroups;
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.sql.JoinType;
 import org.hibernate.transform.DistinctRootEntityResultTransformer;
 import org.springframework.stereotype.Repository;
 

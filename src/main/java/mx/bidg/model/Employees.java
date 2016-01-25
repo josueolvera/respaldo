@@ -10,7 +10,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -20,8 +19,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -29,15 +26,15 @@ import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateConverter;
 import mx.bidg.utils.DateTimeConverter;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "EMPLOYEES")
-@NamedQueries({
-    @NamedQuery(name = "Employees.findAll", query = "SELECT e FROM Employees e")})
 public class Employees implements Serializable {
     
     private static final long serialVersionUID = 1L;
@@ -181,11 +178,11 @@ public class Employees implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String motherName;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEmployee")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
     @JsonView(JsonViews.Embedded.class)
     private List<DwEmployees> dwEmployeesList;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEmployee")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
     @JsonView(JsonViews.Embedded.class)
     private List<EmployeesAccounts> employeesAccountsList;
 

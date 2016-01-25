@@ -21,12 +21,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_PERIODIC_PAYMENTS_STATUS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CPeriodicPaymentsStatus implements Serializable {
@@ -45,7 +47,7 @@ public class CPeriodicPaymentsStatus implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String periodicPaymentStatus;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idPeriodicPaymentStatus")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "periodicPaymentStatus")
     @JsonView(JsonViews.Embedded.class)
     private List<PeriodicsPayments> periodicsPaymentsList;
 

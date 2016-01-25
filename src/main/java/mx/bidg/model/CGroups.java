@@ -22,12 +22,14 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_GROUPS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CGroups implements Serializable {
@@ -53,11 +55,11 @@ public class CGroups implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String acronyms;
     
-    @OneToMany(mappedBy = "idGroup")
+    @OneToMany(mappedBy = "group")
     @JsonView(JsonViews.EmbeddedBudget.class)
     private List<Budgets> budgetsList;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idGroup")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "group")
     @JsonView(JsonViews.Embedded.class)
     private List<DwEnterprises> dwEnterprisesList;
 

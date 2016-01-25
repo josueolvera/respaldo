@@ -18,22 +18,20 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.TimeConverter;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "DW_EMPLOYEES")
-@NamedQueries({
-    @NamedQuery(name = "DwEmployees.findAll", query = "SELECT d FROM DwEmployees d")})
 public class DwEmployees implements Serializable {
     
     private static final long serialVersionUID = 1L;

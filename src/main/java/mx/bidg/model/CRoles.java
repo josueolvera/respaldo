@@ -5,6 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
@@ -20,28 +23,37 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_ROLES")
-@NamedQueries({
-    @NamedQuery(name = "CRoles.findAll", query = "SELECT c FROM CRoles c")})
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CRoles implements Serializable {
+    
     private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_ROLE")
+    @JsonView(JsonViews.Root.class)
     private Integer idRole;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "ROLE_NAME")
+    @JsonView(JsonViews.Root.class)
     private String roleName;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idRole")
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "role")
+    @JsonView(JsonViews.Embedded.class)
     private List<DwEmployees> dwEmployeesList;
 
     public CRoles() {

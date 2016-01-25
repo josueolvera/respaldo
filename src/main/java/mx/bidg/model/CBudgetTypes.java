@@ -21,12 +21,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_BUDGET_TYPES")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CBudgetTypes implements Serializable {
@@ -47,11 +49,15 @@ public class CBudgetTypes implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
+    
+    @Column(name = "ID_TABLE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idTable;
 
     @JoinColumn(name = "ID_TABLE", referencedColumnName = "ID_TABLE")
     @JsonView({JsonViews.RootExtras.class, JsonViews.Embedded.class})
     @ManyToOne(optional = false)
-    private CTables idTable;
+    private CTables table;
 
     public CBudgetTypes() {
     }
@@ -84,12 +90,20 @@ public class CBudgetTypes implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public CTables getIdTable() {
+    public Integer getIdTable() {
         return idTable;
     }
 
-    public void setIdTable(CTables idTable) {
+    public void setIdTable(Integer idTable) {
         this.idTable = idTable;
+    }
+
+    public CTables getTable() {
+        return table;
+    }
+
+    public void setTable(CTables table) {
+        this.table = table;
     }
 
     @Override

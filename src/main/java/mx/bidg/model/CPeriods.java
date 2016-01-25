@@ -70,7 +70,7 @@ public class CPeriods implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idPeriod")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "period")
     @JsonView(JsonViews.Embedded.class)
     private List<PeriodicsPayments> periodicsPaymentsList;
 

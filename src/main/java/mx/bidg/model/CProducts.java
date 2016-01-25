@@ -17,12 +17,14 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author rafael
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_PRODUCTS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CProducts implements Serializable {
@@ -45,11 +47,11 @@ public class CProducts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProduct")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     @JsonView(JsonViews.Embedded.class)
     private List<RequestProducts> requestProductsList;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProduct")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     @JsonView(JsonViews.Embedded.class)
     private List<ProductTypesProduct> productTypesProductList;
 

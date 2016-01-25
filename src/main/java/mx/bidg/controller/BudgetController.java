@@ -68,9 +68,9 @@ public class BudgetController {
             for(JsonNode jsonBudgetMonthConcept : jsonRequest.get("budgetMonthConceptList")) {
                 budgetMonthConcept = new BudgetMonthConcepts();
                 budgetMonthConcept.setAmount(jsonBudgetMonthConcept.get("amountConcept").decimalValue());
-                budgetMonthConcept.setIdBudgetConcept(new CBudgetConcepts(jsonBudgetMonthConcept.get("budgetConcept").asInt()));
+                budgetMonthConcept.setBudgetConcept(new CBudgetConcepts(jsonBudgetMonthConcept.get("budgetConcept").asInt()));
                 budgetMonthConcept.setIdAccessLevel(1);
-                budgetMonthConcept.setIdBudgetMonthBranch(budgetMonthBranch);
+                budgetMonthConcept.setBudgetMonthBranch(budgetMonthBranch);
                 budgetMonthConceptsList.add(budgetMonthConcept);
             }
 

@@ -22,12 +22,14 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_BUDGET_CONCEPTS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CBudgetConcepts implements Serializable {
@@ -52,7 +54,7 @@ public class CBudgetConcepts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudgetConcept")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "budgetConcept")
     @JsonView(JsonViews.Embedded.class)
     private List<BudgetMonthConcepts> budgetMonthConceptsList;
 

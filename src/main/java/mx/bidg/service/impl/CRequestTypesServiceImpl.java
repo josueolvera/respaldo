@@ -48,9 +48,9 @@ public class CRequestTypesServiceImpl implements CRequestTypesService {
         List<CRequestTypes> requestTypes = findAll();
         
         for(RequestTypesProduct requestTypesProduct : requestTypesProducts) {
-            if(requestTypes.contains(requestTypesProduct.getIdRequestType()) && 
-                    !list.contains(requestTypesProduct.getIdRequestType())) {
-                list.add(requestTypesProduct.getIdRequestType());
+            if(requestTypes.contains(requestTypesProduct.getRequestType()) && 
+                    !list.contains(requestTypesProduct.getRequestType())) {
+                list.add(requestTypesProduct.getRequestType());
             }
         }
         

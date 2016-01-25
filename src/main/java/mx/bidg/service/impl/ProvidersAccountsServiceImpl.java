@@ -53,13 +53,13 @@ public class ProvidersAccountsServiceImpl implements ProvidersAccountsService {
         account.setAccountNumber(accountNumber);
         account.setIdAccessLevel(1);
         //Tipo de cuenta definitiva
-        account.setIdAccountType(new CAccountsTypes(1));
-        account.setIdBank(new CBanks(idBank));
+        account.setAccountType(new CAccountsTypes(1));
+        account.setBank(new CBanks(idBank));
         
         ProvidersAccounts providersAccount = new ProvidersAccounts();
         providersAccount.setIdAccessLevel(1);
-        providersAccount.setIdAccount(account);
-        providersAccount.setIdProvider(provider);
+        providersAccount.setAccount(account);
+        providersAccount.setProvider(provider);
         
         return dao.save(providersAccount);
     }

@@ -23,12 +23,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "ACCOUNTS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Accounts implements Serializable {
@@ -56,21 +58,29 @@ public class Accounts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
     
-    @JoinColumn(name = "ID_BANK", referencedColumnName = "ID_BANK")
+    @Column(name = "ID_BANK", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idBank;
+    
+    @Column(name = "ID_ACCOUNT_TYPE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idAccountType;
+    
+    @Column(name = "ID_BANK", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CBanks idBank;
+    private CBanks bank;
     
     @JoinColumn(name = "ID_ACCOUNT_TYPE", referencedColumnName = "ID_ACCOUNT_TYPE")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CAccountsTypes idAccountType;
+    private CAccountsTypes accountType;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAccount")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
     @JsonView(JsonViews.Embedded.class)
     private List<EmployeesAccounts> employeesAccountsList;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAccount")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
     @JsonView(JsonViews.Embedded.class)
     private List<ProvidersAccounts> providersAccountsList;
     
@@ -109,6 +119,46 @@ public class Accounts implements Serializable {
         this.accountClabe = accountClabe;
     }
 
+    public int getIdAccessLevel() {
+        return idAccessLevel;
+    }
+
+    public void setIdAccessLevel(int idAccessLevel) {
+        this.idAccessLevel = idAccessLevel;
+    }
+
+    public Integer getIdBank() {
+        return idBank;
+    }
+
+    public void setIdBank(Integer idBank) {
+        this.idBank = idBank;
+    }
+
+    public Integer getIdAccountType() {
+        return idAccountType;
+    }
+
+    public void setIdAccountType(Integer idAccountType) {
+        this.idAccountType = idAccountType;
+    }
+
+    public CBanks getBank() {
+        return bank;
+    }
+
+    public void setBank(CBanks bank) {
+        this.bank = bank;
+    }
+
+    public CAccountsTypes getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(CAccountsTypes accountType) {
+        this.accountType = accountType;
+    }
+
     public List<EmployeesAccounts> getEmployeesAccountsList() {
         return employeesAccountsList;
     }
@@ -125,30 +175,6 @@ public class Accounts implements Serializable {
         this.providersAccountsList = providersAccountsList;
     }
 
-    public CBanks getIdBank() {
-        return idBank;
-    }
-
-    public void setIdBank(CBanks idBank) {
-        this.idBank = idBank;
-    }
-
-    public int getIdAccessLevel() {
-        return idAccessLevel;
-    }
-
-    public void setIdAccessLevel(int idAccessLevel) {
-        this.idAccessLevel = idAccessLevel;
-    }
-
-    public CAccountsTypes getIdAccountType() {
-        return idAccountType;
-    }
-
-    public void setIdAccountType(CAccountsTypes idAccountType) {
-        this.idAccountType = idAccountType;
-    }
-    
     public List<PriceEstimations> getPriceEstimationsList() {
         return priceEstimationsList;
     }

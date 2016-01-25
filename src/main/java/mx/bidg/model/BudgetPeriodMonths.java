@@ -20,12 +20,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "BUDGET_PERIOD_MONTHS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class BudgetPeriodMonths implements Serializable {
@@ -41,21 +43,33 @@ public class BudgetPeriodMonths implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
+    
+    @Column(name = "ID_BUDGET_PERIOD", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idBudgetPeriod;
+
+    @Column(name = "ID_MONTH_FIRST", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idMonthFirst;
+
+    @Column(name = "ID_MONTH_LAST", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idMonthLast;
 
     @JoinColumn(name = "ID_BUDGET_PERIOD", referencedColumnName = "ID_BUDGET_PERIOD")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private CBudgetPeriods idBudgetPeriod;
+    private CBudgetPeriods budgetPeriod;
 
     @JoinColumn(name = "ID_MONTH_FIRST", referencedColumnName = "ID_MONTH")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private CMonths idMonthFirst;
+    private CMonths monthFirst;
 
     @JoinColumn(name = "ID_MONTH_LAST", referencedColumnName = "ID_MONTH")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private CMonths idMonthLast;
+    private CMonths monthLast;
 
     public BudgetPeriodMonths() {
     }
@@ -80,28 +94,52 @@ public class BudgetPeriodMonths implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public CBudgetPeriods getIdBudgetPeriod() {
+    public Integer getIdBudgetPeriod() {
         return idBudgetPeriod;
     }
 
-    public void setIdBudgetPeriod(CBudgetPeriods idBudgetPeriod) {
+    public void setIdBudgetPeriod(Integer idBudgetPeriod) {
         this.idBudgetPeriod = idBudgetPeriod;
     }
 
-    public CMonths getIdMonthFirst() {
+    public Integer getIdMonthFirst() {
         return idMonthFirst;
     }
 
-    public void setIdMonthFirst(CMonths idMonthFirst) {
+    public void setIdMonthFirst(Integer idMonthFirst) {
         this.idMonthFirst = idMonthFirst;
     }
 
-    public CMonths getIdMonthLast() {
+    public Integer getIdMonthLast() {
         return idMonthLast;
     }
 
-    public void setIdMonthLast(CMonths idMonthLast) {
+    public void setIdMonthLast(Integer idMonthLast) {
         this.idMonthLast = idMonthLast;
+    }
+
+    public CBudgetPeriods getBudgetPeriod() {
+        return budgetPeriod;
+    }
+
+    public void setBudgetPeriod(CBudgetPeriods budgetPeriod) {
+        this.budgetPeriod = budgetPeriod;
+    }
+
+    public CMonths getMonthFirst() {
+        return monthFirst;
+    }
+
+    public void setMonthFirst(CMonths monthFirst) {
+        this.monthFirst = monthFirst;
+    }
+
+    public CMonths getMonthLast() {
+        return monthLast;
+    }
+
+    public void setMonthLast(CMonths monthLast) {
+        this.monthLast = monthLast;
     }
 
     @Override

@@ -24,12 +24,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author rafael
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_PRODUCT_TYPES")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CProductTypes implements Serializable {
@@ -48,25 +50,33 @@ public class CProductTypes implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String productType;
     
-    @JoinColumn(name = "ID_PROVIDER", referencedColumnName = "ID_PROVIDER")
-    @ManyToOne(optional = true)
-    @JsonView(JsonViews.Embedded.class)
-    private Providers idProvider;
-
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
     
+    @Column(name = "ID_PROVIDER", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idProvider;
+    
+    @Column(name = "ID_BUDGET_SUBCATEGORY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idBudgetSubcategory;
+    
+    @JoinColumn(name = "ID_PROVIDER", referencedColumnName = "ID_PROVIDER")
+    @ManyToOne(optional = true)
+    @JsonView(JsonViews.Embedded.class)
+    private Providers provider;
+    
     @JoinColumn(name = "ID_BUDGET_SUBCATEGORY", referencedColumnName = "ID_BUDGET_SUBCATEGORY")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CBudgetSubcategories idBudgetSubcategory;
+    private CBudgetSubcategories budgetSubcategory;
     
-    @OneToMany(mappedBy = "idProductType")
+    @OneToMany(mappedBy = "productType")
     @JsonView(JsonViews.Embedded.class)
     private List<RequestTypesProduct> requestTypesProductList;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProductType")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "productType")
     @JsonView(JsonViews.Embedded.class)
     private List<ProductTypesProduct> productTypesProductList;
 
@@ -100,7 +110,39 @@ public class CProductTypes implements Serializable {
     public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
     }
-    
+
+    public Integer getIdProvider() {
+        return idProvider;
+    }
+
+    public void setIdProvider(Integer idProvider) {
+        this.idProvider = idProvider;
+    }
+
+    public Integer getIdBudgetSubcategory() {
+        return idBudgetSubcategory;
+    }
+
+    public void setIdBudgetSubcategory(Integer idBudgetSubcategory) {
+        this.idBudgetSubcategory = idBudgetSubcategory;
+    }
+
+    public Providers getProvider() {
+        return provider;
+    }
+
+    public void setProvider(Providers provider) {
+        this.provider = provider;
+    }
+
+    public CBudgetSubcategories getBudgetSubcategory() {
+        return budgetSubcategory;
+    }
+
+    public void setBudgetSubcategory(CBudgetSubcategories budgetSubcategory) {
+        this.budgetSubcategory = budgetSubcategory;
+    }
+
     public List<RequestTypesProduct> getRequestTypesProductList() {
         return requestTypesProductList;
     }
@@ -108,29 +150,13 @@ public class CProductTypes implements Serializable {
     public void setRequestTypesProductList(List<RequestTypesProduct> requestTypesProductList) {
         this.requestTypesProductList = requestTypesProductList;
     }
-    
+
     public List<ProductTypesProduct> getProductTypesProductList() {
         return productTypesProductList;
     }
 
     public void setProductTypesProductList(List<ProductTypesProduct> productTypesProductList) {
         this.productTypesProductList = productTypesProductList;
-    }
-    
-    public CBudgetSubcategories getIdBudgetSubcategory() {
-        return idBudgetSubcategory;
-    }
-
-    public void setIdBudgetSubcategory(CBudgetSubcategories idBudgetSubcategory) {
-        this.idBudgetSubcategory = idBudgetSubcategory;
-    }
-
-    public Providers getIdProvider() {
-        return idProvider;
-    }
-
-    public void setIdProvider(Providers idProvider) {
-        this.idProvider = idProvider;
     }
 
     @Override

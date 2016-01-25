@@ -14,6 +14,8 @@ import mx.bidg.model.Users;
  */
 public interface RequestsService {
     
-    public Requests save(String data, Users user) throws Exception;
+    Requests save(String data, Users user) throws Exception;
+    
+    Requests authorization(Integer idRequest);
     
 }

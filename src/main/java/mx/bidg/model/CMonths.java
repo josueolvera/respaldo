@@ -22,12 +22,14 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_MONTHS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CMonths implements Serializable {
@@ -49,15 +51,15 @@ public class CMonths implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idMonth")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "month")
     @JsonView(JsonViews.Embedded.class)
     private List<BudgetMonthBranch> budgetMonthBranchList;
 
-    @OneToMany(mappedBy = "idMonthFirst")
+    @OneToMany(mappedBy = "monthFirst")
     @JsonView(JsonViews.Embedded.class)
     private List<BudgetPeriodMonths> budgetPeriodMonthsList;
 
-    @OneToMany(mappedBy = "idMonthLast")
+    @OneToMany(mappedBy = "monthLast")
     @JsonView(JsonViews.Embedded.class)
     private List<BudgetPeriodMonths> budgetPeriodMonthsList1;
 

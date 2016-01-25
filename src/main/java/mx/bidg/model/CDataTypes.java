@@ -11,8 +11,10 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
+@DynamicUpdate
 @Table(name = "C_DATA_TYPES")
 public class CDataTypes implements Serializable {
     private static final long serialVersionUID = 1L;
