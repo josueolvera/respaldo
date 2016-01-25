@@ -5,19 +5,15 @@
  */
 package mx.bidg.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlTransient;
 import org.hibernate.annotations.DynamicUpdate;
 
 /**
@@ -27,7 +23,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "C_COMPONENTS")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CComponents implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -51,10 +46,6 @@ public class CComponents implements Serializable {
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "component")
-    @JsonView(JsonViews.Embedded.class)
-    private List<ViewsComponent> viewsComponentList;
 
     public CComponents() {
     }
@@ -91,15 +82,6 @@ public class CComponents implements Serializable {
 
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
-    }
-
-    @XmlTransient
-    public List<ViewsComponent> getViewsComponentList() {
-        return viewsComponentList;
-    }
-
-    public void setViewsComponentList(List<ViewsComponent> viewsComponentList) {
-        this.viewsComponentList = viewsComponentList;
     }
 
     @Override

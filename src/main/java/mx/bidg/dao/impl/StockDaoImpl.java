@@ -2,14 +2,10 @@ package mx.bidg.dao.impl;
 
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.StockDao;
-import mx.bidg.model.StockEmployeeAssignments;
 import mx.bidg.model.Stocks;
-import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
-import org.hibernate.Query;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

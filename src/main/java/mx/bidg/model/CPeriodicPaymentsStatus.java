@@ -30,7 +30,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "C_PERIODIC_PAYMENTS_STATUS")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CPeriodicPaymentsStatus implements Serializable {
     
     private static final long serialVersionUID = 1L;
@@ -46,10 +45,6 @@ public class CPeriodicPaymentsStatus implements Serializable {
     @Column(name = "PERIODIC_PAYMENT_STATUS")
     @JsonView(JsonViews.Root.class)
     private String periodicPaymentStatus;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "periodicPaymentStatus")
-    @JsonView(JsonViews.Embedded.class)
-    private List<PeriodicsPayments> periodicsPaymentsList;
 
     public CPeriodicPaymentsStatus() {
     }
@@ -72,14 +67,6 @@ public class CPeriodicPaymentsStatus implements Serializable {
 
     public void setPeriodicPaymentStatus(String periodicPaymentStatus) {
         this.periodicPaymentStatus = periodicPaymentStatus;
-    }
-
-    public List<PeriodicsPayments> getPeriodicsPaymentsList() {
-        return periodicsPaymentsList;
-    }
-
-    public void setPeriodicsPaymentsList(List<PeriodicsPayments> periodicsPaymentsList) {
-        this.periodicsPaymentsList = periodicsPaymentsList;
     }
 
     @Override

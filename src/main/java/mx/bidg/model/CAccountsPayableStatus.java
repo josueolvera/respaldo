@@ -5,19 +5,14 @@
  */
 package mx.bidg.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
@@ -30,7 +25,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "C_ACCOUNTS_PAYABLE_STATUS")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CAccountsPayableStatus implements Serializable {
     
     private static final long serialVersionUID = 1L;
@@ -50,10 +44,6 @@ public class CAccountsPayableStatus implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "accountPayableStatus")
-    @JsonView(JsonViews.Embedded.class)
-    private List<AccountsPayable> accountsPayableList;
 
     public CAccountsPayableStatus() {
     }
@@ -84,14 +74,6 @@ public class CAccountsPayableStatus implements Serializable {
 
     public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
-    }
-
-    public List<AccountsPayable> getAccountsPayableList() {
-        return accountsPayableList;
-    }
-
-    public void setAccountsPayableList(List<AccountsPayable> accountsPayableList) {
-        this.accountsPayableList = accountsPayableList;
     }
 
     @Override

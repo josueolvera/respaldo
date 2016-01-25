@@ -5,19 +5,14 @@
  */
 package mx.bidg.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
@@ -28,7 +23,6 @@ import mx.bidg.config.JsonViews;
  */
 @Entity
 @Table(name = "C_CURRENCIES")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CCurrencies implements Serializable {
     
     private static final long serialVersionUID = 1L;
@@ -44,10 +38,6 @@ public class CCurrencies implements Serializable {
     @Column(name = "CURRENCY")
     @JsonView(JsonViews.Root.class)
     private String currency;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "currency")
-    @JsonView(JsonViews.Embedded.class)
-    private List<AccountsPayable> accountsPayableList;
 
     public CCurrencies() {
     }
@@ -95,14 +85,6 @@ public class CCurrencies implements Serializable {
     @Override
     public String toString() {
         return "mx.bidg.model.CCurrencies[ idCurrency=" + idCurrency + " ]";
-    }
-
-    public List<AccountsPayable> getAccountsPayableList() {
-        return accountsPayableList;
-    }
-
-    public void setAccountsPayableList(List<AccountsPayable> accountsPayableList) {
-        this.accountsPayableList = accountsPayableList;
     }
     
 }

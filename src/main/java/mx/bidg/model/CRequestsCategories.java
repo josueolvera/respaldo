@@ -5,13 +5,10 @@
  */
 package mx.bidg.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,7 +17,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import org.hibernate.annotations.DynamicUpdate;
@@ -32,7 +28,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "C_REQUESTS_CATEGORIES")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CRequestsCategories implements Serializable {
     
     private static final long serialVersionUID = 1L;
@@ -74,10 +69,6 @@ public class CRequestsCategories implements Serializable {
     @ManyToOne
     @JsonView(JsonViews.EmbeddedRequestCategory.class)
     private CViews view;
-    
-    @OneToMany(mappedBy = "requestCategory")
-    @JsonView(JsonViews.Embedded.class)
-    private List<RequestTypesProduct> requestTypesProductList;
 
     public CRequestsCategories() {
     }
@@ -116,14 +107,6 @@ public class CRequestsCategories implements Serializable {
 
     public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
-    }
-    
-    public List<RequestTypesProduct> getRequestTypesProductList() {
-        return requestTypesProductList;
-    }
-
-    public void setRequestTypesProductList(List<RequestTypesProduct> requestTypesProductList) {
-        this.requestTypesProductList = requestTypesProductList;
     }
 
     public Integer getIdView() {

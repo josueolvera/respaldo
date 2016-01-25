@@ -5,19 +5,14 @@
  */
 package mx.bidg.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -31,7 +26,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "C_DISTRIBUTORS")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CDistributors implements Serializable {
         
     private static final long serialVersionUID = 1L;
@@ -58,10 +52,6 @@ public class CDistributors implements Serializable {
     @Column(name = "HAS_STOCK")
     @JsonView(JsonViews.Root.class)
     private Integer hasStock;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "distributor")
-    @JsonView(JsonViews.Embedded.class)
-    private List<DwEnterprises> dwEnterprisesList;
 
     public CDistributors() {
     }
@@ -105,14 +95,6 @@ public class CDistributors implements Serializable {
 
     public void setHasStock(Integer hasStock) {
         this.hasStock = hasStock;
-    }
-
-    public List<DwEnterprises> getDwEnterprisesList() {
-        return dwEnterprisesList;
-    }
-
-    public void setDwEnterprisesList(List<DwEnterprises> dwEnterprisesList) {
-        this.dwEnterprisesList = dwEnterprisesList;
     }
 
     @Override

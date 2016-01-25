@@ -5,19 +5,14 @@
  */
 package mx.bidg.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
@@ -30,7 +25,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "C_BANKS")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CBanks implements Serializable {
     
     private static final long serialVersionUID = 1L;
@@ -65,10 +59,6 @@ public class CBanks implements Serializable {
     @Column(name = "DEFAULT_BANK")
     @JsonView(JsonViews.Root.class)
     private Integer defaultBank;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "bank")
-    @JsonView(JsonViews.Embedded.class)
-    private List<Accounts> accountsList;
 
     public CBanks() {
     }
@@ -123,14 +113,6 @@ public class CBanks implements Serializable {
 
     public void setDefaultBank(Integer defaultBank) {
         this.defaultBank = defaultBank;
-    }
-
-    public List<Accounts> getAccountsList() {
-        return accountsList;
-    }
-
-    public void setAccountsList(List<Accounts> accountsList) {
-        this.accountsList = accountsList;
     }
 
     @Override
