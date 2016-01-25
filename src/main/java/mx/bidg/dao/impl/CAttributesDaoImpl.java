@@ -2,7 +2,6 @@ package mx.bidg.dao.impl;
 
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CAttributesDao;
-import mx.bidg.model.CArticles;
 import mx.bidg.model.CAttributes;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;

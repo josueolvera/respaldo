@@ -47,8 +47,8 @@ public class ProvidersAccountsDaoImpl extends AbstractDao<Integer, ProvidersAcco
     @Override
     public List<ProvidersAccounts> findByProvider(Providers p) {
         Criteria criteria = createEntityCriteria()
-                .add(Restrictions.eq("idProvider", p))
-                .setFetchMode("idAccount", FetchMode.JOIN);
+                .add(Restrictions.eq("provider", p))
+                .setFetchMode("account", FetchMode.JOIN);
         return (List<ProvidersAccounts>) criteria.list();
     }
     

@@ -46,8 +46,8 @@ public class EmployeesAccountsDaoImpl extends AbstractDao<Integer, EmployeesAcco
     @Override
     public List<EmployeesAccounts> findByEmployee(Employees e) {
         Criteria criteria = createEntityCriteria()
-                .add(Restrictions.eq("idEmployee", e))
-                .setFetchMode("idAccount", FetchMode.JOIN);
+                .add(Restrictions.eq("employee", e))
+                .setFetchMode("account", FetchMode.JOIN);
         return (List<EmployeesAccounts>) criteria.list();
     }
     
