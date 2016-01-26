@@ -58,10 +58,9 @@ public class FoliosController {
 
         String jsonFolio = jsonNode.get("folio").asText();
         String jsonDetails = jsonNode.get("details").asText();
-        CFolios folio = foliosService.findByFolio(jsonFolio);
 
         auth.setUsers(user);
-        auth.setCFolios(folio);
+        auth.setFolio(jsonFolio);
         auth.setCAuthorizationStatus(new CAuthorizationStatus(1));
         auth.setAuthorizationDate(LocalDateTime.now());
         auth.setIdAccessLevel(1);

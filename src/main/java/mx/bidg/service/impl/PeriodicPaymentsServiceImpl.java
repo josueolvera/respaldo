@@ -45,7 +45,7 @@ public class PeriodicPaymentsServiceImpl implements PeriodicPaymentsService {
                 LocalDateTime.parse(json.get("dueDate").asText()) : null;
         
         PeriodicsPayments periodicsPayment = new PeriodicsPayments();
-        periodicsPayment.setIdPeriod(period);
+        periodicsPayment.setPeriod(period);
         periodicsPayment.setFolio(folio);
         periodicsPayment.setAmount(amount);
         periodicsPayment.setInitialDate(initialDate);
@@ -53,9 +53,9 @@ public class PeriodicPaymentsServiceImpl implements PeriodicPaymentsService {
         //Ningun pago realizado de este servicio
         periodicsPayment.setPaymentNum(0);
         //Se crea el PeriodicsPayment con Status 1 = Inactivo
-        periodicsPayment.setIdPeriodicPaymentStatus(new CPeriodicPaymentsStatus(1));
+        periodicsPayment.setPeriodicPaymentStatus(new CPeriodicPaymentsStatus(1));
         periodicsPayment.setIdAccessLevel(1);
-        periodicsPayment.setIdCurrency(currency);
+        periodicsPayment.setCurrency(currency);
         periodicsPayment = periodicPaymentsDao.save(periodicsPayment);
         
         return periodicsPayment;

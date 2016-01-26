@@ -59,12 +59,12 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
             accountsPayable.setPayNum(payNum);
             accountsPayable.setTotalPayments(totalPayments);
             //Tipo de operacion Egreso = 1
-            accountsPayable.setIdOperationType(new COperationTypes(1));
+            accountsPayable.setOperationType(new COperationTypes(1));
             accountsPayable.setDueDate(dueDate);
             //Estatus de AccountPayable Inactiva = 1
-            accountsPayable.setIdAccountPayableStatus(new CAccountsPayableStatus(1));
+            accountsPayable.setAccountPayableStatus(new CAccountsPayableStatus(1));
             accountsPayable.setIdAccessLevel(1);
-            accountsPayable.setIdCurrency(currency);
+            accountsPayable.setCurrency(currency);
             accountsPayable = accountsPayableDao.save(accountsPayable);
             accounts.add(accountsPayable);
             

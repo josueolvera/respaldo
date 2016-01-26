@@ -5,33 +5,28 @@
  */
 package mx.bidg.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.ManyToOne;import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author rafael
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_REQUEST_TYPES")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CRequestTypes implements Serializable { 
     
     private static final long serialVersionUID = 1L;
@@ -52,14 +47,14 @@ public class CRequestTypes implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
     
+    @Column(name = "ID_BUDGET_CATEGORY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idBudgetCategory;
+    
     @JoinColumn(name = "ID_BUDGET_CATEGORY", referencedColumnName = "ID_BUDGET_CATEGORY")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CBudgetCategories idBudgetCategory;
-    
-    @OneToMany(mappedBy = "idRequestType")
-    @JsonView(JsonViews.Embedded.class)
-    private List<RequestTypesProduct> requestTypesProductList;
+    private CBudgetCategories budgetCategory;
 
     public CRequestTypes() {
     }
@@ -92,20 +87,20 @@ public class CRequestTypes implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public List<RequestTypesProduct> getRequestTypesProductList() {
-        return requestTypesProductList;
-    }
-
-    public void setRequestTypesProductList(List<RequestTypesProduct> requestTypesProductList) {
-        this.requestTypesProductList = requestTypesProductList;
-    }
-    
-    public CBudgetCategories getIdBudgetCategory() {
+    public Integer getIdBudgetCategory() {
         return idBudgetCategory;
     }
 
-    public void setIdBudgetCategory(CBudgetCategories idBudgetCategory) {
+    public void setIdBudgetCategory(Integer idBudgetCategory) {
         this.idBudgetCategory = idBudgetCategory;
+    }
+
+    public CBudgetCategories getBudgetCategory() {
+        return budgetCategory;
+    }
+
+    public void setBudgetCategory(CBudgetCategories budgetCategory) {
+        this.budgetCategory = budgetCategory;
     }
 
     @Override

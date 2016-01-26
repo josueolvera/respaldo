@@ -49,7 +49,7 @@ public class PeriodicPaymentsDaoImpl extends AbstractDao<Integer, PeriodicsPayme
     public List<PeriodicsPayments> findByFolio(String folio) {
         Criteria criteria = createEntityCriteria()
                 .add(Restrictions.eq("folio", folio))
-                .setFetchMode("idPeriodicPaymentStatus", FetchMode.JOIN);
+                .setFetchMode("periodicPaymentStatus", FetchMode.JOIN);
         return (List<PeriodicsPayments>) criteria.list();
     }
     

@@ -10,12 +10,14 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author Rafael Viveros
  */
 @Entity
+@DynamicUpdate
 @Table(name = "STOCK_DOCUMENTS")
 public class StockDocuments implements Serializable {
     private static final long serialVersionUID = 1L;

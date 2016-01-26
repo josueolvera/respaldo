@@ -24,12 +24,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "BUDGETS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Budgets implements Serializable {
@@ -85,7 +87,7 @@ public class Budgets implements Serializable {
     @JsonView({JsonViews.Embedded.class})
     private CBudgetSubcategories budgetSubcategory;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBudget")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "budget")
     @JsonView(JsonViews.Embedded.class)
     private List<BudgetMonthBranch> budgetMonthBranchList;
 

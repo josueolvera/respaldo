@@ -52,9 +52,9 @@ public class CProductTypesServiceImpl implements CProductTypesService {
         List<CProductTypes> productTypes = productTypesDao.findAll();System.out.println(productTypes);
         
         for(RequestTypesProduct requestTypesProduct : requestTypesProducts) {
-            if(productTypes.contains(requestTypesProduct.getIdProductType()) && 
-                    !list.contains(requestTypesProduct.getIdProductType())) {
-                list.add(requestTypesProduct.getIdProductType());
+            if(productTypes.contains(requestTypesProduct.getProductType()) && 
+                    !list.contains(requestTypesProduct.getProductType())) {
+                list.add(requestTypesProduct.getProductType());
             }
         }
         

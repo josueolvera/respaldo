@@ -33,7 +33,7 @@ public class CBudgetTypesDaoImpl extends AbstractDao<Integer, CBudgetTypes> impl
     @Override
     public List<CBudgetTypes> findAll() {
         Criteria criteria = createEntityCriteria().
-                setFetchMode("idTable", FetchMode.JOIN);
+                setFetchMode("table", FetchMode.JOIN);
         return (List<CBudgetTypes>) criteria.list();
     }
 

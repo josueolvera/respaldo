@@ -45,8 +45,8 @@ public class ProductTypesProductDaoImpl extends AbstractDao<Integer, ProductType
     @Override
     public List<ProductTypesProduct> findByProductType(CProductTypes cProductType) {
         return (List<ProductTypesProduct>) createEntityCriteria()
-                .add(Restrictions.eq("idProductType", cProductType))
-                .setFetchMode("idProduct", FetchMode.JOIN)
+                .add(Restrictions.eq("productType", cProductType))
+                .setFetchMode("product", FetchMode.JOIN)
                 .list();
     }
     

@@ -33,7 +33,7 @@ public class AccountsServiceImpl implements AccountsService {
         List<Accounts> list = new ArrayList<>();
         List<ProvidersAccounts> providersAccounts = providersAccountsDao.findByProvider(provider);
         for(ProvidersAccounts providersAccount : providersAccounts) {
-            list.add(providersAccount.getIdAccount());
+            list.add(providersAccount.getAccount());
         }
         return list;
     }

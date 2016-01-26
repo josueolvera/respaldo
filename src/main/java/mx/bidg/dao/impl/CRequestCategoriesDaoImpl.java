@@ -24,8 +24,8 @@ public class CRequestCategoriesDaoImpl extends AbstractDao<Integer, CRequestsCat
     public CRequestsCategories findById(int id) {
         return (CRequestsCategories) createEntityCriteria()
                 .add(Restrictions.eq("idRequestCategorie", id))
-                .setFetchMode("idView", FetchMode.JOIN)
-                .setFetchMode("idView.cTasks", FetchMode.JOIN)
+                .setFetchMode("view", FetchMode.JOIN)
+                .setFetchMode("view.cTasks", FetchMode.JOIN)
                 .uniqueResult();
     }
 

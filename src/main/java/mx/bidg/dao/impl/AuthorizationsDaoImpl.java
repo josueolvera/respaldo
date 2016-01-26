@@ -42,4 +42,9 @@ public class AuthorizationsDaoImpl extends AbstractDao<Integer, Authorizations> 
         remove(entity);
         return true;
     }
+
+    @Override
+    public List<Authorizations> findByFolio(String folio) {
+        return createEntityCriteria().add(Restrictions.eq("folio", folio)).list();
+    }
 }

@@ -25,12 +25,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "ACCOUNTS_PAYABLE")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class AccountsPayable implements Serializable {
@@ -94,20 +96,32 @@ public class AccountsPayable implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
     
+    @Column(name = "ID_ACCOUNT_PAYABLE_STATUS", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idAccountPayableStatus;
+    
+    @Column(name = "ID_OPERATION_TYPE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idOperationType;
+    
+    @JoinColumn(name = "ID_CURRENCY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idCurrency;
+    
     @JoinColumn(name = "ID_ACCOUNT_PAYABLE_STATUS", referencedColumnName = "ID_ACCOUNT_PAYABLE_STATUS")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CAccountsPayableStatus idAccountPayableStatus;
+    private CAccountsPayableStatus accountPayableStatus;
     
     @JoinColumn(name = "ID_OPERATION_TYPE", referencedColumnName = "ID_OPERATION_TYPE")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private COperationTypes idOperationType;
+    private COperationTypes operationType;
     
     @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CCurrencies idCurrency;
+    private CCurrencies currency;
 
     public AccountsPayable() {
     }
@@ -199,28 +213,52 @@ public class AccountsPayable implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public CAccountsPayableStatus getIdAccountPayableStatus() {
+    public Integer getIdAccountPayableStatus() {
         return idAccountPayableStatus;
     }
 
-    public void setIdAccountPayableStatus(CAccountsPayableStatus idAccountPayableStatus) {
+    public void setIdAccountPayableStatus(Integer idAccountPayableStatus) {
         this.idAccountPayableStatus = idAccountPayableStatus;
     }
 
-    public COperationTypes getIdOperationType() {
+    public Integer getIdOperationType() {
         return idOperationType;
     }
 
-    public void setIdOperationType(COperationTypes idOperationType) {
+    public void setIdOperationType(Integer idOperationType) {
         this.idOperationType = idOperationType;
     }
 
-    public CCurrencies getIdCurrency() {
+    public Integer getIdCurrency() {
         return idCurrency;
     }
 
-    public void setIdCurrency(CCurrencies idCurrency) {
+    public void setIdCurrency(Integer idCurrency) {
         this.idCurrency = idCurrency;
+    }
+
+    public CAccountsPayableStatus getAccountPayableStatus() {
+        return accountPayableStatus;
+    }
+
+    public void setAccountPayableStatus(CAccountsPayableStatus accountPayableStatus) {
+        this.accountPayableStatus = accountPayableStatus;
+    }
+
+    public COperationTypes getOperationType() {
+        return operationType;
+    }
+
+    public void setOperationType(COperationTypes operationType) {
+        this.operationType = operationType;
+    }
+
+    public CCurrencies getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(CCurrencies currency) {
+        this.currency = currency;
     }
 
     @Override

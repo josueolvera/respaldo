@@ -5,14 +5,11 @@
  */
 package mx.bidg.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -23,7 +20,6 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "C_TABLES")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CTables implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -52,14 +48,6 @@ public class CTables implements Serializable {
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idTable")
-    @JsonView(JsonViews.Embedded.class)
-    private List<TablesField> tablesFieldList;
-
-    @OneToMany(mappedBy = "cTables")
-    @JsonView(JsonViews.Embedded.class)
-    private List<CFolios> cFoliosList;
 
     public CTables() {
     }
@@ -104,22 +92,6 @@ public class CTables implements Serializable {
 
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
-    }
-
-    public List<TablesField> getTablesFieldList() {
-        return tablesFieldList;
-    }
-
-    public void setTablesFieldList(List<TablesField> tablesFieldList) {
-        this.tablesFieldList = tablesFieldList;
-    }
-
-    public List<CFolios> getCFoliosList() {
-        return cFoliosList;
-    }
-
-    public void setCFoliosList(List<CFolios> cFoliosList) {
-        this.cFoliosList = cFoliosList;
     }
 
     @Override

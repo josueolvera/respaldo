@@ -25,7 +25,6 @@ public class CFoliosDaoImpl extends AbstractDao<Integer, CFolios> implements CFo
     public CFolios findByFolio(String folio) {
         return (CFolios) createEntityCriteria()
                 .add(Restrictions.eq("folio", folio))
-                .setFetchMode("authorizations", FetchMode.JOIN)
                 .uniqueResult();
     }
 

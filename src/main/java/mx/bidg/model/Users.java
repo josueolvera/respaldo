@@ -127,7 +127,7 @@ public class Users implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private List<Requests> requestsList1;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUser")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonView(JsonViews.Embedded.class)
     private List<UsersRole> usersRoleList;
     

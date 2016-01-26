@@ -23,14 +23,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author rafael
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_REQUEST_STATUS")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CRequestStatus implements Serializable {
     
     private static final long serialVersionUID = 1L;
@@ -54,10 +55,6 @@ public class CRequestStatus implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idRequestStatus")
-    @JsonView(JsonViews.Embedded.class)
-    private List<Requests> requestsList;
 
     public CRequestStatus() {
     }
@@ -94,14 +91,6 @@ public class CRequestStatus implements Serializable {
 
     public void setIdAccessLevel(int idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
-    }
-    
-    public List<Requests> getRequestsList() {
-        return requestsList;
-    }
-
-    public void setRequestsList(List<Requests> requestsList) {
-        this.requestsList = requestsList;
     }
 
     @Override

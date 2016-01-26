@@ -20,12 +20,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "EMPLOYEES_ACCOUNTS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class EmployeesAccounts implements Serializable {
@@ -39,15 +41,23 @@ public class EmployeesAccounts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idEmployeeAccount;
     
+    @Column(name = "ID_EMPLOYEE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idEmployee;
+    
+    @Column(name = "ID_ACCOUNT", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idAccount;
+    
     @JoinColumn(name = "ID_EMPLOYEE", referencedColumnName = "ID_EMPLOYEE")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private Employees idEmployee;
+    private Employees employee;
     
     @JoinColumn(name = "ID_ACCOUNT", referencedColumnName = "ID_ACCOUNT")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private Accounts idAccount;
+    private Accounts account;
     
     @Basic(optional = false)
     @NotNull
@@ -70,12 +80,36 @@ public class EmployeesAccounts implements Serializable {
         this.idEmployeeAccount = idEmployeeAccount;
     }
 
-    public Accounts getIdAccount() {
+    public Integer getIdEmployee() {
+        return idEmployee;
+    }
+
+    public void setIdEmployee(Integer idEmployee) {
+        this.idEmployee = idEmployee;
+    }
+
+    public Integer getIdAccount() {
         return idAccount;
     }
 
-    public void setIdAccount(Accounts idAccount) {
+    public void setIdAccount(Integer idAccount) {
         this.idAccount = idAccount;
+    }
+
+    public Employees getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employees employee) {
+        this.employee = employee;
+    }
+
+    public Accounts getAccount() {
+        return account;
+    }
+
+    public void setAccount(Accounts account) {
+        this.account = account;
     }
 
     public int getIdAccessLevel() {
@@ -84,14 +118,6 @@ public class EmployeesAccounts implements Serializable {
 
     public void setIdAccessLevel(int idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
-    }
-
-    public Employees getIdEmployee() {
-        return idEmployee;
-    }
-
-    public void setIdEmployee(Employees idEmployee) {
-        this.idEmployee = idEmployee;
     }
 
     @Override

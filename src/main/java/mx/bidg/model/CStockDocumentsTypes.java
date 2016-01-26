@@ -6,12 +6,14 @@ import mx.bidg.config.JsonViews;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author Rafael Viveros
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_STOCK_DOCUMENTS_TYPES")
 public class CStockDocumentsTypes implements Serializable {
     private static final long serialVersionUID = 1L;

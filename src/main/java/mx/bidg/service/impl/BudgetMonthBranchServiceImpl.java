@@ -70,7 +70,7 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
 
             BudgetMonthConcepts budgetMonthConcepts = new BudgetMonthConcepts();
             budgetMonthConcepts.setIdAccessLevel(1);
-            budgetMonthConcepts.setIdBudgetConcept(concept);
+            budgetMonthConcepts.setBudgetConcept(concept);
             ArrayList<BudgetMonthConcepts> budgetMonthConceptsList = new ArrayList<>();
             BudgetMonthBranch budgetMonthBranch = new BudgetMonthBranch();
             BigDecimal amountConcept;
@@ -100,7 +100,7 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
                     budgetMonthBranch.setYear(year);
                     budgetMonthBranchDao.save(budgetMonthBranch);
 
-                    budgetMonthConcepts.setIdBudgetMonthBranch(budgetMonthBranch);
+                    budgetMonthConcepts.setBudgetMonthBranch(budgetMonthBranch);
                     budgetMonthConceptsList.add(budgetMonthConcepts);
 //                    budgetMonthBranch.setBudgetMonthConceptsList(budgetMonthConceptsList);
                     

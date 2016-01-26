@@ -21,12 +21,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "BUDGET_MONTH_CONCEPTS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class BudgetMonthConcepts implements Serializable {
@@ -45,20 +47,32 @@ public class BudgetMonthConcepts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private BigDecimal amount;
     
-    @JoinColumn(name = "ID_BUDGET_MONTH_BRANCH", referencedColumnName = "ID_BUDGET_MONTH_BRANCH")
-    @ManyToOne(optional = false)
-    @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
-    private BudgetMonthBranch idBudgetMonthBranch;
-    
-    @JoinColumn(name = "ID_BUDGET_CONCEPT", referencedColumnName = "ID_BUDGET_CONCEPT")
-    @ManyToOne(optional = false)
-    @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
-    private CBudgetConcepts idBudgetConcept;
-    
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
+    
+    @Column(name = "ID_BUDGET_MONTH_BRANCH", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idBudgetMonthBranch;
+    
+    @Column(name = "ID_BUDGET_CONCEPT", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idBudgetConcept;
+    
+    @Column(name = "ID_CURRENCY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idCurrency;
+    
+    @JoinColumn(name = "ID_BUDGET_MONTH_BRANCH", referencedColumnName = "ID_BUDGET_MONTH_BRANCH")
+    @ManyToOne(optional = false)
+    @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
+    private BudgetMonthBranch budgetMonthBranch;
+    
+    @JoinColumn(name = "ID_BUDGET_CONCEPT", referencedColumnName = "ID_BUDGET_CONCEPT")
+    @ManyToOne(optional = false)
+    @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
+    private CBudgetConcepts budgetConcept;
     
     @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
     @ManyToOne(optional = false)
@@ -88,14 +102,6 @@ public class BudgetMonthConcepts implements Serializable {
         this.amount = amount;
     }
 
-    public CBudgetConcepts getIdBudgetConcept() {
-        return idBudgetConcept;
-    }
-
-    public void setIdBudgetConcept(CBudgetConcepts idBudgetConcept) {
-        this.idBudgetConcept = idBudgetConcept;
-    }
-    
     public Integer getIdAccessLevel() {
         return idAccessLevel;
     }
@@ -103,13 +109,45 @@ public class BudgetMonthConcepts implements Serializable {
     public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
     }
-    
-    public BudgetMonthBranch getIdBudgetMonthBranch() {
+
+    public Integer getIdBudgetMonthBranch() {
         return idBudgetMonthBranch;
     }
 
-    public void setIdBudgetMonthBranch(BudgetMonthBranch idBudgetMonthBranch) {
+    public void setIdBudgetMonthBranch(Integer idBudgetMonthBranch) {
         this.idBudgetMonthBranch = idBudgetMonthBranch;
+    }
+
+    public Integer getIdBudgetConcept() {
+        return idBudgetConcept;
+    }
+
+    public void setIdBudgetConcept(Integer idBudgetConcept) {
+        this.idBudgetConcept = idBudgetConcept;
+    }
+
+    public Integer getIdCurrency() {
+        return idCurrency;
+    }
+
+    public void setIdCurrency(Integer idCurrency) {
+        this.idCurrency = idCurrency;
+    }
+
+    public BudgetMonthBranch getBudgetMonthBranch() {
+        return budgetMonthBranch;
+    }
+
+    public void setBudgetMonthBranch(BudgetMonthBranch budgetMonthBranch) {
+        this.budgetMonthBranch = budgetMonthBranch;
+    }
+
+    public CBudgetConcepts getBudgetConcept() {
+        return budgetConcept;
+    }
+
+    public void setBudgetConcept(CBudgetConcepts budgetConcept) {
+        this.budgetConcept = budgetConcept;
     }
 
     public CCurrencies getCurrency() {

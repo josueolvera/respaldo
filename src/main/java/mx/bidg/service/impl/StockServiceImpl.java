@@ -53,7 +53,7 @@ public class StockServiceImpl implements StockService {
 
         for (RequestProducts product : request.getRequestProductsList()) {
             Stocks stockArticle = new Stocks();
-            stockArticle.setArticle(articlesService.findByProduct(product.getIdProduct()));
+            stockArticle.setArticle(articlesService.findByProduct(product.getProduct()));
             stockArticle.setArticleStatus(new CArticleStatus(1));
             stockArticle.setCreationDate(LocalDateTime.now());
             stockArticle.setFolio(request.getFolio());

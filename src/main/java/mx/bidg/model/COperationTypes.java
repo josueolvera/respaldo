@@ -21,14 +21,15 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_OPERATION_TYPES")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class COperationTypes implements Serializable {
     
     private static final long serialVersionUID = 1L;
@@ -44,10 +45,6 @@ public class COperationTypes implements Serializable {
     @Column(name = "OPERATION_TYPE")
     @JsonView(JsonViews.Root.class)
     private String operationType;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idOperationType")
-    @JsonView(JsonViews.Embedded.class)
-    private List<AccountsPayable> accountsPayableList;
 
     public COperationTypes() {
     }
@@ -70,14 +67,6 @@ public class COperationTypes implements Serializable {
 
     public void setOperationType(String operationType) {
         this.operationType = operationType;
-    }
-
-    public List<AccountsPayable> getAccountsPayableList() {
-        return accountsPayableList;
-    }
-
-    public void setAccountsPayableList(List<AccountsPayable> accountsPayableList) {
-        this.accountsPayableList = accountsPayableList;
     }
 
     @Override

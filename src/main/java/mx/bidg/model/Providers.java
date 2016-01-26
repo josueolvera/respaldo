@@ -22,12 +22,14 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "PROVIDERS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Providers implements Serializable {
@@ -60,11 +62,11 @@ public class Providers implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     private int idAccessLevel;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProvider")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "provider")
     @JsonView(JsonViews.Embedded.class)
     private List<ProvidersAccounts> providersAccountsList;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProvider")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "provider")
     @JsonView(JsonViews.Embedded.class)
     private List<CProductTypes> productTypesList;
 

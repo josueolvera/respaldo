@@ -10,10 +10,11 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
+@DynamicUpdate
 @Table(name = "PROPERTIES")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Properties implements Serializable {

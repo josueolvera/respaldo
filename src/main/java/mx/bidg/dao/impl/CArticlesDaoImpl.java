@@ -45,4 +45,9 @@ public class CArticlesDaoImpl extends AbstractDao<Integer, CArticles> implements
     public boolean delete(CArticles entity) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
+
+    @Override
+    public List<CArticles> findAllWithIdProduct() {
+        return createEntityCriteria().add(Restrictions.isNotNull("idProduct")).list();
+    }
 }

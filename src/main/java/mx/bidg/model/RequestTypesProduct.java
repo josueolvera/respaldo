@@ -23,12 +23,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "REQUEST_TYPES_PRODUCT")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class RequestTypesProduct implements Serializable {
@@ -48,20 +50,32 @@ public class RequestTypesProduct implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer estimationsQuantity;
     
+    @Column(name = "ID_REQUEST_CATEGORY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRequestCategory;
+    
+    @Column(name = "ID_REQUEST_TYPE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRequestType;
+    
+    @Column(name = "ID_PRODUCT_TYPE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idProductType;
+    
     @JoinColumn(name = "ID_REQUEST_CATEGORY", referencedColumnName = "ID_REQUEST_CATEGORY")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private CRequestsCategories idRequestCategory;
+    private CRequestsCategories requestCategory;
     
     @JoinColumn(name = "ID_REQUEST_TYPE", referencedColumnName = "ID_REQUEST_TYPE")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private CRequestTypes idRequestType;
+    private CRequestTypes requestType;
     
     @JoinColumn(name = "ID_PRODUCT_TYPE", referencedColumnName = "ID_PRODUCT_TYPE")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private CProductTypes idProductType;
+    private CProductTypes productType;
     
     @Basic(optional = false)
     @NotNull
@@ -69,7 +83,7 @@ public class RequestTypesProduct implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private Integer idAccessLevel;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idRequestTypeProduct")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "requestTypeProduct")
     @JsonView(JsonViews.Embedded.class)
     private List<Requests> requestsList;
 
@@ -96,6 +110,54 @@ public class RequestTypesProduct implements Serializable {
         this.estimationsQuantity = estimationsQuantity;
     }
 
+    public Integer getIdRequestCategory() {
+        return idRequestCategory;
+    }
+
+    public void setIdRequestCategory(Integer idRequestCategory) {
+        this.idRequestCategory = idRequestCategory;
+    }
+
+    public Integer getIdRequestType() {
+        return idRequestType;
+    }
+
+    public void setIdRequestType(Integer idRequestType) {
+        this.idRequestType = idRequestType;
+    }
+
+    public Integer getIdProductType() {
+        return idProductType;
+    }
+
+    public void setIdProductType(Integer idProductType) {
+        this.idProductType = idProductType;
+    }
+
+    public CRequestsCategories getRequestCategory() {
+        return requestCategory;
+    }
+
+    public void setRequestCategory(CRequestsCategories requestCategory) {
+        this.requestCategory = requestCategory;
+    }
+
+    public CRequestTypes getRequestType() {
+        return requestType;
+    }
+
+    public void setRequestType(CRequestTypes requestType) {
+        this.requestType = requestType;
+    }
+
+    public CProductTypes getProductType() {
+        return productType;
+    }
+
+    public void setProductType(CProductTypes productType) {
+        this.productType = productType;
+    }
+
     public Integer getIdAccessLevel() {
         return idAccessLevel;
     }
@@ -104,30 +166,6 @@ public class RequestTypesProduct implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public CRequestsCategories getIdRequestCategory() {
-        return idRequestCategory;
-    }
-
-    public void setIdRequestCategory(CRequestsCategories idRequestCategory) {
-        this.idRequestCategory = idRequestCategory;
-    }
-
-    public CRequestTypes getIdRequestType() {
-        return idRequestType;
-    }
-
-    public void setIdRequestType(CRequestTypes idRequestType) {
-        this.idRequestType = idRequestType;
-    }
-
-    public CProductTypes getIdProductType() {
-        return idProductType;
-    }
-
-    public void setIdProductType(CProductTypes idProductType) {
-        this.idProductType = idProductType;
-    }
-    
     public List<Requests> getRequestsList() {
         return requestsList;
     }

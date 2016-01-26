@@ -14,16 +14,17 @@ import mx.bidg.utils.DateTimeConverter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author rafael
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_FOLIOS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CFolios implements Serializable {
@@ -58,10 +59,6 @@ public class CFolios implements Serializable {
     @JsonProperty("cTables")
     @JsonView(JsonViews.Embedded.class)
     private CTables cTables;
-
-    @OneToMany(mappedBy = "cFolios")
-    @JsonView(JsonViews.Embedded.class)
-    private List<Authorizations> authorizations;
 
     public CFolios() {
     }
@@ -122,14 +119,6 @@ public class CFolios implements Serializable {
 
     public void setCTables(CTables cTables) {
         this.cTables = cTables;
-    }
-
-    public List<Authorizations> getAuthorizations() {
-        return authorizations;
-    }
-
-    public void setAuthorizations(List<Authorizations> authorizations) {
-        this.authorizations = authorizations;
     }
 
     @Override

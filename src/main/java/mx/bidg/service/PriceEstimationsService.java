@@ -19,7 +19,7 @@ public interface PriceEstimationsService {
     
     public PriceEstimations findById(int id);
     
-    public PriceEstimations update(PriceEstimations pe);
+    public PriceEstimations update(PriceEstimations pe) throws Exception;
     
     public List<PriceEstimations> findByIdRequest(int idRequest);
     

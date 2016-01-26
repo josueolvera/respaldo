@@ -49,7 +49,7 @@ public class AccountsPayableDaoImpl extends AbstractDao<Integer, AccountsPayable
     public List<AccountsPayable> findByFolio(String folio) {
         Criteria criteria = createEntityCriteria()
                 .add(Restrictions.eq("folio", folio))
-                .setFetchMode("idAccountPayableStatus", FetchMode.JOIN);
+                .setFetchMode("accountPayableStatus", FetchMode.JOIN);
         return (List<AccountsPayable>) criteria.list();
     }
     

@@ -5,31 +5,27 @@
  */
 package mx.bidg.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_MONTHS")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CMonths implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -48,18 +44,6 @@ public class CMonths implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idMonth")
-    @JsonView(JsonViews.Embedded.class)
-    private List<BudgetMonthBranch> budgetMonthBranchList;
-
-    @OneToMany(mappedBy = "idMonthFirst")
-    @JsonView(JsonViews.Embedded.class)
-    private List<BudgetPeriodMonths> budgetPeriodMonthsList;
-
-    @OneToMany(mappedBy = "idMonthLast")
-    @JsonView(JsonViews.Embedded.class)
-    private List<BudgetPeriodMonths> budgetPeriodMonthsList1;
 
     public CMonths() {
     }
@@ -90,30 +74,6 @@ public class CMonths implements Serializable {
 
     public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
-    }
-
-    public List<BudgetMonthBranch> getBudgetMonthBranchList() {
-        return budgetMonthBranchList;
-    }
-
-    public void setBudgetMonthBranchList(List<BudgetMonthBranch> budgetMonthBranchList) {
-        this.budgetMonthBranchList = budgetMonthBranchList;
-    }
-
-    public List<BudgetPeriodMonths> getBudgetPeriodMonthsList() {
-        return budgetPeriodMonthsList;
-    }
-
-    public void setBudgetPeriodMonthsList(List<BudgetPeriodMonths> budgetPeriodMonthsList) {
-        this.budgetPeriodMonthsList = budgetPeriodMonthsList;
-    }
-
-    public List<BudgetPeriodMonths> getBudgetPeriodMonthsList1() {
-        return budgetPeriodMonthsList1;
-    }
-
-    public void setBudgetPeriodMonthsList1(List<BudgetPeriodMonths> budgetPeriodMonthsList1) {
-        this.budgetPeriodMonthsList1 = budgetPeriodMonthsList1;
     }
 
     @Override

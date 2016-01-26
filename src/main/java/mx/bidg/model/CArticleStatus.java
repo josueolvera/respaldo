@@ -10,8 +10,10 @@ import mx.bidg.config.JsonViews;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
+@DynamicUpdate
 @Table(name = "C_ARTICLE_STATUS")
 public class CArticleStatus implements Serializable {
     private static final long serialVersionUID = 1L;

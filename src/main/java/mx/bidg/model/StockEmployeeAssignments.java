@@ -10,12 +10,14 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author Rafael Viveros
  */
 @Entity
+@DynamicUpdate
 @Table(name = "STOCK_EMPLOYEE_ASSIGNMENTS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class StockEmployeeAssignments implements Serializable {

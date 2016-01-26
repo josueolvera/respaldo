@@ -20,12 +20,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "PROVIDERS_ACCOUNTS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class ProvidersAccounts implements Serializable {
@@ -45,15 +47,23 @@ public class ProvidersAccounts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
     
+    @Column(name = "ID_ACCOUNT", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idAccount;
+    
+    @JoinColumn(name = "ID_PROVIDER", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idProvider;
+    
     @JoinColumn(name = "ID_ACCOUNT", referencedColumnName = "ID_ACCOUNT")
     @ManyToOne(optional = false)
     @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedAccounts.class})
-    private Accounts idAccount;
+    private Accounts account;
     
     @JoinColumn(name = "ID_PROVIDER", referencedColumnName = "ID_PROVIDER")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private Providers idProvider;
+    private Providers provider;
 
     public ProvidersAccounts() {
     }
@@ -83,20 +93,36 @@ public class ProvidersAccounts implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public Accounts getIdAccount() {
+    public Integer getIdAccount() {
         return idAccount;
     }
 
-    public void setIdAccount(Accounts idAccount) {
+    public void setIdAccount(Integer idAccount) {
         this.idAccount = idAccount;
     }
 
-    public Providers getIdProvider() {
+    public Integer getIdProvider() {
         return idProvider;
     }
 
-    public void setIdProvider(Providers idProvider) {
+    public void setIdProvider(Integer idProvider) {
         this.idProvider = idProvider;
+    }
+
+    public Accounts getAccount() {
+        return account;
+    }
+
+    public void setAccount(Accounts account) {
+        this.account = account;
+    }
+
+    public Providers getProvider() {
+        return provider;
+    }
+
+    public void setProvider(Providers provider) {
+        this.provider = provider;
     }
 
     @Override

@@ -48,8 +48,8 @@ public class BudgetMonthConceptsDaoImpl extends AbstractDao<Integer, BudgetMonth
     @Override
     public List<BudgetMonthConcepts> findByConcept(CBudgetConcepts budgetConcept) {
         Criteria criteria = createEntityCriteria()
-                .add(Restrictions.eq("idBudgetConcept", budgetConcept))
-                .setFetchMode("idBudgetMonthBranch", FetchMode.JOIN);
+                .add(Restrictions.eq("budgetConcept", budgetConcept))
+                .setFetchMode("budgetMonthBranch", FetchMode.JOIN);
         return (List<BudgetMonthConcepts>) criteria.list();
     }
     

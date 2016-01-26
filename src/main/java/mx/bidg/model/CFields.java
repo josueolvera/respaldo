@@ -5,27 +5,24 @@
  */
 package mx.bidg.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlTransient;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_FIELDS")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CFields implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -48,10 +45,6 @@ public class CFields implements Serializable {
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idField")
-    @JsonView(JsonViews.Embedded.class)
-    private List<TablesField> tablesFieldList;
 
     public CFields() {
     }
@@ -89,16 +82,7 @@ public class CFields implements Serializable {
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
-
-    @XmlTransient
-    public List<TablesField> getTablesFieldList() {
-        return tablesFieldList;
-    }
-
-    public void setTablesFieldList(List<TablesField> tablesFieldList) {
-        this.tablesFieldList = tablesFieldList;
-    }
-
+    
     @Override
     public int hashCode() {
         int hash = 0;

@@ -25,12 +25,14 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author sistemask
  */
 @Entity
+@DynamicUpdate
 @Table(name = "PERIODICS_PAYMENTS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class PeriodicsPayments implements Serializable {
@@ -85,20 +87,32 @@ public class PeriodicsPayments implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
     
+    @Column(name = "ID_PERIOD", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idPeriod;
+    
+    @Column(name = "ID_PERIODIC_PAYMENT_STATUS", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idPeriodicPaymentStatus;
+    
+    @Column(name = "ID_CURRENCY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idCurrency;
+    
     @JoinColumn(name = "ID_PERIOD", referencedColumnName = "ID_PERIOD")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CPeriods idPeriod;
+    private CPeriods period;
     
     @JoinColumn(name = "ID_PERIODIC_PAYMENT_STATUS", referencedColumnName = "ID_PERIODIC_PAYMENT_STATUS")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CPeriodicPaymentsStatus idPeriodicPaymentStatus;
+    private CPeriodicPaymentsStatus periodicPaymentStatus;
     
     @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CCurrencies idCurrency;
+    private CCurrencies currency;
 
     public PeriodicsPayments() {
     }
@@ -179,28 +193,52 @@ public class PeriodicsPayments implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public CPeriods getIdPeriod() {
+    public Integer getIdPeriod() {
         return idPeriod;
     }
 
-    public void setIdPeriod(CPeriods idPeriod) {
+    public void setIdPeriod(Integer idPeriod) {
         this.idPeriod = idPeriod;
     }
 
-    public CPeriodicPaymentsStatus getIdPeriodicPaymentStatus() {
+    public Integer getIdPeriodicPaymentStatus() {
         return idPeriodicPaymentStatus;
     }
 
-    public void setIdPeriodicPaymentStatus(CPeriodicPaymentsStatus idPeriodicPaymentStatus) {
+    public void setIdPeriodicPaymentStatus(Integer idPeriodicPaymentStatus) {
         this.idPeriodicPaymentStatus = idPeriodicPaymentStatus;
     }
 
-    public CCurrencies getIdCurrency() {
+    public Integer getIdCurrency() {
         return idCurrency;
     }
 
-    public void setIdCurrency(CCurrencies idCurrency) {
+    public void setIdCurrency(Integer idCurrency) {
         this.idCurrency = idCurrency;
+    }
+
+    public CPeriods getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(CPeriods period) {
+        this.period = period;
+    }
+
+    public CPeriodicPaymentsStatus getPeriodicPaymentStatus() {
+        return periodicPaymentStatus;
+    }
+
+    public void setPeriodicPaymentStatus(CPeriodicPaymentsStatus periodicPaymentStatus) {
+        this.periodicPaymentStatus = periodicPaymentStatus;
+    }
+
+    public CCurrencies getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(CCurrencies currency) {
+        this.currency = currency;
     }
 
     @Override

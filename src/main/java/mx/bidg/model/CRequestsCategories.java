@@ -5,13 +5,10 @@
  */
 package mx.bidg.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,20 +17,24 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author rafael
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_REQUESTS_CATEGORIES")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CRequestsCategories implements Serializable {
     
     private static final long serialVersionUID = 1L;
+    
+    public static final int COTIZABLE = 1;
+    public static final int DIRECTA = 2;
+    public static final int PERIODICA = 3;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -56,18 +57,18 @@ public class CRequestsCategories implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String information;
     
-    @JoinColumn(name = "ID_VIEW", referencedColumnName = "ID_VIEW")
-    @ManyToOne
-    @JsonView(JsonViews.EmbeddedRequestCategory.class)
-    private CViews idView;
+    @Column(name = "ID_VIEW", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idView;
 
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
     
-    @OneToMany(mappedBy = "idRequestCategory")
-    @JsonView(JsonViews.Embedded.class)
-    private List<RequestTypesProduct> requestTypesProductList;
+    @JoinColumn(name = "ID_VIEW", referencedColumnName = "ID_VIEW")
+    @ManyToOne
+    @JsonView(JsonViews.EmbeddedRequestCategory.class)
+    private CViews view;
 
     public CRequestsCategories() {
     }
@@ -107,13 +108,21 @@ public class CRequestsCategories implements Serializable {
     public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
     }
-    
-    public List<RequestTypesProduct> getRequestTypesProductList() {
-        return requestTypesProductList;
+
+    public Integer getIdView() {
+        return idView;
     }
 
-    public void setRequestTypesProductList(List<RequestTypesProduct> requestTypesProductList) {
-        this.requestTypesProductList = requestTypesProductList;
+    public void setIdView(Integer idView) {
+        this.idView = idView;
+    }
+
+    public CViews getView() {
+        return view;
+    }
+
+    public void setView(CViews view) {
+        this.view = view;
     }
 
     @Override
@@ -147,14 +156,6 @@ public class CRequestsCategories implements Serializable {
 
     public void setInformation(String information) {
         this.information = information;
-    }
-
-    public CViews getIdView() {
-        return idView;
-    }
-
-    public void setIdView(CViews idView) {
-        this.idView = idView;
     }
     
 }

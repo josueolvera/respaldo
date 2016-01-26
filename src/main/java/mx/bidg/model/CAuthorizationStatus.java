@@ -11,12 +11,14 @@ import mx.bidg.config.JsonViews;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import org.hibernate.annotations.DynamicUpdate;
 
 /**
  *
  * @author rafael
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_AUTHORIZATION_STATUS")
 public class CAuthorizationStatus implements Serializable {
     private static final long serialVersionUID = 1L;
