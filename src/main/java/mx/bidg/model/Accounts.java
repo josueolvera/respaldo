@@ -66,7 +66,7 @@ public class Accounts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAccountType;
     
-    @Column(name = "ID_BANK", insertable = false, updatable = false)
+    @JoinColumn(name = "ID_BANK", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private CBanks bank;
