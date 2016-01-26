@@ -13,7 +13,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>${pageTitle}</title>
     <link rel="stylesheet" href="/BIDGroup/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="/BIDGroup/assets/css/styles.css">
