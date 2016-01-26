@@ -55,7 +55,12 @@
             idProducto: '',
             desactivarCombos: false,
             desactivarGuardar: true,
-            numberOfRequest: 0
+            numberOfRequest: 0,
+            estimations: [],
+            supplier: {},
+            idSupplier: '',
+            accounts: {},
+            idAccount: ''
           },
           methods:
           {
@@ -152,6 +157,26 @@
                    options: data
                  });
               });
+            },
+            createCotizacion: function()
+            {
+              var cotizacion= {
+              idRequest: '',
+              idAccount: '',
+              idCurrency: '',
+              amount: '',
+              sku: ''
+              }
+              return cotizacion;
+            },
+            newCotizacion: function()
+            {
+              var cotizacion= this.createCotizacion();
+              this.estimations.push(cotizacion);
+            },
+            deleteCotizacion: function(cotizacion)
+            {
+              this.estimations.$remove(cotizacion);
             }
           },
         filters:
@@ -302,26 +327,87 @@
 
             <br>
             <div class="row">
-              <div class="col-xs-12 text-right">
+              <div class="col-xs-6 text-left">
+                <button type="button" class="btn btn-default" @click="newCotizacion">Agregar Cotizacion</button>
+              </div>
+              <div class="col-xs-6 text-right">
                 <button class="btn btn-success" :disabled="desactivarGuardar">Guardar Solicitud</button>
               </div>
             </div>
 
           </form>
           <br>
-          <div class="row">
+          <div class="row" v-for="cotizacion in estimations">
             <div class="col-xs-12">
               <div class="panel panel-default">
                 <div class="panel-heading">
-                  <h3 class="panel-title">Cotizacion</h3>
+                  <div class="row">
+                    <div class="col-xs-6 text-left">
+                      <h3 class="panel-title">Cotizacion</h3>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                      <button type="button" class="btn btn-sm btn-default" @click="deleteCotizacion(cotizacion)">
+                        <span class="glyphicon glyphicon-remove"></span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
                 <div class="panel-body">
+                  <div class="row">
+                    <div class="col-xs-3">
+                      <label>
+                        Proveedor
+                      </label>
+                      <select class="form-control" v-model="idSupplier">
 
+                      </select>
+                    </div>
+                    <div class="col-xs-3">
+                      <label>
+                        Cuenta Bancaria
+                      </label>
+                      <select class="form-control" v-model="idAccount">
+
+                      </select>
+                    </div>
+                    <div class="col-xs-3">
+                      <label>
+                        Tipo de Moneda
+                      </label>
+                      <select class="form-control">
+
+                      </select>
+                    </div>
+                    <div class="col-xs-3">
+                      <label>
+                        Monto
+                      </label>
+                      <div class="input-group">
+                        <span class="input-group-addon">$</span>
+                        <input number class="form-control" placeholder="">
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="row">
+                    <div class="col-xs-3">
+                      <label>
+                        SKU
+                      </label>
+                      <input number class="form-control">
+                    </div>
+                    <div class="col-xs-4">
+                      <label>
+                        Archivo de la Cotizacion
+                      </label>
+                      <input type="file" class="form-control">
+                    </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->
