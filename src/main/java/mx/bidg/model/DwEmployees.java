@@ -38,7 +38,6 @@ public class DwEmployees implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_DW_EMPLOYEE")
     @JsonView(JsonViews.Root.class)
     private Integer idDwEmployee;
