@@ -5,6 +5,7 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -23,6 +24,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateConverter;
 import mx.bidg.utils.DateTimeConverter;
@@ -35,6 +38,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "EMPLOYEES")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Employees implements Serializable {
     
     private static final long serialVersionUID = 1L;
@@ -108,10 +112,10 @@ public class Employees implements Serializable {
     
     @Basic(optional = false)
     @NotNull
-    @Column(name = "HIGH_DATE")
+    @Column(name = "JOIN_DATE")
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
-    private LocalDateTime highDate;
+    private LocalDateTime joinDate;
     
     @Basic(optional = false)
     @NotNull
@@ -120,14 +124,14 @@ public class Employees implements Serializable {
     private int status;
 
     @Size(max = 50)
-    @Column(name = "BIRTHPLACE")
+    @Column(name = "BIRTH_PLACE")
     @JsonView(JsonViews.Root.class)
-    private String birthplace;
+    private String birthPlace;
     
-    @Column(name = "BIRTHDATE")
+    @Column(name = "BIRTHDAY")
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateConverter.class)
-    private LocalDate birthdate;
+    private LocalDate birthday;
     
     @Size(max = 50)
     @Column(name = "STATE")
@@ -154,9 +158,9 @@ public class Employees implements Serializable {
     private String colonia;
     
     @Size(max = 50)
-    @Column(name = "DELEGATION_MUNICIPALITY")
+    @Column(name = "CITY")
     @JsonView(JsonViews.Root.class)
-    private String delegationMunicipality;
+    private String city;
     
     @Size(max = 5)
     @Column(name = "POSTCODE")
@@ -321,12 +325,12 @@ public class Employees implements Serializable {
         this.salary = salary;
     }
 
-    public LocalDateTime getHighDate() {
-        return highDate;
+    public LocalDateTime getJoinDate() {
+        return joinDate;
     }
 
-    public void setHighDate(LocalDateTime highDate) {
-        this.highDate = highDate;
+    public void setJoinDate(LocalDateTime highDate) {
+        this.joinDate = highDate;
     }
 
     public int getStatus() {
@@ -337,20 +341,20 @@ public class Employees implements Serializable {
         this.status = status;
     }
 
-    public String getBirthplace() {
-        return birthplace;
+    public String getBirthPlace() {
+        return birthPlace;
     }
 
-    public void setBirthplace(String birthplace) {
-        this.birthplace = birthplace;
+    public void setBirthPlace(String birthplace) {
+        this.birthPlace = birthplace;
     }
 
-    public LocalDate getBirthdate() {
-        return birthdate;
+    public LocalDate getBirthday() {
+        return birthday;
     }
 
-    public void setBirthdate(LocalDate birthdate) {
-        this.birthdate = birthdate;
+    public void setBirthday(LocalDate birthdate) {
+        this.birthday = birthdate;
     }
 
     public String getState() {
@@ -393,12 +397,12 @@ public class Employees implements Serializable {
         this.colonia = colonia;
     }
 
-    public String getDelegationMunicipality() {
-        return delegationMunicipality;
+    public String getCity() {
+        return city;
     }
 
-    public void setDelegationMunicipality(String delegationMunicipality) {
-        this.delegationMunicipality = delegationMunicipality;
+    public void setCity(String delegationMunicipality) {
+        this.city = delegationMunicipality;
     }
 
     public String getPostcode() {
@@ -441,6 +445,14 @@ public class Employees implements Serializable {
         this.dwEmployeesList = dwEmployeesList;
     }
 
+    public List<EmployeesAccounts> getEmployeesAccountsList() {
+        return employeesAccountsList;
+    }
+
+    public void setEmployeesAccountsList(List<EmployeesAccounts> employeesAccountsList) {
+        this.employeesAccountsList = employeesAccountsList;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -465,13 +477,4 @@ public class Employees implements Serializable {
     public String toString() {
         return "mx.bidg.model.Employees[ idEmployee=" + idEmployee + " ]";
     }
-
-    public List<EmployeesAccounts> getEmployeesAccountsList() {
-        return employeesAccountsList;
-    }
-
-    public void setEmployeesAccountsList(List<EmployeesAccounts> employeesAccountsList) {
-        this.employeesAccountsList = employeesAccountsList;
-    }
-    
 }

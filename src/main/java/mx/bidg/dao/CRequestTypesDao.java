@@ -7,4 +7,7 @@ import mx.bidg.model.CRequestTypes;
  *         Created on 18/11/15.
  */
 public interface CRequestTypesDao extends InterfaceDao<CRequestTypes> {
+    
+    CRequestTypes findByIdFetchBudgetCategory(int id);
+    
 }

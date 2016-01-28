@@ -31,7 +31,7 @@ public class RequestsController {
         throws Exception{
         
         Users user = (Users) session.getAttribute("user");
-        Requests request = requestsService.save(data, user);
+        Requests request = requestsService.saveData(data, user);
         String response;
         
         if(request != null) {
@@ -52,6 +52,13 @@ public class RequestsController {
         Requests request = requestsService.authorization(idRequest);
         return null;
         
+    }
+    
+    
+    @RequestMapping(value = "/month-branch-product-type", method = RequestMethod.POST, 
+            headers = {"Accept=application/json;charset=UTF-8"}, produces = "application/json;charset=UTF-8")
+    public @ResponseBody String getBudgetMonthProductType(@RequestBody String data) throws Exception {
+        return mapper.writeValueAsString(requestsService.getBudgetMonthProductType(data));
     }
     
 }

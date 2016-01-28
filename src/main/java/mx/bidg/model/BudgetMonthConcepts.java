@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -70,7 +71,7 @@ public class BudgetMonthConcepts implements Serializable {
     private BudgetMonthBranch budgetMonthBranch;
     
     @JoinColumn(name = "ID_BUDGET_CONCEPT", referencedColumnName = "ID_BUDGET_CONCEPT")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
     private CBudgetConcepts budgetConcept;
     

@@ -91,11 +91,12 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
     @Override
     public PriceEstimations update(PriceEstimations pe) throws Exception{
-        Requests request = requestsDao.findByIdFetchStatus(pe.getIdRequest());
-        if(request.getIdRequestStatus().equals(1))
+        CEstimationStatus status = pe.getEstimationStatus();
+        if(status.getIdEstimationStatus().equals(1))
             return priceEstimationsDao.update(pe);
         else
-            throw new ValidationException("No se puede modificar una solicitud ya autorizada");
+            throw new ValidationException("No se puede modificar una cotizacion ya autorizada", 
+            "No se puede modificar una solicitud ya autorizada");
     }
 
     @Override
@@ -146,7 +147,8 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             }
 
         } else {
-            throw new ValidationException("No es posible elegir una cotizacion de una Solicitud Aceptada o Rechazada");
+            throw new ValidationException("No es posible elegir una cotizacion de una Solicitud Aceptada o Rechazada", 
+                "No es posible elegir una cotizacion de una Solicitud Aceptada o Rechazada");
         }
 
     }

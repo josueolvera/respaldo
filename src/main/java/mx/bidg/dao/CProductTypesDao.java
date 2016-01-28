@@ -7,4 +7,7 @@ import mx.bidg.model.CProductTypes;
  * Created on 19/11/15.
  */
 public interface CProductTypesDao extends InterfaceDao<CProductTypes> {
+    
+    CProductTypes findByIdFetchBudgetSubcategory(int id);
+    
 }
