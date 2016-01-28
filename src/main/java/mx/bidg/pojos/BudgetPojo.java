@@ -19,6 +19,8 @@ public class BudgetPojo {
     private int idArea;
     private int idBudgetCategory;
     private int idBudgetSubcategory;
+    private int year;
+    private int isAuthorized;
     private BigDecimal granTotal;
     private List<ConceptPojo> conceptos;
     private List<TotalMonthPojo> totalMonth;
@@ -26,12 +28,15 @@ public class BudgetPojo {
     public BudgetPojo() {
     }
 
-    public BudgetPojo(int idBudget, int idGroup, int idArea, int idBudgetCategory, int idBudgetSubcategory, List<ConceptPojo> conceptos, List<TotalMonthPojo> totalMonth) {
+    public BudgetPojo(int idBudget, int idGroup, int idArea, int idBudgetCategory, int idBudgetSubcategory, int year, int isAuthorized, BigDecimal granTotal, List<ConceptPojo> conceptos, List<TotalMonthPojo> totalMonth) {
         this.idBudget = idBudget;
         this.idGroup = idGroup;
         this.idArea = idArea;
         this.idBudgetCategory = idBudgetCategory;
         this.idBudgetSubcategory = idBudgetSubcategory;
+        this.year = year;
+        this.isAuthorized = isAuthorized;
+        this.granTotal = granTotal;
         this.conceptos = conceptos;
         this.totalMonth = totalMonth;
     }
@@ -98,6 +103,22 @@ public class BudgetPojo {
 
     public void setTotalMonth(List<TotalMonthPojo> totalMonth) {
         this.totalMonth = totalMonth;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public int getIsAuthorized() {
+        return isAuthorized;
+    }
+
+    public void setIsAuthorized(int isAuthorized) {
+        this.isAuthorized = isAuthorized;
     }
     
 }

@@ -74,6 +74,7 @@ public class CBudgetConceptsController {
                 
                 conceptPojoList = new ArrayList<>();
                 totalMonthPojoList = new ArrayList<>();
+                budgetPojo = new BudgetPojo();
                 
                 for(CBudgetConcepts budgetConcept : conceptsList) {
                     
@@ -106,6 +107,8 @@ public class CBudgetConceptsController {
                         totalMonthPojoList.add(totalMonthPojo);
                         conceptPojo.setDwEnterprise(budgetMonthBranch.getDwEnterprise().getIdDwEnterprise());
                         conceptPojo.setYear(budgetMonthBranch.getYear());
+                        budgetPojo.setYear(budgetMonthBranch.getYear());
+                        budgetPojo.setIsAuthorized(budgetMonthBranch.getIsAuthorized());
                     }
                     
                     conceptPojo.setConceptMonth(conceptMonthPojoList);
@@ -113,15 +116,13 @@ public class CBudgetConceptsController {
                     
                 }
                 
-                budgetPojo = new BudgetPojo(
-                        budget.getIdBudget(),
-                        budget.getIdGroup(),
-                        budget.getIdArea(),
-                        budget.getIdBudgetCategory(),
-                        budget.getIdBudgetSubcategory(),
-                        conceptPojoList,
-                        totalMonthPojoList
-                );
+                budgetPojo.setIdBudget(budget.getIdBudget());
+                budgetPojo.setIdGroup(budget.getIdGroup());
+                budgetPojo.setIdArea(budget.getIdArea());
+                budgetPojo.setIdBudgetCategory(budget.getIdBudgetCategory());
+                budgetPojo.setIdBudgetSubcategory(budget.getIdBudgetSubcategory());
+                budgetPojo.setConceptos(conceptPojoList);
+                budgetPojo.setTotalMonth(totalMonthPojoList);
                 budgetPojo.setGranTotal(BigDecimal.ZERO);
                 
                 list.add(budgetPojo);
