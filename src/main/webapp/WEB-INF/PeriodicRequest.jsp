@@ -38,15 +38,36 @@
           {
             request:
             {
-              idRequestCategory: '',
-              idRequestType: '',
-              idProductType: '',
+              idRequest: '',
+              folio: '',
               description: '',
               purpose: '',
               products: [],
-              idUser: ''
+              userRequest: {
+                idUser: '',
+                username: '',
+                mail: ''
+              },
+              userResponsable: {
+                idUser: '',
+                username: '',
+                mail: ''
+              },
+              creationDate: '',
+              budgetMonthBranch: {
+                idBudgetMonthBranch: ''
+              },
+              requestTypeProduct: {
+                idRequestTypeProduct: ''
+              },
+              requestStatus: {
+                idRequestStatus: ''
+              }
             },
             idRequestCategory: '',
+            idRequestType: '',
+            idProductType: '',
+
             optionSelect: [],
             RequestTypes: {},
             ProductTypes: {},
@@ -141,7 +162,7 @@
                 showAlert(data);
               }).error(function(data)
               {
-                showAlert("No se pudo");
+                showAlert(data.error.message);
               });
             },
             obtainAllUsers: function()
