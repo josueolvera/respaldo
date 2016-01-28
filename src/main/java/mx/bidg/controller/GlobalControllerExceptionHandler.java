@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,22 +23,28 @@ import java.util.logging.Logger;
 @ControllerAdvice
 public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler({Exception.class, SQLException.class, RuntimeException.class})
     public ResponseEntity<Object> exceptionHandler(Exception e, WebRequest request) {
-        Logger.getLogger("GlobalControllerExceptionHandler").log(Level.SEVERE, e.getMessage(), e);
+        Logger.getLogger("Exception").log(Level.SEVERE, e.getMessage(), e);
+        String errorMessage = "Ha habido un problema con su solicitud, intente nuevamente";
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+
+        if(e instanceof SQLIntegrityConstraintViolationException) {
+            errorMessage = "Elemento duplicado";
+        }
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
         ErrorField errors = new ErrorField(
-                null, "Ha habido un problema con su solicitud, intente nuevamente", HttpStatus.BAD_REQUEST.value()
+                null, errorMessage, status.value()
         );
 
-        return handleExceptionInternal(e, errors, headers, HttpStatus.BAD_REQUEST, request);
+        return handleExceptionInternal(e, errors, headers, status, request);
     }
 
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<Object> validationExceptionHandler(Exception e, WebRequest request) {
-        Logger.getLogger("GlobalControllerExceptionHandler").log(Level.SEVERE, e.getMessage(), e);
+        Logger.getLogger("ValidationException").log(Level.SEVERE, e.getMessage(), e);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
