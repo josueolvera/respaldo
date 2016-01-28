@@ -55,11 +55,12 @@ public class PriceEstimations implements Serializable {
     
     @Size(max = 100)
     @Column(name = "FILE_PATH")
-    @JsonView(JsonViews.Root.class)
+    @JsonView(JsonViews.Private.class)
     private String filePath;
     
     @Size(max = 45)
     @Column(name = "FILE_NAME")
+    @JsonView(JsonViews.Root.class)
     private String fileName;
     
     @Size(max = 45)

@@ -6,6 +6,8 @@ import mx.bidg.model.CRequestTypes;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.Restrictions;
 
 /**
  * @author Rafael Viveros
@@ -36,5 +38,13 @@ public class CRequestTypesDaoImpl extends AbstractDao<Integer, CRequestTypes> im
     @Override
     public boolean delete(CRequestTypes entity) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public CRequestTypes findByIdFetchBudgetCategory(int id) {
+        return (CRequestTypes) createEntityCriteria()
+                .add(Restrictions.idEq(id))
+                .setFetchMode("budgetCategory", FetchMode.JOIN)
+                .uniqueResult();
     }
 }

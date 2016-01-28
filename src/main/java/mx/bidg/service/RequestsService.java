@@ -5,6 +5,7 @@
  */
 package mx.bidg.service;
 
+import java.util.HashMap;
 import mx.bidg.model.Requests;
 import mx.bidg.model.Users;
 
@@ -14,7 +15,9 @@ import mx.bidg.model.Users;
  */
 public interface RequestsService {
     
-    Requests save(String data, Users user) throws Exception;
+    HashMap<String, Object> getBudgetMonthProductType(String data) throws Exception;
+    
+    Requests saveData(String data, Users user) throws Exception;
     
     Requests authorization(Integer idRequest);
     

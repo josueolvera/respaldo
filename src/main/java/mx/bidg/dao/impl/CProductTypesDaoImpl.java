@@ -6,6 +6,8 @@ import mx.bidg.model.CProductTypes;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.Restrictions;
 
 /**
  * @author Rafael Viveros
@@ -36,5 +38,13 @@ public class CProductTypesDaoImpl extends AbstractDao<Integer, CProductTypes> im
     @Override
     public boolean delete(CProductTypes entity) {
         throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public CProductTypes findByIdFetchBudgetSubcategory(int id) {
+        return (CProductTypes) createEntityCriteria()
+                .add(Restrictions.idEq(id))
+                .setFetchMode("budgetSubcategory", FetchMode.JOIN)
+                .uniqueResult();
     }
 }

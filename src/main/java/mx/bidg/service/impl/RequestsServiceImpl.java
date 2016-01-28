@@ -8,6 +8,7 @@ package mx.bidg.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
+import java.util.HashMap;
 import mx.bidg.dao.BudgetMonthBranchDao;
 import mx.bidg.dao.BudgetsDao;
 import mx.bidg.dao.CMonthsDao;
@@ -77,9 +78,65 @@ public class RequestsServiceImpl implements RequestsService {
     RequestProductsDao requestProductsDao;
     
     ObjectMapper map = new ObjectMapper();
+    
+    @Override
+    public HashMap<String, Object> getBudgetMonthProductType(String data) throws Exception {
+        
+        JsonNode jsonRequest = map.readTree(data);
+        HashMap<String, Object> hashMap = new HashMap<>();
+        
+        CRequestsCategories cRequestsCategory = cRequestCategoriesDao
+                .findById(jsonRequest.get("idRequestCategory").asInt());
+        CRequestTypes cRequestType = cRequestTypesDao
+                .findByIdFetchBudgetCategory(jsonRequest.get("idRequestType").asInt());
+        CProductTypes cProductType = cProductTypesDao
+                .findByIdFetchBudgetSubcategory(jsonRequest.get("idProductType").asInt());
+        Users userResponsable = usersDao.findByIdFetchDwEmployee(jsonRequest.get("idUser").asInt());
+        LocalDate date = LocalDate.now();
+        
+        CMonths month = cMonthsDao.findById(date.getMonthValue());
+        
+        if(month == null) {
+            throw new ValidationException("No existe el mes", "Error al obtener el mes");
+        }
+        
+        DwEnterprises dwEnterprise = userResponsable.getDwEmployee().getDwEnterprise();
+        
+        System.out.println("cRequestsCategory: " + cRequestsCategory);
+        System.out.println("cRequestType" + cRequestType);
+        System.out.println("cProductType" + cProductType);
+        System.out.println("userResponsable" + userResponsable);
+        System.out.println("dwEnterprise" + dwEnterprise);
+        
+        
+        Budgets budget = budgetsDao.findByCombination(dwEnterprise.getGroup(), dwEnterprise.getArea(), 
+                cRequestType.getBudgetCategory(), cProductType.getBudgetSubcategory());
+        
+        if(budget == null) {
+            throw new ValidationException("No existe el Presupuesto", "No existe un presupuesto para esta solicitud");
+        }
+        
+        RequestTypesProduct requestTypesProduct = requestTypesProductDao.findByCombination(cRequestsCategory, 
+                cRequestType, cProductType);
+        
+        if(requestTypesProduct == null) {
+            throw new ValidationException("No existe el RequestTypesProduct", "No existe un tipo de producto "
+                    + "asociado a esta solicitud");
+        }
+        
+        hashMap.put("requestTypesProduct", requestTypesProduct);
+        BudgetMonthBranch budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget, month, dwEnterprise, date.getYear());
+        
+        if(budgetMonthBranch == null) {
+            throw new ValidationException("No existe Presupuesto para la fecha solicitada", "No existe Presupuesto para la fecha solicitada");
+        }
+        
+        hashMap.put("budgetMonthBranch", budgetMonthBranch);
+        return hashMap;
+    }
 
     @Override
-    public Requests save(String data, Users user) throws Exception {
+    public Requests saveData(String data, Users user) throws Exception {
         
         JsonNode jsonRequest = map.readTree(data);
         CRequestsCategories cRequestsCategory = cRequestCategoriesDao
