@@ -69,6 +69,9 @@
                                 </ul>
                             </li>
                         </ul>
+                        <ul class="sidebar-date">
+                            <li class="date-text">{{ systemDate.dateTextLong }}</li>
+                        </ul>
                         <ul class="logout">
                             <li>
                                 <a href="#">
@@ -102,14 +105,21 @@
             var USER_VM = new Vue({
                 el: '#main-sidebar',
                 ready: function () {
-                    this.$http.get(ROOT_URL + '/app-menu').success(function (data) {
-                        this.menu = data;
-                    });
+                    this.fetchApp();
                 },
                 data: {
-                    menu: {}
+                    menu: null,
+                    user: null,
+                    systemDate: null
                 },
                 methods: {
+                    fetchApp: function () {
+                        this.$http.get(ROOT_URL + '/app-menu').success(function (data) {
+                            this.menu = data.menu;
+                            this.user = data.user;
+                            this.systemDate = data.systemDate;
+                        });
+                    },
                     closeSession: function () {
                         this.$http.post(ROOT_URL + '/logout').success(function () {
                             location.replace(ROOT_URL);
