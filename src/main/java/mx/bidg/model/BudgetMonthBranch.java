@@ -78,6 +78,11 @@ public class BudgetMonthBranch implements Serializable {
     @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
     private DwEnterprises dwEnterprise;
     
+    @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
+    @ManyToOne(optional = false)
+    @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
+    private CCurrencies currency;
+    
     @Column(name = "ID_BUDGET", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idBudget;
@@ -103,7 +108,7 @@ public class BudgetMonthBranch implements Serializable {
     @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
     @ManyToOne(optional = false)
     @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
-    private CCurrencies currency;
+    private Integer idCurrency;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "budgetMonthBranch")
     @JsonView(JsonViews.Embedded.class)
@@ -252,6 +257,14 @@ public class BudgetMonthBranch implements Serializable {
 
     public void setBudgetMonthConceptsList(List<BudgetMonthConcepts> budgetMonthConceptsList) {
         this.budgetMonthConceptsList = budgetMonthConceptsList;
+    }
+
+    public Integer getIdCurrency() {
+        return idCurrency;
+    }
+
+    public void setIdCurrency(Integer idCurrency) {
+        this.idCurrency = idCurrency;
     }
 
     @Override
