@@ -7,8 +7,10 @@ package mx.bidg.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import mx.bidg.dao.BudgetMonthBranchDao;
 import mx.bidg.dao.BudgetsDao;
 import mx.bidg.dao.CMonthsDao;
@@ -91,23 +93,17 @@ public class RequestsServiceImpl implements RequestsService {
                 .findByIdFetchBudgetCategory(jsonRequest.get("idRequestType").asInt());
         CProductTypes cProductType = cProductTypesDao
                 .findByIdFetchBudgetSubcategory(jsonRequest.get("idProductType").asInt());
-        Users userResponsable = usersDao.findByIdFetchDwEmployee(jsonRequest.get("idUser").asInt());
-        LocalDate date = LocalDate.now();
+        Users userResponsable = usersDao.findByIdFetchDwEmployee(jsonRequest.get("idUserResponsable").asInt());
+//        LocalDate date = LocalDate.now();
         
-        CMonths month = cMonthsDao.findById(date.getMonthValue());
+        CMonths month = cMonthsDao.findById(jsonRequest.get("idMonth").asInt());
+        Integer year = jsonRequest.get("year").asInt();
         
         if(month == null) {
             throw new ValidationException("No existe el mes", "Error al obtener el mes");
         }
         
-        DwEnterprises dwEnterprise = userResponsable.getDwEmployee().getDwEnterprise();
-        
-        System.out.println("cRequestsCategory: " + cRequestsCategory);
-        System.out.println("cRequestType" + cRequestType);
-        System.out.println("cProductType" + cProductType);
-        System.out.println("userResponsable" + userResponsable);
-        System.out.println("dwEnterprise" + dwEnterprise);
-        
+        DwEnterprises dwEnterprise = userResponsable.getDwEmployee().getDwEnterprise();        
         
         Budgets budget = budgetsDao.findByCombination(dwEnterprise.getGroup(), dwEnterprise.getArea(), 
                 cRequestType.getBudgetCategory(), cProductType.getBudgetSubcategory());
@@ -125,7 +121,7 @@ public class RequestsServiceImpl implements RequestsService {
         }
         
         hashMap.put("requestTypesProduct", requestTypesProduct);
-        BudgetMonthBranch budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget, month, dwEnterprise, date.getYear());
+        BudgetMonthBranch budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget, month, dwEnterprise, year);
         
         if(budgetMonthBranch == null) {
             throw new ValidationException("No existe Presupuesto para la fecha solicitada", "No existe Presupuesto para la fecha solicitada");
@@ -139,7 +135,7 @@ public class RequestsServiceImpl implements RequestsService {
     public Requests saveData(String data, Users user) throws Exception {
         
         JsonNode jsonRequest = map.readTree(data);
-        CRequestsCategories cRequestsCategory = cRequestCategoriesDao
+        /*CRequestsCategories cRequestsCategory = cRequestCategoriesDao
                 .findById(jsonRequest.get("idRequestCategory").asInt());
         CRequestTypes cRequestType = cRequestTypesDao
                 .findById(jsonRequest.get("idRequestType").asInt());
@@ -175,30 +171,33 @@ public class RequestsServiceImpl implements RequestsService {
         
         if(budgetMonthBranch == null) {
             throw new ValidationException("No existe Presupuesto para la fecha solicitada", "No existe Presupuesto para la fecha solicitada");
-        }
+        }*/
         
         Requests request = new Requests();
-        request.setRequestTypeProduct(requestTypesProduct);
-        request.setBudgetMonthBranch(budgetMonthBranch);
+        request.setRequestTypeProduct(new RequestTypesProduct(jsonRequest.get("idRequestTypesProduct").asInt()));
+        request.setBudgetMonthBranch(new BudgetMonthBranch(jsonRequest.get("idBudgetMonthBranch").asInt()));
         //51 es el id de Requests en CTables
         request.setFolio(foliosService.createNew(new CTables(51)));
         request.setUserRequest(user);
-        request.setUserResponsable(userResponsable);
+        request.setUserResponsable(new Users(jsonRequest.get("idUserResponsable").asInt()));
         request.setDescription(jsonRequest.get("description").asText());
         request.setPurpose(jsonRequest.get("purpose").asText());
         //1 es el id de Pendiente en CRequestStatus
         request.setRequestStatus(new CRequestStatus(1));
+        request.setCreationDate(LocalDateTime.now());
         request.setIdAccessLevel(1);
-        request = requestsDao.save(request);
-        request = requestsDao.findByIdFetchBudgetMonthBranch(request.getIdRequest());
+        List<RequestProducts> requestProducts = new ArrayList<>();
         
         for(JsonNode jsonProducts : jsonRequest.get("products")) {
             CProducts product = new CProducts(jsonProducts.get("idProduct").asInt());
             RequestProducts requestProduct = new RequestProducts();
             requestProduct.setProduct(product);
             requestProduct.setRequest(request);
-            requestProduct = requestProductsDao.save(requestProduct);
+            requestProducts.add(requestProduct);
         }
+        
+        request.setRequestProductsList(requestProducts);
+        request = requestsDao.save(request);
         
         return request;
     }

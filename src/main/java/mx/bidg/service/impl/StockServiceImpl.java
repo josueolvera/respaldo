@@ -38,6 +38,11 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
+    public Stocks findSimpleById(int idStock) {
+        return stockDao.findSimpleById(idStock);
+    }
+
+    @Override
     public List<Stocks> findByDistributor(Integer idDistributor) {
         return stockDao.findByDistributor(idDistributor);
     }
@@ -62,5 +67,16 @@ public class StockServiceImpl implements StockService {
         }
 
         return stocksList;
+    }
+
+    @Override
+    public Stocks update(Stocks stock) {
+        stockDao.update(stock);
+        return stock;
+    }
+
+    @Override
+    public Stocks updateEntity(Stocks stock) {
+        return stockDao.updateEntity(stock);
     }
 }

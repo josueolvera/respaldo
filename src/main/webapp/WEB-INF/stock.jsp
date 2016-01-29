@@ -19,6 +19,8 @@
                     this.fetchAreas();
                     this.fetchDocumentTypes();
                     this.fetchValues();
+                    this.fetchArticleStatus();
+                    this.fetchAllEmployees();
                 },
                 data: {
                     isSaving: false,
@@ -28,6 +30,8 @@
                         areas: [],
                         attributes: [],
                         values: [],
+                        articleStatus: [],
+                        employees: [],
                         documentTypes: []
                     },
                     selectedOptions: {
@@ -41,6 +45,15 @@
                     editModal: {
                         selectAttr: null,
                         selectValue: null,
+                        serialNumber: 0,
+                        stockFolio: 0,
+                        articleStatus: null,
+                        purchasePrice: 0,
+                        employees: null,
+                        selectedEmployee: null,
+                        article: null
+                    },
+                    assignmentsModal: {
                         article: null
                     },
                     attachmentsDownloadUrl: ROOT_URL + "/stock/attachments/download/"
@@ -58,15 +71,17 @@
                         });
                     },
                     attachOnScreen: function () {
-                        $('.lazy').onScreen({
-                            container: window,
-                            direction: 'vertical',
-                            doIn: function() {
-                                this.dispatchEvent(new Event('build'));
-                            },
-                            tolerance: 0,
-                            throttle: 50,
-                            debug: true
+                        this.$nextTick(function () {
+                            $('.lazy').onScreen({
+                                container: window,
+                                direction: 'vertical',
+                                doIn: function() {
+                                    this.dispatchEvent(new Event('build'));
+                                },
+                                tolerance: 0,
+                                throttle: 50,
+                                debug: true
+                            });
                         });
                     },
                     fetchStock: function (distributor) {
@@ -74,9 +89,7 @@
                             this.stockGroups = this.groupBy(data, function (item) {
                                 return item.idDwEnterprises;
                             });
-                            this.$nextTick(function () {
-                                this.attachOnScreen();
-                            });
+                            this.attachOnScreen();
                         });
                     },
                     fetchStockProperties: function (article) {
@@ -106,6 +119,30 @@
                             article.stockEmployeeAssignmentsList = data;
                         });
                     },
+                    fetchStockAssignmentsRecord: function (article) {
+                        this.$http.get(
+                                ROOT_URL + "/stock/" + article.idStock + "/assignments/record"
+                        ).success(function(data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (el) {
+                                if (isNaN(el.dwEnterprises)) {
+                                    jsonObjectIndex[el.dwEnterprises._id] = el.dwEnterprises;
+                                } else {
+                                    el.dwEnterprises = jsonObjectIndex[el.dwEnterprises];
+                                }
+                                if (isNaN(el.employee)) {
+                                    jsonObjectIndex[el.employee._id] = el.employee;
+                                } else {
+                                    el.employee = jsonObjectIndex[el.employee];
+                                }
+                            });
+
+                            Vue.set(article, "assignmentsRecord", data);
+                            $("#assignmentsModal").modal("show");
+                        }).error(function () {
+                            showAlert("Permiso denegado", {type: 3});
+                        });
+                    },
                     fetchDistributors: function () {
                         this.$http.get(ROOT_URL + "/distributors?forStock=true").success(function (data) {
                             this.selectOptions.distributors = data;
@@ -132,6 +169,21 @@
                                 options: data,
                                 create: false
                             });
+                        });
+                    },
+                    fetchArticleStatus: function () {
+                        this.$http.get(ROOT_URL + "/stock-status").success(function (data) {
+                            this.selectOptions.articleStatus = data;
+                        });
+                    },
+                    fetchEmployees: function(idDw) {
+                        this.$http.get(ROOT_URL + "/employees?idDwEnterprise=" + idDw).success(function (data) {
+                            this.editModal.employees = data;
+                        });
+                    },
+                    fetchAllEmployees: function() {
+                        this.$http.get(ROOT_URL + "/employees").success(function (data) {
+                            this.selectOptions.employees = data;
                         });
                     },
                     fetchValues: function () {
@@ -222,10 +274,10 @@
                             form.reset();
                             this.fetchStockDocuments(article);
                             this.fetchStockDocumentsRecord(article);
-                        }).error(function () {
+                        }).error(function (data) {
                             this.isSaving = false;
                             form.reset();
-                            showAlert("Ha habido un problema con su solicitud, intente nuevamente", {type:3})
+                            showAlert(data.error.message, {type:3})
                         });
                     },
                     validateFile: function (event) {
@@ -248,11 +300,18 @@
                     },
                     showEditArticleModal: function (article) {
                         this.editModal.article = article;
+                        this.editModal.serialNumber = article.serialNumber;
+                        this.editModal.stockFolio = article.stockFolio;
+                        this.editModal.articleStatus = article.articleStatus;
+                        this.editModal.purchasePrice = article.purchasePrice;
+                        this.editModal.selectedEmployee = article.stockEmployeeAssignmentsList[0].employee;
                         this.fetchAttributes(article.article.idArticle);
+                        this.fetchEmployees(article.idDwEnterprises);
                         $("#editModal").modal("show");
                     },
                     showAssignmentsModal: function (article) {
-                        $("#assignmentsModal").modal("show");
+                        this.assignmentsModal.article = article;
+                        this.fetchStockAssignmentsRecord(article);
                     },
                     closeEditModal: function () {
                         this.editModal.selectAttr[0].selectize.destroy();
@@ -267,7 +326,20 @@
                     },
                     saveStockArticle: function (article) {
                         this.isSaving = true;
-                        console.log(article);
+                        this.$http.post(ROOT_URL + "/stock/" + article.idStock, {
+                            serialNumber: this.editModal.serialNumber,
+                            stockFolio: this.editModal.stockFolio,
+                            articleStatus: this.editModal.articleStatus,
+                            purchasePrice: this.editModal.purchasePrice,
+                            employee: {
+                                idEmployee: this.editModal.selectedEmployee.idEmployee
+                            }
+                        }).success(function (data){
+                            this.isSaving = false;
+                        }).error(function (data) {
+                            this.isSaving = false;
+                            showAlert(data.error.message, {type: 3});
+                        });
                     }
                 }
             });
@@ -324,7 +396,7 @@
                 <div v-for="stock in stockGroups | filterBy areaFilter" class="">
                     <div class="text-center col-xs-12"><h4>{{ stock[0].dwEnterprises.area.areaName }}</h4></div>
                     <div class="col-xs-12 panel-group">
-                        <div v-for="article in stock" @build="buildArticle(article)" data-loader="stockElementsLoader"
+                        <div v-for="article in stock" @build="buildArticle(article)"
                              class="lazy panel panel-default">
                             <div class="panel-heading">
                                 <div class="row">
@@ -375,6 +447,10 @@
                                     <div v-if="article.propertiesList != null" class="col-md-6 col-xs-12">
                                         <h5 class="text-center">Propiedades</h5>
                                         <table class="table table-striped">
+                                            <tr>
+                                                <td>Estado</td>
+                                                <td>{{ article.articleStatus.articleStatus }}</td>
+                                            </tr>
                                             <tr>
                                                 <td>Folio de inventario</td>
                                                 <td>{{ article.stockFolio }}</td>
@@ -522,39 +598,64 @@
                         </div>
                         <div class="modal-body">
                             <div class="row">
-                                <div class="col-xs-4">
+                                <div class="col-md-4 col-xs-6">
                                     <label>Artículo: </label>
                                     {{ editModal.article.article.articleName }}
                                 </div>
-                                <div class="col-xs-4">
+                                <div class="col-md-4 col-xs-6">
                                     <label>No. de Serie: </label>
                                     {{ editModal.article.serialNumber }}
                                 </div>
-                                <div class="col-xs-4">
+                                <div class="col-md-4 col-xs-12">
                                     <label>Asignado a: </label>
-                                    {{ editModal.article.idEmployee }}
+                                    {{ editModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
+                                    {{ editModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
+                                    {{ editModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
+                                    {{ editModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}
                                 </div>
                             </div>
                             <hr />
                             <div class="row line">
-                                <div class="col-xs-4">
-                                    <label>No. de serie</label>
-                                    <input :disabled="isSaving" type="text" class="form-control">
-                                </div>
-                                <div class="col-xs-4">
-                                    <label>Folio de Inventario</label>
-                                    <input :disabled="isSaving" type="text" class="form-control">
-                                </div>
-                                <div class="col-xs-4">
-                                    <label>Estado de artículo</label>
-                                    <select :disabled="isSaving" class="form-control">
-                                        <option value="1">Activo</option>
+                                <div class="col-md-8 col-xs-12">
+                                    <label>Asignar a:</label>
+                                    <select v-model="editModal.selectedEmployee.idEmployee"
+                                            :disabled="isSaving" class="form-control">
+                                        <option v-for="employee in editModal.employees"
+                                                :value="employee.idEmployee">
+                                                {{ employee.firstName }}
+                                                {{ employee.middleName }}
+                                                {{ employee.parentalLast }}
+                                                {{ employee.motherLast }}
+                                            </option>
                                     </select>
+                                </div>
+                                <div class="col-md-4 col-xs-6">
+                                    <label>No. de serie</label>
+                                    <input v-model="editModal.serialNumber"
+                                           :disabled="isSaving" type="text" class="form-control">
+                                </div>
+                                <div class="col-md-4 col-xs-6">
+                                    <label>Folio de Inventario</label>
+                                    <input v-model="editModal.stockFolio"
+                                           :disabled="isSaving" type="text" class="form-control">
+                                </div>
+                                <div class="col-md-4 col-xs-6">
+                                    <label>Estado de artículo</label>
+                                    <select v-model="editModal.articleStatus"
+                                            :disabled="isSaving" class="form-control">
+                                        <option v-for="status in selectOptions.articleStatus"
+                                                :value="status">{{ status.articleStatus }}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 col-xs-6">
+                                    <label>Precio de compra</label>
+                                    <input v-model="editModal.purchasePrice"
+                                           :disabled="isSaving" type="text" class="form-control">
                                 </div>
                             </div>
                             <div class="row line">
                                 <div class="text-center line col-xs-12"><strong>Propiedades</strong></div>
-                                <div class="col-xs-8 col-xs-push-2">
+                                <div class="col-xs-12 col-md-8 col-md-push-2">
                                     <table class="table table-striped line">
                                         <tr v-for="property in editModal.article.propertiesList">
                                             <td class="col-xs-5">
@@ -573,7 +674,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-8 col-xs-push-2">
+                                <div class="col-xs-12 col-md-8 col-md-push-2">
                                     <div class="col-xs-5">
                                         <label>Atributo</label>
                                         <select id="select-attribute" class="form-control"></select>
@@ -605,16 +706,72 @@
             </div>
             <%-- Modal de asignaciones --%>
             <div id="assignmentsModal" class="modal fade" data-backdrop="static" data-keyboard="false">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
+                <div class="modal-dialog modal-lg" style="height: 90%;">
+                    <div class="modal-content flex-box">
+                        <div class="modal-header flex-row flex-header">
                             <button class="close" @click="closeAssignmentsModal"><span aria-hidden="true">&times;</span>
                             </button>
                             <h4 class="modal-title">Modificaciar asignacion</h4>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body flex-box">
+                            <div class="row flex-row flex-header">
+                                <div class="col-md-4 col-xs-6">
+                                    <label>Artículo: </label>
+                                    {{ assignmentsModal.article.article.articleName }}
+                                </div>
+                                <div class="col-md-4 col-xs-6">
+                                    <label>No. de Serie: </label>
+                                    {{ assignmentsModal.article.serialNumber }}
+                                </div>
+                                <div class="col-md-4 col-xs-12">
+                                    <label>Asignado a: </label>
+                                    {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
+                                    {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
+                                    {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
+                                    {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}
+                                </div>
+                            </div>
+                            <div class="row flex-row flex-header">
+                                <div class="col-xs-4"><label>Asignar a</label></div>
+                                <div class="col-xs-8">
+                                    <select v-model="" class="form-control col-xs-8"
+                                            @change="">
+                                        <option v-for="distributor in selectOptions.distributors"
+                                                :value="distributor">
+                                            {{ distributor.distributorName }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="flex-row flex-content">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Asignado a</th>
+                                            <th>Distribuidor</th>
+                                            <th>Region</th>
+                                            <th>Sucursal</th>
+                                            <th>Area</th>
+                                            <th>Fecha de asignación</th>
+                                        </tr>
+                                    </thead>
+                                    <tr v-for="assignment in assignmentsModal.article.assignmentsRecord">
+                                        <td>
+                                            {{ assignment.employee.firstName }}
+                                            {{ assignment.employee.middleName }}
+                                            {{ assignment.employee.parentalLast }}
+                                            {{ assignment.employee.motherLast }}
+                                        </td>
+                                        <td>{{ assignment.dwEnterprises.distributor.distributorName }}</td>
+                                        <td>{{ assignment.dwEnterprises.region.regionName }}</td>
+                                        <td>{{ assignment.dwEnterprises.branch.branchName }}</td>
+                                        <td>{{ assignment.dwEnterprises.area.areaName }}</td>
+                                        <td>{{ assignment.assignmentDateFormats.dateNumber }}</td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
-                        <div class="text-right modal-footer">
+                        <div class="text-right modal-footer flex-row flex-footer">
                             <button :disabled="isSaving" class="btn btn-default" @click="closeAssignmentsModal">Cancelar</button>
                             <button @click=""
                                     :disabled="isSaving"

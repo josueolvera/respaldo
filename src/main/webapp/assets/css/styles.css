@@ -43,6 +43,7 @@ body {
 }
 
 .main-menu {
+    color: #FFFFFF;
     background:#354553;
     border-right:1px solid #e5e5e5;
     position: fixed;
@@ -273,4 +274,66 @@ nav ul,nav li {
         box-shadow: 0 -2em #555555;
         height: 5em;
     }
+}
+
+/* Flex box */
+
+.flex-box {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+.flex-row {
+    flex: 0 1 auto;
+}
+
+.flex-header {
+    flex: 0 1 auto;
+    min-height: 5.5rem;
+}
+
+.flex-content {
+    flex: 1 1 auto;
+    overflow-y: auto;
+}
+
+.flex-footer {
+    flex: 0 1 auto;
+    min-height: 5rem;
+}
+
+/* Fecha vertical */
+
+.sidebar-date {
+    position: absolute;
+    bottom: 100px;
+    left: 40px;
+    font-weight: bold;
+}
+
+.sidebar-date .date-text {
+    -webkit-transform: rotate(-90deg);
+       -moz-transform: rotate(-90deg);
+         -o-transform: rotate(-90deg);
+            transform: rotate(-90deg);
+    -webkit-transform-origin: left bottom 0;
+       -moz-transform-origin: left bottom 0;
+         -o-transform-origin: left bottom 0;
+            transform-origin: left bottom 0;
+    -webkit-transition: 0.5s ease-in-out;
+       -moz-transition: 0.5s ease-in-out;
+         -o-transition: 0.5s ease-in-out;
+            transition: 0.5s ease-in-out;
+}
+
+.main-menu:hover .date-text {
+    -webkit-transform: rotate(0deg);
+       -moz-transform: rotate(0deg);
+         -o-transform: rotate(0deg);
+            transform: rotate(0deg);
+    -webkit-transform-origin: left bottom 0;
+       -moz-transform-origin: left bottom 0;
+         -o-transform-origin: left bottom 0;
+            transform-origin: left bottom 0;
 }

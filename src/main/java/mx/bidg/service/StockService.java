@@ -15,4 +15,7 @@ public interface StockService {
     List<Stocks> findAll();
     List<Stocks> addStockArticlesFromRequest(Requests request);
     List<Stocks> findByDistributor(Integer idDistributor);
+    Stocks update(Stocks stock);
+    Stocks updateEntity(Stocks stock);
+    Stocks findSimpleById(int idStock);
 }

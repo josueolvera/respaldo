@@ -12,4 +12,5 @@ import java.util.List;
 public interface EmployeesService {
     List<Employees> findSimpleBy(DwEnterprises dwEnterprises);
     List<Employees> findAll();
+    Employees findById(Integer id);
 }

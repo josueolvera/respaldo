@@ -32,7 +32,9 @@ public class EmployeesDaoImpl extends AbstractDao<Integer, Employees> implements
 
     @Override
     public Employees findById(int id) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return (Employees) createEntityCriteria()
+                .add(Restrictions.idEq(id))
+                .uniqueResult();
     }
 
     @Override

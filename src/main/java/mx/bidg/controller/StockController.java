@@ -4,13 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
-import mx.bidg.exceptions.InvalidFileException;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
-import mx.bidg.service.PropertiesService;
-import mx.bidg.service.StockDocumentsService;
-import mx.bidg.service.StockEmployeeAssignmentsService;
-import mx.bidg.service.StockService;
+import mx.bidg.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -27,7 +23,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import java.io.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -57,9 +55,12 @@ public class StockController {
     @Autowired
     private StockEmployeeAssignmentsService assignmentsService;
 
+    @Autowired
+    private DwEmployeesService dwEmployeesService;
+
     private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findAll() throws IOException {
         List<Stocks> stock = stockService.findAll();
         return new ResponseEntity<>(
@@ -68,7 +69,53 @@ public class StockController {
         );
     }
 
-    @RequestMapping(value = "/{idDistributor}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    @RequestMapping(
+            value = "/{idStock}", method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE
+    )
+    public ResponseEntity<String> updateStock(@PathVariable int idStock, @RequestBody String data) throws IOException {
+        JsonNode jnode = mapper.readTree(data);
+        Employees employee = new Employees(jnode.get("employee").get("idEmployee").asInt());
+
+        Stocks stock = stockService.findSimpleById(idStock);
+        DwEmployees dwEmployee = dwEmployeesService.findBy(
+                employee,
+                new DwEnterprises(stock.getIdDwEnterprises())
+        );
+
+        if (dwEmployee == null) {
+            throw new ValidationException(
+                    "No existe DwEmployees: No se permite resignación de área",
+                    "No se permite resignación de área",
+                    HttpStatus.FORBIDDEN
+            );
+        }
+
+        StockEmployeeAssignments assignment = assignmentsService.getAssignmentFor(stock);
+
+        stock.setSerialNumber(jnode.get("serialNumber").asText());
+        stock.setStockFolio(jnode.get("stockFolio").asText());
+        stock.setArticleStatus(new CArticleStatus(jnode.get("articleStatus").get("idArticleStatus").asInt()));
+        stock.setPurchasePrice(new BigDecimal(jnode.get("purchasePrice").asDouble()));
+
+        if (! assignment.getIdEmmployee().equals(employee.getIdEmployee())) {
+            assignment.setCurrentAssignment(0);
+            StockEmployeeAssignments newAssignment = new StockEmployeeAssignments();
+            newAssignment.setStocks(stock);
+            newAssignment.setDwEnterprises(stock.getDwEnterprises());
+            newAssignment.setEmployee(employee);
+            newAssignment.setAssignmentDate(LocalDateTime.now());
+            newAssignment.setCurrentAssignment(1);
+            newAssignment.setIdAccessLevel(1);
+
+            assignmentsService.update(assignment);
+            assignmentsService.saveAssignment(newAssignment);
+        }
+        stockService.update(stock);
+        return new ResponseEntity<>("Registro exitoso", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{idDistributor}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findByDistributor(@PathVariable int idDistributor) throws IOException {
         List<Stocks> stock = stockService.findByDistributor(idDistributor);
         return new ResponseEntity<>(
@@ -235,7 +282,9 @@ public class StockController {
 
     @RequestMapping(value = "/{idStock}/assignments", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getAssignments(@PathVariable int idStock) throws IOException {
-        List<StockEmployeeAssignments> assignments = assignmentsService.getAssignmentsFor(new Stocks(idStock));
+        StockEmployeeAssignments assignment = assignmentsService.getAssignmentFor(new Stocks(idStock));
+        List<StockEmployeeAssignments> assignments = new ArrayList<>();
+        assignments.add(assignment);
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(assignments),
                 HttpStatus.OK

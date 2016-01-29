@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import mx.bidg.dao.BudgetMonthBranchDao;
+import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.BudgetMonthConcepts;
 import mx.bidg.model.Budgets;
@@ -23,6 +24,7 @@ import mx.bidg.service.BudgetsService;
 import mx.bidg.service.DwEnterprisesService;
 import mx.bidg.utils.MoneyConverter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -160,6 +162,22 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
     @Override
     public BudgetMonthBranch update(BudgetMonthBranch budgetMonthBranch) {
         return budgetMonthBranchDao.update(budgetMonthBranch);
+    }
+
+    @Override
+    public String authorizeBudget(String data) throws Exception {
+        
+        JsonNode json = map.readTree(data);
+        int idBudget = json.get("idBudget").asInt();
+        int year = json.get("year").asInt();
+        
+        if(budgetMonthBranchDao.authorizeBudget(idBudget, year)) {
+            return "Presupuesto autorizado";
+        } else {
+            throw new ValidationException("No se han actualizado registros en la autorizacion del Presupuesto", 
+                "No se ha podido autorizar el Presupuesto. Intente nuevamente", HttpStatus.OK);
+        }
+        
     }
 
 }

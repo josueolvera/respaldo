@@ -10,6 +10,6 @@ import java.util.List;
  * Created on 19/01/16.
  */
 public interface StockEmployeeAssignmentsDao extends InterfaceDao<StockEmployeeAssignments> {
-    List<StockEmployeeAssignments> findFor(Stocks stock);
+    StockEmployeeAssignments findFor(Stocks stock);
     List<StockEmployeeAssignments> findRecordFor(Stocks stock);
 }

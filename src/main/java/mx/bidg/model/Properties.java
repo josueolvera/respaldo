@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -38,16 +40,19 @@ public class Properties implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAttributesArticle;
 
+    @NotNull
     @JoinColumn(name = "ID_VALUE", referencedColumnName = "ID_VALUE")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private CValues value;
 
+    @NotNull
     @JoinColumn(name = "ID_STOCK", referencedColumnName = "ID_STOCK")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JsonView(JsonViews.Embedded.class)
     private Stocks stocks;
 
+    @NotNull
     @JoinColumn(name = "ID_ATTRIBUTES_ARTICLE", referencedColumnName = "ID_ATTRIBUTE_ARTICLE")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
@@ -56,7 +61,7 @@ public class Properties implements Serializable {
     public Properties() {
     }
 
-    public Properties(Integer idProperty) {
+    public Properties(@Min(1) Integer idProperty) {
         this.idProperty = idProperty;
     }
 

@@ -14,18 +14,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.utils.DateTimeConverter;
@@ -48,7 +37,6 @@ public class Users implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_USER")
     @JsonView(JsonViews.Root.class)
     private Integer idUser;
@@ -64,7 +52,7 @@ public class Users implements Serializable {
     @NotNull
     @Size(min = 1, max = 35)
     @Column(name = "PASSWORD")
-    @JsonView(JsonViews.Root.class)
+    @JsonView(JsonViews.Private.class)
     private String password;
 
     @Basic(optional = false)
@@ -91,7 +79,7 @@ public class Users implements Serializable {
     private Integer idDwemployee;
     
     @JoinColumn(name = "ID_DW_EMPLOYEE", referencedColumnName = "ID_DW_EMPLOYEE")
-    @ManyToOne
+    @OneToOne
     @JsonView(JsonViews.Embedded.class)
     private DwEmployees dwEmployee;
     

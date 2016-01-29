@@ -10,7 +10,8 @@ import java.util.List;
  * Created on 19/01/16.
  */
 public interface StockEmployeeAssignmentsService {
-    List<StockEmployeeAssignments> getAssignmentsFor(Stocks stock);
+    StockEmployeeAssignments getAssignmentFor(Stocks stock);
     List<StockEmployeeAssignments> getAssignmentsRecordFor(Stocks stock);
     boolean saveAssignment(StockEmployeeAssignments assignment);
+    StockEmployeeAssignments update(StockEmployeeAssignments assignment);
 }

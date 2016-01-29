@@ -9,17 +9,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.TimeConverter;
@@ -75,9 +65,9 @@ public class DwEmployees implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CRoles role;
     
-    @OneToMany(mappedBy = "dwEmployee")
+    @OneToOne(mappedBy = "dwEmployee")
     @JsonView(JsonViews.Embedded.class)
-    private List<Users> usersList;
+    private Users user;
 
     public DwEmployees() {
     }
@@ -150,12 +140,12 @@ public class DwEmployees implements Serializable {
         this.role = role;
     }
 
-    public List<Users> getUsersList() {
-        return usersList;
+    public Users getUser() {
+        return user;
     }
 
-    public void setUsersList(List<Users> usersList) {
-        this.usersList = usersList;
+    public void setUser(Users user) {
+        this.user = user;
     }
 
     @Override
