@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.CSystems;
 import mx.bidg.model.Users;
+import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.service.ApplicationMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -42,6 +45,11 @@ public class ApplicationMenuController {
             session.setAttribute("appMenu", systems);
         }
 
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(systems), HttpStatus.OK);
+        HashMap<String, Object> response = new HashMap<>();
+        response.put("menu", systems);
+        response.put("user", user);
+        response.put("systemDate", new DateFormatsPojo(LocalDateTime.now()));
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(response), HttpStatus.OK);
     }
 }
