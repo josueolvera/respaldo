@@ -7,7 +7,6 @@ package mx.bidg.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,22 +94,16 @@ public class RequestsServiceImpl implements RequestsService {
         CProductTypes cProductType = cProductTypesDao
                 .findByIdFetchBudgetSubcategory(jsonRequest.get("idProductType").asInt());
         Users userResponsable = usersDao.findByIdFetchDwEmployee(jsonRequest.get("idUserResponsable").asInt());
-        LocalDate date = LocalDate.now();
+//        LocalDate date = LocalDate.now();
         
-        CMonths month = cMonthsDao.findById(date.getMonthValue());
+        CMonths month = cMonthsDao.findById(jsonRequest.get("idMonth").asInt());
+        Integer year = jsonRequest.get("year").asInt();
         
         if(month == null) {
             throw new ValidationException("No existe el mes", "Error al obtener el mes");
         }
         
-        DwEnterprises dwEnterprise = userResponsable.getDwEmployee().getDwEnterprise();
-        
-        System.out.println("cRequestsCategory: " + cRequestsCategory);
-        System.out.println("cRequestType" + cRequestType);
-        System.out.println("cProductType" + cProductType);
-        System.out.println("userResponsable" + userResponsable);
-        System.out.println("dwEnterprise" + dwEnterprise);
-        
+        DwEnterprises dwEnterprise = userResponsable.getDwEmployee().getDwEnterprise();        
         
         Budgets budget = budgetsDao.findByCombination(dwEnterprise.getGroup(), dwEnterprise.getArea(), 
                 cRequestType.getBudgetCategory(), cProductType.getBudgetSubcategory());
@@ -128,7 +121,7 @@ public class RequestsServiceImpl implements RequestsService {
         }
         
         hashMap.put("requestTypesProduct", requestTypesProduct);
-        BudgetMonthBranch budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget, month, dwEnterprise, date.getYear());
+        BudgetMonthBranch budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget, month, dwEnterprise, year);
         
         if(budgetMonthBranch == null) {
             throw new ValidationException("No existe Presupuesto para la fecha solicitada", "No existe Presupuesto para la fecha solicitada");
