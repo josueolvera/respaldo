@@ -23,4 +23,6 @@ public interface BudgetMonthBranchService {
     
     public BudgetMonthBranch update(BudgetMonthBranch budgetMonthBranch);
     
+    public String authorizeBudget(String data) throws Exception;
+    
 }

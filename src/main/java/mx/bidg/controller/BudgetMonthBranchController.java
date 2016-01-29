@@ -6,7 +6,6 @@
 package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.service.BudgetMonthBranchService;
@@ -16,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -41,6 +41,12 @@ public class BudgetMonthBranchController {
         }
         
         return new ResponseEntity<>(map.writerWithView(JsonViews.Root.class).writeValueAsString(budgetMonthBranch), HttpStatus.OK);
+    }
+    
+    
+    @RequestMapping(value = "/authorize", method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"})
+    public @ResponseBody String authorize(@RequestBody String data) throws Exception {
+        return budgetMonthBranchService.authorizeBudget(data);
     }
     
 }

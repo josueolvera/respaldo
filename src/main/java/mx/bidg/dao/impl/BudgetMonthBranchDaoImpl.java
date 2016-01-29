@@ -69,5 +69,16 @@ public class BudgetMonthBranchDaoImpl extends AbstractDao<Integer, BudgetMonthBr
         Criteria criteria = createEntityCriteria().add(Restrictions.eq("budget", budget));
         return (List<BudgetMonthBranch>) criteria.list();
     }
+
+    @Override
+    public boolean authorizeBudget(int idBudget, int year) {
+        int updatedEntities = getSession()
+                .createQuery("update BudgetMonthBranch set isAuthorized = 1 "
+                        + "where idBudget = :idBudget and year = :year")
+                .setInteger("idBudget", idBudget)
+                .setInteger("year", year)
+                .executeUpdate();
+        return updatedEntities > 0;
+    }
     
 }
