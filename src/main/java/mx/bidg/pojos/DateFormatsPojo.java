@@ -36,10 +36,19 @@ public class DateFormatsPojo {
         this.time12 = dateTime.format(DateTimeFormatter.ofPattern("hh:mm a"));
         this.time24 = dateTime.format(DateTimeFormatter.ofPattern("HH:mm"));
 
-        this.dateElements = new DateElements(dateTime);
+        this.dateElements = new DateElements(dateTime.toLocalDate());
     }
 
-    public DateFormatsPojo(@NotNull LocalDate date) {}
+    public DateFormatsPojo(@NotNull LocalDate date) {
+        Locale locale = LocaleUtils.toLocale("es_MX");
+        this.iso = date.format(DateTimeFormatter.ISO_DATE);
+
+        this.dateNumber = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        this.dateTextShort = date.format(DateTimeFormatter.ofPattern("EE dd, MMM yyyy").withLocale(locale));
+        this.dateTextLong = date.format(DateTimeFormatter.ofPattern("EEEE dd, MMMM yyyy").withLocale(locale));
+
+        this.dateElements = new DateElements(date);
+    }
 
     public DateFormatsPojo(@NotNull LocalTime time) {}
 
@@ -80,22 +89,18 @@ public class DateFormatsPojo {
         private String monthNameLong;
         private String year;
 
-        public DateElements(LocalDateTime localDateTime) {
+        public DateElements(LocalDate localDate) {
             Locale locale = LocaleUtils.toLocale("es_MX");
-            this.day = localDateTime.format(DateTimeFormatter.ofPattern("dd"));
-            this.dayNameShort = localDateTime.format(DateTimeFormatter.ofPattern("EE").withLocale(locale));
-            this.dayNameLong = localDateTime.format(DateTimeFormatter.ofPattern("EEEE").withLocale(locale));
+            this.day = localDate.format(DateTimeFormatter.ofPattern("dd"));
+            this.dayNameShort = localDate.format(DateTimeFormatter.ofPattern("EE").withLocale(locale));
+            this.dayNameLong = localDate.format(DateTimeFormatter.ofPattern("EEEE").withLocale(locale));
 
-            this.month = localDateTime.format(DateTimeFormatter.ofPattern("MM"));
-            this.monthNameShort = localDateTime.format(DateTimeFormatter.ofPattern("MMM").withLocale(locale));
-            this.monthNameLong = localDateTime.format(DateTimeFormatter.ofPattern("MMMM").withLocale(locale));
+            this.month = localDate.format(DateTimeFormatter.ofPattern("MM"));
+            this.monthNameShort = localDate.format(DateTimeFormatter.ofPattern("MMM").withLocale(locale));
+            this.monthNameLong = localDate.format(DateTimeFormatter.ofPattern("MMMM").withLocale(locale));
 
-            this.year = localDateTime.format(DateTimeFormatter.ofPattern("yyyy"));
+            this.year = localDate.format(DateTimeFormatter.ofPattern("yyyy"));
         }
-
-        public DateElements(LocalTime localTime) {}
-
-        public DateElements(LocalDate localDate) {}
 
         public String getDay() {
             return day;
