@@ -37,7 +37,6 @@ public class Users implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_USER")
     @JsonView(JsonViews.Root.class)
     private Integer idUser;
@@ -53,7 +52,7 @@ public class Users implements Serializable {
     @NotNull
     @Size(min = 1, max = 35)
     @Column(name = "PASSWORD")
-    @JsonView(JsonViews.Root.class)
+    @JsonView(JsonViews.Private.class)
     private String password;
 
     @Basic(optional = false)
