@@ -22,7 +22,7 @@ public class StockEmployeeAssignmentsServiceImpl implements StockEmployeeAssignm
     private StockEmployeeAssignmentsDao employeeAssignmentsDao;
 
     @Override
-    public List<StockEmployeeAssignments> getAssignmentsFor(Stocks stock) {
+    public StockEmployeeAssignments getAssignmentFor(Stocks stock) {
         return employeeAssignmentsDao.findFor(stock);
     }
 
@@ -33,6 +33,12 @@ public class StockEmployeeAssignmentsServiceImpl implements StockEmployeeAssignm
 
     @Override
     public boolean saveAssignment(StockEmployeeAssignments assignment) {
-        return employeeAssignmentsDao.delete(assignment);
+        employeeAssignmentsDao.save(assignment);
+        return true;
+    }
+
+    @Override
+    public StockEmployeeAssignments update(StockEmployeeAssignments assignment) {
+        return employeeAssignmentsDao.update(assignment);
     }
 }

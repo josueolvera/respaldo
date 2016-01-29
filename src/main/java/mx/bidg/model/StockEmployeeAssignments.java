@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
 
 import java.io.Serializable;
@@ -55,6 +56,11 @@ public class StockEmployeeAssignments implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
+
+    @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonView(JsonViews.Embedded.class)
+    private DwEnterprises dwEnterprises;
 
     @JoinColumn(name = "ID_EMPLOYEE", referencedColumnName = "ID_EMPLOYEE")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -148,6 +154,18 @@ public class StockEmployeeAssignments implements Serializable {
 
     public void setStocks(Stocks stocks) {
         this.stocks = stocks;
+    }
+
+    public DwEnterprises getDwEnterprises() {
+        return dwEnterprises;
+    }
+
+    public void setDwEnterprises(DwEnterprises dwEnterprises) {
+        this.dwEnterprises = dwEnterprises;
+    }
+
+    public DateFormatsPojo getAssignmentDateFormats() {
+        return new DateFormatsPojo(assignmentDate);
     }
 
     @Override

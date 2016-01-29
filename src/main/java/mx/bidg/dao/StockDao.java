@@ -10,4 +10,6 @@ import java.util.List;
  */
 public interface StockDao extends InterfaceDao<Stocks> {
     List<Stocks> findByDistributor(Integer idDistributor);
+    Stocks updateEntity(Stocks stock);
+    Stocks findSimpleById(Integer idStock);
 }

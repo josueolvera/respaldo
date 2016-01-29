@@ -27,6 +27,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateConverter;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -451,6 +452,20 @@ public class Employees implements Serializable {
 
     public void setEmployeesAccountsList(List<EmployeesAccounts> employeesAccountsList) {
         this.employeesAccountsList = employeesAccountsList;
+    }
+
+    public DateFormatsPojo getJoinDateFormats() {
+        if (joinDate == null) {
+            return null;
+        }
+        return new DateFormatsPojo(joinDate);
+    }
+
+    public DateFormatsPojo getBithDayFormats() {
+        if (birthday == null) {
+            return null;
+        }
+        return new DateFormatsPojo(birthday);
     }
 
     @Override

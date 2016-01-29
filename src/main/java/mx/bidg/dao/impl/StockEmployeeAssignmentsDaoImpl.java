@@ -31,12 +31,12 @@ public class StockEmployeeAssignmentsDaoImpl extends AbstractDao<Integer, StockE
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<StockEmployeeAssignments> findFor(Stocks stock) {
-        return (List<StockEmployeeAssignments>) createEntityCriteria()
+    public StockEmployeeAssignments findFor(Stocks stock) {
+        return (StockEmployeeAssignments) createEntityCriteria()
                 .add(Restrictions.eq("idStock", stock.getIdStock()))
                 .add(Restrictions.eq("currentAssignment", 1))
                 .setFetchMode("employee", FetchMode.JOIN)
-                .list();
+                .uniqueResult();
     }
 
     @Override
@@ -44,7 +44,9 @@ public class StockEmployeeAssignmentsDaoImpl extends AbstractDao<Integer, StockE
     public List<StockEmployeeAssignments> findRecordFor(Stocks stock) {
         return (List<StockEmployeeAssignments>) createEntityCriteria()
                 .add(Restrictions.eq("idStock", stock.getIdStock()))
+                .add(Restrictions.eq("currentAssignment", 0))
                 .setFetchMode("employee", FetchMode.JOIN)
+                .setFetchMode("dwEnterprises", FetchMode.JOIN)
                 .list();
     }
 

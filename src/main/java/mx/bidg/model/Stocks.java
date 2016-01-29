@@ -11,6 +11,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
+import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.SelectBeforeUpdate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -50,7 +52,6 @@ public class Stocks implements Serializable {
     private String stockFolio;
 
     @Basic(optional = false)
-    @NotNull
     @Column(name = "CREATION_DATE")
     @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
@@ -84,7 +85,7 @@ public class Stocks implements Serializable {
     private CArticles article;
 
     @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JsonView(JsonViews.Embedded.class)
     private DwEnterprises dwEnterprises;
 
