@@ -53,10 +53,12 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         JsonNode jsonList = mapper.readTree(data);
         List<PriceEstimations> estimations = new ArrayList<>();
 
-        for (JsonNode json : jsonList.get("estimations")) {
+        for (JsonNode json : jsonList) {
             Integer idRequest = json.get("idRequest").asInt();
             Requests request = requestsDao.findByIdFetchBudgetMonthBranch(idRequest);
             BigDecimal budgetAmount = request.getBudgetMonthBranch().getAmount();
+            BigDecimal expendedAmount = request.getBudgetMonthBranch().getExpendedAmount();
+            BigDecimal residualAmount = budgetAmount.subtract(expendedAmount);
             int idAccount = json.get("idAccount").asInt();
             int idCurrency = json.get("idCurrency").asInt();
             BigDecimal amount = json.get("amount").decimalValue();
@@ -75,7 +77,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             estimation.setEstimationStatus(new CEstimationStatus(1));
             estimation.setSku(sku);
             //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
-            estimation.setOutOfBudget((budgetAmount.compareTo(amount) == -1)? 1 : 0);
+            estimation.setOutOfBudget((residualAmount.compareTo(amount) == -1)? 1 : 0);
             estimation = priceEstimationsDao.save(estimation);
             estimations.add(estimation);
         }
@@ -91,12 +93,25 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
     @Override
     public PriceEstimations update(PriceEstimations pe) throws Exception{
-        CEstimationStatus status = pe.getEstimationStatus();
-        if(status.getIdEstimationStatus().equals(1))
-            return priceEstimationsDao.update(pe);
-        else
+        PriceEstimations estimation = priceEstimationsDao.findByIdFetchRequestStatus(pe.getIdEstimation());
+        if(estimation.getEstimationStatus().getIdEstimationStatus().equals(1)) {
+            Requests request = requestsDao.findByIdFetchBudgetMonthBranch(estimation.getIdRequest());
+            BigDecimal budgetAmount = request.getBudgetMonthBranch().getAmount();
+            BigDecimal expendedAmount = request.getBudgetMonthBranch().getExpendedAmount();
+            BigDecimal residualAmount = budgetAmount.subtract(expendedAmount);
+            
+            estimation.setAccount(new Accounts(pe.getIdAccount()));
+            estimation.setAmount(pe.getAmount());
+            estimation.setCurrency(new CCurrencies(pe.getIdCurrency()));
+            //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
+            estimation.setOutOfBudget((residualAmount.compareTo(pe.getAmount()) == -1)? 1 : 0);
+            estimation.setSku(pe.getSku());
+            estimation.setUserEstimation(new Users(pe.getIdUserEstimation()));
+            return estimation;
+        } else {
             throw new ValidationException("No se puede modificar una cotizacion ya autorizada", 
             "No se puede modificar una solicitud ya autorizada");
+        }
     }
 
     @Override
@@ -151,6 +166,14 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
                 "No es posible elegir una cotizacion de una Solicitud Aceptada o Rechazada");
         }
 
+    }
+
+    @Override
+    public PriceEstimations saveFileData(int idEstimation, String fileName, String filePath) {
+        PriceEstimations estimation = new PriceEstimations(idEstimation);
+        estimation.setFileName(fileName);
+        estimation.setFilePath(filePath);
+        return priceEstimationsDao.update(estimation);
     }
 
 }

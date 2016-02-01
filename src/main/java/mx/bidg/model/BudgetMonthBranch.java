@@ -105,9 +105,8 @@ public class BudgetMonthBranch implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer isAuthorized;
     
-    @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
-    @ManyToOne(optional = false)
-    @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
+    @Column(name = "ID_CURRENCY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
     private Integer idCurrency;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "budgetMonthBranch")
