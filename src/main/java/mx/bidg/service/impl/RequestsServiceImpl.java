@@ -134,54 +134,14 @@ public class RequestsServiceImpl implements RequestsService {
     @Override
     public Requests saveData(String data, Users user) throws Exception {
         
-        JsonNode jsonRequest = map.readTree(data);
-        /*CRequestsCategories cRequestsCategory = cRequestCategoriesDao
-                .findById(jsonRequest.get("idRequestCategory").asInt());
-        CRequestTypes cRequestType = cRequestTypesDao
-                .findById(jsonRequest.get("idRequestType").asInt());
-        CProductTypes cProductType = cProductTypesDao
-                .findById(jsonRequest.get("idProductType").asInt());
-        Users userResponsable = usersDao.findByIdFetchDwEmployee(jsonRequest.get("idUser").asInt());
-        LocalDate date = LocalDate.now();
-        
-        CMonths month = cMonthsDao.findById(date.getMonthValue());
-        
-        if(month == null) {
-            throw new ValidationException("No existe el mes", "Error al obtener el mes");
-        }
-        
-        DwEnterprises dwEnterprise = userResponsable.getDwEmployee().getDwEnterprise();
-        
-        Budgets budget = budgetsDao.findByCombination(dwEnterprise.getGroup(), dwEnterprise.getArea(), 
-                cRequestType.getBudgetCategory(), cProductType.getBudgetSubcategory());
-        
-        if(budget == null) {
-            throw new ValidationException("No existe el Presupuesto", "No existe un presupuesto para esta solicitud");
-        }
-        
-        RequestTypesProduct requestTypesProduct = requestTypesProductDao.findByCombination(cRequestsCategory, 
-                cRequestType, cProductType);
-        
-        if(requestTypesProduct == null) {
-            throw new ValidationException("No existe el RequestTypesProduct", "No existe un tipo de producto "
-                    + "asociado a esta solicitud");
-        }
-        
-        BudgetMonthBranch budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget, month, dwEnterprise, date.getYear());
-        
-        if(budgetMonthBranch == null) {
-            throw new ValidationException("No existe Presupuesto para la fecha solicitada", "No existe Presupuesto para la fecha solicitada");
-        }*/
-        
-        Requests request = new Requests();
-        request.setRequestTypeProduct(new RequestTypesProduct(jsonRequest.get("idRequestTypesProduct").asInt()));
-        request.setBudgetMonthBranch(new BudgetMonthBranch(jsonRequest.get("idBudgetMonthBranch").asInt()));
+        JsonNode jsonRequest = map.readTree(data);        
+        Requests request = map.treeToValue(jsonRequest.get("request"), Requests.class);
+        request.setRequestTypeProduct(new RequestTypesProduct(request.getIdRequestTypeProduct()));
+        request.setBudgetMonthBranch(new BudgetMonthBranch(request.getIdBudgetMonthBranch()));
         //51 es el id de Requests en CTables
         request.setFolio(foliosService.createNew(new CTables(51)));
         request.setUserRequest(user);
-        request.setUserResponsable(new Users(jsonRequest.get("idUserResponsable").asInt()));
-        request.setDescription(jsonRequest.get("description").asText());
-        request.setPurpose(jsonRequest.get("purpose").asText());
+        request.setUserResponsable(new Users(request.getIdUserResponsable()));
         //1 es el id de Pendiente en CRequestStatus
         request.setRequestStatus(new CRequestStatus(1));
         request.setCreationDate(LocalDateTime.now());
@@ -189,7 +149,7 @@ public class RequestsServiceImpl implements RequestsService {
         List<RequestProducts> requestProducts = new ArrayList<>();
         
         for(JsonNode jsonProducts : jsonRequest.get("products")) {
-            CProducts product = new CProducts(jsonProducts.get("idProduct").asInt());
+            CProducts product = map.treeToValue(jsonProducts.get("product"), CProducts.class);
             RequestProducts requestProduct = new RequestProducts();
             requestProduct.setProduct(product);
             requestProduct.setRequest(request);
