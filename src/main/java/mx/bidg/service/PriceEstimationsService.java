@@ -17,6 +17,8 @@ public interface PriceEstimationsService {
     
     public List<PriceEstimations> saveData(String data, Users user) throws Exception;
     
+    public PriceEstimations saveFileData(int idEstimation, String fileName, String filePath);
+    
     public PriceEstimations findById(int id);
     
     public PriceEstimations update(PriceEstimations pe) throws Exception;
