@@ -108,7 +108,8 @@
             area: '',
             totalArea: '',
             newSearch: false,
-            year: 0
+            year: 0,
+            isAutorized: false
           },
           methods:
           {
@@ -232,16 +233,21 @@
                       ];
                     return objeto;
             },
-              searchConcepts: function(group, area)
+              searchConcepts: function(group, area, year)
               {
                 var self= this;
-                this.$http.get("http://localhost:8080/BIDGroup/budget-concepts/group-area/"+group+"/"+area)
+                this.isAutorized= false;
+                this.$http.get("http://localhost:8080/BIDGroup/budget-concepts/group-area/"+group+"/"+area+"/"+year)
                         .success(function (data)
                         {
                           this.datosPresupuesto = data;
 
                           $.each(this.datosPresupuesto, function(index, el)
                           {
+                            if (el.isAuthorized == 1)
+                            {
+                                self.isAutorized= true;
+                            }
                             $.each(el.conceptos, function(indexs, ele)
                             {
                                 $.each(ele.conceptMonth, function(indexss, elem)
@@ -312,7 +318,7 @@
                                 .success(function (data)
                                 {
                                   this.contenido = data;
-                                  this.searchConcepts(this.group, this.area);
+                                  this.searchConcepts(this.group, this.area, this.year);
                                 });
                       });
             }
@@ -409,6 +415,15 @@
             });
           });
           this.totalArea = accounting.formatNumber(this.totalArea);
+        },
+        obtainConceptsYear: function()
+        {
+          this.$http.get("http://localhost:8080/BIDGroup/budgets/"+this.group+"/"+this.area)
+                  .success(function (data)
+                  {
+                    this.contenido = data;
+                    this.searchConcepts(this.group, this.area, this.year);
+                  });
         }
         ,
         saveBudget: function(eventoconcepto)
@@ -421,7 +436,7 @@
                     .success(function (data)
                     {
                       this.contenido = data;
-                      this.searchConcepts(this.group, this.area);
+                      this.searchConcepts(this.group, this.area, this.year);
                     });
           }).error(function(){
             showAlert("Ha habido un error con la solicitud, intente nuevamente");
@@ -522,13 +537,13 @@
             <!-- Page Content -->
             <div id="page-content-wrapper">
                 <div class="container-fluid">
-
-                  <div class="row">
+                  <div class="row" v-if="newSearch">
                     <div class="col-xs-2">
                       <label>
                         Año
                       </label>
-                      <select class="form-control" v-model="year">
+                      <select class="form-control" v-model="year" @change="obtainConceptsYear">
+                        <option></option>
                         <option value="2015">2015</option>
                         <option value="2016">2016</option>
                       </select>
@@ -574,13 +589,13 @@
                               <div class="col-xs-1 text-left">
                                 <button type="button" class="btn btn-default" id="g-{{cont[0].idBudgetCategory}}-{{conte.idBudgetSubcategory}}"
                                    @click="seteoInfo(sucss.idDwEnterprise, conte, $event)"
-                                   style="margin-top: 40px">
+                                   style="margin-top: 40px" :disabled="isAutorized">
                                   <span class="glyphicon glyphicon-plus"></span>
                                 </button>
                               </div>
                               <div class="col-xs-6 text left" v-if="conte.conceptos.length > 0">
                                 <button type="button" class="btn btn-default" id="s-{{cont[0].idBudgetCategory}}-{{conte.idBudgetSubcategory}}"
-                                   @click="saveBudget(conte.conceptos)" style="margin-top: 40px">
+                                   @click="saveBudget(conte.conceptos)" style="margin-top: 40px" :disabled="isAutorized">
                                   <span class="glyphicon glyphicon-floppy-disk"></span>
                                 </button>
                               </div>
@@ -614,14 +629,15 @@
 
                             <div class="row" style="margin-left: 0px" v-for="concepto in conte.conceptos">
                               <div class="col-xs-2" style="padding-left: 0px; padding-right: 1px">
-                                <input type="text" name="name" class="form-control input-sm" style="font-size: 10px" v-model="concepto.conceptName">
+                                <input type="text" name="name" class="form-control input-sm" style="font-size: 10px"
+                                  v-model="concepto.conceptName" :disabled="isAutorized">
                               </div>
                               <div class="col-xs-9">
                                 <div class="col-xs-1" v-for="mess in concepto.conceptMonth"
                                   style="padding-left: 0px; padding-right: 1px">
                                     <input type="text" class="form-control input-sm" placeholder=""
                                       id="{{mess.month}}" v-model="mess.amountConcept" @change="moneyFormat(mess, concepto, conte)"
-                                      style="font-size: 10px" onkeypress="return isNumberKey(event)">
+                                      style="font-size: 10px" onkeypress="return isNumberKey(event)" :disabled="isAutorized">
                                 </div>
                               </div>
                               <div class="col-xs-1" style="padding-left: 0px; padding-right: 0px">
@@ -632,13 +648,14 @@
                                 </div>
                                 <div class="col-xs-4" style="padding-left: 0px; padding-right: 0px">
                                   <button type="button" class="btn btn-link"
-                                     @click="deleteObject(conte, concepto)">
+                                     @click="deleteObject(conte, concepto)" :disabled="isAutorized">
                                     <span class="glyphicon glyphicon-minus"></span>
                                   </button>
                                 </div>
                                 <div class="col-xs-4 text-right">
                                   <div class="checkbox">
-                                    <input type="checkbox" value="" style="margin-top: 1px" v-model="concepto.equals" @change="equalsImport(concepto, conte)">
+                                    <input type="checkbox" value="" style="margin-top: 1px" v-model="concepto.equals"
+                                      @change="equalsImport(concepto, conte)" :disabled="isAutorized">
                                   </div>
                                 </div>
                               </div>
