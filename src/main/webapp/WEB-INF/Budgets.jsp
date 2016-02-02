@@ -107,7 +107,8 @@
             group: '',
             area: '',
             totalArea: '',
-            newSearch: false
+            newSearch: false,
+            year: 0
           },
           methods:
           {
@@ -169,7 +170,7 @@
                              return item.idregion;
                              });
                            });
-                        });
+                         });
 
                         this.$http.get("http://localhost:8080/BIDGroup/budgets/"+res[0]+"/"+res[1])
                                 .success(function (data)
@@ -191,7 +192,7 @@
                           idConcept: 0,
                           idBudget: 0,
                           dwEnterprise: 0,
-                          year: 2015,
+                          year: 0,
                           conceptName: '',
                           conceptMonth: [
                             {name: 'Enero', month: 1, amountConcept: ''},
@@ -260,6 +261,7 @@
               var totalMeses= this.createTotalMonths();
               concepto.dwEnterprise = idDwEnterprise;
               concepto.idBudget= budget.idBudget;
+              concepto.year= this.year;
             //  this.arrayConcepts.push(concepto);
              if (! budget.conceptos)
              {
@@ -520,6 +522,19 @@
             <!-- Page Content -->
             <div id="page-content-wrapper">
                 <div class="container-fluid">
+
+                  <div class="row">
+                    <div class="col-xs-2">
+                      <label>
+                        Año
+                      </label>
+                      <select class="form-control" v-model="year">
+                        <option value="2015">2015</option>
+                        <option value="2016">2016</option>
+                      </select>
+                    </div>
+                  </div>
+
                   <div class="row" v-for="suc in sucursales" v-if="newSearch">
                     <div class="col-xs-12">
                     <div class="row" v-for="sucs in suc">
