@@ -16,7 +16,9 @@ import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.BudgetMonthConcepts;
 import mx.bidg.model.Budgets;
+import mx.bidg.model.CAreas;
 import mx.bidg.model.CBudgetConcepts;
+import mx.bidg.model.CGroups;
 import mx.bidg.model.CMonths;
 import mx.bidg.model.DwEnterprises;
 import mx.bidg.service.BudgetMonthBranchService;
@@ -168,16 +170,20 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
     public String authorizeBudget(String data) throws Exception {
         
         JsonNode json = map.readTree(data);
-        int idBudget = json.get("idBudget").asInt();
+        int idGroup = json.get("idGroup").asInt();
+        int idArea = json.get("idArea").asInt();
         int year = json.get("year").asInt();
         
-        if(budgetMonthBranchDao.authorizeBudget(idBudget, year)) {
-            return "Presupuesto autorizado";
-        } else {
-            throw new ValidationException("No se han actualizado registros en la autorizacion del Presupuesto", 
-                "No se ha podido autorizar el Presupuesto. Intente nuevamente", HttpStatus.OK);
+        List<Budgets> budgets = budgetsService.findByGroupArea(new CGroups(idGroup), new CAreas(idArea));
+        
+        for(Budgets budget : budgets) {
+            if(!budgetMonthBranchDao.authorizeBudget(budget.getIdBudget(), year)) {
+                throw new ValidationException("No se han actualizado registros en la autorizacion del Presupuesto", 
+                   "No se ha podido autorizar el Presupuesto. Intente nuevamente", HttpStatus.OK);
+            }
         }
         
+        return "Presupuesto autorizado";
     }
 
 }
