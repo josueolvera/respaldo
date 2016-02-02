@@ -15,10 +15,10 @@ import mx.bidg.model.CBudgetConcepts;
  */
 public interface CBudgetConceptsService {
     
-    public CBudgetConcepts save(CBudgetConcepts cBudgetConcept);
-    public CBudgetConcepts findById(int idBudgetConcept);
-    public CBudgetConcepts update(CBudgetConcepts cBudgetConcept);
-    public boolean delete(CBudgetConcepts cBudgetConcept);
-    public List<CBudgetConcepts> findByBudget(Budgets budget);
+    CBudgetConcepts save(CBudgetConcepts cBudgetConcept);
+    CBudgetConcepts findById(int idBudgetConcept);
+    CBudgetConcepts update(CBudgetConcepts cBudgetConcept);
+    boolean delete(CBudgetConcepts cBudgetConcept);
+    List<CBudgetConcepts> findByBudget(Budgets budget, int year);
     
 }

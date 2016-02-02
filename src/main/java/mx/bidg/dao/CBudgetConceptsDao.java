@@ -15,6 +15,6 @@ import mx.bidg.model.CBudgetConcepts;
  */
 public interface CBudgetConceptsDao extends InterfaceDao<CBudgetConcepts> {
     
-     public List<CBudgetConcepts> findByBudget(Budgets budget);
+     public List<CBudgetConcepts> findByBudget(Budgets budget, int year);
      
 }
