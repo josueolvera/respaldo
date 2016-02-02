@@ -173,14 +173,10 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
         int idGroup = json.get("idGroup").asInt();
         int idArea = json.get("idArea").asInt();
         int year = json.get("year").asInt();
-        
-        List<Budgets> budgets = budgetsService.findByGroupArea(new CGroups(idGroup), new CAreas(idArea));
-        
-        for(Budgets budget : budgets) {
-            if(!budgetMonthBranchDao.authorizeBudget(budget.getIdBudget(), year)) {
-                throw new ValidationException("No se han actualizado registros en la autorizacion del Presupuesto", 
-                   "No se ha podido autorizar el Presupuesto. Intente nuevamente", HttpStatus.OK);
-            }
+
+        if(!budgetMonthBranchDao.authorizeBudget(idGroup, idArea, year)) {
+            throw new ValidationException("No se han actualizado registros en la autorizacion del Presupuesto", 
+               "No se ha podido autorizar el Presupuesto. Intente nuevamente", HttpStatus.OK);
         }
         
         return "Presupuesto autorizado";
