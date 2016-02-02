@@ -9,6 +9,7 @@ import java.util.List;
 import mx.bidg.model.CAreas;
 import mx.bidg.model.CGroups;
 import mx.bidg.model.DwEnterprises;
+import mx.bidg.pojos.HierarchicalLevel;
 
 /**
  *
@@ -23,5 +24,6 @@ public interface DwEnterprisesService {
     public DwEnterprises findById(int idDwEnterprise);
     
     public DwEnterprises findByIdUser(int idUser);
-    
+
+    List<HierarchicalLevel> findHierarchicalStructure();
 }

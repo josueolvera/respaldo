@@ -16,6 +16,7 @@ import mx.bidg.model.CGroups;
 import mx.bidg.model.CRegions;
 import mx.bidg.model.DwEnterprises;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -37,8 +38,15 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<DwEnterprises> findAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return (List<DwEnterprises>) createEntityCriteria()
+                .setFetchMode("group", FetchMode.JOIN)
+                .setFetchMode("distributor", FetchMode.JOIN)
+                .setFetchMode("region", FetchMode.JOIN)
+                .setFetchMode("branch", FetchMode.JOIN)
+                .setFetchMode("area", FetchMode.JOIN)
+                .list();
     }
 
     @Override
