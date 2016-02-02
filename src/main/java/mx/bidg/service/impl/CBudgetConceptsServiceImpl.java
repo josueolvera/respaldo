@@ -48,8 +48,8 @@ public class CBudgetConceptsServiceImpl implements CBudgetConceptsService {
     }
 
     @Override
-    public List<CBudgetConcepts> findByBudget(Budgets budget) {
-        return budgetConceptsDao.findByBudget(budget);
+    public List<CBudgetConcepts> findByBudget(Budgets budget, int year) {
+        return budgetConceptsDao.findByBudget(budget, year);
     }
 
     @Override

@@ -5,6 +5,7 @@
  */
 package mx.bidg.dao.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CBudgetConceptsDao;
@@ -53,12 +54,15 @@ public class CBudgetConceptsDaoImpl extends AbstractDao<Integer, CBudgetConcepts
     }
 
     @Override
-    public List<CBudgetConcepts> findByBudget(Budgets budget) {
+    public List<CBudgetConcepts> findByBudget(Budgets budget, int year) {
+        HashMap<String,Object> map = new HashMap<>();
+        map.put("budget", budget);
+        map.put("year", year);
         Criteria criteria = createEntityCriteria()
                 .setResultTransformer(DistinctRootEntityResultTransformer.INSTANCE)
                 .setFetchMode("budgetMonthConceptsList", FetchMode.JOIN)
                 .setFetchMode("budgetMonthConceptsList.budgetMonthBranch", FetchMode.JOIN)
-                .createCriteria("budgetMonthConceptsList.budgetMonthBranch").add(Restrictions.eq("budget", budget));
+                .createCriteria("budgetMonthConceptsList.budgetMonthBranch").add(Restrictions.allEq(map));
         return (List<CBudgetConcepts>) criteria.list();
     }
     
