@@ -70,7 +70,12 @@
                             </li>
                         </ul>
                         <ul class="sidebar-date">
-                            <li class="date-text">{{ systemDate.dateTextLong }}</li>
+                            <li class="date-text">
+                                {{ systemDate.dateElements.dayNameLong | capitalize }}
+                                {{ systemDate.dateElements.day }},
+                                {{ systemDate.dateElements.monthNameLong | capitalize }}
+                                {{ systemDate.dateElements.year }}
+                            </li>
                         </ul>
                         <ul class="logout">
                             <li>
