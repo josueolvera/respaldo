@@ -289,17 +289,17 @@ nav ul,nav li {
 }
 
 .flex-header {
-    flex: 0 1 auto;
+    flex: 0 0 auto;
     min-height: 5.5rem;
 }
 
 .flex-content {
-    flex: 1 1 auto;
+    flex: 1 1 0;
     overflow-y: auto;
 }
 
 .flex-footer {
-    flex: 0 1 auto;
+    flex: 0 0 auto;
     min-height: 5rem;
 }
 
