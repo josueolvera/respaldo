@@ -5,11 +5,22 @@
  */
 package mx.bidg.dao;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.time.LocalDateTime;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.http.HttpSession;
+import mx.bidg.model.GlobalTracer;
+import mx.bidg.model.Users;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import javax.persistence.Table;
+import mx.bidg.config.JsonViews;
+import mx.bidg.exceptions.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -27,6 +38,9 @@ public abstract class AbstractDao<PK extends Serializable, T> {
     @Autowired
     private SessionFactory sessionFactory;
     
+    @Autowired
+    private HttpSession session;
+    
     protected Session getSession(){
         return sessionFactory.getCurrentSession();
     }
@@ -36,19 +50,40 @@ public abstract class AbstractDao<PK extends Serializable, T> {
     }
     
     public void persist(T entity){
+        globalTracer("INSERT", entity);
         getSession().persist(entity);
     }
     
     public void remove(T entity){
+        globalTracer("DELETE", entity);
         getSession().delete(entity);
     }
     
     public void modify(T entity){
+        globalTracer("UPDATE", entity);
         getSession().update(entity);
     }
     
     protected Criteria createEntityCriteria(){
         return getSession().createCriteria(persistentClass);
+    }
+    
+    public void globalTracer(String operationType, T entity) {
+        GlobalTracer tracer = new GlobalTracer();
+        Users user = (Users) session.getAttribute("user");
+        ObjectMapper mapper = new ObjectMapper();
+        tracer.setIdUser(user);
+        tracer.setUsername(user.getUsername());
+        tracer.setOperationType(operationType);
+        Table annotation = entity.getClass().getAnnotation(Table.class);
+        tracer.setTableName(annotation.name());
+        tracer.setCreationDate(LocalDateTime.now());
+        try {
+            tracer.setInfo(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(entity));
+        } catch (JsonProcessingException ex) {
+            throw new ValidationException(ex.getMessage());
+        }
+        getSession().save(tracer);
     }
     
 }

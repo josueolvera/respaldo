@@ -126,6 +126,10 @@ public class Users implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userEstimation")
     @JsonView(JsonViews.Embedded.class)
     private List<PriceEstimations> priceEstimationsList1;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUser")
+    @JsonView(JsonViews.Embedded.class)
+    private List<GlobalTracer> globalTracerList;
 
     public Users() {
     }
@@ -281,6 +285,14 @@ public class Users implements Serializable {
         this.priceEstimationsList1 = priceEstimationsList1;
     }
 
+    public List<GlobalTracer> getGlobalTracerList() {
+        return globalTracerList;
+    }
+
+    public void setGlobalTracerList(List<GlobalTracer> globalTracerList) {
+        this.globalTracerList = globalTracerList;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -305,5 +317,5 @@ public class Users implements Serializable {
     public String toString() {
         return "Users{" + "idUser=" + idUser + ", username=" + username + ", password=" + password + ", mail=" + mail + ", status=" + status + ", activeSession=" + activeSession + ", timeSession=" + timeSession + ", highDate=" + highDate + ", modificationDate=" + modificationDate + ", lowDate=" + lowDate + "'}'";
     }
-    
-}
+
+    }
