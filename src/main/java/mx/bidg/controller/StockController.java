@@ -305,7 +305,20 @@ public class StockController {
         JsonNode jnode = mapper.readTree(data);
         DwEnterprises dwEnterprises = new DwEnterprises(jnode.get("idDwEnterprise").asInt());
         Stocks stock = stockService.findSimpleById(idStock);
+        StockEmployeeAssignments assignment = assignmentsService.getAssignmentFor(stock);
+        StockEmployeeAssignments newAssignment = new StockEmployeeAssignments();
+
         stock.setDwEnterprises(dwEnterprises);
+        assignment.setCurrentAssignment(0);
+        newAssignment.setStocks(stock);
+        newAssignment.setDwEnterprises(stock.getDwEnterprises());
+        newAssignment.setEmployee(assignment.getEmployee());
+        newAssignment.setAssignmentDate(LocalDateTime.now());
+        newAssignment.setCurrentAssignment(1);
+        newAssignment.setIdAccessLevel(1);
+
+        assignmentsService.update(assignment);
+        assignmentsService.saveAssignment(newAssignment);
         stockService.update(stock);
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(""),
