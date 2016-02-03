@@ -126,6 +126,10 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
                             HierarchicalLevel level4 = new HierarchicalLevel(dwA.getIdArea(), dwA.getArea().getAreaName());
                             level4.setAlias(dwA.getArea().getAreaName());
                             level3.addSubLevel(level4);
+
+                            for (DwEnterprises item : dwAreasList) {
+                                level4.setDwEnterprise(item);
+                            }
                         }
                     }
                 }
