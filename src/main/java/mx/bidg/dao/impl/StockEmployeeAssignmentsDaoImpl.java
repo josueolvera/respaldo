@@ -61,7 +61,7 @@ public class StockEmployeeAssignmentsDaoImpl extends AbstractDao<Integer, StockE
 
     @Override
     public StockEmployeeAssignments update(StockEmployeeAssignments entity) {
-        getSession().update(entity);
+        modify(entity);
         return entity;
     }
 

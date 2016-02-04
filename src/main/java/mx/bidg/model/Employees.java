@@ -31,6 +31,7 @@ import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateConverter;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.envers.Audited;
 
 /**
  *
@@ -39,6 +40,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "EMPLOYEES")
+@Audited
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Employees implements Serializable {
     

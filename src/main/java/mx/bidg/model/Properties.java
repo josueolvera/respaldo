@@ -14,10 +14,12 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.envers.Audited;
 
 @Entity
 @DynamicUpdate
 @Table(name = "PROPERTIES")
+@Audited
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Properties implements Serializable {
     private static final long serialVersionUID = 1L;

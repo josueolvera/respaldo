@@ -71,6 +71,11 @@ public class GlobalTracer implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String info;
     
+    @Size(max = 200)
+    @Column(name = "TASK")
+    @JsonView(JsonViews.Root.class)
+    private String task;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
@@ -151,6 +156,14 @@ public class GlobalTracer implements Serializable {
 
     public void setIdUser(Users idUser) {
         this.idUser = idUser;
+    }
+
+    public String getTask() {
+        return task;
+    }
+
+    public void setTask(String task) {
+        this.task = task;
     }
 
     @Override

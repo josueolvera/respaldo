@@ -10,8 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.time.LocalDateTime;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.http.HttpSession;
 import mx.bidg.model.GlobalTracer;
 import mx.bidg.model.Users;
@@ -19,6 +17,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import javax.persistence.Table;
+import javax.servlet.http.HttpServletRequest;
 import mx.bidg.config.JsonViews;
 import mx.bidg.exceptions.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +38,7 @@ public abstract class AbstractDao<PK extends Serializable, T> {
     private SessionFactory sessionFactory;
     
     @Autowired
-    private HttpSession session;
+    private HttpServletRequest request;
     
     protected Session getSession(){
         return sessionFactory.getCurrentSession();
@@ -70,12 +69,15 @@ public abstract class AbstractDao<PK extends Serializable, T> {
     
     public void globalTracer(String operationType, T entity) {
         GlobalTracer tracer = new GlobalTracer();
+        HttpSession session = request.getSession(false);
+        String task = request.getMethod().toLowerCase() + ":" + request.getRequestURI();
         Users user = (Users) session.getAttribute("user");
         ObjectMapper mapper = new ObjectMapper();
+        Table annotation = entity.getClass().getAnnotation(Table.class);
         tracer.setIdUser(user);
         tracer.setUsername(user.getUsername());
         tracer.setOperationType(operationType);
-        Table annotation = entity.getClass().getAnnotation(Table.class);
+        tracer.setTask(task);
         tracer.setTableName(annotation.name());
         tracer.setCreationDate(LocalDateTime.now());
         try {

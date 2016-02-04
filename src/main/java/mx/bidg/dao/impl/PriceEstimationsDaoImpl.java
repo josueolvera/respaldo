@@ -36,7 +36,7 @@ public class PriceEstimationsDaoImpl extends AbstractDao<Integer, PriceEstimatio
 
     @Override
     public PriceEstimations update(PriceEstimations entity) {
-        getSession().update(entity);
+        modify(entity);
         return entity;
     }
 

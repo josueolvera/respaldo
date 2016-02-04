@@ -19,6 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.envers.Audited;
 
 /**
  *
@@ -27,6 +28,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "C_REQUEST_TYPES")
+@Audited
 public class CRequestTypes implements Serializable { 
     
     private static final long serialVersionUID = 1L;

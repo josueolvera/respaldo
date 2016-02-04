@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.envers.Audited;
 
 /**
  * @author Rafael Viveros
@@ -16,6 +17,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "C_VALUES")
+@Audited
 public class CValues implements Serializable {
     private static final long serialVersionUID = 1L;
 

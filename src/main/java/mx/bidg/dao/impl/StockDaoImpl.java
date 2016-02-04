@@ -57,7 +57,7 @@ public class StockDaoImpl extends AbstractDao<Integer, Stocks> implements StockD
 
     @Override
     public Stocks update(Stocks entity) {
-        getSession().update(entity);
+        modify(entity);
         return entity;
     }
 
@@ -68,6 +68,7 @@ public class StockDaoImpl extends AbstractDao<Integer, Stocks> implements StockD
 
     @Override
     public Stocks updateEntity(Stocks stock) {
+        globalTracer("UPDATE", stock);
         Query query = getSession().createQuery("" +
                 "UPDATE Stocks SET idArticleStatus = :idStatus, " +
                 "purchasePrice = :price, serialNumber = :serialNumber, stockFolio = :folio WHERE idStock = :id"

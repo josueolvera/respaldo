@@ -21,6 +21,7 @@ import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.envers.Audited;
 
 /**
  *
@@ -29,6 +30,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "C_BRANCHS")
+@Audited
 public class CBranchs implements Serializable {
     
     private static final long serialVersionUID = 1L;

@@ -43,7 +43,7 @@ public class PropertiesDaoImpl extends AbstractDao<Integer, Properties> implemen
 
     @Override
     public Properties update(Properties entity) {
-        getSession().update(entity);
+        modify(entity);
         return entity;
     }
 

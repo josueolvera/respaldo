@@ -38,7 +38,7 @@ public class UsersDaoImpl extends AbstractDao<Integer, Users> implements UsersDa
 
     @Override
     public Users update(Users entity) {
-        getSession().update(entity);
+        modify(entity);
         return entity;
     }
 

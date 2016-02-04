@@ -35,7 +35,7 @@ public class PeriodicPaymentsDaoImpl extends AbstractDao<Integer, PeriodicsPayme
 
     @Override
     public PeriodicsPayments update(PeriodicsPayments entity) {
-        getSession().update(entity);
+        modify(entity);
         return entity;
     }
 

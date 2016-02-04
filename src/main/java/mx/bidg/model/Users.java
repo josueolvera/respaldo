@@ -21,6 +21,7 @@ import mx.bidg.utils.DateTimeConverter;
 import mx.bidg.utils.TimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SelectBeforeUpdate;
+import org.hibernate.envers.Audited;
 
 /**
  *
@@ -30,6 +31,7 @@ import org.hibernate.annotations.SelectBeforeUpdate;
 @Table(name = "USERS")
 @DynamicUpdate
 @SelectBeforeUpdate
+@Audited
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Users implements Serializable {
     

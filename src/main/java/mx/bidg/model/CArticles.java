@@ -12,10 +12,12 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.envers.Audited;
 
 @Entity
 @DynamicUpdate
 @Table(name = "C_ARTICLES")
+@Audited
 public class CArticles implements Serializable {
     private static final long serialVersionUID = 1L;
 

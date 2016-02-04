@@ -14,6 +14,7 @@ import javax.validation.constraints.NotNull;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.TimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.envers.Audited;
 
 /**
  *
@@ -22,6 +23,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "DW_EMPLOYEES")
+@Audited
 public class DwEmployees implements Serializable {
     
     private static final long serialVersionUID = 1L;
