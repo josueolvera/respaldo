@@ -21,7 +21,7 @@ import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.envers.Audited;
+
 
 /**
  *
@@ -30,7 +30,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @DynamicUpdate
 @Table(name = "C_BUDGET_SUBCATEGORIES")
-@Audited
+
 public class CBudgetSubcategories implements Serializable {
     
     private static final long serialVersionUID = 1L;

@@ -26,7 +26,7 @@ import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.envers.Audited;
+
 
 /**
  *
@@ -35,7 +35,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @DynamicUpdate
 @Table(name = "PRICE_ESTIMATIONS")
-@Audited
+
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class PriceEstimations implements Serializable {
     

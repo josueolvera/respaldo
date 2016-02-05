@@ -30,7 +30,7 @@ import mx.bidg.config.JsonViews;
 import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.envers.Audited;
+
 
 /**
  *
@@ -39,7 +39,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @DynamicUpdate
 @Table(name = "REQUESTS")
-@Audited
+
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Requests implements Serializable {
     

@@ -23,7 +23,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.envers.Audited;
+
 
 /**
  *
@@ -32,7 +32,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @DynamicUpdate
 @Table(name = "BUDGET_MONTH_CONCEPTS")
-@Audited
+
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class BudgetMonthConcepts implements Serializable {
     

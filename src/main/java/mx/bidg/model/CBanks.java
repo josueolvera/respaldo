@@ -17,7 +17,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.envers.Audited;
+
 
 /**
  *
@@ -26,7 +26,7 @@ import org.hibernate.envers.Audited;
 @Entity
 @DynamicUpdate
 @Table(name = "C_BANKS")
-@Audited
+
 public class CBanks implements Serializable {
     
     private static final long serialVersionUID = 1L;

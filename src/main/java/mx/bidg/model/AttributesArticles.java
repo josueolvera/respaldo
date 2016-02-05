@@ -9,11 +9,11 @@ import mx.bidg.config.JsonViews;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import org.hibernate.envers.Audited;
+
 
 @Entity
 @Table(name = "ATTRIBUTES_ARTICLES")
-@Audited
+
 public class AttributesArticles implements Serializable {
     private static final long serialVersionUID = 1L;
 

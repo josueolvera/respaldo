@@ -19,12 +19,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.envers.Audited;
+
 
 @Entity
 @DynamicUpdate
 @Table(name = "STOCKS")
-@Audited
+
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Stocks implements Serializable {
     private static final long serialVersionUID = 1L;
