@@ -40,8 +40,9 @@
 
             <c:if test="${user.username != null}">
                 <div id="main-sidebar" class="sidebar">
-                    <nav class="main-menu">
-                        <ul>
+                    <nav @mouseenter="toggleSidebar" @mouseleave="toggleSidebar"
+                         :class="{ 'expanded': sidebar.expanded }" class="main-menu flex-box">
+                        <ul class="flex-header flex-row">
                             <li>
                                 <a href="/BIDGroup">
                                     <span class="fa fa-home fa-2x glyphicon glyphicon-bidg"></span>
@@ -49,16 +50,19 @@
                                 </a>
                             </li>
                         </ul>
-                        <ul class="top-menu">
+                        <ul class="top-menu flex-content flex-row">
                             <li v-for="menuSystem in menu" class="has-sub-nav">
-                                <a href="#">
+                                <a @click="toggleSystemItem(menuSystem)" href="#" class="menu-toggle">
                                     <span class="fa fa-list fa-2x glyphicon {{ menuSystem.iconClass }}"></span>
                                     <span class="nav-text">{{ menuSystem.systemName }}</span>
                                 </a>
-                                <ul class="menu-sub-nav">
+                                <ul :class="{ 'expanded': menuSystem.expanded && sidebar.expanded }" class="menu-sub-nav">
                                     <li v-for="moduleSystem in menuSystem.modules" class="has-sub-nav">
-                                        <a href="#"><span class="nav-text">{{ moduleSystem.moduleName }}</span></a>
-                                        <ul class="menu-sub-nav">
+                                        <a @click="toggleModuleItem(moduleSystem)" href="#" class="menu-toggle">
+                                            <span class="nav-text">{{ moduleSystem.moduleName }}</span>
+                                        </a>
+                                        <ul :class="{ 'expanded': moduleSystem.expanded && sidebar.expanded }"
+                                            class="menu-sub-nav">
                                             <li v-for="viewModule in moduleSystem.views">
                                                 <a href="/BIDGroup/{{ viewModule.cTasks.taskName }}">
                                                     <span class="nav-text">{{ viewModule.viewName }}</span>
@@ -69,15 +73,15 @@
                                 </ul>
                             </li>
                         </ul>
-                        <ul class="sidebar-date">
-                            <li class="date-text">
-                                {{ systemDate.dateElements.dayNameLong | capitalize }}
-                                {{ systemDate.dateElements.day }},
-                                {{ systemDate.dateElements.monthNameLong | capitalize }}
-                                {{ systemDate.dateElements.year }}
+                        <ul class="logout flex-footer flex-row">
+                            <li :class="{ 'vertical': sidebar.expanded }" class="sidebar-date">
+                                <span class="date-text">
+                                    {{ systemDate.dateElements.dayNameLong | capitalize }}
+                                    {{ systemDate.dateElements.day }},
+                                    {{ systemDate.dateElements.monthNameLong | capitalize }}
+                                    {{ systemDate.dateElements.year }}
+                                </span>
                             </li>
-                        </ul>
-                        <ul class="logout">
                             <li>
                                 <a href="#">
                                     <span class="fa fa-list fa-2x glyphicon glyphicon-user"></span>
@@ -113,6 +117,17 @@
                     this.fetchApp();
                 },
                 data: {
+                    sidebar: {
+                        expanded: false,
+                        itemsExpanded: {
+                            system: {
+                                expanded: false
+                            },
+                            module: {
+                                expanded: false
+                            }
+                        }
+                    },
                     menu: null,
                     user: null,
                     systemDate: null
@@ -131,6 +146,27 @@
                         }).error(function () {
                             location.replace(ROOT_URL);
                         });
+                    },
+                    toggleSidebar: function () {
+                        this.sidebar.expanded = ! this.sidebar.expanded;
+                    },
+                    toggleSystemItem: function (item) {
+                        if (item.expanded) {
+                            item.expanded = false;
+                        } else {
+                            this.sidebar.itemsExpanded.system.expanded = false;
+                            Vue.set(item, "expanded", true);
+                        }
+                        this.sidebar.itemsExpanded.system = item;
+                    },
+                    toggleModuleItem: function (item) {
+                        if (item.expanded) {
+                            item.expanded = false;
+                        } else {
+                            this.sidebar.itemsExpanded.module.expanded = false;
+                            Vue.set(item, "expanded", true);
+                        }
+                        this.sidebar.itemsExpanded.module = item;
                     }
                 }
             });
