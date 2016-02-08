@@ -7,7 +7,6 @@ package mx.bidg.service.impl;
 
 import java.util.List;
 import mx.bidg.dao.UsersDao;
-import mx.bidg.exceptions.ActiveSessionException;
 import mx.bidg.exceptions.InactiveUserException;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.ActiveSession;
@@ -15,6 +14,7 @@ import mx.bidg.model.Users;
 import mx.bidg.service.ActiveSessionService;
 import mx.bidg.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +51,11 @@ public class UsersServiceImpl implements UsersService {
         
         ActiveSession activeSession = activeSessionService.findById(userDB.getIdUser());
         if(activeSession != null) {
-            throw new ActiveSessionException("El usuario " + user.getUsername() + " ya tiene una sesion activa");
+            throw new ValidationException(
+                    "El usuario " + user.getUsername() + " ya tiene una sesion activa",
+                    "El usuario ya tiene una sesion activa",
+                    HttpStatus.PRECONDITION_FAILED
+                    );
         }
         
         if(userDB.getPassword().equals(user.getPassword())) {
