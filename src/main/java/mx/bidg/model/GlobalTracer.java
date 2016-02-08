@@ -83,10 +83,9 @@ public class GlobalTracer implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
     
-    @JoinColumn(name = "ID_USER", referencedColumnName = "ID_USER")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private Users idUser;
+    @Column(name = "ID_USER")
+    @JsonView(JsonViews.Root.class)
+    private Integer idUser;
 
     public GlobalTracer() {
     }
@@ -150,11 +149,11 @@ public class GlobalTracer implements Serializable {
         this.creationDate = creationDate;
     }
 
-    public Users getIdUser() {
+    public Integer getIdUser() {
         return idUser;
     }
 
-    public void setIdUser(Users idUser) {
+    public void setIdUser(Integer idUser) {
         this.idUser = idUser;
     }
 

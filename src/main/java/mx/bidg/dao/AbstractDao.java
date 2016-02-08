@@ -68,24 +68,32 @@ public abstract class AbstractDao<PK extends Serializable, T> {
     }
     
     public void globalTracer(String operationType, T entity) {
-        GlobalTracer tracer = new GlobalTracer();
         HttpSession session = request.getSession(false);
-        String task = request.getMethod().toLowerCase() + ":" + request.getRequestURI();
-        Users user = (Users) session.getAttribute("user");
-        ObjectMapper mapper = new ObjectMapper();
-        Table annotation = entity.getClass().getAnnotation(Table.class);
-        tracer.setIdUser(user);
-        tracer.setUsername(user.getUsername());
-        tracer.setOperationType(operationType);
-        tracer.setTask(task);
-        tracer.setTableName(annotation.name());
-        tracer.setCreationDate(LocalDateTime.now());
-        try {
-            tracer.setInfo(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(entity));
-        } catch (JsonProcessingException ex) {
-            throw new ValidationException(ex.getMessage());
+        if(session == null) {
+            return;
         }
-        getSession().save(tracer);
+        Users user = (Users) session.getAttribute("user");
+
+        if (user != null && user.getIdUser() != null && user.getUsername() != null) {
+            System.out.println(user.getIdUser());
+            System.out.println(user.getUsername());
+            String task = request.getMethod().toLowerCase() + ":" + request.getRequestURI();
+            GlobalTracer tracer = new GlobalTracer();
+            ObjectMapper mapper = new ObjectMapper();
+            Table annotation = entity.getClass().getAnnotation(Table.class);
+            tracer.setIdUser(user.getIdUser());
+            tracer.setUsername(user.getUsername());
+            tracer.setOperationType(operationType);
+            tracer.setTask(task);
+            tracer.setTableName(annotation.name());
+            tracer.setCreationDate(LocalDateTime.now());
+            try {
+                tracer.setInfo(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(entity));
+            } catch (JsonProcessingException ex) {
+                throw new ValidationException(ex.getMessage());
+            }
+            getSession().save(tracer);
+        }
     }
     
 }
