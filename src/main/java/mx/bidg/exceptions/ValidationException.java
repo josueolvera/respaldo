@@ -19,13 +19,14 @@ public class ValidationException extends RuntimeException {
     private String clientMessage;
     private ErrorField errorField;
 
-    public ValidationException() {
-
-    }
-
     public ValidationException(String message) {
         super(message);
         this.loggerMessage = message;
+        this.clientMessage = "Ha habido un problema con su solicitud, intente nuevamente";
+        this.status = HttpStatus.BAD_REQUEST;
+        ErrorField errorField = new ErrorField(clientMessage);
+        errorField.getError().setCode(status.value());
+        this.errorField = errorField;
     }
 
     public ValidationException(String loggerMessage, String clientMessage) {

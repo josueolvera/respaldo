@@ -15,10 +15,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.PRECONDITION_FAILED, reason = "El usuario ya tiene una sesion activa")
 public class ActiveSessionException extends ValidationException {
     
-    public ActiveSessionException() {
-        
-    }
-    
     public ActiveSessionException(String message) {
         super(message);
     }
