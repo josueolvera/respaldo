@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import mx.bidg.config.JsonViews;
 import mx.bidg.exceptions.InvalidFileException;
+import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.PriceEstimations;
 import mx.bidg.model.Users;
 import mx.bidg.service.PriceEstimationsService;
@@ -52,8 +53,8 @@ public class PriceEstimationsController {
     
     ObjectMapper mapper = new ObjectMapper();
     
-    @RequestMapping(method = RequestMethod.POST, headers = {"Accept=aplication/json; charset=UTF-8"}, 
-            produces = "aplication/json; charset=UTF-8")
+    @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json; charset=UTF-8"},
+            produces = "application/json; charset=UTF-8")
     public @ResponseBody ResponseEntity<String> save(@RequestBody String data, HttpSession session) throws Exception {
         
         Users user = (Users) session.getAttribute("user");
@@ -69,7 +70,7 @@ public class PriceEstimationsController {
     
     
     @RequestMapping(value = "/{idEstimation}/attachment", method = RequestMethod.POST, 
-            headers = {"Accept=aplication/json; charset=UTF-8"})
+            headers = {"Accept=application/json; charset=UTF-8"})
     public @ResponseBody ResponseEntity<String> saveFile(@PathVariable int idEstimation, 
             @RequestParam("file") MultipartFile filePart) throws Exception {
         
@@ -95,7 +96,9 @@ public class PriceEstimationsController {
             
             File dir = new File(SAVE_PATH + destDir);
             if (! dir.exists()) {
-                dir.mkdir();
+                if(!dir.mkdir()) {
+                    throw new ValidationException("Error al crear el directorio: " + dir, "Error al crear el directorio");
+                }
             }
 
             OutputStream outputStream = new FileOutputStream(new File(SAVE_PATH + destFile));

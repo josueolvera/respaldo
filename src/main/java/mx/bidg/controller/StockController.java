@@ -83,14 +83,6 @@ public class StockController {
                 new DwEnterprises(stock.getIdDwEnterprises())
         );
 
-        if (dwEmployee == null) {
-            throw new ValidationException(
-                    "No existe DwEmployees: No se permite resignación de área",
-                    "No se permite resignación de área",
-                    HttpStatus.FORBIDDEN
-            );
-        }
-
         StockEmployeeAssignments assignment = assignmentsService.getAssignmentFor(stock);
 
         stock.setSerialNumber(jnode.get("serialNumber").asText());
@@ -99,6 +91,14 @@ public class StockController {
         stock.setPurchasePrice(new BigDecimal(jnode.get("purchasePrice").asDouble()));
 
         if (! assignment.getIdEmmployee().equals(employee.getIdEmployee())) {
+            if (dwEmployee == null) {
+                throw new ValidationException(
+                        "No existe DwEmployees: No se permite resignación de área",
+                        "No se permite resignación de área",
+                        HttpStatus.FORBIDDEN
+                );
+            }
+
             assignment.setCurrentAssignment(0);
             StockEmployeeAssignments newAssignment = new StockEmployeeAssignments();
             newAssignment.setStocks(stock);
@@ -301,7 +301,25 @@ public class StockController {
     }
 
     @RequestMapping(value = "/{idStock}/assignments", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> saveAssignment(@PathVariable int idStock) throws IOException {
+    public ResponseEntity<String> saveAssignment(@PathVariable int idStock, @RequestBody String data) throws IOException {
+        JsonNode jnode = mapper.readTree(data);
+        DwEnterprises dwEnterprises = new DwEnterprises(jnode.get("idDwEnterprise").asInt());
+        Stocks stock = stockService.findSimpleById(idStock);
+        StockEmployeeAssignments assignment = assignmentsService.getAssignmentFor(stock);
+        StockEmployeeAssignments newAssignment = new StockEmployeeAssignments();
+
+        stock.setDwEnterprises(dwEnterprises);
+        assignment.setCurrentAssignment(0);
+        newAssignment.setStocks(stock);
+        newAssignment.setDwEnterprises(stock.getDwEnterprises());
+        newAssignment.setEmployee(assignment.getEmployee());
+        newAssignment.setAssignmentDate(LocalDateTime.now());
+        newAssignment.setCurrentAssignment(1);
+        newAssignment.setIdAccessLevel(1);
+
+        assignmentsService.update(assignment);
+        assignmentsService.saveAssignment(newAssignment);
+        stockService.update(stock);
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(""),
                 HttpStatus.CREATED

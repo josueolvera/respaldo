@@ -11,11 +11,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.SelectBeforeUpdate;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -23,9 +20,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.hibernate.annotations.DynamicUpdate;
 
+
 @Entity
 @DynamicUpdate
 @Table(name = "STOCKS")
+
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Stocks implements Serializable {
     private static final long serialVersionUID = 1L;

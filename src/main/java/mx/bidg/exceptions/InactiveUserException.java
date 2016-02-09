@@ -15,9 +15,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.UNAUTHORIZED, reason = "Acceso no autorizado")
 public class InactiveUserException extends ValidationException {
 
-    public InactiveUserException() {
-    }
-
     public InactiveUserException(String message) {
         super(message);
     }

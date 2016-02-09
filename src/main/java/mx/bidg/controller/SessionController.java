@@ -17,6 +17,7 @@ import mx.bidg.service.ApplicationMenuService;
 import mx.bidg.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -48,7 +49,7 @@ public class SessionController {
         return "index";
     }
     
-    @RequestMapping(value = "/login", method = RequestMethod.POST, produces = "text/html;charset=UTF-8")
+    @RequestMapping(value = "/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> login(@RequestBody Users user, HttpServletRequest request) {
         
         Users userSession = usersService.verifyUserLogin(user);

@@ -42,7 +42,7 @@ public class BudgetMonthBranchDaoImpl extends AbstractDao<Integer, BudgetMonthBr
 
     @Override
     public BudgetMonthBranch update(BudgetMonthBranch entity) {
-        getSession().update(entity);
+        modify(entity);
         return entity;
     }
 
@@ -72,7 +72,7 @@ public class BudgetMonthBranchDaoImpl extends AbstractDao<Integer, BudgetMonthBr
 
     @Override
     public boolean authorizeBudget(int idGroup, int idArea, int year) {
-        
+        globalTracer("UPDATE", new BudgetMonthBranch());
         String query = "update BUDGET_MONTH_BRANCH bmb "
                 + "inner join BUDGETS b on bmb.ID_BUDGET = b.ID_BUDGET set IS_AUTHORIZED = 1 "
                 + "where bmb.YEAR = :year and b.ID_GROUP = :idGroup and b.ID_AREA = :idArea";

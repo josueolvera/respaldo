@@ -25,6 +25,7 @@ import javax.validation.constraints.NotNull;
 import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
 
+
 /**
  *
  * @author sistemask
@@ -32,6 +33,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "REQUEST_TYPES_PRODUCT")
+
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class RequestTypesProduct implements Serializable {
     

@@ -24,5 +24,10 @@ public class CCurrenciesServiceImpl implements CCurrenciesService {
     public List<CCurrencies> findAll() {
         return cCurrenciesDao.findAll();
     }
-    
+
+    @Override
+    public CCurrencies update(CCurrencies currency) {
+        return cCurrenciesDao.update(currency);
+    }
+
 }

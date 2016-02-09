@@ -36,7 +36,7 @@ public class CArticleStatusDaoImpl extends AbstractDao<Integer, CArticleStatus> 
 
     @Override
     public CArticleStatus update(CArticleStatus entity) {
-        getSession().update(entity);
+        modify(entity);
         return entity;
     }
 

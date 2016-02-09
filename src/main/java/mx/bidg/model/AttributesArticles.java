@@ -10,8 +10,10 @@ import mx.bidg.config.JsonViews;
 import javax.persistence.*;
 import java.io.Serializable;
 
+
 @Entity
 @Table(name = "ATTRIBUTES_ARTICLES")
+
 public class AttributesArticles implements Serializable {
     private static final long serialVersionUID = 1L;
 

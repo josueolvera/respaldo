@@ -22,6 +22,7 @@ import javax.validation.constraints.NotNull;
 import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
 
+
 /**
  *
  * @author sistemask
@@ -29,6 +30,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "PROVIDERS_ACCOUNTS")
+
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class ProvidersAccounts implements Serializable {
     

@@ -15,9 +15,11 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import org.hibernate.annotations.DynamicUpdate;
 
+
 @Entity
 @DynamicUpdate
 @Table(name = "PROPERTIES")
+
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Properties implements Serializable {
     private static final long serialVersionUID = 1L;

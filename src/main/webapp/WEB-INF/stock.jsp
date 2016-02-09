@@ -20,7 +20,7 @@
                     this.fetchDocumentTypes();
                     this.fetchValues();
                     this.fetchArticleStatus();
-                    this.fetchAllEmployees();
+                    this.fetchHierarchy();
                 },
                 data: {
                     isSaving: false,
@@ -32,6 +32,7 @@
                         values: [],
                         articleStatus: [],
                         employees: [],
+                        hierarchy: [],
                         documentTypes: []
                     },
                     selectedOptions: {
@@ -54,6 +55,12 @@
                         article: null
                     },
                     assignmentsModal: {
+                        selected: {
+                            distributor: null,
+                            region: null,
+                            branch: null,
+                            area: null
+                        },
                         article: null
                     },
                     attachmentsDownloadUrl: ROOT_URL + "/stock/attachments/download/"
@@ -151,6 +158,11 @@
                     fetchAreas: function () {
                         this.$http.get(ROOT_URL + "/areas").success(function (data) {
                             this.selectOptions.areas = data;
+                        });
+                    },
+                    fetchHierarchy: function () {
+                        this.$http.get(ROOT_URL + "/dw-enterprises/hierarchy").success(function (data) {
+                            this.selectOptions.hierarchy = data;
                         });
                     },
                     fetchDocumentTypes: function () {
@@ -280,6 +292,18 @@
                             showAlert(data.error.message, {type:3})
                         });
                     },
+                    distributorChanged: function () {
+                        this.assignmentsModal.selected.region = null;
+                        this.assignmentsModal.selected.branch = null;
+                        this.assignmentsModal.selected.area = null;
+                    },
+                    regionChanged: function () {
+                        this.assignmentsModal.selected.branch = null;
+                        this.assignmentsModal.selected.area = null;
+                    },
+                    branchChanged: function () {
+                        this.assignmentsModal.selected.area = null;
+                    },
                     validateFile: function (event) {
                         if (! event.target.files[0].name.match(/(\.jpg|\.jpeg|\.pdf|\.png)$/i)) {
                             event.target.value = null;
@@ -334,12 +358,36 @@
                             employee: {
                                 idEmployee: this.editModal.selectedEmployee.idEmployee
                             }
-                        }).success(function (data){
+                        }).success(function () {
+                            article.serialNumber = this.editModal.serialNumber;
+                            article.stockFolio = this.editModal.stockFolio;
+                            article.articleStatus = this.editModal.articleStatus;
+                            article.purchasePrice = this.editModal.purchasePrice;
+                            article.stockEmployeeAssignmentsList[0].employee = this.editModal.selectedEmployee;
                             this.isSaving = false;
+                            showAlert("Articulo modificado con exito", {type: 1});
                         }).error(function (data) {
                             this.isSaving = false;
                             showAlert(data.error.message, {type: 3});
                         });
+                    },
+                    saveStockAssignment: function (article) {
+                        if (this.assignmentsModal.selected.area == null) {
+                            showAlert("Distribudor, region, sucursal y area son requeridos", {type:3});
+                            return;
+                        }
+                        this.isSaving = true;
+                        this.$http.post(ROOT_URL + "/stock/" + article.idStock + "/assignments", {
+                            idDwEnterprise: this.assignmentsModal.selected.area.dwEnterprise.idDwEnterprise
+                        }).success(function () {
+                            this.isSaving = false;
+                            showAlert("Asignación exitosa");
+                            this.fetchStock(this.selectedOptions.distributor);
+                            this.closeAssignmentsModal();
+                        }).error(function (data) {
+                            this.isSaving = false;
+                            showAlert(data.error.message, {type:3});
+                        })
                     }
                 }
             });
@@ -383,11 +431,11 @@
                         </option>
                     </select>
                 </div>
-                <div class="col-md-3 col-xs-6">
+                <div style="visibility: hidden" class="col-md-3 col-xs-6">
                     <label>Region</label>
                     <select class="form-control"></select>
                 </div>
-                <div class="col-md-3 col-xs-6">
+                <div style="visibility: hidden" class="col-md-3 col-xs-6">
                     <label>Sucursal</label>
                     <select class="form-control"></select>
                 </div>
@@ -723,22 +771,48 @@
                                     <label>No. de Serie: </label>
                                     {{ assignmentsModal.article.serialNumber }}
                                 </div>
-                                <div class="col-md-4 col-xs-12">
-                                    <label>Asignado a: </label>
-                                    {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
-                                    {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
-                                    {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
-                                    {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}
+                                <div class="col-md-4 col-xs-6">
+                                    <label>Folio de inventario: </label>
+                                    {{ assignmentsModal.article.stockFolio }}
                                 </div>
-                            </div>
-                            <div class="row flex-row flex-header">
-                                <div class="col-xs-4"><label>Asignar a</label></div>
-                                <div class="col-xs-8">
-                                    <select v-model="" class="form-control col-xs-8"
-                                            @change="">
-                                        <option v-for="distributor in selectOptions.distributors"
+                                <div class="col-xs-12"><label>Asignar a</label></div>
+                                <div class="col-md-3 col-xs-6">
+                                    <label>Distribuidor</label>
+                                    <select v-model="assignmentsModal.selected.distributor" class="form-control"
+                                            @change="distributorChanged">
+                                        <option v-for="distributor in selectOptions.hierarchy[0].subLevels"
                                                 :value="distributor">
-                                            {{ distributor.distributorName }}
+                                            {{ distributor.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 col-xs-6">
+                                    <label>Region</label>
+                                    <select v-model="assignmentsModal.selected.region" class="form-control"
+                                            @change="regionChanged" :disabled="assignmentsModal.selected.distributor == null">
+                                        <option v-for="region in assignmentsModal.selected.distributor.subLevels"
+                                                :value="region">
+                                            {{ region.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 col-xs-6">
+                                    <label>Sucursal</label>
+                                    <select v-model="assignmentsModal.selected.branch" class="form-control"
+                                            @change="branchChanged" :disabled="assignmentsModal.selected.region == null">
+                                        <option v-for="branch in assignmentsModal.selected.region.subLevels"
+                                                :value="branch">
+                                            {{ branch.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 col-xs-6">
+                                    <label>Area</label>
+                                    <select v-model="assignmentsModal.selected.area" class="form-control"
+                                            @change="" :disabled="assignmentsModal.selected.branch == null">
+                                        <option v-for="area in assignmentsModal.selected.branch.subLevels"
+                                                :value="area">
+                                            {{ area.name }}
                                         </option>
                                     </select>
                                 </div>
@@ -755,6 +829,25 @@
                                             <th>Fecha de asignación</th>
                                         </tr>
                                     </thead>
+                                    <tr class="success">
+                                        <td>
+                                            {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
+                                            {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
+                                            {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
+                                            {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}
+                                        </td>
+                                        <td>{{ assignmentsModal.article.dwEnterprises.distributor.distributorName }}</td>
+                                        <td>{{ assignmentsModal.article.dwEnterprises.region.regionName }}</td>
+                                        <td>{{ assignmentsModal.article.dwEnterprises.branch.branchName }}</td>
+                                        <td>{{ assignmentsModal.article.dwEnterprises.area.areaName }}</td>
+                                        <td>
+                                            {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].assignmentDateFormats.dateNumber }}
+                                            <span class="label label-success">Actual</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="text-center">
+                                        <td colspan="6"><label>Historial de asignaciones</label></td>
+                                    </tr>
                                     <tr v-for="assignment in assignmentsModal.article.assignmentsRecord">
                                         <td>
                                             {{ assignment.employee.firstName }}
@@ -773,7 +866,7 @@
                         </div>
                         <div class="text-right modal-footer flex-row flex-footer">
                             <button :disabled="isSaving" class="btn btn-default" @click="closeAssignmentsModal">Cancelar</button>
-                            <button @click=""
+                            <button @click="saveStockAssignment(assignmentsModal.article)"
                                     :disabled="isSaving"
                                     class="btn btn-success">
                                 Guardar

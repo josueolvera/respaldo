@@ -27,6 +27,7 @@ import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
+
 /**
  *
  * @author sistemask
@@ -34,6 +35,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "PERIODICS_PAYMENTS")
+
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class PeriodicsPayments implements Serializable {
     

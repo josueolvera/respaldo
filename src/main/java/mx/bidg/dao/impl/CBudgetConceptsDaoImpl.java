@@ -43,7 +43,7 @@ public class CBudgetConceptsDaoImpl extends AbstractDao<Integer, CBudgetConcepts
 
     @Override
     public CBudgetConcepts update(CBudgetConcepts entity) {
-        getSession().update(entity);
+        modify(entity);
         return entity;
     }
 

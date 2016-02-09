@@ -19,6 +19,7 @@ import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
 
+
 /**
  *
  * @author sistemask
@@ -26,6 +27,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "C_AREAS")
+
 public class CAreas implements Serializable {
         
     private static final long serialVersionUID = 1L;

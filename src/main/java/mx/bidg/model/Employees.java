@@ -32,6 +32,7 @@ import mx.bidg.utils.DateConverter;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
+
 /**
  *
  * @author sistemask
@@ -39,6 +40,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "EMPLOYEES")
+
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Employees implements Serializable {
     

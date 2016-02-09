@@ -68,7 +68,7 @@ public class StockDocumentsDaoImpl extends AbstractDao<Integer, StockDocuments> 
 
     @Override
     public StockDocuments update(StockDocuments entity) {
-        getSession().update(entity);
+        modify(entity);
         return entity;
     }
 

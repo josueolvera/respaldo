@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import org.hibernate.annotations.DynamicUpdate;
 
+
 /**
  *
  * @author rafael
@@ -21,6 +22,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "C_PRODUCTS")
+
 public class CProducts implements Serializable {
     
     private static final long serialVersionUID = 1L;

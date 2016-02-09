@@ -15,6 +15,7 @@ import mx.bidg.config.JsonViews;
 import mx.bidg.utils.TimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
+
 /**
  *
  * @author sistemask
@@ -22,6 +23,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "DW_EMPLOYEES")
+
 public class DwEmployees implements Serializable {
     
     private static final long serialVersionUID = 1L;

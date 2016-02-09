@@ -33,7 +33,7 @@ public class AuthorizationsDaoImpl extends AbstractDao<Integer, Authorizations> 
 
     @Override
     public Authorizations update(Authorizations entity) {
-        getSession().update(entity);
+        modify(entity);
         return entity;
     }
 

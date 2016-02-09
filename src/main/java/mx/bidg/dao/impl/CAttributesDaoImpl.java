@@ -35,7 +35,7 @@ public class CAttributesDaoImpl extends AbstractDao<Integer, CAttributes> implem
 
     @Override
     public CAttributes update(CAttributes entity) {
-        getSession().update(entity);
+        modify(entity);
         return entity;
     }
 

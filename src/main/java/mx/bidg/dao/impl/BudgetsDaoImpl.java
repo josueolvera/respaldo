@@ -69,11 +69,12 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
     }
 
     @Override
-    public ArrayList<Budgets> findByGroupArea(CGroups idGroup, CAreas idArea) {
+    public ArrayList<Budgets> findByGroupAreaEnterprise(CGroups idGroup, CAreas idArea, Integer idDwEnterprise) {
         Criteria criteria = createEntityCriteria();
         HashMap<String, Object> map = new HashMap<>();
         map.put("group", idGroup);
         map.put("area", idArea);
+        map.put("budgetMonthBranchList.idDwEnterprise", idDwEnterprise);
         ArrayList<Budgets> list = (ArrayList<Budgets>) criteria.add(Restrictions.allEq(map))
                 .setResultTransformer(DistinctRootEntityResultTransformer.INSTANCE)
                 .list();

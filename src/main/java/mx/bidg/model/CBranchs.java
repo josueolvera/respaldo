@@ -22,6 +22,7 @@ import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
+
 /**
  *
  * @author sistemask
@@ -29,6 +30,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "C_BRANCHS")
+
 public class CBranchs implements Serializable {
     
     private static final long serialVersionUID = 1L;

@@ -2,10 +2,8 @@ package mx.bidg.controller;
 
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.pojos.ErrorField;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -13,6 +11,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,5 +51,23 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
         ValidationException ex = (ValidationException) e;
 
         return handleExceptionInternal(e, ex.getError(), headers, ex.getStatus(), request);
+    }
+
+    protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
+            HttpRequestMethodNotSupportedException ex, HttpHeaders headers, HttpStatus status, WebRequest request
+    ) {
+        pageNotFoundLogger.warn(ex.getMessage());
+        status = HttpStatus.METHOD_NOT_ALLOWED;
+
+        Set<HttpMethod> supportedMethods = ex.getSupportedHttpMethods();
+        if (!supportedMethods.isEmpty()) {
+            headers.setAllow(supportedMethods);
+        }
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
+        ErrorField errors = new ErrorField(
+                null, "Método no autorizado", status.value()
+        );
+
+        return handleExceptionInternal(ex, errors, headers, status, request);
     }
 }

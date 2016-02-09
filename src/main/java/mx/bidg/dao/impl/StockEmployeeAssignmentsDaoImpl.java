@@ -5,6 +5,7 @@ import mx.bidg.dao.StockEmployeeAssignmentsDao;
 import mx.bidg.model.StockEmployeeAssignments;
 import mx.bidg.model.Stocks;
 import org.hibernate.FetchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -47,6 +48,7 @@ public class StockEmployeeAssignmentsDaoImpl extends AbstractDao<Integer, StockE
                 .add(Restrictions.eq("currentAssignment", 0))
                 .setFetchMode("employee", FetchMode.JOIN)
                 .setFetchMode("dwEnterprises", FetchMode.JOIN)
+                .addOrder(Order.desc("assignmentDate"))
                 .list();
     }
 
@@ -59,7 +61,7 @@ public class StockEmployeeAssignmentsDaoImpl extends AbstractDao<Integer, StockE
 
     @Override
     public StockEmployeeAssignments update(StockEmployeeAssignments entity) {
-        getSession().update(entity);
+        modify(entity);
         return entity;
     }
 

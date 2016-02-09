@@ -37,7 +37,7 @@ body {
     background-size: 35px;
 }
 
-.main-menu:hover,nav.main-menu.expanded {
+.main-menu.expanded {
     width: 25rem;
     overflow: hidden;
 }
@@ -63,13 +63,10 @@ body {
     display: none;
     margin-left: 3rem;
     padding: 0 0 2rem 0;
+    transition: 3s easy;
 }
 
-.has-sub-nav:hover > ul {
-    display: block;
-}
-
-.menu-sub-nav .has-sub-nav:hover ul {
+.has-sub-nav ul.expanded {
     display: block;
 }
 
@@ -78,17 +75,18 @@ body {
 }
 
 .main-menu .top-menu {
-    margin: 2rem 0;
+    margin: 0;
+    overflow-x: hidden;
 }
 
 .main-menu > ul {
-    margin:1rem 0;
+    margin: 1rem 0;
 }
 
 .main-menu li {
-    position:relative;
-    display:block;
-    width:250px;
+    position: relative;
+    display: block;
+    width: 250px;
 }
 
 .main-menu li > a {
@@ -123,9 +121,6 @@ body {
 }
 
 .main-menu > ul.logout {
-    position:absolute;
-    left:0;
-    bottom:0;
 }
 
 .no-touch .scrollable.hover {
@@ -133,8 +128,7 @@ body {
 }
 
 .no-touch .scrollable.hover:hover {
-    overflow-y:auto;
-    overflow:visible;
+    overflow-y: auto;
 }
 
 a:hover,a:focus {
@@ -289,51 +283,49 @@ nav ul,nav li {
 }
 
 .flex-header {
-    flex: 0 1 auto;
+    flex: 0 0 auto;
     min-height: 5.5rem;
 }
 
 .flex-content {
-    flex: 1 1 auto;
+    flex: 1 1 0;
     overflow-y: auto;
 }
 
 .flex-footer {
-    flex: 0 1 auto;
+    flex: 0 0 auto;
     min-height: 5rem;
 }
 
 /* Fecha vertical */
 
 .sidebar-date {
-    position: absolute;
-    bottom: 100px;
-    left: 40px;
+    left: 20px;
     font-weight: bold;
 }
 
-.sidebar-date .date-text {
+.sidebar-date {
     -webkit-transform: rotate(-90deg);
        -moz-transform: rotate(-90deg);
          -o-transform: rotate(-90deg);
             transform: rotate(-90deg);
-    -webkit-transform-origin: left bottom 0;
-       -moz-transform-origin: left bottom 0;
-         -o-transform-origin: left bottom 0;
-            transform-origin: left bottom 0;
+    -webkit-transform-origin: 0 0 0;
+       -moz-transform-origin: 0 0 0;
+         -o-transform-origin: 0 0 0;
+            transform-origin: 0 0 0;
     -webkit-transition: 0.5s ease-in-out;
        -moz-transition: 0.5s ease-in-out;
          -o-transition: 0.5s ease-in-out;
             transition: 0.5s ease-in-out;
 }
 
-.main-menu:hover .date-text {
+.sidebar-date.vertical {
     -webkit-transform: rotate(0deg);
        -moz-transform: rotate(0deg);
          -o-transform: rotate(0deg);
             transform: rotate(0deg);
-    -webkit-transform-origin: left bottom 0;
-       -moz-transform-origin: left bottom 0;
-         -o-transform-origin: left bottom 0;
-            transform-origin: left bottom 0;
+    -webkit-transform-origin: 0 0 0;
+       -moz-transform-origin: 0 0 0;
+         -o-transform-origin: 0 0 0;
+            transform-origin: 0 0 0;
 }

@@ -35,7 +35,7 @@ public class AccountsPayableDaoImpl extends AbstractDao<Integer, AccountsPayable
 
     @Override
     public AccountsPayable update(AccountsPayable entity) {
-        getSession().update(entity);
+        modify(entity);
         return entity;
     }
 
