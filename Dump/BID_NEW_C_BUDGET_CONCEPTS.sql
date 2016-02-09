@@ -29,7 +29,7 @@ CREATE TABLE `C_BUDGET_CONCEPTS` (
   `BUDGET_CONCEPT` varchar(50) NOT NULL,
   `ID_ACCESS_LEVEL` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`ID_BUDGET_CONCEPT`)
-) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=94 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -38,7 +38,7 @@ CREATE TABLE `C_BUDGET_CONCEPTS` (
 
 LOCK TABLES `C_BUDGET_CONCEPTS` WRITE;
 /*!40000 ALTER TABLE `C_BUDGET_CONCEPTS` DISABLE KEYS */;
-INSERT INTO `C_BUDGET_CONCEPTS` VALUES (32,'Prueba',1),(64,'Prueba',1),(65,'Nuevo',1),(66,'Uno mas',1),(68,'Equipo',1),(69,'Aca',1),(70,'Ejemplo',1),(76,'Aca',1),(77,'Uno mas',1),(80,'Si',1),(83,'D',1),(85,'Aca aca',1),(86,'Aquii',1),(87,'Luz',1),(88,'Otro',1);
+INSERT INTO `C_BUDGET_CONCEPTS` VALUES (32,'Prueba',1),(64,'Prueba',1),(65,'Nuevo',1),(66,'Uno mas',1),(68,'Equipo',1),(69,'Aca',1),(70,'Ejemplos',1),(76,'Aca',1),(77,'Uno mas',1),(80,'Si',1),(83,'D',1),(85,'Aca aca',1),(86,'Aquii2',1),(87,'Luz',1),(88,'Otros',1),(89,'Algo',1),(90,'qwww',1),(91,'Asistente',1),(92,'Nomina Reclutador',1);
 /*!40000 ALTER TABLE `C_BUDGET_CONCEPTS` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -51,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-01-29 12:38:13
+-- Dump completed on 2016-02-09 17:43:43

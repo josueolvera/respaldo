@@ -20,6 +20,8 @@ public interface BudgetsDao extends InterfaceDao<Budgets> {
     
     Budgets findByCombination(CGroups idGroup, CAreas idArea, CBudgetCategories idCategory,
             CBudgetSubcategories idSubcategory);
+
+    ArrayList<Budgets> findByGroupArea(CGroups idGroup, CAreas idArea);
     
     ArrayList<Budgets> findByGroupAreaEnterprise(CGroups idGroup, CAreas idArea, Integer idDwEnterprise);
     

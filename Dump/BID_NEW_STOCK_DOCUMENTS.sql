@@ -34,11 +34,13 @@ CREATE TABLE `STOCK_DOCUMENTS` (
   `CURRENT_DOCUMENT` int(11) NOT NULL DEFAULT '0',
   `ID_ACCESS_LEVEL` int(11) DEFAULT '1',
   PRIMARY KEY (`ID_STOCK_DOCUMENT`),
-  KEY `STOCK_DOCUMENTS_STOCKS_ID_STOCK_fk` (`ID_STOCK`),
-  KEY `STOCK_DOCUMENTS_C_STOCK_DOCUMENTS_TYPES_ID_DOCUMENT_TYPE_fk` (`ID_DOCUMENT_TYPE`),
+  KEY `FK1leirld9cyy5io9dam6p7ojt2` (`ID_DOCUMENT_TYPE`),
+  KEY `FKk8fd40ce5blk6xx1l8x55nr36` (`ID_STOCK`),
+  CONSTRAINT `FKk8fd40ce5blk6xx1l8x55nr36` FOREIGN KEY (`ID_STOCK`) REFERENCES `STOCKS` (`ID_STOCK`),
+  CONSTRAINT `FK1leirld9cyy5io9dam6p7ojt2` FOREIGN KEY (`ID_DOCUMENT_TYPE`) REFERENCES `C_STOCK_DOCUMENTS_TYPES` (`ID_DOCUMENT_TYPE`),
   CONSTRAINT `STOCK_DOCUMENTS_C_STOCK_DOCUMENTS_TYPES_ID_DOCUMENT_TYPE_fk` FOREIGN KEY (`ID_DOCUMENT_TYPE`) REFERENCES `C_STOCK_DOCUMENTS_TYPES` (`ID_DOCUMENT_TYPE`),
   CONSTRAINT `STOCK_DOCUMENTS_STOCKS_ID_STOCK_fk` FOREIGN KEY (`ID_STOCK`) REFERENCES `STOCKS` (`ID_STOCK`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -47,7 +49,7 @@ CREATE TABLE `STOCK_DOCUMENTS` (
 
 LOCK TABLES `STOCK_DOCUMENTS` WRITE;
 /*!40000 ALTER TABLE `STOCK_DOCUMENTS` DISABLE KEYS */;
-INSERT INTO `STOCK_DOCUMENTS` VALUES (1,1,1,'/article_1/Documento.1.1453314032536','Captura de pantalla de 2015-11-04 13_21_40.png','2016-01-20 18:20:32',0,1),(2,1,2,'/article_1/Documento.2.1451517612425','diagrama.xmi','2016-01-12 16:47:20',0,1),(3,1,3,'/article_1/Documento.3.1451517612438','bid_new.svg','2016-01-12 16:47:20',0,1),(4,2,1,'/article_2/Documento.1.1452538883032','bid_new.svg','2016-01-12 16:47:20',1,1),(5,2,2,'/article_2/Documento.2.1452538883052','stock_schema.svg','2016-01-12 16:47:20',1,1),(6,2,3,'/article_2/Documento.3.1452538883063','autosave.xmi','2016-01-12 16:47:20',1,1),(7,3,1,'/article_3/Documento.1.1452539904008','bid_new.svg','2016-01-12 16:47:20',1,1),(8,3,2,'/article_3/Documento.2.1452540646842','SkypeFedora.png','2016-01-12 16:47:20',1,1),(9,3,3,'/article_3/Documento.3.1452539904208','autosave.xmi','2016-01-12 16:47:20',1,1),(14,4,1,'/article_4/Documento.1.1452617240497','imagen.png','2016-01-12 16:47:20',0,1),(15,4,2,'/article_4/Documento.2.1452616425435','es_mx.oxt','2016-01-12 16:33:45',1,1),(16,4,3,'/article_4/Documento.3.1452552130923','autosave.xmi','2016-01-11 22:42:10',1,1),(18,1,1,'/article_1/Documento.1.1452296795310','imagen.png','2016-01-20 17:06:17',0,1),(19,1,1,'/article_1/Documento.1.1453314622483','SkypeFedora.png','2016-01-20 18:30:22',0,1),(20,1,1,'/article_1/Documento.1.1453314684339','SkypeFedora.png','2016-01-20 18:31:24',1,1),(21,1,2,'/article_1/Documento.2.1453315094598','bid_new_sc.pdf','2016-01-20 18:38:14',0,1),(22,1,3,'/article_1/Documento.3.1453315427915','imagen.png','2016-01-20 18:43:47',0,1),(23,1,2,'/article_1/Documento.2.1453317137885','bid_new.pdf','2016-01-20 19:12:17',1,1),(24,1,3,'/article_1/Documento.3.1453317176865','SkypeFedora.png','2016-01-20 19:12:56',1,1),(25,4,1,'/article_4/Documento.1.1453318458709','bid_new.pdf','2016-01-20 19:34:18',0,1),(26,4,1,'/article_4/Documento.1.1453318482165','SkypeFedora.png','2016-01-20 19:34:42',1,1);
+INSERT INTO `STOCK_DOCUMENTS` VALUES (1,1,1,'/article_1/Documento.1.1453314032536','Captura de pantalla de 2015-11-04 13_21_40.png','2016-01-20 18:20:32',0,1),(2,1,2,'/article_1/Documento.2.1451517612425','diagrama.xmi','2016-01-12 16:47:20',0,1),(3,1,3,'/article_1/Documento.3.1451517612438','bid_new.svg','2016-01-12 16:47:20',0,1),(4,2,1,'/article_2/Documento.1.1452538883032','bid_new.svg','2016-01-12 16:47:20',1,1),(5,2,2,'/article_2/Documento.2.1452538883052','stock_schema.svg','2016-01-12 16:47:20',1,1),(6,2,3,'/article_2/Documento.3.1452538883063','autosave.xmi','2016-01-12 16:47:20',1,1),(7,3,1,'/article_3/Documento.1.1452539904008','bid_new.svg','2016-01-12 16:47:20',1,1),(8,3,2,'/article_3/Documento.2.1452540646842','SkypeFedora.png','2016-01-12 16:47:20',1,1),(9,3,3,'/article_3/Documento.3.1452539904208','autosave.xmi','2016-01-12 16:47:20',1,1),(14,4,1,'/article_4/Documento.1.1452617240497','imagen.png','2016-01-12 16:47:20',0,1),(15,4,2,'/article_4/Documento.2.1452616425435','es_mx.oxt','2016-01-12 16:33:45',1,1),(16,4,3,'/article_4/Documento.3.1452552130923','autosave.xmi','2016-01-11 22:42:10',1,1),(18,1,1,'/article_1/Documento.1.1452296795310','imagen.png','2016-01-20 17:06:17',0,1),(19,1,1,'/article_1/Documento.1.1453314622483','SkypeFedora.png','2016-01-20 18:30:22',0,1),(20,1,1,'/article_1/Documento.1.1453314684339','SkypeFedora.png','2016-01-20 18:31:24',0,1),(21,1,2,'/article_1/Documento.2.1453315094598','bid_new_sc.pdf','2016-01-20 18:38:14',0,1),(22,1,3,'/article_1/Documento.3.1453315427915','imagen.png','2016-01-20 18:43:47',0,1),(23,1,2,'/article_1/Documento.2.1453317137885','bid_new.pdf','2016-01-20 19:12:17',1,1),(24,1,3,'/article_1/Documento.3.1453317176865','SkypeFedora.png','2016-01-20 19:12:56',1,1),(25,4,1,'/article_4/Documento.1.1453318458709','bid_new.pdf','2016-01-20 19:34:18',0,1),(26,4,1,'/article_4/Documento.1.1453318482165','SkypeFedora.png','2016-01-20 19:34:42',1,1),(27,1,1,'/article_1/Documento.1.1454451838904','redinternet (1).pdf','2016-02-02 22:23:58',1,1);
 /*!40000 ALTER TABLE `STOCK_DOCUMENTS` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -60,4 +62,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-01-29 12:38:11
+-- Dump completed on 2016-02-09 17:43:41
