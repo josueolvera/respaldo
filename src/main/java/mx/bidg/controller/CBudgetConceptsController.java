@@ -52,9 +52,9 @@ public class CBudgetConceptsController {
     
     ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
     
-    @RequestMapping(value = "/group-area/{idGroup}/{idArea}/{year}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/group-area/{idGroup}/{idArea}/{idDwEnterprise}/{year}/", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody ResponseEntity<String> getByGroupArea(@PathVariable int idGroup, @PathVariable int idArea, 
-            @PathVariable int year) throws Exception {
+            @PathVariable Integer idDwEnterprise, @PathVariable int year) throws Exception {
         
         List<BudgetPojo> list = new ArrayList<>();
         List<ConceptMonthPojo> conceptMonthPojoList;
@@ -65,7 +65,7 @@ public class CBudgetConceptsController {
         ConceptMonthPojo conceptMonthPojo;
         TotalMonthPojo totalMonthPojo;
         CMonths cMonth;
-        List<Budgets> budgetList =  budgetsService.findByGroupArea(new CGroups(idGroup), new CAreas(idArea));
+        List<Budgets> budgetList =  budgetsService.findByGroupAreaEnterprise(new CGroups(idGroup), new CAreas(idArea), idDwEnterprise);
         
         for(Budgets budget: budgetList) {
             
