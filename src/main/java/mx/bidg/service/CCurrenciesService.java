@@ -14,6 +14,7 @@ import mx.bidg.model.CCurrencies;
  */
 public interface CCurrenciesService {
     
-    public List<CCurrencies> findAll();
-    
+    List<CCurrencies> findAll();
+    CCurrencies update(CCurrencies currency);
+
 }

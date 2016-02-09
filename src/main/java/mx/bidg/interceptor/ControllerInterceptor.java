@@ -37,6 +37,15 @@ public class ControllerInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception{
         
+        String key = buildURIkey(request.getRequestURI(), request.getMethod().toLowerCase());
+
+        HashMap<String, ArrayList<Integer>> mapPermissions = permissions.getMap();
+        ArrayList<Integer> idRoles = mapPermissions.get(key);
+
+        if(idRoles.contains(6)) {
+            return true;
+        }
+
         HttpSession session = request.getSession(false);
 
         if(session == null) {
@@ -44,20 +53,15 @@ public class ControllerInterceptor extends HandlerInterceptorAdapter {
             logger.log(Level.WARNING, "Sesion nula");
             return false;
         }
-        
+
         Users user = (Users) session.getAttribute("user");
-        
+
         if(user == null || user.getIdUser() == null) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Es necesario inciar sesion");
             logger.log(Level.WARNING, "Usuario nulo");
             return false;
         }
 
-        String key = buildURIkey(request.getRequestURI(), request.getMethod().toLowerCase());
-        
-        HashMap<String, ArrayList<Integer>> mapPermissions = permissions.getMap();
-        ArrayList<Integer> idRoles = mapPermissions.get(key);
-        
         if(idRoles == null) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Acceso denegado");
             logger.log(Level.WARNING, "No hay roles para este request. KEY: " + key);

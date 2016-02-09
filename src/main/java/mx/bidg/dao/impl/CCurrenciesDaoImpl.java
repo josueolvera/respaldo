@@ -25,13 +25,15 @@ public class CCurrenciesDaoImpl extends AbstractDao<Integer, CCurrencies> implem
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<CCurrencies> findAll() {
         return createEntityCriteria().list();
     }
 
     @Override
     public CCurrencies update(CCurrencies entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        modify(entity);
+        return entity;
     }
 
     @Override
