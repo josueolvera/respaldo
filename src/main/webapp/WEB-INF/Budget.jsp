@@ -114,7 +114,8 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
               idGroup: '',
               idArea: '',
               year: 0
-            }
+            },
+            showInfo: false
           },
           methods:
           {
@@ -160,6 +161,8 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
               if (this.lastkeysearch !== key)
               {
                 this.newSearch= true;
+                this.year= '';
+                this.showInfo= false;
                 this.$http.get("http://localhost:8080/BIDGroup/dw-enterprises/"+res[0]+"/"+res[1])
                         .success(function (data)
                         {
@@ -423,12 +426,19 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
         },
         obtainConceptsYear: function()
         {
-          this.$http.get("http://localhost:8080/BIDGroup/budgets/"+this.group+"/"+this.area)
-                  .success(function (data)
-                  {
-                    this.contenido = data;
-                    this.searchConcepts(this.group, this.area, this.year);
-                  });
+          if (this.year !== '')
+          {
+            this.$http.get("http://localhost:8080/BIDGroup/budgets/"+this.group+"/"+this.area)
+                    .success(function (data)
+                    {
+                      this.contenido = data;
+                      this.searchConcepts(this.group, this.area, this.year);
+                    });
+            this.showInfo= true;
+          }
+          else{
+            this.showInfo= false;
+          }
         },
         autorizar: function()
         {
@@ -576,7 +586,7 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
                     </div>
                   </div>
 
-                  <div class="row" v-for="suc in sucursales" v-if="newSearch">
+                  <div class="row" v-for="suc in sucursales" v-if="showInfo">
                     <div class="col-xs-12">
                     <div class="row" v-for="sucs in suc">
                       <div class="row" v-for="sucss in sucs" style="margin-left: 0px">
