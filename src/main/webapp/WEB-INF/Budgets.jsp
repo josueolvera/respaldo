@@ -94,9 +94,11 @@
             catalogoAreas: {},
             catalogoRubros: {},
             catalogoSubRubros: {},
+            idBranchSelected: '',
             arbolNiveles: {},
             contenido: {},
-            sucursales: {},
+            sucursales: [],
+            branches: false,
             flag: true,
             bandera1ernivel: false,
             bandera2donivel: false,
@@ -110,7 +112,8 @@
             newSearch: false,
             year: 0,
             isAutorized: false,
-	    showInfo: false
+	    showInfo: false,
+	    sucursal: {}
           },
           methods:
           {
@@ -158,23 +161,35 @@
                 this.newSearch= true;
                 this.year= '';
                 this.showInfo= false;
+                this.sucursales= [];
+                this.contenido= {};
                 this.$http.get("http://localhost:8080/BIDGroup/dw-enterprises/"+res[0]+"/"+res[1])
                         .success(function (data)
                         {
-                           var self= this;
-                           var agrupados = this.groupBy(data, function (item)
-                           {
-                              return item.iddistributor;
-                           });
+                          var self= this;
+                          var count = Object.keys(data).length
+                          if (count > 1)
+                          {
+                            this.branches= true;
+                            var agrupados = this.groupBy(data, function (item)
+                            {
+                               return item.iddistributor;
+                            });
 
-                           this.sucursales = agrupados.map(function(ele)
-                           {
-                             return self.groupBy(ele, function(item)
-                             {
-                             return item.idregion;
-                             });
-                           });
-                         });
+                            this.sucursal = agrupados.map(function(ele)
+                            {
+                              return self.groupBy(ele, function(item)
+                              {
+                              return item.idregion;
+                              });
+                            });
+
+                          }
+                          else {
+                            this.sucursales= data;
+                            this.branches= false;
+                          }
+                        });
 
                         this.$http.get("http://localhost:8080/BIDGroup/budgets/"+res[0]+"/"+res[1])
                                 .success(function (data)
@@ -236,11 +251,11 @@
                       ];
                     return objeto;
             },
-              searchConcepts: function(group, area, year)
+              searchConcepts: function(group, area, year, idBranchSelected)
               {
                 var self= this;
                 this.isAutorized= false;
-                this.$http.get("http://localhost:8080/BIDGroup/budget-concepts/group-area/"+group+"/"+area+"/"+year)
+                this.$http.get("http://localhost:8080/BIDGroup/budget-concepts/group-area/"+group+"/"+area+"/"+idBranchSelected+"/"+year)
                         .success(function (data)
                         {
                           this.datosPresupuesto = data;
@@ -321,7 +336,7 @@
                                 .success(function (data)
                                 {
                                   this.contenido = data;
-                                  this.searchConcepts(this.group, this.area, this.year);
+                                  this.searchConcepts(this.group, this.area, this.year, this.sucursales[0].idDwEnterprise);
                                 });
                       });
             }
@@ -427,13 +442,60 @@
                     .success(function (data)
                     {
                       this.contenido = data;
-                      this.searchConcepts(this.group, this.area, this.year);
+                      this.searchConcepts(this.group, this.area, this.year, this.sucursales[0].idDwEnterprise);
                     });
             this.showInfo= true;
           }
           else{
             this.showInfo= false;
           }
+        },
+        autorizar: function()
+        {
+          this.autorizacion.idGroup= this.group;
+          this.autorizacion.idArea= this.area;
+          this.autorizacion.year= this.year;
+
+          this.$http.post("http://localhost:8080/BIDGroup/budget-month-branch/authorize", JSON.stringify(this.autorizacion)).
+          success(function(data)
+          {
+            showAlert(data);
+            this.$http.get("http://localhost:8080/BIDGroup/budgets/"+this.group+"/"+this.area)
+                    .success(function (data)
+                    {
+                      this.contenido = data;
+                      this.searchConcepts(this.group, this.area, this.year, this.sucursales[0].idDwEnterprise);
+                    });
+          }).error(function(){
+            showAlert("Ha habido un error con la solicitud, intente nuevamente");
+          });
+
+        }
+        ,
+        copyBranch: function()
+        {
+          this.sucursales= [];
+          var self= this;
+          this.sucursal.forEach(function (element)
+          {
+              element.forEach(function (ele)
+              {
+                ele.forEach(function (el)
+                {
+
+                  if (self.idBranchSelected == el.idDwEnterprise)
+                  {
+                    vm.sucursales.push(el);
+                  }
+                });
+              });
+          });
+          this.$http.get("http://localhost:8080/BIDGroup/budgets/"+this.group+"/"+this.area)
+                  .success(function (data)
+                  {
+                    this.contenido = data;
+                    this.searchConcepts(this.group, this.area, this.year, this.sucursales[0].idDwEnterprise);
+                  });
         }
         ,
         saveBudget: function(eventoconcepto)
@@ -446,7 +508,7 @@
                     .success(function (data)
                     {
                       this.contenido = data;
-                      this.searchConcepts(this.group, this.area, this.year);
+                      this.searchConcepts(this.group, this.area, this.year,this.sucursales[0].idDwEnterprise);
                     });
           }).error(function(){
             showAlert("Ha habido un error con la solicitud, intente nuevamente");
@@ -558,151 +620,163 @@
                         <option value="2016">2016</option>
                       </select>
                     </div>
-                  </div>
-
-                  <div class="row" v-for="suc in sucursales" v-if="showInfo">
-                    <div class="col-xs-12">
-                    <div class="row" v-for="sucs in suc">
-                      <div class="row" v-for="sucss in sucs" style="margin-left: 0px">
-
-                        <div class="row" style="margin-left: 0px; margin-right: 0px">
-                          <div class="col-xs-6 text-left">
-                            <h2 style="font-weight: bold">{{sucss.idDistributor | DistributorFilter}}<small>&nbsp;{{sucss.idBranch | SucursalFilter}}</small></h2>
-                          </div>
-                          <div class="col-xs-6 text-right">
-                            <h3>{{sucss.idArea | areaName}}</h3>
-
-                            <div class="col-xs-6 col-xs-offset-6">
-                              <div class="input-group">
-                                <span class="input-group-addon">$</span>
-                                <input type="text" class="form-control" disabled="true" v-model="totalArea">
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <hr>
-                      <div class="row" v-for="cont in contenido" style="margin-left: 0px; margin-right: 0px" id="1-{{sucss.idArea}}-{{cont[0].idBudgetCategory}}">
+                    <div class="col-xs-4" v-if="branches">
+                      <div class="row" v-for="sucursa in sucursal">
                         <div class="col-xs-12">
-                          <div class="bs-callout bs-callout-default">
-                          <h4>{{cont[0].idBudgetCategory | budgetCategory }}</h4>
-                          <div class="row" v-for="conte in cont" id="1-{{sucss.idArea}}-{{cont[0].idBudgetCategory}}-{{conte.idBudgetSubcategory}}"
-                             style="margin-left: 0px; margin-right: 0px">
-                            <div class="row" style="margin-left: 0px; margin-right: 0px">
-                              <div class="col-xs-4">
-                                <h5>{{conte.idBudgetSubcategory | BudgetSubcategory }}</h5>
-                                <div class="input-group">
-                                  <span class="input-group-addon">$</span>
-                                  <input type="text" class="form-control" placeholder="" disabled="true" v-model=conte.granTotal>
-                                </div>
-                              </div>
-                              <div class="col-xs-1 text-left">
-                                <button type="button" class="btn btn-default" id="g-{{cont[0].idBudgetCategory}}-{{conte.idBudgetSubcategory}}"
-                                   @click="seteoInfo(sucss.idDwEnterprise, conte, $event)"
-                                   style="margin-top: 40px" :disabled="isAutorized">
-                                  <span class="glyphicon glyphicon-plus"></span>
-                                </button>
-                              </div>
-                              <div class="col-xs-6 text left" v-if="conte.conceptos.length > 0">
-                                <button type="button" class="btn btn-default" id="s-{{cont[0].idBudgetCategory}}-{{conte.idBudgetSubcategory}}"
-                                   @click="saveBudget(conte.conceptos)" style="margin-top: 40px" :disabled="isAutorized">
-                                  <span class="glyphicon glyphicon-floppy-disk"></span>
-                                </button>
-                              </div>
-                            </div>
-                            <br>
-                            <div class="row" style="margin-left: 0px" v-if="conte.conceptos.length > 0">
-                              <div class="col-xs-2" style="padding-left: 0px; padding-right: 1px">
-                                <label>
-                                  Concepto
-                                </label>
-                              </div>
-                              <div class="col-xs-9">
-                                <div class="col-xs-1" v-for="mes in meses"
-                                  style="padding-left: 0px; padding-right: 1px">
-                                  <label>
-                                    {{mes}}
-                                  </label>
-                                </div>
-                              </div>
-                              <div class="col-xs-1" style="padding-left: 0px; padding-right: 0px">
-                                <div class="col-xs-4" style="padding-left: 0px; padding-right: 0px">
-                                  <label>
-                                    Total
-                                  </label>
-                                </div>
-                                <div class="col-xs-4" style="padding-left: 0px; padding-right: 0px">
-
-                                </div>
-                              </div>
-                            </div>
-
-                            <div class="row" style="margin-left: 0px" v-for="concepto in conte.conceptos">
-                              <div class="col-xs-2" style="padding-left: 0px; padding-right: 1px">
-                                <input type="text" name="name" class="form-control input-sm" style="font-size: 10px"
-                                  v-model="concepto.conceptName" :disabled="isAutorized">
-                              </div>
-                              <div class="col-xs-9">
-                                <div class="col-xs-1" v-for="mess in concepto.conceptMonth"
-                                  style="padding-left: 0px; padding-right: 1px">
-                                    <input type="text" class="form-control input-sm" placeholder=""
-                                      id="{{mess.month}}" v-model="mess.amountConcept" @change="moneyFormat(mess, concepto, conte)"
-                                      style="font-size: 10px" onkeypress="return isNumberKey(event)" :disabled="isAutorized">
-                                </div>
-                              </div>
-                              <div class="col-xs-1" style="padding-left: 0px; padding-right: 0px">
-                                <div class="col-xs-4" style="padding-left: 0px; padding-right: 0px">
-                                  <label style="font-size: 9px; margin-top: 6px">
-                                    {{concepto.total}}
-                                  </label>
-                                </div>
-                                <div class="col-xs-4" style="padding-left: 0px; padding-right: 0px">
-                                  <button type="button" class="btn btn-link"
-                                     @click="deleteObject(conte, concepto)" :disabled="isAutorized">
-                                    <span class="glyphicon glyphicon-minus"></span>
-                                  </button>
-                                </div>
-                                <div class="col-xs-4 text-right">
-                                  <div class="checkbox">
-                                    <input type="checkbox" value="" style="margin-top: 1px" v-model="concepto.equals"
-                                      @change="equalsImport(concepto, conte)" :disabled="isAutorized">
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                            <br>
-
-                              <div class="row" style="margin-left: 0px" v-if="conte.conceptos.length > 0">
-                                <div class="col-xs-2 text-right">
-                                  <label>
-                                    Total:
-                                  </label>
-                                </div>
-
-                                <div class="col-xs-9">
-                                  <div class="col-xs-1 text-center" v-for="totalmes in conte.totalMonth"
-                                    style="padding-left: 0px; padding-right: 1px">
-                                    <label>
-                                      {{totalmes.montoConcept}}
-                                    </label>
-                                  </div>
-                                </div>
-
-                                <div class="col-xs-1 text-left" style="padding-left: 0px; padding-right: 1px">
-                                  <label>
-                                    $ {{conte.granTotal}}
-                                  </label>
-                                </div>
-                              </div>
-
-                          </div>
-                          </div>
+                        <div class="row" v-for="sucurs in sucursa">
+                          <label>
+                            Sucursal
+                          </label>
+                          <select class="form-control" @change="copyBranch" v-model="idBranchSelected" >
+                          <option></option>
+                          <option v-for="sucur in sucurs" value="{{sucur.idDwEnterprise}}">{{sucur.idBranch | SucursalFilter}}</option>
+                          </select>
                         </div>
-                      </div>
                       </div>
                     </div>
+                    </div>
                   </div>
+
+                    <div class="row" v-for="sucss in sucursales" style="margin-left: 0px" v-if="showInfo">
+                      <div class="col-xs-12">
+                      <div class="row" style="margin-left: 0px; margin-right: 0px">
+                        <div class="col-xs-6 text-left">
+                          <h2 style="font-weight: bold">{{sucss.idDistributor | DistributorFilter}}<small>&nbsp;{{sucss.idBranch | SucursalFilter}}</small></h2>
+                        </div>
+                        <div class="col-xs-6 text-right">
+                          <h3>{{sucss.idArea | areaName}}</h3>
+
+                          <div class="col-xs-6 col-xs-offset-6">
+                            <div class="input-group">
+                              <span class="input-group-addon">$</span>
+                              <input type="text" class="form-control" disabled="true" v-model="totalArea">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <hr>
+                    <div class="row" v-for="cont in contenido" style="margin-left: 0px; margin-right: 0px" id="1-{{sucss.idArea}}-{{cont[0].idBudgetCategory}}">
+                      <div class="col-xs-12">
+                        <div class="bs-callout bs-callout-default">
+                        <h4>{{cont[0].idBudgetCategory | budgetCategory }}</h4>
+                        <div class="row" v-for="conte in cont" id="1-{{sucss.idArea}}-{{cont[0].idBudgetCategory}}-{{conte.idBudgetSubcategory}}"
+                           style="margin-left: 0px; margin-right: 0px">
+                          <div class="row" style="margin-left: 0px; margin-right: 0px">
+                            <div class="col-xs-4">
+                              <h5>{{conte.idBudgetSubcategory | BudgetSubcategory }}</h5>
+                              <div class="input-group">
+                                <span class="input-group-addon">$</span>
+                                <input type="text" class="form-control" placeholder="" disabled="true" v-model=conte.granTotal>
+                              </div>
+                            </div>
+                            <div class="col-xs-1 text-left">
+                              <button type="button" class="btn btn-default" id="g-{{cont[0].idBudgetCategory}}-{{conte.idBudgetSubcategory}}"
+                                 @click="seteoInfo(sucss.idDwEnterprise, conte, $event)"
+                                 style="margin-top: 40px" :disabled="isAutorized">
+                                <span class="glyphicon glyphicon-plus"></span>
+                              </button>
+                            </div>
+                            <div class="col-xs-6 text left" v-if="conte.conceptos.length > 0">
+                              <button type="button" class="btn btn-default" id="s-{{cont[0].idBudgetCategory}}-{{conte.idBudgetSubcategory}}"
+                                 @click="saveBudget(conte.conceptos)" style="margin-top: 40px" :disabled="isAutorized">
+                                <span class="glyphicon glyphicon-floppy-disk"></span>
+                              </button>
+                            </div>
+                          </div>
+                          <br>
+                          <div class="row" style="margin-left: 0px" v-if="conte.conceptos.length > 0">
+                            <div class="col-xs-2" style="padding-left: 0px; padding-right: 1px">
+                              <label>
+                                Concepto
+                              </label>
+                            </div>
+                            <div class="col-xs-9">
+                              <div class="col-xs-1" v-for="mes in meses"
+                                style="padding-left: 0px; padding-right: 1px">
+                                <label>
+                                  {{mes}}
+                                </label>
+                              </div>
+                            </div>
+                            <div class="col-xs-1" style="padding-left: 0px; padding-right: 0px">
+                              <div class="col-xs-4" style="padding-left: 0px; padding-right: 0px">
+                                <label>
+                                  Total
+                                </label>
+                              </div>
+                              <div class="col-xs-4" style="padding-left: 0px; padding-right: 0px">
+
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="row" style="margin-left: 0px" v-for="concepto in conte.conceptos">
+                            <div class="col-xs-2" style="padding-left: 0px; padding-right: 1px">
+                              <input type="text" name="name" class="form-control input-sm" style="font-size: 10px"
+                                v-model="concepto.conceptName" :disabled="isAutorized">
+                            </div>
+                            <div class="col-xs-9">
+                              <div class="col-xs-1" v-for="mess in concepto.conceptMonth"
+                                style="padding-left: 0px; padding-right: 1px">
+                                  <input type="text" class="form-control input-sm" placeholder=""
+                                    id="{{mess.month}}" v-model="mess.amountConcept" @change="moneyFormat(mess, concepto, conte)"
+                                    style="font-size: 10px" onkeypress="return isNumberKey(event)" :disabled="isAutorized">
+                              </div>
+                            </div>
+                            <div class="col-xs-1" style="padding-left: 0px; padding-right: 0px">
+                              <div class="col-xs-4" style="padding-left: 0px; padding-right: 0px">
+                                <label style="font-size: 9px; margin-top: 6px">
+                                  {{concepto.total}}
+                                </label>
+                              </div>
+                              <div class="col-xs-4" style="padding-left: 0px; padding-right: 0px">
+                                <button type="button" class="btn btn-link"
+                                   @click="deleteObject(conte, concepto)" :disabled="isAutorized">
+                                  <span class="glyphicon glyphicon-minus"></span>
+                                </button>
+                              </div>
+                              <div class="col-xs-4 text-right">
+                                <div class="checkbox">
+                                  <input type="checkbox" value="" style="margin-top: 1px" v-model="concepto.equals"
+                                    @change="equalsImport(concepto, conte)" :disabled="isAutorized">
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <br>
+
+                            <div class="row" style="margin-left: 0px" v-if="conte.conceptos.length > 0">
+                              <div class="col-xs-2 text-right">
+                                <label>
+                                  Total:
+                                </label>
+                              </div>
+
+                              <div class="col-xs-9">
+                                <div class="col-xs-1 text-center" v-for="totalmes in conte.totalMonth"
+                                  style="padding-left: 0px; padding-right: 1px">
+                                  <label>
+                                    {{totalmes.montoConcept}}
+                                  </label>
+                                </div>
+                              </div>
+
+                              <div class="col-xs-1 text-left" style="padding-left: 0px; padding-right: 1px">
+                                <label>
+                                  $ {{conte.granTotal}}
+                                </label>
+                              </div>
+                            </div>
+
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                    </div>
+                <div class="row">
                 </div>
+              </div>
                 </div> <!-- /#container-fluid -->
             </div> <!-- /#Page Content -->
         </div> <!-- /#wrapper -->

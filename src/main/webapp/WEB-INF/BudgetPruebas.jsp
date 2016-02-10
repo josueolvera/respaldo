@@ -1,4 +1,4 @@
-lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <link rel="stylesheet" href="../assets/css/barralateral.css">
@@ -98,6 +98,7 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
             arbolNiveles: {},
             contenido: {},
             sucursales: [],
+            branches: false,
             flag: true,
             bandera1ernivel: false,
             bandera2donivel: false,
@@ -165,22 +166,34 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
                 this.newSearch= true;
                 this.year= '';
                 this.showInfo= false;
+                this.sucursales= [];
+                this.contenido= {};
                 this.$http.get("http://localhost:8080/BIDGroup/dw-enterprises/"+res[0]+"/"+res[1])
                         .success(function (data)
                         {
-                           var self= this;
-                           var agrupados = this.groupBy(data, function (item)
-                           {
-                              return item.iddistributor;
-                           });
+                          var self= this;
+                          var count = Object.keys(data).length
+                          if (count > 1)
+                          {
+                            this.branches= true;
+                            var agrupados = this.groupBy(data, function (item)
+                            {
+                               return item.iddistributor;
+                            });
 
-                           this.sucursal = agrupados.map(function(ele)
-                           {
-                             return self.groupBy(ele, function(item)
-                             {
-                             return item.idregion;
-                             });
-                           });
+                            this.sucursal = agrupados.map(function(ele)
+                            {
+                              return self.groupBy(ele, function(item)
+                              {
+                              return item.idregion;
+                              });
+                            });
+
+                          }
+                          else {
+                            this.sucursales= data;
+                            this.branches= false;
+                          }
                         });
 
                         this.$http.get("http://localhost:8080/BIDGroup/budgets/"+res[0]+"/"+res[1])
@@ -243,11 +256,11 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
                       ];
                     return objeto;
             },
-              searchConcepts: function(group, area, year)
+              searchConcepts: function(group, area, year, idBranchSelected)
               {
                 var self= this;
                 this.isAutorized= false;
-                this.$http.get("http://localhost:8080/BIDGroup/budget-concepts/group-area/"+group+"/"+area+"/"+year)
+                this.$http.get("http://localhost:8080/BIDGroup/budget-concepts/group-area/"+group+"/"+area+"/"+idBranchSelected+"/"+year)
                         .success(function (data)
                         {
                           this.datosPresupuesto = data;
@@ -328,7 +341,7 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
                                 .success(function (data)
                                 {
                                   this.contenido = data;
-                                  this.searchConcepts(this.group, this.area, this.year);
+                                  this.searchConcepts(this.group, this.area, this.year, this.sucursales[0].idDwEnterprise);
                                 });
                       });
             }
@@ -434,7 +447,7 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
                     .success(function (data)
                     {
                       this.contenido = data;
-                      this.searchConcepts(this.group, this.area, this.year);
+                      this.searchConcepts(this.group, this.area, this.year, this.sucursales[0].idDwEnterprise);
                     });
             this.showInfo= true;
           }
@@ -456,7 +469,7 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
                     .success(function (data)
                     {
                       this.contenido = data;
-                      this.searchConcepts(this.group, this.area, this.year);
+                      this.searchConcepts(this.group, this.area, this.year, this.sucursales[0].idDwEnterprise);
                     });
           }).error(function(){
             showAlert("Ha habido un error con la solicitud, intente nuevamente");
@@ -466,7 +479,7 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
         ,
         copyBranch: function()
         {
-          vm.sucursales= [];
+          this.sucursales= [];
           var self= this;
           this.sucursal.forEach(function (element)
           {
@@ -475,13 +488,19 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
                 ele.forEach(function (el)
                 {
 
-                  if (self.idBranchSelected == el.idBranch)
+                  if (self.idBranchSelected == el.idDwEnterprise)
                   {
                     vm.sucursales.push(el);
                   }
                 });
               });
           });
+          this.$http.get("http://localhost:8080/BIDGroup/budgets/"+this.group+"/"+this.area)
+                  .success(function (data)
+                  {
+                    this.contenido = data;
+                    this.searchConcepts(this.group, this.area, this.year, this.sucursales[0].idDwEnterprise);
+                  });
         }
         ,
         saveBudget: function(eventoconcepto)
@@ -494,7 +513,7 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
                     .success(function (data)
                     {
                       this.contenido = data;
-                      this.searchConcepts(this.group, this.area, this.year);
+                      this.searchConcepts(this.group, this.area, this.year,this.sucursales[0].idDwEnterprise);
                     });
           }).error(function(){
             showAlert("Ha habido un error con la solicitud, intente nuevamente");
@@ -606,20 +625,24 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
                         <option value="2016">2016</option>
                       </select>
                     </div>
-                  </div>
-
-                  <div class="row" v-for="suc in sucursal" v-if="showInfo">
-                    <div class="col-xs-12">
-                    <div class="row" v-for="sucs in suc">
-                      <select class="form-control" @change="copyBranch" v-model="idBranchSelected">
-                      <option v-for="sucss in sucs" value="{{sucss.idBranch}}">{{sucss.idBranch | SucursalFilter}}</option>
-                      </select>
+                    <div class="col-xs-4" v-if="branches">
+                      <div class="row" v-for="sucursa in sucursal">
+                        <div class="col-xs-12">
+                        <div class="row" v-for="sucurs in sucursa">
+                          <label>
+                            Sucursal
+                          </label>
+                          <select class="form-control" @change="copyBranch" v-model="idBranchSelected" >
+                          <option></option>
+                          <option v-for="sucur in sucurs" value="{{sucur.idDwEnterprise}}">{{sucur.idBranch | SucursalFilter}}</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
                     </div>
                   </div>
-                </div>
 
-
-                    <div class="row" v-for="sucss in sucursales" style="margin-left: 0px">
+                    <div class="row" v-for="sucss in sucursales" style="margin-left: 0px" v-if="showInfo">
                       <div class="col-xs-12">
                       <div class="row" style="margin-left: 0px; margin-right: 0px">
                         <div class="col-xs-6 text-left">
@@ -762,12 +785,7 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
                   </div>
                 </div>
               </div>
-
-
                 </div> <!-- /#container-fluid -->
-                <pre>
-                  {{ $data.sucursales | json}}
-                </pre>
             </div> <!-- /#Page Content -->
         </div> <!-- /#wrapper -->
       </div> <!-- #contenidos -->
