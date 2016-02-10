@@ -33,7 +33,6 @@ public class CViews implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_VIEW")
     @JsonView(JsonViews.Root.class)
     private Integer idView;
@@ -48,6 +47,13 @@ public class CViews implements Serializable {
     @Column(name = "VIEW_NAME")
     @JsonView(JsonViews.Root.class)
     private String viewName;
+
+    @Basic(optional = false)
+    @Column(name = "SHOW_IN_MENU")
+    @NotNull
+    @Size(min = 0, max = 1)
+    @JsonView(JsonViews.Root.class)
+    private Integer showInMenu;
 
     @Basic(optional = false)
     @NotNull
@@ -114,6 +120,14 @@ public class CViews implements Serializable {
 
     public void setViewName(String viewName) {
         this.viewName = viewName;
+    }
+
+    public boolean isShowInMenu() {
+        return showInMenu == 1;
+    }
+
+    public void setShowInMenu(Integer showInMenu) {
+        this.showInMenu = showInMenu;
     }
 
     public LocalDateTime getCreationDate() {

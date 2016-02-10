@@ -31,7 +31,9 @@ public class ApplicationMenuServiceImpl implements ApplicationMenuService {
     public List<CSystems> buildMenuForRoles(List<UsersRole> usersRoles) {
         ArrayList<CViews> views = new ArrayList<>();
         for (ViewsRole viewRol : viewsRolesService.findViewsRolesFor(usersRoles)) {
-            views.add(viewRol.getView());
+            if (viewRol.getView().isShowInMenu()) {
+                views.add(viewRol.getView());
+            }
         }
 
         HashMap<String, ArrayList<CViews>> viewsGroups = viewsGroupArrays.groupInMap(views, new GroupArrays.Filter<CViews>() {
