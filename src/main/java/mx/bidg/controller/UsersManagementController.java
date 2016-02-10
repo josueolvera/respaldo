@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 @RequestMapping("/users")
-public class UsersController {
+public class UsersManagementController {
     
     @Autowired
     UsersService usersService;
