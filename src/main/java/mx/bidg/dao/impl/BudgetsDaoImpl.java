@@ -10,12 +10,9 @@ import java.util.HashMap;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.BudgetsDao;
-import mx.bidg.model.Budgets;
-import mx.bidg.model.CAreas;
-import mx.bidg.model.CBudgetCategories;
-import mx.bidg.model.CBudgetSubcategories;
-import mx.bidg.model.CGroups;
+import mx.bidg.model.*;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.DistinctRootEntityResultTransformer;
 import org.springframework.stereotype.Repository;
@@ -81,14 +78,18 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ArrayList<Budgets> findByGroupAreaEnterprise(CGroups idGroup, CAreas idArea, Integer idDwEnterprise) {
         Criteria criteria = createEntityCriteria();
         HashMap<String, Object> map = new HashMap<>();
         map.put("group", idGroup);
         map.put("area", idArea);
-        map.put("budgetMonthBranchList.idDwEnterprise", idDwEnterprise);
-        ArrayList<Budgets> list = (ArrayList<Budgets>) criteria.add(Restrictions.allEq(map))
+        ArrayList<Budgets> list = (ArrayList<Budgets>) criteria
                 .setResultTransformer(DistinctRootEntityResultTransformer.INSTANCE)
+                .setFetchMode("budgetMonthBranchList", FetchMode.JOIN)
+                .add(Restrictions.allEq(map))
+                .createCriteria("budgetMonthBranchList")
+                .add(Restrictions.eq("idDwEnterprise", idDwEnterprise))
                 .list();
         return list;
     }

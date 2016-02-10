@@ -30,4 +30,9 @@ public class CCurrenciesServiceImpl implements CCurrenciesService {
         return cCurrenciesDao.update(currency);
     }
 
+    @Override
+    public CCurrencies geById(int id) {
+        return cCurrenciesDao.findById(id);
+    }
+
 }

@@ -109,6 +109,12 @@ public class AccountsPayable implements Serializable {
     @JoinColumn(name = "ID_CURRENCY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idCurrency;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "RATE")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal rate;
     
     @JoinColumn(name = "ID_ACCOUNT_PAYABLE_STATUS", referencedColumnName = "ID_ACCOUNT_PAYABLE_STATUS")
     @ManyToOne(optional = false)
@@ -261,6 +267,14 @@ public class AccountsPayable implements Serializable {
 
     public void setCurrency(CCurrencies currency) {
         this.currency = currency;
+    }
+
+    public BigDecimal getRate() {
+        return rate;
+    }
+
+    public void setRate(BigDecimal rate) {
+        this.rate = rate;
     }
 
     @Override
