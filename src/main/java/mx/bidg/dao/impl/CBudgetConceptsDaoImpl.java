@@ -65,5 +65,19 @@ public class CBudgetConceptsDaoImpl extends AbstractDao<Integer, CBudgetConcepts
                 .createCriteria("budgetMonthConceptsList.budgetMonthBranch").add(Restrictions.allEq(map));
         return (List<CBudgetConcepts>) criteria.list();
     }
-    
+
+    @Override
+    public List<CBudgetConcepts> findByBudgetEnterprise(Budgets budget, int year, Integer idDwEnterprise) {
+        HashMap<String,Object> map = new HashMap<>();
+        map.put("budget", budget);
+        map.put("year", year);
+        map.put("idDwEnterprise", idDwEnterprise);
+        Criteria criteria = createEntityCriteria()
+                .setResultTransformer(DistinctRootEntityResultTransformer.INSTANCE)
+                .setFetchMode("budgetMonthConceptsList", FetchMode.JOIN)
+                .setFetchMode("budgetMonthConceptsList.budgetMonthBranch", FetchMode.JOIN)
+                .createCriteria("budgetMonthConceptsList.budgetMonthBranch").add(Restrictions.allEq(map));
+        return (List<CBudgetConcepts>) criteria.list();
+    }
+
 }
