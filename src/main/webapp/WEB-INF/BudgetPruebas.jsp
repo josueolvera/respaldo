@@ -482,6 +482,7 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
                 });
               });
           });
+          this.searchConcepts(this.group, this.area, this.year, this.idBranchSelected);
         }
         ,
         saveBudget: function(eventoconcepto)
@@ -766,7 +767,7 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
 
                 </div> <!-- /#container-fluid -->
                 <pre>
-                  {{ $data.idBranchSelected | json}}
+                  {{ $data.sucursales | json}}
                 </pre>
             </div> <!-- /#Page Content -->
         </div> <!-- /#wrapper -->
