@@ -20,5 +20,6 @@ public interface CBudgetConceptsService {
     CBudgetConcepts update(CBudgetConcepts cBudgetConcept);
     boolean delete(CBudgetConcepts cBudgetConcept);
     List<CBudgetConcepts> findByBudget(Budgets budget, int year);
+    List<CBudgetConcepts> findByBudgetEnterprise(Budgets budget, int year, Integer idDwEnterprise);
     
 }

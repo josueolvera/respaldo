@@ -69,7 +69,7 @@ public class CBudgetConceptsController {
         
         for(Budgets budget: budgetList) {
             
-            List<CBudgetConcepts> conceptsList = budgetConceptsService.findByBudget(budget, year);
+            List<CBudgetConcepts> conceptsList = budgetConceptsService.findByBudgetEnterprise(budget, year, idDwEnterprise);
             if(!conceptsList.isEmpty()) {
                 
                 conceptPojoList = new ArrayList<>();

@@ -53,6 +53,11 @@ public class CBudgetConceptsServiceImpl implements CBudgetConceptsService {
     }
 
     @Override
+    public List<CBudgetConcepts> findByBudgetEnterprise(Budgets budget, int year, Integer idDwEnterprise) {
+        return budgetConceptsDao.findByBudgetEnterprise(budget, year, idDwEnterprise);
+    }
+
+    @Override
     public boolean delete(CBudgetConcepts cBudgetConcept) {
         
         List<BudgetMonthConcepts> budgetMonthConceptsList = budgetMonthConceptsService.findByConcept(cBudgetConcept);
