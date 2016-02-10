@@ -243,11 +243,11 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
                       ];
                     return objeto;
             },
-              searchConcepts: function(group, area, year)
+              searchConcepts: function(group, area, year, idBranchSelected)
               {
                 var self= this;
                 this.isAutorized= false;
-                this.$http.get("http://localhost:8080/BIDGroup/budget-concepts/group-area/"+group+"/"+area+"/"+year)
+                this.$http.get("http://localhost:8080/BIDGroup/budget-concepts/group-area/"+group+"/"+area+"/"+idBranchSelected+"/"+year)
                         .success(function (data)
                         {
                           this.datosPresupuesto = data;
@@ -328,7 +328,7 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
                                 .success(function (data)
                                 {
                                   this.contenido = data;
-                                  this.searchConcepts(this.group, this.area, this.year);
+                                  this.searchConcepts(this.group, this.area, this.year, this.idBranchSelected);
                                 });
                       });
             }
@@ -434,7 +434,7 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
                     .success(function (data)
                     {
                       this.contenido = data;
-                      this.searchConcepts(this.group, this.area, this.year);
+                      this.searchConcepts(this.group, this.area, this.year, this.idBranchSelected);
                     });
             this.showInfo= true;
           }
@@ -456,7 +456,7 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
                     .success(function (data)
                     {
                       this.contenido = data;
-                      this.searchConcepts(this.group, this.area, this.year);
+                      this.searchConcepts(this.group, this.area, this.year, this.idBranchSelected);
                     });
           }).error(function(){
             showAlert("Ha habido un error con la solicitud, intente nuevamente");
@@ -494,7 +494,7 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
                     .success(function (data)
                     {
                       this.contenido = data;
-                      this.searchConcepts(this.group, this.area, this.year);
+                      this.searchConcepts(this.group, this.area, this.year, this.idBranchSelected);
                     });
           }).error(function(){
             showAlert("Ha habido un error con la solicitud, intente nuevamente");
@@ -766,7 +766,7 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
 
                 </div> <!-- /#container-fluid -->
                 <pre>
-                  {{ $data.sucursales | json}}
+                  {{ $data.idBranchSelected | json}}
                 </pre>
             </div> <!-- /#Page Content -->
         </div> <!-- /#wrapper -->
