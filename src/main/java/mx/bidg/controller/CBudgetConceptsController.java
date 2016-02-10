@@ -52,7 +52,7 @@ public class CBudgetConceptsController {
     
     ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
     
-    @RequestMapping(value = "/group-area/{idGroup}/{idArea}/{idDwEnterprise}/{year}/", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/group-area/{idGroup}/{idArea}/{idDwEnterprise}/{year}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody ResponseEntity<String> getByGroupArea(@PathVariable int idGroup, @PathVariable int idArea, 
             @PathVariable Integer idDwEnterprise, @PathVariable int year) throws Exception {
         

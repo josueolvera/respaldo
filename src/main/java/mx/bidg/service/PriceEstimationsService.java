@@ -15,16 +15,16 @@ import mx.bidg.model.Users;
  */
 public interface PriceEstimationsService {
     
-    public List<PriceEstimations> saveData(String data, Users user) throws Exception;
+    List<PriceEstimations> saveData(String data, Users user) throws Exception;
     
-    public PriceEstimations saveFileData(int idEstimation, String fileName, String filePath);
+    PriceEstimations saveFileData(int idEstimation, String fileName, String filePath);
     
-    public PriceEstimations findById(int id);
+    PriceEstimations findById(int id);
     
-    public PriceEstimations update(PriceEstimations pe) throws Exception;
+    PriceEstimations update(PriceEstimations pe) throws Exception;
     
-    public List<PriceEstimations> findByIdRequest(int idRequest);
+    List<PriceEstimations> findByIdRequest(int idRequest);
     
-    public void estimationAuthorization(int idEstimation, Users user);
+    void estimationAuthorization(int idEstimation, Users user);
     
 }

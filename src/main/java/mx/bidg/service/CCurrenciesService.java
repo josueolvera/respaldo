@@ -16,5 +16,6 @@ public interface CCurrenciesService {
     
     List<CCurrencies> findAll();
     CCurrencies update(CCurrencies currency);
+    CCurrencies geById(int id);
 
 }

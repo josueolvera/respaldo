@@ -100,6 +100,12 @@ public class PeriodicsPayments implements Serializable {
     @Column(name = "ID_CURRENCY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idCurrency;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "RATE")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal rate;
     
     @JoinColumn(name = "ID_PERIOD", referencedColumnName = "ID_PERIOD")
     @ManyToOne(optional = false)
@@ -241,6 +247,14 @@ public class PeriodicsPayments implements Serializable {
 
     public void setCurrency(CCurrencies currency) {
         this.currency = currency;
+    }
+
+    public BigDecimal getRate() {
+        return rate;
+    }
+
+    public void setRate(BigDecimal rate) {
+        this.rate = rate;
     }
 
     @Override

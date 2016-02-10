@@ -105,6 +105,12 @@ public class PriceEstimations implements Serializable {
     @Column(name = "USER_ESTIMATION", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idUserEstimation;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "RATE")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal rate;
     
     @JoinColumn(name = "ID_REQUEST", referencedColumnName = "ID_REQUEST")
     @ManyToOne(optional = false)
@@ -327,6 +333,14 @@ public class PriceEstimations implements Serializable {
 
     public void setIdUserEstimation(Integer idUserEstimation) {
         this.idUserEstimation = idUserEstimation;
+    }
+
+    public BigDecimal getRate() {
+        return rate;
+    }
+
+    public void setRate(BigDecimal rate) {
+        this.rate = rate;
     }
 
     @Override
