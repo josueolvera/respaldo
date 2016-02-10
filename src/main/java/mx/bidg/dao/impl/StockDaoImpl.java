@@ -28,6 +28,7 @@ public class StockDaoImpl extends AbstractDao<Integer, Stocks> implements StockD
         return (Stocks) createEntityCriteria()
                 .add(Restrictions.eq("idStock", id))
                 .setFetchMode("dwEnterprises", FetchMode.JOIN)
+                .setFetchMode("propertiesList", FetchMode.JOIN)
                 .uniqueResult();
     }
 

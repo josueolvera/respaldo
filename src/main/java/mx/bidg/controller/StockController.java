@@ -14,10 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -61,8 +58,13 @@ public class StockController {
     private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findAll() throws IOException {
-        List<Stocks> stock = stockService.findAll();
+    public ResponseEntity<String> findAll(@RequestParam(name = "idDistributor", required = false) Integer idDistributor) throws IOException {
+        List<Stocks> stock;
+        if (idDistributor != null) {
+            stock = stockService.findByDistributor(idDistributor);
+        } else {
+            stock = stockService.findAll();
+        }
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(stock),
                 HttpStatus.OK
@@ -115,9 +117,9 @@ public class StockController {
         return new ResponseEntity<>("Registro exitoso", HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{idDistributor}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findByDistributor(@PathVariable int idDistributor) throws IOException {
-        List<Stocks> stock = stockService.findByDistributor(idDistributor);
+    @RequestMapping(value = "/{idStock}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findByDistributor(@PathVariable int idStock) throws IOException {
+        Stocks stock = stockService.findById(idStock);
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(stock),
                 HttpStatus.OK
