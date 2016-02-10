@@ -8,13 +8,12 @@ package mx.bidg.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import mx.bidg.dao.AccountsPayableDao;
-import mx.bidg.dao.PeriodicPaymentsDao;
-import mx.bidg.dao.PriceEstimationsDao;
-import mx.bidg.dao.RequestsDao;
+
+import mx.bidg.dao.*;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.Accounts;
 import mx.bidg.model.AccountsPayable;
@@ -45,6 +44,9 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     @Autowired
     RequestsDao requestsDao;
 
+    @Autowired
+    CCurrenciesDao currenciesDao;
+
     ObjectMapper mapper = new ObjectMapper();
 
     @Override
@@ -61,7 +63,8 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             BigDecimal residualAmount = budgetAmount.subtract(expendedAmount);
             int idAccount = json.get("idAccount").asInt();
             int idCurrency = json.get("idCurrency").asInt();
-            BigDecimal amount = json.get("amount").decimalValue();
+            BigDecimal rate = ((json.get("rate").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("rate").decimalValue() : BigDecimal.ONE;
+            BigDecimal amount = ((json.get("amount").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("amount").decimalValue().divide(rate, 6, RoundingMode.DOWN) : BigDecimal.ZERO;
             String sku = json.get("sku").asText();
 
             PriceEstimations estimation = new PriceEstimations();
@@ -94,17 +97,21 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     @Override
     public PriceEstimations update(PriceEstimations pe) throws Exception{
         PriceEstimations estimation = priceEstimationsDao.findByIdFetchRequestStatus(pe.getIdEstimation());
+        //Verifica que el estatus de la solicitud sea Pendiente (1)
         if(estimation.getEstimationStatus().getIdEstimationStatus().equals(1)) {
             Requests request = requestsDao.findByIdFetchBudgetMonthBranch(estimation.getIdRequest());
             BigDecimal budgetAmount = request.getBudgetMonthBranch().getAmount();
             BigDecimal expendedAmount = request.getBudgetMonthBranch().getExpendedAmount();
             BigDecimal residualAmount = budgetAmount.subtract(expendedAmount);
+            BigDecimal rate = ((pe.getRate().compareTo(BigDecimal.ZERO)) == 1)? pe.getRate() : BigDecimal.ONE;
+            BigDecimal amount = ((pe.getAmount().compareTo(BigDecimal.ZERO)) == 1)? pe.getAmount().divide(rate, 6, RoundingMode.DOWN) : BigDecimal.ZERO;
             
             estimation.setAccount(new Accounts(pe.getIdAccount()));
-            estimation.setAmount(pe.getAmount());
+            estimation.setAmount(amount);
             estimation.setCurrency(new CCurrencies(pe.getIdCurrency()));
+            estimation.setRate(rate);
             //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
-            estimation.setOutOfBudget((residualAmount.compareTo(pe.getAmount()) == -1)? 1 : 0);
+            estimation.setOutOfBudget((residualAmount.compareTo(amount) == -1)? 1 : 0);
             estimation.setSku(pe.getSku());
             estimation.setUserEstimation(new Users(pe.getIdUserEstimation()));
             return estimation;

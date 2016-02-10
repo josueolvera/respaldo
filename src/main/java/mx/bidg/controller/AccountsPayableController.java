@@ -32,9 +32,9 @@ public class AccountsPayableController {
     
     @RequestMapping(value = "/request/{idRequest}", method = RequestMethod.POST, 
             headers = "Accept=application/json; charset=UTF-8")
-    public @ResponseBody String save(@PathVariable int idRequest, @RequestBody String data) throws Exception {
+    public @ResponseBody String saveFromRequest(@PathVariable int idRequest, @RequestBody String data) throws Exception {
         List<AccountsPayable> accountsPayables = accountsPayableService.saveData(data, idRequest);
         return (accountsPayables.isEmpty())? "Error al guardar el Plan de pago" : "Plan de Pago guardado";
     }
-    
+
 }
