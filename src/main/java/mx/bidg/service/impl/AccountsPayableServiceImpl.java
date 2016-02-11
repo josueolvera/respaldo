@@ -36,16 +36,17 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
     ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    public List<AccountsPayable> saveData(String data, int idRequest) throws Exception {
+    public List<AccountsPayable> saveData(String data) throws Exception {
         
         JsonNode jsonList = mapper.readTree(data);
-        String folio = requestsDao.findById(idRequest).getFolio();
+        String folio = jsonList.get("folio").asText();
         List<AccountsPayable> accounts = new ArrayList<>();
         AccountsPayable accountsPayable;
         
         for(JsonNode json : jsonList.get("payments")) {
             
             BigDecimal amount = json.get("amount").decimalValue();
+            BigDecimal rate = json.get("rate").decimalValue();
             Integer payNum = json.get("payNum").asInt();
             Integer totalPayments = json.get("totalPayments").asInt();
             LocalDateTime dueDate = (json.get("dueDate").asText() != null)? 

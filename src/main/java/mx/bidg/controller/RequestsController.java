@@ -4,14 +4,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import javax.servlet.http.HttpSession;
 import mx.bidg.config.JsonViews;
+import mx.bidg.model.AccountsPayable;
 import mx.bidg.model.Requests;
 import mx.bidg.model.Users;
+import mx.bidg.service.AccountsPayableService;
 import mx.bidg.service.RequestsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Rafael Viveros
@@ -23,6 +27,9 @@ public class RequestsController {
     
     @Autowired
     RequestsService requestsService;
+
+    @Autowired
+    AccountsPayableService accountsPayableService;
     
     ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
     
@@ -59,6 +66,13 @@ public class RequestsController {
             headers = {"Accept=application/json;charset=UTF-8"}, produces = "application/json;charset=UTF-8")
     public @ResponseBody String getBudgetMonthProductType(@RequestBody String data) throws Exception {
         return mapper.writeValueAsString(requestsService.getBudgetMonthProductType(data));
+    }
+
+
+    @RequestMapping(value = "/accounts-payable", method = RequestMethod.POST, headers = "Accept=application/json; charset=UTF-8")
+    public @ResponseBody String saveAccountPayable(@RequestBody String data) throws Exception {
+        List<AccountsPayable> accountsPayables = accountsPayableService.saveData(data);
+        return (accountsPayables.isEmpty())? "Error al guardar el Plan de pago" : "Plan de Pago guardado";
     }
     
 }

@@ -14,6 +14,6 @@ import mx.bidg.model.AccountsPayable;
  */
 public interface AccountsPayableService {
     
-    public List<AccountsPayable> saveData(String data, int idRequest) throws Exception;
+    List<AccountsPayable> saveData(String data) throws Exception;
     
 }

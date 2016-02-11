@@ -13,6 +13,6 @@ import mx.bidg.model.PeriodicsPayments;
  */
 public interface PeriodicPaymentsService {
     
-    public PeriodicsPayments saveData(String data, int idRequest) throws Exception;
+    PeriodicsPayments saveData(String data, int idRequest) throws Exception;
     
 }
