@@ -100,6 +100,7 @@
             sucursales: [],
             branches: false,
             flag: true,
+            cargando: false,
             bandera1ernivel: false,
             bandera2donivel: false,
             bandera3ernivel: false,
@@ -160,7 +161,6 @@
             {
               var ids= key.substr(2, key.length);
               var res = ids.split("-");
-
               if (this.lastkeysearch !== key)
               {
                 this.newSearch= true;
@@ -191,6 +191,7 @@
 
                           }
                           else {
+
                             this.sucursales= data;
                             this.branches= false;
                           }
@@ -199,8 +200,8 @@
                         this.$http.get("http://localhost:8080/BIDGroup/budgets/"+res[0]+"/"+res[1])
                                 .success(function (data)
                                 {
+                                  this.cargando= false;
                                   this.contenido = data;
-                                  this.searchConcepts(res[0], res[1]);
                                 });
                       this.group = res[0];
                       this.area = res[1];
@@ -260,6 +261,7 @@
               {
                 var self= this;
                 this.isAutorized= false;
+                this.cargando= true;
                 this.$http.get("http://localhost:8080/BIDGroup/budget-concepts/group-area/"+group+"/"+area+"/"+idBranchSelected+"/"+year)
                         .success(function (data)
                         {
@@ -438,9 +440,18 @@
             });
           });
           this.totalArea = accounting.formatNumber(this.totalArea);
+          this.cargando= false;
         },
         obtainConceptsYear: function()
         {
+          if (this.branches)
+          {
+            this.cargando= false;
+          }
+          else{
+            this.cargando= true;
+          }
+
           if (this.year !== '')
           {
             this.$http.get("http://localhost:8080/BIDGroup/budgets/"+this.group+"/"+this.area)
@@ -479,6 +490,7 @@
         ,
         copyBranch: function()
         {
+          this.cargando= true;
           this.sucursales= [];
           var self= this;
           this.sucursal.forEach(function (element)
@@ -642,6 +654,12 @@
                     </div>
                     </div>
                   </div>
+
+                  <div v-if="cargando" class="col-xs-12"
+                       style="height: 6rem; padding: 2rem 0;">
+                      <div class="loader">Cargando...</div>
+                  </div>
+
 
                     <div class="row" v-for="sucss in sucursales" style="margin-left: 0px; margin-right: 0px" v-if="showInfo">
                     <!--  <div class="col-xs-12"> -->
