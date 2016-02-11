@@ -584,28 +584,29 @@
 
     <jsp:body>
       <div id="contenidos">
-        <div id="wrapper">
-            <!-- Sidebar -->
-            <div id="sidebar-wrapper">
-                <ul class="sidebar-nav" >
-                  <li id="o-1" @click="prepareList($event)">BIDGroup
-                  <ul v-if="bandera1ernivel">
-                    <li class="firstlevel collapsed" v-for="item in arbolNiveles" @click="prepareList($event)" id="o-1-{{item[0][0].idArea}}">
-                      {{item[0][0].idArea | areaName}}
-                      <ul v-if="bandera2donivel" id="u{{item[0][0].idArea}}" style="display: none">
-                        <li class="secondlevel" v-for="items in item" @click="prepareList1($event)"
-                          id="o-1-{{item[0][0].idArea}}-{{items[0].idBudgetCategory}}">
-                          {{items[0].idBudgetCategory | budgetCategory}}
-                        </li>
-                      </ul>
+
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav" >
+              <li id="o-1" @click="prepareList($event)">BIDGroup
+              <ul v-if="bandera1ernivel">
+                <li class="firstlevel collapsed" v-for="item in arbolNiveles" @click="prepareList($event)" id="o-1-{{item[0][0].idArea}}">
+                  {{item[0][0].idArea | areaName}}
+                  <ul v-if="bandera2donivel" id="u{{item[0][0].idArea}}" style="display: none">
+                    <li class="secondlevel" v-for="items in item" @click="prepareList1($event)"
+                      id="o-1-{{item[0][0].idArea}}-{{items[0].idBudgetCategory}}">
+                      {{items[0].idBudgetCategory | budgetCategory}}
                     </li>
-
                   </ul>
-                  </li>
-                </ul> <!-- /#sidebar-nav -->
-            </div>
-            <!-- /#sidebar-wrapper -->
+                </li>
 
+              </ul>
+              </li>
+            </ul> <!-- /#sidebar-nav -->
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <div id="wrapper">
+            <!-- Sidebar --
             <!-- Page Content -->
             <div id="page-content-wrapper">
                 <div class="container-fluid">
@@ -637,10 +638,10 @@
                     </div>
                   </div>
 
-                    <div class="row" v-for="sucss in sucursales" style="margin-left: 0px" v-if="showInfo">
-                      <div class="col-xs-12">
+                    <div class="row" v-for="sucss in sucursales" style="margin-left: 0px; margin-right: 0px" v-if="showInfo">
+                    <!--  <div class="col-xs-12"> -->
                       <div class="row" style="margin-left: 0px; margin-right: 0px">
-                        <div class="col-xs-6 text-left">
+                        <div class="col-xs-6 text-left" style="padding-left: 0">
                           <h2 style="font-weight: bold">{{sucss.idDistributor | DistributorFilter}}<small>&nbsp;{{sucss.idBranch | SucursalFilter}}</small></h2>
                         </div>
                         <div class="col-xs-6 text-right">
@@ -771,8 +772,8 @@
 
                         </div>
                         </div>
-                      </div>
-                    </div>
+                    <!--  </div> -->
+                <!--  </div> -->
                     </div>
                 <div class="row">
                 </div>
