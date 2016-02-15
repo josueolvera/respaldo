@@ -33,12 +33,15 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicUpdate
 @Table(name = "C_REQUEST_STATUS")
 public class CRequestStatus implements Serializable {
-    
+
+    public static final int PENDIENTE = 1;
+    public static final int APROBADA = 2;
+    public static final int RECHAZADA = 3;
+
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_REQUEST_STATUS")
     @JsonView(JsonViews.Root.class)
     private Integer idRequestStatus;

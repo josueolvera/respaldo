@@ -26,12 +26,14 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicUpdate
 @Table(name = "C_ACCOUNTS_TYPES")
 public class CAccountsTypes implements Serializable {
-    
+
+    private static final int DEFINITIVA = 1;
+    private static final int PROVICIONAL = 2;
+
     private static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_ACCOUNT_TYPE")
     @JsonView(JsonViews.Root.class)
     private Integer idAccountType;

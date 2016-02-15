@@ -31,12 +31,14 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicUpdate
 @Table(name = "C_PERIODIC_PAYMENTS_STATUS")
 public class CPeriodicPaymentsStatus implements Serializable {
-    
+
+    public static final int INACTIVO = 1;
+    public static final int ACTIVO = 2;
+
     private static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_PERIODIC_PAYMENT_STATUS")
     @JsonView(JsonViews.Root.class)
     private Integer idPeriodicPaymentStatus;

@@ -26,12 +26,16 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicUpdate
 @Table(name = "C_ACCOUNTS_PAYABLE_STATUS")
 public class CAccountsPayableStatus implements Serializable {
-    
+
+    public static final int INACTIVA = 1;
+    public static final int PENDIENTE = 2;
+    public static final int FINALIZADA = 3;
+    public static final int CANCELADA = 4;
+
     private static final long serialVersionUID = 1L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_ACCOUNT_PAYABLE_STATUS")
     @JsonView(JsonViews.Root.class)
     private Integer idAccountPayableStatus;
