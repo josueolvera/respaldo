@@ -142,8 +142,7 @@ public class RequestsServiceImpl implements RequestsService {
         request.setFolio(foliosService.createNew(new CTables(51)));
         request.setUserRequest(user);
         request.setUserResponsible(new Users(request.getIdUserResponsible()));
-        //1 es el id de Pendiente en CRequestStatus
-        request.setRequestStatus(new CRequestStatus(1));
+        request.setRequestStatus(new CRequestStatus(CRequestStatus.PENDIENTE));
         request.setCreationDate(LocalDateTime.now());
         request.setIdAccessLevel(1);
         List<RequestProducts> requestProducts = new ArrayList<>();
