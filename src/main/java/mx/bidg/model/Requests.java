@@ -88,9 +88,9 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idUserRequest;
     
-    @Column(name = "USER_RESPONSABLE", insertable = false, updatable = false)
+    @Column(name = "USER_RESPONSIBLE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idUserResponsable;
+    private Integer idUserResponsible;
     
     @Column(name = "ID_BUDGET_MONTH_BRANCH", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -109,10 +109,10 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private Users userRequest;
     
-    @JoinColumn(name = "USER_RESPONSABLE", referencedColumnName = "ID_USER")
+    @JoinColumn(name = "USER_RESPONSIBLE", referencedColumnName = "ID_USER")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private Users userResponsable;
+    private Users userResponsible;
     
     @JoinColumn(name = "ID_BUDGET_MONTH_BRANCH", referencedColumnName = "ID_BUDGET_MONTH_BRANCH")
     @ManyToOne(optional = false)
@@ -211,12 +211,12 @@ public class Requests implements Serializable {
         this.idUserRequest = idUserRequest;
     }
 
-    public Integer getIdUserResponsable() {
-        return idUserResponsable;
+    public Integer getIdUserResponsible() {
+        return idUserResponsible;
     }
 
-    public void setIdUserResponsable(Integer idUserResponsable) {
-        this.idUserResponsable = idUserResponsable;
+    public void setIdUserResponsible(Integer idUserResponsable) {
+        this.idUserResponsible = idUserResponsable;
     }
 
     public Integer getIdBudgetMonthBranch() {
@@ -251,12 +251,12 @@ public class Requests implements Serializable {
         this.userRequest = userRequest;
     }
 
-    public Users getUserResponsable() {
-        return userResponsable;
+    public Users getUserResponsible() {
+        return userResponsible;
     }
 
-    public void setUserResponsable(Users userResponsable) {
-        this.userResponsable = userResponsable;
+    public void setUserResponsible(Users userResponsable) {
+        this.userResponsible = userResponsable;
     }
 
     public BudgetMonthBranch getBudgetMonthBranch() {

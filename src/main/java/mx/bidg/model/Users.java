@@ -113,7 +113,7 @@ public class Users implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private List<Requests> requestsList;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userResponsable")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userResponsible")
     @JsonView(JsonViews.Embedded.class)
     private List<Requests> requestsList1;
 

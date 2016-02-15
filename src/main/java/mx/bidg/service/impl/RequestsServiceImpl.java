@@ -141,7 +141,7 @@ public class RequestsServiceImpl implements RequestsService {
         //51 es el id de Requests en CTables
         request.setFolio(foliosService.createNew(new CTables(51)));
         request.setUserRequest(user);
-        request.setUserResponsable(new Users(request.getIdUserResponsable()));
+        request.setUserResponsible(new Users(request.getIdUserResponsible()));
         //1 es el id de Pendiente en CRequestStatus
         request.setRequestStatus(new CRequestStatus(1));
         request.setCreationDate(LocalDateTime.now());
