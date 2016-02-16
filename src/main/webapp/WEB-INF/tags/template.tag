@@ -24,6 +24,8 @@
     <link rel="stylesheet" href="/BIDGroup/assets/css/messenger-theme-air.css">
     <link rel="stylesheet" href="/BIDGroup/assets/css/selectize.css">
     <link rel="stylesheet" href="/BIDGroup/assets/css/selectize.bootstrap3.css">
+    <link rel="stylesheet" href="/BIDGroup/assets/css/bootstrap-toggle.min.css">
+    <link rel="stylesheet" href="/BIDGroup/assets/css/bootstrap-datetimepicker.min.css">
     <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users" />
     <jsp:invoke fragment="styles" />
 </head>
@@ -82,12 +84,22 @@
                                     {{ systemDate.dateElements.year }}
                                 </span>
                             </li>
+                            <li class="inbox-item">
+                                <a :href="sidebar.inboxURL">
+                                    <span class="fa fa-list fa-2x glyphicon glyphicon-envelope"></span>
+                                    <span class="nav-text">
+                                        Bandeja de entrada
+                                        <span class="badge">4</span>
+                                    </span>
+                                </a>
+                            </li>
                             <li>
                                 <a href="#">
                                     <span class="fa fa-list fa-2x glyphicon glyphicon-user"></span>
                                     <span class="nav-text">${user.username}</span>
                                 </a>
-                            </li><li>
+                            </li>
+                            <li>
                                 <a @click.prevent="closeSession" href="#">
                                     <span class="fa fa-list fa-2x glyphicon glyphicon-off"></span>
                                     <span class="nav-text">Salir</span>
@@ -96,15 +108,18 @@
                         </ul>
                     </nav>
                 </div>
-                <div class="col-xs-push-2 col-xs-10 col-md-push-1 col-md-11 col-lg-push-1 col-lg-11"><jsp:doBody /></div>
+                <div class="col-xs-10 col-md-11 col-lg-11 body"><jsp:doBody /></div>
             </c:if>
         </div>
         <script src="/BIDGroup/assets/js/jquery-2.1.4.min.js"></script>
         <script src="/BIDGroup/assets/js/bootstrap.min.js"></script>
+        <script src="/BIDGroup/assets/js/moment-with-locales.min.js"></script>
+        <script src="/BIDGroup/assets/js/bootstrap-datetimepicker.min.js"></script>
         <script src="/BIDGroup/assets/js/jquery.onscreen.min.js"></script>
         <script src="/BIDGroup/assets/js/vue-1.0.7.js"></script>
         <script src="/BIDGroup/assets/js/vue-resource-0.1.17.min.js"></script>
         <script src="/BIDGroup/assets/js/selectize.standalone.min.js"></script>
+        <script src="/BIDGroup/assets/js/bootstrap-toggle.min.js"></script>
         <script src="/BIDGroup/assets/js/messenger.min.js"></script>
         <script src="/BIDGroup/assets/js/alerts.js"></script>
         <script src="/BIDGroup/assets/js/accounting.js"></script>
@@ -118,6 +133,7 @@
                 },
                 data: {
                     sidebar: {
+                        inboxURL: ROOT_URL + "/user/inbox-page",
                         expanded: false,
                         itemsExpanded: {
                             system: {
