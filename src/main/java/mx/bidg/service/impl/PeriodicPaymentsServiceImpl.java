@@ -33,10 +33,10 @@ public class PeriodicPaymentsServiceImpl implements PeriodicPaymentsService {
     ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    public PeriodicsPayments saveData(String data, int idRequest) throws Exception {
+    public PeriodicsPayments saveData(String data) throws Exception {
         
         JsonNode json = mapper.readTree(data);
-        String folio = requestsDao.findById(idRequest).getFolio();
+        String folio = json.get("folio").asText();
         CPeriods period = new CPeriods(json.get("period").asInt());
         CCurrencies currency = new CCurrencies(json.get("currency").asInt());
         BigDecimal amount = json.get("amount").decimalValue();

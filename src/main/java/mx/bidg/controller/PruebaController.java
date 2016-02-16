@@ -8,11 +8,15 @@ package mx.bidg.controller;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.ActiveSessionsList;
 import mx.bidg.config.Permissions;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,10 +28,7 @@ import mx.bidg.model.Users;
 import mx.bidg.service.CTasksService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.View;
 
 import javax.servlet.http.HttpSession;
@@ -83,5 +84,16 @@ public class PruebaController {
     @RequestMapping(value = "/{uno}/{dos}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody String dobleVariable (@PathVariable int uno, @PathVariable int dos) {
         return uno + ":" + dos;
+    }
+
+
+    @RequestMapping(value = "/date", method = RequestMethod.POST, headers = {"Accept=application/json; Charset=UTF-8"})
+    public @ResponseBody String dateTest(@RequestBody String data) throws Exception {
+        JsonNode json = mapper.readTree(data);
+        String dateS = json.get("date").asText();
+        System.out.println("Fecha: " + dateS);
+        LocalDateTime date = LocalDateTime.parse(dateS, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        System.out.println("Fecha 2: " + date);
+        return "OK";
     }
 }

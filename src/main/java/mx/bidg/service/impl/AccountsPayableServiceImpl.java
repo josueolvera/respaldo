@@ -39,12 +39,12 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
     public List<AccountsPayable> saveData(String data) throws Exception {
         
         JsonNode jsonList = mapper.readTree(data);
-        String folio = jsonList.get("folio").asText();
         List<AccountsPayable> accounts = new ArrayList<>();
         AccountsPayable accountsPayable;
-        
+
         for(JsonNode json : jsonList.get("payments")) {
-            
+
+            String folio = json.get("folio").asText();
             BigDecimal amount = json.get("amount").decimalValue();
             BigDecimal rate = json.get("rate").decimalValue();
             Integer payNum = json.get("payNum").asInt();

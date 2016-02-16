@@ -69,10 +69,19 @@ public class RequestsController {
     }
 
 
-    @RequestMapping(value = "/accounts-payable", method = RequestMethod.POST, headers = "Accept=application/json; charset=UTF-8")
+    @RequestMapping(value = "/accounts-payable", method = RequestMethod.POST, headers = "Accept=application/json; charset=UTF-8",
+            produces = "application/json;charset=UTF-8")
     public @ResponseBody String saveAccountPayable(@RequestBody String data) throws Exception {
         List<AccountsPayable> accountsPayables = accountsPayableService.saveData(data);
-        return (accountsPayables.isEmpty())? "Error al guardar el Plan de pago" : "Plan de Pago guardado";
+        return mapper.writeValueAsString(accountsPayables);
+//        return (accountsPayables.isEmpty())? "Error al guardar el Plan de pago" : "Plan de Pago guardado";
+    }
+
+
+    @RequestMapping(value = "/period-payment", method = RequestMethod.POST, headers = "Accept=application/json; charset=UTF-8",
+            produces = "application/json;charset=UTF-8")
+    public @ResponseBody String savePeriodicPayment(@RequestBody String data) throws Exception {
+        return null;
     }
     
 }

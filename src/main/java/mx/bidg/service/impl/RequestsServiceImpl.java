@@ -8,6 +8,7 @@ package mx.bidg.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -135,15 +136,18 @@ public class RequestsServiceImpl implements RequestsService {
     public Requests saveData(String data, Users user) throws Exception {
         
         JsonNode jsonRequest = map.readTree(data);        
-        Requests request = map.treeToValue(jsonRequest.get("request"), Requests.class);
-        request.setRequestTypeProduct(new RequestTypesProduct(request.getIdRequestTypeProduct()));
-        request.setBudgetMonthBranch(new BudgetMonthBranch(request.getIdBudgetMonthBranch()));
+        Requests request = new Requests();
+        request.setDescription(jsonRequest.get("request").get("description").asText());
+        request.setPurpose(jsonRequest.get("request").get("purpose").asText());
+        request.setRequestTypeProduct(new RequestTypesProduct(jsonRequest.get("request").get("idRequestTypesProduct").asInt()));
+        request.setBudgetMonthBranch(new BudgetMonthBranch(jsonRequest.get("request").get("idBudgetMonthBranch").asInt()));
         //51 es el id de Requests en CTables
         request.setFolio(foliosService.createNew(new CTables(51)));
         request.setUserRequest(user);
-        request.setUserResponsible(new Users(request.getIdUserResponsible()));
         request.setRequestStatus(new CRequestStatus(CRequestStatus.PENDIENTE));
+        request.setUserResponsible(new Users(jsonRequest.get("request").get("idUserResponsable").asInt()));
         request.setCreationDate(LocalDateTime.now());
+        request.setApplyingDate(LocalDateTime.parse(jsonRequest.get("request").get("applyingDate").asText(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
         request.setIdAccessLevel(1);
         List<RequestProducts> requestProducts = new ArrayList<>();
         

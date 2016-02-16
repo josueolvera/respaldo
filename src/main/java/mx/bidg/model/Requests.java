@@ -77,6 +77,13 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "APPLYING_DATE", updatable = false)
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime applyingDate;
     
     @Basic(optional = false)
     @NotNull
@@ -190,9 +197,21 @@ public class Requests implements Serializable {
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
-    
+
+    public LocalDateTime getApplyingDate() {
+        return applyingDate;
+    }
+
+    public void setApplyingDate(LocalDateTime applyingDate) {
+        this.applyingDate = applyingDate;
+    }
+
     public DateFormatsPojo getCreationDateFormats() {
         return new DateFormatsPojo(creationDate);
+    }
+
+    public DateFormatsPojo getApplyingDateFormats() {
+        return new DateFormatsPojo(applyingDate);
     }
 
     public int getIdAccessLevel() {

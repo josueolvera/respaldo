@@ -42,6 +42,12 @@ public class ControllerInterceptor extends HandlerInterceptorAdapter {
         HashMap<String, ArrayList<Integer>> mapPermissions = permissions.getMap();
         ArrayList<Integer> idRoles = mapPermissions.get(key);
 
+        if(idRoles == null) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Acceso denegado");
+            logger.log(Level.WARNING, "No hay roles para este request. KEY: " + key);
+            return false;
+        }
+
         if(idRoles.contains(6)) {
             return true;
         }
@@ -62,12 +68,7 @@ public class ControllerInterceptor extends HandlerInterceptorAdapter {
             return false;
         }
 
-        if(idRoles == null) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Acceso denegado");
-            logger.log(Level.WARNING, "No hay roles para este request. KEY: " + key);
-            return false;
-        }
-        
+
         List<UsersRole> userRoles = user.getUsersRoleList();
 
         for(UsersRole userRol : userRoles) {
