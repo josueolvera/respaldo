@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.WeekFields;
 import java.util.Locale;
 
 /**
@@ -88,9 +89,11 @@ public class DateFormatsPojo {
         private String monthNameShort;
         private String monthNameLong;
         private String year;
+        private Integer week;
 
         public DateElements(LocalDate localDate) {
             Locale locale = LocaleUtils.toLocale("es_MX");
+            WeekFields weekFields = WeekFields.of(locale);
             this.day = localDate.format(DateTimeFormatter.ofPattern("dd"));
             this.dayNameShort = localDate.format(DateTimeFormatter.ofPattern("EE").withLocale(locale));
             this.dayNameLong = localDate.format(DateTimeFormatter.ofPattern("EEEE").withLocale(locale));
@@ -100,6 +103,7 @@ public class DateFormatsPojo {
             this.monthNameLong = localDate.format(DateTimeFormatter.ofPattern("MMMM").withLocale(locale));
 
             this.year = localDate.format(DateTimeFormatter.ofPattern("yyyy"));
+            this.week = localDate.get(weekFields.weekOfWeekBasedYear());
         }
 
         public String getDay() {
@@ -128,6 +132,10 @@ public class DateFormatsPojo {
 
         public String getYear() {
             return year;
+        }
+
+        public Integer getWeek() {
+            return week;
         }
     }
 }
