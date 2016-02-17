@@ -95,10 +95,10 @@ public class RequestsServiceImpl implements RequestsService {
         CProductTypes cProductType = cProductTypesDao
                 .findByIdFetchBudgetSubcategory(jsonRequest.get("idProductType").asInt());
         Users userResponsable = usersDao.findByIdFetchDwEmployee(jsonRequest.get("idUserResponsable").asInt());
-//        LocalDate date = LocalDate.now();
+        LocalDateTime date = LocalDateTime.parse(jsonRequest.get("applyingDate").asText(), DateTimeFormatter.ISO_INSTANT);
         
-        CMonths month = cMonthsDao.findById(jsonRequest.get("idMonth").asInt());
-        Integer year = jsonRequest.get("year").asInt();
+        CMonths month = cMonthsDao.findById(date.getMonthValue());
+        Integer year = date.getYear();
         
         if(month == null) {
             throw new ValidationException("No existe el mes", "Error al obtener el mes");

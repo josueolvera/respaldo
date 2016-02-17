@@ -5,9 +5,11 @@ import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import javax.servlet.http.HttpSession;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.AccountsPayable;
+import mx.bidg.model.PeriodicsPayments;
 import mx.bidg.model.Requests;
 import mx.bidg.model.Users;
 import mx.bidg.service.AccountsPayableService;
+import mx.bidg.service.PeriodicPaymentsService;
 import mx.bidg.service.RequestsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,9 @@ public class RequestsController {
 
     @Autowired
     AccountsPayableService accountsPayableService;
+
+    @Autowired
+    PeriodicPaymentsService periodicPaymentsService;
     
     ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
     
@@ -81,7 +86,8 @@ public class RequestsController {
     @RequestMapping(value = "/period-payment", method = RequestMethod.POST, headers = "Accept=application/json; charset=UTF-8",
             produces = "application/json;charset=UTF-8")
     public @ResponseBody String savePeriodicPayment(@RequestBody String data) throws Exception {
-        return null;
+        PeriodicsPayments periodicsPayment = periodicPaymentsService.saveData(data);
+        return mapper.writeValueAsString(periodicsPayment);
     }
     
 }

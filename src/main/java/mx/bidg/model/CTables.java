@@ -49,6 +49,11 @@ public class CTables implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
 
+    @Size(max = 100)
+    @Column(name = "CLASS_NAME")
+    @JsonView(JsonViews.Root.class)
+    private String className;
+
     public CTables() {
     }
 
@@ -92,6 +97,14 @@ public class CTables implements Serializable {
 
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
     }
 
     @Override

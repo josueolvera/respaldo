@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import mx.bidg.dao.AccountsPayableDao;
@@ -50,12 +51,13 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
             Integer payNum = json.get("payNum").asInt();
             Integer totalPayments = json.get("totalPayments").asInt();
             LocalDateTime dueDate = (json.get("dueDate").asText() != null)? 
-                LocalDateTime.parse(json.get("dueDate").asText()) : null;
+                LocalDateTime.parse(json.get("dueDate").asText(), DateTimeFormatter.ISO_DATE_TIME) : null;
             CCurrencies currency = new CCurrencies(json.get("currency").asInt());
             
             accountsPayable = new AccountsPayable();
             accountsPayable.setFolio(folio);
             accountsPayable.setAmount(amount);
+            accountsPayable.setRate(rate);
             accountsPayable.setPaidAmount(new BigDecimal(BigInteger.ZERO));
             accountsPayable.setPayNum(payNum);
             accountsPayable.setTotalPayments(totalPayments);

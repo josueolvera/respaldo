@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import mx.bidg.dao.PeriodicPaymentsDao;
 import mx.bidg.dao.RequestsDao;
 import mx.bidg.model.CCurrencies;
@@ -42,7 +44,7 @@ public class PeriodicPaymentsServiceImpl implements PeriodicPaymentsService {
         BigDecimal amount = json.get("amount").decimalValue();
         LocalDateTime initialDate = LocalDateTime.parse(json.get("initialDate").asText());
         LocalDateTime dueDate = (json.get("dueDate").asText() != null)? 
-                LocalDateTime.parse(json.get("dueDate").asText()) : null;
+                LocalDateTime.parse(json.get("dueDate").asText(), DateTimeFormatter.ISO_DATE_TIME) : null;
         
         PeriodicsPayments periodicsPayment = new PeriodicsPayments();
         periodicsPayment.setPeriod(period);

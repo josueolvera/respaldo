@@ -86,14 +86,4 @@ public class PruebaController {
         return uno + ":" + dos;
     }
 
-
-    @RequestMapping(value = "/date", method = RequestMethod.POST, headers = {"Accept=application/json; Charset=UTF-8"})
-    public @ResponseBody String dateTest(@RequestBody String data) throws Exception {
-        JsonNode json = mapper.readTree(data);
-        String dateS = json.get("date").asText();
-        System.out.println("Fecha: " + dateS);
-        LocalDateTime date = LocalDateTime.parse(dateS, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        System.out.println("Fecha 2: " + date);
-        return "OK";
-    }
 }

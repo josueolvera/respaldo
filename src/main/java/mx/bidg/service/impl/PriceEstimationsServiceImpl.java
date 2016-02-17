@@ -95,25 +95,27 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     }
 
     @Override
-    public PriceEstimations update(PriceEstimations pe) throws Exception{
-        PriceEstimations estimation = priceEstimationsDao.findByIdFetchRequestStatus(pe.getIdEstimation());
+    public PriceEstimations update(Integer idEstimation, String data) throws Exception{
+        PriceEstimations estimation = priceEstimationsDao.findByIdFetchRequestStatus(idEstimation);
+        JsonNode json = mapper.readTree(data);
         //Verifica que el estatus de la solicitud sea Pendiente (1)
         if(estimation.getEstimationStatus().getIdEstimationStatus().equals(1)) {
             Requests request = requestsDao.findByIdFetchBudgetMonthBranch(estimation.getIdRequest());
             BigDecimal budgetAmount = request.getBudgetMonthBranch().getAmount();
             BigDecimal expendedAmount = request.getBudgetMonthBranch().getExpendedAmount();
             BigDecimal residualAmount = budgetAmount.subtract(expendedAmount);
-            BigDecimal rate = ((pe.getRate().compareTo(BigDecimal.ZERO)) == 1)? pe.getRate() : BigDecimal.ONE;
-            BigDecimal amount = ((pe.getAmount().compareTo(BigDecimal.ZERO)) == 1)? pe.getAmount().divide(rate, 6, RoundingMode.DOWN) : BigDecimal.ZERO;
+            BigDecimal rate = ((json.get("rate").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("rate").decimalValue() : BigDecimal.ONE;
+            BigDecimal amount = ((json.get("amount").decimalValue().compareTo(BigDecimal.ZERO)) == 1)?
+                    json.get("amount").decimalValue().divide(rate, 6, RoundingMode.DOWN) : BigDecimal.ZERO;
             
-            estimation.setAccount(new Accounts(pe.getIdAccount()));
+            estimation.setAccount(new Accounts(json.get("idAccount").asInt()));
             estimation.setAmount(amount);
-            estimation.setCurrency(new CCurrencies(pe.getIdCurrency()));
+            estimation.setCurrency(new CCurrencies(json.get("idCurrency").asInt()));
             estimation.setRate(rate);
             //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
             estimation.setOutOfBudget((residualAmount.compareTo(amount) == -1)? 1 : 0);
-            estimation.setSku(pe.getSku());
-            estimation.setUserEstimation(new Users(pe.getIdUserEstimation()));
+            estimation.setSku((json.get("sku").asText() != null) ? json.get("sku").asText() : "");
+//            estimation.setUserEstimation(new Users(json.get("idUserEstimation").asInt()));
             return estimation;
         } else {
             throw new ValidationException("No se puede modificar una cotizacion ya autorizada", 
