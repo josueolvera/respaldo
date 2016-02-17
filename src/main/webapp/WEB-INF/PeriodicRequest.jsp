@@ -25,10 +25,9 @@
           ready: function ()
           {
             this.obtainAllUsers();
-            this.idRequestCategory= this.getGet();
-            this.request.idRequestCategory = this.idRequestCategory.cat;
-
-            this.$http.get(ROOT_URL+"/request-types/request-category/"+this.idRequestCategory.cat)
+            this.RequestCategory= this.getGet();
+            this.obtainRequestInformation.idRequestCategory= this.RequestCategory.cat;
+            this.$http.get(ROOT_URL+"/request-types/request-category/"+ this.obtainRequestInformation.idRequestCategory)
                     .success(function (data)
                     {
                        this.RequestTypes= data;
@@ -36,6 +35,20 @@
           },
           data:
           {
+            months:[
+              {idMonth: 1, name: 'Enero'},
+              {idMonth: 2, name: 'Febrero'},
+              {idMonth: 3, name: 'Marzo'},
+              {idMonth: 4, name: 'Abril'},
+              {idMonth: 5, name: 'Mayo'},
+              {idMonth: 6, name: 'Junio'},
+              {idMonth: 7, name: 'Julio'},
+              {idMonth: 8, name: 'Agosto'},
+              {idMonth: 9, name: 'Septiembre'},
+              {idMonth: 10, name: 'Octubre'},
+              {idMonth: 11, name: 'Noviembre'},
+              {idMonth: 12, name: 'Diciembre'}
+            ],
             request:
             {
               idRequest: '',
@@ -64,10 +77,19 @@
                 idRequestStatus: ''
               }
             },
-            idRequestCategory: '',
+            obtainRequestInformation:
+            {
+              idRequestCategory: '',
+              idRequestType: '',
+              idProductType: '',
+              idUserResponsable: '',
+              year: '',
+              idMonth: ''
+            },
+            RequestCategory: '',
+            ResponseRequestInformation: '',
             idRequestType: '',
             idProductType: '',
-
             optionSelect: [],
             RequestTypes: {},
             ProductTypes: {},
@@ -101,7 +123,7 @@
             obtainProductType: function()
             {
               this.ProductTypes= {};
-              this.$http.get(ROOT_URL+"/product-types/request-category-type/"+this.idRequestCategory.cat+"/"+this.request.idRequestType)
+              this.$http.get(ROOT_URL+"/product-types/request-category-type/"+this.obtainRequestInformation.idRequestCategory+"/"+this.obtainRequestInformation.idRequestType)
                       .success(function (data)
                       {
                          this.ProductTypes= data;
@@ -111,12 +133,23 @@
             obtainProducts: function()
             {
               this.Productos= {};
-              this.$http.get(ROOT_URL+"/products/product-type/"+this.request.idProductType)
+              this.$http.get(ROOT_URL+"/products/product-type/"+this.obtainRequestInformation.idProductType)
                       .success(function (data)
                       {
                          this.Productos= data;
                       });
             },
+            obtainRequestInfo: function()
+            {
+              var date= new Date();
+              this.obtainRequestInformation.year= date.getFullYear();
+              this.$http.post(ROOT_URL+"/requests/month-branch-product-type", JSON.stringify(this.obtainRequestInformation))
+                      .success(function (data)
+                      {
+                         this.ResponseRequestInformation= data;
+                      });
+            }
+            ,
             saveProduct: function()
             {
               var producto= this.createProduct();
@@ -169,14 +202,15 @@
             {
              this.$http.get(ROOT_URL + "/users").success(function (data)
               {
-                this.optionSelect = $('#select_responsable').selectize({
+                /*this.optionSelect = $('#select_responsable').selectize({
                    create: false,
                    sortField: 'text',
                    searchField: 'mail',
                    valueField: 'idUser',
 						       labelField: 'username',
                    options: data
-                 });
+                 });*/
+                 this.Users= data;
               });
             },
             createCotizacion: function()
@@ -232,7 +266,7 @@
                <label>
                  Tipo de Solicitud:
                </label>
-               <select class="form-control" v-model="request.idRequestType" :disabled="desactivarCombos" @change="obtainProductType" required>
+               <select class="form-control" v-model="obtainRequestInformation.idRequestType" :disabled="desactivarCombos" @change="obtainProductType" required>
                  <option v-for="RequestType in RequestTypes"
                    value="{{RequestType.idRequestType}}">{{RequestType.requestType}}
                  </option>
@@ -243,7 +277,7 @@
                 <label>
                   Tipo de producto
                 </label>
-                <select class="form-control" v-model="request.idProductType" :disabled="desactivarCombos"
+                <select class="form-control" v-model="obtainRequestInformation.idProductType" :disabled="desactivarCombos"
                   @change="obtainProducts" required>
                   <option v-for="ProductType in ProductTypes" value="{{ProductType.idProductType}}">
                     {{ProductType.productType}}
@@ -264,22 +298,35 @@
 
               <div class="col-xs-1">
                 <div class="col-xs-6">
-                  <button type="button" class="btn btn-default" style="margin-top: 25px; margin-left: -33px" v-on:click="saveProduct">
+                  <button type="button" class="btn btn-default" style="margin-top: 25px; margin-left: -33px"
+                    v-on:click="saveProduct">
                     <span class="glyphicon glyphicon-plus"></span>
                   </button>
                 </div>
               </div>
 
+              <div class="col-xs-2">
+                <label>
+                  Mes
+                </label>
+                <select class="form-control" v-model="obtainRequestInformation.idMonth" @change="obtainRequestInfo">
+                  <option></option>
+                  <option v-for="month in months" value="{{month.idMonth}}">{{month.name}}</option>
+                </select>
+              </div>
+
+              <div class="col-xs-2">
+                <label>
+                  Responsable:
+                </label>
+                <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
+                @change="obtainRequestInfo">
+                  <option></option>
+                  <option v-for="user in Users" value="{{user.idUser}}"> {{user.username}} </option>
+                </select>
+              </div>
+
               <!--
-             <div class="col-xs-2">
-               <label>
-                 Duración:
-               </label>
-               <select class="form-control" name="" id="tipoArticulo">
-                 <option value="1">1 Mes</option>
-                 <option value="0">Otro..</option>
-               </select>
-             </div>
 
              <div class="col-xs-2">
                <label>
@@ -294,14 +341,7 @@
              </div>
 
            -->
-             <div class="col-xs-2">
-               <label>
-                 Responsable:
-               </label>
-               <select class="form-control" id="select_responsable">
 
-               </select>
-             </div>
             </div>
             <br>
               <div class="row">
@@ -429,6 +469,9 @@
               </div>
             </div>
           </div>
+          <pre>
+            {{ $data.ResponseRequestInformation | json}}
+          </pre>
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->
