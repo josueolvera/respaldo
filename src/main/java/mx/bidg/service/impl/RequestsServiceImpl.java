@@ -95,7 +95,7 @@ public class RequestsServiceImpl implements RequestsService {
         CProductTypes cProductType = cProductTypesDao
                 .findByIdFetchBudgetSubcategory(jsonRequest.get("idProductType").asInt());
         Users userResponsable = usersDao.findByIdFetchDwEmployee(jsonRequest.get("idUserResponsable").asInt());
-        LocalDateTime date = LocalDateTime.parse(jsonRequest.get("applyingDate").asText(), DateTimeFormatter.ISO_INSTANT);
+        LocalDateTime date = LocalDateTime.parse(jsonRequest.get("applyingDate").asText(), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         
         CMonths month = cMonthsDao.findById(date.getMonthValue());
         Integer year = date.getYear();
