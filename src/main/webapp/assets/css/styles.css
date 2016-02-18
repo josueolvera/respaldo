@@ -2,6 +2,10 @@ body {
     background: #E4E8E8;
 }
 
+.body {
+    margin-left: 70px;
+}
+
 .header-wrapper {
     height: 100%;
     background: url("../img/header_bg_new.png") repeat-x top;
@@ -155,6 +159,11 @@ nav ul,nav li {
 .dashboard-page nav.dashboard-menu ul li.active a {
     color:#fff;
     background-color:#5fa2db;
+}
+
+.main-menu .badge {
+    color: #354553;
+    background: #FFFFFF;
 }
 
 /* Login Form */
@@ -328,4 +337,71 @@ nav ul,nav li {
        -moz-transform-origin: 0 0 0;
          -o-transform-origin: 0 0 0;
             transform-origin: 0 0 0;
+}
+
+/* Cards */
+
+.card {
+    /*padding: 1rem 1.5rem;*/
+    border: 1px solid #c8c8c8;
+    border-bottom: 0;
+    background: #FFFFFF;
+    box-shadow: 0 -1px 0 #e5e5e5,0 0 2px rgba(0,0,0,.12),0 2px 4px rgba(0,0,0,.24);
+}
+
+.card .label {
+    font-size: 85%;
+}
+
+.card p, .card span {
+    margin: 0 1rem 0 0;
+}
+
+.card span span {
+    margin: 0;
+}
+
+.card-inline .badge {
+    min-width: 2.5rem;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.card-inline .card-image {
+    float: left;
+    max-width: 5%;
+    min-width: 3rem;
+    overflow: hidden;
+}
+
+.card-inline .card-title {
+    float: left;
+    width: 25%;
+    max-width: 25%;
+    overflow: hidden;
+}
+
+.card-inline .card-subtitle {
+    float: left;
+    max-width: 20%;
+}
+
+.card-inline .card-text {
+    float: left;
+    color: #777777;
+    max-width: 40%;
+}
+
+.card-inline .card-actions {
+    text-align: right;
+    float: right;
+    min-width: 10%;
+    max-width: 20%;
+    padding: 1rem 1.5rem;
+}
+
+.card-inline .card-body {
+    width: 80%;
+    float: left;
+    padding: 1rem 1.5rem;
 }
