@@ -17,6 +17,15 @@
         </script>
 
         <script type="text/javascript">
+        $(function () {
+          $('#datetimepicker1').datetimepicker({
+            locale: 'es',
+            format: 'YYYY/MM/DD'
+          });
+            });
+        </script>
+
+        <script type="text/javascript">
           var vm= new Vue({
           el: '#contenidos',
           created: function(){
@@ -83,8 +92,7 @@
               idRequestType: '',
               idProductType: '',
               idUserResponsable: '',
-              year: '',
-              idMonth: ''
+              applyingDate: ''
             },
             RequestCategory: '',
             ResponseRequestInformation: '',
@@ -141,13 +149,17 @@
             },
             obtainRequestInfo: function()
             {
-              var date= new Date();
-              this.obtainRequestInformation.year= date.getFullYear();
+              var date= new Date(this.obtainRequestInformation.applyingDate);
+              var dateiso= date.toISOString();
+              this.obtainRequestInformation.applyingDate= dateiso.slice(0, -1);
+              console.log(dateiso.slice(0, -1));
+
               this.$http.post(ROOT_URL+"/requests/month-branch-product-type", JSON.stringify(this.obtainRequestInformation))
                       .success(function (data)
                       {
                          this.ResponseRequestInformation= data;
                       });
+
             }
             ,
             saveProduct: function()
@@ -246,7 +258,7 @@
     <jsp:body>
       <div id="contenidos">
 
-          <div class="container-fluid">
+          <div class="container-fluid" style="margin-left: 100px">
 
             <form v-on:submit.prevent="saveRequest">
             <div class="row">
@@ -287,7 +299,7 @@
 
               <div class="col-xs-2">
                 <label>
-                  Producto
+                  Productos
                 </label>
                 <select class="form-control" v-model="idProducto" id="selectProducto" required>
                   <option v-for="Product in Productos" value="{{Product.idProduct}}">
@@ -307,12 +319,23 @@
 
               <div class="col-xs-2">
                 <label>
+                  Fecha Aplicacion
+                </label>
+                <div class="form-group">
+                <div class='input-group date' id='datetimepicker1'>
+                    <input type='text' class="form-control" v-model="obtainRequestInformation.applyingDate" @change="obtainRequestInfo">
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+                </div>
+              <!--  <label>
                   Mes
                 </label>
                 <select class="form-control" v-model="obtainRequestInformation.idMonth" @change="obtainRequestInfo">
                   <option></option>
                   <option v-for="month in months" value="{{month.idMonth}}">{{month.name}}</option>
-                </select>
+                </select> -->
               </div>
 
               <div class="col-xs-2">
@@ -468,10 +491,11 @@
                 </div>
               </div>
             </div>
+            <pre>
+              {{ $data.obtainRequestInformation | json}}
+            </pre>
           </div>
-          <pre>
-            {{ $data.ResponseRequestInformation | json}}
-          </pre>
+
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->
