@@ -31,8 +31,11 @@ CREATE TABLE `C_REQUESTS_CATEGORIES` (
   `PERIODIC` int(11) DEFAULT '0',
   `ID_ACCESS_LEVEL` int(11) DEFAULT '1',
   `INFORMATION` varchar(1000) DEFAULT NULL,
+  `ID_RESOURCE_TASK` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`ID_REQUEST_CATEGORY`),
   KEY `fk_C_REQUEST_CATEGORIES_C_VIEWS_idx` (`ID_VIEW`),
+  KEY `FK_C_REQUESTS_CATEGORIES_RESOURCES_TASK` (`ID_RESOURCE_TASK`),
+  CONSTRAINT `FK_C_REQUESTS_CATEGORIES_RESOURCES_TASK` FOREIGN KEY (`ID_RESOURCE_TASK`) REFERENCES `RESOURCES_TASKS` (`ID_RESOURCE_TASK`),
   CONSTRAINT `FKh3xa347wf85wf0kp0mwx8lu9x` FOREIGN KEY (`ID_VIEW`) REFERENCES `C_VIEWS` (`ID_VIEW`),
   CONSTRAINT `fk_C_REQUEST_CATEGORIES_C_VIEWS` FOREIGN KEY (`ID_VIEW`) REFERENCES `C_VIEWS` (`ID_VIEW`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
@@ -44,7 +47,7 @@ CREATE TABLE `C_REQUESTS_CATEGORIES` (
 
 LOCK TABLES `C_REQUESTS_CATEGORIES` WRITE;
 /*!40000 ALTER TABLE `C_REQUESTS_CATEGORIES` DISABLE KEYS */;
-INSERT INTO `C_REQUESTS_CATEGORIES` VALUES (1,6,'Cotizable',0,1,'<p>En esta categoria tenemos las siguientes solicitudes:</p><p>Solicitudes de Compra con Cotizaciones.</p><p>Solicitud de Mantenimiento con Cotizaciones</p>'),(2,7,'Directa',0,1,'<p>En esta categoria tenemos las siguientes solicitudes:</p><p>Solicitudes de Compra sin Cotizaciones.</p><p>Solicitud de Mantenimiento sin Cotizaciones</p>'),(3,8,'Periodica',1,1,'<p>En esta categoria tenemos las siguientes solicitudes:</p><p>Solicitudes de Servicio-Agua.</p><p>Solicitudes de Servicio-Luz.</p><p>Solicitudes de Telefonia Fija.</p><p>Solicitudes de Telefonia Movil.</p><p>Solicitudes de Internet.</p><p>Solicitudes de Seguridad-Alarmas</p>');
+INSERT INTO `C_REQUESTS_CATEGORIES` VALUES (1,6,'Cotizable',0,1,'<p>En esta categoria tenemos las siguientes solicitudes:</p><p>Solicitudes de Compra con Cotizaciones.</p><p>Solicitud de Mantenimiento con Cotizaciones</p>',2),(2,7,'Directa',0,1,'<p>En esta categoria tenemos las siguientes solicitudes:</p><p>Solicitudes de Compra sin Cotizaciones.</p><p>Solicitud de Mantenimiento sin Cotizaciones</p>',3),(3,8,'Periodica',1,1,'<p>En esta categoria tenemos las siguientes solicitudes:</p><p>Solicitudes de Servicio-Agua.</p><p>Solicitudes de Servicio-Luz.</p><p>Solicitudes de Telefonia Fija.</p><p>Solicitudes de Telefonia Movil.</p><p>Solicitudes de Internet.</p><p>Solicitudes de Seguridad-Alarmas</p>',4);
 /*!40000 ALTER TABLE `C_REQUESTS_CATEGORIES` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -57,4 +60,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-02-09 17:43:38
+-- Dump completed on 2016-02-17 17:36:42
