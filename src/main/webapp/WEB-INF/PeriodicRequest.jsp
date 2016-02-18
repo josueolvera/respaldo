@@ -16,14 +16,7 @@
         }
         </script>
 
-        <script type="text/javascript">
-        $(function () {
-          $('#datetimepicker1').datetimepicker({
-            locale: 'es',
-            format: 'YYYY/MM/DD'
-          });
-            });
-        </script>
+
 
         <script type="text/javascript">
           var vm= new Vue({
@@ -33,6 +26,11 @@
           },
           ready: function ()
           {
+            this.timePicker = $('#datetimepicker1').datetimepicker({
+              locale: 'es',
+              format: 'YYYY/MM/DD'
+              }).data();
+
             this.obtainAllUsers();
             this.RequestCategory= this.getGet();
             this.obtainRequestInformation.idRequestCategory= this.RequestCategory.cat;
@@ -111,7 +109,8 @@
             supplier: {},
             idSupplier: '',
             accounts: {},
-            idAccount: ''
+            idAccount: '',
+            timePicker: ''
           },
           methods:
           {
