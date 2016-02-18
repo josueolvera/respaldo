@@ -29,7 +29,10 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
 
     @Override
     public Requests findById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return (Requests) createEntityCriteria()
+                .add(Restrictions.idEq(id))
+                .setFetchMode("ID_REQUEST_TYPE_PRODUCT", FetchMode.JOIN)
+                .uniqueResult();
     }
 
     @Override

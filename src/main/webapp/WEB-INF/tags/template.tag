@@ -89,7 +89,7 @@
                                     <span class="fa fa-list fa-2x glyphicon glyphicon-envelope"></span>
                                     <span class="nav-text">
                                         Bandeja de entrada
-                                        <span class="badge">4</span>
+                                        <span class="badge">{{ notifications }}</span>
                                     </span>
                                 </a>
                             </li>
@@ -113,7 +113,8 @@
         </div>
         <script src="/BIDGroup/assets/js/jquery-2.1.4.min.js"></script>
         <script src="/BIDGroup/assets/js/bootstrap.min.js"></script>
-        <script src="/BIDGroup/assets/js/moment-with-locales.min.js"></script>
+        <script src="/BIDGroup/assets/js/moment.min.js"></script>
+        <script src="/BIDGroup/assets/js/moment-locale-es-mx.js"></script>
         <script src="/BIDGroup/assets/js/bootstrap-datetimepicker.min.js"></script>
         <script src="/BIDGroup/assets/js/jquery.onscreen.min.js"></script>
         <script src="/BIDGroup/assets/js/vue-1.0.7.js"></script>
@@ -146,6 +147,7 @@
                     },
                     menu: null,
                     user: null,
+                    notifications: 0,
                     systemDate: null
                 },
                 methods: {
@@ -153,6 +155,7 @@
                         this.$http.get(ROOT_URL + '/app-menu').success(function (data) {
                             this.menu = data.menu;
                             this.user = data.user;
+                            this.notifications = data.notifications;
                             this.systemDate = data.systemDate;
                         });
                     },

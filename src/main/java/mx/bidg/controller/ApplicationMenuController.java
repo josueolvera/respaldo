@@ -7,6 +7,7 @@ import mx.bidg.model.CSystems;
 import mx.bidg.model.Users;
 import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.service.ApplicationMenuService;
+import mx.bidg.service.NotificationsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,10 @@ import java.util.List;
 public class ApplicationMenuController {
 
     @Autowired
-    ApplicationMenuService appMenuService;
+    private ApplicationMenuService appMenuService;
+
+    @Autowired
+    private NotificationsService notificationsService;
 
     ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
@@ -48,8 +52,12 @@ public class ApplicationMenuController {
         HashMap<String, Object> response = new HashMap<>();
         response.put("menu", systems);
         response.put("user", user);
+        response.put("notifications", notificationsService.countNotificationsForUser(user));
         response.put("systemDate", new DateFormatsPojo(LocalDateTime.now()));
 
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(response), HttpStatus.OK);
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(response),
+                HttpStatus.OK
+        );
     }
 }

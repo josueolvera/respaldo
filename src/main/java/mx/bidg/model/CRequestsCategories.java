@@ -38,7 +38,6 @@ public class CRequestsCategories implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_REQUEST_CATEGORY")
     @JsonView(JsonViews.Root.class)
     private Integer idRequestCategorie;
@@ -61,6 +60,10 @@ public class CRequestsCategories implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idView;
 
+    @Column(name = "ID_RESOURCE_TASK", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idResourceTask;
+
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
@@ -69,6 +72,11 @@ public class CRequestsCategories implements Serializable {
     @ManyToOne
     @JsonView(JsonViews.EmbeddedRequestCategory.class)
     private CViews view;
+
+    @JoinColumn(name = "ID_RESOURCE_TASK", referencedColumnName = "ID_RESOURCE_TASK")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private ResourcesTasks resourcesTasks;
 
     public CRequestsCategories() {
     }
@@ -123,6 +131,22 @@ public class CRequestsCategories implements Serializable {
 
     public void setView(CViews view) {
         this.view = view;
+    }
+
+    public Integer getIdResourceTask() {
+        return idResourceTask;
+    }
+
+    public void setIdResourceTask(Integer idResourceTask) {
+        this.idResourceTask = idResourceTask;
+    }
+
+    public ResourcesTasks getResourcesTasks() {
+        return resourcesTasks;
+    }
+
+    public void setResourcesTasks(ResourcesTasks resourcesTasks) {
+        this.resourcesTasks = resourcesTasks;
     }
 
     @Override
