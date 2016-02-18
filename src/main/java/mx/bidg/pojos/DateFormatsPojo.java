@@ -3,10 +3,9 @@ package mx.bidg.pojos;
 import org.apache.commons.lang3.LocaleUtils;
 
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
 
@@ -25,33 +24,46 @@ public class DateFormatsPojo {
     private String time24;
 
     private DateElements dateElements;
+    private PeriodDiff dateDiff;
+    private static Locale locale = LocaleUtils.toLocale("es_MX");
+    private static WeekFields weekFields = WeekFields.of(locale);
+
+    public DateFormatsPojo() {}
 
     public DateFormatsPojo(@NotNull LocalDateTime dateTime) {
-        Locale locale = LocaleUtils.toLocale("es_MX");
         this.iso = dateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-
-        this.dateNumber = dateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-        this.dateTextShort = dateTime.format(DateTimeFormatter.ofPattern("EE dd, MMM yyyy").withLocale(locale));
-        this.dateTextLong = dateTime.format(DateTimeFormatter.ofPattern("EEEE dd, MMMM yyyy").withLocale(locale));
-
-        this.time12 = dateTime.format(DateTimeFormatter.ofPattern("hh:mm a"));
-        this.time24 = dateTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+        build(dateTime.toLocalDate());
+        build(dateTime.toLocalTime());
+        buildPeriod(LocalDate.now(), dateTime.toLocalDate());
 
         this.dateElements = new DateElements(dateTime.toLocalDate());
     }
 
     public DateFormatsPojo(@NotNull LocalDate date) {
-        Locale locale = LocaleUtils.toLocale("es_MX");
         this.iso = date.format(DateTimeFormatter.ISO_DATE);
-
-        this.dateNumber = date.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
-        this.dateTextShort = date.format(DateTimeFormatter.ofPattern("EE dd, MMM yyyy").withLocale(locale));
-        this.dateTextLong = date.format(DateTimeFormatter.ofPattern("EEEE dd, MMMM yyyy").withLocale(locale));
+        build(date);
+        buildPeriod(LocalDate.now(), date);
 
         this.dateElements = new DateElements(date);
     }
 
     public DateFormatsPojo(@NotNull LocalTime time) {}
+
+    public void build(LocalDate localDate) {
+        this.dateNumber = localDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        this.dateTextShort = localDate.format(DateTimeFormatter.ofPattern("EE dd, MMM yyyy").withLocale(locale));
+        this.dateTextLong = localDate.format(DateTimeFormatter.ofPattern("EEEE dd, MMMM yyyy").withLocale(locale));
+    }
+
+    public void build(LocalTime time) {
+        this.time12 = time.format(DateTimeFormatter.ofPattern("hh:mm a"));
+        this.time24 = time.format(DateTimeFormatter.ofPattern("HH:mm"));
+    }
+
+    public void buildPeriod(LocalDate from, LocalDate to) {
+        Period period = Period.between(from, to).normalized();
+        this.dateDiff = new PeriodDiff(period);
+    }
 
     public String getIso() {
         return iso;
@@ -81,6 +93,14 @@ public class DateFormatsPojo {
         return dateElements;
     }
 
+    public void setDateElements(DateElements elements) {
+        this.dateElements = elements;
+    }
+
+    public PeriodDiff getDateDiff() {
+        return dateDiff;
+    }
+
     private static class DateElements {
         private String day;
         private String dayNameShort;
@@ -88,12 +108,18 @@ public class DateFormatsPojo {
         private String month;
         private String monthNameShort;
         private String monthNameLong;
-        private String year;
+        private Integer year;
         private Integer week;
+        private DateInterval interval;
+
+        public DateElements() {}
 
         public DateElements(LocalDate localDate) {
-            Locale locale = LocaleUtils.toLocale("es_MX");
-            WeekFields weekFields = WeekFields.of(locale);
+            build(localDate);
+            this.interval = new DateInterval(localDate);
+        }
+
+        public void build(LocalDate localDate) {
             this.day = localDate.format(DateTimeFormatter.ofPattern("dd"));
             this.dayNameShort = localDate.format(DateTimeFormatter.ofPattern("EE").withLocale(locale));
             this.dayNameLong = localDate.format(DateTimeFormatter.ofPattern("EEEE").withLocale(locale));
@@ -102,7 +128,7 @@ public class DateFormatsPojo {
             this.monthNameShort = localDate.format(DateTimeFormatter.ofPattern("MMM").withLocale(locale));
             this.monthNameLong = localDate.format(DateTimeFormatter.ofPattern("MMMM").withLocale(locale));
 
-            this.year = localDate.format(DateTimeFormatter.ofPattern("yyyy"));
+            this.year = localDate.getYear();
             this.week = localDate.get(weekFields.weekOfWeekBasedYear());
         }
 
@@ -130,12 +156,125 @@ public class DateFormatsPojo {
             return monthNameLong;
         }
 
-        public String getYear() {
+        public Integer getYear() {
             return year;
         }
 
         public Integer getWeek() {
             return week;
+        }
+
+        public DateInterval getInterval() {
+            return interval;
+        }
+    }
+
+    private static class DateInterval {
+        private String name;
+        private LocalDate top;
+        private LocalDate bottom;
+
+        public DateInterval(LocalDate date){
+
+            LocalDate currentDate = LocalDate.now();
+            if (currentDate.getYear() == date.getYear()) {
+                if (date.isEqual(currentDate)) {
+                    this.name = "Hoy";
+                    this.top = date;
+                    this.bottom = date;
+                } else if (currentDate.get(weekFields.weekOfWeekBasedYear()) == date.get(weekFields.weekOfWeekBasedYear())) {
+                    this.name = "Esta semana";
+                    top = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
+                    bottom = date.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY));
+                } else if (currentDate.getMonthValue() == date.getMonthValue()) {
+                    this.name = "Este mes";
+                    top = date.with(TemporalAdjusters.firstDayOfMonth());
+                    bottom = date.with(TemporalAdjusters.lastDayOfMonth());
+                } else {
+                    this.name = "Este año";
+                    top = date.with(TemporalAdjusters.firstDayOfYear());
+                    bottom = date.with(TemporalAdjusters.lastDayOfYear());
+                }
+            } else {
+                this.name = "En el futuro";
+                top = date.with(TemporalAdjusters.firstDayOfNextYear());
+            }
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public DateFormatsPojo getTop() {
+            if (top != null) {
+                return build(top);
+            }
+            return null;
+        }
+
+        public DateFormatsPojo getBottom() {
+            if (bottom != null) {
+                return build(bottom);
+            }
+            return null;
+        }
+
+        private DateFormatsPojo build(LocalDate date) {
+            DateFormatsPojo formats = new DateFormatsPojo();
+            DateElements elements = new DateElements();
+            formats.build(date);
+            elements.build(date);
+            formats.setDateElements(elements);
+            return formats;
+        }
+    }
+
+    private static class PeriodDiff {
+        private Period period;
+        private boolean isNegative;
+        private boolean isZero;
+
+        public PeriodDiff(Period period) {
+            this.isZero = period.isZero();
+            this.isNegative = period.isNegative();
+
+            if (period.isNegative()) {
+                this.period = period.negated();
+            } else {
+                this.period = period;
+            }
+        }
+
+        public MyPeriod getPeriod() {
+            return new MyPeriod(period);
+        }
+
+        public boolean isNegative() {
+            return isNegative;
+        }
+
+        public boolean isZero() {
+            return isZero;
+        }
+    }
+
+    private static class MyPeriod {
+        private Period period;
+
+        public MyPeriod(Period period) {
+            this.period = period;
+        }
+
+        public Integer getDays() {
+            return period.getDays();
+        }
+
+        public Integer getMonths() {
+            return period.getMonths();
+        }
+
+        public Integer getYears() {
+            return period.getYears();
         }
     }
 }
