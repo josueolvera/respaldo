@@ -56,34 +56,26 @@
               {idMonth: 11, name: 'Noviembre'},
               {idMonth: 12, name: 'Diciembre'}
             ],
-            request:
+            objectRequest:
             {
-              idRequest: '',
-              folio: '',
-              description: '',
-              purpose: '',
-              products: [],
-              userRequest: {
-                idUser: '',
-                username: '',
-                mail: ''
-              },
-              userResponsable: {
-                idUser: '',
-                username: '',
-                mail: ''
-              },
-              creationDate: '',
-              budgetMonthBranch: {
-                idBudgetMonthBranch: ''
-              },
-              requestTypeProduct: {
-                idRequestTypeProduct: ''
-              },
-              requestStatus: {
+            request:
+              {
+                idRequest: '',
+                folio: '',
+                description: '',
+                purpose: '',
+                creationDate: '',
+                applyingDate: '',
+                idUserRequest: '',
+                idUserResponsable: '',
+                idBudgetMonthBranch: '',
+                idRequestTypesProduct: '',
                 idRequestStatus: ''
-              }
-            },
+              },
+             products: []
+           },
+            responseSaveRequest: ''
+           ,
             obtainRequestInformation:
             {
               idRequestCategory: '',
@@ -148,19 +140,27 @@
             },
             obtainRequestInfo: function()
             {
-              var date= new Date(this.obtainRequestInformation.applyingDate);
+              var date = this.timePicker.DateTimePicker.date();
               var dateiso= date.toISOString();
               this.obtainRequestInformation.applyingDate= dateiso.slice(0, -1);
-              console.log(dateiso.slice(0, -1));
 
               this.$http.post(ROOT_URL+"/requests/month-branch-product-type", JSON.stringify(this.obtainRequestInformation))
                       .success(function (data)
                       {
                          this.ResponseRequestInformation= data;
+                         this.matchInformation(this.ResponseRequestInformation);
                       });
 
             }
             ,
+            matchInformation: function(requestInformation)
+            {
+              this.objectRequest.request.idRequestTypesProduct= requestInformation.requestTypesProduct.idRequestTypeProduct;
+              this.objectRequest.request.applyingDate= this.obtainRequestInformation.applyingDate;
+              this.objectRequest.request.idUserResponsable= this.obtainRequestInformation.idUserResponsable;
+              this.objectRequest.request.idBudgetMonthBranch = requestInformation.budgetMonthBranch.idBudgetMonthBranch;
+
+            },
             saveProduct: function()
             {
               var producto= this.createProduct();
@@ -171,10 +171,10 @@
                 {
                   producto.idProduct = element.idProduct;
                   producto.descripcion = element.product;
-                  self.request.products.push(producto);
+                  self.objectRequest.products.push(producto);
                 }
               });
-              if (this.request.products.length> 0)
+              if (this.objectRequest.products.length> 0)
               {
                 this.desactivarCombos= true;
                 this.desactivarGuardar= false;
@@ -190,8 +190,8 @@
             },
             deleteProduct: function(product)
             {
-                this.request.products.$remove(product);
-                if (this.request.products.length == 0)
+                this.objectRequest.products.$remove(product);
+                if (this.objectRequest.products.length == 0)
                 {
                   this.desactivarCombos= false;
                   this.desactivarGuardar = true;
@@ -199,11 +199,11 @@
             },
             saveRequest: function(event)
             {
-              this.request.idUser= this.optionSelect[0].selectize.getValue();
-              this.$http.post(ROOT_URL+"/requests", JSON.stringify(this.request)).
+              this.$http.post(ROOT_URL+"/requests", JSON.stringify(this.objectRequest)).
               success(function(data)
               {
-                showAlert(data);
+                this.responseSaveRequest= data;
+                console.log(this.responseSaveRequest);
               }).error(function(data)
               {
                 showAlert(data.error.message);
@@ -374,7 +374,7 @@
                 </div>
               </div>
 
-              <div class="row" v-for="produc in request.products">
+              <div class="row" v-for="produc in objectRequest.products">
                 <div class="col-xs-4">
                   <div class="col-xs-4">
                     {{produc.descripcion}}
@@ -395,7 +395,7 @@
                 <label>
                   Descripcion del Servicio:
                 </label>
-                <textarea class="form-control" rows="3" cols="50" v-model="request.description" required></textarea>
+                <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.description" required></textarea>
               </div>
             </div>
             <br>
@@ -404,7 +404,7 @@
                 <label>
                   Motivo de Contratacion:
                 </label>
-                <textarea class="form-control" rows="3" cols="50" v-model="request.purpose" required></textarea>
+                <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.purpose" required></textarea>
               </div>
             </div>
 
@@ -491,7 +491,7 @@
               </div>
             </div>
             <pre>
-              {{ $data.obtainRequestInformation | json}}
+              {{$data.objectRequest | json}}
             </pre>
           </div>
 
