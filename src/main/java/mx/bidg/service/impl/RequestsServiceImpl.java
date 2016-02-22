@@ -156,6 +156,7 @@ public class RequestsServiceImpl implements RequestsService {
             RequestProducts requestProduct = new RequestProducts();
             requestProduct.setProduct(product);
             requestProduct.setRequest(request);
+            requestProduct.setIdAccessLevel(1);
             requestProducts.add(requestProduct);
         }
         
