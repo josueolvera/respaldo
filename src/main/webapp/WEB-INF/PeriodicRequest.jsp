@@ -100,8 +100,7 @@
             idSupplier: '',
             accounts: {},
             idAccount: '',
-            timePicker: '',
-            accountsPayable: []
+            timePicker: ''
           },
           methods:
           {
@@ -229,12 +228,21 @@
             },
             createCotizacion: function()
             {
-              var cotizacion= {
+              var cotizacion=
+              {
+              idEstimation: '',
+              amount: '',
+              rate: '',
+              fileName: '',
+              sku: '',
+              outOfBudget: '',
               idRequest: '',
+              idEstimationStatus: '',
               idAccount: '',
               idCurrency: '',
-              amount: '',
-              sku: ''
+              idUserAuthorization: '',
+              idUserEstimation: '',
+              creationDate: ''
               }
               return cotizacion;
             },
