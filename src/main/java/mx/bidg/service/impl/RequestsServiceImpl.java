@@ -152,7 +152,7 @@ public class RequestsServiceImpl implements RequestsService {
         List<RequestProducts> requestProducts = new ArrayList<>();
         
         for(JsonNode jsonProducts : jsonRequest.get("products")) {
-            CProducts product = map.treeToValue(jsonProducts.get("product"), CProducts.class);
+            CProducts product = new CProducts(jsonProducts.get("idProduct").asInt());
             RequestProducts requestProduct = new RequestProducts();
             requestProduct.setProduct(product);
             requestProduct.setRequest(request);
