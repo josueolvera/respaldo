@@ -16,8 +16,6 @@
         }
         </script>
 
-
-
         <script type="text/javascript">
           var vm= new Vue({
           el: '#contenidos',
@@ -102,7 +100,8 @@
             idSupplier: '',
             accounts: {},
             idAccount: '',
-            timePicker: ''
+            timePicker: '',
+            accountsPayable: []
           },
           methods:
           {
@@ -203,7 +202,11 @@
               success(function(data)
               {
                 this.responseSaveRequest= data;
-                console.log(this.responseSaveRequest);
+                console.log(responseSaveRequest);
+                /*
+                this.objectRequest.request= "";
+                this.objectRequest.request= responseSaveRequest;
+                */
               }).error(function(data)
               {
                 showAlert(data.error.message);
@@ -243,6 +246,25 @@
             deleteCotizacion: function(cotizacion)
             {
               this.estimations.$remove(cotizacion);
+            },
+            createAccountPayable: function()
+            {
+              var accountPayable=
+              {
+                idAccountPayable: '',
+                folio: '',
+                amount: '',
+                paidAmount: '',
+                payNum: '',
+                totalPayments: '',
+                creationDate: '',
+                dueDate: '',
+                idAccountPayableStatus: '',
+                idOperationType: '',
+                idCurrency: '',
+                rate: ''
+              }
+              return accountPayable;
             }
           },
         filters:
