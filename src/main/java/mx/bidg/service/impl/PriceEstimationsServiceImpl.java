@@ -47,47 +47,46 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     @Autowired
     CCurrenciesDao currenciesDao;
 
+    @Autowired
+    AccountsDao accountsDao;
+
     ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    public List<PriceEstimations> saveData(String data, Users user) throws Exception {
+    public PriceEstimations saveData(String data, Users user) throws Exception {
 
-        JsonNode jsonList = mapper.readTree(data);
-        List<PriceEstimations> estimations = new ArrayList<>();
+        JsonNode json = mapper.readTree(data);
 
-        for (JsonNode json : jsonList) {
-            Integer idRequest = json.get("idRequest").asInt();
-            Requests request = requestsDao.findByIdFetchBudgetMonthBranch(idRequest);
-            BigDecimal budgetAmount = request.getBudgetMonthBranch().getAmount();
-            BigDecimal expendedAmount = request.getBudgetMonthBranch().getExpendedAmount();
-            BigDecimal residualAmount = budgetAmount.subtract(expendedAmount);
-            int idAccount = json.get("idAccount").asInt();
-            int idCurrency = json.get("idCurrency").asInt();
-            BigDecimal rate = ((json.get("rate").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("rate").decimalValue() : BigDecimal.ONE;
-            BigDecimal amount = ((json.get("amount").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("amount").decimalValue().divide(rate, 6, RoundingMode.DOWN) : BigDecimal.ZERO;
-            String sku = json.get("sku").asText();
+        Integer idRequest = json.get("idRequest").asInt();
+        Requests request = requestsDao.findByIdFetchBudgetMonthBranch(idRequest);
+        BigDecimal budgetAmount = request.getBudgetMonthBranch().getAmount();
+        BigDecimal expendedAmount = request.getBudgetMonthBranch().getExpendedAmount();
+        BigDecimal residualAmount = budgetAmount.subtract(expendedAmount);
+        Accounts account = accountsDao.findById(json.get("idAccount").asInt());
+        int idCurrency = json.get("idCurrency").asInt();
+        BigDecimal rate = ((json.get("rate").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("rate").decimalValue() : BigDecimal.ONE;
+        BigDecimal amount = ((json.get("amount").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("amount").decimalValue().divide(rate, 6, RoundingMode.DOWN) : BigDecimal.ZERO;
+        String sku = json.get("sku").asText();
 
-            PriceEstimations estimation = new PriceEstimations();
-            estimation.setRequest(request);
-            estimation.setAccount(new Accounts(idAccount));
-            estimation.setCurrency(new CCurrencies(idCurrency));
-            estimation.setAmount(amount);
-            estimation.setFilePath("");
-            estimation.setFileName("");
-            estimation.setRate(rate);
-            estimation.setCreationDate(LocalDateTime.now());
-            estimation.setUserEstimation(user);
-            estimation.setIdAccessLevel(1);
-            //Por defecto, las cotizaciones se guardan como pendientes (1)
-            estimation.setEstimationStatus(new CEstimationStatus(1));
-            estimation.setSku(sku);
-            //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
-            estimation.setOutOfBudget((residualAmount.compareTo(amount) == -1)? 1 : 0);
-            estimation = priceEstimationsDao.save(estimation);
-            estimations.add(estimation);
-        }
+        PriceEstimations estimation = new PriceEstimations();
+        estimation.setRequest(request);
+        estimation.setAccount(account);
+        estimation.setCurrency(new CCurrencies(idCurrency));
+        estimation.setAmount(amount);
+        estimation.setFilePath("");
+        estimation.setFileName("");
+        estimation.setRate(rate);
+        estimation.setCreationDate(LocalDateTime.now());
+        estimation.setUserEstimation(user);
+        estimation.setIdAccessLevel(1);
+        //Por defecto, las cotizaciones se guardan como pendientes (1)
+        estimation.setEstimationStatus(new CEstimationStatus(1));
+        estimation.setSku(sku);
+        //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
+        estimation.setOutOfBudget((residualAmount.compareTo(amount) == -1)? 1 : 0);
+        estimation = priceEstimationsDao.save(estimation);
 
-        return estimations;
+        return estimation;
 
     }
 
