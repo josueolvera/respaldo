@@ -173,20 +173,29 @@ public class DateFormatsPojo {
         private String name;
         private LocalDate top;
         private LocalDate bottom;
+        private Boolean sameDay = false;
+        private Boolean sameWeek = false;
+        private Boolean sameMonth = false;
+        private Boolean sameYear = false;
 
         public DateInterval(LocalDate date){
 
             LocalDate currentDate = LocalDate.now();
             if (currentDate.getYear() == date.getYear()) {
-                if (date.isEqual(currentDate)) {
+                this.sameDay = date.isEqual(currentDate);
+                this.sameWeek = currentDate.get(weekFields.weekOfWeekBasedYear()) == date.get(weekFields.weekOfWeekBasedYear());
+                this.sameMonth = currentDate.getMonthValue() == date.getMonthValue();
+                this.sameYear = true;
+
+                if (sameDay) {
                     this.name = "Hoy";
                     this.top = date;
                     this.bottom = date;
-                } else if (currentDate.get(weekFields.weekOfWeekBasedYear()) == date.get(weekFields.weekOfWeekBasedYear())) {
+                } else if (sameWeek) {
                     this.name = "Esta semana";
                     top = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
                     bottom = date.with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY));
-                } else if (currentDate.getMonthValue() == date.getMonthValue()) {
+                } else if (sameMonth) {
                     this.name = "Este mes";
                     top = date.with(TemporalAdjusters.firstDayOfMonth());
                     bottom = date.with(TemporalAdjusters.lastDayOfMonth());
@@ -217,6 +226,22 @@ public class DateFormatsPojo {
                 return build(bottom);
             }
             return null;
+        }
+
+        public Boolean getSameDay() {
+            return sameDay;
+        }
+
+        public Boolean getSameWeek() {
+            return sameWeek;
+        }
+
+        public Boolean getSameMonth() {
+            return sameMonth;
+        }
+
+        public Boolean getSameYear() {
+            return sameYear;
         }
 
         private DateFormatsPojo build(LocalDate date) {

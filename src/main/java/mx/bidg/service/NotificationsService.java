@@ -9,9 +9,9 @@ import java.util.List;
  * Created on 10/02/16.
  */
 public interface NotificationsService {
-    Notifications createNotification(Users user, Requests request);
-    Notifications createNotification(Users user, Stocks stock);
-    Notifications createNotification(Users user, AccountsPayable accountPayable);
+    List<Notifications> createNotification(List<Users> users, Requests request);
+    List<Notifications> createNotification(List<Users> users, Stocks stock);
+    List<Notifications> createNotification(List<Users> users, AccountsPayable accountPayable);
     Long countNotificationsForUser(Users user);
     List<Notifications> findAllForUser(Users user);
     List<Notifications> findArchiveForUser(Users user);

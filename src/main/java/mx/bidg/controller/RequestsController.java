@@ -9,6 +9,7 @@ import mx.bidg.model.PeriodicsPayments;
 import mx.bidg.model.Requests;
 import mx.bidg.model.Users;
 import mx.bidg.service.AccountsPayableService;
+import mx.bidg.service.NotificationsService;
 import mx.bidg.service.PeriodicPaymentsService;
 import mx.bidg.service.RequestsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,6 +37,9 @@ public class RequestsController {
 
     @Autowired
     PeriodicPaymentsService periodicPaymentsService;
+
+    @Autowired
+    NotificationsService notificationsService;
     
     ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
     
@@ -47,6 +52,10 @@ public class RequestsController {
         String response;
         
         if(request != null) {
+            List<Users> users = new ArrayList<>();
+            users.add(user);
+            users.add(request.getUserResponsible());
+            notificationsService.createNotification(users, request);
             response = mapper.writeValueAsString(request);
         } else {
             response = "Error al guardar la Solicitud";

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,31 +28,37 @@ public class NotificationsServiceImpl implements NotificationsService {
     private RequestsDao requestsDao;
 
     @Override
-    public Notifications createNotification(Users user, Requests request) {
+    public List<Notifications> createNotification(List<Users> users, Requests request) {
         request = requestsDao.findById(request.getIdRequest());
+        List<Notifications> notifications = new ArrayList<>();
 
-        Notifications notification = new Notifications();
-        notification.setIdResource(request.getIdRequest());
-        notification.setResourcesTasks(request.getRequestTypeProduct().getRequestCategory().getResourcesTasks());
-        notification.setTitle(request.getRequestTypeProduct().getRequestType().getRequestType());
-        notification.setSubtitle(request.getRequestTypeProduct().getProductType().getProductType());
-        notification.setText(request.getDescription());
-        notification.setUser(user);
-        notification.setNotificationTypes(new CNotificationTypes(CNotificationTypes.S));
-        notification.setNotificationsStatus(new CNotificationsStatus(CNotificationsStatus.PENDIENTE));
-        notification.setCreationDate(LocalDateTime.now());
-        notification.setDueDate(LocalDateTime.now());
+        for (Users user : users) {
+            Notifications notification = new Notifications();
+            notification.setIdResource(request.getIdRequest());
+            notification.setResourcesTasks(request.getRequestTypeProduct().getRequestCategory().getResourcesTasks());
+            notification.setTitle(request.getRequestTypeProduct().getRequestType().getRequestType());
+            notification.setSubtitle(request.getRequestTypeProduct().getProductType().getProductType());
+            notification.setText(request.getDescription());
+            notification.setUser(user);
+            notification.setNotificationTypes(new CNotificationTypes(CNotificationTypes.S));
+            notification.setNotificationsStatus(new CNotificationsStatus(CNotificationsStatus.PENDIENTE));
+            notification.setCreationDate(LocalDateTime.now());
+            notification.setDueDate(LocalDateTime.now());
 
-        return notification;
+            notifications.add(notification);
+            notificationsDao.save(notification);
+        }
+
+        return notifications;
     }
 
     @Override
-    public Notifications createNotification(Users user, Stocks stock) {
+    public List<Notifications> createNotification(List<Users> users, Stocks stock) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
-    public Notifications createNotification(Users user, AccountsPayable accountPayable) {
+    public List<Notifications> createNotification(List<Users> users, AccountsPayable accountPayable) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 
