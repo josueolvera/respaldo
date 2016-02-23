@@ -24,6 +24,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -301,6 +302,14 @@ public class PriceEstimations implements Serializable {
 
     public void setAuthorizationDate(LocalDateTime authorizationDate) {
         this.authorizationDate = authorizationDate;
+    }
+
+    public DateFormatsPojo getCreationDateFormats() {
+        return new DateFormatsPojo(creationDate);
+    }
+
+    public DateFormatsPojo getAuthorizationDateFormats() {
+        return new DateFormatsPojo(authorizationDate);
     }
 
     public Users getUserAuthorization() {

@@ -16,6 +16,8 @@ import java.util.Calendar;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.exceptions.InvalidFileException;
 import mx.bidg.exceptions.ValidationException;
@@ -51,7 +53,7 @@ public class PriceEstimationsController {
     @Autowired
     PriceEstimationsService estimationsService;
     
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
     
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json; charset=UTF-8"},
             produces = "application/json; charset=UTF-8")
@@ -63,7 +65,7 @@ public class PriceEstimationsController {
         if(estimations.isEmpty())
             return new ResponseEntity<>("Error al guardar la cotizacion", HttpStatus.CONFLICT);
         
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(estimations), 
+        return new ResponseEntity<>(mapper.writeValueAsString(estimations),
                 HttpStatus.OK);
         
     }
