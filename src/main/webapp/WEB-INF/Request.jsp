@@ -52,7 +52,8 @@
               <div class="col-xs-4 col-xs-offset-3">
 
                 <div class="list-group" v-for="requestCategorie in requestCategories">
-                    <a href="" class="list-group-item">
+                    <a href="../{{requestCategorie.view.cTasks.taskName}}?cat={{requestCategorie.idRequestCategorie}}"
+                      class="list-group-item">
                     <h4 class="list-group-item-heading">{{requestCategorie.category}}</h4>
                     <p class="list-group-item-text">
                       {{{requestCategorie.information}}}
