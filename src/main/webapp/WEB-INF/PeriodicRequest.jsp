@@ -3,6 +3,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users" />
 
+
 <t:template pageTitle="BID Group: Presupuestos">
     <jsp:attribute name="scripts">
 
@@ -302,9 +303,10 @@
                });
 
             },
-            saveEstimations: function()
+            saveEstimations: function(cotizacion)
             {
-              this.$http.post(ROOT_URL+"/estimations", JSON.stringify(this.estimations)).
+              console.log(cotizacion);
+              /*this.$http.post(ROOT_URL+"/estimations", JSON.stringify(cotizacion)).
               success(function(data)
               {
                 console.log("Bien");
@@ -312,7 +314,7 @@
               {
                 console.log("Mal");
               });
-
+              */
             }
           },
         filters:
@@ -466,17 +468,25 @@
           </form>
           <br>
           <div class="row" v-for="cotizacion in estimations">
+            <form v-on:submit.prevent="saveEstimations(cotizacion)">
             <div class="col-xs-12">
               <div class="panel panel-default">
                 <div class="panel-heading">
                   <div class="row">
-                    <div class="col-xs-6 text-left">
+                    <div class="col-xs-8 text-left">
                       <h3 class="panel-title">Cotizacion</h3>
                     </div>
-                    <div class="col-xs-6 text-right">
-                      <button type="button" class="btn btn-sm btn-default" @click="deleteCotizacion(cotizacion)">
-                        <span class="glyphicon glyphicon-remove"></span>
-                      </button>
+                    <div class="col-xs-4">
+                      <div class="col-xs-6 text-right">
+                        <button class="btn btn-sm btn-default">
+                          <span class="glyphicon glyphicon-floppy-disk"></span>
+                        </button>
+                      </div>
+                      <div class="col-xs-6">
+                        <button type="button" class="btn btn-sm btn-default" @click="deleteCotizacion(cotizacion)" >
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -552,8 +562,8 @@
                   </div>
                 </div>
               </div>
+            </form>
             </div>
-            <button class="btn btn-default" @click="saveEstimations">Guardar</button>
             <pre>
               {{ $data.estimations | json}}
             </pre>
