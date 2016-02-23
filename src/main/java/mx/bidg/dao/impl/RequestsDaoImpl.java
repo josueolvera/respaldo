@@ -31,7 +31,7 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
     public Requests findById(int id) {
         return (Requests) createEntityCriteria()
                 .add(Restrictions.idEq(id))
-                .setFetchMode("ID_REQUEST_TYPE_PRODUCT", FetchMode.JOIN)
+                .setFetchMode("requestTypeProduct", FetchMode.JOIN)
                 .uniqueResult();
     }
 

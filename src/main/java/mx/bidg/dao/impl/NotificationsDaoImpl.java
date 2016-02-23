@@ -2,8 +2,10 @@ package mx.bidg.dao.impl;
 
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.NotificationsDao;
+import mx.bidg.model.CNotificationsStatus;
 import mx.bidg.model.Notifications;
 import mx.bidg.model.Users;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -25,7 +27,8 @@ public class NotificationsDaoImpl extends AbstractDao<Integer, Notifications> im
     @Override
     public Notifications findById(int id) {
         return (Notifications) createEntityCriteria()
-                .add(Restrictions.idEq(id));
+                .add(Restrictions.idEq(id))
+                .uniqueResult();
     }
 
     @Override
@@ -39,6 +42,10 @@ public class NotificationsDaoImpl extends AbstractDao<Integer, Notifications> im
     public List<Notifications> findAllForUser(Users user) {
         return (List<Notifications>) createEntityCriteria()
                 .add(Restrictions.eq("idUser", user.getIdUser()))
+                .add(Restrictions.disjunction(
+                        Restrictions.eq("idNotificationStatus", CNotificationsStatus.PENDIENTE),
+                        Restrictions.eq("idNotificationStatus", CNotificationsStatus.LEIDA)
+                ))
                 .addOrder(Order.asc("dueDate"))
                 .list();
     }
@@ -46,8 +53,13 @@ public class NotificationsDaoImpl extends AbstractDao<Integer, Notifications> im
     @Override
     public Long countNotificationsForUser(Users user) {
         return (Long) getSession()
-                .createQuery("select count(n) from Notifications n where n.idUser = :idUser")
+                .createQuery(
+                        "select count(n) from Notifications n where n.idUser = :idUser " +
+                        "and (n.idNotificationStatus = :idPendiente or n.idNotificationStatus = :idLeida)"
+                )
                 .setInteger("idUser", user.getIdUser())
+                .setInteger("idPendiente", CNotificationsStatus.PENDIENTE)
+                .setInteger("idLeida", CNotificationsStatus.LEIDA)
                 .uniqueResult();
     }
 
