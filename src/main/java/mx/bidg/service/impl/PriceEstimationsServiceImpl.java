@@ -74,6 +74,8 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             estimation.setAmount(amount);
             estimation.setFilePath("");
             estimation.setFileName("");
+            estimation.setRate(rate);
+            estimation.setCreationDate(LocalDateTime.now());
             estimation.setUserEstimation(user);
             estimation.setIdAccessLevel(1);
             //Por defecto, las cotizaciones se guardan como pendientes (1)
