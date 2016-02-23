@@ -68,6 +68,11 @@ public class NotificationsServiceImpl implements NotificationsService {
     }
 
     @Override
+    public Notifications findById(Integer id) {
+        return notificationsDao.findById(id);
+    }
+
+    @Override
     public List<Notifications> findAllForUser(Users user) {
         return notificationsDao.findAllForUser(user);
     }
@@ -84,6 +89,7 @@ public class NotificationsServiceImpl implements NotificationsService {
 
     @Override
     public Notifications update(Notifications notification) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        notificationsDao.update(notification);
+        return notification;
     }
 }

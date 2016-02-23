@@ -361,6 +361,10 @@ nav ul,nav li {
     margin: 0;
 }
 
+.card-inline {
+    max-height: 4.5rem;
+}
+
 .card-inline .badge {
     min-width: 2.5rem;
     font-size: 1.5rem;
@@ -379,29 +383,35 @@ nav ul,nav li {
     width: 25%;
     max-width: 25%;
     overflow: hidden;
+    white-space: nowrap;
+    margin-right: 1rem;
 }
 
 .card-inline .card-subtitle {
     float: left;
     max-width: 20%;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .card-inline .card-text {
     float: left;
     color: #777777;
     max-width: 40%;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .card-inline .card-actions {
     text-align: right;
     float: right;
     min-width: 10%;
-    max-width: 20%;
+    max-width: 25%;
     padding: 1rem 1.5rem;
 }
 
 .card-inline .card-body {
-    width: 80%;
+    width: 75%;
     float: left;
     padding: 1rem 1.5rem;
 }

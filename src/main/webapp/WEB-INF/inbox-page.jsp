@@ -136,7 +136,14 @@
                     },
                     saveNotificationDelay: function (notification) {
                         var date = this.delayModal.datePicker.DateTimePicker.date();
-                        console.log(date.toIsoString());
+                        console.log(date.toISOString());
+                    },
+                    markAsRead: function (notification) {
+                        this.$http.put(
+                                ROOT_URL + "/notifications/archive/" + notification.idNotification
+                        ).success(function (data) {
+                            showAlert("Notificacion archivada");
+                        });
                     }
                 }
             });
@@ -160,7 +167,6 @@
                     </h4>
                     <h4 v-if="notificationGroup[0].dueDate.dateDiff.negative" class="text-left">
                         Atrasadas
-                        <span class="small">{{ notificationGroup[0].dueDate.dateTextLong }}</span>
                     </h4>
                     <div v-for="notification in notificationGroup" class="notification"
                          :class="{ 'row': notification.expanded, 'expanded': notification.expanded }">
@@ -181,25 +187,41 @@
                             </div>
                             <div class="card-actions">
                                 <span v-if="notification.dueDate.dateDiff.negative" class="label label-danger">
-                                    {{ notification.dueDate.dateNumber }}
+                                    {{ notification.dueDate.dateElements.dayNameLong | capitalize }}
+                                    {{ notification.dueDate.dateElements.day }}
+                                    <span v-if="! notification.dueDate.dateElements.interval.sameMonth">
+                                        , {{ notification.dueDate.dateElements.monthNameLong | capitalize }}
+                                    </span>
+                                    <span v-if="! notification.dueDate.dateElements.interval.sameYear">
+                                        {{ notification.dueDate.dateElements.year }}
+                                    </span>
                                 </span>
                                 <span v-if="! notification.dueDate.dateDiff.negative">
                                     <span v-if="! notification.dueDate.dateDiff.zero">
-                                    <span v-if="notification.dueDate.dateDiff.period.days <= 7" class="label label-warning">
-                                        {{ notification.dueDate.dateElements.dayNameLong }}
-                                        {{ notification.dueDate.dateElements.day }}
+                                        <span :class="{
+                                                'label-warning': notification.dueDate.dateDiff.period.days <= 7,
+                                                'label-primary': notification.dueDate.dateDiff.period.days > 7
+                                            }" class="label">
+                                            {{ notification.dueDate.dateElements.dayNameLong | capitalize }}
+                                            {{ notification.dueDate.dateElements.day }}
+                                            <span v-if="! notification.dueDate.dateElements.interval.sameMonth">
+                                                , {{ notification.dueDate.dateElements.monthNameLong | capitalize }}
+                                            </span>
+                                            <span v-if="! notification.dueDate.dateElements.interval.sameYear">
+                                                {{ notification.dueDate.dateElements.year }}
+                                            </span>
+                                        </span>
                                     </span>
-                                    <span v-if="notification.dueDate.dateDiff.period.days > 7" class="label label-info">
-                                        {{ notification.dueDate.dateElements.dayNameLong }}
-                                        {{ notification.dueDate.dateElements.day }}
+                                    <span v-if="notification.dueDate.dateDiff.zero" class="label label-danger">
+                                        {{ notification.dueDate.dateElements.interval.name }}
                                     </span>
                                 </span>
-                                <span v-if="notification.dueDate.dateDiff.zero" class="label label-danger">
-                                    {{ notification.dueDate.dateElements.interval.name }}
-                                </span>
-                                </span>
-                                <a href="#"><span class="glyphicon glyphicon-ok"></span></a>
-                                <a @click.prevent="showDelayModal(notification)" href="#"><span class="glyphicon glyphicon-calendar"></span></a>
+                                <a @click.prevent="markAsRead(notification)" href="#">
+                                    <span class="glyphicon glyphicon-ok"></span>
+                                </a>
+                                <a @click.prevent="showDelayModal(notification)" href="#">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </a>
                                 <a href="{{ notification.resourcesTasks.view.cTasks.taskName | resourceViewURI notification.idResource }}">
                                     <span class="glyphicon glyphicon-new-window"></span>
                                 </a>
@@ -207,6 +229,8 @@
                         </div>
                         <div :class="{ 'in': notification.expanded }"
                              class="notification-details collapse clearfix">
+                            <p class="col-xs-4"><strong>Recivida el: {{ notification.creationDate.dateNumber }}</strong></p>
+                            <p class="col-xs-4"><strong>Vencimiento: {{ notification.dueDate.dateNumber }}</strong></p>
                             <p v-for="(key, value) in notification.details" class="col-xs-4">
                                 <span>{{ key }}</span>
                                 <span>{{ value }}</span>
