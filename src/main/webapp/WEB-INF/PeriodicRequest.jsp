@@ -30,6 +30,8 @@
               }).data();
 
             this.obtainAllUsers();
+            this.obtainSuppliers();
+            this.obtainCurrencies();
             this.RequestCategory= this.getGet();
             this.obtainRequestInformation.idRequestCategory= this.RequestCategory.cat;
             this.$http.get(ROOT_URL+"/request-types/request-category/"+ this.obtainRequestInformation.idRequestCategory)
@@ -96,11 +98,12 @@
             desactivarGuardar: true,
             numberOfRequest: 0,
             estimations: [],
-            supplier: {},
+            suppliers: {},
             idSupplier: '',
             accounts: {},
             idAccount: '',
-            timePicker: ''
+            timePicker: '',
+            currencies: {}
           },
           methods:
           {
@@ -200,29 +203,28 @@
               this.$http.post(ROOT_URL+"/requests", JSON.stringify(this.objectRequest)).
               success(function(data)
               {
-                this.responseSaveRequest= data;
-                console.log(responseSaveRequest);
-                /*
-                this.objectRequest.request= "";
-                this.objectRequest.request= responseSaveRequest;
-                */
+                this.fillRequestInformation(data);
+
               }).error(function(data)
               {
-                showAlert(data.error.message);
+
               });
             },
+            fillRequestInformation: function(datos)
+            {
+              this.objectRequest.request.idRequest= datos.idRequest;
+              this.objectRequest.request.folio= datos.folio;
+              this.objectRequest.request.creationDate= datos.creationDateFormats.iso;
+              this.objectRequest.request.idUserRequest= datos.userRequest.idUser;
+              this.objectRequest.request.idRequestStatus= datos.requestStatus.idRequestStatus;
+              Vue.set(this.objectRequest.request, "userRequest", datos.userRequest );
+              Vue.set(this.objectRequest.request, "userResponsable", datos.userResponsible );
+            }
+            ,
             obtainAllUsers: function()
             {
              this.$http.get(ROOT_URL + "/users").success(function (data)
               {
-                /*this.optionSelect = $('#select_responsable').selectize({
-                   create: false,
-                   sortField: 'text',
-                   searchField: 'mail',
-                   valueField: 'idUser',
-						       labelField: 'username',
-                   options: data
-                 });*/
                  this.Users= data;
               });
             },
@@ -242,13 +244,16 @@
               idCurrency: '',
               idUserAuthorization: '',
               idUserEstimation: '',
-              creationDate: ''
+              creationDate: '',
+              idSupplier: '',
+              accountSupplier: {}
               }
               return cotizacion;
             },
             newCotizacion: function()
             {
               var cotizacion= this.createCotizacion();
+              cotizacion.idRequest= this.objectRequest.request.idRequest;
               this.estimations.push(cotizacion);
             },
             deleteCotizacion: function(cotizacion)
@@ -273,6 +278,41 @@
                 rate: ''
               }
               return accountPayable;
+            },
+            obtainSuppliers: function()
+            {
+              this.$http.get(ROOT_URL + "/providers").success(function (data)
+               {
+                  this.suppliers= data;
+               });
+            },
+            obtainAccounts: function(cotizacion)
+            {
+              this.$http.get(ROOT_URL + "/providers-accounts/provider/"+cotizacion.idSupplier).success(function (data)
+               {
+                    cotizacion.accountSupplier= data;
+               });
+
+            },
+            obtainCurrencies: function()
+            {
+              this.$http.get(ROOT_URL + "/currencies").success(function (data)
+               {
+                    this.currencies= data;
+               });
+
+            },
+            saveEstimations: function()
+            {
+              this.$http.post(ROOT_URL+"/estimations", JSON.stringify(this.estimations)).
+              success(function(data)
+              {
+                console.log("Bien");
+              }).error(function(data)
+              {
+                console.log("Mal");
+              });
+
             }
           },
         filters:
@@ -358,13 +398,7 @@
                     </span>
                 </div>
                 </div>
-              <!--  <label>
-                  Mes
-                </label>
-                <select class="form-control" v-model="obtainRequestInformation.idMonth" @change="obtainRequestInfo">
-                  <option></option>
-                  <option v-for="month in months" value="{{month.idMonth}}">{{month.name}}</option>
-                </select> -->
+
               </div>
 
               <div class="col-xs-2">
@@ -377,23 +411,6 @@
                   <option v-for="user in Users" value="{{user.idUser}}"> {{user.username}} </option>
                 </select>
               </div>
-
-              <!--
-
-             <div class="col-xs-2">
-               <label>
-                 Tipo de Pago:
-               </label>
-               <select class="form-control" name="" id="tipoArticulo">
-                 <option value="1">Semanal</option>
-                 <option value="2">Quincenal</option>
-                 <option value="3">Mensual</option>
-                 <option value="4">Bimestral</option>
-               </select>
-             </div>
-
-           -->
-
             </div>
             <br>
               <div class="row">
@@ -417,8 +434,6 @@
                 </div>
 
               </div>
-
-
               <br>
             <div class="row">
               <div class="col-xs-12">
@@ -471,24 +486,33 @@
                       <label>
                         Proveedor
                       </label>
-                      <select class="form-control" v-model="idSupplier">
-
+                      <select class="form-control" v-model="cotizacion.idSupplier" @change="obtainAccounts(cotizacion)">
+                        <option></option>
+                        <option v-for="supplier in suppliers" value="{{supplier.idProvider}}">
+                          {{supplier.providerName}}
+                        </option>
                       </select>
                     </div>
                     <div class="col-xs-3">
                       <label>
                         Cuenta Bancaria
                       </label>
-                      <select class="form-control" v-model="idAccount">
-
+                      <select class="form-control" v-model="cotizacion.idAccount">
+                        <option></option>
+                        <option v-for="accounts in cotizacion.accountSupplier" value="{{accounts.idAccount}}">
+                          {{accounts.account.accountNumber}}
+                        </option>
                       </select>
                     </div>
                     <div class="col-xs-3">
                       <label>
                         Tipo de Moneda
                       </label>
-                      <select class="form-control">
-
+                      <select class="form-control" v-model="cotizacion.idCurrency">
+                        <option></option>
+                        <option v-for="curr in currencies" value="{{curr.idCurrency}}">
+                          {{curr.currency}}
+                        </option>
                       </select>
                     </div>
                     <div class="col-xs-3">
@@ -497,7 +521,7 @@
                       </label>
                       <div class="input-group">
                         <span class="input-group-addon">$</span>
-                        <input number class="form-control" placeholder="">
+                        <input number class="form-control" placeholder="" v-model="cotizacion.amount">
                       </div>
                     </div>
                   </div>
@@ -507,21 +531,31 @@
                       <label>
                         SKU
                       </label>
-                      <input number class="form-control">
+                      <input class="form-control" v-model="cotizacion.sku">
                     </div>
                     <div class="col-xs-4">
                       <label>
                         Archivo de la Cotizacion
                       </label>
-                      <input type="file" class="form-control">
+                      <input type="file" class="form-control" v-model="cotizacion.fileName">
+                    </div>
+                    <div class="col-xs-3">
+                      <label>
+                        Tipo de Cambio
+                      </label>
+                      <div class="input-group">
+                        <span class="input-group-addon">$</span>
+                        <input number class="form-control" placeholder="" v-model="cotizacion.rate">
+                      </div>
                     </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+            <button class="btn btn-default" @click="saveEstimations">Guardar</button>
             <pre>
-              {{$data.objectRequest | json}}
+              {{ $data.estimations | json}}
             </pre>
           </div>
 
