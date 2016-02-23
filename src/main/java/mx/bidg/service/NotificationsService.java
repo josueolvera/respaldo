@@ -13,6 +13,7 @@ public interface NotificationsService {
     List<Notifications> createNotification(List<Users> users, Stocks stock);
     List<Notifications> createNotification(List<Users> users, AccountsPayable accountPayable);
     Long countNotificationsForUser(Users user);
+    Notifications findById(Integer id);
     List<Notifications> findAllForUser(Users user);
     List<Notifications> findArchiveForUser(Users user);
     Notifications archive(Notifications notification);
