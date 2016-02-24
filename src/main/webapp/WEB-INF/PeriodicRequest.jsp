@@ -247,7 +247,8 @@
               idUserEstimation: '',
               creationDate: '',
               idSupplier: '',
-              accountSupplier: {}
+              accountSupplier: {},
+              indexOfForm: ''
               }
               return cotizacion;
             },
@@ -255,6 +256,7 @@
             {
               var cotizacion= this.createCotizacion();
               cotizacion.idRequest= this.objectRequest.request.idRequest;
+              cotizacion.indexOfForm= this.estimations.length;
               this.estimations.push(cotizacion);
             },
             deleteCotizacion: function(cotizacion)
@@ -305,16 +307,25 @@
             },
             saveEstimations: function(cotizacion)
             {
-              console.log(cotizacion);
-              /*this.$http.post(ROOT_URL+"/estimations", JSON.stringify(cotizacion)).
+              var form = document.getElementById("form-"+cotizacion.indexOfForm);
+              var formData = new FormData(form);
+              this.$http.post(ROOT_URL+"/estimations", JSON.stringify(cotizacion)).
               success(function(data)
               {
                 console.log("Bien");
+
+                this.$http.post(ROOT_URL+"/estimations/"+data.idEstimation+"/attachment", formData).
+                success(function(data)
+                {
+                  console.log("Vientos");
+                }).error(function(data){
+                  console.log("Triste");
+                });
+
               }).error(function(data)
               {
                 console.log("Mal");
               });
-              */
             }
           },
         filters:
@@ -468,7 +479,7 @@
           </form>
           <br>
           <div class="row" v-for="cotizacion in estimations">
-            <form v-on:submit.prevent="saveEstimations(cotizacion)">
+            <form v-on:submit.prevent="saveEstimations(cotizacion)" id="form-{{cotizacion.indexOfForm}}">
             <div class="col-xs-12">
               <div class="panel panel-default">
                 <div class="panel-heading">
@@ -547,7 +558,7 @@
                       <label>
                         Archivo de la Cotizacion
                       </label>
-                      <input type="file" class="form-control" v-model="cotizacion.fileName">
+                      <input type="file" name="file" class="form-control" v-model="cotizacion.fileName">
                     </div>
                     <div class="col-xs-3">
                       <label>
