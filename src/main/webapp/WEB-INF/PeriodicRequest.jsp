@@ -71,7 +71,8 @@
                 idUserResponsable: '',
                 idBudgetMonthBranch: '',
                 idRequestTypesProduct: '',
-                idRequestStatus: ''
+                idRequestStatus: '',
+                isSaved: false
               },
              products: []
            },
@@ -204,8 +205,8 @@
               this.$http.post(ROOT_URL+"/requests", JSON.stringify(this.objectRequest)).
               success(function(data)
               {
+                showAlert("Registro de solicitud exitoso, ahora puedes agregar las cotizaciones")
                 this.fillRequestInformation(data);
-
               }).error(function(data)
               {
 
@@ -220,6 +221,8 @@
               this.objectRequest.request.idRequestStatus= datos.requestStatus.idRequestStatus;
               Vue.set(this.objectRequest.request, "userRequest", datos.userRequest );
               Vue.set(this.objectRequest.request, "userResponsable", datos.userResponsible );
+              this.objectRequest.request.isSaved = true;
+              this.desactivarGuardar= true;
             }
             ,
             obtainAllUsers: function()
@@ -248,7 +251,18 @@
               creationDate: '',
               idSupplier: '',
               accountSupplier: {},
-              indexOfForm: ''
+              indexOfForm: '',
+              userAuthorization: {
+                idUser: '',
+                username: '',
+                mail: ''
+              },
+              userEstimation: {
+                idUser: '',
+                username: '',
+                mail: ''
+              },
+              isSaved: true
               }
               return cotizacion;
             },
@@ -309,23 +323,39 @@
             {
               var form = document.getElementById("form-"+cotizacion.indexOfForm);
               var formData = new FormData(form);
+              var responseOfEstimation;
+              var responseOfFileUpload;
               this.$http.post(ROOT_URL+"/estimations", JSON.stringify(cotizacion)).
               success(function(data)
               {
-                console.log("Bien");
-
+                responseOfEstimation= data;
                 this.$http.post(ROOT_URL+"/estimations/"+data.idEstimation+"/attachment", formData).
                 success(function(data)
                 {
-                  console.log("Vientos");
+                  showAlert("Registro de cotizacion Exitoso");
+                  responseOfFileUpload= data;
+                  this.matchEstimationInfo(responseOfEstimation, responseOfFileUpload, cotizacion);
                 }).error(function(data){
-                  console.log("Triste");
+                  showAlert("La cotizacion se ha guardado, pero hubo un error al guardar el archivo");
                 });
 
               }).error(function(data)
               {
-                console.log("Mal");
+                showAlert("Ha fallado el registro de su cotizacion, intente nuevamente");
               });
+            },
+            matchEstimationInfo: function(responseOfEstimation, responseOfFileUpload, cotizacion)
+            {
+              cotizacion.idEstimation= responseOfEstimation.idEstimation;
+              cotizacion.fileName= responseOfFileUpload.fileName;
+              cotizacion.outOfBudget= responseOfEstimation.outOfBudget;
+              cotizacion.idEstimationStatus= responseOfEstimation.estimationStatus.idEstimationStatus;
+              cotizacion.idUserEstimation= responseOfEstimation.userEstimation.idUser;
+              cotizacion.creationDate= responseOfEstimation.creationDateFormats.iso;
+              cotizacion.userEstimation.idUser= responseOfEstimation.userEstimation.idUser;
+              cotizacion.userEstimation.username= responseOfEstimation.userEstimation.username;
+              cotizacion.userEstimation.mail= responseOfEstimation.userEstimation.mail;
+              cotizacion.isSaved= false;
             }
           },
         filters:
@@ -469,10 +499,11 @@
             <br>
             <div class="row">
               <div class="col-xs-6 text-left">
-                <button type="button" class="btn btn-default" @click="newCotizacion">Agregar Cotizacion</button>
+                <button class="btn btn-success" :disabled="desactivarGuardar">Guardar Solicitud</button>
               </div>
               <div class="col-xs-6 text-right">
-                <button class="btn btn-success" :disabled="desactivarGuardar">Guardar Solicitud</button>
+                <button type="button" class="btn btn-default" @click="newCotizacion" v-if="objectRequest.request.isSaved">Agregar Cotizacion
+                </button>
               </div>
             </div>
 
@@ -484,16 +515,22 @@
               <div class="panel panel-default">
                 <div class="panel-heading">
                   <div class="row">
-                    <div class="col-xs-8 text-left">
+                    <div class="col-xs-4 text-left">
                       <h3 class="panel-title">Cotizacion</h3>
                     </div>
+                    <div class="col-xs-4" >
+                      <span class="label label-danger" v-if="cotizacion.outOfBudget == 1">Cotizacion Fuera de Presupuesto</span>
+                    </div>
                     <div class="col-xs-4">
-                      <div class="col-xs-6 text-right">
+                      <div class="col-xs-8">
+
+                      </div>
+                      <div class="col-xs-2 text-right">
                         <button class="btn btn-sm btn-default">
                           <span class="glyphicon glyphicon-floppy-disk"></span>
                         </button>
                       </div>
-                      <div class="col-xs-6">
+                      <div class="col-xs-2 text-right" v-if="cotizacion.isSaved">
                         <button type="button" class="btn btn-sm btn-default" @click="deleteCotizacion(cotizacion)" >
                           <span class="glyphicon glyphicon-remove"></span>
                         </button>
@@ -507,7 +544,8 @@
                       <label>
                         Proveedor
                       </label>
-                      <select class="form-control" v-model="cotizacion.idSupplier" @change="obtainAccounts(cotizacion)">
+                      <select class="form-control" v-model="cotizacion.idSupplier"
+                        @change="obtainAccounts(cotizacion)" required="true">
                         <option></option>
                         <option v-for="supplier in suppliers" value="{{supplier.idProvider}}">
                           {{supplier.providerName}}
@@ -518,7 +556,7 @@
                       <label>
                         Cuenta Bancaria
                       </label>
-                      <select class="form-control" v-model="cotizacion.idAccount">
+                      <select class="form-control" v-model="cotizacion.idAccount" required="true">
                         <option></option>
                         <option v-for="accounts in cotizacion.accountSupplier" value="{{accounts.idAccount}}">
                           {{accounts.account.accountNumber}}
@@ -529,7 +567,7 @@
                       <label>
                         Tipo de Moneda
                       </label>
-                      <select class="form-control" v-model="cotizacion.idCurrency">
+                      <select class="form-control" v-model="cotizacion.idCurrency" required="true">
                         <option></option>
                         <option v-for="curr in currencies" value="{{curr.idCurrency}}">
                           {{curr.currency}}
@@ -542,7 +580,7 @@
                       </label>
                       <div class="input-group">
                         <span class="input-group-addon">$</span>
-                        <input number class="form-control" placeholder="" v-model="cotizacion.amount">
+                        <input number class="form-control" placeholder="" v-model="cotizacion.amount" required="true">
                       </div>
                     </div>
                   </div>
@@ -558,15 +596,15 @@
                       <label>
                         Archivo de la Cotizacion
                       </label>
-                      <input type="file" name="file" class="form-control" v-model="cotizacion.fileName">
+                      <input type="file" name="file" class="form-control" required="true">
                     </div>
                     <div class="col-xs-3">
                       <label>
                         Tipo de Cambio
                       </label>
                       <div class="input-group">
-                        <span class="input-group-addon">$</span>
-                        <input number class="form-control" placeholder="" v-model="cotizacion.rate">
+                        <span class="input-group-addon">%</span>
+                        <input number class="form-control" placeholder="" v-model="cotizacion.rate" required="true">
                       </div>
                     </div>
                     </div>
@@ -575,9 +613,6 @@
               </div>
             </form>
             </div>
-            <pre>
-              {{ $data.estimations | json}}
-            </pre>
           </div>
 
           </div> <!-- container-fluid -->
