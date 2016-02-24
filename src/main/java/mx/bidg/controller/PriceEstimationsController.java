@@ -72,7 +72,7 @@ public class PriceEstimationsController {
     
     
     @RequestMapping(value = "/{idEstimation}/attachment", method = RequestMethod.POST, 
-            headers = {"Accept=application/json; charset=UTF-8"})
+            produces = "application/json; charset=UTF-8")
     public @ResponseBody ResponseEntity<String> saveFile(@PathVariable int idEstimation, 
             @RequestParam("file") MultipartFile filePart) throws Exception {
         
