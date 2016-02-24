@@ -7,20 +7,24 @@ package mx.bidg.dao;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
-import java.time.LocalDateTime;
-import javax.servlet.http.HttpSession;
+import mx.bidg.config.AccessLevelFiltered;
+import mx.bidg.config.JsonViews;
+import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.GlobalTracer;
 import mx.bidg.model.Users;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.persistence.Table;
 import javax.servlet.http.HttpServletRequest;
-import mx.bidg.config.JsonViews;
-import mx.bidg.exceptions.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.servlet.http.HttpSession;
+import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -66,8 +70,22 @@ public abstract class AbstractDao<PK extends Serializable, T> {
         getSession().update(entity);
     }
     
-    protected Criteria createEntityCriteria(){
-        return getSession().createCriteria(persistentClass);
+    protected Criteria createEntityCriteria() {
+        Criteria entityCriteria = getSession().createCriteria(persistentClass);
+        if (AccessLevelFiltered.class.isAssignableFrom(persistentClass)) {
+            HttpSession session = request.getSession(false);
+            if(session != null) {
+                Users user = (Users) session.getAttribute("user");
+                Disjunction disjunction = Restrictions.disjunction();
+
+                for (Integer level : user.getAccessLevels()) {
+                    disjunction.add(Restrictions.eq("idAccessLevel", level));
+                }
+
+                entityCriteria.add(disjunction);
+            }
+        }
+        return entityCriteria;
     }
     
     public void globalTracer(String operationType, T entity) {

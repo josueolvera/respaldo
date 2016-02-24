@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -132,6 +133,10 @@ public class Users implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUser")
     @JsonView(JsonViews.Embedded.class)
     private List<GlobalTracer> globalTracerList;
+
+    @Transient
+    @JsonView(JsonViews.Root.class)
+    private Set<Integer> accessLevels;
 
     public Users() {
     }
@@ -293,6 +298,14 @@ public class Users implements Serializable {
 
     public void setGlobalTracerList(List<GlobalTracer> globalTracerList) {
         this.globalTracerList = globalTracerList;
+    }
+
+    public Set<Integer> getAccessLevels() {
+        return accessLevels;
+    }
+
+    public void setAccessLevels(Set<Integer> accessLevels) {
+        this.accessLevels = accessLevels;
     }
 
     @Override

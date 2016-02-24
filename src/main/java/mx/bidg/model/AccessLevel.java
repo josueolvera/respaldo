@@ -51,7 +51,7 @@ public class AccessLevel implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAccessLevel")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "accessLevel")
     @JsonView(JsonViews.Embedded.class)
     private List<AccessLevelsRole> accessLevelsRoleList;
 

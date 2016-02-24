@@ -5,12 +5,14 @@
  */
 package mx.bidg.service.impl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import mx.bidg.dao.UsersDao;
 import mx.bidg.exceptions.InactiveUserException;
 import mx.bidg.exceptions.ValidationException;
-import mx.bidg.model.ActiveSession;
-import mx.bidg.model.Users;
+import mx.bidg.model.*;
 import mx.bidg.service.ActiveSessionService;
 import mx.bidg.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,10 +57,20 @@ public class UsersServiceImpl implements UsersService {
                     "El usuario " + user.getUsername() + " ya tiene una sesion activa",
                     "El usuario ya tiene una sesion activa",
                     HttpStatus.PRECONDITION_FAILED
-                    );
+            );
         }
         
         if(userDB.getPassword().equals(user.getPassword())) {
+
+            Set<Integer> accessLevels = new HashSet<>();
+            for (UsersRole userRole : userDB.getUsersRoleList()) {
+                SystemRoles role = userRole.getIdSystemRole();
+                for (AccessLevelsRole accessLevel : role.getAccessLevelsRoleList()) {
+                    accessLevels.add(accessLevel.getAccessLevel().getIdAccessLevel());
+                }
+            }
+            userDB.setAccessLevels(accessLevels);
+
             return userDB;
         } else {
             throw new ValidationException("Contraseña incorrecta. Username: " + user.getUsername());

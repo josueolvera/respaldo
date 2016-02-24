@@ -28,10 +28,12 @@ public class AccessLevelsRole implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_ACCESS_LEVEL_ROLE")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevelRole;
+
+    @Column(name = "ID_ACCESS_LEVEL", insertable = false, updatable = false)
+    private Integer idAccessLevel;
 
     @Basic(optional = false)
     @NotNull
@@ -43,7 +45,7 @@ public class AccessLevelsRole implements Serializable {
     @JoinColumn(name = "ID_ACCESS_LEVEL", referencedColumnName = "ID_ACCESS_LEVEL")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private AccessLevel idAccessLevel;
+    private AccessLevel accessLevel;
 
     @JoinColumn(name = "ID_SYSTEM_ROLE", referencedColumnName = "ID_SYSTEM_ROLE")
     @ManyToOne(optional = false)
@@ -74,16 +76,24 @@ public class AccessLevelsRole implements Serializable {
         return creationDate;
     }
 
+    public Integer getIdAccessLevel() {
+        return idAccessLevel;
+    }
+
+    public void setIdAccessLevel(Integer idAccessLevel) {
+        this.idAccessLevel = idAccessLevel;
+    }
+
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
-    public AccessLevel getIdAccessLevel() {
-        return idAccessLevel;
+    public AccessLevel getAccessLevel() {
+        return accessLevel;
     }
 
-    public void setIdAccessLevel(AccessLevel idAccessLevel) {
-        this.idAccessLevel = idAccessLevel;
+    public void setAccessLevel(AccessLevel idAccessLevel) {
+        this.accessLevel = idAccessLevel;
     }
 
     public SystemRoles getIdSystemRole() {
