@@ -180,7 +180,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
     @Override
     public PriceEstimations saveFileData(int idEstimation, String fileName, String filePath) {
-        PriceEstimations estimation = new PriceEstimations(idEstimation);
+        PriceEstimations estimation = priceEstimationsDao.findById(idEstimation);
         estimation.setFileName(fileName);
         estimation.setFilePath(filePath);
         return priceEstimationsDao.update(estimation);
