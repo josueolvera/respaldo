@@ -8,6 +8,7 @@ package mx.bidg.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import mx.bidg.config.AccessLevelFiltered;
 import mx.bidg.config.JsonViews;
 import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
@@ -26,7 +27,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "STOCKS")
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
-public class Stocks implements Serializable {
+public class Stocks implements AccessLevelFiltered, Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
