@@ -3,9 +3,9 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users" />
 
+
 <t:template pageTitle="BID Group: Presupuestos">
     <jsp:attribute name="scripts">
-
         <script type="text/javascript">
         function isNumberKey(evt)
         {
@@ -17,221 +17,70 @@
         </script>
 
         <script type="text/javascript">
-          var vm= new Vue({
-          el: '#contenidos',
-          created: function(){
+        var vm= new Vue({
+        el: '#contenidos',
+        created: function()
+        {
 
-          },
-          ready: function ()
-          {
-            this.timePicker = $('#datetimepicker1').datetimepicker({
-              locale: 'es',
-              format: 'YYYY/MM/DD'
-              }).data();
+        },
+        ready: function ()
+        {
+          this.timePicker = $('#datetimepicker1').datetimepicker({
+            locale: 'es',
+            format: 'YYYY/MM/DD'
+            }).data();
 
-            this.obtainAllUsers();
-            this.obtainSuppliers();
-            this.obtainCurrencies();
-            this.RequestCategory= this.getGet();
-            this.obtainRequestInformation.idRequestCategory= this.RequestCategory.cat;
-            this.$http.get(ROOT_URL+"/request-types/request-category/"+ this.obtainRequestInformation.idRequestCategory)
-                    .success(function (data)
-                    {
-                       this.RequestTypes= data;
-                    });
-          },
-          data:
-          {
-            months:[
-              {idMonth: 1, name: 'Enero'},
-              {idMonth: 2, name: 'Febrero'},
-              {idMonth: 3, name: 'Marzo'},
-              {idMonth: 4, name: 'Abril'},
-              {idMonth: 5, name: 'Mayo'},
-              {idMonth: 6, name: 'Junio'},
-              {idMonth: 7, name: 'Julio'},
-              {idMonth: 8, name: 'Agosto'},
-              {idMonth: 9, name: 'Septiembre'},
-              {idMonth: 10, name: 'Octubre'},
-              {idMonth: 11, name: 'Noviembre'},
-              {idMonth: 12, name: 'Diciembre'}
-            ],
-            objectRequest:
-            {
-            request:
-              {
-                idRequest: '',
-                folio: '',
-                description: '',
-                purpose: '',
-                creationDate: '',
-                applyingDate: '',
-                idUserRequest: '',
-                idUserResponsable: '',
-                idBudgetMonthBranch: '',
-                idRequestTypesProduct: '',
-                idRequestStatus: ''
-              },
-             products: []
+          this.RequestCategory= this.getGet();
+          this.obtainRequestInformation.idRequestCategory= this.RequestCategory.cat;
+          this.$http.get(ROOT_URL+"/request-types/request-category/"+ this.obtainRequestInformation.idRequestCategory)
+                  .success(function (data)
+                  {
+                     this.RequestTypes= data;
+                  });
+          this.obtainAllUsers();
+          this.obtainSuppliers();
+          this.obtainCurrencies();
+
+        },
+        data:
+        {
+          RequestCategory: '',
+          obtainRequestInformation:
+           {
+             idRequestCategory: '',
+             idRequestType: '',
+             idProductType: '',
+             idUserResponsable: '',
+             applyingDate: ''
            },
-            responseSaveRequest: ''
-           ,
-            obtainRequestInformation:
-            {
-              idRequestCategory: '',
-              idRequestType: '',
-              idProductType: '',
-              idUserResponsable: '',
-              applyingDate: ''
-            },
-            RequestCategory: '',
-            ResponseRequestInformation: '',
-            idRequestType: '',
-            idProductType: '',
-            optionSelect: [],
-            RequestTypes: {},
-            ProductTypes: {},
-            Productos: {},
-            Users: {},
-            idProducto: '',
-            desactivarCombos: false,
-            desactivarGuardar: true,
-            numberOfRequest: 0,
-            estimations: [],
-            suppliers: {},
-            idSupplier: '',
-            accounts: {},
-            idAccount: '',
-            timePicker: '',
-            currencies: {}
+           RequestTypes: {},
+           desactivarCombos: false,
+           ProductTypes: {},
+           Productos: {},
+           objectRequest:
+           {
+           request:
+             {
+               idRequest: '',
+               folio: '',
+               description: '',
+               purpose: '',
+               creationDate: '',
+               applyingDate: '',
+               idUserRequest: '',
+               idUserResponsable: '',
+               idBudgetMonthBranch: '',
+               idRequestTypesProduct: '',
+               idRequestStatus: '',
+               isSaved: false
+             },
+            products: []
           },
-          methods:
-          {
-            getGet: function()
-            {
-              var loc = document.location.href;
-              var getString = loc.split('?')[1];
-              var GET = getString.split('&');
-              var get = {};//this object will be filled with the key-value pairs and returned.
-
-              for(var i = 0, l = GET.length; i < l; i++){
-                 var tmp = GET[i].split('=');
-                 get[tmp[0]] = unescape(decodeURI(tmp[1]));
-              }
-              return get;
-            },
-            obtainProductType: function()
-            {
-              this.ProductTypes= {};
-              this.$http.get(ROOT_URL+"/product-types/request-category-type/"+this.obtainRequestInformation.idRequestCategory+"/"+this.obtainRequestInformation.idRequestType)
-                      .success(function (data)
-                      {
-                         this.ProductTypes= data;
-                      });
-
-            },
-            obtainProducts: function()
-            {
-              this.Productos= {};
-              this.$http.get(ROOT_URL+"/products/product-type/"+this.obtainRequestInformation.idProductType)
-                      .success(function (data)
-                      {
-                         this.Productos= data;
-                      });
-            },
-            obtainRequestInfo: function()
-            {
-              var date = this.timePicker.DateTimePicker.date();
-              var dateiso= date.toISOString();
-              this.obtainRequestInformation.applyingDate= dateiso.slice(0, -1);
-
-              this.$http.post(ROOT_URL+"/requests/month-branch-product-type", JSON.stringify(this.obtainRequestInformation))
-                      .success(function (data)
-                      {
-                         this.ResponseRequestInformation= data;
-                         this.matchInformation(this.ResponseRequestInformation);
-                      });
-
-            }
-            ,
-            matchInformation: function(requestInformation)
-            {
-              this.objectRequest.request.idRequestTypesProduct= requestInformation.requestTypesProduct.idRequestTypeProduct;
-              this.objectRequest.request.applyingDate= this.obtainRequestInformation.applyingDate;
-              this.objectRequest.request.idUserResponsable= this.obtainRequestInformation.idUserResponsable;
-              this.objectRequest.request.idBudgetMonthBranch = requestInformation.budgetMonthBranch.idBudgetMonthBranch;
-
-            },
-            saveProduct: function()
-            {
-              var producto= this.createProduct();
-              var self= this;
-              this.Productos.forEach(function(element)
-              {
-                if (self.idProducto == element.idProduct)
-                {
-                  producto.idProduct = element.idProduct;
-                  producto.descripcion = element.product;
-                  self.objectRequest.products.push(producto);
-                }
-              });
-              if (this.objectRequest.products.length> 0)
-              {
-                this.desactivarCombos= true;
-                this.desactivarGuardar= false;
-              }
-            },
-            createProduct: function()
-            {
-              var producto= {
-                idProduct: '',
-                descripcion: ''
-              };
-              return producto;
-            },
-            deleteProduct: function(product)
-            {
-                this.objectRequest.products.$remove(product);
-                if (this.objectRequest.products.length == 0)
-                {
-                  this.desactivarCombos= false;
-                  this.desactivarGuardar = true;
-                }
-            },
-            saveRequest: function(event)
-            {
-              this.$http.post(ROOT_URL+"/requests", JSON.stringify(this.objectRequest)).
-              success(function(data)
-              {
-                this.fillRequestInformation(data);
-
-              }).error(function(data)
-              {
-
-              });
-            },
-            fillRequestInformation: function(datos)
-            {
-              this.objectRequest.request.idRequest= datos.idRequest;
-              this.objectRequest.request.folio= datos.folio;
-              this.objectRequest.request.creationDate= datos.creationDateFormats.iso;
-              this.objectRequest.request.idUserRequest= datos.userRequest.idUser;
-              this.objectRequest.request.idRequestStatus= datos.requestStatus.idRequestStatus;
-              Vue.set(this.objectRequest.request, "userRequest", datos.userRequest );
-              Vue.set(this.objectRequest.request, "userResponsable", datos.userResponsible );
-            }
-            ,
-            obtainAllUsers: function()
-            {
-             this.$http.get(ROOT_URL + "/users").success(function (data)
-              {
-                 this.Users= data;
-              });
-            },
-            createCotizacion: function()
-            {
-              var cotizacion=
-              {
+          desactivarGuardar: true,
+          timePicker: '',
+          Users: {},
+          ResponseRequestInformation: {},
+          estimation: {
               idEstimation: '',
               amount: '',
               rate: '',
@@ -246,80 +95,205 @@
               idUserEstimation: '',
               creationDate: '',
               idSupplier: '',
-              accountSupplier: {}
+              accountSupplier: {},
+              indexOfForm: '',
+              userAuthorization: {
+                idUser: '',
+                username: '',
+                mail: ''
+              },
+              userEstimation: {
+                idUser: '',
+                username: '',
+                mail: ''
+              },
+              isSaved: true
+            },
+            suppliers: {},
+            currencies: {}
+
+        },
+        methods:
+        {
+          getGet: function()
+          {
+            var loc = document.location.href;
+            var getString = loc.split('?')[1];
+            var GET = getString.split('&');
+            var get = {};//this object will be filled with the key-value pairs and returned.
+
+            for(var i = 0, l = GET.length; i < l; i++){
+               var tmp = GET[i].split('=');
+               get[tmp[0]] = unescape(decodeURI(tmp[1]));
+            }
+            return get;
+          },
+          obtainProductType: function()
+          {
+            this.ProductTypes= {};
+            this.$http.get(ROOT_URL+"/product-types/request-category-type/"+this.obtainRequestInformation.idRequestCategory+"/"+this.obtainRequestInformation.idRequestType)
+                    .success(function (data)
+                    {
+                       this.ProductTypes= data;
+                    });
+
+          },
+          obtainProducts: function()
+          {
+            this.Productos= {};
+            this.$http.get(ROOT_URL+"/products/product-type/"+this.obtainRequestInformation.idProductType)
+                    .success(function (data)
+                    {
+                       this.Productos= data;
+                    });
+          },
+          saveProduct: function()
+          {
+            var producto= this.createProduct();
+            var self= this;
+            this.Productos.forEach(function(element)
+            {
+              if (self.idProducto == element.idProduct)
+              {
+                producto.idProduct = element.idProduct;
+                producto.descripcion = element.product;
+                self.objectRequest.products.push(producto);
               }
-              return cotizacion;
-            },
-            newCotizacion: function()
+            });
+            if (this.objectRequest.products.length> 0)
             {
-              var cotizacion= this.createCotizacion();
-              cotizacion.idRequest= this.objectRequest.request.idRequest;
-              this.estimations.push(cotizacion);
-            },
-            deleteCotizacion: function(cotizacion)
-            {
-              this.estimations.$remove(cotizacion);
-            },
-            createAccountPayable: function()
-            {
-              var accountPayable=
-              {
-                idAccountPayable: '',
-                folio: '',
-                amount: '',
-                paidAmount: '',
-                payNum: '',
-                totalPayments: '',
-                creationDate: '',
-                dueDate: '',
-                idAccountPayableStatus: '',
-                idOperationType: '',
-                idCurrency: '',
-                rate: ''
-              }
-              return accountPayable;
-            },
-            obtainSuppliers: function()
-            {
-              this.$http.get(ROOT_URL + "/providers").success(function (data)
-               {
-                  this.suppliers= data;
-               });
-            },
-            obtainAccounts: function(cotizacion)
-            {
-              this.$http.get(ROOT_URL + "/providers-accounts/provider/"+cotizacion.idSupplier).success(function (data)
-               {
-                    cotizacion.accountSupplier= data;
-               });
-
-            },
-            obtainCurrencies: function()
-            {
-              this.$http.get(ROOT_URL + "/currencies").success(function (data)
-               {
-                    this.currencies= data;
-               });
-
-            },
-            saveEstimations: function()
-            {
-              this.$http.post(ROOT_URL+"/estimations", JSON.stringify(this.estimations)).
-              success(function(data)
-              {
-                console.log("Bien");
-              }).error(function(data)
-              {
-                console.log("Mal");
-              });
-
+              this.desactivarCombos= true;
+              this.desactivarGuardar= false;
             }
           },
-        filters:
-        {
+          createProduct: function()
+          {
+            var producto= {
+              idProduct: '',
+              descripcion: ''
+            };
+            return producto;
+          },
+          deleteProduct: function(product)
+          {
+              this.objectRequest.products.$remove(product);
+              if (this.objectRequest.products.length == 0)
+              {
+                this.desactivarCombos= false;
+                this.desactivarGuardar = true;
+              }
+          },
+          obtainAllUsers: function()
+          {
+           this.$http.get(ROOT_URL + "/users").success(function (data)
+            {
+               this.Users= data;
+            });
+          },
+          obtainRequestInfo: function()
+          {
+            var date = this.timePicker.DateTimePicker.date();
+            var dateiso= date.toISOString();
+            this.obtainRequestInformation.applyingDate= dateiso.slice(0, -1);
+            this.$http.post(ROOT_URL+"/requests/month-branch-product-type", JSON.stringify(this.obtainRequestInformation))
+                    .success(function (data)
+                    {
+                       this.ResponseRequestInformation= data;
+                       this.matchInformation(this.ResponseRequestInformation);
+                    });
+          },
+          matchInformation: function(requestInformation)
+          {
+            this.objectRequest.request.idRequestTypesProduct= requestInformation.requestTypesProduct.idRequestTypeProduct;
+            this.objectRequest.request.applyingDate= this.obtainRequestInformation.applyingDate;
+            this.objectRequest.request.idUserResponsable= this.obtainRequestInformation.idUserResponsable;
+            this.objectRequest.request.idBudgetMonthBranch = requestInformation.budgetMonthBranch.idBudgetMonthBranch;
+          },
+          obtainSuppliers: function()
+          {
+            this.$http.get(ROOT_URL + "/providers").success(function (data)
+             {
+                this.suppliers= data;
+             });
+          },
+          obtainAccounts: function(estimation)
+          {
+            this.$http.get(ROOT_URL + "/providers-accounts/provider/"+estimation.idSupplier).success(function (data)
+             {
+                  estimation.accountSupplier= data;
+             });
+          },
+          obtainCurrencies: function()
+          {
+            this.$http.get(ROOT_URL + "/currencies").success(function (data)
+             {
+                  this.currencies= data;
+             });
+          },
+          saveAllInformationRequest: function(event)
+          {
+            this.saveRequest();
+          },
+          saveRequest: function()
+          {
+            this.$http.post(ROOT_URL+"/requests", JSON.stringify(this.objectRequest)).
+            success(function(data)
+            {
 
-        }
-        });
+              this.fillRequestInformation(data);
+            }).error(function(data)
+            {
+              showAlert("Ha habido un error intente nuevamente");
+            });
+          },
+          fillRequestInformation: function(datos)
+          {
+            alert(datos.idRequest);
+            this.objectRequest.request.idRequest= datos.idRequest;
+            this.estimation.idRequest= this.objectRequest.request.idRequest;
+            this.objectRequest.request.folio= datos.folio;
+            this.objectRequest.request.creationDate= datos.creationDateFormats.iso;
+            this.objectRequest.request.idUserRequest= datos.userRequest.idUser;
+            this.objectRequest.request.idRequestStatus= datos.requestStatus.idRequestStatus;
+            Vue.set(this.objectRequest.request, "userRequest", datos.userRequest );
+            Vue.set(this.objectRequest.request, "userResponsable", datos.userResponsible );
+            this.objectRequest.request.isSaved = true;
+            this.desactivarGuardar= true;
+            this.saveEstimations();
+          },
+          saveEstimations: function()
+          {
+            var responseOfEstimation;
+            this.$http.post(ROOT_URL+"/estimations", JSON.stringify(this.estimation)).
+            success(function(data)
+            {
+              responseOfEstimation= data;
+              showAlert("Registro de solicitud exitoso");
+              this.matchEstimationInfo(responseOfEstimation, this.estimation);
+            }).error(function(data)
+            {
+              showAlert("Ha fallado el registro de su cotizacion, intente nuevamente");
+            });
+          },
+          matchEstimationInfo: function(responseOfEstimation, cotizacion)
+          {
+            cotizacion.idEstimation= responseOfEstimation.idEstimation;
+            cotizacion.outOfBudget= responseOfEstimation.outOfBudget;
+            cotizacion.idEstimationStatus= responseOfEstimation.estimationStatus.idEstimationStatus;
+            cotizacion.idUserEstimation= responseOfEstimation.userEstimation.idUser;
+            cotizacion.creationDate= responseOfEstimation.creationDateFormats.iso;
+            cotizacion.userEstimation.idUser= responseOfEstimation.userEstimation.idUser;
+            cotizacion.userEstimation.username= responseOfEstimation.userEstimation.username;
+            cotizacion.userEstimation.mail= responseOfEstimation.userEstimation.mail;
+            cotizacion.isSaved= false;
+          }
+
+        },
+      filters:
+      {
+
+      }
+      });
 
         </script>
     </jsp:attribute>
@@ -328,8 +302,7 @@
       <div id="contenidos">
 
           <div class="container-fluid" style="margin-left: 100px">
-
-            <form v-on:submit.prevent="saveRequest">
+            <form v-on:submit.prevent="saveAllInformationRequest">
             <div class="row">
               <div class="col-xs-4">
               <h1>Solicitud Directa</h1>
@@ -398,9 +371,7 @@
                     </span>
                 </div>
                 </div>
-
               </div>
-
               <div class="col-xs-2">
                 <label>
                   Responsable:
@@ -454,103 +425,101 @@
             </div>
 
             <br>
-            <div class="row">
-              <div class="col-xs-6 text-left">
-                <button type="button" class="btn btn-default" @click="newCotizacion">Agregar Informacion Adicional</button>
-              </div>
-              <div class="col-xs-6 text-right">
-                <button class="btn btn-success" :disabled="desactivarGuardar">Guardar Solicitud</button>
-              </div>
-            </div>
 
-          </form>
-          <br>
-          <div class="row" v-for="cotizacion in estimations">
-            <div class="col-xs-12">
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <div class="row">
-                    <div class="col-xs-6 text-left">
-                      <h3 class="panel-title">Datos de Deposito</h3>
-                    </div>
-                    <div class="col-xs-6 text-right">
-                      <button type="button" class="btn btn-sm btn-default" @click="deleteCotizacion(cotizacion)">
-                        <span class="glyphicon glyphicon-remove"></span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div class="panel-body">
-                  <div class="row">
-                    <div class="col-xs-3">
-                      <label>
-                        Beneficiario
-                      </label>
-                      <select class="form-control" v-model="cotizacion.idSupplier" @change="obtainAccounts(cotizacion)">
-                        <option></option>
-                        <option v-for="supplier in suppliers" value="{{supplier.idProvider}}">
-                          {{supplier.providerName}}
-                        </option>
-                      </select>
-                    </div>
-                    <div class="col-xs-3">
-                      <label>
-                        Cuenta Bancaria
-                      </label>
-                      <select class="form-control" v-model="cotizacion.idAccount">
-                        <option></option>
-                        <option v-for="accounts in cotizacion.accountSupplier" value="{{accounts.idAccount}}">
-                          {{accounts.account.accountNumber}}
-                        </option>
-                      </select>
-                    </div>
-                    <div class="col-xs-3">
-                      <label>
-                        Tipo de Moneda
-                      </label>
-                      <select class="form-control" v-model="cotizacion.idCurrency">
-                        <option></option>
-                        <option v-for="curr in currencies" value="{{curr.idCurrency}}">
-                          {{curr.currency}}
-                        </option>
-                      </select>
-                    </div>
-                    <div class="col-xs-3">
-                      <label>
-                        Monto
-                      </label>
-                      <div class="input-group">
-                        <span class="input-group-addon">$</span>
-                        <input number class="form-control" placeholder="" v-model="cotizacion.amount">
+            <div class="row">
+              <div class="col-xs-12">
+                <div class="panel panel-default">
+                  <div class="panel-heading">
+                    <div class="row">
+                      <div class="col-xs-4 text-left">
+                        <h3 class="panel-title">Informacion del Pago</h3>
+                      </div>
+                      <div class="col-xs-4" >
+                        <span class="label label-danger" v-if="estimation.outOfBudget == 1">Cotizacion Fuera de Presupuesto</span>
+                      </div>
+                      <div class="col-xs-4">
+                        <div class="col-xs-8">
+
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <br>
-                  <div class="row">
-                    <div class="col-xs-3">
-                      <label>
-                        SKU
-                      </label>
-                      <input class="form-control" v-model="cotizacion.sku">
-                    </div>
-                    <div class="col-xs-3">
-                      <label>
-                        Tipo de Cambio
-                      </label>
-                      <div class="input-group">
-                        <span class="input-group-addon">$</span>
-                        <input number class="form-control" placeholder="" v-model="cotizacion.rate">
+                  <div class="panel-body">
+                    <div class="row">
+                      <div class="col-xs-3">
+                        <label>
+                          Proveedor
+                        </label>
+                        <select class="form-control" v-model="estimation.idSupplier"
+                          @change="obtainAccounts(estimation)" required="true">
+                          <option></option>
+                          <option v-for="supplier in suppliers" value="{{supplier.idProvider}}">
+                            {{supplier.providerName}}
+                          </option>
+                        </select>
+                      </div>
+                      <div class="col-xs-3">
+                        <label>
+                          Cuenta Bancaria
+                        </label>
+                        <select class="form-control" v-model="estimation.idAccount" required="true">
+                          <option></option>
+                          <option v-for="accounts in estimation.accountSupplier" value="{{accounts.idAccount}}">
+                            {{accounts.account.accountNumber}}
+                          </option>
+                        </select>
+                      </div>
+                      <div class="col-xs-3">
+                        <label>
+                          Tipo de Moneda
+                        </label>
+                        <select class="form-control" v-model="estimation.idCurrency" required="true">
+                          <option></option>
+                          <option v-for="curr in currencies" value="{{curr.idCurrency}}">
+                            {{curr.currency}}
+                          </option>
+                        </select>
+                      </div>
+                      <div class="col-xs-3">
+                        <label>
+                          Monto
+                        </label>
+                        <div class="input-group">
+                          <span class="input-group-addon">$</span>
+                          <input number class="form-control" placeholder="" v-model="estimation.amount" required="true">
+                        </div>
                       </div>
                     </div>
+                    <br>
+                    <div class="row">
+                      <div class="col-xs-3">
+                        <label>
+                          SKU(Opcional)
+                        </label>
+                        <input class="form-control" v-model="estimation.sku">
+                      </div>
+                      <div class="col-xs-3">
+                        <label>
+                          Tipo de Cambio
+                        </label>
+                        <div class="input-group">
+                          <span class="input-group-addon">%</span>
+                          <input number class="form-control" placeholder="" v-model="estimation.rate" required="true">
+                        </div>
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-xs-12 text-right">
+                      <button class="btn btn-success" :disabled="desactivarGuardar">Guardar Solicitud</button>
                     </div>
                   </div>
                 </div>
+
+              </form>
               </div>
-            </div>
-            <button class="btn btn-default" @click="saveEstimations">Guardar</button>
-            <pre>
-              {{ $data.estimations | json}}
-            </pre>
           </div>
 
           </div> <!-- container-fluid -->
