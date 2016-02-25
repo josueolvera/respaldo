@@ -248,7 +248,6 @@
           },
           fillRequestInformation: function(datos)
           {
-            alert(datos.idRequest);
             this.objectRequest.request.idRequest= datos.idRequest;
             this.estimation.idRequest= this.objectRequest.request.idRequest;
             this.objectRequest.request.folio= datos.folio;
