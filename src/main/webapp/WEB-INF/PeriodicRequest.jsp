@@ -152,6 +152,16 @@
                       {
                          this.ResponseRequestInformation= data;
                          this.matchInformation(this.ResponseRequestInformation);
+                      }).error(function(data)
+                      {
+                        showAlert("No existe presupuesto para este tipo de solicitud");
+                        this.obtainRequestInformation.idRequestType= '';
+                        this.obtainRequestInformation.idProductType= '';
+                        this.obtainRequestInformation.idUserResponsable= '';
+                        this.obtainRequestInformation.applyingDate= '';
+                        this.objectRequest.products= [];
+                        this.idProducto= '';
+                        this.desactivarCombos= false;
                       });
 
             }

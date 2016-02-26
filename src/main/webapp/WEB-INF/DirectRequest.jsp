@@ -195,11 +195,22 @@
             var date = this.timePicker.DateTimePicker.date();
             var dateiso= date.toISOString();
             this.obtainRequestInformation.applyingDate= dateiso.slice(0, -1);
+
             this.$http.post(ROOT_URL+"/requests/month-branch-product-type", JSON.stringify(this.obtainRequestInformation))
                     .success(function (data)
                     {
                        this.ResponseRequestInformation= data;
                        this.matchInformation(this.ResponseRequestInformation);
+                    }).error(function(data)
+                    {
+                      showAlert("No existe presupuesto para este tipo de solicitud");
+                      this.obtainRequestInformation.idRequestType= '';
+                      this.obtainRequestInformation.idProductType= '';
+                      this.obtainRequestInformation.idUserResponsable= '';
+                      this.obtainRequestInformation.applyingDate= '';
+                      this.objectRequest.products= [];
+                      this.idProducto= '';
+                      this.desactivarCombos= false;
                     });
           },
           matchInformation: function(requestInformation)
