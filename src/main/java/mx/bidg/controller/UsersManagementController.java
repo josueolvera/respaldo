@@ -10,6 +10,7 @@ import mx.bidg.config.JsonViews;
 import mx.bidg.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +30,7 @@ public class UsersManagementController {
     
     ObjectMapper mapper = new ObjectMapper();
     
-    @RequestMapping(method = RequestMethod.GET, produces = "application/jason;charset=UTF-8")
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> getUsersList() throws Exception {
         String response = mapper.writerWithView(JsonViews.Root.class).writeValueAsString(usersService.findAll());
         return new ResponseEntity<>(response, HttpStatus.OK);
