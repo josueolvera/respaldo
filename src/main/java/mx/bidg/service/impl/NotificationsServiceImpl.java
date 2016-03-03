@@ -12,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Rafael Viveros
@@ -35,22 +37,25 @@ public class NotificationsServiceImpl implements NotificationsService {
     public List<Notifications> createNotification(List<Users> users, Requests request) {
         request = requestsDao.findById(request.getIdRequest());
         List<Notifications> notifications = new ArrayList<>();
+        Set<String> userNames = new HashSet<>(users.size());
 
         for (Users user : users) {
-            Notifications notification = new Notifications();
-            notification.setIdResource(request.getIdRequest());
-            notification.setResourcesTasks(request.getRequestTypeProduct().getRequestCategory().getResourcesTasks());
-            notification.setTitle(request.getRequestTypeProduct().getRequestType().getRequestType());
-            notification.setSubtitle(request.getRequestTypeProduct().getProductType().getProductType());
-            notification.setText(request.getDescription());
-            notification.setUser(user);
-            notification.setNotificationTypes(new CNotificationTypes(CNotificationTypes.S));
-            notification.setNotificationsStatus(new CNotificationsStatus(CNotificationsStatus.PENDIENTE));
-            notification.setCreationDate(LocalDateTime.now());
-            notification.setDueDate(LocalDateTime.now());
+            if (userNames.add(user.getUsername())) {
+                Notifications notification = new Notifications();
+                notification.setIdResource(request.getIdRequest());
+                notification.setResourcesTasks(request.getRequestTypeProduct().getRequestCategory().getResourcesTasks());
+                notification.setTitle(request.getRequestTypeProduct().getRequestType().getRequestType());
+                notification.setSubtitle(request.getRequestTypeProduct().getProductType().getProductType());
+                notification.setText(request.getDescription());
+                notification.setUser(user);
+                notification.setNotificationTypes(new CNotificationTypes(CNotificationTypes.S));
+                notification.setNotificationsStatus(new CNotificationsStatus(CNotificationsStatus.PENDIENTE));
+                notification.setCreationDate(LocalDateTime.now());
+                notification.setDueDate(LocalDateTime.now());
 
-            notifications.add(notification);
-            notificationsDao.save(notification);
+                notifications.add(notification);
+                notificationsDao.save(notification);
+            }
         }
 
         return notifications;
