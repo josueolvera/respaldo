@@ -29,9 +29,7 @@ public class NotificationsController {
             value = "/archive/{idNotification}", method = RequestMethod.PUT,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE
     ) public ResponseEntity<String> archiveNotification(@PathVariable int idNotification) throws IOException {
-        Notifications notification = notificationsService.findById(idNotification);
-        notification.setNotificationsStatus(new CNotificationsStatus(CNotificationsStatus.ARCHIVADA));
-        notificationsService.update(notification);
+        notificationsService.archive(idNotification);
 
         return new ResponseEntity<>("Notificacion archivada", HttpStatus.OK);
     }

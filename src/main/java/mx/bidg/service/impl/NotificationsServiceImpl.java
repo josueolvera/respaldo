@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,9 @@ public class NotificationsServiceImpl implements NotificationsService {
 
     @Autowired
     private RequestsDao requestsDao;
+
+    @Autowired
+    private HttpSession session;
 
     @Override
     public List<Notifications> createNotification(List<Users> users, Requests request) {
@@ -83,8 +87,14 @@ public class NotificationsServiceImpl implements NotificationsService {
     }
 
     @Override
-    public Notifications archive(Notifications notification) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+    public Notifications archive(Integer idNotification) {
+        Notifications notification = notificationsDao.findById(idNotification);
+        Users user = (Users) session.getAttribute("user");
+        if (user.getIdUser().equals(notification.getIdUser())) {
+            notification.setNotificationsStatus(new CNotificationsStatus(CNotificationsStatus.ARCHIVADA));
+            notificationsDao.update(notification);
+        }
+        return notification;
     }
 
     @Override
