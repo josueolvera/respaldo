@@ -36,7 +36,7 @@ public class DwEmployees implements Serializable {
     
     @Basic(optional = false)
     @NotNull
-    @Column(name = "CREATION_DATE")
+    @Column(name = "CREATION_DATE", updatable = false)
     @Convert(converter = TimeConverter.class)
     private LocalTime creationDate;
     

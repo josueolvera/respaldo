@@ -52,7 +52,7 @@ public class Stocks implements AccessLevelFiltered, Serializable {
     private String stockFolio;
 
     @Basic(optional = false)
-    @Column(name = "CREATION_DATE")
+    @Column(name = "CREATION_DATE", updatable = false)
     @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
     private LocalDateTime creationDate;

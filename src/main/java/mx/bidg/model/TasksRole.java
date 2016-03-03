@@ -30,14 +30,13 @@ public class TasksRole implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_TASK_ROLE")
     @JsonView(JsonViews.Root.class)
     private Integer idTaskRole;
 
     @Basic(optional = false)
     @NotNull
-    @Column(name = "CREATION_DATE")
+    @Column(name = "CREATION_DATE", updatable = false)
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;

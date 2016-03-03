@@ -43,7 +43,7 @@ public class CFolios implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String folio;
 
-    @Column(name = "CREATION_DATE")
+    @Column(name = "CREATION_DATE", updatable = false)
     @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
     private LocalDateTime creationDate;
