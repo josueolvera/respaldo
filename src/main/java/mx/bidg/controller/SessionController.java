@@ -47,7 +47,7 @@ public class SessionController {
     @RequestMapping(produces = {"text/html;charset=UTF-8"})
     public String home(HttpSession session) {
         Users users = (Users) session.getAttribute("user");
-        if (users.getIdUser() != null) {
+        if (users != null && users.getIdUser() != null) {
             return "inbox-page";
         }
         return "index";
