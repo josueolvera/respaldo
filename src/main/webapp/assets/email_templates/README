@@ -1,0 +1,2 @@
+Los Templates para notificación por correo electrónico deben ser almacenados
+en la ruta indicada por la propiedad 'email_templates.dir'

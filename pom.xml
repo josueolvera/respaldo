@@ -29,6 +29,7 @@
         <hibernate-validator.version>5.1.3.Final</hibernate-validator.version>
         <jackson.datatype.hibernate4>2.5.3</jackson.datatype.hibernate4>
         <httpcomponents.version>4.5.1</httpcomponents.version>
+        <jtwig-spring.version>3.1.1</jtwig-spring.version>
     </properties>
     
     <dependencies>
@@ -164,6 +165,16 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>${httpcomponents.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.lyncode</groupId>
+            <artifactId>jtwig-spring</artifactId>
+            <version>${jtwig-spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.18</version>
         </dependency>
 
     </dependencies>

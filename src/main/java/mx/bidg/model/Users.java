@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -32,7 +27,6 @@ import org.hibernate.annotations.SelectBeforeUpdate;
 @Table(name = "USERS")
 @DynamicUpdate
 @SelectBeforeUpdate
-
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Users implements Serializable {
     
@@ -129,10 +123,6 @@ public class Users implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userEstimation")
     @JsonView(JsonViews.Embedded.class)
     private List<PriceEstimations> priceEstimationsList1;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUser")
-    @JsonView(JsonViews.Embedded.class)
-    private List<GlobalTracer> globalTracerList;
 
     @Transient
     @JsonView(JsonViews.Root.class)
@@ -290,14 +280,6 @@ public class Users implements Serializable {
 
     public void setPriceEstimationsList1(List<PriceEstimations> priceEstimationsList1) {
         this.priceEstimationsList1 = priceEstimationsList1;
-    }
-
-    public List<GlobalTracer> getGlobalTracerList() {
-        return globalTracerList;
-    }
-
-    public void setGlobalTracerList(List<GlobalTracer> globalTracerList) {
-        this.globalTracerList = globalTracerList;
     }
 
     public Set<Integer> getAccessLevels() {

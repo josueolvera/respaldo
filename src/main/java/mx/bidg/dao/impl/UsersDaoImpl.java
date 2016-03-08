@@ -32,8 +32,11 @@ public class UsersDaoImpl extends AbstractDao<Integer, Users> implements UsersDa
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Users> findAll() {
-        return (List<Users>) createEntityCriteria().list();
+        return (List<Users>) createEntityCriteria()
+                .add(Restrictions.eq("status", 1))
+                .list();
     }
 
     @Override

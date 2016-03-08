@@ -37,7 +37,7 @@ public class AccessLevelsRole implements Serializable {
 
     @Basic(optional = false)
     @NotNull
-    @Column(name = "CREATION_DATE")
+    @Column(name = "CREATION_DATE", updatable = false)
     @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
     private LocalDateTime creationDate;

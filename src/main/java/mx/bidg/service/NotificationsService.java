@@ -16,6 +16,6 @@ public interface NotificationsService {
     Notifications findById(Integer id);
     List<Notifications> findAllForUser(Users user);
     List<Notifications> findArchiveForUser(Users user);
-    Notifications archive(Notifications notification);
+    Notifications archive(Integer idNotification);
     Notifications update(Notifications notification);
 }
