@@ -7,6 +7,7 @@ package mx.bidg.dao;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.AccessLevelFiltered;
 import mx.bidg.config.JsonViews;
 import mx.bidg.exceptions.ValidationException;
@@ -56,18 +57,18 @@ public abstract class AbstractDao<PK extends Serializable, T> {
     }
     
     public void persist(T entity){
-        globalTracer("INSERT", entity);
         getSession().persist(entity);
+        globalTracer("INSERT", entity);
     }
     
     public void remove(T entity){
-        globalTracer("DELETE", entity);
         getSession().delete(entity);
+        globalTracer("DELETE", entity);
     }
     
     public void modify(T entity){
-        globalTracer("UPDATE", entity);
         getSession().update(entity);
+        globalTracer("UPDATE", entity);
     }
     
     protected Criteria createEntityCriteria() {
@@ -100,16 +101,17 @@ public abstract class AbstractDao<PK extends Serializable, T> {
             System.out.println(user.getUsername());
             String task = request.getMethod().toLowerCase() + ":" + request.getRequestURI();
             GlobalTracer tracer = new GlobalTracer();
-            ObjectMapper mapper = new ObjectMapper();
+            ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
             Table annotation = entity.getClass().getAnnotation(Table.class);
             tracer.setIdUser(user.getIdUser());
             tracer.setUsername(user.getUsername());
             tracer.setOperationType(operationType);
             tracer.setTask(task);
             tracer.setTableName(annotation.name());
+            tracer.setIdEntity(entity.hashCode());
             tracer.setCreationDate(LocalDateTime.now());
             try {
-                tracer.setInfo(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(entity));
+                tracer.setInfo(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(entity));
             } catch (JsonProcessingException ex) {
                 throw new ValidationException(ex.getMessage());
             }
