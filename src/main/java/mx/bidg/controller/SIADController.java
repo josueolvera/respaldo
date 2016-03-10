@@ -59,4 +59,10 @@ public class SIADController {
         return "PeriodicRequest";
     }
     
+        @RequestMapping(value = "/searchRequest", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public String searchRequest() {
+        return "SearchRequest";
+    }
+    
+    
 }
