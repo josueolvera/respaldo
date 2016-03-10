@@ -42,7 +42,8 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
 
     @Override
     public Requests update(Requests entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        modify(entity);
+        return entity;
     }
 
     @Override

@@ -31,9 +31,17 @@ public class UserController {
 
     private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
-    @RequestMapping(value = "/inbox-page", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/inbox-page", method = RequestMethod.GET)
     public String getInboxPage(HttpSession session) throws IOException {
         return "inbox-page";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getLoggedInUser(HttpSession session) throws IOException {
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(session.getAttribute("user")),
+                HttpStatus.OK
+        );
     }
 
     @RequestMapping(value = "/inbox", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

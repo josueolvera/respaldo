@@ -35,8 +35,9 @@ import org.hibernate.annotations.DynamicUpdate;
 public class CRequestStatus implements Serializable {
 
     public static final int PENDIENTE = 1;
-    public static final int APROBADA = 2;
+    public static final int COTIZADA = 2;
     public static final int RECHAZADA = 3;
+    public static final int APROBADA = 4;
 
     private static final long serialVersionUID = 1L;
 

@@ -56,6 +56,11 @@ public class GlobalTracer implements Serializable {
     @Column(name = "OPERATION_TYPE")
     @JsonView(JsonViews.Root.class)
     private String operationType;
+
+    @Basic(optional = true)
+    @Column(name = "ID_ENTITY")
+    @JsonView(JsonViews.Root.class)
+    private Integer idEntity;
     
     @Basic(optional = false)
     @NotNull
@@ -122,6 +127,14 @@ public class GlobalTracer implements Serializable {
 
     public void setOperationType(String operationType) {
         this.operationType = operationType;
+    }
+
+    public Integer getIdEntity() {
+        return idEntity;
+    }
+
+    public void setIdEntity(Integer idEntity) {
+        this.idEntity = idEntity;
     }
 
     public String getTableName() {
