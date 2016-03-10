@@ -15,16 +15,10 @@ import java.util.List;
 
 import mx.bidg.dao.*;
 import mx.bidg.exceptions.ValidationException;
-import mx.bidg.model.Accounts;
-import mx.bidg.model.AccountsPayable;
-import mx.bidg.model.CCurrencies;
-import mx.bidg.model.CEstimationStatus;
-import mx.bidg.model.PeriodicsPayments;
-import mx.bidg.model.PriceEstimations;
-import mx.bidg.model.Requests;
-import mx.bidg.model.Users;
+import mx.bidg.model.*;
 import mx.bidg.service.PriceEstimationsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,12 +73,14 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         estimation.setCreationDate(LocalDateTime.now());
         estimation.setUserEstimation(user);
         estimation.setIdAccessLevel(1);
-        //Por defecto, las cotizaciones se guardan como pendientes (1)
-        estimation.setEstimationStatus(new CEstimationStatus(1));
+        estimation.setEstimationStatus(new CEstimationStatus(CEstimationStatus.PENDIENTE));
         estimation.setSku(sku);
         //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
         estimation.setOutOfBudget((residualAmount.compareTo(amount) == -1)? 1 : 0);
         estimation = priceEstimationsDao.save(estimation);
+
+        request.setRequestStatus(new CRequestStatus(CRequestStatus.COTIZADA));
+        requestsDao.update(request);
 
         return estimation;
 
@@ -99,8 +95,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     public PriceEstimations update(Integer idEstimation, String data) throws Exception{
         PriceEstimations estimation = priceEstimationsDao.findByIdFetchRequestStatus(idEstimation);
         JsonNode json = mapper.readTree(data);
-        //Verifica que el estatus de la solicitud sea Pendiente (1)
-        if(estimation.getEstimationStatus().getIdEstimationStatus().equals(1)) {
+        if(estimation.getEstimationStatus().getIdEstimationStatus().equals(CEstimationStatus.PENDIENTE)) {
             Requests request = requestsDao.findByIdFetchBudgetMonthBranch(estimation.getIdRequest());
             BigDecimal budgetAmount = request.getBudgetMonthBranch().getAmount();
             BigDecimal expendedAmount = request.getBudgetMonthBranch().getExpendedAmount();
@@ -134,23 +129,20 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         PriceEstimations estimation = priceEstimationsDao.findByIdFetchRequestStatus(idEstimation);
         Requests request = estimation.getRequest();
 
-        //Verificar que la solicitud sigue pendiente (status 1) para poder modificar
-        if (request.getRequestStatus().getIdRequestStatus().equals(1)) {
+        if (request.getRequestStatus().getIdRequestStatus().equals(CEstimationStatus.PENDIENTE)) {
             
             String folio = request.getFolio();
-            //Verificar si hay PeriodicPayments asociados a este request con status Inactivo(1) para eliminarlos
             List<PeriodicsPayments> periodicPayments = periodicPaymentsDao.findByFolio(folio);
             for (PeriodicsPayments payment : periodicPayments) {
-                if (payment.getPeriodicPaymentStatus().getIdPeriodicPaymentStatus().equals(1)) {
+                if (payment.getPeriodicPaymentStatus().getIdPeriodicPaymentStatus().equals(CPeriodicPaymentsStatus.INACTIVO)) {
                     if(!periodicPaymentsDao.delete(payment))
                         throw new ValidationException("No se pudo eliminar el PeriodicPayment: " + payment);
                 }
             }
             
-            //Verificar si hay AccountsPayable asociados a este request con status Inactivo(1) para eliminarlos
             List<AccountsPayable> accountsPayable = accountsPayableDao.findByFolio(folio);
             for(AccountsPayable account : accountsPayable) {
-                if(account.getAccountPayableStatus().getIdAccountPayableStatus().equals(1)) {
+                if(account.getAccountPayableStatus().getIdAccountPayableStatus().equals(CAccountsPayableStatus.INACTIVA)) {
                     if(!accountsPayableDao.delete(account))
                         throw new ValidationException("No se pudo eliminar el AccountPayable: " + account);
                 }
@@ -163,17 +155,15 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
                 e.setAuthorizationDate(LocalDateTime.now());
 
                 if (e.getIdEstimation().equals(idEstimation)) {
-                    //Cotizacion Aceptada = 2
-                    e.setEstimationStatus(new CEstimationStatus(2));
+                    e.setEstimationStatus(new CEstimationStatus(CEstimationStatus.APROBADA));
                 } else {
-                    //Cotizacion Rechazada = 3
-                    e.setEstimationStatus(new CEstimationStatus(3));
+                    e.setEstimationStatus(new CEstimationStatus(CEstimationStatus.RECHAZADA));
                 }
             }
 
         } else {
             throw new ValidationException("No es posible elegir una cotizacion de una Solicitud Aceptada o Rechazada", 
-                "No es posible elegir una cotizacion de una Solicitud Aceptada o Rechazada");
+                "No es posible elegir una cotizacion de una Solicitud Aceptada o Rechazada", HttpStatus.FORBIDDEN);
         }
 
     }
