@@ -7,6 +7,6 @@ package mx.bidg.config;
  * Los model (entities) que necesiten ser filtrados por Access Level,
  * deben implementar esta interfaz
  */
-public interface AccessLevelFiltered {
+public interface AccessLevelFilterable {
     Integer getIdAccessLevel();
 }
