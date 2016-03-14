@@ -2,23 +2,22 @@ package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
-import javax.servlet.http.HttpSession;
-import mx.bidg.config.JsonViews;
+import mx.bidg.events.RequestCreatedEvent;
 import mx.bidg.model.AccountsPayable;
 import mx.bidg.model.PeriodicsPayments;
 import mx.bidg.model.Requests;
 import mx.bidg.model.Users;
 import mx.bidg.service.AccountsPayableService;
-import mx.bidg.service.NotificationsService;
 import mx.bidg.service.PeriodicPaymentsService;
 import mx.bidg.service.RequestsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -39,7 +38,7 @@ public class RequestsController {
     PeriodicPaymentsService periodicPaymentsService;
 
     @Autowired
-    NotificationsService notificationsService;
+    private ApplicationEventPublisher eventPublisher;
     
     ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
     
@@ -52,10 +51,7 @@ public class RequestsController {
         String response;
         
         if(request != null) {
-            List<Users> users = new ArrayList<>();
-            users.add(user);
-            users.add(request.getUserResponsible());
-            notificationsService.createNotification(users, request);
+            eventPublisher.publishEvent(new RequestCreatedEvent(request));
             response = mapper.writeValueAsString(request);
         } else {
             response = "Error al guardar la Solicitud";
