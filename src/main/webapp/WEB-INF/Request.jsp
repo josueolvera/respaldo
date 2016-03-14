@@ -19,7 +19,7 @@
           },
           data:
           {
-            requestCategories: {}
+            requestCategories: []
           },
           methods:
           {
@@ -28,12 +28,25 @@
               this.$http.get(ROOT_URL+"/request-categories")
               .success(function (data)
               {
-                this.requestCategories= data;
+                this.prepareInformation(data);
               });
+            },
+            prepareInformation: function(data)
+            {
+              var self= this;
+                data.forEach(function(element){
+                 var object= {
+                    taskName: '',
+                    category: '',
+                    information: ''
+                  };
+                  object.taskName= element.view.cTasks.taskName.substring(0,element.view.cTasks.taskName.length - 1);
+                  object.category= element.category;
+                  object.information= element.information;
+                self.requestCategories.push(object);
+                });
+
             }
-
-
-
           },
         filters:
         {
@@ -52,7 +65,7 @@
               <div class="col-xs-4 col-xs-offset-3">
 
                 <div class="list-group" v-for="requestCategorie in requestCategories">
-                    <a href="../{{requestCategorie.view.cTasks.taskName}}?cat={{requestCategorie.idRequestCategorie}}"
+                    <a href="../{{requestCategorie.taskName}}0"
                       class="list-group-item">
                     <h4 class="list-group-item-heading">{{requestCategorie.category}}</h4>
                     <p class="list-group-item-text">

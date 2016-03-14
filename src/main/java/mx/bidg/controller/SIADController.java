@@ -49,9 +49,14 @@ public class SIADController {
         return "CotizableRequest";
     }
     
-    @RequestMapping(value = "/directa", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public String directaRequestType() {
-        return "DirectRequest";
+    @RequestMapping(value = "/directa/{idRequest}", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView directaRequestType(@PathVariable int idRequest) {
+        int cat= 2;
+        ModelAndView model= new ModelAndView();
+        model.addObject("idRequest", idRequest);
+        model.addObject("cat", cat);
+        model.setViewName("DirectRequest");
+        return model;
     }
     
     @RequestMapping(value = "/periodica", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
@@ -59,10 +64,34 @@ public class SIADController {
         return "PeriodicRequest";
     }
     
-        @RequestMapping(value = "/searchRequest", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    @RequestMapping(value = "/search-request", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public String searchRequest() {
         return "SearchRequest";
     }
     
+    @RequestMapping(value = "/cotizableb/{idRequest}", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView cotizableRequestTypeSearch(@PathVariable int idRequest) {
+        ModelAndView model= new ModelAndView();
+        model.addObject("idRequest", idRequest);
+        model.setViewName("CotizableRequest");
+        return model;
+    }
+    
+    @RequestMapping(value = "/directab/{idRequest}", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView directaRequestTypeSearch(@PathVariable int idRequest) {
+        ModelAndView model= new ModelAndView();
+        model.addObject("idRequest", idRequest);
+        model.setViewName("DirectRequest");
+        return model;
+    }
+    
+    @RequestMapping(value = "/periodicab/{idRequest}", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView periodicRequestTypeSearch(@PathVariable int idRequest) 
+    {
+        ModelAndView model= new ModelAndView();
+        model.addObject("idRequest", idRequest);
+        model.setViewName("PeriodicRequest");
+        return model;
+    }
     
 }

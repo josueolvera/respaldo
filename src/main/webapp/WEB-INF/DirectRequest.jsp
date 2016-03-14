@@ -30,8 +30,7 @@
             format: 'YYYY/MM/DD'
             }).data();
 
-          this.RequestCategory= this.getGet();
-          this.obtainRequestInformation.idRequestCategory= this.RequestCategory.cat;
+          this.obtainRequestInformation.idRequestCategory= this.RequestCategory;
           this.$http.get(ROOT_URL+"/request-types/request-category/"+ this.obtainRequestInformation.idRequestCategory)
                   .success(function (data)
                   {
@@ -44,7 +43,7 @@
         },
         data:
         {
-          RequestCategory: '',
+          RequestCategory: ${cat},
           obtainRequestInformation:
            {
              idRequestCategory: '',
@@ -115,19 +114,6 @@
         },
         methods:
         {
-          getGet: function()
-          {
-            var loc = document.location.href;
-            var getString = loc.split('?')[1];
-            var GET = getString.split('&');
-            var get = {};//this object will be filled with the key-value pairs and returned.
-
-            for(var i = 0, l = GET.length; i < l; i++){
-               var tmp = GET[i].split('=');
-               get[tmp[0]] = unescape(decodeURI(tmp[1]));
-            }
-            return get;
-          },
           obtainProductType: function()
           {
             this.ProductTypes= {};
