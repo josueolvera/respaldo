@@ -41,7 +41,10 @@ public class NotificationsDaoImpl extends AbstractDao<Integer, Notifications> im
     @SuppressWarnings("unchecked")
     public List<Notifications> findAllForUser(Users user) {
         return (List<Notifications>) createEntityCriteria()
-                .add(Restrictions.eq("idUser", user.getIdUser()))
+                .add(Restrictions.disjunction(
+                        Restrictions.eq("idUser", user.getIdUser()),
+                        Restrictions.eq("idUser", 0)
+                ))
                 .add(Restrictions.disjunction(
                         Restrictions.eq("idNotificationStatus", CNotificationsStatus.PENDIENTE),
                         Restrictions.eq("idNotificationStatus", CNotificationsStatus.LEIDA)
