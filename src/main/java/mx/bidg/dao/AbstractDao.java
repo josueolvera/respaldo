@@ -1,14 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mx.bidg.dao;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
-import mx.bidg.config.AccessLevelFiltered;
+import mx.bidg.config.AccessLevelFilterable;
 import mx.bidg.config.JsonViews;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.GlobalTracer;
@@ -19,6 +14,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
 import javax.persistence.Table;
 import javax.servlet.http.HttpServletRequest;
@@ -56,24 +52,50 @@ public abstract class AbstractDao<PK extends Serializable, T> {
         return (T) getSession().get(persistentClass, key);
     }
     
-    public void persist(T entity){
+    public void persist(T entity) {
         getSession().persist(entity);
         globalTracer("INSERT", entity);
     }
     
-    public void remove(T entity){
-        getSession().delete(entity);
-        globalTracer("DELETE", entity);
+    public void remove(T entity) {
+        if (AccessLevelFilterable.class.isAssignableFrom(persistentClass)) {
+            if (isAuthorized(entity)) {
+                getSession().delete(entity);
+                globalTracer("DELETE", entity);
+            } else {
+                throw new ValidationException(
+                        "Operación DELETE sobre Registro: " + entity.hashCode() + "no autorizada",
+                        "Operación no autorizada",
+                        HttpStatus.UNAUTHORIZED
+                );
+            }
+        } else {
+            getSession().delete(entity);
+            globalTracer("DELETE", entity);
+        }
     }
     
-    public void modify(T entity){
-        getSession().update(entity);
-        globalTracer("UPDATE", entity);
+    public void modify(T entity) {
+        if (AccessLevelFilterable.class.isAssignableFrom(persistentClass)) {
+            if (isAuthorized(entity)) {
+                getSession().update(entity);
+                globalTracer("UPDATE", entity);
+            } else {
+                throw new ValidationException(
+                        "Operación UPDATE sobre Registro: " + entity.hashCode() + "no autorizada",
+                        "Operación no autorizada",
+                        HttpStatus.UNAUTHORIZED
+                );
+            }
+        } else {
+            getSession().update(entity);
+            globalTracer("UPDATE", entity);
+        }
     }
     
     protected Criteria createEntityCriteria() {
         Criteria entityCriteria = getSession().createCriteria(persistentClass);
-        if (AccessLevelFiltered.class.isAssignableFrom(persistentClass)) {
+        if (AccessLevelFilterable.class.isAssignableFrom(persistentClass)) {
             HttpSession session = request.getSession(false);
             if(session != null) {
                 Users user = (Users) session.getAttribute("user");
@@ -88,6 +110,22 @@ public abstract class AbstractDao<PK extends Serializable, T> {
         }
         return entityCriteria;
     }
+
+    private boolean isAuthorized(T entity) {
+        HttpSession session = request.getSession(false);
+        if(session == null) {
+            return false;
+        }
+
+        Users user = (Users) session.getAttribute("user");
+        if (user != null && user.getIdUser() != null && user.getUsername() != null) {
+            return false;
+        }
+
+        AccessLevelFilterable enty = (AccessLevelFilterable) entity;
+        return user.getAccessLevels().contains(enty.getIdAccessLevel());
+
+    }
     
     public void globalTracer(String operationType, T entity) {
         HttpSession session = request.getSession(false);
@@ -97,8 +135,6 @@ public abstract class AbstractDao<PK extends Serializable, T> {
         Users user = (Users) session.getAttribute("user");
 
         if (user != null && user.getIdUser() != null && user.getUsername() != null) {
-            System.out.println(user.getIdUser());
-            System.out.println(user.getUsername());
             String task = request.getMethod().toLowerCase() + ":" + request.getRequestURI();
             GlobalTracer tracer = new GlobalTracer();
             ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
