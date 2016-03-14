@@ -42,6 +42,11 @@ public class CNotificationTypes implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String foreground;
 
+    @Lob
+    @Column(name = "DETAILS_TEMPLATE")
+    @JsonView(JsonViews.Root.class)
+    private String detailsTemplate;
+
     public CNotificationTypes() {
     }
 
@@ -79,6 +84,14 @@ public class CNotificationTypes implements Serializable {
 
     public void setForeground(String foreground) {
         this.foreground = foreground;
+    }
+
+    public String getDetailsTemplate() {
+        return detailsTemplate;
+    }
+
+    public void setDetailsTemplate(String detailsTemplate) {
+        this.detailsTemplate = detailsTemplate;
     }
 
     @Override
