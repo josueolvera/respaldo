@@ -5,6 +5,7 @@ import org.apache.commons.lang3.LocaleUtils;
 import javax.validation.constraints.NotNull;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
@@ -63,6 +64,7 @@ public class DateFormatsPojo {
     public void buildPeriod(LocalDate from, LocalDate to) {
         Period period = Period.between(from, to).normalized();
         this.dateDiff = new PeriodDiff(period);
+        this.dateDiff.setTotalDays(ChronoUnit.DAYS.between(from, to));
     }
 
     public String getIso() {
@@ -206,7 +208,7 @@ public class DateFormatsPojo {
                 }
             } else {
                 this.name = "En el futuro";
-                top = date.with(TemporalAdjusters.firstDayOfNextYear());
+                top = date.with(TemporalAdjusters.firstDayOfYear());
             }
         }
 
@@ -258,6 +260,7 @@ public class DateFormatsPojo {
         private Period period;
         private boolean isNegative;
         private boolean isZero;
+        private Long totalDays;
 
         public PeriodDiff(Period period) {
             this.isZero = period.isZero();
@@ -272,6 +275,14 @@ public class DateFormatsPojo {
 
         public MyPeriod getPeriod() {
             return new MyPeriod(period);
+        }
+
+        public Long getTotalDays() {
+            return totalDays;
+        }
+
+        public void setTotalDays(Long totalDays) {
+            this.totalDays = totalDays;
         }
 
         public boolean isNegative() {
