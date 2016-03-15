@@ -52,8 +52,7 @@ public class ProvidersAccountsServiceImpl implements ProvidersAccountsService {
         account.setAccountClabe(clabe);
         account.setAccountNumber(accountNumber);
         account.setIdAccessLevel(1);
-        //Tipo de cuenta definitiva
-        account.setAccountType(new CAccountsTypes(1));
+        account.setAccountType(new CAccountsTypes(CAccountsTypes.DEFINITIVA));
         account.setBank(new CBanks(idBank));
         
         ProvidersAccounts providersAccount = new ProvidersAccounts();
@@ -65,9 +64,8 @@ public class ProvidersAccountsServiceImpl implements ProvidersAccountsService {
     }
 
     @Override
-    public List<ProvidersAccounts> findByAccountsProvider(Accounts a) 
-    {
-     return dao.findByAccountProviders(a);
+    public List<ProvidersAccounts> findByAccountsProvider(Accounts a) {
+        return dao.findByAccount(a);
     }
     
 }

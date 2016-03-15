@@ -18,6 +18,6 @@ public interface ProvidersAccountsDao extends InterfaceDao<ProvidersAccounts> {
     
     public List<ProvidersAccounts> findByProvider(Providers p);
     
-    public List<ProvidersAccounts> findByAccountProviders(Accounts a);
+    public List<ProvidersAccounts> findByAccount(Accounts a);
     
 }
