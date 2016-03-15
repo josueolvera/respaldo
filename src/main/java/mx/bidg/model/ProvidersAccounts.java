@@ -38,7 +38,6 @@ public class ProvidersAccounts implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_PROVIDER_ACCOUNT")
     @JsonView(JsonViews.Root.class)
     private Integer idProviderAccount;
@@ -53,7 +52,7 @@ public class ProvidersAccounts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAccount;
     
-    @JoinColumn(name = "ID_PROVIDER", insertable = false, updatable = false)
+    @Column(name = "ID_PROVIDER", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idProvider;
     

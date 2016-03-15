@@ -64,9 +64,8 @@ public class ProvidersAccountsServiceImpl implements ProvidersAccountsService {
     }
 
     @Override
-    public List<ProvidersAccounts> findByAccountsProvider(Accounts a) 
-    {
-     return dao.findByAccountProviders(a);
+    public List<ProvidersAccounts> findByAccountsProvider(Accounts a) {
+        return dao.findByAccount(a);
     }
     
 }
