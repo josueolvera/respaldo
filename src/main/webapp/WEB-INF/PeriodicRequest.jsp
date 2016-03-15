@@ -33,13 +33,13 @@
             this.obtainAllUsers();
             this.obtainSuppliers();
             this.obtainCurrencies();
-            this.RequestCategory= this.getGet();
-            this.obtainRequestInformation.idRequestCategory= this.RequestCategory.cat;
+            this.obtainRequestInformation.idRequestCategory= this.RequestCategory;
             this.$http.get(ROOT_URL+"/request-types/request-category/"+ this.obtainRequestInformation.idRequestCategory)
                     .success(function (data)
                     {
                        this.RequestTypes= data;
                     });
+            this.verifyUpdateOrSave();
           },
           data:
           {
@@ -86,7 +86,8 @@
               idUserResponsable: '',
               applyingDate: ''
             },
-            RequestCategory: '',
+            RequestCategory: ${cat},
+            idRequest: ${idRequest},
             ResponseRequestInformation: '',
             idRequestType: '',
             idProductType: '',
@@ -97,6 +98,7 @@
             Users: {},
             idProducto: '',
             desactivarCombos: false,
+            isUpdate: false,
             desactivarGuardar: true,
             numberOfRequest: 0,
             estimations: [],
@@ -109,19 +111,6 @@
           },
           methods:
           {
-            getGet: function()
-            {
-              var loc = document.location.href;
-              var getString = loc.split('?')[1];
-              var GET = getString.split('&');
-              var get = {};//this object will be filled with the key-value pairs and returned.
-
-              for(var i = 0, l = GET.length; i < l; i++){
-                 var tmp = GET[i].split('=');
-                 get[tmp[0]] = unescape(decodeURI(tmp[1]));
-              }
-              return get;
-            },
             obtainProductType: function()
             {
               this.ProductTypes= {};
@@ -366,7 +355,72 @@
               cotizacion.userEstimation.username= responseOfEstimation.userEstimation.username;
               cotizacion.userEstimation.mail= responseOfEstimation.userEstimation.mail;
               cotizacion.isSaved= false;
+            },
+            verifyUpdateOrSave: function()
+            {
+              if (this.idRequest> 0)
+              {
+                this.$http.get(ROOT_URL+"/requests/"+this.idRequest).
+                success(function(data)
+                {
+                  this.matchInformationUpdate(data);
+                }).error(function(data){
+                  showAlert("Ha habido un error al obtener la informacion");
+                });
+              }
+            },
+            matchInformationUpdate: function(data)
+            {
+              var self= this;
+              this.isUpdate= true;
+              this.obtainRequestInformation.idRequestType= data.requestTypeProduct.idRequestType;
+              this.obtainRequestInformation.applyingDate= data.applyingDateFormats.dateNumber;
+              this.obtainRequestInformation.idUserResponsable= data.idUserResponsible;
+              this.objectRequest.request.description= data.description;
+              this.objectRequest.request.purpose= data.purpose;
+              data.requestProductsList.forEach(function(element)
+              {
+              var producto= self.createProduct();
+              producto.idProduct= element.product.idProduct;
+              producto.descripcion= element.product.product;
+              self.objectRequest.products.push(producto);
+              });
+
+              this.$http.get(ROOT_URL+"/estimations/request/"+this.idRequest).
+              success(function(data)
+              {
+                this.matchInformationEstimationsUpdate(data);
+              }).error(function(data){
+                showAlert("Ha habido un error al obtener la informacion de las cotizacion");
+              });
+
+            },
+            matchInformationEstimationsUpdate: function(data)
+            {
+              var self = this;
+                data.forEach(function(element)
+                {
+                  var cotizacion= self.createCotizacion();
+                  cotizacion.idEstimation= element.idEstimation;
+                  cotizacion.amount = element.amount;
+                  cotizacion.rate= element.rate;
+                  cotizacion.sku= element.sku;
+                  cotizacion.outOfBudget = element.outOfBudget;
+                  cotizacion.idRequest = element.idRequest;
+                  cotizacion.idEstimationStatus = element.idEstimationStatus;
+                  cotizacion.idAccount = element.idAccount;
+                  cotizacion.idCurrency = element.idCurrency;
+                  cotizacion.idUserEstimation = element.idUserEstimation;
+                  cotizacion.indexOfForm = self.estimations.length;
+                  cotizacion.creationDate = element.creationDateFormats.iso;
+                  self.fillSuppliers(cotizacion);
+                });
+            },
+            fillSuppliers: function(cotizacion)
+            {
+              console.log(cotizacion);
             }
+
           },
         filters:
         {
@@ -400,7 +454,7 @@
                <label>
                  Tipo de Solicitud:
                </label>
-               <select class="form-control" v-model="obtainRequestInformation.idRequestType" :disabled="desactivarCombos" @change="obtainProductType" required>
+               <select class="form-control" v-model="obtainRequestInformation.idRequestType" :disabled="desactivarCombos || isUpdate" @change="obtainProductType" required>
                  <option v-for="RequestType in RequestTypes"
                    value="{{RequestType.idRequestType}}">{{RequestType.requestType}}
                  </option>
@@ -411,7 +465,7 @@
                 <label>
                   Tipo de producto
                 </label>
-                <select class="form-control" v-model="obtainRequestInformation.idProductType" :disabled="desactivarCombos"
+                <select class="form-control" v-model="obtainRequestInformation.idProductType" :disabled="desactivarCombos || isUpdate"
                   @change="obtainProducts" required>
                   <option v-for="ProductType in ProductTypes" value="{{ProductType.idProductType}}">
                     {{ProductType.productType}}
@@ -423,7 +477,7 @@
                 <label>
                   Productos
                 </label>
-                <select class="form-control" v-model="idProducto" id="selectProducto" required>
+                <select class="form-control" v-model="idProducto" id="selectProducto" :disabled="isUpdate" required>
                   <option v-for="Product in Productos" value="{{Product.idProduct}}">
                     {{Product.product}}
                   </option>
@@ -433,7 +487,7 @@
               <div class="col-xs-1">
                 <div class="col-xs-6">
                   <button type="button" class="btn btn-default" style="margin-top: 25px; margin-left: -33px"
-                    v-on:click="saveProduct">
+                    v-on:click="saveProduct" :disabled="isUpdate">
                     <span class="glyphicon glyphicon-plus"></span>
                   </button>
                 </div>
@@ -445,7 +499,8 @@
                 </label>
                 <div class="form-group">
                 <div class='input-group date' id='datetimepicker1'>
-                    <input type='text' class="form-control" v-model="obtainRequestInformation.applyingDate" @change="obtainRequestInfo">
+                    <input type='text' class="form-control" v-model="obtainRequestInformation.applyingDate"
+                      @change="obtainRequestInfo" :disabled="isUpdate">
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
@@ -459,7 +514,7 @@
                   Responsable:
                 </label>
                 <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
-                @change="obtainRequestInfo">
+                @change="obtainRequestInfo" :disabled="isUpdate">
                   <option></option>
                   <option v-for="user in Users" value="{{user.idUser}}"> {{user.username}} </option>
                 </select>
@@ -480,7 +535,7 @@
                     {{produc.descripcion}}
                   </div>
                   <div class="col-xs-2 text-left">
-                    <button class="btn btn-link" @click="deleteProduct(produc)">
+                    <button class="btn btn-link" @click="deleteProduct(produc)" :disabled="isUpdate">
                       <span class="glyphicon glyphicon-remove"></span>
                     </button>
                   </div>
@@ -493,7 +548,8 @@
                 <label>
                   Descripcion del Servicio:
                 </label>
-                <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.description" required></textarea>
+                <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.description"
+                  :disabled="isUpdate" required></textarea>
               </div>
             </div>
             <br>
@@ -502,7 +558,8 @@
                 <label>
                   Motivo de Contratacion:
                 </label>
-                <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.purpose" required></textarea>
+                <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.purpose"
+                  :disabled="isUpdate" required></textarea>
               </div>
             </div>
 

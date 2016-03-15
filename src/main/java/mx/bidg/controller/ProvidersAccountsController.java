@@ -8,6 +8,7 @@ package mx.bidg.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import mx.bidg.config.JsonViews;
+import mx.bidg.model.Accounts;
 import mx.bidg.model.Providers;
 import mx.bidg.model.ProvidersAccounts;
 import mx.bidg.service.ProvidersAccountsService;
@@ -44,6 +45,13 @@ public class ProvidersAccountsController {
     @RequestMapping(value = "/provider/{idProvider}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> getByProvider(@PathVariable int idProvider) throws Exception {
         List<ProvidersAccounts> list = providersAccountsService.findByProvider(new Providers(idProvider));
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.EmbeddedAccounts.class)
+                .writeValueAsString(list), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/account/{idAccount}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    public @ResponseBody ResponseEntity<String> getByAccount(@PathVariable int idAccount) throws Exception {
+        List<ProvidersAccounts> list = providersAccountsService.findByAccountsProvider(new Accounts(idAccount));
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.EmbeddedAccounts.class)
                 .writeValueAsString(list), HttpStatus.OK);
     }

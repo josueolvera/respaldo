@@ -8,6 +8,7 @@ package mx.bidg.dao.impl;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.ProvidersAccountsDao;
+import mx.bidg.model.Accounts;
 import mx.bidg.model.Providers;
 import mx.bidg.model.ProvidersAccounts;
 import org.hibernate.Criteria;
@@ -49,6 +50,14 @@ public class ProvidersAccountsDaoImpl extends AbstractDao<Integer, ProvidersAcco
         Criteria criteria = createEntityCriteria()
                 .add(Restrictions.eq("provider", p))
                 .setFetchMode("account", FetchMode.JOIN);
+        return (List<ProvidersAccounts>) criteria.list();
+    }
+
+    @Override
+    public List<ProvidersAccounts> findByAccountProviders(Accounts a) {
+        Criteria criteria = createEntityCriteria()
+                .add(Restrictions.eq("account", a))
+                .setFetchMode("provider", FetchMode.JOIN);
         return (List<ProvidersAccounts>) criteria.list();
     }
     

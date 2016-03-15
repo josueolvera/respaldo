@@ -6,6 +6,7 @@
 package mx.bidg.dao;
 
 import java.util.List;
+import mx.bidg.model.Accounts;
 import mx.bidg.model.Providers;
 import mx.bidg.model.ProvidersAccounts;
 
@@ -16,5 +17,7 @@ import mx.bidg.model.ProvidersAccounts;
 public interface ProvidersAccountsDao extends InterfaceDao<ProvidersAccounts> {
     
     public List<ProvidersAccounts> findByProvider(Providers p);
+    
+    public List<ProvidersAccounts> findByAccountProviders(Accounts a);
     
 }

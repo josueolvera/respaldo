@@ -99,4 +99,10 @@ public class RequestsController {
         return mapper.writeValueAsString(periodicsPayment);
     }
     
+    @RequestMapping(value="/{idRequest}", method = RequestMethod.GET, headers = "Accept=application/json; charset=UTF-8",
+            produces = "application/json;charset=UTF-8")
+    public @ResponseBody String findRequestByID(@PathVariable int idRequest) throws Exception {
+        Requests request = requestsService.findById(idRequest);
+        return mapper.writeValueAsString(request);
+    }
 }
