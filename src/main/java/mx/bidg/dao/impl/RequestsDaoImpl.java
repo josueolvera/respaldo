@@ -32,6 +32,7 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
         return (Requests) createEntityCriteria()
                 .add(Restrictions.idEq(id))
                 .setFetchMode("requestTypeProduct", FetchMode.JOIN)
+                .setFetchMode("requestProductsList", FetchMode.JOIN)
                 .uniqueResult();
     }
 
@@ -74,6 +75,6 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
                 .setFetchMode("requestTypeProduct", FetchMode.JOIN)
                 .setFetchMode("requestTypeProduct.", FetchMode.JOIN);
         return (Requests) criteria.uniqueResult();
-    }
+    }    
     
 }

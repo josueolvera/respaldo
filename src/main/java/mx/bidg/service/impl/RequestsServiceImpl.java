@@ -173,5 +173,12 @@ public class RequestsServiceImpl implements RequestsService {
         
         return null;
     }
+
+    @Override
+    public Requests findById(Integer idRequest) 
+    {
+        Requests request = requestsDao.findById(idRequest);
+        return request;
+    }
     
 }

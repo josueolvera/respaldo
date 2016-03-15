@@ -21,4 +21,6 @@ public interface RequestsService {
     
     Requests authorization(Integer idRequest);
     
+    Requests findById(Integer idRequest);
+    
 }

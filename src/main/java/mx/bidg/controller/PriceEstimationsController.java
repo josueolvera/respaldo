@@ -114,7 +114,7 @@ public class PriceEstimationsController {
             outputStream.close();
             inputStream.close();
             
-            PriceEstimations estimation = estimationsService.saveFileData(idEstimation, filePart.getOriginalFilename(), 
+            PriceEstimations estimation = estimationsService.saveFileData(idEstimation, filePart.getOriginalFilename(),
                     destFile);
             
             return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(estimation), 

@@ -282,6 +282,45 @@
             cotizacion.userEstimation.username= responseOfEstimation.userEstimation.username;
             cotizacion.userEstimation.mail= responseOfEstimation.userEstimation.mail;
             cotizacion.isSaved= false;
+            //this.createAccountPayable();
+          },
+          createAccountPayable: function()
+          {
+            var accountsPayable= {
+              payments: []
+            };
+              var accountPayable= {
+                idAccountPayable: '',
+                folio: '',
+                amount: '',
+                paidAmount: '',
+                payNum: '',
+                totalPayments: '',
+                creationDate: '',
+                dueDate: '',
+                idAccountPayableStatus: '',
+                idOperationType: '',
+                idCurrency: '',
+                rate: ''
+              };
+              accountPayable.folio= this.objectRequest.request.folio;
+              accountPayable.amount= this.estimation.amount;
+              accountPayable.paidAmount = this.estimation.amount;
+              accountPayable.payNum= 1;
+              accountPayable.totalPayments= 1;
+              accountPayable.idCurrency= this.estimation.idCurrency;
+              accountPayable.rate= this.estimation.rate;
+              accountsPayable.payments.push(accountPayable);
+
+              this.$http.post(ROOT_URL+"/requests/accounts-payable", JSON.stringify(accountsPayable)).
+              success(function(data)
+              {
+                showAlert("Registro de solicitud exitoso");
+              }).error(function(data)
+              {
+                showAlert("Ha fallado el registro de su solicitud, intente nuevamente");
+              });
+
           }
 
         },
@@ -508,7 +547,15 @@
                   </div>
 
                   <div class="row">
-                    <div class="col-xs-12 text-right">
+                    <div class="col-xs-8">
+                        <div class="col-xs-1">
+                          <button class="btn btn-success" :disabled="desactivarGuardar">Autorizar</button>
+                        </div>
+                        <div class="col-xs-1">
+                          <button class="btn btn-danger" :disabled="desactivarGuardar">Declinar</button>
+                        </div>
+                    </div>
+                    <div class="col-xs-4 text-right">
                       <button class="btn btn-success" :disabled="desactivarGuardar">Guardar Solicitud</button>
                     </div>
                   </div>

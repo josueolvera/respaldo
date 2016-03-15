@@ -1,4 +1,4 @@
-package mx.bidg.listeners;
+/*package mx.bidg.listeners;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyRuntimeException;
@@ -19,10 +19,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * @author Rafael Viveros
- * Created on 14/03/16.
- */
 @Component
 public class RequestEventsListener {
 
@@ -72,3 +68,4 @@ public class RequestEventsListener {
         }
     }
 }
+*/

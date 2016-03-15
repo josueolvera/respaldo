@@ -418,7 +418,19 @@
             },
             fillSuppliers: function(cotizacion)
             {
-              console.log(cotizacion);
+              this.$http.get(ROOT_URL+"/providers-accounts/account/"+cotizacion.idAccount).
+              success(function(data)
+              {
+                data.forEach(function(element)
+                {
+                  cotizacion.idSupplier= element.idProvider;
+                  //Aqui hay que terminar el metodo
+                });
+
+              }).error(function(data){
+                showAlert("Ha habido un error al obtener la informacion de las cotizacion");
+              });
+
             }
 
           },
