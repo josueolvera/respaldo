@@ -1,5 +1,6 @@
 package mx.bidg.service.impl;
 
+import mx.bidg.dao.AuthorizationsDao;
 import mx.bidg.dao.CFoliosDao;
 import mx.bidg.model.CFolios;
 import mx.bidg.model.CTables;
@@ -20,7 +21,10 @@ import java.util.Random;
 public class FoliosServiceImpl implements FoliosService {
 
     @Autowired
-    CFoliosDao foliosDao;
+    private CFoliosDao foliosDao;
+
+    @Autowired
+    private AuthorizationsDao authorizationsDao;
 
     @Override
     public String createNew(CTables table) {
@@ -37,7 +41,9 @@ public class FoliosServiceImpl implements FoliosService {
 
     @Override
     public CFolios findByFolio(String folio) {
-        return foliosDao.findByFolio(folio);
+        CFolios cfolio = foliosDao.findByFolio(folio);
+        cfolio.setAuthorizations(authorizationsDao.findByFolio(folio));
+        return cfolio;
     }
 
     @Override

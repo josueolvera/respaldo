@@ -26,7 +26,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "AUTHORIZATIONS")
-
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Authorizations implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -38,7 +37,6 @@ public class Authorizations implements Serializable {
     private Integer idAuthorization;
 
     @Basic(optional = false)
-    @NotNull
     @Column(name = "AUTHORIZATION_DATE")
     @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
@@ -60,6 +58,10 @@ public class Authorizations implements Serializable {
     @Column(name = "FOLIO")
     @JsonView(JsonViews.Root.class)
     private String folio;
+
+    @Column(name = "AUTHORIZATION_ORDER")
+    @JsonView(JsonViews.Root.class)
+    private Integer authorizationOrder;
     
     @Column(name = "ID_AUTHORIZATION_STATUS", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -72,7 +74,7 @@ public class Authorizations implements Serializable {
     private CAuthorizationStatus cAuthorizationStatus;
 
     @JoinColumn(name = "ID_USER", referencedColumnName = "ID_USER")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JsonView(JsonViews.Embedded.class)
     private Users users;
 
@@ -134,6 +136,14 @@ public class Authorizations implements Serializable {
 
     public void setFolio(String folio) {
         this.folio = folio;
+    }
+
+    public Integer getAuthorizationOrder() {
+        return authorizationOrder;
+    }
+
+    public void setAuthorizationOrder(Integer authorizationOrder) {
+        this.authorizationOrder = authorizationOrder;
     }
 
     public Integer getIdAuthorizationStatus() {
