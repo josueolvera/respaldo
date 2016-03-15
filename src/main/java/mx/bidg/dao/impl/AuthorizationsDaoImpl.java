@@ -44,6 +44,7 @@ public class AuthorizationsDaoImpl extends AbstractDao<Integer, Authorizations> 
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Authorizations> findByFolio(String folio) {
         return createEntityCriteria().add(Restrictions.eq("folio", folio)).list();
     }

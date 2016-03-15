@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
+import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.Authorizations;
 import mx.bidg.model.CAuthorizationStatus;
 import mx.bidg.model.CFolios;
@@ -12,6 +13,7 @@ import mx.bidg.service.AuthorizationsService;
 import mx.bidg.service.FoliosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +38,7 @@ public class FoliosController {
 
     ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> findFolio(@RequestParam(name = "folio", required = false) String folio) throws IOException {
         String response;
         if (folio == null) {
@@ -50,36 +52,20 @@ public class FoliosController {
         );
     }
 
-    @RequestMapping(value = "/authorizations", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public ResponseEntity<String> addAuthorization(@RequestBody String data, HttpSession session) throws IOException {
-        JsonNode jsonNode = mapper.readTree(data);
-        Authorizations auth = new Authorizations();
-        Users user = (Users) session.getAttribute("user");
-
-        String jsonFolio = jsonNode.get("folio").asText();
-        String jsonDetails = jsonNode.get("details").asText();
-
-        auth.setUsers(user);
-        auth.setFolio(jsonFolio);
-        auth.setCAuthorizationStatus(new CAuthorizationStatus(1));
-        auth.setAuthorizationDate(LocalDateTime.now());
-        auth.setIdAccessLevel(1);
-        auth.setDetails(jsonDetails);
-
-        authorizationsService.save(auth);
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(auth), HttpStatus.CREATED);
-    }
-
     @RequestMapping(value = "/authorizations/{id}/authorize", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> authorizeAuthorization(@PathVariable int id, HttpSession session) throws IOException {
         Users user = (Users) session.getAttribute("user");
         Authorizations auth = authorizationsService.findById(id);
 
         if (! auth.getIdUser().equals(user.getIdUser())) {
-            return new ResponseEntity<>("Acceso denegado", HttpStatus.UNAUTHORIZED);
+            throw new ValidationException(
+                    "El usuario con id: " + user.getIdUser() + " intentó modificar la autorizacion del usuario con id: " + auth.getIdUser(),
+                    "Acceso no autorizado",
+                    HttpStatus.UNAUTHORIZED
+            );
         }
 
-        changeAuthorizationStatus(auth, 2);
+        changeAuthorizationStatus(auth, CAuthorizationStatus.AUTORIZADA);
 
         return new ResponseEntity<>("Operacion realizada con exito", HttpStatus.OK);
     }
@@ -90,10 +76,14 @@ public class FoliosController {
         Authorizations auth = authorizationsService.findById(id);
 
         if (! auth.getIdUser().equals(user.getIdUser())) {
-            return new ResponseEntity<>("Acceso denegado", HttpStatus.UNAUTHORIZED);
+            throw new ValidationException(
+                    "El usuario con id: " + user.getIdUser() + " intentó modificar la autorizacion del usuario con id: " + auth.getIdUser(),
+                    "Acceso no autorizado",
+                    HttpStatus.UNAUTHORIZED
+            );
         }
 
-        changeAuthorizationStatus(auth, 3);
+        changeAuthorizationStatus(auth, CAuthorizationStatus.RECHAZADA);
 
         return new ResponseEntity<>("Operacion realizada con exito", HttpStatus.OK);
     }

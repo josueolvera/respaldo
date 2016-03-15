@@ -58,6 +58,7 @@
                     }).data();
                 },
                 data: {
+                    idUser: ${user.idUser},
                     showHistory: false,
                     notifications: [],
                     notificationExpanded: null,
@@ -216,10 +217,10 @@
                                         {{ notification.dueDate.dateElements.interval.name }}
                                     </span>
                                 </span>
-                                <a @click.prevent="markAsRead(notification)" href="#">
+                                <a v-if="notification.idUser == idUser" @click.prevent="markAsRead(notification)" href="#">
                                     <span class="glyphicon glyphicon-ok"></span>
                                 </a>
-                                <a @click.prevent="showDelayModal(notification)" href="#">
+                                <a v-if="notification.idUser == idUser" @click.prevent="showDelayModal(notification)" href="#">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </a>
                                 <a href="{{ notification.resourcesTasks.view.cTasks.taskName | resourceViewURI notification.idResource }}">

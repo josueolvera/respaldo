@@ -14,6 +14,7 @@ import mx.bidg.utils.DateTimeConverter;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -48,6 +49,10 @@ public class CFolios implements Serializable {
     @JsonView(JsonViews.Root.class)
     private LocalDateTime creationDate;
 
+    @Column(name = "ID_TABLE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idTable;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
@@ -59,6 +64,10 @@ public class CFolios implements Serializable {
     @JsonProperty("cTables")
     @JsonView(JsonViews.Embedded.class)
     private CTables cTables;
+
+    @Transient
+    @JsonView(JsonViews.Embedded.class)
+    List<Authorizations> authorizations;
 
     public CFolios() {
     }
@@ -104,12 +113,28 @@ public class CFolios implements Serializable {
         this.creationDate = creationDate;
     }
 
+    public Integer getIdTable() {
+        return idTable;
+    }
+
+    public void setIdTable(Integer idTable) {
+        this.idTable = idTable;
+    }
+
     public int getIdAccessLevel() {
         return idAccessLevel;
     }
 
     public void setIdAccessLevel(int idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
+    }
+
+    public List<Authorizations> getAuthorizations() {
+        return authorizations;
+    }
+
+    public void setAuthorizations(List<Authorizations> authorizations) {
+        this.authorizations = authorizations;
     }
 
     @JsonProperty("cTables")
