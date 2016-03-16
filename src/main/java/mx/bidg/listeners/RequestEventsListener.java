@@ -1,4 +1,4 @@
-/*package mx.bidg.listeners;
+package mx.bidg.listeners;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyRuntimeException;
@@ -68,4 +68,4 @@ public class RequestEventsListener {
         }
     }
 }
-*/
+
