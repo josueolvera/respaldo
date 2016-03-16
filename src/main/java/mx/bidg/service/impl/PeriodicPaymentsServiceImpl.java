@@ -39,8 +39,8 @@ public class PeriodicPaymentsServiceImpl implements PeriodicPaymentsService {
         
         JsonNode json = mapper.readTree(data);
         String folio = json.get("folio").asText();
-        CPeriods period = new CPeriods(json.get("period").asInt());
-        CCurrencies currency = new CCurrencies(json.get("currency").asInt());
+        CPeriods period = new CPeriods(json.get("idPeriod").asInt());
+        CCurrencies currency = new CCurrencies(json.get("idCurrency").asInt());
         BigDecimal amount = json.get("amount").decimalValue();
         LocalDateTime initialDate = LocalDateTime.parse(json.get("initialDate").asText(), DateTimeFormatter.ISO_DATE_TIME);
         LocalDateTime dueDate = (json.get("dueDate").asText() != null)? 

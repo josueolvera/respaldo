@@ -39,11 +39,12 @@
           this.obtainAllUsers();
           this.obtainSuppliers();
           this.obtainCurrencies();
-
+          this.verifyUpdateOrSave();
         },
         data:
         {
           RequestCategory: ${cat},
+          idRequest: ${idRequest},
           obtainRequestInformation:
            {
              idRequestCategory: '',
@@ -54,6 +55,7 @@
            },
            RequestTypes: {},
            desactivarCombos: false,
+           isUpdate: false,
            ProductTypes: {},
            Productos: {},
            objectRequest:
@@ -320,9 +322,120 @@
               {
                 showAlert("Ha fallado el registro de su solicitud, intente nuevamente");
               });
+          },
+          verifyUpdateOrSave: function()
+          {
+            if (this.idRequest> 0)
+            {
+              this.$http.get(ROOT_URL+"/requests/"+this.idRequest).
+              success(function(data)
+              {
+                this.matchInformationUpdate(data);
+              }).error(function(data){
+                showAlert("Ha habido un error al obtener la informacion");
+              });
+            }
+          },
+          matchInformationUpdate: function(data)
+          {
+            var self= this;
+            this.isUpdate= true;
+            this.obtainRequestInformation.idRequestType= data.requestTypeProduct.idRequestType;
+            this.obtainRequestInformation.applyingDate= data.applyingDateFormats.dateNumber;
+            this.obtainRequestInformation.idUserResponsable= data.idUserResponsible;
+            this.objectRequest.request.idRequest= data.idRequest;
+            this.objectRequest.request.description= data.description;
+            this.objectRequest.request.purpose= data.purpose;
+            data.requestProductsList.forEach(function(element)
+            {
+            var producto= self.createProduct();
+            producto.idProduct= element.product.idProduct;
+            producto.descripcion= element.product.product;
+            self.objectRequest.products.push(producto);
+            });
 
+            this.$http.get(ROOT_URL+"/estimations/request/"+this.idRequest).
+            success(function(data)
+            {
+              this.matchInformationEstimationsUpdate(data);
+            }).error(function(data){
+              showAlert("Ha habido un error al obtener la informacion de la cotizacion");
+            });
+
+          },
+          matchInformationEstimationsUpdate: function(data)
+          {
+            var self = this;
+              data.forEach(function(element)
+              {
+                self.estimation.idEstimation= element.idEstimation;
+                self.estimation.amount = element.amount;
+                self.estimation.rate= element.rate;
+                self.estimation.sku= element.sku;
+                self.estimation.outOfBudget = element.outOfBudget;
+                self.estimation.idRequest = element.idRequest;
+                self.estimation.idEstimationStatus = element.idEstimationStatus;
+                self.estimation.idAccount = element.idAccount;
+                self.estimation.idCurrency = element.idCurrency;
+                self.estimation.idUserEstimation = element.idUserEstimation;
+                self.estimation.indexOfForm = self.estimation.length;
+                self.estimation.creationDate = element.creationDateFormats.iso;
+                self.fillSuppliers(self.estimation);
+              });
+          },
+          fillSuppliers: function(cotizacion)
+          {
+            var self= this;
+            this.$http.get(ROOT_URL+"/providers-accounts/account/"+cotizacion.idAccount).
+            success(function(data)
+            {
+              data.forEach(function(element)
+              {
+                self.estimation.idSupplier= element.idProvider;
+
+                self.$http.get(ROOT_URL + "/providers-accounts/provider/"+cotizacion.idSupplier).
+                success(function (data)
+                 {
+                      self.estimation.accountSupplier= data;
+                 });
+              });
+
+            }).error(function(data){
+              showAlert("Ha habido un error al obtener la informacion de las cotizaciones");
+            });
+          },
+          downloadFile: function(idEstimation)
+          {
+            this.$http.get(ROOT_URL + "/estimations/attachment/download/"+idEstimation).
+            success(function (data)
+             {
+
+             }).error(function(data)
+             {
+              showAlert("Ha habido un error al obtener el archivo");
+             });
+          },
+          modifyCotizacion: function(cotizacion)
+          {
+            this.$http.post(ROOT_URL+"/estimations/cotizacion.idEstimation", JSON.stringify(cotizacion)).
+            success(function(data)
+            {
+              showAlert("Modificacion Exitosa");
+
+            }).error(function(data)
+            {
+              showAlert("Ha fallado el registro de su cotizacion, intente nuevamente");
+            });
+
+          },
+          autorizeRequest: function()
+          {
+            console.log(this.objectRequest.request);
+          },
+          declineRequest: function()
+          {
+            alert("Se rechaza");
           }
-
         },
       filters:
       {
@@ -355,7 +468,7 @@
                <label>
                  Tipo de Solicitud:
                </label>
-               <select class="form-control" v-model="obtainRequestInformation.idRequestType" :disabled="desactivarCombos" @change="obtainProductType" required>
+               <select class="form-control" v-model="obtainRequestInformation.idRequestType" :disabled="desactivarCombos || isUpdate" @change="obtainProductType" required>
                  <option v-for="RequestType in RequestTypes"
                    value="{{RequestType.idRequestType}}">{{RequestType.requestType}}
                  </option>
@@ -366,7 +479,7 @@
                 <label>
                   Tipo de producto
                 </label>
-                <select class="form-control" v-model="obtainRequestInformation.idProductType" :disabled="desactivarCombos"
+                <select class="form-control" v-model="obtainRequestInformation.idProductType" :disabled="desactivarCombos || isUpdate"
                   @change="obtainProducts" required>
                   <option v-for="ProductType in ProductTypes" value="{{ProductType.idProductType}}">
                     {{ProductType.productType}}
@@ -378,7 +491,7 @@
                 <label>
                   Productos
                 </label>
-                <select class="form-control" v-model="idProducto" id="selectProducto" required>
+                <select class="form-control" v-model="idProducto" id="selectProducto" :disabled="isUpdate" required>
                   <option v-for="Product in Productos" value="{{Product.idProduct}}">
                     {{Product.product}}
                   </option>
@@ -388,7 +501,7 @@
               <div class="col-xs-1">
                 <div class="col-xs-6">
                   <button type="button" class="btn btn-default" style="margin-top: 25px; margin-left: -33px"
-                    v-on:click="saveProduct">
+                  :disabled="isUpdate"  v-on:click="saveProduct">
                     <span class="glyphicon glyphicon-plus"></span>
                   </button>
                 </div>
@@ -400,7 +513,8 @@
                 </label>
                 <div class="form-group">
                 <div class='input-group date' id='datetimepicker1'>
-                    <input type='text' class="form-control" v-model="obtainRequestInformation.applyingDate" @change="obtainRequestInfo">
+                    <input type='text' class="form-control" v-model="obtainRequestInformation.applyingDate"
+                      :disabled="isUpdate" @change="obtainRequestInfo">
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
@@ -411,7 +525,7 @@
                 <label>
                   Responsable:
                 </label>
-                <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
+                <select class="form-control" required="true" :disabled="isUpdate" v-model="obtainRequestInformation.idUserResponsable"
                 @change="obtainRequestInfo">
                   <option></option>
                   <option v-for="user in Users" value="{{user.idUser}}"> {{user.username}} </option>
@@ -433,7 +547,7 @@
                     {{produc.descripcion}}
                   </div>
                   <div class="col-xs-2 text-left">
-                    <button class="btn btn-link" @click="deleteProduct(produc)">
+                    <button class="btn btn-link" @click="deleteProduct(produc)" :disabled="isUpdate">
                       <span class="glyphicon glyphicon-remove"></span>
                     </button>
                   </div>
@@ -446,7 +560,8 @@
                 <label>
                   Descripcion de la Solicitud:
                 </label>
-                <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.description" required></textarea>
+                <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.description"
+                  :disabled="isUpdate" required></textarea>
               </div>
             </div>
             <br>
@@ -455,7 +570,8 @@
                 <label>
                   Motivo de la Solicitud:
                 </label>
-                <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.purpose" required></textarea>
+                <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.purpose"
+                  :disabled="isUpdate" required></textarea>
               </div>
             </div>
 
@@ -481,7 +597,7 @@
                   </div>
                   <div class="panel-body">
                     <div class="row">
-                      <div class="col-xs-3">
+                      <div class="col-xs-2">
                         <label>
                           Proveedor
                         </label>
@@ -493,7 +609,7 @@
                           </option>
                         </select>
                       </div>
-                      <div class="col-xs-3">
+                      <div class="col-xs-2">
                         <label>
                           Cuenta Bancaria
                         </label>
@@ -504,7 +620,7 @@
                           </option>
                         </select>
                       </div>
-                      <div class="col-xs-3">
+                      <div class="col-xs-2">
                         <label>
                           Tipo de Moneda
                         </label>
@@ -515,7 +631,7 @@
                           </option>
                         </select>
                       </div>
-                      <div class="col-xs-3">
+                      <div class="col-xs-2">
                         <label>
                           Monto
                         </label>
@@ -527,7 +643,7 @@
                     </div>
                     <br>
                     <div class="row">
-                      <div class="col-xs-3">
+                      <div class="col-xs-2">
                         <label>
                           SKU(Opcional)
                         </label>
@@ -547,12 +663,14 @@
                   </div>
 
                   <div class="row">
-                    <div class="col-xs-8">
-                        <div class="col-xs-1">
-                          <button class="btn btn-success" :disabled="desactivarGuardar">Autorizar</button>
+                    <div class="col-xs-8" >
+                        <div class="col-xs-2">
+                          <button type="button" class="btn btn-success" v-if="estimation.idEstimation > 0"
+                            @click="autorizeRequest">Autorizar</button>
                         </div>
-                        <div class="col-xs-1">
-                          <button class="btn btn-danger" :disabled="desactivarGuardar">Declinar</button>
+                        <div class="col-xs-2">
+                          <button type="button" class="btn btn-danger" v-if="estimation.idEstimation > 0"
+                            @click="declineRequest" >Declinar</button>
                         </div>
                     </div>
                     <div class="col-xs-4 text-right">
@@ -564,6 +682,10 @@
               </form>
               </div>
           </div>
+
+          <pre>
+            {{ $data.estimation | json}}
+          </pre>
 
           </div> <!-- container-fluid -->
 
