@@ -60,18 +60,8 @@ public class RequestsController {
         return new ResponseEntity<>(response, HttpStatus.OK);
         
     }
-    
-    
-    @RequestMapping(value = "/authorization/{idRequest}", method = RequestMethod.POST, 
-            produces = "application/json;charset=UTF-8")
-    public @ResponseBody String authorization(@PathVariable Integer idRequest) throws Exception{
-        
-        Requests request = requestsService.authorization(idRequest);
-        return null;
-        
-    }
-    
-    
+
+
     @RequestMapping(value = "/month-branch-product-type", method = RequestMethod.POST, 
             headers = {"Accept=application/json;charset=UTF-8"}, produces = "application/json;charset=UTF-8")
     public @ResponseBody String getBudgetMonthProductType(@RequestBody String data) throws Exception {
