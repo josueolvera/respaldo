@@ -43,7 +43,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
         List<AccountsPayable> accounts = new ArrayList<>();
         AccountsPayable accountsPayable;
 
-        for(JsonNode json : jsonList.get("payments")) {
+        for(JsonNode json : jsonList) {
 
             String folio = json.get("folio").asText();
             BigDecimal amount = json.get("amount").decimalValue();

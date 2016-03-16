@@ -47,32 +47,29 @@ public class SIADController {
     
     @RequestMapping(value = "/directa/{idRequest}", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public ModelAndView directaRequestType(@PathVariable int idRequest) {
-        CRequestsCategories requestCategory= new CRequestsCategories();
         ModelAndView model= new ModelAndView();
         model.addObject("idRequest", idRequest);
-        model.addObject("cat", requestCategory.DIRECTA);
+        model.addObject("cat", CRequestsCategories.DIRECTA);
         model.setViewName("DirectRequest");
         return model;
     }
     
         @RequestMapping(value = "/cotizable/{idRequest}", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public ModelAndView cotizableRequestTypeSearch(@PathVariable int idRequest) {
-        CRequestsCategories requestCategory= new CRequestsCategories();
         ModelAndView model= new ModelAndView();
         model.addObject("idRequest", idRequest);
-        model.addObject("cat", requestCategory.COTIZABLE);
+        model.addObject("cat", CRequestsCategories.COTIZABLE);
         model.setViewName("CotizableRequest");
         return model;
     }
     
-    
+
     @RequestMapping(value = "/periodica/{idRequest}", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public ModelAndView periodicRequestTypeSearch(@PathVariable int idRequest) 
     {
-        CRequestsCategories requestCategory= new CRequestsCategories();
         ModelAndView model= new ModelAndView();
         model.addObject("idRequest", idRequest);
-        model.addObject("cat", requestCategory.PERIODICA);
+        model.addObject("cat", CRequestsCategories.PERIODICA);
         model.setViewName("PeriodicRequest");
         return model;
     }
