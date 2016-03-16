@@ -1,13 +1,10 @@
 package mx.bidg.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.Authorizations;
-import mx.bidg.model.CAuthorizationStatus;
-import mx.bidg.model.CFolios;
 import mx.bidg.model.Users;
 import mx.bidg.service.AuthorizationsService;
 import mx.bidg.service.FoliosService;
@@ -20,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 /**
  * @author Rafael Viveros
@@ -65,7 +61,7 @@ public class FoliosController {
             );
         }
 
-        changeAuthorizationStatus(auth, CAuthorizationStatus.AUTORIZADA);
+        authorizationsService.authorize(auth);
 
         return new ResponseEntity<>("Operacion realizada con exito", HttpStatus.OK);
     }
@@ -83,14 +79,8 @@ public class FoliosController {
             );
         }
 
-        changeAuthorizationStatus(auth, CAuthorizationStatus.RECHAZADA);
+        authorizationsService.reject(auth);
 
         return new ResponseEntity<>("Operacion realizada con exito", HttpStatus.OK);
-    }
-
-    private void changeAuthorizationStatus(Authorizations auth, int status) {
-        auth.setCAuthorizationStatus(new CAuthorizationStatus(status));
-        auth.setAuthorizationDate(LocalDateTime.now());
-        authorizationsService.update(auth);
     }
 }

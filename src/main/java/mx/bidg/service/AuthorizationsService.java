@@ -13,4 +13,6 @@ public interface AuthorizationsService {
     List<Authorizations> findAll();
     Authorizations save(Authorizations entity);
     Authorizations update(Authorizations entity);
+    Authorizations authorize(Authorizations authorizations);
+    Authorizations reject(Authorizations authorizations);
 }
