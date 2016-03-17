@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import mx.bidg.dao.PeriodicPaymentsDao;
 import mx.bidg.dao.RequestsDao;
@@ -64,5 +65,10 @@ public class PeriodicPaymentsServiceImpl implements PeriodicPaymentsService {
         
         return periodicsPayment;
     }
-    
+
+    @Override
+    public List<PeriodicsPayments> findByFolio(String folio) {
+        return periodicPaymentsDao.findByFolio(folio);
+    }
+
 }

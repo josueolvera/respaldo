@@ -7,6 +7,8 @@ package mx.bidg.service;
 
 import mx.bidg.model.PeriodicsPayments;
 
+import java.util.List;
+
 /**
  *
  * @author sistemask
@@ -14,5 +16,6 @@ import mx.bidg.model.PeriodicsPayments;
 public interface PeriodicPaymentsService {
     
     PeriodicsPayments saveData(String data) throws Exception;
+    List<PeriodicsPayments> findByFolio(String folio);
     
 }
