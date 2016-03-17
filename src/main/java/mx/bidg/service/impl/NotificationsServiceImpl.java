@@ -8,6 +8,8 @@ import mx.bidg.service.EmailTemplatesService;
 import mx.bidg.service.NotificationsService;
 import mx.bidg.service.RequestsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +28,11 @@ import java.util.logging.Logger;
  */
 @Service
 @Transactional
+@PropertySource(value = {"classpath:application.properties"})
 public class NotificationsServiceImpl implements NotificationsService {
+
+    @Value("${notification.email_template_name}")
+    private String EMAIL_TEMPLATE_NAME;
 
     @Autowired
     private NotificationsDao notificationsDao;
@@ -46,7 +52,7 @@ public class NotificationsServiceImpl implements NotificationsService {
     @Override
     public List<Notifications> createNotification(List<Users> users, Requests request) {
         request = requestsDao.findById(request.getIdRequest());
-        EmailTemplates emailTemplate = emailTemplatesService.findByName("notification");
+        EmailTemplates emailTemplate = emailTemplatesService.findByName(EMAIL_TEMPLATE_NAME);
         List<Notifications> notifications = new ArrayList<>();
         Set<String> userNames = new HashSet<>(users.size());
 
@@ -73,7 +79,7 @@ public class NotificationsServiceImpl implements NotificationsService {
 
     @Override
     public Notifications createNotification(Users user, Requests request) {
-        EmailTemplates emailTemplate = emailTemplatesService.findByName("notification");
+        EmailTemplates emailTemplate = emailTemplatesService.findByName(EMAIL_TEMPLATE_NAME);
         request = requestsDao.findById(request.getIdRequest());
         emailTemplate.addRecipient(new EmailRecipients(user.getMail(), user.getUsername(), EmailRecipients.TO));
         emailTemplate.addProperty("user", user);

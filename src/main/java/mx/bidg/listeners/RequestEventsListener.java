@@ -9,6 +9,8 @@ import mx.bidg.service.AuthorizationsService;
 import mx.bidg.service.NotificationsService;
 import mx.bidg.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -18,7 +20,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
+@PropertySource(value = {"classpath:application.properties"})
 public class RequestEventsListener {
+
+    @Value("${authorizations.rule_name}")
+    private String AUTHORIZATIONS_RULE_NAME;
+
+    @Value("${authorizations.default.user_id}")
+    private Integer DEFAULT_USER_ID;
 
     @Autowired
     private NotificationsService notificationsService;
@@ -42,11 +51,12 @@ public class RequestEventsListener {
         notificationsService.createNotification(users, request);
     }
 
+    @Async
     @EventListener
     @SuppressWarnings("unchecked")
     public void buildAuthorizationsTreeOnRequestCreatedEvent(CreationEvent<Requests> event) {
         Requests requests = event.getResource();
-        AuthorizationTreeRules rule = authorizationTreeRulesService.findByRuleName("authorizations");
+        AuthorizationTreeRules rule = authorizationTreeRulesService.findByRuleName(AUTHORIZATIONS_RULE_NAME);
         Binding binding = new Binding();
         binding.setProperty("request", requests);
         GroovyShell shell = new GroovyShell(binding);
@@ -56,7 +66,7 @@ public class RequestEventsListener {
         } catch (RuntimeException e) {
             Logger.getLogger(RequestEventsListener.class.getName())
                     .log(Level.SEVERE, "Error al evaluar la regla del arbol de autorizaciones", e);
-            users.put(1, 1);
+            users.put(1, DEFAULT_USER_ID);
         } finally {
             Map.Entry<Integer, Integer> firstEntry = users.firstEntry();
             Users user = usersService.findById(firstEntry.getValue());
