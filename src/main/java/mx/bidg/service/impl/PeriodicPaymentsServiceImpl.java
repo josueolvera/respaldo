@@ -39,7 +39,7 @@ public class PeriodicPaymentsServiceImpl implements PeriodicPaymentsService {
         
         JsonNode json = mapper.readTree(data);
         String folio = json.get("folio").asText();
-        BigDecimal rate = json.get("rate").decimalValue();
+        BigDecimal rate = ((json.get("rate").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("rate").decimalValue() : BigDecimal.ONE;
         CPeriods period = new CPeriods(json.get("idPeriod").asInt());
         CCurrencies currency = new CCurrencies(json.get("idCurrency").asInt());
         BigDecimal amount = json.get("amount").decimalValue();

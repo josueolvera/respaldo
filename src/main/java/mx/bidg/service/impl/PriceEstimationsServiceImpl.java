@@ -170,6 +170,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
     @Override
     public boolean delete(Integer idEstimation) {
+//        PriceEstimations estimation = pr
         return priceEstimationsDao.delete(new PriceEstimations(idEstimation));
     }
 
