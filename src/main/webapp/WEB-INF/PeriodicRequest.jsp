@@ -480,7 +480,7 @@
             },
             modifyCotizacion: function(cotizacion)
             {
-              this.$http.post(ROOT_URL+"/estimations/cotizacion.idEstimation", JSON.stringify(cotizacion)).
+              this.$http.post(ROOT_URL+"/estimations/"+cotizacion.idEstimation, JSON.stringify(cotizacion)).
               success(function(data)
               {
                 showAlert("Modificacion Exitosa");
