@@ -14,8 +14,8 @@ import mx.bidg.model.PriceEstimations;
  */
 public interface PriceEstimationsDao extends InterfaceDao<PriceEstimations> {
     
-    public List<PriceEstimations> findByIdRequest(int idRequest);
+    List<PriceEstimations> findByIdRequest(int idRequest);
     
-    public PriceEstimations findByIdFetchRequestStatus(int idEstimation);
+    PriceEstimations findByIdFetchRequestStatus(int idEstimation);
     
 }

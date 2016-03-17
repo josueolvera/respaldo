@@ -177,5 +177,15 @@ public class PriceEstimationsController {
         estimationsService.update(idEstimation, data);
         return "Modificacion exitosa";
     }
+
+
+    @RequestMapping(value = "/{idEstimation}", method = RequestMethod.DELETE, headers = {"Accept=application/json;charset=UTF-8"})
+    public @ResponseBody String delete(@PathVariable Integer idEstimation) throws Exception {
+        if(estimationsService.delete(idEstimation)) {
+            return "Cotizacion eliminada";
+        } else {
+            throw new ValidationException("La operacion de eliminacion en el Dao fallo", "Error al eliminar la cotizacion", HttpStatus.CONFLICT);
+        }
+    }
     
 }
