@@ -15,5 +15,6 @@ import mx.bidg.model.AccountsPayable;
 public interface AccountsPayableService {
     
     List<AccountsPayable> saveData(String data) throws Exception;
+    List<AccountsPayable> findByFolio(String folio);
     
 }

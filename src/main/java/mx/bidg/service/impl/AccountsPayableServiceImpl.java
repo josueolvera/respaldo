@@ -75,5 +75,10 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
         
         return accounts;
     }
-    
+
+    @Override
+    public List<AccountsPayable> findByFolio(String folio) {
+        return accountsPayableDao.findByFolio(folio);
+    }
+
 }
