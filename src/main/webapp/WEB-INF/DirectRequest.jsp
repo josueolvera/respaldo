@@ -430,7 +430,7 @@
           },
           autorizeRequest: function()
           {
-            console.log(this.objectRequest.request);
+            //Aqui tenemos que poner la funcion para autorizar y despues crear la cuenta por pagar
           },
           declineRequest: function()
           {
