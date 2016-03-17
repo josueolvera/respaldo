@@ -132,13 +132,11 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         if (request.getRequestStatus().getIdRequestStatus().equals(CEstimationStatus.PENDIENTE)) {
             
             String folio = request.getFolio();
-            List<PeriodicsPayments> periodicPayments = periodicPaymentsDao.findByFolio(folio);
-            for (PeriodicsPayments payment : periodicPayments) {
-                if (payment.getPeriodicPaymentStatus().getIdPeriodicPaymentStatus().equals(CPeriodicPaymentsStatus.INACTIVO)) {
-                    if(!periodicPaymentsDao.delete(payment))
-                        throw new ValidationException("No se pudo eliminar el PeriodicPayment: " + payment);
+            PeriodicsPayments periodicPayment = periodicPaymentsDao.findByFolio(folio);
+                if (periodicPayment.getPeriodicPaymentStatus().getIdPeriodicPaymentStatus().equals(CPeriodicPaymentsStatus.INACTIVO)) {
+                    if(!periodicPaymentsDao.delete(periodicPayment))
+                        throw new ValidationException("No se pudo eliminar el PeriodicPayment: " + periodicPayment);
                 }
-            }
             
             List<AccountsPayable> accountsPayable = accountsPayableDao.findByFolio(folio);
             for(AccountsPayable account : accountsPayable) {

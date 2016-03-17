@@ -16,6 +16,6 @@ import java.util.List;
 public interface PeriodicPaymentsService {
     
     PeriodicsPayments saveData(String data) throws Exception;
-    List<PeriodicsPayments> findByFolio(String folio);
+    PeriodicsPayments findByFolio(String folio);
     
 }

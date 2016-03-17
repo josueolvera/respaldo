@@ -14,6 +14,6 @@ import mx.bidg.model.PeriodicsPayments;
  */
 public interface PeriodicPaymentsDao extends InterfaceDao<PeriodicsPayments> {
     
-    public List<PeriodicsPayments> findByFolio(String folio);
+    PeriodicsPayments findByFolio(String folio);
     
 }

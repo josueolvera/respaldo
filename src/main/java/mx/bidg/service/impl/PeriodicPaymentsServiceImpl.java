@@ -67,7 +67,7 @@ public class PeriodicPaymentsServiceImpl implements PeriodicPaymentsService {
     }
 
     @Override
-    public List<PeriodicsPayments> findByFolio(String folio) {
+    public PeriodicsPayments findByFolio(String folio) {
         return periodicPaymentsDao.findByFolio(folio);
     }
 
