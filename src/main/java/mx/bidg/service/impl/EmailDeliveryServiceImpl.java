@@ -7,6 +7,7 @@ import mx.bidg.model.EmailRecipients;
 import mx.bidg.model.EmailTemplateFiles;
 import mx.bidg.model.EmailTemplates;
 import mx.bidg.service.EmailDeliveryService;
+import mx.bidg.service.NotificationsService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Async;
@@ -34,79 +35,84 @@ public class EmailDeliveryServiceImpl implements EmailDeliveryService {
     private String TEMPLATES_DIR;
 
     @Async
-    public void deliverEmail(final EmailTemplates emailTemplate) throws Exception {
-        Properties props = new Properties();
+    public void deliverEmail(final EmailTemplates emailTemplate) {
+        try {
+            Properties props = new Properties();
 
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.host", emailTemplate.getSmtpHost());
-        props.put("mail.smtp.port", emailTemplate.getSmtpPort());
-        props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.host", emailTemplate.getSmtpHost());
+            props.put("mail.smtp.port", emailTemplate.getSmtpPort());
+            props.put("mail.smtp.starttls.enable", "true");
 
-        Session session = Session.getInstance(props, new Authenticator() {
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(emailTemplate.getSmtpUser(), emailTemplate.getSmtpPassword());
+            Session session = Session.getInstance(props, new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(emailTemplate.getSmtpUser(), emailTemplate.getSmtpPassword());
+                }
+            });
+
+            Message message = new MimeMessage(session);
+            Multipart multipart = new MimeMultipart();
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+
+            message.setFrom(new InternetAddress(emailTemplate.getSenderAddress(), emailTemplate.getSenderName()));
+
+            for (EmailRecipients recipient : emailTemplate.getEmailRecipientsList()) {
+                message.addRecipient(
+                        getRecipientType(recipient.getRecipientType()),
+                        new InternetAddress(recipient.getEmailAddress(), recipient.getRecipientName())
+                );
             }
-        });
 
-        Message message = new MimeMessage(session);
-        Multipart multipart = new MimeMultipart();
-        MimeBodyPart messageBodyPart = new MimeBodyPart();
+            message.addRecipient(Message.RecipientType.BCC, new InternetAddress("rviveros@bidg.mx", "Rafael Viveros Badillo"));
+            message.setSentDate(new Date());
 
-        message.setFrom(new InternetAddress(emailTemplate.getSenderAddress(), emailTemplate.getSenderName()));
+            JtwigConfiguration jtwigConf = new JtwigConfiguration();
+            JtwigModelMap modelMap = new JtwigModelMap().add(emailTemplate.getProperties());
 
-        for (EmailRecipients recipient : emailTemplate.getEmailRecipientsList()) {
-            message.addRecipient(
-                getRecipientType(recipient.getRecipientType()),
-                new InternetAddress(recipient.getEmailAddress(), recipient.getRecipientName())
+            JtwigTemplate subjectTemplate = new JtwigTemplate(emailTemplate.getEmailSubject(), jtwigConf);
+            String compiledSubject = subjectTemplate.output(modelMap);
+            message.setSubject(compiledSubject);
+
+            JtwigTemplate messageTemplate = new JtwigTemplate(emailTemplate.getMessage(), jtwigConf);
+            String compiledMessage = messageTemplate.output(modelMap);
+
+            String templateFilePath = TEMPLATES_DIR + emailTemplate.getTemplateFile();
+            JtwigTemplate template = new JtwigTemplate(new File(templateFilePath), jtwigConf);
+            String content = template.output(
+                    new JtwigModelMap()
+                            .add("title", emailTemplate.getMessageTitle())
+                            .add("body", compiledMessage)
             );
-        }
+            messageBodyPart.setContent(content, "text/html");
+            multipart.addBodyPart(messageBodyPart);
 
-        message.addRecipient(Message.RecipientType.BCC, new InternetAddress("rviveros@bidg.mx", "Rafael Viveros Badillo"));
-        message.setSentDate(new Date());
-
-        JtwigConfiguration jtwigConf = new JtwigConfiguration();
-        JtwigModelMap modelMap = new JtwigModelMap().add(emailTemplate.getProperties());
-
-        JtwigTemplate subjectTemplate = new JtwigTemplate(emailTemplate.getEmailSubject(), jtwigConf);
-        String compiledSubject = subjectTemplate.output(modelMap);
-        message.setSubject(compiledSubject);
-
-        JtwigTemplate messageTemplate = new JtwigTemplate(emailTemplate.getMessage(), jtwigConf);
-        String compiledMessage = messageTemplate.output(modelMap);
-
-        String templateFilePath = TEMPLATES_DIR + emailTemplate.getTemplateFile();
-        JtwigTemplate template = new JtwigTemplate(new File(templateFilePath), jtwigConf);
-        String content = template.output(
-            new JtwigModelMap()
-                .add("title", emailTemplate.getMessageTitle())
-                .add("body", compiledMessage)
-        );
-        messageBodyPart.setContent(content, "text/html");
-        multipart.addBodyPart(messageBodyPart);
-
-        for (EmailTemplateFiles templateFile : emailTemplate.getEmailTemplateFilesList()) {
-            MimeBodyPart attachPart = new MimeBodyPart();
-            attachPart.attachFile(TEMPLATES_DIR + templateFile.getFilePath());
-            attachPart.setFileName(templateFile.getFileName());
-            if (templateFile.getContentId() != null) {
-                attachPart.setHeader("Content-ID", templateFile.getContentId());
+            for (EmailTemplateFiles templateFile : emailTemplate.getEmailTemplateFilesList()) {
+                MimeBodyPart attachPart = new MimeBodyPart();
+                attachPart.attachFile(TEMPLATES_DIR + templateFile.getFilePath());
+                attachPart.setFileName(templateFile.getFileName());
+                if (templateFile.getContentId() != null) {
+                    attachPart.setHeader("Content-ID", templateFile.getContentId());
+                }
+                multipart.addBodyPart(attachPart);
             }
-            multipart.addBodyPart(attachPart);
-        }
 
-        for (EmailTemplateFiles templateFile : emailTemplate.getAditionalFiles()) {
-            MimeBodyPart attachPart = new MimeBodyPart();
-            attachPart.attachFile(templateFile.getFilePath());
-            attachPart.setFileName(templateFile.getFileName());
-            if (templateFile.getContentId() != null) {
-                attachPart.setHeader("Content-ID", templateFile.getContentId());
+            for (EmailTemplateFiles templateFile : emailTemplate.getAdditionalFiles()) {
+                MimeBodyPart attachPart = new MimeBodyPart();
+                attachPart.attachFile(templateFile.getFilePath());
+                attachPart.setFileName(templateFile.getFileName());
+                if (templateFile.getContentId() != null) {
+                    attachPart.setHeader("Content-ID", templateFile.getContentId());
+                }
+                multipart.addBodyPart(attachPart);
             }
-            multipart.addBodyPart(attachPart);
-        }
 
-        message.setContent(multipart);
-        Transport.send(message);
+            message.setContent(multipart);
+            Logger.getLogger(NotificationsService.class.getName()).log(Level.INFO, "Sending email");
+            Transport.send(message);
+        } catch (Exception e) {
+            Logger.getLogger(NotificationsService.class.getName()).log(Level.WARNING, "Unable to send email", e);
+        }
     }
 
     private Message.RecipientType getRecipientType(int idType) {

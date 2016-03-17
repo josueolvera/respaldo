@@ -81,5 +81,10 @@ public class UsersServiceImpl implements UsersService {
     public List<Users> findAll() {
         return usersDao.findAll();
     }
-    
+
+
+    @Override
+    public Users findById(Integer idUser) {
+        return usersDao.findByIdFetchDwEmployee(idUser);
+    }
 }

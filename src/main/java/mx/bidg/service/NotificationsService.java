@@ -12,6 +12,11 @@ public interface NotificationsService {
     List<Notifications> createNotification(List<Users> users, Requests request);
     List<Notifications> createNotification(List<Users> users, Stocks stock);
     List<Notifications> createNotification(List<Users> users, AccountsPayable accountPayable);
+
+    Notifications createNotification(Users user, Requests request);
+    Notifications createNotification(Users user, Stocks stock);
+    Notifications createNotification(Users user, AccountsPayable accountPayable);
+
     Long countNotificationsForUser(Users user);
     Notifications findById(Integer id);
     List<Notifications> findAllForUser(Users user);

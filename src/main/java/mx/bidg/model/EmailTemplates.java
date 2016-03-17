@@ -115,7 +115,7 @@ public class EmailTemplates implements Serializable {
 
     @Transient
     @JsonView(JsonViews.Private.class)
-    private List<EmailTemplateFiles> aditionalFiles;
+    private List<EmailTemplateFiles> additionalFiles;
 
     public EmailTemplates() {
     }
@@ -247,12 +247,25 @@ public class EmailTemplates implements Serializable {
         this.emailTemplateFilesList = emailTemplateFilesList;
     }
 
-    public List<EmailTemplateFiles> getAditionalFiles() {
-        return aditionalFiles;
+    public List<EmailTemplateFiles> getAdditionalFiles() {
+        if (additionalFiles == null) {
+            additionalFiles = new ArrayList<>();
+        }
+        return additionalFiles;
     }
 
     public HashMap<String, Object> getProperties() {
+        if (properties == null) {
+            properties = new HashMap<>();
+        }
         return properties;
+    }
+
+    public void addProperty(String propertyName, Object propertyValue) {
+        if (properties == null) {
+            properties = new HashMap<>();
+        }
+        properties.put(propertyName, propertyValue);
     }
 
     public void setProperties(HashMap<String, Object> properties) {
@@ -267,10 +280,10 @@ public class EmailTemplates implements Serializable {
     }
 
     public void addFile(EmailTemplateFiles file) {
-        if (this.aditionalFiles == null) {
-            this.aditionalFiles = new ArrayList<>();
+        if (this.additionalFiles == null) {
+            this.additionalFiles = new ArrayList<>();
         }
-        this.aditionalFiles.add(file);
+        this.additionalFiles.add(file);
     }
 
     @Override

@@ -41,7 +41,7 @@ public class Users implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
-    @Column(name = "USERNAME")
+    @Column(name = "USERNAME", updatable = false)
     @JsonView(JsonViews.Root.class)
     private String username;
 

@@ -7,5 +7,5 @@ import mx.bidg.model.EmailTemplates;
  * Created on 29/02/16.
  */
 public interface EmailDeliveryService {
-    void deliverEmail(EmailTemplates emailTemplate) throws Exception;
+    void deliverEmail(EmailTemplates emailTemplate);
 }
