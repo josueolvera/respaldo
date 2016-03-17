@@ -39,6 +39,7 @@ public class PeriodicPaymentsServiceImpl implements PeriodicPaymentsService {
         
         JsonNode json = mapper.readTree(data);
         String folio = json.get("folio").asText();
+        BigDecimal rate = json.get("rate").decimalValue();
         CPeriods period = new CPeriods(json.get("idPeriod").asInt());
         CCurrencies currency = new CCurrencies(json.get("idCurrency").asInt());
         BigDecimal amount = json.get("amount").decimalValue();
@@ -50,6 +51,7 @@ public class PeriodicPaymentsServiceImpl implements PeriodicPaymentsService {
         periodicsPayment.setPeriod(period);
         periodicsPayment.setFolio(folio);
         periodicsPayment.setAmount(amount);
+        periodicsPayment.setRate(rate);
         periodicsPayment.setInitialDate(initialDate);
         periodicsPayment.setDueDate(dueDate);
         //Ningun pago realizado de este servicio
