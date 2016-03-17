@@ -26,5 +26,7 @@ public interface PriceEstimationsService {
     List<PriceEstimations> findByIdRequest(int idRequest);
     
     void estimationAuthorization(int idEstimation, Users user);
+
+    boolean delete(Integer idEstimation);
     
 }

@@ -1,21 +1,19 @@
 package mx.bidg.listeners;
 
 import groovy.lang.Binding;
-import groovy.lang.GroovyRuntimeException;
 import groovy.lang.GroovyShell;
 import mx.bidg.events.CreationEvent;
 import mx.bidg.model.*;
 import mx.bidg.service.AuthorizationTreeRulesService;
 import mx.bidg.service.AuthorizationsService;
 import mx.bidg.service.NotificationsService;
+import mx.bidg.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,6 +29,10 @@ public class RequestEventsListener {
     @Autowired
     private AuthorizationsService authorizationsService;
 
+    @Autowired
+    private UsersService usersService;
+
+    @Async
     @EventListener
     public void createNotificationsOnRequestCreatedEvent(CreationEvent<Requests> event) {
         List<Users> users = new ArrayList<>();
@@ -48,14 +50,18 @@ public class RequestEventsListener {
         Binding binding = new Binding();
         binding.setProperty("request", requests);
         GroovyShell shell = new GroovyShell(binding);
-        Map<Integer, Integer> users = new HashMap<>(1);
+        TreeMap<Integer, Integer> users = new TreeMap<>();
         try {
-            users = (Map<Integer, Integer>) shell.evaluate(rule.getRuleCode());
+            users = new TreeMap<>((Map<Integer, Integer>) shell.evaluate(rule.getRuleCode()));
         } catch (RuntimeException e) {
             Logger.getLogger(RequestEventsListener.class.getName())
                     .log(Level.SEVERE, "Error al evaluar la regla del arbol de autorizaciones", e);
             users.put(1, 1);
         } finally {
+            Map.Entry<Integer, Integer> firstEntry = users.firstEntry();
+            Users user = usersService.findById(firstEntry.getValue());
+            notificationsService.createNotification(user, requests);
+
             for (Map.Entry<Integer, Integer> entry : users.entrySet()) {
                 Authorizations auth = new Authorizations();
                 auth.setFolio(requests.getFolio());

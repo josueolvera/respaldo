@@ -407,7 +407,7 @@ nav ul,nav li {
     float: right;
     min-width: 10%;
     max-width: 25%;
-    padding: 1rem 1.5rem;
+    padding: 1rem;
 }
 
 .card-inline .card-body {

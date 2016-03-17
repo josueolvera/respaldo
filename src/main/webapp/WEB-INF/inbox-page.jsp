@@ -14,6 +14,9 @@
             #content {
                 margin-top: 1.5rem;
             }
+            .loader {
+                margin-top: 2rem;
+            }
             .notification.expanded {
                 margin-top: 1.5rem;
                 margin-bottom: 1.5rem;
@@ -44,6 +47,58 @@
 
     <jsp:attribute name="scripts">
         <script type="text/javascript">
+            Vue.component('S', function (resolve, reject) {
+                Vue.http.get(ROOT_URL + "/notification-types").success(function (data) {
+                    var type = data.filter(function (element) {
+                        return element.notificationSymbol == "S"
+                    });
+                    resolve({
+                        props: ['notification', 'resource'],
+                        template: type[0].detailsTemplate
+                    });
+                }).error(function () {
+                    reject();
+                })
+            });
+            Vue.component('C', function (resolve, reject) {
+                Vue.http.get(ROOT_URL + "/notification-types").success(function (data) {
+                    var type = data.filter(function (element) {
+                        return element.notificationSymbol == "C"
+                    });
+                    resolve({
+                        props: ['notification', 'resource'],
+                        template: type[0].detailsTemplate
+                    });
+                }).error(function () {
+                    reject();
+                })
+            });
+            Vue.component('I', function (resolve, reject) {
+                Vue.http.get(ROOT_URL + "/notification-types").success(function (data) {
+                    var type = data.filter(function (element) {
+                        return element.notificationSymbol == "I"
+                    });
+                    resolve({
+                        props: ['notification', 'resource'],
+                        template: type[0].detailsTemplate
+                    });
+                }).error(function () {
+                    reject();
+                })
+            });
+            Vue.component('T', function (resolve, reject) {
+                Vue.http.get(ROOT_URL + "/notification-types").success(function (data) {
+                    var type = data.filter(function (element) {
+                        return element.notificationSymbol == "T"
+                    });
+                    resolve({
+                        props: ['notification', 'resource'],
+                        template: type[0].detailsTemplate
+                    });
+                }).error(function () {
+                    reject();
+                })
+            });
             var vm = new Vue({
                 el: '#content',
                 ready: function () {
@@ -109,8 +164,10 @@
                             });
 
                             Vue.nextTick(function () {
-                                var el = document.getElementById("content");
-                                el.classList.remove("hidden");
+                                var content = document.getElementById("content");
+                                var loader = document.getElementById("loader");
+                                content.classList.remove("hidden");
+                                loader.classList.add("hidden");
                             });
                         });
                     },
@@ -144,6 +201,7 @@
                                 ROOT_URL + "/notifications/archive/" + notification.idNotification
                         ).success(function (data) {
                             showAlert("Notificacion archivada");
+                            this.fetchInbox();
                         });
                     }
                 }
@@ -152,6 +210,7 @@
     </jsp:attribute>
 
     <jsp:body>
+        <div id="loader" class="loader">Cargando...</div>
         <div id="content" class="hidden">
             <div class="col-xs-12">
                 <div class="col-md-6"><h4>Notificaciones</h4></div>
@@ -200,8 +259,8 @@
                                 <span v-if="! notification.dueDate.dateDiff.negative">
                                     <span v-if="! notification.dueDate.dateDiff.zero">
                                         <span :class="{
-                                                'label-warning': notification.dueDate.dateDiff.period.days <= 7,
-                                                'label-primary': notification.dueDate.dateDiff.period.days > 7
+                                                'label-warning': notification.dueDate.dateDiff.totalDays <= 7,
+                                                'label-primary': notification.dueDate.dateDiff.totalDays > 7
                                             }" class="label">
                                             {{ notification.dueDate.dateElements.dayNameLong | capitalize }}
                                             {{ notification.dueDate.dateElements.day }}
@@ -223,19 +282,18 @@
                                 <a v-if="notification.idUser == idUser" @click.prevent="showDelayModal(notification)" href="#">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </a>
-                                <a href="{{ notification.resourcesTasks.view.cTasks.taskName | resourceViewURI notification.idResource }}">
+                                <a href="{{ notification.resourcesTasks.view.cTasks.taskName | resourceViewURI notification.idResource }}"
+                                   target="_blank">
                                     <span class="glyphicon glyphicon-new-window"></span>
                                 </a>
                             </div>
                         </div>
                         <div :class="{ 'in': notification.expanded }"
                              class="notification-details collapse clearfix">
-                            <p class="col-xs-4"><strong>Recivida el: {{ notification.creationDate.dateNumber }}</strong></p>
-                            <p class="col-xs-4"><strong>Vencimiento: {{ notification.dueDate.dateNumber }}</strong></p>
-                            <p v-for="(key, value) in notification.details" class="col-xs-4">
-                                <span>{{ key }}</span>
-                                <span>{{ value }}</span>
-                            </p>
+                            <component :is="notification.notificationTypes.notificationSymbol"
+                                    :notification="notification"
+                                    :resource="notification.details">
+                            </component>
                         </div>
                     </div>
                 </div>

@@ -42,7 +42,8 @@ public class PriceEstimationsDaoImpl extends AbstractDao<Integer, PriceEstimatio
 
     @Override
     public boolean delete(PriceEstimations entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        remove(entity);
+        return true;
     }
 
     @Override

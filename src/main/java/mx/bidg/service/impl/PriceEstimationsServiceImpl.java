@@ -169,6 +169,11 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     }
 
     @Override
+    public boolean delete(Integer idEstimation) {
+        return priceEstimationsDao.delete(new PriceEstimations(idEstimation));
+    }
+
+    @Override
     public PriceEstimations saveFileData(int idEstimation, String fileName, String filePath) {
         PriceEstimations estimation = priceEstimationsDao.findById(idEstimation);
         estimation.setFileName(fileName);

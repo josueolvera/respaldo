@@ -3,6 +3,8 @@ package mx.bidg.service.impl;
 import mx.bidg.dao.NotificationsDao;
 import mx.bidg.dao.RequestsDao;
 import mx.bidg.model.*;
+import mx.bidg.service.EmailDeliveryService;
+import mx.bidg.service.EmailTemplatesService;
 import mx.bidg.service.NotificationsService;
 import mx.bidg.service.RequestsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Rafael Viveros
@@ -28,6 +32,12 @@ public class NotificationsServiceImpl implements NotificationsService {
     private NotificationsDao notificationsDao;
 
     @Autowired
+    private EmailDeliveryService emailDeliveryService;
+
+    @Autowired
+    private EmailTemplatesService emailTemplatesService;
+
+    @Autowired
     private RequestsDao requestsDao;
 
     @Autowired
@@ -36,28 +46,18 @@ public class NotificationsServiceImpl implements NotificationsService {
     @Override
     public List<Notifications> createNotification(List<Users> users, Requests request) {
         request = requestsDao.findById(request.getIdRequest());
+        EmailTemplates emailTemplate = emailTemplatesService.findByName("notification");
         List<Notifications> notifications = new ArrayList<>();
         Set<String> userNames = new HashSet<>(users.size());
 
         for (Users user : users) {
             if (userNames.add(user.getUsername())) {
-                Notifications notification = new Notifications();
-                notification.setIdResource(request.getIdRequest());
-                notification.setResourcesTasks(request.getRequestTypeProduct().getRequestCategory().getResourcesTasks());
-                notification.setTitle("Solicitud: " + request.getRequestTypeProduct().getRequestType().getRequestType());
-                notification.setSubtitle(request.getRequestTypeProduct().getProductType().getProductType());
-                notification.setText(request.getDescription());
-                notification.setUser(user);
-                notification.setNotificationTypes(new CNotificationTypes(CNotificationTypes.S));
-                notification.setNotificationsStatus(new CNotificationsStatus(CNotificationsStatus.PENDIENTE));
-                notification.setCreationDate(LocalDateTime.now());
-                notification.setDueDate(LocalDateTime.now());
-
-                notifications.add(notification);
-                notificationsDao.save(notification);
+                notifications.add(buildAndSave(request, user));
+                emailTemplate.addRecipient(new EmailRecipients(user.getMail(), user.getUsername(), EmailRecipients.TO));
             }
         }
 
+        emailDeliveryService.deliverEmail(emailTemplate);
         return notifications;
     }
 
@@ -68,6 +68,26 @@ public class NotificationsServiceImpl implements NotificationsService {
 
     @Override
     public List<Notifications> createNotification(List<Users> users, AccountsPayable accountPayable) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public Notifications createNotification(Users user, Requests request) {
+        EmailTemplates emailTemplate = emailTemplatesService.findByName("notification");
+        request = requestsDao.findById(request.getIdRequest());
+        emailTemplate.addRecipient(new EmailRecipients(user.getMail(), user.getUsername(), EmailRecipients.TO));
+        emailTemplate.addProperty("user", user);
+        emailDeliveryService.deliverEmail(emailTemplate);
+        return buildAndSave(request, user);
+    }
+
+    @Override
+    public Notifications createNotification(Users user, Stocks stock) {
+        throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public Notifications createNotification(Users user, AccountsPayable accountPayable) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
 
@@ -106,5 +126,21 @@ public class NotificationsServiceImpl implements NotificationsService {
     public Notifications update(Notifications notification) {
         notificationsDao.update(notification);
         return notification;
+    }
+
+    private Notifications buildAndSave(Requests request, Users user) {
+        Notifications notification = new Notifications();
+        notification.setIdResource(request.getIdRequest());
+        notification.setResourcesTasks(request.getRequestTypeProduct().getRequestCategory().getResourcesTasks());
+        notification.setTitle("Solicitud: " + request.getRequestTypeProduct().getRequestType().getRequestType());
+        notification.setSubtitle(request.getRequestTypeProduct().getProductType().getProductType());
+        notification.setText(request.getDescription());
+        notification.setUser(user);
+        notification.setNotificationTypes(new CNotificationTypes(CNotificationTypes.S));
+        notification.setNotificationsStatus(new CNotificationsStatus(CNotificationsStatus.PENDIENTE));
+        notification.setCreationDate(LocalDateTime.now());
+        notification.setDueDate(LocalDateTime.now());
+
+        return notificationsDao.save(notification);
     }
 }
