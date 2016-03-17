@@ -184,7 +184,7 @@ public class PriceEstimationsController {
         if(estimationsService.delete(idEstimation)) {
             return "Cotizacion eliminada";
         } else {
-            throw new ValidationException("La operacion de eliminacion en el Dao fallo", "Error al eliminar la cotizacion", HttpStatus.CONFLICT);
+            throw new ValidationException("La operacion de eliminacion fallo", "Error al eliminar la cotizacion", HttpStatus.CONFLICT);
         }
     }
     

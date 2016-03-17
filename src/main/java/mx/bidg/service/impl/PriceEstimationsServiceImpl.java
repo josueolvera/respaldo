@@ -170,8 +170,13 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
     @Override
     public boolean delete(Integer idEstimation) {
-//        PriceEstimations estimation = pr
-        return priceEstimationsDao.delete(new PriceEstimations(idEstimation));
+        PriceEstimations estimation = priceEstimationsDao.findByIdFetchRequestStatus(idEstimation);
+        if(estimation.getIdEstimationStatus() == CEstimationStatus.PENDIENTE){
+            return priceEstimationsDao.delete(new PriceEstimations(idEstimation));
+        } else {
+            throw new ValidationException("La cotizacion no tiene estatus de Pendiente", "Solo pueden" +
+                    " eliminarse Cotizaciones Pendientes de aprobacion", HttpStatus.CONFLICT);
+        }
     }
 
     @Override
