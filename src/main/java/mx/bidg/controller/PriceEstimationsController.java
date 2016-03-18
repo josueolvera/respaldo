@@ -129,7 +129,7 @@ public class PriceEstimationsController {
     
     @RequestMapping(value = "/attachment/download/{idEstimation}", method = RequestMethod.GET)
     public void readFile(@PathVariable int idEstimation, HttpServletResponse response) throws IOException {
-        String SAVE_PATH = env.getRequiredProperty("stock.documents_dir");
+        String SAVE_PATH = env.getRequiredProperty("estimations.documents_dir");
         PriceEstimations estimation = estimationsService.findById(idEstimation);
         File file = new File(SAVE_PATH + estimation.getFilePath());
 
