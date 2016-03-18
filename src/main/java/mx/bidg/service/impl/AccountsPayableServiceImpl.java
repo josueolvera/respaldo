@@ -50,8 +50,8 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
             BigDecimal rate = json.get("rate").decimalValue();
             Integer payNum = json.get("payNum").asInt();
             Integer totalPayments = json.get("totalPayments").asInt();
-            LocalDateTime dueDate = (json.get("dueDate").asText() != null)? 
-            LocalDateTime.parse(json.get("dueDate").asText(), DateTimeFormatter.ISO_DATE_TIME) : null;
+            LocalDateTime dueDate = (json.get("dueDate").asText() != null || !json.get("dueDate").asText().equals(""))?
+                LocalDateTime.parse(json.get("dueDate").asText(), DateTimeFormatter.ISO_DATE_TIME) : null;
             CCurrencies currency = new CCurrencies(json.get("currency").asInt());
             
             accountsPayable = new AccountsPayable();
