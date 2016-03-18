@@ -290,7 +290,8 @@
                 username: '',
                 mail: ''
               },
-              isSaved: true
+              isSaved: true,
+              requiredFile: true
               }
               return cotizacion;
             },
@@ -349,6 +350,45 @@
             },
             saveEstimations: function(cotizacion)
             {
+              if (cotizacion.idEstimation > 0)
+              {
+                //this.modifyCotizacion(cotizacion);
+                if (cotizacion.fileName !== "")
+                {
+                  var form = document.getElementById("form-"+cotizacion.indexOfForm);
+                  var formData = new FormData(form);
+
+                  this.$http.post(ROOT_URL+"/estimations/"+cotizacion.idEstimation, JSON.stringify(cotizacion)).
+                  success(function(data)
+                  {
+                    this.$http.post(ROOT_URL+"/estimations/"+cotizacion.idEstimation+"/attachment", formData).
+                    success(function(data)
+                    {
+                      showAlert("Modificacion Realizada con Exito");
+                    }).error(function(data){
+                      showAlert("La modificacion se ha realizado, pero hubo un error al guardar el archivo");
+                    });
+
+                  }).error(function(data)
+                  {
+                    showAlert("Ha fallado el registro de su cotizacion, intente nuevamente");
+                  });
+
+                }
+                else{
+                  this.$http.post(ROOT_URL+"/estimations/"+cotizacion.idEstimation, JSON.stringify(cotizacion)).
+                  success(function(data)
+                  {
+                    showAlert("Modificacion Exitosa");
+
+                  }).error(function(data)
+                  {
+                    showAlert("Ha fallado el registro de su cotizacion, intente nuevamente");
+                  });
+                }
+              }
+              else
+              {
               var form = document.getElementById("form-"+cotizacion.indexOfForm);
               var formData = new FormData(form);
               var responseOfEstimation;
@@ -371,6 +411,7 @@
               {
                 showAlert("Ha fallado el registro de su cotizacion, intente nuevamente");
               });
+            }
             },
             matchEstimationInfo: function(responseOfEstimation, responseOfFileUpload, cotizacion)
             {
@@ -384,6 +425,7 @@
               cotizacion.userEstimation.username= responseOfEstimation.userEstimation.username;
               cotizacion.userEstimation.mail= responseOfEstimation.userEstimation.mail;
               cotizacion.isSaved= false;
+              cotizacion.requiredFile= false;
             },
             verifyUpdateOrSave: function()
             {
@@ -441,8 +483,8 @@
                   cotizacion.idAccount = element.idAccount;
                   cotizacion.idCurrency = element.idCurrency;
                   cotizacion.idUserEstimation = element.idUserEstimation;
-                  cotizacion.indexOfForm = self.estimations.length;
                   cotizacion.creationDate = element.creationDateFormats.iso;
+                  cotizacion.requiredFile = false;
                   self.fillSuppliers(cotizacion);
                 });
             },
@@ -461,6 +503,7 @@
                    {
                         cotizacion.accountSupplier= data;
                    });
+                  cotizacion.indexOfForm = self.estimations.length;
                   self.estimations.push(cotizacion);
                 });
 
@@ -479,19 +522,6 @@
                 showAlert("Ha habido un error al obtener el archivo");
                });
             },
-            modifyCotizacion: function(cotizacion)
-            {
-              this.$http.post(ROOT_URL+"/estimations/"+cotizacion.idEstimation, JSON.stringify(cotizacion)).
-              success(function(data)
-              {
-                showAlert("Modificacion Exitosa");
-
-              }).error(function(data)
-              {
-                showAlert("Ha fallado el registro de su cotizacion, intente nuevamente");
-              });
-
-            },
             obtainAllPeriods: function()
             {
               this.$http.get(ROOT_URL + "/periods").
@@ -508,23 +538,38 @@
             {
               var dateInitialWithout= this.periodicPayment.initialDate;
               var datedueDateWithout= this.periodicPayment.dueDate;
+              if (this.periodicPayment.dueDate !== "")
+              {
+                var dateDueDate= this.timePickerFechaVencimiento.DateTimePicker.date();
+                var dateisoDue= dateDueDate.toISOString();
+                this.periodicPayment.dueDate = dateisoDue.slice(0, -1);
+              }
               var dateInitial = this.timePickerPagoInicial.DateTimePicker.date();
-              var dateDueDate= this.timePickerFechaVencimiento.DateTimePicker.date();
               var dateisoInitial= dateInitial.toISOString();
-              var dateisoDue= dateDueDate.toISOString();
               this.periodicPayment.initialDate= dateisoInitial.slice(0, -1);
-              this.periodicPayment.dueDate = dateisoDue.slice(0, -1);
+
 
               this.$http.post(ROOT_URL+"/requests/period-payment", JSON.stringify(this.periodicPayment)).
               success(function(data)
               {
                 showAlert("Registro de informacion de pago exitoso");
-                console.log(data);
+                this.periodicPayment.idPeriodicPayment= data.idPeriodicPayment;
+                this.periodicPayment.initialDate= dateInitialWithout;
+                this.periodicPayment.dueDate= datedueDateWithout;
+                this.periodicPayment.idPeriodicPaymentStatus= data.periodicPaymentStatus.idPeriodicPaymentStatus;
+                this.periodicPayment.paymentNum = data.paymentNum;
               }).error(function(data)
               {
                 showAlert("Ha fallado el registro de su informacion, intente nuevamente");
               });
 
+            },
+            prepareModalPeriodicPayment: function(cotizacion)
+            {
+              $("#periodicPayment").modal("show");
+              this.periodicPayment.amount= cotizacion.amount;
+              this.periodicPayment.idCurrency= cotizacion.idCurrency;
+              this.periodicPayment.rate= cotizacion.rate;
             }
 
           },
@@ -675,7 +720,7 @@
                 <button class="btn btn-success" :disabled="desactivarGuardar">Guardar Solicitud</button>
               </div>
               <div class="col-xs-6 text-right">
-                <button type="button" class="btn btn-default" @click="newCotizacion" v-if="objectRequest.request.isSaved">Agregar Cotizacion
+                <button type="button" class="btn btn-default" @click="newCotizacion" v-if="objectRequest.request.isSaved || isUpdate">Agregar Cotizacion
                 </button>
               </div>
             </div>
@@ -710,7 +755,7 @@
                       </div>
 
                       <div class="col-xs-1 text-right" v-if="cotizacion.idEstimation > 0">
-                        <button class="btn btn-sm btn-default" @click="modifyCotizacion(cotizacion)" >
+                        <button class="btn btn-sm btn-default">
                           <span class="glyphicon glyphicon-pencil"></span>
                         </button>
                       </div>
@@ -784,15 +829,16 @@
                       <label>
                         Archivo de la Cotizacion
                       </label>
-                      <input type="file" name="file" class="form-control" required="true">
+                      <input type="file" name="file" class="form-control"
+                       v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}">
                     </div>
                     <div class="col-xs-2" v-if="cotizacion.idEstimation > 0">
                       <button type="button" class="btn btn-link"
                         @click="downloadFile(cotizacion.idEstimation)" style="margin-top: 25px">Ver archivo
                       </button>
                     </div>
-                    <div class="col-xs-2">
-                      <button type="button" class="btn btn-link" data-toggle="modal" data-target="#periodicPayment"
+                    <div class="col-xs-2" v-if="cotizacion.idAccount > 0">
+                      <button type="button" class="btn btn-link" @click="prepareModalPeriodicPayment(cotizacion)"
                        style="margin-top: 25px">Agregar Informacion de Pago
                       </button>
                     </div>
@@ -819,7 +865,8 @@
                       </label>
                       <div class="input-group">
                         <span class="input-group-addon">$</span>
-                        <input type="text" class="form-control" placeholder="" v-model="periodicPayment.amount">
+                        <input type="text" class="form-control" placeholder="" v-model="periodicPayment.amount"
+                          disabled="true">
                       </div>
                     </div>
 
@@ -873,7 +920,7 @@
                         <label>
                           Tipo de Moneda
                         </label>
-                        <select class="form-control" v-model="periodicPayment.idCurrency">
+                        <select class="form-control" v-model="periodicPayment.idCurrency" disabled="true">
                           <option></option>
                           <option v-for="curr in currencies" value="{{curr.idCurrency}}">
                             {{curr.currency}}
@@ -887,7 +934,8 @@
                         </label>
                         <div class="input-group">
                           <span class="input-group-addon">%</span>
-                          <input number class="form-control" placeholder="" v-model="periodicPayment.rate">
+                          <input number class="form-control" placeholder="" v-model="periodicPayment.rate"
+                            disabled="true">
                         </div>
                       </div>
                     </div>
@@ -905,7 +953,7 @@
           </div>
 
           <pre>
-            {{$data.periodicPayment | json}}
+            {{$data.estimations | json}}
 
           </pre>
           </div> <!-- container-fluid -->

@@ -29,16 +29,28 @@
               locale: 'es',
               format: 'YYYY/MM/DD'
               }).data();
-            
+
+            this.timePickerPagoInicial = $('#datePagoInicial').datetimepicker({
+              locale: 'es',
+              format: 'YYYY/MM/DD'
+              }).data();
+
+              this.timePickerFechaVencimiento = $('#dateFechaVencimiento').datetimepicker({
+                locale: 'es',
+                format: 'YYYY/MM/DD'
+                }).data();
+
             this.obtainAllUsers();
             this.obtainSuppliers();
             this.obtainCurrencies();
+            this.obtainAllPeriods();
             this.obtainRequestInformation.idRequestCategory= this.RequestCategory;
             this.$http.get(ROOT_URL+"/request-types/request-category/"+ this.obtainRequestInformation.idRequestCategory)
                     .success(function (data)
                     {
                        this.RequestTypes= data;
                     });
+            this.verifyUpdateOrSave();
           },
           data:
           {
@@ -97,6 +109,7 @@
             Users: {},
             idProducto: '',
             desactivarCombos: false,
+            isUpdate: false,
             desactivarGuardar: true,
             numberOfRequest: 0,
             estimations: [],
@@ -105,7 +118,29 @@
             accounts: {},
             idAccount: '',
             timePicker: '',
-            currencies: {}
+            currencies: {},
+            periodicPayment:
+            {
+            idPeriodicPayment: '',
+            folio: '',
+            amount: '',
+            initialDate: '',
+            nextPayment: '',
+            dueDate: '',
+            paymentNum: '',
+            idPeriod: '',
+            idPeriodicPaymentStatus: '',
+            idCurrency: '',
+            rate: ''
+          },
+          timePickerPagoInicial: '',
+          timePickerFechaVencimiento: '',
+          Periods: '',
+          AccountsPayables: [],
+          optionPago: '',
+          numberOfPay: '',
+          amountOfPay: '',
+          timePickerEsquema: ''
           },
           methods:
           {
@@ -213,6 +248,7 @@
             {
               this.objectRequest.request.idRequest= datos.idRequest;
               this.objectRequest.request.folio= datos.folio;
+              this.periodicPayment.folio= datos.folio;
               this.objectRequest.request.creationDate= datos.creationDateFormats.iso;
               this.objectRequest.request.idUserRequest= datos.userRequest.idUser;
               this.objectRequest.request.idRequestStatus= datos.requestStatus.idRequestStatus;
@@ -259,7 +295,8 @@
                 username: '',
                 mail: ''
               },
-              isSaved: true
+              isSaved: true,
+              requiredFile: true
               }
               return cotizacion;
             },
@@ -289,7 +326,8 @@
                 idAccountPayableStatus: '',
                 idOperationType: '',
                 idCurrency: '',
-                rate: ''
+                rate: '',
+                idDatePicker: ''
               }
               return accountPayable;
             },
@@ -318,6 +356,45 @@
             },
             saveEstimations: function(cotizacion)
             {
+              if (cotizacion.idEstimation > 0)
+              {
+                //this.modifyCotizacion(cotizacion);
+                if (cotizacion.fileName !== "")
+                {
+                  var form = document.getElementById("form-"+cotizacion.indexOfForm);
+                  var formData = new FormData(form);
+
+                  this.$http.post(ROOT_URL+"/estimations/"+cotizacion.idEstimation, JSON.stringify(cotizacion)).
+                  success(function(data)
+                  {
+                    this.$http.post(ROOT_URL+"/estimations/"+cotizacion.idEstimation+"/attachment", formData).
+                    success(function(data)
+                    {
+                      showAlert("Modificacion Realizada con Exito");
+                    }).error(function(data){
+                      showAlert("La modificacion se ha realizado, pero hubo un error al guardar el archivo");
+                    });
+
+                  }).error(function(data)
+                  {
+                    showAlert("Ha fallado el registro de su cotizacion, intente nuevamente");
+                  });
+
+                }
+                else{
+                  this.$http.post(ROOT_URL+"/estimations/"+cotizacion.idEstimation, JSON.stringify(cotizacion)).
+                  success(function(data)
+                  {
+                    showAlert("Modificacion Exitosa");
+
+                  }).error(function(data)
+                  {
+                    showAlert("Ha fallado el registro de su cotizacion, intente nuevamente");
+                  });
+                }
+              }
+              else
+              {
               var form = document.getElementById("form-"+cotizacion.indexOfForm);
               var formData = new FormData(form);
               var responseOfEstimation;
@@ -340,6 +417,7 @@
               {
                 showAlert("Ha fallado el registro de su cotizacion, intente nuevamente");
               });
+            }
             },
             matchEstimationInfo: function(responseOfEstimation, responseOfFileUpload, cotizacion)
             {
@@ -353,6 +431,228 @@
               cotizacion.userEstimation.username= responseOfEstimation.userEstimation.username;
               cotizacion.userEstimation.mail= responseOfEstimation.userEstimation.mail;
               cotizacion.isSaved= false;
+              cotizacion.requiredFile= false;
+            },
+            verifyUpdateOrSave: function()
+            {
+              if (this.idRequest> 0)
+              {
+                this.$http.get(ROOT_URL+"/requests/"+this.idRequest).
+                success(function(data)
+                {
+                  this.matchInformationUpdate(data);
+                }).error(function(data){
+                  showAlert("Ha habido un error al obtener la informacion");
+                });
+              }
+            },
+            matchInformationUpdate: function(data)
+            {
+              var self= this;
+              this.isUpdate= true;
+              this.obtainRequestInformation.idRequestType= data.requestTypeProduct.idRequestType;
+              this.obtainRequestInformation.applyingDate= data.applyingDateFormats.dateNumber;
+              this.obtainRequestInformation.idUserResponsable= data.idUserResponsible;
+              this.periodicPayment.folio= data.folio;
+              this.objectRequest.request.description= data.description;
+              this.objectRequest.request.purpose= data.purpose;
+              data.requestProductsList.forEach(function(element)
+              {
+              var producto= self.createProduct();
+              producto.idProduct= element.product.idProduct;
+              producto.descripcion= element.product.product;
+              self.objectRequest.products.push(producto);
+              });
+
+              this.$http.get(ROOT_URL+"/estimations/request/"+this.idRequest).
+              success(function(data)
+              {
+                this.matchInformationEstimationsUpdate(data);
+              }).error(function(data){
+                showAlert("Ha habido un error al obtener la informacion de las cotizacion");
+              });
+
+            },
+            matchInformationEstimationsUpdate: function(data)
+            {
+              var self = this;
+                data.forEach(function(element)
+                {
+                  var cotizacion= self.createCotizacion();
+                  cotizacion.idEstimation= element.idEstimation;
+                  cotizacion.amount = element.amount;
+                  cotizacion.rate= element.rate;
+                  cotizacion.sku= element.sku;
+                  cotizacion.outOfBudget = element.outOfBudget;
+                  cotizacion.idRequest = element.idRequest;
+                  cotizacion.idEstimationStatus = element.idEstimationStatus;
+                  cotizacion.idAccount = element.idAccount;
+                  cotizacion.idCurrency = element.idCurrency;
+                  cotizacion.idUserEstimation = element.idUserEstimation;
+                  cotizacion.creationDate = element.creationDateFormats.iso;
+                  cotizacion.requiredFile = false;
+                  self.fillSuppliers(cotizacion);
+                });
+            },
+            fillSuppliers: function(cotizacion)
+            {
+              var self= this;
+              this.$http.get(ROOT_URL+"/providers-accounts/account/"+cotizacion.idAccount).
+              success(function(data)
+              {
+                data.forEach(function(element)
+                {
+                  cotizacion.idSupplier= element.idProvider;
+
+                  self.$http.get(ROOT_URL + "/providers-accounts/provider/"+cotizacion.idSupplier).
+                  success(function (data)
+                   {
+                        cotizacion.accountSupplier= data;
+                   });
+                  cotizacion.indexOfForm = self.estimations.length;
+                  self.estimations.push(cotizacion);
+                });
+
+              }).error(function(data){
+                showAlert("Ha habido un error al obtener la informacion de las cotizacion");
+              });
+            },
+            downloadFile: function(idEstimation)
+            {
+              this.$http.get(ROOT_URL + "/estimations/attachment/download/"+idEstimation).
+              success(function (data)
+               {
+
+               }).error(function(data)
+               {
+                showAlert("Ha habido un error al obtener el archivo");
+               });
+            },
+            obtainAllPeriods: function()
+            {
+              this.$http.get(ROOT_URL + "/periods").
+              success(function (data)
+               {
+                 this.Periods = data;
+               }).error(function(data)
+               {
+                showAlert("Ha habido un error al obtener los periodos");
+               });
+
+            },
+            savePeriodicPayment: function()
+            {
+              var dateInitialWithout= this.periodicPayment.initialDate;
+              var datedueDateWithout= this.periodicPayment.dueDate;
+              if (this.periodicPayment.dueDate !== "")
+              {
+                var dateDueDate= this.timePickerFechaVencimiento.DateTimePicker.date();
+                var dateisoDue= dateDueDate.toISOString();
+                this.periodicPayment.dueDate = dateisoDue.slice(0, -1);
+              }
+              var dateInitial = this.timePickerPagoInicial.DateTimePicker.date();
+              var dateisoInitial= dateInitial.toISOString();
+              this.periodicPayment.initialDate= dateisoInitial.slice(0, -1);
+
+
+              this.$http.post(ROOT_URL+"/requests/period-payment", JSON.stringify(this.periodicPayment)).
+              success(function(data)
+              {
+                showAlert("Registro de informacion de pago exitoso");
+                this.periodicPayment.idPeriodicPayment= data.idPeriodicPayment;
+                this.periodicPayment.initialDate= dateInitialWithout;
+                this.periodicPayment.dueDate= datedueDateWithout;
+                this.periodicPayment.idPeriodicPaymentStatus= data.periodicPaymentStatus.idPeriodicPaymentStatus;
+                this.periodicPayment.paymentNum = data.paymentNum;
+              }).error(function(data)
+              {
+                showAlert("Ha fallado el registro de su informacion, intente nuevamente");
+              });
+
+            },
+            prepareModalPeriodicPayment: function(cotizacion)
+            {
+              $("#periodicPayment").modal("show");
+              this.periodicPayment.amount= cotizacion.amount;
+              this.periodicPayment.idCurrency= cotizacion.idCurrency;
+              this.periodicPayment.rate= cotizacion.rate;
+            },
+            generarPagosFijos: function()
+            {
+              for (var i = 0; i < this.numberOfPay; i++)
+              {
+                var accountPayable = this.createAccountPayable();
+                accountPayable.folio= this.periodicPayment.folio;
+                accountPayable.amount=this.amountOfPay;
+                accountPayable.idCurrency=this.periodicPayment.idCurrency
+                accountPayable.rate=this.periodicPayment.rate
+                accountPayable.idDatePicker= i;
+                this.AccountsPayables.push(accountPayable);
+              }
+            },
+            activarTimePicker: function(idDatePicker)
+            {
+              this.timePickerEsquema = $('#datetimepickerEsquema'+idDatePicker).datetimepicker({
+                locale: 'es',
+                format: 'YYYY/MM/DD'
+                }).data();
+            },
+            emptyEsquema: function()
+            {
+              this.AccountsPayables= [];
+              this.amountOfPay= '';
+              this.numberOfPay= '';
+            },
+            generarPagosVariables: function()
+            {
+              var accountPayable = this.createAccountPayable();
+              accountPayable.folio= this.periodicPayment.folio;
+              accountPayable.amount=this.amountOfPay;
+              accountPayable.idCurrency=this.periodicPayment.idCurrency
+              accountPayable.rate=this.periodicPayment.rate
+              if (this.AccountsPayables.length == 0)
+              {
+                accountPayable.idDatePicker= 0;
+              }
+              else
+              {
+                accountPayable.idDatePicker= Math.round(Math.random()*1000);
+              }
+              this.AccountsPayables.push(accountPayable);
+
+            },
+            saveAccountPayable: function()
+            {
+              var totalPayments = this.AccountsPayables.length;
+              var counter= 1;
+              this.AccountsPayables.forEach(function(element)
+              {
+                element.totalPayments= totalPayments;
+                element.payNum= counter++;
+              });
+              var accountswithout= this.AccountsPayables;
+
+              this.AccountsPayables.forEach(function(element)
+              {
+                if (element.dueDate !== "")
+                {
+                    var d = new Date(element.dueDate);
+                    var n = d.toISOString();
+                    element.dueDate = n.slice(0, -1);
+                }
+              });
+
+              this.$http.post(ROOT_URL+"/requests/accounts-payable", JSON.stringify(this.AccountsPayables)).
+              success(function(data)
+              {
+                showAlert("Registro de informacion de pago exitoso");
+
+              }).error(function(data)
+              {
+                showAlert("Ha fallado el registro de su informacion, intente nuevamente");
+              });
+
+
             }
           },
         filters:
@@ -387,7 +687,7 @@
                <label>
                  Tipo de Solicitud:
                </label>
-               <select class="form-control" v-model="obtainRequestInformation.idRequestType" :disabled="desactivarCombos" @change="obtainProductType" required>
+               <select class="form-control" v-model="obtainRequestInformation.idRequestType" :disabled="desactivarCombos || isUpdate" @change="obtainProductType" required>
                  <option v-for="RequestType in RequestTypes"
                    value="{{RequestType.idRequestType}}">{{RequestType.requestType}}
                  </option>
@@ -398,7 +698,7 @@
                 <label>
                   Tipo de producto
                 </label>
-                <select class="form-control" v-model="obtainRequestInformation.idProductType" :disabled="desactivarCombos"
+                <select class="form-control" v-model="obtainRequestInformation.idProductType" :disabled="desactivarCombos || isUpdate"
                   @change="obtainProducts" required>
                   <option v-for="ProductType in ProductTypes" value="{{ProductType.idProductType}}">
                     {{ProductType.productType}}
@@ -410,7 +710,7 @@
                 <label>
                   Productos
                 </label>
-                <select class="form-control" v-model="idProducto" id="selectProducto" required>
+                <select class="form-control" v-model="idProducto" id="selectProducto" :disabled="isUpdate" required>
                   <option v-for="Product in Productos" value="{{Product.idProduct}}">
                     {{Product.product}}
                   </option>
@@ -420,7 +720,7 @@
               <div class="col-xs-1">
                 <div class="col-xs-6">
                   <button type="button" class="btn btn-default" style="margin-top: 25px; margin-left: -33px"
-                    v-on:click="saveProduct">
+                    v-on:click="saveProduct" :disabled="isUpdate">
                     <span class="glyphicon glyphicon-plus"></span>
                   </button>
                 </div>
@@ -432,7 +732,8 @@
                 </label>
                 <div class="form-group">
                 <div class='input-group date' id='datetimepicker1'>
-                    <input type='text' class="form-control" v-model="obtainRequestInformation.applyingDate" @change="obtainRequestInfo">
+                    <input type='text' class="form-control" v-model="obtainRequestInformation.applyingDate"
+                      @change="obtainRequestInfo" :disabled="isUpdate">
                     <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
@@ -446,7 +747,7 @@
                   Responsable:
                 </label>
                 <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
-                @change="obtainRequestInfo">
+                @change="obtainRequestInfo" :disabled="isUpdate">
                   <option></option>
                   <option v-for="user in Users" value="{{user.idUser}}"> {{user.username}} </option>
                 </select>
@@ -467,7 +768,7 @@
                     {{produc.descripcion}}
                   </div>
                   <div class="col-xs-2 text-left">
-                    <button class="btn btn-link" @click="deleteProduct(produc)">
+                    <button class="btn btn-link" @click="deleteProduct(produc)" :disabled="isUpdate">
                       <span class="glyphicon glyphicon-remove"></span>
                     </button>
                   </div>
@@ -480,7 +781,8 @@
                 <label>
                   Descripcion de la Solicitud:
                 </label>
-                <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.description" required></textarea>
+                <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.description"
+                  :disabled="isUpdate" required></textarea>
               </div>
             </div>
             <br>
@@ -489,7 +791,8 @@
                 <label>
                   Motivo de la Solicitud:
                 </label>
-                <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.purpose" required></textarea>
+                <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.purpose"
+                  :disabled="isUpdate" required></textarea>
               </div>
             </div>
 
@@ -499,7 +802,7 @@
                 <button class="btn btn-success" :disabled="desactivarGuardar">Guardar Solicitud</button>
               </div>
               <div class="col-xs-6 text-right">
-                <button type="button" class="btn btn-default" @click="newCotizacion" v-if="objectRequest.request.isSaved">Agregar Cotizacion
+                <button type="button" class="btn btn-default" @click="newCotizacion" v-if="objectRequest.request.isSaved || isUpdate">Agregar Cotizacion
                 </button>
               </div>
             </div>
@@ -519,17 +822,23 @@
                       <span class="label label-danger" v-if="cotizacion.outOfBudget == 1">Cotizacion Fuera de Presupuesto</span>
                     </div>
                     <div class="col-xs-4">
-                      <div class="col-xs-8">
+                      <div class="col-xs-9">
 
                       </div>
-                      <div class="col-xs-2 text-right">
+                      <div class="col-xs-1 text-right" v-if="cotizacion.idEstimation == 0">
                         <button class="btn btn-sm btn-default">
                           <span class="glyphicon glyphicon-floppy-disk"></span>
                         </button>
                       </div>
-                      <div class="col-xs-2 text-right" v-if="cotizacion.isSaved">
+                      <div class="col-xs-1 text-right" v-if="cotizacion.idEstimation == 0">
                         <button type="button" class="btn btn-sm btn-default" @click="deleteCotizacion(cotizacion)" >
                           <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                      </div>
+
+                      <div class="col-xs-1 text-right" v-if="cotizacion.idEstimation > 0">
+                        <button class="btn btn-sm btn-default">
+                          <span class="glyphicon glyphicon-pencil"></span>
                         </button>
                       </div>
                     </div>
@@ -537,7 +846,7 @@
                 </div>
                 <div class="panel-body">
                   <div class="row">
-                    <div class="col-xs-3">
+                    <div class="col-xs-2">
                       <label>
                         Proveedor
                       </label>
@@ -549,7 +858,7 @@
                         </option>
                       </select>
                     </div>
-                    <div class="col-xs-3">
+                    <div class="col-xs-2">
                       <label>
                         Cuenta Bancaria
                       </label>
@@ -560,7 +869,7 @@
                         </option>
                       </select>
                     </div>
-                    <div class="col-xs-3">
+                    <div class="col-xs-2">
                       <label>
                         Tipo de Moneda
                       </label>
@@ -571,7 +880,7 @@
                         </option>
                       </select>
                     </div>
-                    <div class="col-xs-3">
+                    <div class="col-xs-2">
                       <label>
                         Monto
                       </label>
@@ -580,22 +889,7 @@
                         <input number class="form-control" placeholder="" v-model="cotizacion.amount" required="true">
                       </div>
                     </div>
-                  </div>
-                  <br>
-                  <div class="row">
-                    <div class="col-xs-3">
-                      <label>
-                        SKU
-                      </label>
-                      <input class="form-control" v-model="cotizacion.sku">
-                    </div>
-                    <div class="col-xs-4">
-                      <label>
-                        Archivo de la Cotizacion
-                      </label>
-                      <input type="file" name="file" class="form-control" required="true">
-                    </div>
-                    <div class="col-xs-3">
+                    <div class="col-xs-2">
                       <label>
                         Tipo de Cambio
                       </label>
@@ -604,6 +898,33 @@
                         <input number class="form-control" placeholder="" v-model="cotizacion.rate" required="true">
                       </div>
                     </div>
+                    <div class="col-xs-2">
+                      <label>
+                        SKU
+                      </label>
+                      <input class="form-control" v-model="cotizacion.sku">
+                    </div>
+                  </div>
+                  <br>
+                  <div class="row">
+                    <div class="col-xs-3">
+                      <label>
+                        Archivo de la Cotizacion
+                      </label>
+                      <input type="file" name="file" class="form-control"
+                       v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}">
+                    </div>
+                    <div class="col-xs-2" v-if="cotizacion.idEstimation > 0">
+                      <button type="button" class="btn btn-link"
+                        @click="downloadFile(cotizacion.idEstimation)" style="margin-top: 25px">Ver archivo
+                      </button>
+                    </div>
+                    <div class="col-xs-2" v-if="cotizacion.idAccount > 0">
+                      <button type="button" class="btn btn-link" @click="prepareModalPeriodicPayment(cotizacion)"
+                       style="margin-top: 25px">Agregar Informacion de Pago
+                      </button>
+                    </div>
+
                     </div>
                   </div>
                 </div>
@@ -611,7 +932,183 @@
             </form>
             </div>
           </div>
+          <div class="modal fade" id="periodicPayment" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                  <h4 class="modal-title">Introduzca el esquema de Pagos</h4>
+                </div>
+                <div class="modal-body">
+                  <div class="row">
+                    <div class="col-xs-4">
+                      <label>
+                        Monto de la Cotizacion:
+                      </label>
+                      <div class="input-group">
+                        <span class="input-group-addon">$</span>
+                        <input type="text" class="form-control" placeholder="" v-model="periodicPayment.amount"
+                          disabled="true">
+                      </div>
+                    </div>
 
+                    <div class="col-xs-4">
+                      <label>
+                        Tipo de Moneda
+                      </label>
+                      <select class="form-control" v-model="periodicPayment.idCurrency" disabled="true">
+                        <option></option>
+                        <option v-for="curr in currencies" value="{{curr.idCurrency}}">
+                          {{curr.currency}}
+                        </option>
+                      </select>
+                    </div>
+
+                    <div class="col-xs-4">
+                      <label>
+                        Tipo de Cambio
+                      </label>
+                      <div class="input-group">
+                        <span class="input-group-addon">%</span>
+                        <input number class="form-control" placeholder="" v-model="periodicPayment.rate"
+                          disabled="true">
+                      </div>
+                    </div>
+
+                  </div>
+                  <br>
+                    <div class="row">
+                      <div class="col-xs-12">
+                        <input type="radio" id="pagoFijo" value="1" v-model="optionPago" @change="emptyEsquema">
+                        <label>Esquema de Pagos Fijos</label>
+                        <input type="radio" id="pagoVariable" value="2" v-model="optionPago" @change="emptyEsquema">
+                        <label>Esquema de Pagos Variable</label>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-6" v-if="optionPago==1">
+                        <div class="row">
+                          <div class="col-xs-6">
+                            <label>
+                              Numero de Pagos
+                            </label>
+                            <div class="input-group">
+                              <span class="input-group-addon">#</span>
+                              <input type="text" class="form-control" placeholder="" v-model="numberOfPay">
+                            </div>
+                          </div>
+                          <div class="col-xs-6">
+                            <label>
+                              Monto de Pago
+                            </label>
+                            <div class="input-group">
+                              <span class="input-group-addon">$</span>
+                              <input type="text" class="form-control" placeholder="" v-model="amountOfPay">
+                            </div>
+                          </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                          <div class="col-xs-12 text-right">
+                            <button type="button" class="btn btn-default" name="button" @click="generarPagosFijos">
+                              Generar
+                            </button>
+                          </div>
+                        </div>
+
+                      </div>
+                      <div class="col-xs-6" v-if="optionPago==2">
+                        <div class="col-xs-6">
+                          <label>
+                            Monto de Pago
+                          </label>
+                          <div class="input-group">
+                            <span class="input-group-addon">$</span>
+                            <input type="text" class="form-control" placeholder="" v-model="amountOfPay">
+                          </div>
+                        </div>
+                        <div class="col-xs-6">
+                          <button type="button" class="btn btn-default" name="button"
+                            style="margin-top: 25px" @click="generarPagosVariables">
+                            <span class="glyphicon glyphicon-plus"></span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-xs-12" v-if="AccountsPayables.length> 0">
+                        <label>
+                          Informacion de Pagos
+                        </label>
+
+                        <div class="row">
+                           <div class="col-xs-2">
+                             <label>
+                               #
+                             </label>
+                           </div>
+                           <div class="col-xs-4">
+                              <label>
+                                Monto de Pago
+                              </label>
+                           </div>
+                           <div class="col-xs-4">
+                             <label>
+                               Fecha de Vencimiento
+                             </label>
+                           </div>
+                           <div class="col-xs-2">
+
+                           </div>
+                        </div>
+
+                        <div class="row" v-for="ap in AccountsPayables">
+                          <div class="col-xs-2">
+                            <label>
+                              #
+                            </label>
+                          </div>
+                          <div class="col-xs-4">
+                            <div class="input-group">
+                              <span class="input-group-addon">$</span>
+                              <input type="text" class="form-control"
+                              v-model="ap.amount">
+                            </div>
+                          </div>
+                          <div class="col-xs-4">
+                            <label>
+                              <div class="form-group">
+                              <div class='input-group date' id='datetimepickerEsquema{{ap.idDatePicker}}'>
+                                  <input type='text' class="form-control" @click="activarTimePicker(ap.idDatePicker)" v-model="ap.dueDate">
+                                  <span class="input-group-addon">
+                                      <span class="glyphicon glyphicon-calendar"></span>
+                                  </span>
+                              </div>
+                              </div>
+                            </label>
+                          </div>
+                          <div class="col-xs-2">
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                      <div class="row">
+                        <div class="col-xs-12 text-right">
+                          <button type="button" class="btn btn-success" @click="saveAccountPayable">
+                            Guardar
+                          </button>
+                        </div>
+                      </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <pre>
+            {{$data.AccountsPayables | json}}
+
+          </pre>
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->
