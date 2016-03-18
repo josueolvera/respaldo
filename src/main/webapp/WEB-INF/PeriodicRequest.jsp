@@ -833,9 +833,12 @@
                        v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}">
                     </div>
                     <div class="col-xs-2" v-if="cotizacion.idEstimation > 0">
-                      <button type="button" class="btn btn-link"
+                      <!-- <button type="button" class="btn btn-link"
                         @click="downloadFile(cotizacion.idEstimation)" style="margin-top: 25px">Ver archivo
                       </button>
+                    -->
+                    <a href="../../estimations/attachment/download/{{cotizacion.idEstimation}}"
+                      style="margin-top: 25px">Ver archivo</a>
                     </div>
                     <div class="col-xs-2" v-if="cotizacion.idAccount > 0">
                       <button type="button" class="btn btn-link" @click="prepareModalPeriodicPayment(cotizacion)"
