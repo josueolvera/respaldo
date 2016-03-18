@@ -7,15 +7,13 @@ package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
+
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.model.AccountsPayable;
 import mx.bidg.service.AccountsPayableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -28,6 +26,11 @@ public class AccountsPayableController {
     @Autowired
     AccountsPayableService accountsPayableService;
     
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+
+    @RequestMapping(value = "/folio", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    public @ResponseBody String findByFolio(@RequestParam(name = "folio", required = true) String folio) throws Exception {
+        return mapper.writeValueAsString(accountsPayableService.findByFolio(folio));
+    }
 
 }

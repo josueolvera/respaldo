@@ -6,15 +6,12 @@
 package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.model.PeriodicsPayments;
 import mx.bidg.service.PeriodicPaymentsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -23,10 +20,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/periodic-payment")
 public class PeriodicPaymentsController {
-    
+
     @Autowired
-    PeriodicPaymentsService paymentsService;
-    
-    ObjectMapper mapper = new ObjectMapper();
-    
+    private PeriodicPaymentsService paymentsService;
+    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+
+    @RequestMapping(value = "/folio", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    public @ResponseBody String findByFolio(@RequestParam(name = "folio", required = true) String folio) throws Exception {
+        return mapper.writeValueAsString(paymentsService.findByFolio(folio));
+    }
+
 }
