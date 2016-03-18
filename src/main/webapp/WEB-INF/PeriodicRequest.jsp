@@ -502,6 +502,7 @@
                   success(function (data)
                    {
                         cotizacion.accountSupplier= data;
+                        this.fillPeriodicPayments();
                    });
                   cotizacion.indexOfForm = self.estimations.length;
                   self.estimations.push(cotizacion);
@@ -570,6 +571,26 @@
               this.periodicPayment.amount= cotizacion.amount;
               this.periodicPayment.idCurrency= cotizacion.idCurrency;
               this.periodicPayment.rate= cotizacion.rate;
+            },
+            fillPeriodicPayments: function()
+            {
+              this.$http.get(ROOT_URL + "/periodic-payment/folio?folio="+this.periodicPayment.folio).
+              success(function (data)
+               {
+                 this.periodicPayment.idPeriodicPayment = data.idPeriodicPayment;
+                 this.periodicPayment.folio = data.folio;
+                 this.periodicPayment.amount = data.amount;
+                 this.periodicPayment.paymentNum = data.paymentNum;
+                 this.periodicPayment.idPeriod = data.idPeriod;
+                 this.periodicPayment.idPeriodicPaymentStatus = data.idPeriodicPaymentStatus;
+                 this.periodicPayment.idCurrency = data.idCurrency;
+                 this.periodicPayment.rate = data.rate;
+
+                 //Falta agregar las fechas
+               }).error(function(data)
+               {
+                showAlert("Ha habido un error al obtener los pagos periodicos");
+               });
             }
 
           },
@@ -956,7 +977,7 @@
           </div>
 
           <pre>
-            {{$data.estimations | json}}
+            {{$data.periodicPayment | json}}
 
           </pre>
           </div> <!-- container-fluid -->
