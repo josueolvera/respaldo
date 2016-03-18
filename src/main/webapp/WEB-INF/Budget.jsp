@@ -22,41 +22,41 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
     var vm= new Vue({
           el: '#contenidos',
           created: function(){
-            this.$http.get("http://localhost:8080/BIDGroup/areas")
+            this.$http.get(ROOT_URL + "/areas")
                     .success(function (data)
                     {
                        this.catalogoAreas= data;
                        this.bandera1ernivel= true;
                     });
 
-            this.$http.get("http://localhost:8080/BIDGroup/budget-categories")
+            this.$http.get(ROOT_URL + "/budget-categories")
                     .success(function (data)
                     {
                        this.catalogoRubros= data;
                        this.bandera2donivel= true;
                     });
 
-            this.$http.get("http://localhost:8080/BIDGroup/budget-subcategories")
+            this.$http.get(ROOT_URL + "/budget-subcategories")
                     .success(function (data)
                     {
                        this.catalogoSubRubros= data;
                        this.bandera3ernivel= true;
                     });
 
-            this.$http.get("http://localhost:8080/BIDGroup/distributors")
+            this.$http.get(ROOT_URL + "/distributors")
                     .success(function (data)
                     {
                        this.catalogoDistribuidor= data;
                        //this.bandera3ernivel= true;
                     });
 
-            this.$http.get("http://localhost:8080/BIDGroup/branchs")
+            this.$http.get(ROOT_URL + "/branchs")
                     .success(function (data)
                     {
                        this.catalogoSucursales= data;
                        //this.bandera3ernivel= true;
                     });
-            this.$http.get("http://localhost:8080/BIDGroup/groups")
+            this.$http.get(ROOT_URL + "/groups")
                     .success(function (data)
                     {
                        this.catalogoGrupo= data;
@@ -65,7 +65,7 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
           },
           ready: function ()
           {
-              this.$http.get("http://localhost:8080/BIDGroup/groups/1")
+              this.$http.get(ROOT_URL + "/groups/1")
                       .success(function (data) {
                         // this.sinagrupar= data;
                          var self= this;
@@ -163,7 +163,7 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
                 this.newSearch= true;
                 this.year= '';
                 this.showInfo= false;
-                this.$http.get("http://localhost:8080/BIDGroup/dw-enterprises/"+res[0]+"/"+res[1])
+                this.$http.get(ROOT_URL + "/dw-enterprises/"+res[0]+"/"+res[1])
                         .success(function (data)
                         {
                            var self= this;
@@ -181,7 +181,7 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
                            });
                         });
 
-                        this.$http.get("http://localhost:8080/BIDGroup/budgets/"+res[0]+"/"+res[1])
+                        this.$http.get(ROOT_URL + "/budgets/"+res[0]+"/"+res[1])
                                 .success(function (data)
                                 {
                                   this.contenido = data;
@@ -245,7 +245,7 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
               {
                 var self= this;
                 this.isAutorized= false;
-                this.$http.get("http://localhost:8080/BIDGroup/budget-concepts/group-area/"+group+"/"+area+"/"+year)
+                this.$http.get(ROOT_URL + "/budget-concepts/group-area/"+group+"/"+area+"/"+year)
                         .success(function (data)
                         {
                           this.datosPresupuesto = data;
@@ -318,11 +318,11 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
           {
             if (concepto.idConcept> 0)
             {
-              this.$http.delete("http://localhost:8080/BIDGroup/budget-concepts/"+concepto.idConcept)
+              this.$http.delete(ROOT_URL + "/budget-concepts/"+concepto.idConcept)
                       .success(function (data)
                       {
                         showAlert(data);
-                        this.$http.get("http://localhost:8080/BIDGroup/budgets/"+this.group+"/"+this.area)
+                        this.$http.get(ROOT_URL + "/budgets/"+this.group+"/"+this.area)
                                 .success(function (data)
                                 {
                                   this.contenido = data;
@@ -428,7 +428,7 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
         {
           if (this.year !== '')
           {
-            this.$http.get("http://localhost:8080/BIDGroup/budgets/"+this.group+"/"+this.area)
+            this.$http.get(ROOT_URL + "/budgets/"+this.group+"/"+this.area)
                     .success(function (data)
                     {
                       this.contenido = data;
@@ -446,11 +446,11 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
           this.autorizacion.idArea= this.area;
           this.autorizacion.year= this.year;
 
-          this.$http.post("http://localhost:8080/BIDGroup/budget-month-branch/authorize", JSON.stringify(this.autorizacion)).
+          this.$http.post(ROOT_URL + "/budget-month-branch/authorize", JSON.stringify(this.autorizacion)).
           success(function(data)
           {
             showAlert(data);
-            this.$http.get("http://localhost:8080/BIDGroup/budgets/"+this.group+"/"+this.area)
+            this.$http.get(ROOT_URL + "/budgets/"+this.group+"/"+this.area)
                     .success(function (data)
                     {
                       this.contenido = data;
@@ -464,11 +464,11 @@ lym<%@page contentType="text/html" pageEncoding="UTF-8"%>
         ,
         saveBudget: function(eventoconcepto)
         {
-          this.$http.post("http://localhost:8080/BIDGroup/budget-month-concepts", JSON.stringify(eventoconcepto)).
+          this.$http.post(ROOT_URL + "/budget-month-concepts", JSON.stringify(eventoconcepto)).
           success(function(data)
           {
             showAlert(data);
-            this.$http.get("http://localhost:8080/BIDGroup/budgets/"+this.group+"/"+this.area)
+            this.$http.get(ROOT_URL + "/budgets/"+this.group+"/"+this.area)
                     .success(function (data)
                     {
                       this.contenido = data;
