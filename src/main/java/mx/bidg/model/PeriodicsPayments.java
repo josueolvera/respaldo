@@ -167,7 +167,7 @@ public class PeriodicsPayments implements Serializable {
     }
 
     public DateFormatsPojo getInitialDateFormats() {
-        return new DateFormatsPojo(initialDate);
+        return (initialDate == null ) ? null : new DateFormatsPojo(initialDate);
     }
 
     public void setInitialDate(LocalDateTime initialDate) {
@@ -179,7 +179,7 @@ public class PeriodicsPayments implements Serializable {
     }
 
     public DateFormatsPojo getNextPaymentFormats() {
-        return new DateFormatsPojo(nextPayment);
+        return (nextPayment == null) ? null : new DateFormatsPojo(nextPayment);
     }
 
     public void setNextPayment(LocalDateTime nextPayment) {
@@ -191,7 +191,7 @@ public class PeriodicsPayments implements Serializable {
     }
 
     public DateFormatsPojo getDueDateFormats() {
-        return new DateFormatsPojo(dueDate);
+        return (dueDate == null) ? null : new DateFormatsPojo(dueDate);
     }
 
     public void setDueDate(LocalDateTime dueDate) {
