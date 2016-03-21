@@ -45,10 +45,9 @@ public class PeriodicPaymentsServiceImpl implements PeriodicPaymentsService {
         CCurrencies currency = new CCurrencies(json.get("idCurrency").asInt());
         BigDecimal amount = json.get("amount").decimalValue();
         LocalDateTime initialDate = LocalDateTime.parse(json.get("initialDate").asText(), DateTimeFormatter.ISO_DATE_TIME);
-        System.out.println(json.get("dueDate").asText());
-        LocalDateTime dueDate = (json.get("dueDate").asText() != null || !json.get("dueDate").asText().equals("") ||
-                !json.get("dueDate").asText().equals("''"))?
-                LocalDateTime.parse(json.get("dueDate").asText(), DateTimeFormatter.ISO_DATE_TIME) : null;
+        System.out.println(json.findValue("dueDate"));
+        LocalDateTime dueDate = (json.get("dueDate") == null || json.findValue("dueDate").isNull()) ? null :
+                LocalDateTime.parse(json.get("dueDate").asText(), DateTimeFormatter.ISO_DATE_TIME);
         
         PeriodicsPayments periodicsPayment = new PeriodicsPayments();
         periodicsPayment.setPeriod(period);

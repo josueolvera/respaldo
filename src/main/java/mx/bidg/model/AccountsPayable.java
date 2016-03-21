@@ -24,6 +24,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -201,12 +202,20 @@ public class AccountsPayable implements Serializable {
         return creationDate;
     }
 
+    public DateFormatsPojo getCreationDateFormats() {
+        return (creationDate == null) ? null : new DateFormatsPojo(creationDate);
+    }
+
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
     public LocalDateTime getDueDate() {
         return dueDate;
+    }
+
+    public DateFormatsPojo getDueDateFormats() {
+        return (dueDate == null) ? null : new DateFormatsPojo(dueDate);
     }
 
     public void setDueDate(LocalDateTime dueDate) {
