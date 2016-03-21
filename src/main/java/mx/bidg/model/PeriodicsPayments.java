@@ -24,6 +24,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -165,6 +166,10 @@ public class PeriodicsPayments implements Serializable {
         return initialDate;
     }
 
+    public DateFormatsPojo getInitialDateFormats() {
+        return new DateFormatsPojo(initialDate);
+    }
+
     public void setInitialDate(LocalDateTime initialDate) {
         this.initialDate = initialDate;
     }
@@ -173,12 +178,20 @@ public class PeriodicsPayments implements Serializable {
         return nextPayment;
     }
 
+    public DateFormatsPojo getNextPaymentFormats() {
+        return new DateFormatsPojo(nextPayment);
+    }
+
     public void setNextPayment(LocalDateTime nextPayment) {
         this.nextPayment = nextPayment;
     }
 
     public LocalDateTime getDueDate() {
         return dueDate;
+    }
+
+    public DateFormatsPojo getDueDateFormats() {
+        return new DateFormatsPojo(dueDate);
     }
 
     public void setDueDate(LocalDateTime dueDate) {

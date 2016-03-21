@@ -53,7 +53,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
             LocalDateTime dueDate = (json.get("dueDate").asText() != null || !json.get("dueDate").asText().equals("") ||
                 !json.get("dueDate").asText().equals("''"))?
                 LocalDateTime.parse(json.get("dueDate").asText(), DateTimeFormatter.ISO_DATE_TIME) : null;
-            CCurrencies currency = new CCurrencies(json.get("currency").asInt());
+            CCurrencies currency = new CCurrencies(json.get("idCurrency").asInt());
             accountsPayable = new AccountsPayable();
             accountsPayable.setFolio(folio);
             accountsPayable.setAmount(amount);
@@ -63,6 +63,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
             accountsPayable.setTotalPayments(totalPayments);
             //Tipo de operacion Egreso = 1
             accountsPayable.setOperationType(new COperationTypes(1));
+            accountsPayable.setCreationDate(LocalDateTime.now());
             accountsPayable.setDueDate(dueDate);
             //Estatus de AccountPayable Inactiva = 1
             accountsPayable.setAccountPayableStatus(new CAccountsPayableStatus(1));
