@@ -309,7 +309,17 @@
             },
             deleteCotizacion: function(cotizacion)
             {
-              this.estimations.$remove(cotizacion);
+              if (cotizacion.idEstimation !== "")
+              {
+                this.$http.delete(ROOT_URL + "/estimations/"+cotizacion.idEstimation).success(function (data)
+                 {
+                    showAlert("Cotizacion eliminada correctamente");
+                    this.estimations.$remove(cotizacion);
+                 });
+              }
+              else{
+                  this.estimations.$remove(cotizacion);
+              }
             },
             createAccountPayable: function()
             {
@@ -454,6 +464,15 @@
               this.obtainRequestInformation.applyingDate= data.applyingDateFormats.dateNumber;
               this.obtainRequestInformation.idUserResponsable= data.idUserResponsible;
               this.periodicPayment.folio= data.folio;
+              this.objectRequest.request.idRequest= data.idRequest;
+              this.objectRequest.request.folio= data.folio;
+              this.objectRequest.request.creationDate= this.convertDates(data.creationDateFormats.dateNumber);
+              this.objectRequest.request.applyingDate= this.convertDates(data.applyingDateFormats.dateNumber);
+              this.objectRequest.request.idUserRequest= data.userRequest.idUser;
+              this.objectRequest.request.idUserResponsable= data.idUserResponsible;
+              this.objectRequest.request.idBudgetMonthBranch= data.idBudgetMonthBranch;
+              this.objectRequest.request.idRequestTypeProduct= data.idRequestTypeProduct;
+              this.objectRequest.request.idRequestStatus= data.idRequestStatus;
               this.objectRequest.request.description= data.description;
               this.objectRequest.request.purpose= data.purpose;
               data.requestProductsList.forEach(function(element)
@@ -651,8 +670,11 @@
               {
                 showAlert("Ha fallado el registro de su informacion, intente nuevamente");
               });
-
-
+            },
+            convertDates: function(date)
+            {
+              var dateinformatguion= date.split("-");
+              return dateinformatguion[2]+"/"+dateinformatguion[1]+"/"+dateinformatguion[0];
             }
           },
         filters:
@@ -822,21 +844,21 @@
                       <span class="label label-danger" v-if="cotizacion.outOfBudget == 1">Cotizacion Fuera de Presupuesto</span>
                     </div>
                     <div class="col-xs-4">
-                      <div class="col-xs-9">
+                      <div class="col-xs-6">
 
                       </div>
-                      <div class="col-xs-1 text-right" v-if="cotizacion.idEstimation == 0">
+                      <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0">
                         <button class="btn btn-sm btn-default">
                           <span class="glyphicon glyphicon-floppy-disk"></span>
                         </button>
                       </div>
-                      <div class="col-xs-1 text-right" v-if="cotizacion.idEstimation == 0">
+                      <div class="col-xs-2 text-right">
                         <button type="button" class="btn btn-sm btn-default" @click="deleteCotizacion(cotizacion)" >
                           <span class="glyphicon glyphicon-remove"></span>
                         </button>
                       </div>
 
-                      <div class="col-xs-1 text-right" v-if="cotizacion.idEstimation > 0">
+                      <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation > 0">
                         <button class="btn btn-sm btn-default">
                           <span class="glyphicon glyphicon-pencil"></span>
                         </button>
@@ -915,9 +937,13 @@
                        v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}">
                     </div>
                     <div class="col-xs-2" v-if="cotizacion.idEstimation > 0">
-                      <button type="button" class="btn btn-link"
+                      <!-- <button type="button" class="btn btn-link"
                         @click="downloadFile(cotizacion.idEstimation)" style="margin-top: 25px">Ver archivo
                       </button>
+                    -->
+                    <a style="margin-top: 25px" href="../../estimations/attachment/download/{{cotizacion.idEstimation}}">
+                      Ver archivo
+                    </a>
                     </div>
                     <div class="col-xs-2" v-if="cotizacion.idAccount > 0">
                       <button type="button" class="btn btn-link" @click="prepareModalPeriodicPayment(cotizacion)"
