@@ -304,7 +304,18 @@
             },
             deleteCotizacion: function(cotizacion)
             {
-              this.estimations.$remove(cotizacion);
+
+              if (cotizacion.idEstimation !== "")
+              {
+                this.$http.delete(ROOT_URL + "/estimations/"+cotizacion.idEstimation).success(function (data)
+                 {
+                    showAlert("Cotizacion eliminada correctamente");
+                    this.estimations.$remove(cotizacion);
+                 });
+              }
+              else{
+                  this.estimations.$remove(cotizacion);
+              }
             },
             createAccountPayable: function()
             {
@@ -448,6 +459,15 @@
               this.obtainRequestInformation.applyingDate= data.applyingDateFormats.dateNumber;
               this.obtainRequestInformation.idUserResponsable= data.idUserResponsible;
               this.periodicPayment.folio= data.folio;
+              this.objectRequest.request.idRequest= data.idRequest;
+              this.objectRequest.request.folio= data.folio;
+              this.objectRequest.request.creationDate= this.convertDates(data.creationDateFormats.dateNumber);
+              this.objectRequest.request.applyingDate= this.convertDates(data.applyingDateFormats.dateNumber);
+              this.objectRequest.request.idUserRequest= data.userRequest.idUser;
+              this.objectRequest.request.idUserResponsable= data.idUserResponsible;
+              this.objectRequest.request.idBudgetMonthBranch= data.idBudgetMonthBranch;
+              this.objectRequest.request.idRequestTypeProduct= data.idRequestTypeProduct;
+              this.objectRequest.request.idRequestStatus= data.idRequestStatus;
               this.objectRequest.request.description= data.description;
               this.objectRequest.request.purpose= data.purpose;
               data.requestProductsList.forEach(function(element)
@@ -539,13 +559,14 @@
             {
               var dateInitialWithout= this.periodicPayment.initialDate;
               var datedueDateWithout= this.periodicPayment.dueDate;
+              var self= this;
               if (this.periodicPayment.dueDate !== "")
               {
-                var dateDueDate= this.timePickerFechaVencimiento.DateTimePicker.date();
+                var dateDueDate= new Date(self.periodicPayment.dueDate);
                 var dateisoDue= dateDueDate.toISOString();
-                this.periodicPayment.dueDate = dateisoDue.slice(0, -1);
+                self.periodicPayment.dueDate = dateisoDue.slice(0, -1);
               }
-              var dateInitial = this.timePickerPagoInicial.DateTimePicker.date();
+              var dateInitial = new Date(this.periodicPayment.initialDate);
               var dateisoInitial= dateInitial.toISOString();
               this.periodicPayment.initialDate= dateisoInitial.slice(0, -1);
 
@@ -585,12 +606,18 @@
                  this.periodicPayment.idPeriodicPaymentStatus = data.idPeriodicPaymentStatus;
                  this.periodicPayment.idCurrency = data.idCurrency;
                  this.periodicPayment.rate = data.rate;
+                 this.periodicPayment.initialDate = this.convertDates(data.initialDateFormats.dateNumber);
+                 this.periodicPayment.dueDate = this.convertDates(data.dueDateFormats.dateNumber);
 
-                 //Falta agregar las fechas
                }).error(function(data)
                {
                 showAlert("Ha habido un error al obtener los pagos periodicos");
                });
+            },
+            convertDates: function(date)
+            {
+              var dateinformatguion= date.split("-");
+              return dateinformatguion[2]+"/"+dateinformatguion[1]+"/"+dateinformatguion[0];
             }
 
           },
@@ -761,21 +788,21 @@
                       <span class="label label-danger" v-if="cotizacion.outOfBudget == 1">Cotizacion Fuera de Presupuesto</span>
                     </div>
                     <div class="col-xs-4">
-                      <div class="col-xs-9">
+                      <div class="col-xs-6">
 
                       </div>
-                      <div class="col-xs-1 text-right" v-if="cotizacion.idEstimation == 0">
+                      <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0">
                         <button class="btn btn-sm btn-default">
                           <span class="glyphicon glyphicon-floppy-disk"></span>
                         </button>
                       </div>
-                      <div class="col-xs-1 text-right" v-if="cotizacion.idEstimation == 0">
+                      <div class="col-xs-2 text-right">
                         <button type="button" class="btn btn-sm btn-default" @click="deleteCotizacion(cotizacion)" >
                           <span class="glyphicon glyphicon-remove"></span>
                         </button>
                       </div>
 
-                      <div class="col-xs-1 text-right" v-if="cotizacion.idEstimation > 0">
+                      <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation > 0">
                         <button class="btn btn-sm btn-default">
                           <span class="glyphicon glyphicon-pencil"></span>
                         </button>
@@ -858,8 +885,9 @@
                         @click="downloadFile(cotizacion.idEstimation)" style="margin-top: 25px">Ver archivo
                       </button>
                     -->
-                    <a href="../../estimations/attachment/download/{{cotizacion.idEstimation}}"
-                      style="margin-top: 25px">Ver archivo</a>
+                    <a style="margin-top: 25px" href="../../estimations/attachment/download/{{cotizacion.idEstimation}}">
+                      Ver archivo
+                    </a>
                     </div>
                     <div class="col-xs-2" v-if="cotizacion.idAccount > 0">
                       <button type="button" class="btn btn-link" @click="prepareModalPeriodicPayment(cotizacion)"
@@ -977,7 +1005,7 @@
           </div>
 
           <pre>
-            {{$data.periodicPayment | json}}
+            {{$data.estimations | json}}
 
           </pre>
           </div> <!-- container-fluid -->
