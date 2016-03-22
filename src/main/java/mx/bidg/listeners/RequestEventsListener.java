@@ -41,7 +41,6 @@ public class RequestEventsListener {
     @Autowired
     private UsersService usersService;
 
-    @Async
     @EventListener
     public void createNotificationsOnRequestCreatedEvent(CreationEvent<Requests> event) {
         List<Users> users = new ArrayList<>();
@@ -51,7 +50,6 @@ public class RequestEventsListener {
         notificationsService.createNotification(users, request);
     }
 
-    @Async
     @EventListener
     @SuppressWarnings("unchecked")
     public void buildAuthorizationsTreeOnRequestCreatedEvent(CreationEvent<Requests> event) {

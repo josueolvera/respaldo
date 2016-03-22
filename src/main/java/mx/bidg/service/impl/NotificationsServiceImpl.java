@@ -53,6 +53,7 @@ public class NotificationsServiceImpl implements NotificationsService {
     public List<Notifications> createNotification(List<Users> users, Requests request) {
         request = requestsDao.findById(request.getIdRequest());
         EmailTemplates emailTemplate = emailTemplatesService.findByName(EMAIL_TEMPLATE_NAME);
+        emailTemplate.addProperty("subject", "Solicitud recibida");
         List<Notifications> notifications = new ArrayList<>();
         Set<String> userNames = new HashSet<>(users.size());
 
@@ -83,6 +84,7 @@ public class NotificationsServiceImpl implements NotificationsService {
         request = requestsDao.findById(request.getIdRequest());
         emailTemplate.addRecipient(new EmailRecipients(user.getMail(), user.getUsername(), EmailRecipients.TO));
         emailTemplate.addProperty("user", user);
+        emailTemplate.addProperty("subject", "Solicitud: Se requiere su autorización");
         emailDeliveryService.deliverEmail(emailTemplate);
         return buildAndSave(request, user);
     }
@@ -148,5 +150,10 @@ public class NotificationsServiceImpl implements NotificationsService {
         notification.setDueDate(LocalDateTime.now());
 
         return notificationsDao.save(notification);
+    }
+
+    @Override
+    public Boolean delete(Notifications notifications) {
+        return notificationsDao.delete(notifications);
     }
 }
