@@ -179,7 +179,7 @@ public class PriceEstimationsController {
     }
 
 
-    @RequestMapping(value = "/{idEstimation}", method = RequestMethod.DELETE, headers = {"Accept=application/json;charset=UTF-8"})
+    @RequestMapping(value = "/{idEstimation}", method = RequestMethod.DELETE, headers = {"Accept=text/html;charset=UTF-8"})
     public @ResponseBody String delete(@PathVariable Integer idEstimation) throws Exception {
         if(estimationsService.delete(idEstimation)) {
             return "Cotizacion eliminada";

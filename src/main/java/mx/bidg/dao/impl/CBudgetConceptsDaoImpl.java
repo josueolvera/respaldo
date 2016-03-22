@@ -32,7 +32,9 @@ public class CBudgetConceptsDaoImpl extends AbstractDao<Integer, CBudgetConcepts
 
     @Override
     public CBudgetConcepts findById(int id) {
-        return getByKey(id);
+        return (CBudgetConcepts) createEntityCriteria()
+                .add(Restrictions.idEq(id))
+                .uniqueResult();
     }
 
     @Override
