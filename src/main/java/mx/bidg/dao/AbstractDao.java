@@ -60,8 +60,8 @@ public abstract class AbstractDao<PK extends Serializable, T> {
     public void remove(T entity) {
         if (AccessLevelFilterable.class.isAssignableFrom(persistentClass)) {
             if (isAuthorized(entity)) {
-                getSession().delete(entity);
                 globalTracer("DELETE", entity);
+                getSession().delete(entity);
             } else {
                 throw new ValidationException(
                         "Operación DELETE sobre Registro: " + entity.hashCode() + "no autorizada",
@@ -70,8 +70,8 @@ public abstract class AbstractDao<PK extends Serializable, T> {
                 );
             }
         } else {
-            getSession().delete(entity);
             globalTracer("DELETE", entity);
+            getSession().delete(entity);
         }
     }
     

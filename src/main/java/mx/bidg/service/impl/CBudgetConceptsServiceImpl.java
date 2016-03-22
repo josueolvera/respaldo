@@ -1,13 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mx.bidg.service.impl;
 
-import java.math.BigDecimal;
-import java.util.List;
-import mx.bidg.service.CBudgetConceptsService;
 import mx.bidg.dao.CBudgetConceptsDao;
 import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.BudgetMonthConcepts;
@@ -15,9 +7,13 @@ import mx.bidg.model.Budgets;
 import mx.bidg.model.CBudgetConcepts;
 import mx.bidg.service.BudgetMonthBranchService;
 import mx.bidg.service.BudgetMonthConceptsService;
+import mx.bidg.service.CBudgetConceptsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @Transactional
@@ -59,10 +55,9 @@ public class CBudgetConceptsServiceImpl implements CBudgetConceptsService {
 
     @Override
     public boolean delete(CBudgetConcepts cBudgetConcept) {
-        
-        List<BudgetMonthConcepts> budgetMonthConceptsList = budgetMonthConceptsService.findByConcept(cBudgetConcept);
-        cBudgetConcept = budgetMonthConceptsList.get(0).getBudgetConcept();
-        
+        List<BudgetMonthConcepts> budgetMonthConceptsList = budgetMonthConceptsService.findByConcept(cBudgetConcept.getIdBudgetConcept());
+        CBudgetConcepts concept = new CBudgetConcepts(cBudgetConcept.getIdBudgetConcept());
+
         for(BudgetMonthConcepts budgetMonthConcept : budgetMonthConceptsList) {
             
             BigDecimal amount = budgetMonthConcept.getAmount();
@@ -72,7 +67,7 @@ public class CBudgetConceptsServiceImpl implements CBudgetConceptsService {
             budgetMonthConceptsService.delete(budgetMonthConcept);
             
         }
-        return budgetConceptsDao.delete(cBudgetConcept);
+        return budgetConceptsDao.delete(concept);
     }
     
 }

@@ -15,8 +15,10 @@ import mx.bidg.model.CBudgetConcepts;
  */
 public interface BudgetMonthConceptsService {
     
-    public List<BudgetMonthConcepts> saveList(String data) throws Exception;
-    public boolean delete(BudgetMonthConcepts budgetMonthConcepts);
-    public List<BudgetMonthConcepts> findByConcept(CBudgetConcepts budgetConcept);
+    List<BudgetMonthConcepts> saveList(String data) throws Exception;
+    boolean delete(BudgetMonthConcepts budgetMonthConcepts);
+    List<BudgetMonthConcepts> findByConcept(CBudgetConcepts budgetConcept);
+    List<BudgetMonthConcepts> findByConcept(Integer idBudgetConcept);
+
     
 }

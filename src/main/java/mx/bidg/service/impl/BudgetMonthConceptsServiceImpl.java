@@ -175,4 +175,8 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
         return budgetMonthConceptsDao.findByConcept(budgetConcept);
     }
 
+    @Override
+    public List<BudgetMonthConcepts> findByConcept(Integer idBudgetConcepts) {
+        return budgetMonthConceptsDao.findByConcept(idBudgetConcepts);
+    }
 }
