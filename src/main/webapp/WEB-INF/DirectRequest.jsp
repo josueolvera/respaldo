@@ -36,6 +36,7 @@
                   {
                      this.RequestTypes= data;
                   });
+          this.obtainUserInSession();
           this.obtainAllUsers();
           this.obtainSuppliers();
           this.obtainCurrencies();
@@ -111,7 +112,9 @@
               isSaved: true
             },
             suppliers: {},
-            currencies: {}
+            currencies: {},
+            userInSession: '',
+            isSavingNow: false
 
         },
         methods:
@@ -235,6 +238,7 @@
           },
           saveRequest: function()
           {
+            this.isSavingNow= true;
             this.$http.post(ROOT_URL+"/requests", JSON.stringify(this.objectRequest)).
             success(function(data)
             {
@@ -284,6 +288,7 @@
             cotizacion.userEstimation.username= responseOfEstimation.userEstimation.username;
             cotizacion.userEstimation.mail= responseOfEstimation.userEstimation.mail;
             cotizacion.isSaved= false;
+            this.isSavingNow= false;
             //this.createAccountPayable();
           },
           createAccountPayable: function()
@@ -435,6 +440,19 @@
           declineRequest: function()
           {
             alert("Se rechaza");
+          },
+          obtainUserInSession: function()
+          {
+            this.$http.get(ROOT_URL + "/user").
+            success(function (data)
+             {
+               this.userInSession = data.mail;
+
+             }).error(function(data)
+             {
+              showAlert("Ha habido un error al obtener al usuario en sesion");
+             });
+
           }
         },
       filters:
@@ -459,7 +477,7 @@
                 <label>
                   Solicitante:
                 </label>
-                <input class="form-control" type="text" name="name" value="" disabled="true">
+                <input class="form-control" type="text" name="name" value="" disabled="true" v-model="userInSession">
               </div>
             </div>
             <br>
@@ -666,15 +684,15 @@
                     <div class="col-xs-8" >
                         <div class="col-xs-2">
                           <button type="button" class="btn btn-success" v-if="estimation.idEstimation > 0"
-                            @click="autorizeRequest">Autorizar</button>
+                            @click="autorizeRequest" :disabled="isSavingNow">Autorizar</button>
                         </div>
                         <div class="col-xs-2">
                           <button type="button" class="btn btn-danger" v-if="estimation.idEstimation > 0"
-                            @click="declineRequest" >Declinar</button>
+                            @click="declineRequest" :disabled="isSavingNow" >Declinar</button>
                         </div>
                     </div>
                     <div class="col-xs-4 text-right">
-                      <button class="btn btn-success" :disabled="desactivarGuardar">Guardar Solicitud</button>
+                      <button class="btn btn-success" :disabled="desactivarGuardar || isSavingNow">Guardar Solicitud</button>
                     </div>
                   </div>
                 </div>

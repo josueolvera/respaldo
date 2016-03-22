@@ -40,6 +40,7 @@
                 format: 'YYYY/MM/DD'
                 }).data();
 
+            this.obtainUserInSession();
             this.obtainAllUsers();
             this.obtainSuppliers();
             this.obtainCurrencies();
@@ -135,7 +136,9 @@
           },
           timePickerPagoInicial: '',
           timePickerFechaVencimiento: '',
-          Periods: ''
+          Periods: '',
+          userInSession: '',
+          isSavingNow: false
           },
           methods:
           {
@@ -229,6 +232,7 @@
             },
             saveRequest: function(event)
             {
+              this.isSavingNow= true;
               this.$http.post(ROOT_URL+"/requests", JSON.stringify(this.objectRequest)).
               success(function(data)
               {
@@ -251,6 +255,7 @@
               Vue.set(this.objectRequest.request, "userResponsable", datos.userResponsible );
               this.objectRequest.request.isSaved = true;
               this.desactivarGuardar= true;
+              this.isSavingNow= false;
             }
             ,
             obtainAllUsers: function()
@@ -307,10 +312,12 @@
 
               if (cotizacion.idEstimation !== "")
               {
+                this.isSavingNow= true;
                 this.$http.delete(ROOT_URL + "/estimations/"+cotizacion.idEstimation).success(function (data)
                  {
                     showAlert("Cotizacion eliminada correctamente");
                     this.estimations.$remove(cotizacion);
+                    this.isSavingNow= false;
                  });
               }
               else{
@@ -363,6 +370,7 @@
             {
               if (cotizacion.idEstimation > 0)
               {
+                this.isSavingNow= true;
                 //this.modifyCotizacion(cotizacion);
                 if (cotizacion.fileName !== "")
                 {
@@ -376,13 +384,16 @@
                     success(function(data)
                     {
                       showAlert("Modificacion Realizada con Exito");
+                      this.isSavingNow= false;
                     }).error(function(data){
                       showAlert("La modificacion se ha realizado, pero hubo un error al guardar el archivo");
+                      this.isSavingNow= false;
                     });
 
                   }).error(function(data)
                   {
                     showAlert("Ha fallado el registro de su cotizacion, intente nuevamente");
+                    this.isSavingNow= false;
                   });
 
                 }
@@ -391,15 +402,18 @@
                   success(function(data)
                   {
                     showAlert("Modificacion Exitosa");
+                    this.isSavingNow= false;
 
                   }).error(function(data)
                   {
                     showAlert("Ha fallado el registro de su cotizacion, intente nuevamente");
+                    this.isSavingNow= false;
                   });
                 }
               }
               else
               {
+              this.isSavingNow= true;
               var form = document.getElementById("form-"+cotizacion.indexOfForm);
               var formData = new FormData(form);
               var responseOfEstimation;
@@ -414,10 +428,11 @@
                   showAlert("Registro de cotizacion Exitoso");
                   responseOfFileUpload= data;
                   this.matchEstimationInfo(responseOfEstimation, responseOfFileUpload, cotizacion);
+                  //window.location.href= ROOT_URL+"/siad/periodica/54";
                 }).error(function(data){
                   showAlert("La cotizacion se ha guardado, pero hubo un error al guardar el archivo");
                 });
-
+                this.isSavingNow= false;
               }).error(function(data)
               {
                 showAlert("Ha fallado el registro de su cotizacion, intente nuevamente");
@@ -557,6 +572,7 @@
             },
             savePeriodicPayment: function()
             {
+              this.isSavingNow= true;
               var dateInitialWithout= this.periodicPayment.initialDate;
               var datedueDateWithout= this.periodicPayment.dueDate;
               var self= this;
@@ -580,9 +596,11 @@
                 this.periodicPayment.dueDate= datedueDateWithout;
                 this.periodicPayment.idPeriodicPaymentStatus= data.periodicPaymentStatus.idPeriodicPaymentStatus;
                 this.periodicPayment.paymentNum = data.paymentNum;
+                this.isSavingNow= false;
               }).error(function(data)
               {
                 showAlert("Ha fallado el registro de su informacion, intente nuevamente");
+                this.isSavingNow= false;
               });
 
             },
@@ -618,6 +636,19 @@
             {
               var dateinformatguion= date.split("-");
               return dateinformatguion[2]+"/"+dateinformatguion[1]+"/"+dateinformatguion[0];
+            },
+            obtainUserInSession: function()
+            {
+              this.$http.get(ROOT_URL + "/user").
+              success(function (data)
+               {
+                 this.userInSession = data.mail;
+
+               }).error(function(data)
+               {
+                showAlert("Ha habido un error al obtener al usuario en sesion");
+               });
+
             }
 
           },
@@ -644,7 +675,7 @@
                 <label>
                   Solicitante:
                 </label>
-                <input class="form-control" type="text" name="name" value="" disabled="true">
+                <input class="form-control" type="text" name="name" value="" disabled="true" v-model="userInSession">
               </div>
             </div>
             <br>
@@ -765,7 +796,7 @@
             <br>
             <div class="row">
               <div class="col-xs-6 text-left">
-                <button class="btn btn-success" :disabled="desactivarGuardar">Guardar Solicitud</button>
+                <button class="btn btn-success" :disabled="desactivarGuardar || isSavingNow">Guardar Solicitud</button>
               </div>
               <div class="col-xs-6 text-right">
                 <button type="button" class="btn btn-default" @click="newCotizacion" v-if="objectRequest.request.isSaved || isUpdate">Agregar Cotizacion
@@ -785,25 +816,25 @@
                       <h3 class="panel-title">Cotizacion</h3>
                     </div>
                     <div class="col-xs-4" >
-                      <span class="label label-danger" v-if="cotizacion.outOfBudget == 1">Cotizacion Fuera de Presupuesto</span>
+                      <span class="label label-danger" v-if="cotizacion.outOfBudget>0">Cotizacion Fuera de Presupuesto</span>
                     </div>
                     <div class="col-xs-4">
                       <div class="col-xs-6">
 
                       </div>
-                      <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0">
+                      <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0" :disabled="isSavingNow">
                         <button class="btn btn-sm btn-default">
                           <span class="glyphicon glyphicon-floppy-disk"></span>
                         </button>
                       </div>
                       <div class="col-xs-2 text-right">
-                        <button type="button" class="btn btn-sm btn-default" @click="deleteCotizacion(cotizacion)" >
+                        <button type="button" class="btn btn-sm btn-default" @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" >
                           <span class="glyphicon glyphicon-remove"></span>
                         </button>
                       </div>
 
                       <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation > 0">
-                        <button class="btn btn-sm btn-default">
+                        <button class="btn btn-sm btn-default" :disabled="isSavingNow">
                           <span class="glyphicon glyphicon-pencil"></span>
                         </button>
                       </div>
@@ -885,9 +916,11 @@
                         @click="downloadFile(cotizacion.idEstimation)" style="margin-top: 25px">Ver archivo
                       </button>
                     -->
-                    <a style="margin-top: 25px" href="../../estimations/attachment/download/{{cotizacion.idEstimation}}">
+                    <p style="margin-top: 30px">
+                    <a href="../../estimations/attachment/download/{{cotizacion.idEstimation}}">
                       Ver archivo
                     </a>
+                    </p>
                     </div>
                     <div class="col-xs-2" v-if="cotizacion.idAccount > 0">
                       <button type="button" class="btn btn-link" @click="prepareModalPeriodicPayment(cotizacion)"
@@ -994,7 +1027,7 @@
                     <br>
                       <div class="row">
                         <div class="col-xs-12 text-right">
-                          <button type="button" class="btn btn-success" @click="savePeriodicPayment">
+                          <button type="button" class="btn btn-success" @click="savePeriodicPayment" :disabled="isSavingNow">
                             Guardar
                           </button>
                         </div>
