@@ -107,7 +107,7 @@ public class AccountsPayable implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idOperationType;
     
-    @JoinColumn(name = "ID_CURRENCY", insertable = false, updatable = false)
+    @Column(name = "ID_CURRENCY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idCurrency;
 
