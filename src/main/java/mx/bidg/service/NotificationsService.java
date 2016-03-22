@@ -23,4 +23,5 @@ public interface NotificationsService {
     List<Notifications> findArchiveForUser(Users user);
     Notifications archive(Integer idNotification);
     Notifications update(Notifications notification);
+    Boolean delete(Notifications notifications);
 }
