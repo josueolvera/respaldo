@@ -17,5 +17,6 @@ public interface PeriodicPaymentsService {
     
     PeriodicsPayments saveData(String data) throws Exception;
     PeriodicsPayments findByFolio(String folio);
+    PeriodicsPayments update(int idPayment, String data) throws Exception;
     
 }

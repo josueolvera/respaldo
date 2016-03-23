@@ -33,4 +33,9 @@ public class AccountsPayableController {
         return mapper.writeValueAsString(accountsPayableService.findByFolio(folio));
     }
 
+    @RequestMapping(value = "/{folio}", method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"})
+    public @ResponseBody String update(@PathVariable String folio, @RequestBody String data) throws Exception {
+        return mapper.writeValueAsString(accountsPayableService.update(folio, data));
+    }
+
 }

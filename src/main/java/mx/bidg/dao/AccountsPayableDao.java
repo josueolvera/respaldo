@@ -14,6 +14,6 @@ import mx.bidg.model.AccountsPayable;
  */
 public interface AccountsPayableDao extends InterfaceDao<AccountsPayable> {
     
-    public List<AccountsPayable> findByFolio(String folio);
+    List<AccountsPayable> findByFolio(String folio);
     
 }

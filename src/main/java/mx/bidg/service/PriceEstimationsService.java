@@ -21,7 +21,7 @@ public interface PriceEstimationsService {
     
     PriceEstimations findById(int id);
     
-    PriceEstimations update(Integer idEstimation, String data) throws Exception;
+    PriceEstimations update(Integer idEstimation, String data, Users user) throws Exception;
     
     List<PriceEstimations> findByIdRequest(int idRequest);
     

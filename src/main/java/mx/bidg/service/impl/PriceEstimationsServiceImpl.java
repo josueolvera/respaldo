@@ -92,7 +92,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     }
 
     @Override
-    public PriceEstimations update(Integer idEstimation, String data) throws Exception{
+    public PriceEstimations update(Integer idEstimation, String data, Users user) throws Exception{
         PriceEstimations estimation = priceEstimationsDao.findByIdFetchRequestStatus(idEstimation);
         JsonNode json = mapper.readTree(data);
         if(estimation.getEstimationStatus().getIdEstimationStatus().equals(CEstimationStatus.PENDIENTE)) {
@@ -108,6 +108,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             estimation.setAmount(amount);
             estimation.setCurrency(new CCurrencies(json.get("idCurrency").asInt()));
             estimation.setRate(rate);
+            estimation.setUserEstimation(user);
             //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
             estimation.setOutOfBudget((residualAmount.compareTo(amount) == -1)? 1 : 0);
             estimation.setSku((json.get("sku").asText() != null) ? json.get("sku").asText() : "");

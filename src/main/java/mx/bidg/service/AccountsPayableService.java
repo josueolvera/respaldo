@@ -16,5 +16,6 @@ public interface AccountsPayableService {
     
     List<AccountsPayable> saveData(String data) throws Exception;
     List<AccountsPayable> findByFolio(String folio);
+    List<AccountsPayable> update(String folio, String data) throws Exception;
     
 }
