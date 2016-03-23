@@ -138,7 +138,8 @@
           timePickerFechaVencimiento: '',
           Periods: '',
           userInSession: '',
-          isSavingNow: false
+          isSavingNow: false,
+          isAutoriced: true
           },
           methods:
           {
@@ -648,7 +649,23 @@
                {
                 showAlert("Ha habido un error al obtener al usuario en sesion");
                });
+            },
+            autorizarCotizacion: function(cotizacion)
+            {
+              this.$http.post(ROOT_URL+"/estimations/authorization/"+ cotizacion.idEstimation).
+              success(function(data)
+              {
+                this.isAutoriced = false; 
+              }).error(function(data)
+              {
+                showAlert("Ha fallado la autorizacion de la cotizacion intente nuevamente");
+              });
 
+
+            },
+            cancelarAutorizacion: function()
+            {
+              this.isAutoriced = true;
             }
 
           },
@@ -927,6 +944,22 @@
                        style="margin-top: 25px">Agregar Informacion de Pago
                       </button>
                     </div>
+                    <div class="col-xs-3">
+
+                    </div>
+                    <div class="col-xs-2">
+                      <button type="button" class="btn btn-link" name="button"
+                        v-if="cotizacion.idEstimationStatus== 1 || isAutoriced" style="margin-top:25px"
+                        @click="autorizarCotizacion(cotizacion)">
+                        Autorizar Cotizacion
+                      </button>
+                      <button type="button" class="btn btn-link" name="button"
+                        v-if="cotizacion.idEstimationStatus== 2 || !(isAutoriced)" style="margin-top:25px"
+                        @click="cancelarAutorizacion">
+                        Cancelar Aprobacion
+                      </button>
+
+                    </div>
 
                     </div>
                   </div>
@@ -1038,7 +1071,7 @@
           </div>
 
           <pre>
-            {{$data.estimations | json}}
+            {{$data.isAutoriced | json}}
 
           </pre>
           </div> <!-- container-fluid -->

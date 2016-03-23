@@ -546,7 +546,6 @@
                   cotizacion.indexOfForm = self.estimations.length;
                   self.estimations.push(cotizacion);
                 });
-                this.obtainAllAccountsPayable();
               }).error(function(data){
                 showAlert("Ha habido un error al obtener la informacion de las cotizacion");
               });
@@ -613,6 +612,7 @@
               this.periodicPayment.amount= cotizacion.amount;
               this.periodicPayment.idCurrency= cotizacion.idCurrency;
               this.periodicPayment.rate= cotizacion.rate;
+              this.obtainAllAccountsPayable();
             },
             generarPagosFijos: function()
             {
@@ -694,7 +694,10 @@
                           element.idAccountPayable = el.idAccountPayable;
                           element.paidAmount = el.paidAmount;
                           element.creationDate = self.convertDates(el.creationDateFormats.dateNumber);
-                          element.dueDate = self.convertDates(el.dueDateFormats.dateNumber);
+                          if (element.dueDate !== "")
+                          {
+                             element.dueDate = self.convertDates(el.dueDateFormats.dateNumber);
+                          }
                           element.idAccountPayableStatus = el.accountPayableStatus.idAccountPayableStatus;
                           element.idOperationType = el.operationType.idOperationType;
                       }
@@ -715,9 +718,12 @@
             obtainAllAccountsPayable: function()
             {
               var self= this;
+              this.AccountsPayables= [];
               this.$http.get(ROOT_URL + "/accounts-payable/folio?folio="+this.periodicPayment.folio).success(function (data)
                {
-                 data.forEach(function(element){
+                 data.forEach(function(element)
+                 {
+                   alert("HOla");
                    var accountPayable = self.createAccountPayable();
                    accountPayable.idAccountPayable = element.idAccountPayable;
                    accountPayable.folio = element.folio;
@@ -726,7 +732,10 @@
                    accountPayable.payNum = element.payNum;
                    accountPayable.totalPayments = element.totalPayments;
                    accountPayable.creationDate = self.convertDates(element.creationDateFormats.dateNumber);
-                   accountPayable.dueDate = self.convertDates(element.dueDateFormats.dateNumber);
+                   if (element.dueDateFormats !== null)
+                   {
+                     accountPayable.dueDate = self.convertDates(element.dueDateFormats.dateNumber);
+                   }
                    accountPayable.idAccountPayableStatus = element.idAccountPayableStatus;
                    accountPayable.idOperationType = element.idOperationType;
                    accountPayable.idCurrency = element.idCurrency;
