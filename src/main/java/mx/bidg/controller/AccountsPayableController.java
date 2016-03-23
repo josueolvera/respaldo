@@ -34,7 +34,7 @@ public class AccountsPayableController {
     }
 
     @RequestMapping(value = "/{folio}", method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"})
-    public @ResponseBody String update(@PathVariable String folio, @RequestBody String data) throws Exception {
+    public @ResponseBody String saveList(@PathVariable String folio, @RequestBody String data) throws Exception {
         return mapper.writeValueAsString(accountsPayableService.update(folio, data));
     }
 
