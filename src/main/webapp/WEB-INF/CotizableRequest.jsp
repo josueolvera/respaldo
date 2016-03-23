@@ -1114,7 +1114,7 @@
                             </label>
                             <div class="input-group">
                               <span class="input-group-addon">$</span>
-                              <input type="text" class="form-control" placeholder="" v-model="amountOfPay">
+                              <input number class="form-control" placeholder="" v-model="amountOfPay">
                             </div>
                           </div>
                         </div>
@@ -1135,7 +1135,7 @@
                           </label>
                           <div class="input-group">
                             <span class="input-group-addon">$</span>
-                            <input type="text" class="form-control" placeholder="" v-model="amountOfPay">
+                            <input number class="form-control" placeholder="" v-model="amountOfPay">
                           </div>
                         </div>
                         <div class="col-xs-6">
