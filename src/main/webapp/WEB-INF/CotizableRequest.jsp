@@ -680,7 +680,7 @@
                 }
               });
 
-              this.$http.post(ROOT_URL+"/requests/accounts-payable", JSON.stringify(this.AccountsPayables)).
+              this.$http.post(ROOT_URL+"/accounts-payable/"+this.periodicPayment.folio, JSON.stringify(this.AccountsPayables)).
               success(function(data)
               {
                 showAlert("Registro de informacion de pago exitoso");
