@@ -137,7 +137,8 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         } else {
             String folio = request.getFolio();
             PeriodicsPayments periodicPayment = periodicPaymentsDao.findByFolio(folio);
-                if (periodicPayment.getIdPeriodicPaymentStatus() == CPeriodicPaymentsStatus.INACTIVO) {
+                if ((periodicPayment != null) &&
+                        (periodicPayment.getIdPeriodicPaymentStatus() == CPeriodicPaymentsStatus.INACTIVO)) {
                     if(!periodicPaymentsDao.delete(periodicPayment))
                         throw new ValidationException("No se pudo eliminar el PeriodicPayment: " + periodicPayment);
                 }
