@@ -14,6 +14,7 @@ import mx.bidg.model.BudgetMonthConcepts;
 import mx.bidg.service.BudgetMonthConceptsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,12 +35,10 @@ public class BudgetMonthConceptsController {
     
     ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
     
-    @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"})
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> saveBudgetMonthConceptsList(@RequestBody String data) throws Exception {
         
         List<BudgetMonthConcepts> list = budgetMonthConceptsService.saveList(data);
-        
-//        return new ResponseEntity<>(map.writerWithView(JsonViews.EmbeddedBudget.class).writeValueAsString(list), HttpStatus.OK);
         return new ResponseEntity<>("Concepto(s) guardado(s) con éxito", HttpStatus.OK);
     }
     
