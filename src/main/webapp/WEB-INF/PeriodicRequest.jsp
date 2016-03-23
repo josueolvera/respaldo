@@ -310,7 +310,12 @@
             },
             deleteCotizacion: function(cotizacion)
             {
-
+              if (cotizacion.idEstimationStatus== 2)
+              {
+                showAlert("No puedes eliminar una cotizacion autorizada");
+              }
+              else
+              {
               if (cotizacion.idEstimation !== "")
               {
                 this.isSavingNow= true;
@@ -324,6 +329,7 @@
               else{
                   this.estimations.$remove(cotizacion);
               }
+            }
             },
             createAccountPayable: function()
             {
@@ -655,17 +661,45 @@
               this.$http.post(ROOT_URL+"/estimations/authorization/"+ cotizacion.idEstimation).
               success(function(data)
               {
-                this.isAutoriced = false; 
+                showAlert("Se ha autorizado la cotizacion correctamente");
+                location.reload();
               }).error(function(data)
               {
                 showAlert("Ha fallado la autorizacion de la cotizacion intente nuevamente");
               });
-
-
             },
             cancelarAutorizacion: function()
             {
-              this.isAutoriced = true;
+              this.isAutoriced = false;
+            },
+            modifyPeriodicPayment: function()
+            {
+              this.isSavingNow= true;
+              var dateInitialWithout= this.periodicPayment.initialDate;
+              var datedueDateWithout= this.periodicPayment.dueDate;
+              var self= this;
+              if (this.periodicPayment.dueDate !== "")
+              {
+                var dateDueDate= new Date(self.periodicPayment.dueDate);
+                var dateisoDue= dateDueDate.toISOString();
+                self.periodicPayment.dueDate = dateisoDue.slice(0, -1);
+              }
+              var dateInitial = new Date(this.periodicPayment.initialDate);
+              var dateisoInitial= dateInitial.toISOString();
+              this.periodicPayment.initialDate= dateisoInitial.slice(0, -1);
+
+              this.$http.post(ROOT_URL+"/periodic-payment/"+ this.periodicPayment.idPeriodicPayment, JSON.stringify(this.periodicPayment)).
+              success(function(data)
+              {
+                showAlert("Se ha modificado la forma de pago correctamente");
+                this.periodicPayment.initialDate= dateInitialWithout;
+                this.periodicPayment.dueDate= datedueDateWithout;
+                this.isSavingNow = false;
+
+              }).error(function(data)
+              {
+                showAlert("Ha fallado la autorizacion de la cotizacion intente nuevamente");
+              });
             }
 
           },
@@ -929,34 +963,35 @@
                        v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}">
                     </div>
                     <div class="col-xs-2" v-if="cotizacion.idEstimation > 0">
-                      <!-- <button type="button" class="btn btn-link"
-                        @click="downloadFile(cotizacion.idEstimation)" style="margin-top: 25px">Ver archivo
-                      </button>
-                    -->
                     <p style="margin-top: 30px">
                     <a href="../../estimations/attachment/download/{{cotizacion.idEstimation}}">
                       Ver archivo
                     </a>
                     </p>
                     </div>
-                    <div class="col-xs-2" v-if="cotizacion.idAccount > 0">
+                    <div class="col-xs-2">
                       <button type="button" class="btn btn-link" @click="prepareModalPeriodicPayment(cotizacion)"
-                       style="margin-top: 25px">Agregar Informacion de Pago
+                       style="margin-top: 25px" v-if="cotizacion.idEstimationStatus== 2">Agregar Informacion de Pago
                       </button>
                     </div>
                     <div class="col-xs-3">
 
                     </div>
-                    <div class="col-xs-2">
+                    <div class="col-xs-2 text-right">
                       <button type="button" class="btn btn-link" name="button"
-                        v-if="cotizacion.idEstimationStatus== 1 || isAutoriced" style="margin-top:25px"
+                        v-if="cotizacion.idEstimationStatus== 1" style="margin-top:25px"
                         @click="autorizarCotizacion(cotizacion)">
                         Autorizar Cotizacion
                       </button>
                       <button type="button" class="btn btn-link" name="button"
-                        v-if="cotizacion.idEstimationStatus== 2 || !(isAutoriced)" style="margin-top:25px"
+                        v-if="cotizacion.idEstimationStatus== 2 && isAutoriced" style="margin-top:25px"
                         @click="cancelarAutorizacion">
                         Cancelar Aprobacion
+                      </button>
+                      <button type="button" class="btn btn-link" name="button"
+                        v-if="!(isAutoriced)" style="margin-top:25px"
+                        @click="autorizarCotizacion(cotizacion)">
+                        Autorizar Cotizacion
                       </button>
 
                     </div>
@@ -1060,8 +1095,13 @@
                     <br>
                       <div class="row">
                         <div class="col-xs-12 text-right">
-                          <button type="button" class="btn btn-success" @click="savePeriodicPayment" :disabled="isSavingNow">
+                          <button type="button" class="btn btn-success" @click="savePeriodicPayment"
+                            :disabled="isSavingNow" v-if="periodicPayment.idPeriodicPayment == ''">
                             Guardar
+                          </button>
+                          <button type="button" class="btn btn-success" @click="modifyPeriodicPayment"
+                            :disabled="isSavingNow" v-if="periodicPayment.idPeriodicPayment !== ''">
+                            Modificar
                           </button>
                         </div>
                       </div>
