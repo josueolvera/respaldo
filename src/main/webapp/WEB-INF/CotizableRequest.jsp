@@ -723,7 +723,6 @@
                {
                  data.forEach(function(element)
                  {
-                   alert("HOla");
                    var accountPayable = self.createAccountPayable();
                    accountPayable.idAccountPayable = element.idAccountPayable;
                    accountPayable.folio = element.folio;
