@@ -52,5 +52,4 @@ public class AccountsPayableDaoImpl extends AbstractDao<Integer, AccountsPayable
                 .setFetchMode("accountPayableStatus", FetchMode.JOIN);
         return (List<AccountsPayable>) criteria.list();
     }
-    
 }

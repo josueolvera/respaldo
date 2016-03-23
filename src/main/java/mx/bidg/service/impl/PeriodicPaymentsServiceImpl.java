@@ -71,4 +71,27 @@ public class PeriodicPaymentsServiceImpl implements PeriodicPaymentsService {
         return periodicPaymentsDao.findByFolio(folio);
     }
 
+    @Override
+    public PeriodicsPayments update(int idPayment, String data) throws Exception {
+        JsonNode json = mapper.readTree(data);
+        PeriodicsPayments payment = periodicPaymentsDao.findById(idPayment);
+        BigDecimal amount = json.get("amount").decimalValue();
+        LocalDateTime initialDate = (json.get("initialDate") == null || json.findValue("initialDate").asText().equals("")) ? null :
+                LocalDateTime.parse(json.get("initialDate").asText(), DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime dueDate = (json.get("dueDate") == null || json.findValue("dueDate").asText().equals("")) ? null :
+                LocalDateTime.parse(json.get("dueDate").asText(), DateTimeFormatter.ISO_DATE_TIME);
+        int idPeriod = json.get("idPeriod").asInt();
+        int idCurrency = json.get("idCurrency").asInt();
+        BigDecimal rate = json.get("rate").decimalValue();
+
+        payment.setAmount(amount);
+        payment.setInitialDate(initialDate);
+        payment.setDueDate(dueDate);
+        payment.setPeriod(new CPeriods(idPeriod));
+        payment.setCurrency(new CCurrencies(idCurrency));
+        payment.setRate(rate);
+
+        return payment;
+    }
+
 }

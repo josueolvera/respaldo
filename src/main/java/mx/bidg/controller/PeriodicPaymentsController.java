@@ -30,4 +30,9 @@ public class PeriodicPaymentsController {
         return mapper.writeValueAsString(paymentsService.findByFolio(folio));
     }
 
+    @RequestMapping(value = "/{idPayment}", method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"})
+    public @ResponseBody String update(@PathVariable int idPayment, @RequestBody String data) throws Exception {
+        return mapper.writeValueAsString(paymentsService.update(idPayment, data));
+    }
+
 }

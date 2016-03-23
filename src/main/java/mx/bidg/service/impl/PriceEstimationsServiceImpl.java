@@ -92,7 +92,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     }
 
     @Override
-    public PriceEstimations update(Integer idEstimation, String data) throws Exception{
+    public PriceEstimations update(Integer idEstimation, String data, Users user) throws Exception{
         PriceEstimations estimation = priceEstimationsDao.findByIdFetchRequestStatus(idEstimation);
         JsonNode json = mapper.readTree(data);
         if(estimation.getEstimationStatus().getIdEstimationStatus().equals(CEstimationStatus.PENDIENTE)) {
@@ -108,6 +108,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             estimation.setAmount(amount);
             estimation.setCurrency(new CCurrencies(json.get("idCurrency").asInt()));
             estimation.setRate(rate);
+            estimation.setUserEstimation(user);
             //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
             estimation.setOutOfBudget((residualAmount.compareTo(amount) == -1)? 1 : 0);
             estimation.setSku((json.get("sku").asText() != null) ? json.get("sku").asText() : "");
@@ -129,11 +130,14 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         PriceEstimations estimation = priceEstimationsDao.findByIdFetchRequestStatus(idEstimation);
         Requests request = estimation.getRequest();
 
-        if (request.getRequestStatus().getIdRequestStatus().equals(CEstimationStatus.PENDIENTE)) {
-            
+        if (request.getIdRequestStatus() == CRequestStatus.APROBADA
+                || request.getIdRequestStatus() == CRequestStatus.RECHAZADA) {
+            throw new ValidationException("No es posible elegir una cotizacion de una Solicitud Aceptada o Rechazada",
+                    "No es posible elegir una cotizacion de una Solicitud Aceptada o Rechazada", HttpStatus.FORBIDDEN);
+        } else {
             String folio = request.getFolio();
             PeriodicsPayments periodicPayment = periodicPaymentsDao.findByFolio(folio);
-                if (periodicPayment.getPeriodicPaymentStatus().getIdPeriodicPaymentStatus().equals(CPeriodicPaymentsStatus.INACTIVO)) {
+                if (periodicPayment.getIdPeriodicPaymentStatus() == CPeriodicPaymentsStatus.INACTIVO) {
                     if(!periodicPaymentsDao.delete(periodicPayment))
                         throw new ValidationException("No se pudo eliminar el PeriodicPayment: " + periodicPayment);
                 }
@@ -158,12 +162,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
                     e.setEstimationStatus(new CEstimationStatus(CEstimationStatus.RECHAZADA));
                 }
             }
-
-        } else {
-            throw new ValidationException("No es posible elegir una cotizacion de una Solicitud Aceptada o Rechazada", 
-                "No es posible elegir una cotizacion de una Solicitud Aceptada o Rechazada", HttpStatus.FORBIDDEN);
         }
-
     }
 
     @Override
@@ -184,5 +183,4 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         estimation.setFilePath(filePath);
         return priceEstimationsDao.update(estimation);
     }
-
 }
