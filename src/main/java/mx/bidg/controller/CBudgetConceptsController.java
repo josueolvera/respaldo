@@ -26,6 +26,7 @@ import mx.bidg.service.CBudgetConceptsService;
 import mx.bidg.service.CMonthsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,7 +53,7 @@ public class CBudgetConceptsController {
     
     ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
     
-    @RequestMapping(value = "/group-area/{idGroup}/{idArea}/{idDwEnterprise}/{year}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/group-area/{idGroup}/{idArea}/{idDwEnterprise}/{year}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> getByGroupArea(@PathVariable int idGroup, @PathVariable int idArea, 
             @PathVariable Integer idDwEnterprise, @PathVariable int year) throws Exception {
         
@@ -129,18 +130,6 @@ public class CBudgetConceptsController {
             }            
             
         }
-        
-//        List<List<CBudgetConcepts>> list = new ArrayList<>();
-//        List<Budgets> budgetList =  budgetsService.findByGroupArea(new CGroups(idGroup), new CAreas(idArea));
-//        
-//        for(Budgets budget: budgetList) {
-//            List<CBudgetConcepts> conceptsList = budgetConceptsService.findByBudget(budget);
-//            if(!conceptsList.isEmpty())
-//                list.add(conceptsList);
-//        }
-//
-//        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class)
-//                .writeValueAsString(list), HttpStatus.OK);
         
         return new ResponseEntity<>(mapper.writeValueAsString(list), HttpStatus.OK);
         
