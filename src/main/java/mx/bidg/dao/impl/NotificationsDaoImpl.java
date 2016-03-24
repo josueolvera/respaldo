@@ -67,6 +67,19 @@ public class NotificationsDaoImpl extends AbstractDao<Integer, Notifications> im
     }
 
     @Override
+    public Long countForUserResource(Users user, Integer idResource) {
+        return (Long) getSession()
+                .createQuery(
+                        "select count(n) from Notifications n where n.idUser = :idUser " +
+                                "and n.idResource = :idResource and n.idNotificationStatus <> :idArchivada"
+                )
+                .setInteger("idUser", user.getIdUser())
+                .setInteger("idResource", idResource)
+                .setInteger("idArchivada", CNotificationsStatus.ARCHIVADA)
+                .uniqueResult();
+    }
+
+    @Override
     public Notifications update(Notifications entity) {
         modify(entity);
         return entity;

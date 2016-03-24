@@ -1,5 +1,6 @@
-package mx.bidg.events;
+package mx.bidg.events.requests;
 
+import mx.bidg.events.CreationEvent;
 import mx.bidg.model.Requests;
 
 /**

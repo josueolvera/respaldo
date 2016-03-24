@@ -1,6 +1,7 @@
 package mx.bidg.dao;
 
 import mx.bidg.model.Notifications;
+import mx.bidg.model.ResourcesTasks;
 import mx.bidg.model.Users;
 
 import java.util.List;
@@ -12,4 +13,5 @@ import java.util.List;
 public interface NotificationsDao extends InterfaceDao<Notifications> {
     List<Notifications> findAllForUser(Users user);
     Long countNotificationsForUser(Users user);
+    Long countForUserResource(Users user, Integer idResource);
 }

@@ -19,12 +19,15 @@ import javax.servlet.http.HttpSession;
 
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
+import mx.bidg.events.requests.PriceEstimationAuthorizedEvent;
+import mx.bidg.events.requests.PriceEstimationCreatedEvent;
 import mx.bidg.exceptions.InvalidFileException;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.PriceEstimations;
 import mx.bidg.model.Users;
 import mx.bidg.service.PriceEstimationsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -51,9 +54,12 @@ public class PriceEstimationsController {
     private Environment env;
     
     @Autowired
-    PriceEstimationsService estimationsService;
+    private PriceEstimationsService estimationsService;
+
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
     
-    ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
     
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json; charset=UTF-8"},
             produces = "application/json; charset=UTF-8")
@@ -62,9 +68,11 @@ public class PriceEstimationsController {
         Users user = (Users) session.getAttribute("user");
         PriceEstimations estimation = estimationsService.saveData(data, user);
         
-        if(estimation == null)
+        if(estimation == null) {
             return new ResponseEntity<>("Error al guardar la cotizacion", HttpStatus.CONFLICT);
-        
+        }
+
+        eventPublisher.publishEvent(new PriceEstimationCreatedEvent(estimation.getRequest()));
         return new ResponseEntity<>(mapper.writeValueAsString(estimation),
                 HttpStatus.OK);
         
@@ -167,7 +175,8 @@ public class PriceEstimationsController {
     @RequestMapping(value = "/authorization/{idEstimation}", method = RequestMethod.POST)
     public @ResponseBody String estimationAuthorization(@PathVariable int idEstimation, HttpSession session) {
         Users user = (Users) session.getAttribute("user");
-        estimationsService.estimationAuthorization(idEstimation, user);
+        PriceEstimations estimation = estimationsService.estimationAuthorization(idEstimation, user);
+        eventPublisher.publishEvent(new PriceEstimationAuthorizedEvent(estimation.getRequest()));
         return "Cotizacion autorizada";
     }
     

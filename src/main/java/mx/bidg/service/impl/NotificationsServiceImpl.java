@@ -6,7 +6,6 @@ import mx.bidg.model.*;
 import mx.bidg.service.EmailDeliveryService;
 import mx.bidg.service.EmailTemplatesService;
 import mx.bidg.service.NotificationsService;
-import mx.bidg.service.RequestsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -19,8 +18,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * @author Rafael Viveros
@@ -53,19 +50,43 @@ public class NotificationsServiceImpl implements NotificationsService {
     public List<Notifications> createNotification(List<Users> users, Requests request) {
         request = requestsDao.findById(request.getIdRequest());
         EmailTemplates emailTemplate = emailTemplatesService.findByName(EMAIL_TEMPLATE_NAME);
-        emailTemplate.addProperty("subject", "Solicitud recibida");
+        emailTemplate.addProperty("subject", "Su solicitud ha sido recibida");
         List<Notifications> notifications = new ArrayList<>();
         Set<String> userNames = new HashSet<>(users.size());
 
         for (Users user : users) {
             if (userNames.add(user.getUsername())) {
-                notifications.add(buildAndSave(request, user));
+                Notifications notification = build(request, user);
+                notificationsDao.save(notification);
+                notifications.add(notification);
                 emailTemplate.addRecipient(new EmailRecipients(user.getMail(), user.getUsername(), EmailRecipients.TO));
             }
         }
 
         emailDeliveryService.deliverEmail(emailTemplate);
         return notifications;
+    }
+
+    @Override
+    public Notifications createForEstimationCreation(Users user, Requests request) {
+        request = requestsDao.findById(request.getIdRequest());
+        Notifications notification = build(request, user);
+        notification.setSubtitle("Requiere cotizaciones");
+        notificationsDao.save(notification);
+        return notification;
+    }
+
+    @Override
+    public Notifications createForEstimationAuthorization(Users user, Requests request) {
+        System.out.println(notificationsDao.countForUserResource(user, request.getIdRequest()));
+        if (notificationsDao.countForUserResource(user, request.getIdRequest()) > 0) {
+            return null;
+        }
+        request = requestsDao.findById(request.getIdRequest());
+        Notifications notification = build(request, user);
+        notification.setSubtitle("Cotizacion requiere autorizacion");
+        notificationsDao.save(notification);
+        return notification;
     }
 
     @Override
@@ -85,8 +106,9 @@ public class NotificationsServiceImpl implements NotificationsService {
         emailTemplate.addRecipient(new EmailRecipients(user.getMail(), user.getUsername(), EmailRecipients.TO));
         emailTemplate.addProperty("user", user);
         emailTemplate.addProperty("subject", "Solicitud: Se requiere su autorización");
-        emailDeliveryService.deliverEmail(emailTemplate);
-        return buildAndSave(request, user);
+//        emailDeliveryService.deliverEmail(emailTemplate);
+        Notifications notification = build(request, user);
+        return notificationsDao.save(notification);
     }
 
     @Override
@@ -136,7 +158,7 @@ public class NotificationsServiceImpl implements NotificationsService {
         return notification;
     }
 
-    private Notifications buildAndSave(Requests request, Users user) {
+    private Notifications build(Requests request, Users user) {
         Notifications notification = new Notifications();
         notification.setIdResource(request.getIdRequest());
         notification.setResourcesTasks(request.getRequestTypeProduct().getRequestCategory().getResourcesTasks());
@@ -148,8 +170,7 @@ public class NotificationsServiceImpl implements NotificationsService {
         notification.setNotificationsStatus(new CNotificationsStatus(CNotificationsStatus.PENDIENTE));
         notification.setCreationDate(LocalDateTime.now());
         notification.setDueDate(LocalDateTime.now());
-
-        return notificationsDao.save(notification);
+        return notification;
     }
 
     @Override

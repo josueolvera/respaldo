@@ -112,7 +112,6 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
             estimation.setOutOfBudget((residualAmount.compareTo(amount) == -1)? 1 : 0);
             estimation.setSku((json.get("sku").asText() != null) ? json.get("sku").asText() : "");
-//            estimation.setUserEstimation(new Users(json.get("idUserEstimation").asInt()));
             return estimation;
         } else {
             throw new ValidationException("No se puede modificar una cotizacion ya autorizada", 
@@ -126,7 +125,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     }
 
     @Override
-    public void estimationAuthorization(int idEstimation, Users user) {
+    public PriceEstimations estimationAuthorization(int idEstimation, Users user) {
         PriceEstimations estimation = priceEstimationsDao.findByIdFetchRequestStatus(idEstimation);
         Requests request = estimation.getRequest();
 
@@ -164,6 +163,8 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
                 }
             }
         }
+
+        return estimation;
     }
 
     @Override

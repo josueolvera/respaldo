@@ -206,5 +206,9 @@ public class RequestsServiceImpl implements RequestsService {
         Requests request = requestsDao.findById(idRequest);
         return request;
     }
-    
+
+    @Override
+    public Requests findByFolio(String folio) {
+        return requestsDao.findByFolio(folio);
+    }
 }
