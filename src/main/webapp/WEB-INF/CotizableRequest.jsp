@@ -143,7 +143,10 @@
           amountOfPay: '',
           timePickerEsquema: '',
           userInSession: '',
-          isSavingNow: false
+          isSavingNow: false,
+          showAsignacionAnterior: false,
+          AccountsPayablesInfo: [],
+          isAutoriced: true
           },
           methods:
           {
@@ -314,6 +317,11 @@
             },
             deleteCotizacion: function(cotizacion)
             {
+              if (cotizacion.idEstimationStatus== 2)
+              {
+                showAlert("No puedes eliminar una cotizacion autorizada");
+              }
+              else {
               if (cotizacion.idEstimation !== "")
               {
                 this.isSavingNow= true;
@@ -327,6 +335,7 @@
               else{
                   this.estimations.$remove(cotizacion);
               }
+            }
             },
             createAccountPayable: function()
             {
@@ -680,7 +689,7 @@
                 }
               });
 
-              this.$http.post(ROOT_URL+"/accounts-payable/"+this.periodicPayment.folio, JSON.stringify(this.AccountsPayables)).
+              this.$http.post(ROOT_URL+"/accounts-payable/folio?folio="+this.periodicPayment.folio, JSON.stringify(this.AccountsPayables)).
               success(function(data)
               {
                 showAlert("Registro de informacion de pago exitoso");
@@ -703,7 +712,7 @@
                       }
                     });
                 });
-
+                this.AccountsPayablesInfo = this.AccountsPayables;
               }).error(function(data)
               {
                 showAlert("Ha fallado el registro de su informacion, intente nuevamente");
@@ -719,29 +728,41 @@
             {
               var self= this;
               this.AccountsPayables= [];
+              this.AccountsPayablesInfo= [];
               this.$http.get(ROOT_URL + "/accounts-payable/folio?folio="+this.periodicPayment.folio).success(function (data)
                {
-                 data.forEach(function(element)
+                 if (data.length> 0)
                  {
-                   var accountPayable = self.createAccountPayable();
-                   accountPayable.idAccountPayable = element.idAccountPayable;
-                   accountPayable.folio = element.folio;
-                   accountPayable.amount = element.amount;
-                   accountPayable.paidAmount = element.paidAmount;
-                   accountPayable.payNum = element.payNum;
-                   accountPayable.totalPayments = element.totalPayments;
-                   accountPayable.creationDate = self.convertDates(element.creationDateFormats.dateNumber);
-                   if (element.dueDateFormats !== null)
-                   {
-                     accountPayable.dueDate = self.convertDates(element.dueDateFormats.dateNumber);
-                   }
-                   accountPayable.idAccountPayableStatus = element.idAccountPayableStatus;
-                   accountPayable.idOperationType = element.idOperationType;
-                   accountPayable.idCurrency = element.idCurrency;
-                   accountPayable.rate = element.rate;
-                   accountPayable.idDatePicker = self.AccountsPayables.length;
-                   self.AccountsPayables.push(accountPayable);
-                 });
+                    this.showAsignacionAnterior= true;
+                    var accounts;
+                    data.forEach(function(element)
+                    {
+
+                      var accountPayable = self.createAccountPayable();
+                      accountPayable.idAccountPayable = element.idAccountPayable;
+                      accountPayable.folio = element.folio;
+                      accountPayable.amount = element.amount;
+                      accountPayable.paidAmount = element.paidAmount;
+                      accountPayable.payNum = element.payNum;
+                      accountPayable.totalPayments = element.totalPayments;
+                      accountPayable.creationDate = self.convertDates(element.creationDateFormats.dateNumber);
+                      if (element.dueDateFormats !== null)
+                      {
+                        accountPayable.dueDate = self.convertDates(element.dueDateFormats.dateNumber);
+                      }
+                      accountPayable.idAccountPayableStatus = element.idAccountPayableStatus;
+                      accountPayable.idOperationType = element.idOperationType;
+                      accountPayable.idCurrency = element.idCurrency;
+                      accountPayable.rate = element.rate;
+                      accountPayable.idDatePicker = self.AccountsPayables.length;
+                      self.AccountsPayables.push(accountPayable);
+                      self.AccountsPayablesInfo.push(accountPayable);
+                    });
+                    //accounts= this.AccountsPayables;
+                    //this.AccountsPayablesInfo = accounts;
+                    //self.AccountsPayablesInfo.push(accountPayable);
+                 }
+
                });
             },
             obtainUserInSession: function()
@@ -756,6 +777,22 @@
                 showAlert("Ha habido un error al obtener al usuario en sesion");
                });
 
+            },
+            autorizarCotizacion: function(cotizacion)
+            {
+              this.$http.post(ROOT_URL+"/estimations/authorization/"+ cotizacion.idEstimation).
+              success(function(data)
+              {
+                showAlert("Se ha autorizado la cotizacion correctamente");
+                location.reload();
+              }).error(function(data)
+              {
+                showAlert("Ha fallado la autorizacion de la cotizacion intente nuevamente");
+              });
+            },
+            cancelarAutorizacion: function()
+            {
+              this.isAutoriced = false;
             }
           },
         filters:
@@ -1030,10 +1067,32 @@
                     </a>
                     </p>
                     </div>
-                    <div class="col-xs-2" v-if="cotizacion.idAccount > 0">
+                    <div class="col-xs-2">
                       <button type="button" class="btn btn-link" @click="prepareModalPeriodicPayment(cotizacion)"
-                       style="margin-top: 25px">Agregar Informacion de Pago
+                       style="margin-top: 25px" v-if="cotizacion.idEstimationStatus== 2">Agregar Informacion de Pago
                       </button>
+                    </div>
+
+                    <div class="col-xs-3">
+
+                    </div>
+                    <div class="col-xs-2 text-right">
+                      <button type="button" class="btn btn-link" name="button"
+                        v-if="cotizacion.idEstimationStatus== 1" style="margin-top:25px"
+                        @click="autorizarCotizacion(cotizacion)">
+                        Autorizar Cotizacion
+                      </button>
+                      <button type="button" class="btn btn-link" name="button"
+                        v-if="cotizacion.idEstimationStatus== 2 && isAutoriced" style="margin-top:25px"
+                        @click="cancelarAutorizacion">
+                        Cancelar Aprobacion
+                      </button>
+                      <button type="button" class="btn btn-link" name="button"
+                        v-if="!(isAutoriced)" style="margin-top:25px"
+                        @click="autorizarCotizacion(cotizacion)">
+                        Autorizar Cotizacion
+                      </button>
+
                     </div>
 
                     </div>
@@ -1128,7 +1187,7 @@
                         </div>
 
                       </div>
-                      <div class="col-xs-6" v-if="optionPago==2">
+                      <div class="col-xs-7" v-if="optionPago==2">
                         <div class="col-xs-6">
                           <label>
                             Monto de Pago
@@ -1147,7 +1206,7 @@
                       </div>
                     </div>
                     <div class="row">
-                      <div class="col-xs-12" v-if="AccountsPayables.length> 0">
+                      <div class="col-xs-7" v-if="AccountsPayables.length> 0">
                         <label>
                           Informacion de Pagos
                         </label>
@@ -1182,7 +1241,7 @@
                           <div class="col-xs-4">
                             <div class="input-group">
                               <span class="input-group-addon">$</span>
-                              <input type="text" class="form-control"
+                              <input number class="form-control"
                               v-model="ap.amount">
                             </div>
                           </div>
@@ -1203,6 +1262,39 @@
                           </div>
                         </div>
                       </div>
+
+                      <div class="col-xs-5" v-if="showAsignacionAnterior">
+                        <label>
+                          Asignacion Anterior
+                        </label>
+                        <table class="table table-striped">
+                          <thead>
+                            <th>
+                              #
+                            </th>
+                            <th>
+                              Monto de Pago
+                            </th>
+                            <th>
+                              Fecha de Vencimiento
+                            </th>
+                          </thead>
+                          <tbody>
+                            <tr v-for="accounts in AccountsPayablesInfo">
+                                <td>
+                                  {{accounts.payNum}}
+                                </td>
+                                <td>
+                                  {{accounts.amount}}
+                                </td>
+                                <td>
+                                  {{accounts.dueDate}}
+                                </td>
+
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                       <div class="row">
                         <div class="col-xs-12 text-right">
@@ -1217,7 +1309,7 @@
           </div>
 
           <pre>
-            {{$data.AccountsPayables | json}}
+            {{$data.estimations | json}}
 
           </pre>
           </div> <!-- container-fluid -->
