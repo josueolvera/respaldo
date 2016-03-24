@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import mx.bidg.events.requests.RequestCompletedEvent;
 import mx.bidg.model.AccountsPayable;
 import mx.bidg.model.Requests;
 import mx.bidg.service.AccountsPayableService;
@@ -46,6 +47,7 @@ public class AccountsPayableController {
     @RequestMapping(value = "/folio", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody String update(@RequestParam(name = "folio", required = true) String folio, @RequestBody String data) throws Exception {
         List<AccountsPayable> accountsPayables = accountsPayableService.update(folio, data);
+        eventPublisher.publishEvent(new RequestCompletedEvent(requestsService.findByFolio(folio)));
         return mapper.writeValueAsString(accountsPayables);
     }
 }

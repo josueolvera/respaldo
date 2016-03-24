@@ -14,9 +14,7 @@ import mx.bidg.model.Requests;
 public interface RequestsDao extends InterfaceDao<Requests> {
     
     Requests findByIdFetchBudgetMonthBranch(Integer idRequest);
-    
     Requests findByIdFetchStatus(Integer idRequest);
-    
     Requests findByIdFetchCategory(Integer idRequest);
-    
+    Requests findByFolio(String folio);
 }

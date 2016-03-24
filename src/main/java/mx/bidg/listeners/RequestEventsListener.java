@@ -3,6 +3,9 @@ package mx.bidg.listeners;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import mx.bidg.events.CreationEvent;
+import mx.bidg.events.requests.PriceEstimationAuthorizedEvent;
+import mx.bidg.events.requests.PriceEstimationCreatedEvent;
+import mx.bidg.events.requests.RequestCompletedEvent;
 import mx.bidg.model.*;
 import mx.bidg.service.AuthorizationTreeRulesService;
 import mx.bidg.service.AuthorizationsService;
@@ -23,7 +26,7 @@ import java.util.logging.Logger;
 @PropertySource(value = {"classpath:application.properties"})
 public class RequestEventsListener {
 
-    @Value("${authorizations.rule_name}")
+    @Value("${request.authorizations.rule_name}")
     private String AUTHORIZATIONS_RULE_NAME;
 
     @Value("${authorizations.default.user_id}")
@@ -42,17 +45,34 @@ public class RequestEventsListener {
     private UsersService usersService;
 
     @EventListener
-    public void createNotificationsOnRequestCreatedEvent(CreationEvent<Requests> event) {
+    public void createBaseNotifications(CreationEvent<Requests> event) {
         List<Users> users = new ArrayList<>();
         Requests request = event.getResource();
         users.add(request.getUserRequest());
         users.add(request.getUserResponsible());
         notificationsService.createNotification(users, request);
+        // TODO: Evaluar regla price_estimations.creation.rule_name
+        // TODO: Notificar a responsable de cotizar
+        notificationsService.createForEstimationCreation(new Users(188), request);
+    }
+
+    @EventListener
+    public void buildPriceEstimationsAuthorizationsTree(PriceEstimationCreatedEvent event) {
+        Requests request = event.getResource();
+        // TODO: Notificar a responsabel de autorizar cotizacion
+        notificationsService.createForEstimationAuthorization(new Users(174), request);
+    }
+
+    @EventListener
+    public void buildPaymentsTree(PriceEstimationAuthorizedEvent event) {
+        Requests request = event.getResource();
+        // TODO: Notificar a responsabel de adjuntar plan de pago
+        notificationsService.createForEstimationAuthorization(new Users(188), request);
     }
 
     @EventListener
     @SuppressWarnings("unchecked")
-    public void buildAuthorizationsTreeOnRequestCreatedEvent(CreationEvent<Requests> event) {
+    public void buildRequestAuthorizationsTree(RequestCompletedEvent event) {
         Requests requests = event.getResource();
         AuthorizationTreeRules rule = authorizationTreeRulesService.findByRuleName(AUTHORIZATIONS_RULE_NAME);
         Binding binding = new Binding();

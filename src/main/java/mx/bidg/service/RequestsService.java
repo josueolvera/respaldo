@@ -16,11 +16,8 @@ import mx.bidg.model.Users;
 public interface RequestsService {
     
     HashMap<String, Object> getBudgetMonthProductType(String data) throws Exception;
-    
     Requests saveData(String data, Users user) throws Exception;
-    
     Requests authorization(Integer idRequest);
-    
     Requests findById(Integer idRequest);
-    
+    Requests findByFolio(String folio);
 }

@@ -2,7 +2,7 @@ package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
-import mx.bidg.events.RequestCreatedEvent;
+import mx.bidg.events.requests.RequestCreatedEvent;
 import mx.bidg.model.AccountsPayable;
 import mx.bidg.model.PeriodicsPayments;
 import mx.bidg.model.Requests;

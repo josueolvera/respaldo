@@ -12,34 +12,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import mx.bidg.dao.BudgetMonthBranchDao;
-import mx.bidg.dao.BudgetsDao;
-import mx.bidg.dao.CMonthsDao;
-import mx.bidg.dao.CProductTypesDao;
-import mx.bidg.dao.CRequestCategoriesDao;
-import mx.bidg.dao.CRequestTypesDao;
-import mx.bidg.dao.RequestProductsDao;
-import mx.bidg.dao.RequestTypesProductDao;
-import mx.bidg.dao.RequestsDao;
-import mx.bidg.dao.UsersDao;
+
+import mx.bidg.dao.*;
 import mx.bidg.exceptions.ValidationException;
-import mx.bidg.model.BudgetMonthBranch;
-import mx.bidg.model.Budgets;
-import mx.bidg.model.CMonths;
-import mx.bidg.model.CProductTypes;
-import mx.bidg.model.CProducts;
-import mx.bidg.model.CRequestStatus;
-import mx.bidg.model.CRequestTypes;
-import mx.bidg.model.CRequestsCategories;
-import mx.bidg.model.CTables;
-import mx.bidg.model.DwEnterprises;
-import mx.bidg.model.RequestProducts;
-import mx.bidg.model.RequestTypesProduct;
-import mx.bidg.model.Requests;
-import mx.bidg.model.Users;
+import mx.bidg.model.*;
 import mx.bidg.service.FoliosService;
 import mx.bidg.service.RequestsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -79,6 +59,15 @@ public class RequestsServiceImpl implements RequestsService {
     
     @Autowired
     RequestProductsDao requestProductsDao;
+
+    @Autowired
+    PriceEstimationsDao priceEstimationsDao;
+
+    @Autowired
+    PeriodicPaymentsDao periodicPaymentsDao;
+
+    @Autowired
+    AccountsPayableDao accountsPayableDao;
     
     ObjectMapper map = new ObjectMapper();
     
@@ -168,17 +157,58 @@ public class RequestsServiceImpl implements RequestsService {
 
     @Override
     public Requests authorization(Integer idRequest) {
-        
-        Requests request = requestsDao.findByIdFetchStatus(idRequest);
-        
-        return null;
+
+        Requests request = requestsDao.findByIdFetchCategory(idRequest);
+        if(request == null) {
+            throw new ValidationException("No existe el request", "No se encuentra la solicitud", HttpStatus.CONFLICT);
+        }
+
+        if((request.getIdRequestStatus() != CRequestStatus.COTIZADA) || request.getIdRequestStatus() != CRequestStatus.PENDIENTE) {
+            throw new ValidationException("Estatus de la solicitud invalida", "Esta solicitud ya fue validada anteriormente", HttpStatus.CONFLICT);
+        }
+
+        int estimationAccepted = 0;
+        List<PriceEstimations> estimations = priceEstimationsDao.findByIdRequest(idRequest);
+        if(estimations.isEmpty()) {
+            throw new ValidationException("Esta solicitud no tiene cotizaciones", "Necesita agregar cotizaciones antes de " +
+                    "autorizar una solicitud", HttpStatus.CONFLICT);
+        }
+
+        for(PriceEstimations estimation : estimations) {
+            if(estimation.getIdEstimationStatus() == CEstimationStatus.APROBADA) {
+                estimationAccepted = 1;
+                break;
+            }
+        }
+
+        if(estimationAccepted != 1) {
+            throw new ValidationException("Esta solicitud no tiene cotizaciones aprobadas", "Necesita aprobar una cotizacion " +
+                    "antes de autorizar una solicitud", HttpStatus.CONFLICT);
+        }
+
+        PeriodicsPayments periodicsPayment = periodicPaymentsDao.findByFolio(request.getFolio());
+        List<AccountsPayable> accountslist = accountsPayableDao.findByFolio(request.getFolio());
+
+        if((request.getRequestTypeProduct().getIdRequestCategory() == CRequestsCategories.PERIODICA && periodicsPayment == null) ||
+                (request.getRequestTypeProduct().getIdRequestCategory() == CRequestsCategories.COTIZABLE && accountslist.isEmpty()) ||
+                (request.getRequestTypeProduct().getIdRequestCategory() == CRequestsCategories.DIRECTA && accountslist.isEmpty())) {
+            throw new ValidationException("No hay CXP referentes a esta solicitud", "Necesita agregar informacion de pago para esta " +
+                    "solicitud", HttpStatus.CONFLICT);
+        }
+
+        request.setRequestStatus(new CRequestStatus(CRequestStatus.APROBADA));
+        return requestsDao.update(request);
     }
 
     @Override
-    public Requests findById(Integer idRequest) 
+    public Requests findById(Integer idRequest)
     {
         Requests request = requestsDao.findById(idRequest);
         return request;
     }
-    
+
+    @Override
+    public Requests findByFolio(String folio) {
+        return requestsDao.findByFolio(folio);
+    }
 }

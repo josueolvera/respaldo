@@ -16,6 +16,8 @@ public interface NotificationsService {
     Notifications createNotification(Users user, Requests request);
     Notifications createNotification(Users user, Stocks stock);
     Notifications createNotification(Users user, AccountsPayable accountPayable);
+    Notifications createForEstimationCreation(Users user, Requests request);
+    Notifications createForEstimationAuthorization(Users user, Requests request);
 
     Long countNotificationsForUser(Users user);
     Notifications findById(Integer id);

@@ -37,6 +37,13 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
     }
 
     @Override
+    public Requests findByFolio(String folio) {
+        return (Requests) createEntityCriteria()
+                .add(Restrictions.eq("folio", folio))
+                .uniqueResult();
+    }
+
+    @Override
     public List<Requests> findAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -73,7 +80,7 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
         Criteria criteria = createEntityCriteria()
                 .add(Restrictions.idEq(idRequest))
                 .setFetchMode("requestTypeProduct", FetchMode.JOIN)
-                .setFetchMode("requestTypeProduct.", FetchMode.JOIN);
+                .setFetchMode("requestTypeProduct.requestCategory", FetchMode.JOIN);
         return (Requests) criteria.uniqueResult();
     }    
     
