@@ -73,7 +73,7 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
         Criteria criteria = createEntityCriteria()
                 .add(Restrictions.idEq(idRequest))
                 .setFetchMode("requestTypeProduct", FetchMode.JOIN)
-                .setFetchMode("requestTypeProduct.", FetchMode.JOIN);
+                .setFetchMode("requestTypeProduct.requestCategory", FetchMode.JOIN);
         return (Requests) criteria.uniqueResult();
     }    
     
