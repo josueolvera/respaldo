@@ -15,4 +15,5 @@ public interface AuthorizationsService {
     Authorizations update(Authorizations entity);
     Authorizations authorize(Authorizations authorizations);
     Authorizations reject(Authorizations authorizations);
+    Long countByFolio(String folio);
 }

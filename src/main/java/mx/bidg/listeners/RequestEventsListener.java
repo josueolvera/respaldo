@@ -74,6 +74,9 @@ public class RequestEventsListener {
     @SuppressWarnings("unchecked")
     public void buildRequestAuthorizationsTree(RequestCompletedEvent event) {
         Requests requests = event.getResource();
+        if (authorizationsService.countByFolio(requests.getFolio()) > 0) {
+            return;
+        }
         AuthorizationTreeRules rule = authorizationTreeRulesService.findByRuleName(AUTHORIZATIONS_RULE_NAME);
         Binding binding = new Binding();
         binding.setProperty("request", requests);
