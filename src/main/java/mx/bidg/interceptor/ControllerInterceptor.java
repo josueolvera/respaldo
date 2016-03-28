@@ -78,7 +78,8 @@ public class ControllerInterceptor extends HandlerInterceptorAdapter {
             }
             
         }
-        
+
+        logger.log(Level.WARNING, "Acceso denegado a " + key + " para " + user.getUsername());
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Acceso denegado");
         return false;
     }

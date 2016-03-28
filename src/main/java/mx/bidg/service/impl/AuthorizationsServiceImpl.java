@@ -55,4 +55,9 @@ public class AuthorizationsServiceImpl implements AuthorizationsService {
         auth.setAuthorizationDate(LocalDateTime.now());
         return update(auth);
     }
+
+    @Override
+    public Long countByFolio(String folio) {
+        return authorizationsDao.countByFolio(folio);
+    }
 }

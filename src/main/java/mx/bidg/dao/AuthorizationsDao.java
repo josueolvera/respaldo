@@ -10,5 +10,6 @@ import mx.bidg.model.Authorizations;
 public interface AuthorizationsDao extends InterfaceDao<Authorizations> {
     
     List<Authorizations> findByFolio(String folio);
+    Long countByFolio(String folio);
     
 }
