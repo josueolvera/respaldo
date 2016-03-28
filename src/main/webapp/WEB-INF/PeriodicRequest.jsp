@@ -528,7 +528,7 @@
               }).error(function(data){
                 showAlert("Ha habido un error al obtener la informacion de las cotizacion");
               });
-
+              this.obtainInformationAutorization();
             },
             matchInformationEstimationsUpdate: function(data)
             {
@@ -1232,7 +1232,9 @@
               </div>
             </div>
           </div>
-
+          <pre>
+             {{ $data.infoAutorization | json}}
+          </pre>
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->
