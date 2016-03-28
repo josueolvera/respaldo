@@ -785,11 +785,9 @@
                       accountPayable.rate = element.rate;
                       accountPayable.idDatePicker = self.AccountsPayables.length;
                       self.AccountsPayables.push(accountPayable);
-                      self.AccountsPayablesInfo.push(accountPayable);
+
                     });
-                    //accounts= this.AccountsPayables;
-                    //this.AccountsPayablesInfo = accounts;
-                    //self.AccountsPayablesInfo.push(accountPayable);
+                    this.AccountsPayablesInfo = (JSON.parse(JSON.stringify(this.AccountsPayables))); //Se realiza copia del objeto de cuentas
                  }
 
                });
@@ -1425,9 +1423,6 @@
               </div>
             </div>
           </div>
-          <pre>
-            {{ $data.infoAutorization | json}}
-          </pre>
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->

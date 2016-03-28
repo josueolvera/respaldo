@@ -1232,9 +1232,6 @@
               </div>
             </div>
           </div>
-          <pre>
-             {{ $data.infoAutorization | json}}
-          </pre>
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->
