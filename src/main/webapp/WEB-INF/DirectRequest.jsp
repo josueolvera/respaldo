@@ -114,7 +114,9 @@
             suppliers: {},
             currencies: {},
             userInSession: '',
-            isSavingNow: false
+            isSavingNow: false,
+            AccountsPayables: [],
+            infoAutorization: ''
 
         },
         methods:
@@ -242,7 +244,6 @@
             this.$http.post(ROOT_URL+"/requests", JSON.stringify(this.objectRequest)).
             success(function(data)
             {
-
               this.fillRequestInformation(data);
             }).error(function(data)
             {
@@ -289,45 +290,65 @@
             cotizacion.userEstimation.mail= responseOfEstimation.userEstimation.mail;
             cotizacion.isSaved= false;
             this.isSavingNow= false;
-            //this.createAccountPayable();
+            this.createAccountPayable();
           },
           createAccountPayable: function()
           {
-            var accountsPayable= {
-              payments: []
-            };
-              var accountPayable= {
-                idAccountPayable: '',
-                folio: '',
-                amount: '',
-                paidAmount: '',
-                payNum: '',
-                totalPayments: '',
-                creationDate: '',
-                dueDate: '',
-                idAccountPayableStatus: '',
-                idOperationType: '',
-                idCurrency: '',
-                rate: ''
-              };
+            var self= this;
+            var accountPayable=
+            {
+              idAccountPayable: '',
+              folio: '',
+              amount: '',
+              paidAmount: '',
+              payNum: '',
+              totalPayments: '',
+              creationDate: '',
+              dueDate: '',
+              idAccountPayableStatus: '',
+              idOperationType: '',
+              idCurrency: '',
+              rate: '',
+              idDatePicker: ''
+            }
               accountPayable.folio= this.objectRequest.request.folio;
               accountPayable.amount= this.estimation.amount;
-              accountPayable.paidAmount = this.estimation.amount;
               accountPayable.payNum= 1;
               accountPayable.totalPayments= 1;
               accountPayable.idCurrency= this.estimation.idCurrency;
               accountPayable.rate= this.estimation.rate;
-              accountsPayable.payments.push(accountPayable);
+              this.AccountsPayables.push(accountPayable);
 
-              this.$http.post(ROOT_URL+"/requests/accounts-payable", JSON.stringify(accountsPayable)).
+              this.$http.post(ROOT_URL+"/accounts-payable/folio?folio="+this.objectRequest.request.folio, JSON.stringify(this.AccountsPayables)).
               success(function(data)
               {
-                showAlert("Registro de solicitud exitoso");
-              }).error(function(data)
-              {
-                showAlert("Ha fallado el registro de su solicitud, intente nuevamente");
+                var idRequest= this.objectRequest.request.idRequest;
+                this.isSavingNow= false;
+                this.AccountsPayables.forEach(function(element)
+                {
+                    data.forEach(function(el)
+                    {
+                      if (el.payNum == element.payNum)
+                      {
+                          element.idAccountPayable = el.idAccountPayable;
+                          element.paidAmount = el.paidAmount;
+                          element.creationDate = self.convertDates(el.creationDateFormats.dateNumber);
+                          if (element.dueDate !== "")
+                          {
+                             element.dueDate = self.convertDates(el.dueDateFormats.dateNumber);
+                          }
+                          element.idAccountPayableStatus = el.accountPayableStatus.idAccountPayableStatus;
+                          element.idOperationType = el.operationType.idOperationType;
+                      }
+                    });
+                });
+                setInterval(function()
+                {
+                  window.location.href= ROOT_URL+"/siad/directa/"+idRequest
+                },2000);
               });
-          },
+
+        },
           verifyUpdateOrSave: function()
           {
             if (this.idRequest> 0)
@@ -351,6 +372,15 @@
             this.objectRequest.request.idRequest= data.idRequest;
             this.objectRequest.request.description= data.description;
             this.objectRequest.request.purpose= data.purpose;
+            this.objectRequest.request.folio= data.folio;
+            this.objectRequest.request.creationDate= this.convertDates(data.creationDateFormats.dateNumber);
+            this.objectRequest.request.applyingDate= this.convertDates(data.applyingDateFormats.dateNumber);
+            this.objectRequest.request.idUserRequest= data.userRequest.idUser;
+            this.objectRequest.request.idUserResponsable= data.idUserResponsible;
+            this.objectRequest.request.idBudgetMonthBranch= data.idBudgetMonthBranch;
+            this.objectRequest.request.idRequestTypeProduct= data.idRequestTypeProduct;
+            this.objectRequest.request.idRequestStatus= data.idRequestStatus;
+            this.obtainInformationAutorization();
             data.requestProductsList.forEach(function(element)
             {
             var producto= self.createProduct();
@@ -446,17 +476,76 @@
             this.$http.get(ROOT_URL + "/user").
             success(function (data)
              {
-               this.userInSession = data.mail;
+               this.userInSession = data;
 
              }).error(function(data)
              {
               showAlert("Ha habido un error al obtener al usuario en sesion");
              });
 
+          },
+          convertDates: function(date)
+          {
+            var dateinformatguion= date.split("-");
+            return dateinformatguion[2]+"/"+dateinformatguion[1]+"/"+dateinformatguion[0];
+          },
+          autorizarSolicitudIndividual: function(info)
+          {
+            this.$http.post(ROOT_URL+"/folios/authorizations/"+ info.idAuthorization +"/authorize").
+            success(function(data)
+            {
+              showAlert(data);
+              setInterval(function()
+              {
+                window.location.reload()
+              },2500);
+            }).error(function() {
+              showAlert("Ha habido un error al autorizar la solicitud, intente nuevamente");
+            });
+          },
+          rechazarSolicitudIndividual: function(info)
+          {
+            this.$http.post(ROOT_URL+"/folios/authorizations/"+ info.idAuthorization +"/reject").
+            success(function(data)
+            {
+              showAlert(data);
+              setInterval(function()
+              {
+                window.location.reload()
+              },2500);
+            }).error(function() {
+              showAlert("Ha habido un error al cancelar la solicitud, intente nuevamente");
+            });
+          },
+          obtainInformationAutorization: function()
+          {
+            this.infoAutorization= '';
+            this.$http.get(ROOT_URL+"/folios?folio="+ this.objectRequest.request.folio).
+            success(function(data)
+            {
+              this.infoAutorization= data;
+
+            }).error(function(data)
+            {
+              showAlert("No se ha podido obtener la informacion de la autorizacion");
+            });
           }
         },
       filters:
       {
+         obtainMailUser: function(param)
+        {
+          var self= this;
+          var newParam;
+          self.Users.forEach(function(element)
+          {
+              if (element.idUser == param)
+              {
+              newParam =element.mail;
+              }
+          });
+          return newParam;
+        }
 
       }
       });
@@ -477,7 +566,7 @@
                 <label>
                   Solicitante:
                 </label>
-                <input class="form-control" type="text" name="name" value="" disabled="true" v-model="userInSession">
+                <input class="form-control" type="text" name="name" value="" disabled="true" v-model="userInSession.mail">
               </div>
             </div>
             <br>
@@ -658,16 +747,13 @@
                           <input number class="form-control" placeholder="" v-model="estimation.amount" required="true">
                         </div>
                       </div>
-                    </div>
-                    <br>
-                    <div class="row">
                       <div class="col-xs-2">
                         <label>
                           SKU(Opcional)
                         </label>
                         <input class="form-control" v-model="estimation.sku">
                       </div>
-                      <div class="col-xs-3">
+                      <div class="col-xs-2">
                         <label>
                           Tipo de Cambio
                         </label>
@@ -681,17 +767,7 @@
                   </div>
 
                   <div class="row">
-                    <div class="col-xs-8" >
-                        <div class="col-xs-2">
-                          <button type="button" class="btn btn-success" v-if="estimation.idEstimation > 0"
-                            @click="autorizeRequest" :disabled="isSavingNow">Autorizar</button>
-                        </div>
-                        <div class="col-xs-2">
-                          <button type="button" class="btn btn-danger" v-if="estimation.idEstimation > 0"
-                            @click="declineRequest" :disabled="isSavingNow" >Declinar</button>
-                        </div>
-                    </div>
-                    <div class="col-xs-4 text-right">
+                    <div class="col-xs-12 text-right">
                       <button class="btn btn-success" :disabled="desactivarGuardar || isSavingNow">Guardar Solicitud</button>
                     </div>
                   </div>
@@ -699,12 +775,49 @@
 
               </form>
               </div>
+
+              <div class="row">
+                <div class="col-xs-12">
+                  <label>
+                    Autorizaciones de la Solicitud.
+                  </label>
+                  <table class="table table-striped">
+                    <thead>
+                      <th>
+                        Usuario
+                      </th>
+                      <th>
+                        Estatus
+                      </th>
+                      <th>
+                        Autorizar
+                      </th>
+                    </thead>
+                    <tbody>
+                      <tr v-for="info in infoAutorization.authorizations">
+                        <td>
+                          {{info.idUser | obtainMailUser}}
+                        </td>
+                        <td>
+                          <span class="label label-success" v-if="info.idAuthorizationStatus == 2">Autorizado</span>
+                          <span class="label label-info" v-if="info.idAuthorizationStatus == 1">Pendiente</span>
+                          <span class="label label-danger" v-if="info.idAuthorizationStatus == 3">Rechazado</span>
+                        </td>
+                        <td>
+                          <button type="button" class="btn btn-success btn-sm" name="button" @click="autorizarSolicitudIndividual(info)"
+                            v-if="info.idAuthorizationStatus == 1 & info.idUser == userInSession.idUser">Autorizar</button>
+                          <button type="button" class="btn btn-danger btn-sm" name="button" @click="rechazarSolicitudIndividual(info)"
+                            v-if="info.idAuthorizationStatus == 1 & info.idUser == userInSession.idUser">Rechazar</button>
+
+                        </td>
+                      </tr>
+                    </tbody>
+
+                  </table>
+
+                </div>
+              </div>
           </div>
-
-          <pre>
-            {{ $data.estimation | json}}
-          </pre>
-
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->

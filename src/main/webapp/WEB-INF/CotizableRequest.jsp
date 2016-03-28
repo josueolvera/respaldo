@@ -146,7 +146,8 @@
           isSavingNow: false,
           showAsignacionAnterior: false,
           AccountsPayablesInfo: [],
-          isAutoriced: true
+          isAutoriced: true,
+          infoAutorization: ''
           },
           methods:
           {
@@ -264,6 +265,11 @@
               this.objectRequest.request.isSaved = true;
               this.desactivarGuardar= true;
               this.isSavingNow= false;
+              setInterval(function()
+              {
+                window.location.href= ROOT_URL+"/siad/cotizable/"+datos.idRequest
+              },3000);
+
             }
             ,
             obtainAllUsers: function()
@@ -398,9 +404,17 @@
                     success(function(data)
                     {
                       showAlert("Modificacion Realizada con Exito");
+                      setInterval(function()
+                      {
+                        window.location.reload()
+                      },2500);
                       this.isSavingNow= false;
                     }).error(function(data){
                       showAlert("La modificacion se ha realizado, pero hubo un error al guardar el archivo");
+                      setInterval(function()
+                      {
+                        window.location.reload()
+                      },2500);
                       this.isSavingNow= false;
                     });
 
@@ -416,6 +430,10 @@
                   success(function(data)
                   {
                     showAlert("Modificacion Exitosa");
+                    setInterval(function()
+                    {
+                      window.location.reload()
+                    },2500);
                     this.isSavingNow= false;
 
                   }).error(function(data)
@@ -439,11 +457,19 @@
                 success(function(data)
                 {
                   showAlert("Registro de cotizacion Exitoso");
+                  setInterval(function()
+                  {
+                    window.location.reload()
+                  },2500);
                   responseOfFileUpload= data;
                   this.isSavingNow= false;
                   this.matchEstimationInfo(responseOfEstimation, responseOfFileUpload, cotizacion);
                 }).error(function(data){
                   showAlert("La cotizacion se ha guardado, pero hubo un error al guardar el archivo");
+                  setInterval(function()
+                  {
+                    window.location.reload()
+                  },2500);
                   this.isSavingNow= false;
                 });
 
@@ -536,6 +562,7 @@
                   cotizacion.requiredFile = false;
                   self.fillSuppliers(cotizacion);
                 });
+                this.obtainInformationAutorization();
             },
             fillSuppliers: function(cotizacion)
             {
@@ -625,6 +652,7 @@
             },
             generarPagosFijos: function()
             {
+              this.AccountsPayables= [];
               for (var i = 0; i < this.numberOfPay; i++)
               {
                 var accountPayable = this.createAccountPayable();
@@ -713,6 +741,7 @@
                     });
                 });
                 this.AccountsPayablesInfo = this.AccountsPayables;
+                $("#periodicPayment").modal("hide");
               }).error(function(data)
               {
                 showAlert("Ha fallado el registro de su informacion, intente nuevamente");
@@ -770,7 +799,7 @@
               this.$http.get(ROOT_URL + "/user").
               success(function (data)
                {
-                 this.userInSession = data.mail;
+                 this.userInSession = data;
 
                }).error(function(data)
                {
@@ -784,7 +813,11 @@
               success(function(data)
               {
                 showAlert("Se ha autorizado la cotizacion correctamente");
-                location.reload();
+                setInterval(function()
+                {
+                  window.location.reload()
+                },2500);
+
               }).error(function(data)
               {
                 showAlert("Ha fallado la autorizacion de la cotizacion intente nuevamente");
@@ -793,10 +826,64 @@
             cancelarAutorizacion: function()
             {
               this.isAutoriced = false;
+            },
+            obtainInformationAutorization: function()
+            {
+              this.infoAutorization= '';
+              this.$http.get(ROOT_URL+"/folios?folio="+ this.objectRequest.request.folio).
+              success(function(data)
+              {
+                this.infoAutorization= data;
+
+              }).error(function(data)
+              {
+                showAlert("No se ha podido obtener la informacion de la autorizacion");
+              });
+            },
+            autorizarSolicitudIndividual: function(info)
+            {
+              this.$http.post(ROOT_URL+"/folios/authorizations/"+ info.idAuthorization +"/authorize").
+              success(function(data)
+              {
+                showAlert(data);
+                setInterval(function()
+                {
+                  window.location.reload()
+                },2000);
+              }).error(function() {
+                showAlert("Ha habido un error al autorizar la solicitud, intente nuevamente");
+              });
+            },
+            rechazarSolicitudIndividual: function(info)
+            {
+              this.$http.post(ROOT_URL+"/folios/authorizations/"+ info.idAuthorization +"/reject").
+              success(function(data)
+              {
+                showAlert(data);
+                setInterval(function()
+                {
+                  window.location.reload()
+                },2000);
+              }).error(function() {
+                showAlert("Ha habido un error al cancelar la solicitud, intente nuevamente");
+              });
             }
           },
         filters:
         {
+          obtainMailUser: function(param)
+          {
+            var self= this;
+            var newParam;
+            self.Users.forEach(function(element)
+            {
+                if (element.idUser == param)
+                {
+                newParam =element.mail;
+                }
+            });
+            return newParam;
+          }
 
         }
         });
@@ -818,7 +905,7 @@
                 <label>
                   Solicitante:
                 </label>
-                <input class="form-control" type="text" name="name" value="" disabled="true" v-model="userInSession">
+                <input class="form-control" type="text" name="name" value="" disabled="true" v-model="userInSession.mail">
               </div>
             </div>
             <br>
@@ -1101,6 +1188,47 @@
               </div>
             </form>
             </div>
+            <div class="row">
+              <div class="col-xs-12">
+                <label>
+                  Autorizaciones de la Solicitud.
+                </label>
+                <table class="table table-striped">
+                  <thead>
+                    <th>
+                      Usuario
+                    </th>
+                    <th>
+                      Estatus
+                    </th>
+                    <th>
+                      Autorizar
+                    </th>
+                  </thead>
+                  <tbody>
+                    <tr v-for="info in infoAutorization.authorizations">
+                      <td>
+                        {{info.idUser | obtainMailUser}}
+                      </td>
+                      <td>
+                        <span class="label label-success" v-if="info.idAuthorizationStatus == 2">Autorizado</span>
+                        <span class="label label-info" v-if="info.idAuthorizationStatus == 1">Pendiente</span>
+                        <span class="label label-danger" v-if="info.idAuthorizationStatus == 3">Rechazado</span>
+                      </td>
+                      <td>
+                        <button type="button" class="btn btn-success btn-sm" name="button" @click="autorizarSolicitudIndividual(info)"
+                          v-if="info.idAuthorizationStatus == 1 & info.idUser == userInSession.idUser">Autorizar</button>
+                        <button type="button" class="btn btn-danger btn-sm" name="button" @click="rechazarSolicitudIndividual(info)"
+                          v-if="info.idAuthorizationStatus == 1 & info.idUser == userInSession.idUser">Rechazar</button>
+
+                      </td>
+                    </tr>
+                  </tbody>
+
+                </table>
+
+              </div>
+            </div>
           </div>
           <div class="modal fade" id="periodicPayment" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -1212,11 +1340,6 @@
                         </label>
 
                         <div class="row">
-                           <div class="col-xs-2">
-                             <label>
-                               #
-                             </label>
-                           </div>
                            <div class="col-xs-4">
                               <label>
                                 Monto de Pago
@@ -1233,11 +1356,6 @@
                         </div>
 
                         <div class="row" v-for="ap in AccountsPayables">
-                          <div class="col-xs-2">
-                            <label>
-                              #
-                            </label>
-                          </div>
                           <div class="col-xs-4">
                             <div class="input-group">
                               <span class="input-group-addon">$</span>
@@ -1307,11 +1425,6 @@
               </div>
             </div>
           </div>
-
-          <pre>
-            {{$data.estimations | json}}
-
-          </pre>
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->
