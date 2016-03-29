@@ -302,7 +302,8 @@
                 mail: ''
               },
               isSaved: true,
-              requiredFile: true
+              requiredFile: true,
+              expanded: ''
               }
               return cotizacion;
             },
@@ -311,6 +312,7 @@
               var cotizacion= this.createCotizacion();
               cotizacion.idRequest= this.objectRequest.request.idRequest;
               cotizacion.indexOfForm= this.estimations.length;
+              cotizacion.expanded= 'in';
               this.estimations.push(cotizacion);
             },
             deleteCotizacion: function(cotizacion)
@@ -480,6 +482,7 @@
               cotizacion.userEstimation.mail= responseOfEstimation.userEstimation.mail;
               cotizacion.isSaved= false;
               cotizacion.requiredFile= false;
+              cotizacion.expanded= '';
             },
             verifyUpdateOrSave: function()
             {
@@ -945,7 +948,14 @@
                 <div class="panel-heading">
                   <div class="row">
                     <div class="col-xs-4 text-left">
-                      <h3 class="panel-title">Cotizacion</h3>
+                      <div class="col-xs-6">
+                        <h3 class="panel-title" data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" aria-expanded="false"
+                          aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer">Cotizacion
+                        </h3>
+                      </div>
+                      <div class="col-xs-6">
+                        <h4 class="panel-title">Monto $ {{cotizacion.amount}}</h4>
+                      </div>
                     </div>
                     <div class="col-xs-4" >
                       <span class="label label-danger" v-if="cotizacion.outOfBudget>0">Cotizacion Fuera de Presupuesto</span>
@@ -973,7 +983,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body collapse {{cotizacion.expanded}}" id="collapse{{cotizacion.indexOfForm}}">
                   <div class="row">
                     <div class="col-xs-2">
                       <label>
@@ -1232,6 +1242,9 @@
               </div>
             </div>
           </div>
+          <pre>
+            {{ $data.estimations | json}}
+          </pre>
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->
