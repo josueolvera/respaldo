@@ -491,7 +491,12 @@
           },
           autorizarSolicitudIndividual: function(info)
           {
-            this.$http.post(ROOT_URL+"/folios/authorizations/"+ info.idAuthorization +"/authorize").
+            var detalle= {
+              details: ''
+            }
+            detalle.details = info.details;
+
+            this.$http.post(ROOT_URL+"/folios/authorizations/"+ info.idAuthorization +"/authorize",JSON.stringify(detalle)).
             success(function(data)
             {
               showAlert(data);
@@ -505,7 +510,12 @@
           },
           rechazarSolicitudIndividual: function(info)
           {
-            this.$http.post(ROOT_URL+"/folios/authorizations/"+ info.idAuthorization +"/reject").
+            var detalle= {
+              details: ''
+            }
+            detalle.details = info.details;
+
+            this.$http.post(ROOT_URL+"/folios/authorizations/"+ info.idAuthorization +"/reject", JSON.stringify(detalle)).
             success(function(data)
             {
               showAlert(data);
@@ -545,6 +555,18 @@
               }
           });
           return newParam;
+        },
+        filterNull: function(param)
+        {
+          if (param == "null")
+          {
+              return ''
+          }
+          else
+          {
+            return param;
+          }
+
         }
 
       }
@@ -792,6 +814,9 @@
                       <th>
                         Autorizar
                       </th>
+                      <th>
+                        Detalles
+                      </th>
                     </thead>
                     <tbody>
                       <tr v-for="info in infoAutorization.authorizations">
@@ -809,6 +834,15 @@
                           <button type="button" class="btn btn-danger btn-sm" name="button" @click="rechazarSolicitudIndividual(info)"
                             v-if="info.idAuthorizationStatus == 1 & info.idUser == userInSession.idUser">Rechazar</button>
 
+                        </td>
+                        <td>
+                          <textarea name="name" rows="3" cols="40" v-model="info.details" v-if="info.idAuthorizationStatus == 1">
+
+                          </textarea>
+                          <textarea name="name" rows="3" cols="40" v-model="info.details | filterNull"
+                            v-if="info.idAuthorizationStatus == 3 || info.idAuthorizationStatus == 2" disabled="true" >
+
+                          </textarea>
                         </td>
                       </tr>
                     </tbody>

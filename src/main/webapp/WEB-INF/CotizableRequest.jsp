@@ -310,7 +310,8 @@
                 mail: ''
               },
               isSaved: true,
-              requiredFile: true
+              requiredFile: true,
+              expanded: ''
               }
               return cotizacion;
             },
@@ -319,6 +320,7 @@
               var cotizacion= this.createCotizacion();
               cotizacion.idRequest= this.objectRequest.request.idRequest;
               cotizacion.indexOfForm= this.estimations.length;
+              cotizacion.expanded= 'in';
               this.estimations.push(cotizacion);
             },
             deleteCotizacion: function(cotizacion)
@@ -840,28 +842,38 @@
             },
             autorizarSolicitudIndividual: function(info)
             {
-              this.$http.post(ROOT_URL+"/folios/authorizations/"+ info.idAuthorization +"/authorize").
+              var detalle= {
+                details: ''
+              }
+              detalle.details = info.details;
+
+              this.$http.post(ROOT_URL+"/folios/authorizations/"+ info.idAuthorization +"/authorize",JSON.stringify(detalle)).
               success(function(data)
               {
                 showAlert(data);
                 setInterval(function()
                 {
                   window.location.reload()
-                },2000);
+                },2500);
               }).error(function() {
                 showAlert("Ha habido un error al autorizar la solicitud, intente nuevamente");
               });
             },
             rechazarSolicitudIndividual: function(info)
             {
-              this.$http.post(ROOT_URL+"/folios/authorizations/"+ info.idAuthorization +"/reject").
+              var detalle= {
+                details: ''
+              }
+              detalle.details = info.details;
+
+              this.$http.post(ROOT_URL+"/folios/authorizations/"+ info.idAuthorization +"/reject", JSON.stringify(detalle)).
               success(function(data)
               {
                 showAlert(data);
                 setInterval(function()
                 {
                   window.location.reload()
-                },2000);
+                },2500);
               }).error(function() {
                 showAlert("Ha habido un error al cancelar la solicitud, intente nuevamente");
               });
@@ -881,6 +893,18 @@
                 }
             });
             return newParam;
+          },
+          filterNull: function(param)
+          {
+            if (param == "null")
+            {
+                return ''
+            }
+            else
+            {
+              return param;
+            }
+
           }
 
         }
@@ -1042,7 +1066,14 @@
                 <div class="panel-heading">
                   <div class="row">
                     <div class="col-xs-4 text-left">
-                      <h3 class="panel-title">Cotizacion</h3>
+                      <div class="col-xs-6">
+                        <h3 class="panel-title" data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" aria-expanded="false"
+                          aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer">Cotizacion
+                        </h3>
+                      </div>
+                      <div class="col-xs-6">
+                        <h4 class="panel-title">Monto $ {{cotizacion.amount}}</h4>
+                      </div>
                     </div>
                     <div class="col-xs-4" >
                       <span class="label label-danger" v-if="cotizacion.outOfBudget == 1">Cotizacion Fuera de Presupuesto</span>
@@ -1071,7 +1102,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body collapse {{cotizacion.expanded}}" id="collapse{{cotizacion.indexOfForm}}">
                   <div class="row">
                     <div class="col-xs-2">
                       <label>
@@ -1202,6 +1233,9 @@
                     <th>
                       Autorizar
                     </th>
+                    <th>
+                      Detalles
+                    </th>
                   </thead>
                   <tbody>
                     <tr v-for="info in infoAutorization.authorizations">
@@ -1219,6 +1253,15 @@
                         <button type="button" class="btn btn-danger btn-sm" name="button" @click="rechazarSolicitudIndividual(info)"
                           v-if="info.idAuthorizationStatus == 1 & info.idUser == userInSession.idUser">Rechazar</button>
 
+                      </td>
+                      <td>
+                        <textarea name="name" rows="3" cols="40" v-model="info.details" v-if="info.idAuthorizationStatus == 1">
+
+                        </textarea>
+                        <textarea name="name" rows="3" cols="40" v-model="info.details | filterNull"
+                          v-if="info.idAuthorizationStatus == 3 || info.idAuthorizationStatus == 2" disabled="true" >
+
+                        </textarea>
                       </td>
                     </tr>
                   </tbody>
