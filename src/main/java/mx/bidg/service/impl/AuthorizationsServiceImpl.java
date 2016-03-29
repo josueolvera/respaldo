@@ -1,10 +1,12 @@
 package mx.bidg.service.impl;
 
 import mx.bidg.dao.AuthorizationsDao;
+import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.Authorizations;
 import mx.bidg.model.CAuthorizationStatus;
 import mx.bidg.service.AuthorizationsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +46,13 @@ public class AuthorizationsServiceImpl implements AuthorizationsService {
 
     @Override
     public Authorizations authorize(Authorizations auth) {
+        if (auth.getIdAuthorizationStatus() != CAuthorizationStatus.PENDIENTE) {
+            throw new ValidationException(
+                    "La autorizacion ya no esta pendiente",
+                    "Cambio de estatus no permitido",
+                    HttpStatus.UNAUTHORIZED
+            );
+        }
         auth.setCAuthorizationStatus(new CAuthorizationStatus(CAuthorizationStatus.AUTORIZADA));
         auth.setAuthorizationDate(LocalDateTime.now());
         return update(auth);
@@ -51,6 +60,13 @@ public class AuthorizationsServiceImpl implements AuthorizationsService {
 
     @Override
     public Authorizations reject(Authorizations auth) {
+        if (auth.getIdAuthorizationStatus() != CAuthorizationStatus.PENDIENTE) {
+            throw new ValidationException(
+                    "La autorizacion ya no esta pendiente",
+                    "Cambio de estatus no permitido",
+                    HttpStatus.UNAUTHORIZED
+            );
+        }
         auth.setCAuthorizationStatus(new CAuthorizationStatus(CAuthorizationStatus.RECHAZADA));
         auth.setAuthorizationDate(LocalDateTime.now());
         return update(auth);

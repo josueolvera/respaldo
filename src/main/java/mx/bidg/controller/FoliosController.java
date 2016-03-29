@@ -1,5 +1,6 @@
 package mx.bidg.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
@@ -48,10 +49,11 @@ public class FoliosController {
         );
     }
 
-    @RequestMapping(value = "/authorizations/{id}/authorize", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
-    public @ResponseBody ResponseEntity<String> authorizeAuthorization(@PathVariable int id, HttpSession session) throws IOException {
+    @RequestMapping(value = "/authorizations/{id}/authorize", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody ResponseEntity<String> authorizeAuthorization(@PathVariable int id, HttpSession session, @RequestBody String data) throws IOException {
         Users user = (Users) session.getAttribute("user");
         Authorizations auth = authorizationsService.findById(id);
+        JsonNode jnode = mapper.readTree(data);
 
         if (! auth.getIdUser().equals(user.getIdUser())) {
             throw new ValidationException(
@@ -61,15 +63,17 @@ public class FoliosController {
             );
         }
 
+        auth.setDetails(jnode.get("details").asText());
         authorizationsService.authorize(auth);
 
         return new ResponseEntity<>("Operacion realizada con exito", HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/authorizations/{id}/reject", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
-    public @ResponseBody ResponseEntity<String> rejectAuthorization(@PathVariable int id, HttpSession session) throws IOException {
+    @RequestMapping(value = "/authorizations/{id}/reject", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody ResponseEntity<String> rejectAuthorization(@PathVariable int id, HttpSession session, @RequestBody String data) throws IOException {
         Users user = (Users) session.getAttribute("user");
         Authorizations auth = authorizationsService.findById(id);
+        JsonNode jnode = mapper.readTree(data);
 
         if (! auth.getIdUser().equals(user.getIdUser())) {
             throw new ValidationException(
@@ -79,6 +83,7 @@ public class FoliosController {
             );
         }
 
+        auth.setDetails(jnode.get("details").asText());
         authorizationsService.reject(auth);
 
         return new ResponseEntity<>("Operacion realizada con exito", HttpStatus.OK);
