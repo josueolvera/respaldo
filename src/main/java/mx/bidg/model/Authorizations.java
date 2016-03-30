@@ -67,11 +67,20 @@ public class Authorizations implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAuthorizationStatus;
 
+    @Column(name = "ID_AUTHORIZATION_TYPE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idAuthorizationType;
+
     @JoinColumn(name = "ID_AUTHORIZATION_STATUS", referencedColumnName = "ID_AUTHORIZATION_STATUS")
     @ManyToOne
     @JsonProperty("authorizationStatus")
     @JsonView(JsonViews.Embedded.class)
     private CAuthorizationStatus cAuthorizationStatus;
+
+    @JoinColumn(name = "ID_AUTHORIZATION_TYPE", referencedColumnName = "ID_AUTHORIZATION_TYPE")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CAuthorizationTypes authorizationType;
 
     @JoinColumn(name = "ID_USER", referencedColumnName = "ID_USER")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -169,6 +178,22 @@ public class Authorizations implements Serializable {
 
     public void setUsers(Users users) {
         this.users = users;
+    }
+
+    public Integer getIdAuthorizationType() {
+        return idAuthorizationType;
+    }
+
+    public void setIdAuthorizationType(Integer idAuthorizationType) {
+        this.idAuthorizationType = idAuthorizationType;
+    }
+
+    public CAuthorizationTypes getAuthorizationType() {
+        return authorizationType;
+    }
+
+    public void setAuthorizationType(CAuthorizationTypes authorizationType) {
+        this.authorizationType = authorizationType;
     }
 
     @Override

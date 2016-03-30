@@ -15,10 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,6 +30,15 @@ public class RequestEventsListener {
 
     @Value("${request.authorizations.rule_name}")
     private String AUTHORIZATIONS_RULE_NAME;
+
+    @Value("${price_estimations.creation.rule_name}")
+    private String ESTIMATION_CREATION_RULE_NAME;
+
+    @Value("${price_estimations.authorization.rule_name}")
+    private String ESTIMATION_AUTHORIZATION_RULE_NAME;
+
+    @Value("${payment_plan.creation.rule_name}")
+    private String PAYMENT_PLAN_CREATION_RULE_NAME;
 
     @Value("${authorizations.default.user_id}")
     private Integer DEFAULT_USER_ID;
@@ -51,23 +62,25 @@ public class RequestEventsListener {
         users.add(request.getUserRequest());
         users.add(request.getUserResponsible());
         notificationsService.createNotification(users, request);
-        // TODO: Evaluar regla price_estimations.creation.rule_name
-        // TODO: Notificar a responsable de cotizar
-        notificationsService.createForEstimationCreation(new Users(188), request);
+        AuthorizationTreeRules rule = authorizationTreeRulesService.findByRuleName(ESTIMATION_CREATION_RULE_NAME);
+        Integer idUser = evalRule(rule, request);
+        notificationsService.createForEstimationCreation(new Users(idUser), request);
     }
 
     @EventListener
     public void buildPriceEstimationsAuthorizationsTree(PriceEstimationCreatedEvent event) {
         Requests request = event.getResource();
-        // TODO: Notificar a responsabel de autorizar cotizacion
-        notificationsService.createForEstimationAuthorization(new Users(174), request);
+        AuthorizationTreeRules rule = authorizationTreeRulesService.findByRuleName(ESTIMATION_AUTHORIZATION_RULE_NAME);
+        Integer idUser = evalRule(rule, request);
+        notificationsService.createForEstimationAuthorization(new Users(idUser), request);
     }
 
     @EventListener
     public void buildPaymentsTree(PriceEstimationAuthorizedEvent event) {
         Requests request = event.getResource();
-        // TODO: Notificar a responsabel de adjuntar plan de pago
-        notificationsService.createForEstimationAuthorization(new Users(188), request);
+        AuthorizationTreeRules rule = authorizationTreeRulesService.findByRuleName(PAYMENT_PLAN_CREATION_RULE_NAME);
+        Integer idUser = evalRule(rule, request);
+        notificationsService.createForEstimationAuthorization(new Users(idUser), request);
     }
 
     @EventListener
@@ -97,12 +110,27 @@ public class RequestEventsListener {
                 Authorizations auth = new Authorizations();
                 auth.setFolio(requests.getFolio());
                 auth.setUsers(new Users(entry.getValue()));
+                auth.setAuthorizationType(CAuthorizationTypes.SOLICITUD);
                 auth.setAuthorizationOrder(entry.getKey());
                 auth.setCAuthorizationStatus(new CAuthorizationStatus(CAuthorizationStatus.PENDIENTE));
                 auth.setIdAccessLevel(1);
                 authorizationsService.save(auth);
             }
         }
+    }
+
+    private Integer evalRule(AuthorizationTreeRules rule, Requests request) {
+        Binding binding = new Binding();
+        binding.setProperty("request", request);
+        GroovyShell shell = new GroovyShell(binding);
+        Integer idUser = DEFAULT_USER_ID;
+        try {
+            idUser = (Integer) shell.evaluate(rule.getRuleCode());
+        } catch (RuntimeException e) {
+            Logger.getLogger(RequestEventsListener.class.getName())
+                    .log(Level.SEVERE, "Error al evaluar la regla " + PAYMENT_PLAN_CREATION_RULE_NAME, e);
+        }
+        return idUser;
     }
 }
 
