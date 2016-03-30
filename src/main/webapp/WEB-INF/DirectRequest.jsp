@@ -116,7 +116,8 @@
             userInSession: '',
             isSavingNow: false,
             AccountsPayables: [],
-            infoAutorization: ''
+            infoAutorization: '',
+            userRequest: ''
 
         },
         methods:
@@ -381,6 +382,7 @@
             this.objectRequest.request.idRequestTypeProduct= data.idRequestTypeProduct;
             this.objectRequest.request.idRequestStatus= data.idRequestStatus;
             this.obtainInformationAutorization();
+            this.userRequest = data.userRequest.mail;
             data.requestProductsList.forEach(function(element)
             {
             var producto= self.createProduct();
@@ -477,6 +479,7 @@
             success(function (data)
              {
                this.userInSession = data;
+               this.userRequest = data.mail;
 
              }).error(function(data)
              {
@@ -588,7 +591,7 @@
                 <label>
                   Solicitante:
                 </label>
-                <input class="form-control" type="text" name="name" value="" disabled="true" v-model="userInSession.mail">
+                <input class="form-control" type="text" name="name" value="" disabled="true" v-model="userRequest">
               </div>
             </div>
             <br>

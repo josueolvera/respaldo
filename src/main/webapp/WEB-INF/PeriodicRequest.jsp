@@ -140,7 +140,8 @@
           userInSession: '',
           isSavingNow: false,
           isAutoriced: true,
-          infoAutorization: ''
+          infoAutorization: '',
+          userRequest: ''
           },
           methods:
           {
@@ -516,6 +517,8 @@
               this.objectRequest.request.idRequestStatus= data.idRequestStatus;
               this.objectRequest.request.description= data.description;
               this.objectRequest.request.purpose= data.purpose;
+              this.userRequest = data.userRequest.mail;
+
               data.requestProductsList.forEach(function(element)
               {
               var producto= self.createProduct();
@@ -676,6 +679,7 @@
               success(function (data)
                {
                  this.userInSession = data;
+                 this.userRequest = data.mail;
 
                }).error(function(data)
                {
@@ -833,7 +837,7 @@
                 <label>
                   Solicitante:
                 </label>
-                <input class="form-control" type="text" name="name" value="" disabled="true" v-model="userInSession.mail">
+                <input class="form-control" type="text" name="name" value="" disabled="true" v-model="userRequest">
               </div>
             </div>
             <br>
@@ -1277,9 +1281,6 @@
               </div>
             </div>
           </div>
-          <pre>
-            {{ $data.estimations | json}}
-          </pre>
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->
