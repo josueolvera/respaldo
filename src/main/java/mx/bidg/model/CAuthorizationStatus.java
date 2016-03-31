@@ -22,9 +22,9 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "C_AUTHORIZATION_STATUS")
 public class CAuthorizationStatus implements Serializable {
 
-    public static final int PENDIENTE = 1;
-    public static final int AUTORIZADA = 2;
-    public static final int RECHAZADA = 3;
+    public static final CAuthorizationStatus PENDIENTE = new CAuthorizationStatus(1);
+    public static final CAuthorizationStatus AUTORIZADA = new CAuthorizationStatus(2);
+    public static final CAuthorizationStatus RECHAZADA = new CAuthorizationStatus(3);
 
     private static final long serialVersionUID = 1L;
 

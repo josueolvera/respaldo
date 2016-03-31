@@ -112,7 +112,7 @@ public class RequestEventsListener {
                 auth.setUsers(new Users(entry.getValue()));
                 auth.setAuthorizationType(CAuthorizationTypes.SOLICITUD);
                 auth.setAuthorizationOrder(entry.getKey());
-                auth.setCAuthorizationStatus(new CAuthorizationStatus(CAuthorizationStatus.PENDIENTE));
+                auth.setCAuthorizationStatus(CAuthorizationStatus.PENDIENTE);
                 auth.setIdAccessLevel(1);
                 authorizationsService.save(auth);
             }

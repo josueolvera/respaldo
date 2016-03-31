@@ -46,28 +46,28 @@ public class AuthorizationsServiceImpl implements AuthorizationsService {
 
     @Override
     public Authorizations authorize(Authorizations auth) {
-        if (auth.getIdAuthorizationStatus() != CAuthorizationStatus.PENDIENTE) {
+        if (! auth.getIdAuthorizationStatus().equals(CAuthorizationStatus.PENDIENTE.getIdAuthorizationStatus())) {
             throw new ValidationException(
                     "La autorizacion ya no esta pendiente",
                     "Cambio de estatus no permitido",
                     HttpStatus.UNAUTHORIZED
             );
         }
-        auth.setCAuthorizationStatus(new CAuthorizationStatus(CAuthorizationStatus.AUTORIZADA));
+        auth.setCAuthorizationStatus(CAuthorizationStatus.AUTORIZADA);
         auth.setAuthorizationDate(LocalDateTime.now());
         return update(auth);
     }
 
     @Override
     public Authorizations reject(Authorizations auth) {
-        if (auth.getIdAuthorizationStatus() != CAuthorizationStatus.PENDIENTE) {
+        if (auth.getIdAuthorizationStatus().equals(CAuthorizationStatus.PENDIENTE.getIdAuthorizationStatus())) {
             throw new ValidationException(
                     "La autorizacion ya no esta pendiente",
                     "Cambio de estatus no permitido",
                     HttpStatus.UNAUTHORIZED
             );
         }
-        auth.setCAuthorizationStatus(new CAuthorizationStatus(CAuthorizationStatus.RECHAZADA));
+        auth.setCAuthorizationStatus(CAuthorizationStatus.RECHAZADA);
         auth.setAuthorizationDate(LocalDateTime.now());
         return update(auth);
     }
