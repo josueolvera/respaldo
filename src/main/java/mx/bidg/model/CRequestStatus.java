@@ -23,10 +23,10 @@ import java.io.Serializable;
 @Table(name = "C_REQUEST_STATUS")
 public class CRequestStatus implements Serializable {
 
-    public static final int PENDIENTE = 1;
-    public static final int COTIZADA = 2;
-    public static final int RECHAZADA = 3;
-    public static final int APROBADA = 4;
+    public static final CRequestStatus PENDIENTE = new CRequestStatus(1);
+    public static final CRequestStatus COTIZADA = new CRequestStatus(2);
+    public static final CRequestStatus RECHAZADA = new CRequestStatus(3);
+    public static final CRequestStatus APROBADA = new CRequestStatus(4);
 
     private static final long serialVersionUID = 1L;
 

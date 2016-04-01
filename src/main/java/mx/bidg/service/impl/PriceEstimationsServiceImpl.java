@@ -79,7 +79,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         estimation.setOutOfBudget((residualAmount.compareTo(amount) == -1)? 1 : 0);
         estimation = priceEstimationsDao.save(estimation);
 
-        request.setRequestStatus(new CRequestStatus(CRequestStatus.COTIZADA));
+        request.setRequestStatus(CRequestStatus.COTIZADA);
         requestsDao.update(request);
 
         return estimation;
@@ -129,8 +129,8 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         PriceEstimations estimation = priceEstimationsDao.findByIdFetchRequestStatus(idEstimation);
         Requests request = estimation.getRequest();
 
-        if (request.getIdRequestStatus() == CRequestStatus.APROBADA
-                || request.getIdRequestStatus() == CRequestStatus.RECHAZADA) {
+        if (request.getIdRequestStatus().equals(CRequestStatus.APROBADA.getIdRequestStatus())
+                || request.getIdRequestStatus().equals(CRequestStatus.RECHAZADA.getIdRequestStatus())) {
             throw new ValidationException("No es posible elegir una cotizacion de una Solicitud Aceptada o Rechazada",
                     "No es posible elegir una cotizacion de una Solicitud Aceptada o Rechazada", HttpStatus.FORBIDDEN);
         } else {

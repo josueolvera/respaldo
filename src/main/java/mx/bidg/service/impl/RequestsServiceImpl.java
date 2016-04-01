@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mx.bidg.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -133,7 +128,7 @@ public class RequestsServiceImpl implements RequestsService {
         //51 es el id de Requests en CTables
         request.setFolio(foliosService.createNew(new CTables(51)));
         request.setUserRequest(user);
-        request.setRequestStatus(new CRequestStatus(CRequestStatus.PENDIENTE));
+        request.setRequestStatus(CRequestStatus.PENDIENTE);
         request.setUserResponsible(new Users(jsonRequest.get("request").get("idUserResponsable").asInt()));
         request.setCreationDate(LocalDateTime.now());
         request.setApplyingDate(LocalDateTime.parse(jsonRequest.get("request").get("applyingDate").asText(), DateTimeFormatter.ISO_LOCAL_DATE_TIME));
@@ -163,7 +158,8 @@ public class RequestsServiceImpl implements RequestsService {
             throw new ValidationException("No existe el request", "No se encuentra la solicitud", HttpStatus.CONFLICT);
         }
 
-        if((request.getIdRequestStatus() != CRequestStatus.COTIZADA) || request.getIdRequestStatus() != CRequestStatus.PENDIENTE) {
+        if((request.getIdRequestStatus() != CRequestStatus.COTIZADA.getIdRequestStatus())
+                || request.getIdRequestStatus() != CRequestStatus.PENDIENTE.getIdRequestStatus()) {
             throw new ValidationException("Estatus de la solicitud invalida", "Esta solicitud ya fue validada anteriormente", HttpStatus.CONFLICT);
         }
 
@@ -196,7 +192,7 @@ public class RequestsServiceImpl implements RequestsService {
                     "solicitud", HttpStatus.CONFLICT);
         }
 
-        request.setRequestStatus(new CRequestStatus(CRequestStatus.APROBADA));
+        request.setRequestStatus(CRequestStatus.APROBADA);
         return requestsDao.update(request);
     }
 
