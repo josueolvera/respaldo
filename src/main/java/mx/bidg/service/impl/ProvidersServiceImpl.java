@@ -18,11 +18,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProvidersServiceImpl implements ProvidersService {
     
     @Autowired
-    ProvidersDao dao;
+    private ProvidersDao dao;
 
     @Override
     public List<Providers> findAll() {
         return dao.findAll();
     }
-    
+
+    @Override
+    public Providers save(Providers providers) {
+        dao.save(providers);
+        return providers;
+    }
 }

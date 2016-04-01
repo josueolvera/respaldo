@@ -1,21 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mx.bidg.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
 import mx.bidg.config.JsonViews;
-import mx.bidg.model.Providers;
+import mx.bidg.model.*;
 import mx.bidg.service.ProvidersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.io.IOException;
 
 /**
  *
@@ -26,14 +26,43 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ProvidersController {
     
     @Autowired
-    ProvidersService providersService;
+    private ProvidersService providersService;
     
-    ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper = new ObjectMapper();
     
-    @RequestMapping(produces = "application/json")
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> getProvidersList() throws Exception {
         String response = mapper.writerWithView(JsonViews.Root.class).writeValueAsString(providersService.findAll());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-    
+
+
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody ResponseEntity<String> saveProvider(@RequestBody String data) throws IOException {
+        JsonNode jnode = mapper.readTree(data);
+        Providers provider = new Providers();
+        provider.setProviderName(jnode.get("providerName").asText());
+        provider.setBusinessName(jnode.get("businessName").asText());
+        provider.setRfc(jnode.get("rfc").asText());
+        provider.setIdAccessLevel(1);
+        providersService.save(provider);
+
+        for (JsonNode node : jnode.get("providersAccountsList")) {
+            ProvidersAccounts providerAccount = new ProvidersAccounts();
+            providerAccount.setIdAccessLevel(1);
+            Accounts account = new Accounts();
+            account.setAccountNumber(node.get("accountNumber").asText());
+            account.setAccountClabe(node.get("accountClabe").asText());
+            account.setBank(new CBanks(node.get("idBank").asInt()));
+            account.setAccountType(CAccountsTypes.DEFINITIVA);
+            account.setIdAccessLevel(1);
+
+            providerAccount.setAccount(account);
+            providerAccount.setProvider(provider);
+        }
+
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(provider), HttpStatus.OK
+        );
+    }
 }

@@ -32,7 +32,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "PROVIDERS")
-
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Providers implements Serializable {
     
@@ -40,7 +39,6 @@ public class Providers implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_PROVIDER")
     @JsonView(JsonViews.Root.class)
     private Integer idProvider;
@@ -51,6 +49,11 @@ public class Providers implements Serializable {
     @Column(name = "PROVIDER_NAME")
     @JsonView(JsonViews.Root.class)
     private String providerName;
+
+    @Column(name = "BUSINESS_NAME")
+    @Size(max = 1024)
+    @JsonView(JsonViews.Root.class)
+    private String businessName;
     
     @Basic(optional = false)
     @NotNull
@@ -107,6 +110,14 @@ public class Providers implements Serializable {
 
     public void setRfc(String rfc) {
         this.rfc = rfc;
+    }
+
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
     }
 
     public List<ProvidersAccounts> getProvidersAccountsList() {

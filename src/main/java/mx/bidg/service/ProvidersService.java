@@ -13,7 +13,6 @@ import mx.bidg.model.Providers;
  * @author sistemask
  */
 public interface ProvidersService {
-    
-    public List<Providers> findAll();
-    
+    List<Providers> findAll();
+    Providers save(Providers providers);
 }

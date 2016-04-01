@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mx.bidg.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,9 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProvidersAccountsServiceImpl implements ProvidersAccountsService {
     
     @Autowired
-    ProvidersAccountsDao dao;
+    private ProvidersAccountsDao dao;
     
-    ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public List<ProvidersAccounts> findByProvider(Providers provider) {
@@ -52,7 +47,7 @@ public class ProvidersAccountsServiceImpl implements ProvidersAccountsService {
         account.setAccountClabe(clabe);
         account.setAccountNumber(accountNumber);
         account.setIdAccessLevel(1);
-        account.setAccountType(new CAccountsTypes(CAccountsTypes.DEFINITIVA));
+        account.setAccountType(CAccountsTypes.DEFINITIVA);
         account.setBank(new CBanks(idBank));
         
         ProvidersAccounts providersAccount = new ProvidersAccounts();

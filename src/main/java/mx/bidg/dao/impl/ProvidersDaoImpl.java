@@ -34,12 +34,14 @@ public class ProvidersDaoImpl extends AbstractDao<Integer, Providers> implements
 
     @Override
     public Providers update(Providers entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        modify(entity);
+        return entity;
     }
 
     @Override
     public boolean delete(Providers entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        remove(entity);
+        return true;
     }
     
 }

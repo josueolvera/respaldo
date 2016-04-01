@@ -27,8 +27,8 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "C_ACCOUNTS_TYPES")
 public class CAccountsTypes implements Serializable {
 
-    public static final int DEFINITIVA = 1;
-    public static final int PROVICIONAL = 2;
+    public static final CAccountsTypes DEFINITIVA = new CAccountsTypes(1);
+    public static final CAccountsTypes PROVICIONAL = new CAccountsTypes(2);
 
     private static final long serialVersionUID = 1L;
     
