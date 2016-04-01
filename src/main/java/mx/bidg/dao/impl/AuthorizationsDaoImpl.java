@@ -3,6 +3,7 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.AuthorizationsDao;
 import mx.bidg.model.Authorizations;
+import mx.bidg.model.CAuthorizationStatus;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -50,6 +51,15 @@ public class AuthorizationsDaoImpl extends AbstractDao<Integer, Authorizations> 
         return createEntityCriteria()
                 .add(Restrictions.eq("folio", folio))
                 .addOrder(Order.asc("authorizationOrder"))
+                .list();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Authorizations> findByFolioAndStatus(String folio, CAuthorizationStatus status) {
+        return (List<Authorizations>) createEntityCriteria()
+                .add(Restrictions.eq("folio", folio))
+                .add(Restrictions.eq("idAuthorizationStatus", status.getIdAuthorizationStatus()))
                 .list();
     }
 

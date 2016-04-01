@@ -35,6 +35,11 @@ public class AuthorizationsServiceImpl implements AuthorizationsService {
     }
 
     @Override
+    public List<Authorizations> findByFolioAndStatus(String folio, CAuthorizationStatus status) {
+        return authorizationsDao.findByFolioAndStatus(folio, status);
+    }
+
+    @Override
     public Authorizations save(Authorizations entity) {
         return authorizationsDao.save(entity);
     }

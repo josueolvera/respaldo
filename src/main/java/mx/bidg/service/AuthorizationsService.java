@@ -1,6 +1,7 @@
 package mx.bidg.service;
 
 import mx.bidg.model.Authorizations;
+import mx.bidg.model.CAuthorizationStatus;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import java.util.List;
 public interface AuthorizationsService {
     Authorizations findById(int id);
     List<Authorizations> findAll();
+    List<Authorizations> findByFolioAndStatus(String folio, CAuthorizationStatus status);
     Authorizations save(Authorizations entity);
     Authorizations update(Authorizations entity);
     Authorizations authorize(Authorizations authorizations);

@@ -5,6 +5,7 @@ import groovy.lang.GroovyShell;
 import mx.bidg.events.CreationEvent;
 import mx.bidg.events.requests.PriceEstimationAuthorizedEvent;
 import mx.bidg.events.requests.PriceEstimationCreatedEvent;
+import mx.bidg.events.requests.RequestAuthorizedEvent;
 import mx.bidg.events.requests.RequestCompletedEvent;
 import mx.bidg.model.*;
 import mx.bidg.service.AuthorizationTreeRulesService;
@@ -117,6 +118,13 @@ public class RequestEventsListener {
                 authorizationsService.save(auth);
             }
         }
+    }
+
+    @EventListener
+    public void finalRequestAuthorization(RequestAuthorizedEvent event) {
+        Requests request = event.getResource();
+        request.setRequestStatus(new CRequestStatus(1));
+        // TODO: Notificar a usuario involucrados
     }
 
     private Integer evalRule(AuthorizationTreeRules rule, Requests request) {

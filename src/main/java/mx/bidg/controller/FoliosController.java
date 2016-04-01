@@ -4,12 +4,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
+import mx.bidg.events.authorizations.AuthorizedEvent;
+import mx.bidg.events.authorizations.RejectedEvent;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.Authorizations;
 import mx.bidg.model.Users;
 import mx.bidg.service.AuthorizationsService;
 import mx.bidg.service.FoliosService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,12 +31,15 @@ import java.io.IOException;
 public class FoliosController {
 
     @Autowired
-    FoliosService foliosService;
+    private FoliosService foliosService;
 
     @Autowired
-    AuthorizationsService authorizationsService;
+    private AuthorizationsService authorizationsService;
 
-    ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
+    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> findFolio(@RequestParam(name = "folio", required = false) String folio) throws IOException {
@@ -65,6 +71,7 @@ public class FoliosController {
 
         auth.setDetails(jnode.get("details").asText());
         authorizationsService.authorize(auth);
+        eventPublisher.publishEvent(new AuthorizedEvent(auth));
 
         return new ResponseEntity<>("Operacion realizada con exito", HttpStatus.OK);
     }
@@ -85,6 +92,7 @@ public class FoliosController {
 
         auth.setDetails(jnode.get("details").asText());
         authorizationsService.reject(auth);
+        eventPublisher.publishEvent(new RejectedEvent(auth));
 
         return new ResponseEntity<>("Operacion realizada con exito", HttpStatus.OK);
     }
