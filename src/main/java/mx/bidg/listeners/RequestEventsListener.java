@@ -8,10 +8,7 @@ import mx.bidg.events.requests.PriceEstimationCreatedEvent;
 import mx.bidg.events.requests.RequestAuthorizedEvent;
 import mx.bidg.events.requests.RequestCompletedEvent;
 import mx.bidg.model.*;
-import mx.bidg.service.AuthorizationTreeRulesService;
-import mx.bidg.service.AuthorizationsService;
-import mx.bidg.service.NotificationsService;
-import mx.bidg.service.UsersService;
+import mx.bidg.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -55,6 +52,9 @@ public class RequestEventsListener {
 
     @Autowired
     private UsersService usersService;
+
+    @Autowired
+    private RequestsService requestsService;
 
     @EventListener
     public void createBaseNotifications(CreationEvent<Requests> event) {
@@ -122,9 +122,13 @@ public class RequestEventsListener {
 
     @EventListener
     public void finalRequestAuthorization(RequestAuthorizedEvent event) {
+        // TODO: Marcar solicitud como aprobada
         Requests request = event.getResource();
-        request.setRequestStatus(new CRequestStatus(1));
+        requestsService.authorization(request.getIdRequest());
         // TODO: Notificar a usuario involucrados
+        List<Users> users = new ArrayList<>();
+        users.add(request.getUserRequest());
+        users.add(request.getUserResponsible());
     }
 
     private Integer evalRule(AuthorizationTreeRules rule, Requests request) {

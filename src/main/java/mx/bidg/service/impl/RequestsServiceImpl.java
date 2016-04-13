@@ -163,7 +163,7 @@ public class RequestsServiceImpl implements RequestsService {
             throw new ValidationException("Estatus de la solicitud invalida", "Esta solicitud ya fue validada anteriormente", HttpStatus.CONFLICT);
         }
 
-        int estimationAccepted = 0;
+        boolean estimationAccepted = false;
         List<PriceEstimations> estimations = priceEstimationsDao.findByIdRequest(idRequest);
         if(estimations.isEmpty()) {
             throw new ValidationException("Esta solicitud no tiene cotizaciones", "Necesita agregar cotizaciones antes de " +
@@ -172,12 +172,12 @@ public class RequestsServiceImpl implements RequestsService {
 
         for(PriceEstimations estimation : estimations) {
             if(estimation.getIdEstimationStatus() == CEstimationStatus.APROBADA) {
-                estimationAccepted = 1;
+                estimationAccepted = true;
                 break;
             }
         }
 
-        if(estimationAccepted != 1) {
+        if(! estimationAccepted) {
             throw new ValidationException("Esta solicitud no tiene cotizaciones aprobadas", "Necesita aprobar una cotizacion " +
                     "antes de autorizar una solicitud", HttpStatus.CONFLICT);
         }
