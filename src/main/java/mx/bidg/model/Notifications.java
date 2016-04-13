@@ -154,7 +154,7 @@ public class Notifications implements Serializable {
     }
 
     public DateFormatsPojo getCreationDate() {
-        return new DateFormatsPojo(creationDate);
+        return (creationDate == null) ? null : new DateFormatsPojo(creationDate);
     }
 
     public void setCreationDate(LocalDateTime creationDate) {

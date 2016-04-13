@@ -463,7 +463,7 @@ public class Employees implements Serializable {
         return new DateFormatsPojo(joinDate);
     }
 
-    public DateFormatsPojo getBithDayFormats() {
+    public DateFormatsPojo getBirthDayFormats() {
         if (birthday == null) {
             return null;
         }
