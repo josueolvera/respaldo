@@ -136,7 +136,7 @@ public class StockController {
     }
 
     @RequestMapping(value = "/{idStock}/properties", method = RequestMethod.POST,
-            consumes = "application/json", produces = "text/plain;charset=UTF-8"
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE
     )
     public ResponseEntity<String> saveProperty(@PathVariable int idStock, @RequestBody String data) throws IOException {
         JsonNode node = mapper.readTree(data);

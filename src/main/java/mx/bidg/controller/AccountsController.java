@@ -11,6 +11,7 @@ import mx.bidg.model.Providers;
 import mx.bidg.service.AccountsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +32,7 @@ public class AccountsController {
     
     ObjectMapper mapper = new ObjectMapper();
     
-    @RequestMapping(value = "/provider/{idProvider}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/provider/{idProvider}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> accountsByProvider(@PathVariable int idProvider) throws Exception {
         String response = mapper.writerWithView(JsonViews.Root.class).writeValueAsString(accountsService
                 .findByProvider(new Providers(idProvider)));
