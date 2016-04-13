@@ -34,8 +34,14 @@ public class EmailDeliveryServiceImpl implements EmailDeliveryService {
     @Value("${email_templates.dir}")
     private String TEMPLATES_DIR;
 
+    @Value("${enable_email_delivery}")
+    private Boolean ENABLE_EMAIL_DELIVERY;
+
     @Async
     public void deliverEmail(final EmailTemplates emailTemplate) {
+        if (! ENABLE_EMAIL_DELIVERY) {
+            return;
+        }
         try {
             Properties props = new Properties();
 
