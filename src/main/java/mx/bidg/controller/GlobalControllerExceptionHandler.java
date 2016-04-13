@@ -2,6 +2,7 @@ package mx.bidg.controller;
 
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.pojos.ErrorField;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.*;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -28,7 +29,7 @@ public class GlobalControllerExceptionHandler extends ResponseEntityExceptionHan
         String errorMessage = "Ha habido un problema con su solicitud, intente nuevamente";
         HttpStatus status = HttpStatus.BAD_REQUEST;
 
-        if(e instanceof SQLIntegrityConstraintViolationException) {
+        if (e instanceof SQLIntegrityConstraintViolationException || e instanceof ConstraintViolationException) {
             errorMessage = "Elemento duplicado";
         }
 
