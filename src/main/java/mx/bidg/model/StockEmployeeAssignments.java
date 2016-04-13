@@ -165,7 +165,7 @@ public class StockEmployeeAssignments implements Serializable {
     }
 
     public DateFormatsPojo getAssignmentDateFormats() {
-        return new DateFormatsPojo(assignmentDate);
+        return (assignmentDate == null) ? null : new DateFormatsPojo(assignmentDate);
     }
 
     @Override

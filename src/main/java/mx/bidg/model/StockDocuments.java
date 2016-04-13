@@ -147,7 +147,7 @@ public class StockDocuments implements Serializable {
     }
 
     public DateFormatsPojo getUploadingDateFormats() {
-        return new DateFormatsPojo(uploadingDate);
+        return (uploadingDate == null) ? null : new DateFormatsPojo(uploadingDate);
     }
 
     @Override

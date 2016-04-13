@@ -211,7 +211,7 @@ public class Requests implements Serializable {
     }
 
     public DateFormatsPojo getApplyingDateFormats() {
-        return new DateFormatsPojo(applyingDate);
+        return (applyingDate == null) ? null : new DateFormatsPojo(applyingDate);
     }
 
     public int getIdAccessLevel() {

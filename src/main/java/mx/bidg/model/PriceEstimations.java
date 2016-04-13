@@ -305,7 +305,7 @@ public class PriceEstimations implements Serializable {
     }
 
     public DateFormatsPojo getCreationDateFormats() {
-        return new DateFormatsPojo(creationDate);
+        return (creationDate == null) ? null : new DateFormatsPojo(creationDate);
     }
 
     public DateFormatsPojo getAuthorizationDateFormats() {
