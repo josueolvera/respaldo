@@ -29,7 +29,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "C_DISTRIBUTORS")
 
 public class CDistributors implements Serializable {
-        
+    
     private static final long serialVersionUID = 1L;
     
     @Id
@@ -123,5 +123,5 @@ public class CDistributors implements Serializable {
     public String toString() {
         return "mx.bidg.model.CDistributors[ idDistributor=" + idDistributor + " ]";
     }
-    
+
 }

@@ -93,5 +93,5 @@ public class COperationTypes implements Serializable {
     public String toString() {
         return "mx.bidg.model.COperationTypes[ idOperationType=" + idOperationType + " ]";
     }
-    
+
 }

@@ -84,4 +84,10 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
         return accounts;
     }
 
+    @Override
+    public List<AccountsPayable> findAll() {
+        return accountsPayableDao.findAll();
+    }
+
+
 }
