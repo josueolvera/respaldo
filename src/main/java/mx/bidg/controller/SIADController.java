@@ -78,5 +78,13 @@ public class SIADController {
     public String searchRequest() {
         return "SearchRequest";
     }
+    
+        @RequestMapping(value = "/suppliers", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView suppliersView( ) 
+    {
+        ModelAndView model= new ModelAndView();
+        model.setViewName("Suppliers");
+        return model;
+    }
         
 }
