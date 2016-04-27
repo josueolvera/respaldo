@@ -6,9 +6,12 @@
 package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
 import java.util.List;
 
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import mx.bidg.config.JsonViews;
 import mx.bidg.events.requests.RequestCompletedEvent;
 import mx.bidg.model.AccountsPayable;
 import mx.bidg.model.Requests;
@@ -16,7 +19,9 @@ import mx.bidg.service.AccountsPayableService;
 import mx.bidg.service.RequestsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,5 +54,14 @@ public class AccountsPayableController {
         List<AccountsPayable> accountsPayables = accountsPayableService.update(folio, data);
         eventPublisher.publishEvent(new RequestCompletedEvent(requestsService.findByFolio(folio)));
         return mapper.writeValueAsString(accountsPayables);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findAll() throws IOException{
+        List<AccountsPayable> accountsPayables = accountsPayableService.findAll();
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(accountsPayables),
+                HttpStatus.OK
+        );
     }
 }

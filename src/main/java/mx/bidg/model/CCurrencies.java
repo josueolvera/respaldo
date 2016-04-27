@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
@@ -26,7 +21,7 @@ import mx.bidg.config.JsonViews;
 @Entity
 @Table(name = "C_CURRENCIES")
 public class CCurrencies implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
     
     @Id
@@ -116,5 +111,5 @@ public class CCurrencies implements Serializable {
     public String toString() {
         return "mx.bidg.model.CCurrencies[ idCurrency=" + idCurrency + " ]";
     }
-    
+
 }
