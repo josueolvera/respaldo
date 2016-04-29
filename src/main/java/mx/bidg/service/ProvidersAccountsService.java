@@ -19,4 +19,5 @@ public interface ProvidersAccountsService {
     ProvidersAccounts save(String data) throws Exception;
     ProvidersAccounts findByAccountsProvider(Accounts a);
     Boolean delete(ProvidersAccounts providersAccounts);
+    ProvidersAccounts save(ProvidersAccounts providersAccount);
 }
