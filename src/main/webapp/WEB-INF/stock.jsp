@@ -420,11 +420,11 @@
                     </select>
                 </div>
                 <div class="col-md-3 col-xs-6">
-                    <label>Area</label>
+                    <label>Área</label>
                     <select v-model="selectedOptions.area" class="form-control"
                             @change="attachOnScreen"
                             :disabled="selectOptions.areas.length < 2">
-                        <option value="0" selected>Todas</option>
+                        <option value="0" selected>Todas las Áreas</option>
                         <option v-for="area in selectOptions.areas"
                                 :value="area">
                                 {{ area.areaName }}
@@ -432,7 +432,7 @@
                     </select>
                 </div>
                 <div style="visibility: hidden" class="col-md-3 col-xs-6">
-                    <label>Region</label>
+                    <label>Región</label>
                     <select class="form-control"></select>
                 </div>
                 <div style="visibility: hidden" class="col-md-3 col-xs-6">
@@ -454,11 +454,11 @@
                                             <p>{{ article.article.articleName }}</p>
                                         </div>
                                         <div class="col-md-3 col-xs-6">
-                                            <p><strong>No. de serie</strong></p>
+                                            <p><strong>No. de Serie</strong></p>
                                             <p>{{ article.serialNumber }}</p>
                                         </div>
                                         <div class="col-md-3 col-xs-6">
-                                            <p><strong>Fecha de ingreso</strong></p>
+                                            <p><strong>Fecha de Ingreso</strong></p>
                                             <p>{{ article.creationDateFormats.dateNumber }}</p>
                                         </div>
                                         <div class="col-md-3 col-xs-6">
@@ -500,7 +500,7 @@
                                                 <td>{{ article.articleStatus.articleStatus }}</td>
                                             </tr>
                                             <tr>
-                                                <td>Folio de inventario</td>
+                                                <td>Folio de Inventario</td>
                                                 <td>{{ article.stockFolio }}</td>
                                             </tr>
                                             <tr>
@@ -542,20 +542,20 @@
                         <div class="modal-header">
                             <button @click.prevent="closeAttachmentsModal" class="close"><span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title">Documentos adjuntos</h4>
+                            <h4 class="modal-title">Documentos Adjuntos</h4>
                         </div>
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-4 col-xs-6">
-                                    <label>Artículo: </label>
+                                    <label>Artículo </label>
                                     {{ attachmentsModal.article.article.articleName }}
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>No. de Serie: </label>
+                                    <label>No. de Serie </label>
                                     {{ attachmentsModal.article.serialNumber }}
                                 </div>
                                 <div class="col-md-4 col-xs-12">
-                                    <label>Asignado a: </label>
+                                    <label>Asignado a </label>
                                     {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
                                     {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
                                     {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
@@ -569,9 +569,9 @@
                                     <thead>
                                         <tr>
                                             <th>Documento</th>
-                                            <th>Documento actual</th>
-                                            <th>Fecha de envío</th>
-                                            <th>Nuevo documento</th>
+                                            <th>Documento Actual</th>
+                                            <th>Fecha de Envío</th>
+                                            <th>Nuevo Documento</th>
                                         </tr>
                                     </thead>
                                     <tr v-for="docType in selectOptions.documentTypes">
@@ -614,7 +614,7 @@
                                     <tr>
                                         <th>Documento</th>
                                         <th>Archivo</th>
-                                        <th>Fecha de envío</th>
+                                        <th>Fecha de Envío</th>
                                     </tr>
                                 </thead>
                                 <tr v-for="document in attachmentsModal.article.documentsRecord"
@@ -642,20 +642,20 @@
                         <div class="modal-header">
                             <button class="close" @click="closeEditModal()"><span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title">Modificaciar articulo</h4>
+                            <h4 class="modal-title">Modificación de Artículo</h4>
                         </div>
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-4 col-xs-6">
-                                    <label>Artículo: </label>
+                                    <label>Artículo </label>
                                     {{ editModal.article.article.articleName }}
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>No. de Serie: </label>
+                                    <label>No. de Serie </label>
                                     {{ editModal.article.serialNumber }}
                                 </div>
                                 <div class="col-md-4 col-xs-12">
-                                    <label>Asignado a: </label>
+                                    <label>Asignado a </label>
                                     {{ editModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
                                     {{ editModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
                                     {{ editModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
@@ -665,7 +665,7 @@
                             <hr />
                             <div class="row line">
                                 <div class="col-md-8 col-xs-12">
-                                    <label>Asignar a:</label>
+                                    <label>Asignar a</label>
                                     <select v-model="editModal.selectedEmployee.idEmployee"
                                             :disabled="isSaving" class="form-control">
                                         <option v-for="employee in editModal.employees"
@@ -678,7 +678,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>No. de serie</label>
+                                    <label>No. de Serie</label>
                                     <input v-model="editModal.serialNumber"
                                            :disabled="isSaving" type="text" class="form-control">
                                 </div>
@@ -688,7 +688,7 @@
                                            :disabled="isSaving" type="text" class="form-control">
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>Estado de artículo</label>
+                                    <label>Estado de Artículo</label>
                                     <select v-model="editModal.articleStatus"
                                             :disabled="isSaving" class="form-control">
                                         <option v-for="status in selectOptions.articleStatus"
@@ -696,7 +696,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>Precio de compra</label>
+                                    <label>Precio de Compra</label>
                                     <input v-model="editModal.purchasePrice"
                                            :disabled="isSaving" type="text" class="form-control">
                                 </div>
@@ -759,20 +759,20 @@
                         <div class="modal-header flex-row flex-header">
                             <button class="close" @click="closeAssignmentsModal"><span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title">Modificaciar asignacion</h4>
+                            <h4 class="modal-title">Modificar Asignación</h4>
                         </div>
                         <div class="modal-body flex-box">
                             <div class="row flex-row flex-header">
                                 <div class="col-md-4 col-xs-6">
-                                    <label>Artículo: </label>
+                                    <label>Artículo </label>
                                     {{ assignmentsModal.article.article.articleName }}
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>No. de Serie: </label>
+                                    <label>No. de Serie </label>
                                     {{ assignmentsModal.article.serialNumber }}
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>Folio de inventario: </label>
+                                    <label>Folio de Inventario </label>
                                     {{ assignmentsModal.article.stockFolio }}
                                 </div>
                                 <div class="col-xs-12"><label>Asignar a</label></div>
@@ -787,7 +787,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-3 col-xs-6">
-                                    <label>Region</label>
+                                    <label>Región</label>
                                     <select v-model="assignmentsModal.selected.region" class="form-control"
                                             @change="regionChanged" :disabled="assignmentsModal.selected.distributor == null">
                                         <option v-for="region in assignmentsModal.selected.distributor.subLevels"
@@ -807,7 +807,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-3 col-xs-6">
-                                    <label>Area</label>
+                                    <label>Área</label>
                                     <select v-model="assignmentsModal.selected.area" class="form-control"
                                             @change="" :disabled="assignmentsModal.selected.branch == null">
                                         <option v-for="area in assignmentsModal.selected.branch.subLevels"
@@ -823,10 +823,10 @@
                                         <tr>
                                             <th>Asignado a</th>
                                             <th>Distribuidor</th>
-                                            <th>Region</th>
+                                            <th>Región</th>
                                             <th>Sucursal</th>
-                                            <th>Area</th>
-                                            <th>Fecha de asignación</th>
+                                            <th>Área</th>
+                                            <th>Fecha de Asignación</th>
                                         </tr>
                                     </thead>
                                     <tr class="success">
@@ -846,7 +846,7 @@
                                         </td>
                                     </tr>
                                     <tr class="text-center">
-                                        <td colspan="6"><label>Historial de asignaciones</label></td>
+                                        <td colspan="6"><label>Historial de Asignaciones</label></td>
                                     </tr>
                                     <tr v-for="assignment in assignmentsModal.article.assignmentsRecord">
                                         <td>
