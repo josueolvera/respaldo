@@ -18,6 +18,7 @@ public interface ProvidersAccountsService {
     
     public List<ProvidersAccounts> findByProvider(Providers provider);
     public ProvidersAccounts save(String data) throws Exception;
+    ProvidersAccounts save(ProvidersAccounts providersAccounts);
     public List<ProvidersAccounts> findByAccountsProvider(Accounts a);
     
 }

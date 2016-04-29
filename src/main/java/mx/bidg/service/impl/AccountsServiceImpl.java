@@ -42,5 +42,13 @@ public class AccountsServiceImpl implements AccountsService {
     public List<Accounts> findByUser(Users user) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public Accounts save(Accounts account) {   
+        accountsDao.save(account);
+        return account;
+    }
+    
+    
     
 }

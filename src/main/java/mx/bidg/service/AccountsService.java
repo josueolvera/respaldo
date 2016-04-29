@@ -20,4 +20,6 @@ public interface AccountsService {
     
     public List<Accounts> findByUser(Users user);
     
+    Accounts save(Accounts account);
+    
 }

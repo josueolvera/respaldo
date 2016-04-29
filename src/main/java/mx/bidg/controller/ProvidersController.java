@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
+import mx.bidg.service.AccountsService;
+import mx.bidg.service.ProvidersAccountsService;
 
 /**
  *
@@ -27,6 +29,12 @@ public class ProvidersController {
     
     @Autowired
     private ProvidersService providersService;
+    
+    @Autowired
+    private AccountsService accountService;
+    
+    @Autowired
+    private ProvidersAccountsService providersAccountsService;
     
     private ObjectMapper mapper = new ObjectMapper();
     
@@ -59,6 +67,8 @@ public class ProvidersController {
 
             providerAccount.setAccount(account);
             providerAccount.setProvider(provider);
+            accountService.save(account);
+            providersAccountsService.save(providerAccount);
         }
 
         return new ResponseEntity<>(
