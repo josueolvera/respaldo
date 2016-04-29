@@ -17,4 +17,6 @@ import mx.bidg.model.Users;
 public interface AccountsService {
     List<Accounts> findByProvider(Providers provider);
     List<Accounts> findByUser(Users user);
+    Accounts addAccountForProvider(Providers provider, Accounts account);
+    Boolean delete(Accounts account);
 }

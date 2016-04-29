@@ -30,4 +30,9 @@ public class ProvidersServiceImpl implements ProvidersService {
         dao.save(providers);
         return providers;
     }
+
+    @Override
+    public Providers findById(Integer idProvider) {
+        return dao.findById(idProvider);
+    }
 }
