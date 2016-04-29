@@ -111,6 +111,10 @@ public abstract class AbstractDao<PK extends Serializable, T> {
         return entityCriteria;
     }
 
+    protected Criteria createEntityCriteriaNoAccessLevel() {
+        return getSession().createCriteria(persistentClass);
+    }
+
     private boolean isAuthorized(T entity) {
         HttpSession session = request.getSession(false);
         if(session == null) {

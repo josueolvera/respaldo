@@ -3,6 +3,7 @@ package mx.bidg.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import mx.bidg.config.AccessLevelFilterable;
 import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
@@ -28,7 +29,7 @@ import org.hibernate.annotations.SelectBeforeUpdate;
 @DynamicUpdate
 @SelectBeforeUpdate
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
-public class Users implements Serializable {
+public class Users implements Serializable, AccessLevelFilterable {
     
     private static final long serialVersionUID = 1L;
 
@@ -123,6 +124,9 @@ public class Users implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userEstimation")
     @JsonView(JsonViews.Embedded.class)
     private List<PriceEstimations> priceEstimationsList1;
+
+    @Column(name = "ID_ACCESS_LEVEL")
+    private Integer idAccessLevel;
 
     @Transient
     @JsonView(JsonViews.Root.class)
@@ -280,6 +284,14 @@ public class Users implements Serializable {
 
     public void setPriceEstimationsList1(List<PriceEstimations> priceEstimationsList1) {
         this.priceEstimationsList1 = priceEstimationsList1;
+    }
+
+    public Integer getIdAccessLevel() {
+        return idAccessLevel;
+    }
+
+    public void setIdAccessLevel(Integer idAccessLevel) {
+        this.idAccessLevel = idAccessLevel;
     }
 
     public Set<Integer> getAccessLevels() {
