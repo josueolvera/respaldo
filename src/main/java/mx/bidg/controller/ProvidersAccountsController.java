@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,31 +24,31 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/providers-accounts")
 public class ProvidersAccountsController {
-    
+
     @Autowired
     ProvidersAccountsService providersAccountsService;
-    
+
     ObjectMapper mapper = new ObjectMapper();
-    
+
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"}, produces = "application/json;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> saveProviderAccount(@RequestBody String data) throws Exception {
         ProvidersAccounts providersAccount = providersAccountsService.save(data);
         return new ResponseEntity<>(mapper.writeValueAsString(providersAccount), HttpStatus.OK);
-        
+
     }
-    
+
     @RequestMapping(value = "/provider/{idProvider}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> getByProvider(@PathVariable int idProvider) throws Exception {
         List<ProvidersAccounts> list = providersAccountsService.findByProvider(new Providers(idProvider));
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.EmbeddedAccounts.class)
                 .writeValueAsString(list), HttpStatus.OK);
     }
-    
+
     @RequestMapping(value = "/account/{idAccount}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> getByAccount(@PathVariable int idAccount) throws Exception {
-        List<ProvidersAccounts> list = providersAccountsService.findByAccountsProvider(new Accounts(idAccount));
+        ProvidersAccounts providerAccount = providersAccountsService.findByAccountsProvider(new Accounts(idAccount));
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.EmbeddedAccounts.class)
-                .writeValueAsString(list), HttpStatus.OK);
+                .writeValueAsString(providerAccount), HttpStatus.OK);
     }
-    
+
 }

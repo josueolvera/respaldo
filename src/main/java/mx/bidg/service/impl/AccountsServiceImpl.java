@@ -23,10 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountsServiceImpl implements AccountsService {
     
     @Autowired
-    AccountsDao accountsDao;
+    private AccountsDao accountsDao;
     
     @Autowired
-    ProvidersAccountsDao providersAccountsDao;
+    private ProvidersAccountsDao providersAccountsDao;
 
     @Override
     public List<Accounts> findByProvider(Providers provider) {
@@ -44,11 +44,24 @@ public class AccountsServiceImpl implements AccountsService {
     }
 
     @Override
+    public Accounts addAccountForProvider(Providers provider, Accounts account) {
+        ProvidersAccounts providerAccount = new ProvidersAccounts();
+        account = accountsDao.save(account);
+        providerAccount.setAccount(account);
+        providerAccount.setProvider(provider);
+        providersAccountsDao.save(providerAccount);
+        return account;
+    }
+
+    @Override
+    public Boolean delete(Accounts account) {
+        accountsDao.delete(account);
+        return true;
+    }
+
+    @Override
     public Accounts save(Accounts account) {   
         accountsDao.save(account);
         return account;
     }
-    
-    
-    
 }

@@ -15,11 +15,9 @@ import mx.bidg.model.Users;
  * @author sistemask
  */
 public interface AccountsService {
-    
-    public List<Accounts> findByProvider(Providers provider);
-    
-    public List<Accounts> findByUser(Users user);
-    
+    List<Accounts> findByProvider(Providers provider);
+    List<Accounts> findByUser(Users user);
+    Accounts addAccountForProvider(Providers provider, Accounts account);
+    Boolean delete(Accounts account);
     Accounts save(Accounts account);
-    
 }
