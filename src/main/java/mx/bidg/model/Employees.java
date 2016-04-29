@@ -470,6 +470,14 @@ public class Employees implements Serializable {
         return new DateFormatsPojo(birthday);
     }
 
+    public String getFullName() {
+        return firstName + ' ' + middleName + ' ' + parentalLast + ' ' + motherLast;
+    }
+
+    public String getFullNameReverse() {
+        return parentalLast + ' ' + motherLast + ' ' + firstName + ' ' + middleName;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
