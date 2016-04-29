@@ -96,6 +96,10 @@
 
                     });
           },
+          modifyProvider: function(object)
+          {
+
+          },
           filterNumber: function(val)
           {
             return isNaN(val) ? '' : val;
@@ -178,7 +182,8 @@
                   {{provider.rfc}}
                 </td>
                 <td>
-                  <button type="button" class="btn btn-success" name="button">Modificar</button>
+                  <button type="button" class="btn btn-success" name="button"
+                   data-toggle="modal" data-target="#modalModi" @click="modifyProvider(provider)">Modificar</button>
                 </td>
                 <td>
                   <button type="button" class="btn btn-danger" name="button">Eliminar</button>
@@ -310,6 +315,124 @@
         </div>
       </div>
 
+        <div class="modal fade" id="modalModi" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="">
+                  Modificación de Proveedores
+                </h4>
+              </div>
+              <div class="modal-body">
+
+                <div class="row">
+                  <div class="col-xs-4">
+                    <label>
+                      Nombre del Proveedor
+                    </label>
+                    <input class="form-control" name="name" v-model="supplier.providerName" value="{{modifySupplier.providerName}}">
+                  </div>
+                  <div class="col-xs-4">
+                    <label>
+                      Razon Social
+                    </label>
+                    <input class="form-control" name="name" v-model="supplier.businessName">
+                  </div>
+                  <div class="col-xs-4">
+                    <label>
+                      RFC
+                    </label>
+                    <input class="form-control" name="name" v-model="supplier.rfc">
+                  </div>
+                </div>
+                <br>
+                <div class="row">
+                  <div class="col-xs-3">
+                    <label>
+                      Banco
+                    </label>
+                    <select class="form-control" name="" v-model="idBanks">
+                      <option></option>
+                      <option v-for="bank in banks" value="{{bank.idBank}}">{{bank.acronyms}}</option>
+                    </select>
+                  </div>
+
+                  <div class="col-xs-3">
+                    <label>
+                      Numero de cuenta
+                    </label>
+                    <div class="input-group">
+                      <span class="input-group-addon">#</span>
+                      <input class="form-control" maxlength="12" v-model="accountNumbers" onkeypress="return isNumberKey(event)">
+                    </div>
+                  </div>
+
+                  <div class="col-xs-3">
+                    <label>
+                      CLABE
+                    </label>
+                    <div class="input-group">
+                      <span class="input-group-addon">#</span>
+                      <input type="text" class="form-control" maxlength="18" v-model="clabes" onkeypress="return isNumberKey(event)">
+                    </div>
+                  </div>
+
+                  <button type="button" class="btn btn-default" @click="saveAccount" style="margin-top: 25px">
+                    Agregar Cuenta
+                  </button>
+                </div>
+
+                <table class="table table-striped" v-if="supplier.providersAccountsList.length> 0">
+                  <thead>
+                  <th>
+                    Banco
+                  </th>
+                  <th>
+                    Numero de Cuenta
+                  </th>
+                  <th>
+                    Clabe
+                  </th>
+                  <th style="color: red">
+                    Eliminar la cuenta
+                  </th>
+                  </thead>
+                  <tbody>
+                  <tr v-for="supplier in supplier.providersAccountsList">
+                    <td>
+                      {{supplier.idBank | changeidBank }}
+                    </td>
+                    <td>
+                      {{supplier.accountNumber }}
+                    </td>
+                    <td>
+                      {{supplier.accountClabe}}
+                    </td>
+                    <td>
+                      <button type="button" class="btn btn-danger" @click="eliminarCuenta(supplier)">
+                        Eliminar Cuenta
+                      </button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+
+                <div class="row"  v-if="supplier.providersAccountsList.length> 0">
+                  <div class="col-xs-12 text-left">
+                    <button type="button" class="btn btn-success" @click="saveProvider">
+                      Guardar Proveedor
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div> <!-- #contenidos -->
 
       <!-- Fecha de Termino- Agregar fecha dia de solicitud-->

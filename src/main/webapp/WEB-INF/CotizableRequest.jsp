@@ -928,7 +928,7 @@
               </div>
               <div class="col-xs-4 col-xs-offset-4">
                 <label>
-                  Solicitante:
+                  Solicitante
                 </label>
                 <input class="form-control" type="text" name="name" value="" disabled="true" v-model="userRequest">
               </div>
@@ -937,7 +937,7 @@
             <div class="row">
               <div class="col-xs-2">
                <label>
-                 Tipo de Solicitud:
+                 Tipo de Solicitud
                </label>
                <select class="form-control" v-model="obtainRequestInformation.idRequestType" :disabled="desactivarCombos || isUpdate" @change="obtainProductType" required>
                  <option v-for="RequestType in RequestTypes"
@@ -948,7 +948,7 @@
 
               <div class="col-xs-2">
                 <label>
-                  Tipo de producto
+                  Tipo de Producto
                 </label>
                 <select class="form-control" v-model="obtainRequestInformation.idProductType" :disabled="desactivarCombos || isUpdate"
                   @change="obtainProducts" required>
@@ -980,7 +980,7 @@
 
               <div class="col-xs-2">
                 <label>
-                  Fecha Aplicacion
+                  Fecha Aplicación
                 </label>
                 <div class="form-group">
                 <div class='input-group date' id='datetimepicker1'>
@@ -996,7 +996,7 @@
 
               <div class="col-xs-2">
                 <label>
-                  Responsable:
+                  Responsable
                 </label>
                 <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
                 @change="obtainRequestInfo" :disabled="isUpdate">
@@ -1031,7 +1031,7 @@
             <div class="row">
               <div class="col-xs-12">
                 <label>
-                  Descripcion de la Solicitud:
+                  Descripción de la Solicitud
                 </label>
                 <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.description"
                   :disabled="isUpdate" required></textarea>
@@ -1041,7 +1041,7 @@
             <div class="row">
               <div class="col-xs-12">
                 <label>
-                  Motivo de la Solicitud:
+                  Motivo de la Solicitud
                 </label>
                 <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.purpose"
                   :disabled="isUpdate" required></textarea>
@@ -1055,7 +1055,7 @@
               </div>
               <div class="col-xs-6 text-right">
                 <button type="button" class="btn btn-default" @click="newCotizacion"
-                  v-if="objectRequest.request.isSaved || isUpdate ">Agregar Cotizacion
+                  v-if="objectRequest.request.isSaved || isUpdate ">Agregar Cotización
                 </button>
               </div>
             </div>
@@ -1071,7 +1071,7 @@
                     <div class="col-xs-4 text-left">
                       <div class="col-xs-6">
                         <h3 class="panel-title" data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" aria-expanded="false"
-                          aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer">Cotizacion
+                          aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer">Cotización
                         </h3>
                       </div>
                       <div class="col-xs-6">
@@ -1079,7 +1079,7 @@
                       </div>
                     </div>
                     <div class="col-xs-4" >
-                      <span class="label label-danger" v-if="cotizacion.outOfBudget == 1">Cotizacion Fuera de Presupuesto</span>
+                      <span class="label label-danger" v-if="cotizacion.outOfBudget == 1">Cotización Fuera de Presupuesto</span>
                     </div>
                     <div class="col-xs-4">
                       <div class="col-xs-6">
@@ -1170,7 +1170,7 @@
                   <div class="row">
                     <div class="col-xs-3">
                       <label>
-                        Archivo de la Cotizacion
+                        Archivo de la Cotización
                       </label>
                       <input type="file" name="file" class="form-control"
                        v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}">
@@ -1199,17 +1199,17 @@
                       <button type="button" class="btn btn-link" name="button"
                         v-if="cotizacion.idEstimationStatus== 1" style="margin-top:25px"
                         @click="autorizarCotizacion(cotizacion)">
-                        Autorizar Cotizacion
+                        Autorizar Cotización
                       </button>
                       <button type="button" class="btn btn-link" name="button"
                         v-if="cotizacion.idEstimationStatus== 2 && isAutoriced" style="margin-top:25px"
                         @click="cancelarAutorizacion">
-                        Cancelar Aprobacion
+                        Cancelar Aprobación
                       </button>
                       <button type="button" class="btn btn-link" name="button"
                         v-if="!(isAutoriced)" style="margin-top:25px"
                         @click="autorizarCotizacion(cotizacion)">
-                        Autorizar Cotizacion
+                        Autorizar Cotización
                       </button>
 
                     </div>
@@ -1223,7 +1223,7 @@
             <div class="row">
               <div class="col-xs-12">
                 <label>
-                  Autorizaciones de la Solicitud.
+                  Autorizaciones de la Solicitud
                 </label>
                 <table class="table table-striped">
                   <thead>
@@ -1279,13 +1279,13 @@
               <div class="modal-content">
                 <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                  <h4 class="modal-title">Introduzca el esquema de Pagos</h4>
+                  <h4 class="modal-title">Introduzca el Esquema de Pagos</h4>
                 </div>
                 <div class="modal-body">
                   <div class="row">
                     <div class="col-xs-4">
                       <label>
-                        Monto de la Cotizacion:
+                        Monto de la Cotizacion
                       </label>
                       <div class="input-group">
                         <span class="input-group-addon">$</span>
@@ -1380,7 +1380,7 @@
                     <div class="row">
                       <div class="col-xs-7" v-if="AccountsPayables.length> 0">
                         <label>
-                          Informacion de Pagos
+                          Información de Pagos
                         </label>
 
                         <div class="row">
@@ -1427,7 +1427,7 @@
 
                       <div class="col-xs-5" v-if="showAsignacionAnterior">
                         <label>
-                          Asignacion Anterior
+                          Asignación Anterior
                         </label>
                         <table class="table table-striped">
                           <thead>
