@@ -115,9 +115,16 @@
                     });
 
           },
-          deleteAccount: function () {
-            
-          }
+          deleteAccount: function (account)
+          {
+            this.$http.delete(ROOT_URL+"/accounts/"+account.idAccount)
+                    .success(function (data)
+                    {
+                      showAlert("Cuenta Eliminada");
+                    });
+
+
+          },
           filterNumber: function(val)
           {
             return isNaN(val) ? '' : val;
@@ -428,7 +435,7 @@
                       {{supplier.accountClabe}}
                     </td>
                     <td>
-                      <button type="button" class="btn btn-danger" @click="eliminarCuenta(supplier)">
+                      <button type="button" class="btn btn-danger" @click="deleteAccount(supplier)">
                         Eliminar Cuenta
                       </button>
                     </td>
