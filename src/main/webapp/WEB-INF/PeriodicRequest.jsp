@@ -835,7 +835,7 @@
               </div>
               <div class="col-xs-4 col-xs-offset-4">
                 <label>
-                  Solicitante:
+                  Solicitante
                 </label>
                 <input class="form-control" type="text" name="name" value="" disabled="true" v-model="userRequest">
               </div>
@@ -844,7 +844,7 @@
             <div class="row">
               <div class="col-xs-2">
                <label>
-                 Tipo de Solicitud:
+                 Tipo de Solicitud
                </label>
                <select class="form-control" v-model="obtainRequestInformation.idRequestType" :disabled="desactivarCombos || isUpdate" @change="obtainProductType" required>
                  <option v-for="RequestType in RequestTypes"
@@ -855,7 +855,7 @@
 
               <div class="col-xs-2">
                 <label>
-                  Tipo de producto
+                  Tipo de Producto
                 </label>
                 <select class="form-control" v-model="obtainRequestInformation.idProductType" :disabled="desactivarCombos || isUpdate"
                   @change="obtainProducts" required>
@@ -887,7 +887,7 @@
 
               <div class="col-xs-2">
                 <label>
-                  Fecha Aplicacion
+                  Fecha Aplicación
                 </label>
                 <div class="form-group">
                 <div class='input-group date' id='datetimepicker1'>
@@ -903,7 +903,7 @@
 
               <div class="col-xs-2">
                 <label>
-                  Responsable:
+                  Responsable
                 </label>
                 <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
                 @change="obtainRequestInfo" :disabled="isUpdate">
@@ -938,7 +938,7 @@
             <div class="row">
               <div class="col-xs-12">
                 <label>
-                  Descripcion del Servicio:
+                  Descripción del Servicio
                 </label>
                 <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.description"
                   :disabled="isUpdate" required></textarea>
@@ -948,7 +948,7 @@
             <div class="row">
               <div class="col-xs-12">
                 <label>
-                  Motivo de Contratacion:
+                  Motivo de Contratación
                 </label>
                 <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.purpose"
                   :disabled="isUpdate" required></textarea>
@@ -961,7 +961,7 @@
                 <button class="btn btn-success" :disabled="desactivarGuardar || isSavingNow">Guardar Solicitud</button>
               </div>
               <div class="col-xs-6 text-right">
-                <button type="button" class="btn btn-default" @click="newCotizacion" v-if="objectRequest.request.isSaved || isUpdate">Agregar Cotizacion
+                <button type="button" class="btn btn-default" @click="newCotizacion" v-if="objectRequest.request.isSaved || isUpdate">Agregar Cotización
                 </button>
               </div>
             </div>
@@ -977,7 +977,7 @@
                     <div class="col-xs-4 text-left">
                       <div class="col-xs-6">
                         <h3 class="panel-title" data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" aria-expanded="false"
-                          aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer">Cotizacion
+                          aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer">Cotización
                         </h3>
                       </div>
                       <div class="col-xs-6">
@@ -985,7 +985,7 @@
                       </div>
                     </div>
                     <div class="col-xs-4" >
-                      <span class="label label-danger" v-if="cotizacion.outOfBudget>0">Cotizacion Fuera de Presupuesto</span>
+                      <span class="label label-danger" v-if="cotizacion.outOfBudget>0">Cotización Fuera de Presupuesto</span>
                     </div>
                     <div class="col-xs-4">
                       <div class="col-xs-6">
@@ -1075,7 +1075,7 @@
                   <div class="row">
                     <div class="col-xs-3">
                       <label>
-                        Archivo de la Cotizacion
+                        Archivo de la Cotización
                       </label>
                       <input type="file" name="file" class="form-control"
                        v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}">
@@ -1083,13 +1083,13 @@
                     <div class="col-xs-2" v-if="cotizacion.idEstimation > 0">
                     <p style="margin-top: 30px">
                     <a href="../../estimations/attachment/download/{{cotizacion.idEstimation}}">
-                      Ver archivo
+                      Ver Archivo
                     </a>
                     </p>
                     </div>
                     <div class="col-xs-2">
                       <button type="button" class="btn btn-link" @click="prepareModalPeriodicPayment(cotizacion)"
-                       style="margin-top: 25px" v-if="cotizacion.idEstimationStatus== 2">Agregar Informacion de Pago
+                       style="margin-top: 25px" v-if="cotizacion.idEstimationStatus== 2">Agregar Información de Pago
                       </button>
                     </div>
                     <div class="col-xs-3">
@@ -1099,17 +1099,17 @@
                       <button type="button" class="btn btn-link" name="button"
                         v-if="cotizacion.idEstimationStatus== 1" style="margin-top:25px"
                         @click="autorizarCotizacion(cotizacion)">
-                        Autorizar Cotizacion
+                        Autorizar Cotización
                       </button>
                       <button type="button" class="btn btn-link" name="button"
                         v-if="cotizacion.idEstimationStatus== 2 && isAutoriced" style="margin-top:25px"
                         @click="cancelarAutorizacion">
-                        Cancelar Aprobacion
+                        Cancelar Aprobación
                       </button>
                       <button type="button" class="btn btn-link" name="button"
                         v-if="!(isAutoriced)" style="margin-top:25px"
                         @click="autorizarCotizacion(cotizacion)">
-                        Autorizar Cotizacion
+                        Autorizar Cotización
                       </button>
 
                     </div>
@@ -1123,7 +1123,7 @@
             <div class="row">
               <div class="col-xs-12">
                 <label>
-                  Autorizaciones de la Solicitud.
+                  Autorizaciones de la Solicitud
                 </label>
                 <table class="table table-striped">
                   <thead>
@@ -1180,7 +1180,7 @@
               <div class="modal-content">
                 <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                  <h4 class="modal-title">Introduzca la informacion del pago periodico</h4>
+                  <h4 class="modal-title">Introduzca la Información del Pago Periódico</h4>
                 </div>
                 <div class="modal-body">
                   <div class="row">
@@ -1213,7 +1213,7 @@
 
                     <div class="col-xs-6">
                       <label>
-                        Fecha Aplicacion
+                        Fecha Aplicación
                       </label>
                       <div class="form-group">
                       <div class='input-group date' id='datePagoInicial'>
@@ -1227,7 +1227,7 @@
 
                     <div class="col-xs-6">
                       <label>
-                        Fecha Vencimiento (Opcional)
+                        Fecha de Vencimiento (Opcional)
                       </label>
                       <div class="form-group">
                       <div class='input-group date' id='dateFechaVencimiento'>

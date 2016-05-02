@@ -52,7 +52,7 @@ public class UsersDaoImpl extends AbstractDao<Integer, Users> implements UsersDa
 
     @Override
     public Users findByUsername(String username) {
-        Criteria criteria = createEntityCriteria();
+        Criteria criteria = createEntityCriteriaNoAccessLevel();
         criteria.add(Restrictions.eq("username", username))
                 .setFetchMode("usersRoleList", FetchMode.JOIN)
                 .setFetchMode("usersRoleList.idSystemRole", FetchMode.JOIN)
