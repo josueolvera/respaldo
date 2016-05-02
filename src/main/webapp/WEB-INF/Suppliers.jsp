@@ -96,10 +96,22 @@
 
                     });
           },
-          modifyProvider: function(object)
-          {
+          modifyProvider: function(provider) {
+            $('#modalModi').modal('show');
+            this.supplier.providerName=provider.providerName;
+            this.supplier.businessName= provider.businessName;
+            this.supplier.rfc=provider.rfc;
+
+            this.$http.get(ROOT_URL+"/accounts/provider/"+provider.idProvider)
+                    .success(function (data) {
+                        this.supplier.providersAccountsList=data;
+
+                    });
 
           },
+          deleteAccount: function () {
+            
+          }
           filterNumber: function(val)
           {
             return isNaN(val) ? '' : val;
@@ -134,7 +146,7 @@
       <div class="container-fluid" style="margin-left: 100px">
         <div class="row">
           <div class="col-xs-6 text-left">
-          <h1>Busqueda de Proveedores</h1>
+          <h1>Búsqueda de Proveedores</h1>
           </div>
 
           <div class="col-xs-3">
@@ -157,7 +169,7 @@
                 Nombre del Proveedor
               </th>
               <th>
-                Razon Social
+                Razón Social
               </th>
               <th>
                 RFC
@@ -183,7 +195,7 @@
                 </td>
                 <td>
                   <button type="button" class="btn btn-success" name="button"
-                   data-toggle="modal" data-target="#modalModi" @click="modifyProvider(provider)">Modificar</button>
+                   @click="modifyProvider(provider)">Modificar</button>
                 </td>
                 <td>
                   <button type="button" class="btn btn-danger" name="button">Eliminar</button>
@@ -216,7 +228,7 @@
                 </div>
                 <div class="col-xs-4">
                   <label>
-                    Razon Social
+                    Razón Social
                   </label>
                   <input class="form-control" name="name" v-model="supplier.businessName">
                 </div>
@@ -241,7 +253,7 @@
 
                   <div class="col-xs-3">
                     <label>
-                      Numero de cuenta
+                      Número de Cuenta
                     </label>
                     <div class="input-group">
                       <span class="input-group-addon">#</span>
@@ -270,13 +282,13 @@
                       Banco
                     </th>
                     <th>
-                      Numero de Cuenta
+                      Número de Cuenta
                     </th>
                     <th>
                       Clabe
                     </th>
                     <th style="color: red">
-                      Eliminar la cuenta
+                      Eliminar la Cuenta
                     </th>
                   </thead>
                   <tbody>
@@ -331,11 +343,11 @@
                     <label>
                       Nombre del Proveedor
                     </label>
-                    <input class="form-control" name="name" v-model="supplier.providerName" value="{{modifySupplier.providerName}}">
+                    <input class="form-control" name="name" v-model="supplier.providerName" >
                   </div>
                   <div class="col-xs-4">
                     <label>
-                      Razon Social
+                      Razón Social
                     </label>
                     <input class="form-control" name="name" v-model="supplier.businessName">
                   </div>
@@ -360,7 +372,7 @@
 
                   <div class="col-xs-3">
                     <label>
-                      Numero de cuenta
+                      Número de Cuenta
                     </label>
                     <div class="input-group">
                       <span class="input-group-addon">#</span>
@@ -389,13 +401,13 @@
                     Banco
                   </th>
                   <th>
-                    Numero de Cuenta
+                    Número de Cuenta
                   </th>
                   <th>
                     Clabe
                   </th>
                   <th style="color: red">
-                    Eliminar la cuenta
+                    Eliminar la Cuenta
                   </th>
                   </thead>
                   <tbody>
@@ -417,6 +429,7 @@
                   </tr>
                   </tbody>
                 </table>
+
 
                 <div class="row"  v-if="supplier.providersAccountsList.length> 0">
                   <div class="col-xs-12 text-left">
