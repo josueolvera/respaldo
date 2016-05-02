@@ -16,4 +16,5 @@ public interface ProvidersService {
     List<Providers> findAll();
     Providers findById(Integer idProvider);
     Providers save(Providers providers);
+    Boolean delete(Providers providers);
 }

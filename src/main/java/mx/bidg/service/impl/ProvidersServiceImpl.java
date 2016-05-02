@@ -35,4 +35,10 @@ public class ProvidersServiceImpl implements ProvidersService {
     public Providers findById(Integer idProvider) {
         return dao.findById(idProvider);
     }
+
+    @Override
+    public Boolean delete(Providers providers) {
+        dao.delete(providers);
+        return true;
+    }
 }
