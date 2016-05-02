@@ -802,7 +802,7 @@
               success(function (data)
                {
                  this.userInSession = data;
-                 this.userRequest = data.mail;
+                 this.userRequest = data.dwEmployee.employee.fullName;
 
                }).error(function(data)
                {
