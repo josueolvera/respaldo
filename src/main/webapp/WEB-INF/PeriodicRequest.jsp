@@ -27,17 +27,20 @@
           {
             this.timePicker = $('#datetimepicker1').datetimepicker({
               locale: 'es',
-              format: 'YYYY/MM/DD'
+              format: 'DD/MM/YYYY',
+              minDate: moment().add(1, 'minutes')
               }).data();
 
             this.timePickerPagoInicial = $('#datePagoInicial').datetimepicker({
               locale: 'es',
-              format: 'YYYY/MM/DD'
+              format: 'DD/MM/YYYY',
+              minDate: moment().add(1, 'minutes')
               }).data();
 
               this.timePickerFechaVencimiento = $('#dateFechaVencimiento').datetimepicker({
                 locale: 'es',
-                format: 'YYYY/MM/DD'
+                format: 'DD/MM/YYYY',
+                minDate: moment().add(1, 'minutes')
                 }).data();
 
             this.obtainUserInSession();
