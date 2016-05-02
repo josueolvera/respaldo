@@ -81,11 +81,17 @@
           saveProvider: function()
           {
             var self= this;
+
             this.$http.post(ROOT_URL + "/providers", JSON.stringify(this.supplier)).
-            succtype="number" .error(function()
+            success(function(data)
             {
+              showAlert("Registro de Proveedor Exitoso");
+              this.getProviders();
+
+            }).error(function(){
               showAlert("Ha habido un error con la solicitud, intente nuevamente");
             });
+
           },
           getProviders: function()
           {
