@@ -42,7 +42,7 @@ public class AccountsController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/provider/{idProvider}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+    @RequestMapping(value = "/provider/{idProvider}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
         produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> addProviderAccount(@PathVariable int idProvider, @RequestBody String data) throws IOException {
         JsonNode node = mapper.readTree(data);

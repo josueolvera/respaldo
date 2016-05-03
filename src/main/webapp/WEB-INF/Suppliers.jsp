@@ -37,10 +37,22 @@
             rfc: '',
             providersAccountsList: []
           },
+          provider: {
+            providerName: '',
+            businessName: '',
+            rfc: '',
+            providersAccountsList: []
+          },
           idBanks: '',
           banks: [],
           providers: '',
-          search: ''
+          search: '',
+          cuenta:
+          {
+            accountNumber: '',
+            accountClabe: '',
+            idBank: '',
+          },
 
           },
         methods:
@@ -102,9 +114,58 @@
 
                     });
           },
-          modifyProvider: function(object)
+          modifyProvider: function(provider) {
+            this.provider = (JSON.parse(JSON.stringify(provider)));
+            $('#modalModi').modal('show');
+            this.$http.get(ROOT_URL+"/accounts/provider/"+this.provider.idProvider)
+                    .success(function (data) {
+                      Vue.set(this.provider, 'providersAccountsList', data);
+                    });
+          },
+          deleteAccount: function (account)
           {
+            this.$http.delete(ROOT_URL+"/accounts/"+account.idAccount)
+                    .success(function (data)
+                    {
+                      showAlert("Cuenta Eliminada");
+                      this.provider.providersAccountsList.$remove(account);
+                    });
 
+
+          },
+          addProviderAccount: function (supplier,cuenta)
+          {
+            this.$http.post(ROOT_URL+"/accounts/provider/"+supplier.idProvider,cuenta)
+                    .success(function (data)
+                    {
+                      showAlert("Cuenta Guardada con Exito");
+                      this.$http.get(ROOT_URL+"/accounts/provider/"+this.provider.idProvider)
+                              .success(function (data) {
+                                Vue.set(this.provider, 'providersAccountsList', data);
+                              });
+                      cuenta.accountNumber="";
+                      cuenta.accountClabe="";
+                      cuenta.idBank="";
+                     });
+
+          },
+          updateProvider: function (provider) {
+           this.$http.post(ROOT_URL+"/providers/"+provider.idProvider,provider)
+                    .success(function (data) {
+                          showAlert("Proveedor Actualizado");
+                          $('#modalModi').modal('hide');
+                          this.getProviders();
+                    }).error(function(){
+                          showAlert("Ha habido un error con la solicitud, intente nuevamente");
+            });
+
+          },
+          deleteProvider: function (provider) {
+              this.$http.delete(ROOT_URL+"/providers/"+provider.idProvider)
+                      .success(function (data) {
+                        showAlert("Provedor Eliminado");
+                        this.getProviders();
+                      });
           },
           filterNumber: function(val)
           {
@@ -140,7 +201,7 @@
       <div class="container-fluid" style="margin-left: 100px">
         <div class="row">
           <div class="col-xs-6 text-left">
-          <h1>Busqueda de Proveedores</h1>
+          <h1>Búsqueda de Proveedores</h1>
           </div>
 
           <div class="col-xs-3">
@@ -163,7 +224,7 @@
                 Nombre del Proveedor
               </th>
               <th>
-                Razon Social
+                Razón Social
               </th>
               <th>
                 RFC
@@ -189,10 +250,11 @@
                 </td>
                 <td>
                   <button type="button" class="btn btn-success" name="button"
-                   data-toggle="modal" data-target="#modalModi" @click="modifyProvider(provider)">Modificar</button>
+                   @click="modifyProvider(provider)">Modificar</button>
                 </td>
                 <td>
-                  <button type="button" class="btn btn-danger" name="button">Eliminar</button>
+                  <button type="button" class="btn btn-danger" name="button"
+                  @click="deleteProvider(provider)">Eliminar</button>
                 </td>
               </tr>
             </tbody>
@@ -222,7 +284,7 @@
                 </div>
                 <div class="col-xs-4">
                   <label>
-                    Razon Social
+                    Razón Social
                   </label>
                   <input class="form-control" name="name" v-model="supplier.businessName">
                 </div>
@@ -247,7 +309,7 @@
 
                   <div class="col-xs-3">
                     <label>
-                      Numero de cuenta
+                      Número de Cuenta
                     </label>
                     <div class="input-group">
                       <span class="input-group-addon">#</span>
@@ -276,13 +338,13 @@
                       Banco
                     </th>
                     <th>
-                      Numero de Cuenta
+                      Número de Cuenta
                     </th>
                     <th>
                       Clabe
                     </th>
                     <th style="color: red">
-                      Eliminar la cuenta
+                      Eliminar la Cuenta
                     </th>
                   </thead>
                   <tbody>
@@ -337,19 +399,19 @@
                     <label>
                       Nombre del Proveedor
                     </label>
-                    <input class="form-control" name="name" v-model="supplier.providerName" value="{{modifySupplier.providerName}}">
+                    <input class="form-control" name="name" v-model="provider.providerName" >
                   </div>
                   <div class="col-xs-4">
                     <label>
-                      Razon Social
+                      Razón Social
                     </label>
-                    <input class="form-control" name="name" v-model="supplier.businessName">
+                    <input class="form-control" name="name" v-model="provider.businessName">
                   </div>
                   <div class="col-xs-4">
                     <label>
                       RFC
                     </label>
-                    <input class="form-control" name="name" v-model="supplier.rfc">
+                    <input class="form-control" name="name" v-model="provider.rfc">
                   </div>
                 </div>
                 <br>
@@ -358,7 +420,7 @@
                     <label>
                       Banco
                     </label>
-                    <select class="form-control" name="" v-model="idBanks">
+                    <select class="form-control" name="" v-model="cuenta.idBank">
                       <option></option>
                       <option v-for="bank in banks" value="{{bank.idBank}}">{{bank.acronyms}}</option>
                     </select>
@@ -366,11 +428,11 @@
 
                   <div class="col-xs-3">
                     <label>
-                      Numero de cuenta
+                      Número de Cuenta
                     </label>
                     <div class="input-group">
                       <span class="input-group-addon">#</span>
-                      <input class="form-control" maxlength="12" v-model="accountNumbers" onkeypress="return isNumberKey(event)">
+                      <input class="form-control" maxlength="12" v-model="cuenta.accountNumber" onkeypress="return isNumberKey(event)">
                     </div>
                   </div>
 
@@ -380,43 +442,43 @@
                     </label>
                     <div class="input-group">
                       <span class="input-group-addon">#</span>
-                      <input type="text" class="form-control" maxlength="18" v-model="clabes" onkeypress="return isNumberKey(event)">
+                      <input type="text" class="form-control" maxlength="18" v-model="cuenta.accountClabe" onkeypress="return isNumberKey(event)">
                     </div>
                   </div>
 
-                  <button type="button" class="btn btn-default" @click="saveAccount" style="margin-top: 25px">
+                  <button type="button" class="btn btn-default" @click="addProviderAccount(provider,cuenta)" style="margin-top: 25px">
                     Agregar Cuenta
                   </button>
                 </div>
 
-                <table class="table table-striped" v-if="supplier.providersAccountsList.length> 0">
+                <table class="table table-striped" v-if="provider.providersAccountsList.length> 0">
                   <thead>
                   <th>
                     Banco
                   </th>
                   <th>
-                    Numero de Cuenta
+                    Número de Cuenta
                   </th>
                   <th>
                     Clabe
                   </th>
                   <th style="color: red">
-                    Eliminar la cuenta
+                    Eliminar la Cuenta
                   </th>
                   </thead>
                   <tbody>
-                  <tr v-for="supplier in supplier.providersAccountsList">
+                  <tr v-for="account in provider.providersAccountsList">
                     <td>
-                      {{supplier.idBank | changeidBank }}
+                      {{account.idBank | changeidBank }}
                     </td>
                     <td>
-                      {{supplier.accountNumber }}
+                      {{account.accountNumber }}
                     </td>
                     <td>
-                      {{supplier.accountClabe}}
+                      {{account.accountClabe}}
                     </td>
                     <td>
-                      <button type="button" class="btn btn-danger" @click="eliminarCuenta(supplier)">
+                      <button type="button" class="btn btn-danger" @click="deleteAccount(account)">
                         Eliminar Cuenta
                       </button>
                     </td>
@@ -424,9 +486,10 @@
                   </tbody>
                 </table>
 
-                <div class="row"  v-if="supplier.providersAccountsList.length> 0">
+
+                <div class="row"  v-if="provider.providersAccountsList.length> 0">
                   <div class="col-xs-12 text-left">
-                    <button type="button" class="btn btn-success" @click="saveProvider">
+                    <button type="button" class="btn btn-success" @click="updateProvider(provider)">
                       Guardar Proveedor
                     </button>
                   </div>

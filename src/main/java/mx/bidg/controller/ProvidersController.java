@@ -13,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
+
 import mx.bidg.service.AccountsService;
 import mx.bidg.service.ProvidersAccountsService;
 
@@ -49,7 +51,7 @@ public class ProvidersController {
         provider.setBusinessName(jnode.get("businessName").asText());
         provider.setRfc(jnode.get("rfc").asText());
         provider.setIdAccessLevel(1);
-        providersService.save(provider);
+        providersService.update(provider);
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Root.class).writeValueAsString(provider), HttpStatus.OK
         );
@@ -84,5 +86,16 @@ public class ProvidersController {
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(provider), HttpStatus.OK
         );
+    }
+
+    @RequestMapping(value = "/{idProvider}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> deleteProvider(@PathVariable int idProvider) {
+        Providers provider = providersService.findById(idProvider);
+        List<ProvidersAccounts> providersAccounts = providersAccountsService.findByProvider(provider);
+        for (ProvidersAccounts pa : providersAccounts) {
+            providersAccountsService.delete(pa);
+        }
+        providersService.delete(provider);
+        return new ResponseEntity<>("Proveedor eliminado", HttpStatus.OK);
     }
 }

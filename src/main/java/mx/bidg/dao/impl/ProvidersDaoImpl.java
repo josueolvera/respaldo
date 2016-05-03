@@ -10,6 +10,7 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.ProvidersDao;
 import mx.bidg.model.Providers;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -23,7 +24,9 @@ public class ProvidersDaoImpl extends AbstractDao<Integer, Providers> implements
 
     @Override
     public Providers findById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return (Providers) createEntityCriteria()
+                .add(Restrictions.idEq(id))
+                .uniqueResult();
     }
 
     @Override
