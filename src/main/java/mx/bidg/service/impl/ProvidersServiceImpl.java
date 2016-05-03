@@ -32,6 +32,11 @@ public class ProvidersServiceImpl implements ProvidersService {
     }
 
     @Override
+    public Providers update(Providers providers) {
+        return dao.update(providers);
+    }
+
+    @Override
     public Providers findById(Integer idProvider) {
         return dao.findById(idProvider);
     }

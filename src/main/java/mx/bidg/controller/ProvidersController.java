@@ -49,7 +49,7 @@ public class ProvidersController {
         provider.setBusinessName(jnode.get("businessName").asText());
         provider.setRfc(jnode.get("rfc").asText());
         provider.setIdAccessLevel(1);
-        providersService.save(provider);
+        providersService.update(provider);
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Root.class).writeValueAsString(provider), HttpStatus.OK
         );

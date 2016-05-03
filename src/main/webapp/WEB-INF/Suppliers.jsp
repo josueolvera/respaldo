@@ -37,10 +37,22 @@
             rfc: '',
             providersAccountsList: []
           },
+          provider: {
+            providerName: '',
+            businessName: '',
+            rfc: '',
+            providersAccountsList: []
+          },
           idBanks: '',
           banks: [],
           providers: '',
-          search: ''
+          search: '',
+          cuenta:
+          {
+            accountNumber: '',
+            accountClabe: '',
+            idBank: '',
+          },
 
           },
         methods:
@@ -103,17 +115,12 @@
                     });
           },
           modifyProvider: function(provider) {
+            this.provider = (JSON.parse(JSON.stringify(provider)));
             $('#modalModi').modal('show');
-            this.supplier.providerName=provider.providerName;
-            this.supplier.businessName= provider.businessName;
-            this.supplier.rfc=provider.rfc;
-
-            this.$http.get(ROOT_URL+"/accounts/provider/"+provider.idProvider)
+            this.$http.get(ROOT_URL+"/accounts/provider/"+this.provider.idProvider)
                     .success(function (data) {
-                        this.supplier.providersAccountsList=data;
-
+                      Vue.set(this.provider, 'providersAccountsList', data);
                     });
-
           },
           deleteAccount: function (account)
           {
@@ -121,8 +128,35 @@
                     .success(function (data)
                     {
                       showAlert("Cuenta Eliminada");
+                      this.provider.providersAccountsList.$remove(account);
                     });
 
+
+          },
+          addProviderAccount: function (supplier,cuenta)
+          {
+            this.$http.post(ROOT_URL+"/accounts/provider/"+supplier.idProvider,cuenta)
+                    .success(function (data)
+                    {
+                      showAlert("Cuenta Guardada con Exito");
+                      this.$http.get(ROOT_URL+"/accounts/provider/"+this.provider.idProvider)
+                              .success(function (data) {
+                                Vue.set(this.provider, 'providersAccountsList', data);
+                              });
+                      cuenta.accountNumber="";
+                      cuenta.accountClabe="";
+                      cuenta.idBank="";
+                     });
+
+          },
+          updateProvider: function (provider) {
+           this.$http.post(ROOT_URL+"/providers/"+provider.idProvider,provider)
+                    .success(function (data) {
+                          showAlert("Proveedor Actualizado");
+                          this.getProviders();
+                    }).error(function(){
+                          showAlert("Ha habido un error con la solicitud, intente nuevamente");
+            });
 
           },
           filterNumber: function(val)
@@ -356,19 +390,19 @@
                     <label>
                       Nombre del Proveedor
                     </label>
-                    <input class="form-control" name="name" v-model="supplier.providerName" >
+                    <input class="form-control" name="name" v-model="provider.providerName" >
                   </div>
                   <div class="col-xs-4">
                     <label>
                       Razón Social
                     </label>
-                    <input class="form-control" name="name" v-model="supplier.businessName">
+                    <input class="form-control" name="name" v-model="provider.businessName">
                   </div>
                   <div class="col-xs-4">
                     <label>
                       RFC
                     </label>
-                    <input class="form-control" name="name" v-model="supplier.rfc">
+                    <input class="form-control" name="name" v-model="provider.rfc">
                   </div>
                 </div>
                 <br>
@@ -377,7 +411,7 @@
                     <label>
                       Banco
                     </label>
-                    <select class="form-control" name="" v-model="idBanks">
+                    <select class="form-control" name="" v-model="cuenta.idBank">
                       <option></option>
                       <option v-for="bank in banks" value="{{bank.idBank}}">{{bank.acronyms}}</option>
                     </select>
@@ -389,7 +423,7 @@
                     </label>
                     <div class="input-group">
                       <span class="input-group-addon">#</span>
-                      <input class="form-control" maxlength="12" v-model="accountNumbers" onkeypress="return isNumberKey(event)">
+                      <input class="form-control" maxlength="12" v-model="cuenta.accountNumber" onkeypress="return isNumberKey(event)">
                     </div>
                   </div>
 
@@ -399,16 +433,16 @@
                     </label>
                     <div class="input-group">
                       <span class="input-group-addon">#</span>
-                      <input type="text" class="form-control" maxlength="18" v-model="clabes" onkeypress="return isNumberKey(event)">
+                      <input type="text" class="form-control" maxlength="18" v-model="cuenta.accountClabe" onkeypress="return isNumberKey(event)">
                     </div>
                   </div>
 
-                  <button type="button" class="btn btn-default" @click="saveAccount" style="margin-top: 25px">
+                  <button type="button" class="btn btn-default" @click="addProviderAccount(provider,cuenta)" style="margin-top: 25px">
                     Agregar Cuenta
                   </button>
                 </div>
 
-                <table class="table table-striped" v-if="supplier.providersAccountsList.length> 0">
+                <table class="table table-striped" v-if="provider.providersAccountsList.length> 0">
                   <thead>
                   <th>
                     Banco
@@ -424,18 +458,18 @@
                   </th>
                   </thead>
                   <tbody>
-                  <tr v-for="supplier in supplier.providersAccountsList">
+                  <tr v-for="account in provider.providersAccountsList">
                     <td>
-                      {{supplier.idBank | changeidBank }}
+                      {{account.idBank | changeidBank }}
                     </td>
                     <td>
-                      {{supplier.accountNumber }}
+                      {{account.accountNumber }}
                     </td>
                     <td>
-                      {{supplier.accountClabe}}
+                      {{account.accountClabe}}
                     </td>
                     <td>
-                      <button type="button" class="btn btn-danger" @click="deleteAccount(supplier)">
+                      <button type="button" class="btn btn-danger" @click="deleteAccount(account)">
                         Eliminar Cuenta
                       </button>
                     </td>
@@ -444,9 +478,9 @@
                 </table>
 
 
-                <div class="row"  v-if="supplier.providersAccountsList.length> 0">
+                <div class="row"  v-if="provider.providersAccountsList.length> 0">
                   <div class="col-xs-12 text-left">
-                    <button type="button" class="btn btn-success" @click="saveProvider">
+                    <button type="button" class="btn btn-success" @click="updateProvider(provider)">
                       Guardar Proveedor
                     </button>
                   </div>
