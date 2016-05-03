@@ -13,6 +13,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
@@ -142,6 +143,9 @@ public abstract class AbstractDao<PK extends Serializable, T> {
             String task = request.getMethod().toLowerCase() + ":" + request.getRequestURI();
             GlobalTracer tracer = new GlobalTracer();
             ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+            if (entity instanceof HibernateProxy) {
+                entity = (T) ((HibernateProxy) entity).getHibernateLazyInitializer().getImplementation();
+            }
             Table annotation = entity.getClass().getAnnotation(Table.class);
             tracer.setIdUser(user.getIdUser());
             tracer.setUsername(user.getUsername());
