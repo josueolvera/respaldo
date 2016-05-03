@@ -153,11 +153,19 @@
            this.$http.post(ROOT_URL+"/providers/"+provider.idProvider,provider)
                     .success(function (data) {
                           showAlert("Proveedor Actualizado");
+                          $('#modalModi').modal('hide');
                           this.getProviders();
                     }).error(function(){
                           showAlert("Ha habido un error con la solicitud, intente nuevamente");
             });
 
+          },
+          deleteProvider: function (provider) {
+              this.$http.delete(ROOT_URL+"/providers/"+provider.idProvider)
+                      .success(function (data) {
+                        showAlert("Provedor Eliminado");
+                        this.getProviders();
+                      });
           },
           filterNumber: function(val)
           {
@@ -245,7 +253,8 @@
                    @click="modifyProvider(provider)">Modificar</button>
                 </td>
                 <td>
-                  <button type="button" class="btn btn-danger" name="button">Eliminar</button>
+                  <button type="button" class="btn btn-danger" name="button"
+                  @click="deleteProvider(provider)">Eliminar</button>
                 </td>
               </tr>
             </tbody>
