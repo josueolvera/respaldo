@@ -27,19 +27,22 @@
           {
             this.timePicker = $('#datetimepicker1').datetimepicker({
               locale: 'es',
-              format: 'DD/MM/YYYY',
+              format: 'DD-MM-YYYY',
+              useCurrent: false,
               minDate: moment().add(1, 'minutes')
               }).data();
 
             this.timePickerPagoInicial = $('#datePagoInicial').datetimepicker({
               locale: 'es',
-              format: 'DD/MM/YYYY',
+              format: 'DD-MM-YYYY',
+              useCurrent: false,
               minDate: moment().add(1, 'minutes')
               }).data();
 
               this.timePickerFechaVencimiento = $('#dateFechaVencimiento').datetimepicker({
                 locale: 'es',
-                format: 'DD/MM/YYYY',
+                format: 'DD-MM-YYYY',
+                useCurrent: false,
                 minDate: moment().add(1, 'minutes')
                 }).data();
 
@@ -156,7 +159,6 @@
                       {
                          this.ProductTypes= data;
                       });
-
             },
             obtainProducts: function()
             {
@@ -169,6 +171,7 @@
             },
             obtainRequestInfo: function()
             {
+              var self= this;
               var date = this.timePicker.DateTimePicker.date();
               var dateiso= date.toISOString();
               this.obtainRequestInformation.applyingDate= dateiso.slice(0, -1);
@@ -177,7 +180,9 @@
                       .success(function (data)
                       {
                          this.ResponseRequestInformation= data;
+                         this.obtainRequestInformation.applyingDate = date.format("DD-MM-YYYY");
                          this.matchInformation(this.ResponseRequestInformation);
+
                       }).error(function(data)
                       {
                         showAlert("No existe presupuesto para este tipo de solicitud");
@@ -195,7 +200,9 @@
             matchInformation: function(requestInformation)
             {
               this.objectRequest.request.idRequestTypesProduct= requestInformation.requestTypesProduct.idRequestTypeProduct;
-              this.objectRequest.request.applyingDate= this.obtainRequestInformation.applyingDate;
+              var date = this.timePicker.DateTimePicker.date();
+              var dateiso= date.toISOString();
+              this.objectRequest.request.applyingDate= dateiso.slice(0, -1);
               this.objectRequest.request.idUserResponsable= this.obtainRequestInformation.idUserResponsable;
               this.objectRequest.request.idBudgetMonthBranch = requestInformation.budgetMonthBranch.idBudgetMonthBranch;
 
@@ -497,7 +504,7 @@
                 {
                   this.matchInformationUpdate(data);
                 }).error(function(data){
-                  showAlert("Ha habido un error al obtener la informacion");
+                  //showAlert("Ha habido un error al obtener la informacion");
                 });
               }
             },
@@ -511,8 +518,8 @@
               this.periodicPayment.folio= data.folio;
               this.objectRequest.request.idRequest= data.idRequest;
               this.objectRequest.request.folio= data.folio;
-              this.objectRequest.request.creationDate= this.convertDates(data.creationDateFormats.dateNumber);
-              this.objectRequest.request.applyingDate= this.convertDates(data.applyingDateFormats.dateNumber);
+              this.objectRequest.request.creationDate= data.creationDateFormats.dateNumber;
+              this.objectRequest.request.applyingDate= data.applyingDateFormats.dateNumber;
               this.objectRequest.request.idUserRequest= data.userRequest.idUser;
               this.objectRequest.request.idUserResponsable= data.idUserResponsible;
               this.objectRequest.request.idBudgetMonthBranch= data.idBudgetMonthBranch;
@@ -520,7 +527,7 @@
               this.objectRequest.request.idRequestStatus= data.idRequestStatus;
               this.objectRequest.request.description= data.description;
               this.objectRequest.request.purpose= data.purpose;
-              this.userRequest = data.userRequest.mail;
+              this.userRequest = data.userRequest.dwEmployee.employee.fullName;
 
               data.requestProductsList.forEach(function(element)
               {
@@ -537,7 +544,7 @@
               }).error(function(data){
                 showAlert("Ha habido un error al obtener la informacion de las cotizacion");
               });
-              this.obtainInformationAutorization();
+              this.obtainInformationAutorization(); Checar
             },
             matchInformationEstimationsUpdate: function(data)
             {
@@ -566,19 +573,15 @@
               this.$http.get(ROOT_URL+"/providers-accounts/account/"+cotizacion.idAccount).
               success(function(data)
               {
-                data.forEach(function(element)
-                {
-                  cotizacion.idSupplier= element.idProvider;
+                cotizacion.idSupplier = data.idProvider;
 
                   self.$http.get(ROOT_URL + "/providers-accounts/provider/"+cotizacion.idSupplier).
                   success(function (data)
                    {
                         cotizacion.accountSupplier= data;
-                        this.fillPeriodicPayments();
                    });
                   cotizacion.indexOfForm = self.estimations.length;
                   self.estimations.push(cotizacion);
-                });
 
               }).error(function(data){
                 showAlert("Ha habido un error al obtener la informacion de las cotizacion");
@@ -616,8 +619,11 @@
               if (this.periodicPayment.dueDate !== "")
               {
                 var dateDueDate= new Date(self.periodicPayment.dueDate);
+
                 var dateisoDue= dateDueDate.toISOString();
+
                 self.periodicPayment.dueDate = dateisoDue.slice(0, -1);
+
               }
               var dateInitial = new Date(this.periodicPayment.initialDate);
               var dateisoInitial= dateInitial.toISOString();
@@ -662,8 +668,8 @@
                  this.periodicPayment.idPeriodicPaymentStatus = data.idPeriodicPaymentStatus;
                  this.periodicPayment.idCurrency = data.idCurrency;
                  this.periodicPayment.rate = data.rate;
-                 this.periodicPayment.initialDate = this.convertDates(data.initialDateFormats.dateNumber);
-                 this.periodicPayment.dueDate = this.convertDates(data.dueDateFormats.dateNumber);
+                 this.periodicPayment.initialDate = data.initialDateFormats.dateNumber;
+                 this.periodicPayment.dueDate = data.dueDateFormats.dateNumber;
                  this.obtainInformationAutorization();
 
                }).error(function(data)
@@ -674,7 +680,14 @@
             convertDates: function(date)
             {
               var dateinformatguion= date.split("-");
-              return dateinformatguion[2]+"/"+dateinformatguion[1]+"/"+dateinformatguion[0];
+              return dateinformatguion[0]+"/"+dateinformatguion[1]+"/"+dateinformatguion[2];
+            },
+            convertDatesGuion: function(date)
+            {
+              var dateinformatguion= date.split("T");
+              var datewithSlash = dateinformatguion.split("-");
+              return datewithSlash[2]+"-"+datewithSlash[1]+"-"+datewithSlash[0];
+
             },
             obtainUserInSession: function()
             {
@@ -1284,6 +1297,7 @@
               </div>
             </div>
           </div>
+
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->
