@@ -152,6 +152,14 @@
           },
           methods:
           {
+            setIsCollapsed: function (cotizacion) {
+              if (cotizacion.isCollapsed == true) {
+                cotizacion.isCollapsed = false;
+              } else {
+                Vue.set(cotizacion, "isCollapsed", true);
+              }
+
+            },
             obtainProductType: function()
             {
               this.ProductTypes= {};
@@ -292,7 +300,6 @@
               amount: '',
               rate: '',
               fileName: '',
-              sku: '',
               outOfBudget: '',
               idRequest: '',
               idEstimationStatus: '',
@@ -557,7 +564,6 @@
                   cotizacion.idEstimation= element.idEstimation;
                   cotizacion.amount = element.amount;
                   cotizacion.rate= element.rate;
-                  cotizacion.sku= element.sku;
                   cotizacion.outOfBudget = element.outOfBudget;
                   cotizacion.idRequest = element.idRequest;
                   cotizacion.idEstimationStatus = element.idEstimationStatus;
@@ -921,7 +927,7 @@
               <div class="col-xs-1">
                 <div class="col-xs-6">
                   <button type="button" class="btn btn-default" style="margin-top: 25px; margin-left: -33px"
-                    v-on:click="saveProduct" :disabled="isUpdate">
+                    v-on:click="saveProduct" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Agregar Producto">
                     <span class="glyphicon glyphicon-plus"></span>
                   </button>
                 </div>
@@ -1004,7 +1010,8 @@
                 <div class="panel-heading" class="panel-title">
                   <div class="row">
                     <div data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" aria-expanded="false"
-                         aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer">
+                         aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer"
+                         @click="setIsCollapsed(cotizacion)">
                       <div class="col-xs-4 text-left">
                         <div class="col-xs-6">
                           <h4 class="panel-title">Cotización
@@ -1022,22 +1029,22 @@
                       <div class="col-xs-4">
                         <div class="col-xs-6">
 
-                        </div>
-                        <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0" :disabled="isSavingNow">
-                          <button class="btn btn-sm btn-default">
-                            <span class="glyphicon glyphicon-floppy-disk"></span>
-                          </button>
-                        </div>
-                        <div class="col-xs-2 text-right">
-                          <button type="button" class="btn btn-sm btn-default" @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" >
-                            <span class="glyphicon glyphicon-remove"></span>
-                          </button>
-                        </div>
+                      </div>
+                      <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0" :disabled="isSavingNow">
+                        <button class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="top" title="Agregar Cotización">
+                          <span class="glyphicon glyphicon-floppy-disk"></span>
+                        </button>
+                      </div>
+                      <div class="col-xs-2 text-right">
+                        <button type="button" class="btn btn-sm btn-default" @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip" data-placement="top" title="Eliminar Cotización">
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </button>
+                      </div>
 
-                        <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation > 0">
-                          <button class="btn btn-sm btn-default" :disabled="isSavingNow">
-                            <span class="glyphicon glyphicon-pencil"></span>
-                          </button>
+                        <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation > 0 && cotizacion.isCollapsed == true">
+                        <button class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="top" title="Modificar Cotización">
+                          <span class="glyphicon glyphicon-pencil"></span>
+                        </button>
                         </div>
                       </div>
                     </div>

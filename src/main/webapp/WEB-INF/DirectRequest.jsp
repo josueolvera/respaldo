@@ -89,7 +89,6 @@
               amount: '',
               rate: '',
               fileName: '',
-              sku: '',
               outOfBudget: '',
               idRequest: '',
               idEstimationStatus: '',
@@ -414,7 +413,6 @@
                 self.estimation.idEstimation= element.idEstimation;
                 self.estimation.amount = element.amount;
                 self.estimation.rate= element.rate;
-                self.estimation.sku= element.sku;
                 self.estimation.outOfBudget = element.outOfBudget;
                 self.estimation.idRequest = element.idRequest;
                 self.estimation.idEstimationStatus = element.idEstimationStatus;
@@ -662,7 +660,7 @@
               <div class="col-xs-1">
                 <div class="col-xs-6">
                   <button type="button" class="btn btn-default" style="margin-top: 25px; margin-left: -33px"
-                  :disabled="isUpdate"  v-on:click="saveProduct">
+                  :disabled="isUpdate"  v-on:click="saveProduct" data-toggle="tooltip" data-placement="top" title="Agregar Producto">
                     <span class="glyphicon glyphicon-plus"></span>
                   </button>
                 </div>

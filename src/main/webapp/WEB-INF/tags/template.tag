@@ -126,11 +126,11 @@
         <script src="/BIDGroup/assets/js/accounting.js"></script>
         <script type="text/javascript">
             var ROOT_URL = "/BIDGroup";
-
             var USER_VM = new Vue({
                 el: '#main-sidebar',
                 ready: function () {
                     this.fetchApp();
+                    this.openToolTips();
                 },
                 data: {
                     sidebar: {
@@ -186,7 +186,10 @@
                             Vue.set(item, "expanded", true);
                         }
                         this.sidebar.itemsExpanded.module = item;
-                    }
+                    },
+                    openToolTips: function () {
+                        $('[data-toggle="tooltip"]').tooltip('');
+                    },
                 }
             });
         </script>
