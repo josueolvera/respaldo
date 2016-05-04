@@ -144,6 +144,7 @@
           timePickerEsquema: '',
           userInSession: '',
           isSavingNow: false,
+          isCollapsed: false,
           showAsignacionAnterior: false,
           AccountsPayablesInfo: [],
           isAutoriced: true,
@@ -153,6 +154,14 @@
           },
           methods:
           {
+            setIsCollapsed: function () {
+              if (this.isCollapsed == true) {
+                this.isCollapsed = false;
+              } else {
+                this.isCollapsed = true;
+              }
+
+            },
             obtainProductType: function()
             {
               this.ProductTypes= {};
@@ -1085,7 +1094,8 @@
                 <div class="panel-heading">
                   <div class="row">
                     <div data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" aria-expanded="false"
-                         aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer">
+                         aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer"
+                          @click="setIsCollapsed">
                       <div class="col-xs-4 text-left">
                         <div class="col-xs-6">
                           <h3 class="panel-title">Cotización
@@ -1119,7 +1129,7 @@
                           </button>
                         </div>
 
-                        <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation > 0">
+                        <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation > 0 || isCollapsed == true">
                           <button class="btn btn-sm btn-default" :disabled="isSavingNow">
                             <span class="glyphicon glyphicon-pencil"></span>
                           </button>
