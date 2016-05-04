@@ -154,7 +154,8 @@
           AccountsPayablesInfo: [],
           isAutoriced: true,
           infoAutorization: '',
-          userRequest: ''
+          userRequest: '',
+          flagrate: false
           },
           methods:
           {
@@ -891,6 +892,30 @@
               }).error(function() {
                 showAlert("Ha habido un error al cancelar la solicitud, intente nuevamente");
               });
+            },
+            validateCurrency: function(cotizacion)
+            {
+              var self = this;
+              if (cotizacion.idCurrency== '')
+              {
+                cotizacion.rate = '';
+                this.flagrate = false;
+              }
+              if (cotizacion.idCurrency == 1)
+              {
+                cotizacion.rate = 1;
+                this.flagrate = true;
+              }
+              else
+              {
+                this.currencies.forEach(function(element){
+                    if (cotizacion.idCurrency == element.idCurrency)
+                    {
+                        cotizacion.rate= element.rate;
+                    }
+                });
+                this.flagrate = false;
+              }
             }
           },
         filters:
@@ -989,30 +1014,17 @@
                 </div>
               </div>
 
-              <div class="col-xs-2">
-                <label>
-                  Fecha Aplicación
-                </label>
-                <div class="form-group">
-                <div class='input-group date' id='datetimepicker1'>
-                    <input type='text' class="form-control" v-model="obtainRequestInformation.applyingDate"
-                      @change="obtainRequestInfo" :disabled="isUpdate">
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-                </div>
-                </div>
-
-              </div>
-
-              <div class="col-xs-2">
+              <div class="col-xs-5">
                 <label>
                   Responsable
                 </label>
                 <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
                 @change="obtainRequestInfo" :disabled="isUpdate">
                   <option></option>
-                  <option v-for="user in Users" value="{{user.idUser}}"> {{user.dwEmployee.employee.fullNameReverse}} </option>
+                  <option v-for="user in Users" value="{{user.idUser}}">
+                    <span v-if="user.dwEmployee.employee.fullNameReverse != '' ">{{user.dwEmployee.employee.fullNameReverse}}</span>
+                    <span v-if="user.dwEmployee.employee.fullNameReverse == ''"><{{user.mail}}></span>
+                  </option>
                 </select>
               </div>
             </div>
@@ -1145,7 +1157,7 @@
                       <label>
                         Tipo de Moneda
                       </label>
-                      <select class="form-control" v-model="cotizacion.idCurrency" required="true">
+                      <select class="form-control" v-model="cotizacion.idCurrency" required="true" @change="validateCurrency(cotizacion)">
                         <option></option>
                         <option v-for="curr in currencies" value="{{curr.idCurrency}}">
                           {{curr.currency}}
@@ -1167,7 +1179,7 @@
                       </label>
                       <div class="input-group">
                         <span class="input-group-addon">%</span>
-                        <input number class="form-control" placeholder="" v-model="cotizacion.rate" required="true">
+                        <input number class="form-control" :disabled="flagrate" v-model="cotizacion.rate" required="true">
                       </div>
                     </div>
                     <div class="col-xs-2">
@@ -1481,7 +1493,7 @@
             </div>
           </div>
           <pre>
-            {{ $data.Users | json}}
+            {{ $data.currencies | json}}
           </pre>
 
           </div> <!-- container-fluid -->

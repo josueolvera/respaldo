@@ -901,30 +901,17 @@
                 </div>
               </div>
 
-              <div class="col-xs-2">
-                <label>
-                  Fecha Aplicación
-                </label>
-                <div class="form-group">
-                <div class='input-group date' id='datetimepicker1'>
-                    <input type='text' class="form-control" v-model="obtainRequestInformation.applyingDate"
-                      @change="obtainRequestInfo" :disabled="isUpdate">
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-                </div>
-                </div>
-
-              </div>
-
-              <div class="col-xs-2">
+              <div class="col-xs-5">
                 <label>
                   Responsable
                 </label>
                 <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
                 @change="obtainRequestInfo" :disabled="isUpdate">
                   <option></option>
-                  <option v-for="user in Users" value="{{user.idUser}}"> {{user.username}} </option>
+                  <option v-for="user in Users" value="{{user.idUser}}">
+                    <span v-if="user.dwEmployee.employee.fullNameReverse != '' ">{{user.dwEmployee.employee.fullNameReverse}}</span>
+                    <span v-if="user.dwEmployee.employee.fullNameReverse == ''"><{{user.mail}}></span>
+                  </option>
                 </select>
               </div>
             </div>
