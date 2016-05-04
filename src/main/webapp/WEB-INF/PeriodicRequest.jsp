@@ -972,12 +972,12 @@
             <form v-on:submit.prevent="saveEstimations(cotizacion)" id="form-{{cotizacion.indexOfForm}}">
             <div class="col-xs-12">
               <div class="panel panel-default">
-                <div class="panel-heading">
+                <div class="panel-heading" class="panel-title" data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" aria-expanded="false"
+                     aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer">
                   <div class="row">
                     <div class="col-xs-4 text-left">
                       <div class="col-xs-6">
-                        <h3 class="panel-title" data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" aria-expanded="false"
-                          aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer">Cotizacion
+                        <h3>Cotizacion
                         </h3>
                       </div>
                       <div class="col-xs-6">
