@@ -1020,7 +1020,7 @@
                     {{produc.descripcion}}
                   </div>
                   <div class="col-xs-2 text-left">
-                    <button class="btn btn-link" @click="deleteProduct(produc)" :disabled="isUpdate">
+                    <button class="btn btn-default" @click="deleteProduct(produc)" :disabled="isUpdate">
                       <span class="glyphicon glyphicon-remove"></span>
                     </button>
                   </div>
@@ -1066,12 +1066,12 @@
             <form v-on:submit.prevent="saveEstimations(cotizacion)" id="form-{{cotizacion.indexOfForm}}">
             <div class="col-xs-12">
               <div class="panel panel-default">
-                <div class="panel-heading">
+                <div class="panel-heading" data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" aria-expanded="false"
+                     aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer">
                   <div class="row">
                     <div class="col-xs-4 text-left">
                       <div class="col-xs-6">
-                        <h3 class="panel-title" data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" aria-expanded="false"
-                          aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer">Cotizacion
+                        <h3 class="panel-title">Cotización
                         </h3>
                       </div>
                       <div class="col-xs-6">
@@ -1168,15 +1168,19 @@
                   </div>
                   <br>
                   <div class="row">
-                    <div class="col-xs-3">
+                    <div class="col-xs-5">
                       <label>
                         Archivo de la Cotizacion
                       </label>
                       <input type="file" name="file" class="form-control"
-                       v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}">
+                       v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}"
+                             accept="application/pdf,
+                                     image/*,
+                                     application/msword,
+                                     application/vnd.openxmlformats-officedocument.wordprocessingml.document">
                     </div>
                     <div class="col-xs-2" v-if="cotizacion.idEstimation > 0">
-                      <!-- <button type="button" class="btn btn-link"
+                      <!-- <button type="button" class="btn btn-default"
                         @click="downloadFile(cotizacion.idEstimation)" style="margin-top: 25px">Ver archivo
                       </button>
                     -->
@@ -1187,26 +1191,26 @@
                     </p>
                     </div>
                     <div class="col-xs-2">
-                      <button type="button" class="btn btn-link" @click="prepareModalPeriodicPayment(cotizacion)"
+                      <button type="button" class="btn btn-default" @click="prepareModalPeriodicPayment(cotizacion)"
                        style="margin-top: 25px" v-if="cotizacion.idEstimationStatus== 2">Agregar Informacion de Pago
                       </button>
                     </div>
 
-                    <div class="col-xs-3">
+                    <div class="col-xs-1">
 
                     </div>
                     <div class="col-xs-2 text-right">
-                      <button type="button" class="btn btn-link" name="button"
+                      <button type="button" class="btn btn-default" name="button"
                         v-if="cotizacion.idEstimationStatus== 1" style="margin-top:25px"
                         @click="autorizarCotizacion(cotizacion)">
                         Autorizar Cotizacion
                       </button>
-                      <button type="button" class="btn btn-link" name="button"
+                      <button type="button" class="btn btn-default" name="button"
                         v-if="cotizacion.idEstimationStatus== 2 && isAutoriced" style="margin-top:25px"
                         @click="cancelarAutorizacion">
                         Cancelar Aprobacion
                       </button>
-                      <button type="button" class="btn btn-link" name="button"
+                      <button type="button" class="btn btn-default" name="button"
                         v-if="!(isAutoriced)" style="margin-top:25px"
                         @click="autorizarCotizacion(cotizacion)">
                         Autorizar Cotizacion
