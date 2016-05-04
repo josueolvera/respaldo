@@ -147,7 +147,8 @@
           isSavingNow: false,
           isAutoriced: true,
           infoAutorization: '',
-          userRequest: ''
+          userRequest: '',
+          flagrate: false
           },
           methods:
           {
@@ -803,6 +804,30 @@
               }).error(function() {
                 showAlert("Ha habido un error al cancelar la solicitud, intente nuevamente");
               });
+            },
+            validateCurrency: function(cotizacion)
+            {
+              var self = this;
+              if (cotizacion.idCurrency== '')
+              {
+                cotizacion.rate = '';
+                this.flagrate = false;
+              }
+              if (cotizacion.idCurrency == 1)
+              {
+                cotizacion.rate = 1;
+                this.flagrate = true;
+              }
+              else
+              {
+                this.currencies.forEach(function(element){
+                    if (cotizacion.idCurrency == element.idCurrency)
+                    {
+                        cotizacion.rate= element.naturalRate;
+                    }
+                });
+                this.flagrate = false;
+              }
             }
 
           },
@@ -981,8 +1006,8 @@
                   <div class="row">
                     <div class="col-xs-4 text-left">
                       <div class="col-xs-6">
-                        <h3>Cotización
-                        </h3>
+                        <h4 class="panel-title">Cotización
+                        </h4>
                       </div>
                       <div class="col-xs-6">
                         <h4 class="panel-title">Monto $ {{cotizacion.amount}}</h4>
@@ -1043,7 +1068,7 @@
                       <label>
                         Tipo de Moneda
                       </label>
-                      <select class="form-control" v-model="cotizacion.idCurrency" required="true">
+                      <select class="form-control" v-model="cotizacion.idCurrency" required="true" @change="validateCurrency(cotizacion)">
                         <option></option>
                         <option v-for="curr in currencies" value="{{curr.idCurrency}}">
                           {{curr.currency}}
@@ -1065,7 +1090,8 @@
                       </label>
                       <div class="input-group">
                         <span class="input-group-addon">%</span>
-                        <input number class="form-control" placeholder="" v-model="cotizacion.rate" required="true">
+                        <input number class="form-control" placeholder="" v-model="cotizacion.rate"
+                          :disabled="flagrate" required="true">
                       </div>
                     </div>
                     <div class="col-xs-2">

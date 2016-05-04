@@ -32,12 +32,14 @@
 
             this.timePickerPagoInicial = $('#datePagoInicial').datetimepicker({
               locale: 'es',
-              format: 'YYYY/MM/DD'
+              format: 'DD-MM-YYYY',
+              useCurrent: false,
               }).data();
 
               this.timePickerFechaVencimiento = $('#dateFechaVencimiento').datetimepicker({
                 locale: 'es',
-                format: 'YYYY/MM/DD'
+                format: 'DD-MM-YYYY',
+                useCurrent: false,
                 }).data();
 
             this.obtainUserInSession();
@@ -520,8 +522,8 @@
               this.periodicPayment.folio= data.folio;
               this.objectRequest.request.idRequest= data.idRequest;
               this.objectRequest.request.folio= data.folio;
-              this.objectRequest.request.creationDate= this.convertDates(data.creationDateFormats.dateNumber);
-              this.objectRequest.request.applyingDate= this.convertDates(data.applyingDateFormats.dateNumber);
+              this.objectRequest.request.creationDate= data.creationDateFormats.dateNumber;
+              this.objectRequest.request.applyingDate= data.applyingDateFormats.dateNumber;
               this.objectRequest.request.idUserRequest= data.userRequest.idUser;
               this.objectRequest.request.idUserResponsable= data.idUserResponsible;
               this.objectRequest.request.idBudgetMonthBranch= data.idBudgetMonthBranch;
@@ -903,7 +905,7 @@
                 this.currencies.forEach(function(element){
                     if (cotizacion.idCurrency == element.idCurrency)
                     {
-                        cotizacion.rate= element.rate;
+                        cotizacion.rate= element.naturalRate;
                     }
                 });
                 this.flagrate = false;
@@ -1489,6 +1491,9 @@
               </div>
             </div>
           </div>
+          <pre>
+            {{ $data.currencies | json}}
+          </pre>
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->

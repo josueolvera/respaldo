@@ -119,7 +119,8 @@
             isSavingNow: false,
             AccountsPayables: [],
             infoAutorization: '',
-            userRequest: ''
+            userRequest: '',
+            flagrate: false
 
         },
         methods:
@@ -546,6 +547,30 @@
             {
               showAlert("No se ha podido obtener la informacion de la autorizacion");
             });
+          },
+          validateCurrency: function(cotizacion)
+          {
+            var self = this;
+            if (cotizacion.idCurrency== '')
+            {
+              cotizacion.rate = '';
+              this.flagrate = false;
+            }
+            if (cotizacion.idCurrency == 1)
+            {
+              cotizacion.rate = 1;
+              this.flagrate = true;
+            }
+            else
+            {
+              this.currencies.forEach(function(element){
+                  if (cotizacion.idCurrency == element.idCurrency)
+                  {
+                      cotizacion.rate= element.naturalRate;
+                  }
+              });
+              this.flagrate = false;
+            }
           }
         },
       filters:
@@ -656,17 +681,6 @@
                   </option>
                 </select>
               </div>
-
-              <div class="col-xs-2">
-                <label>
-                  Responsable
-                </label>
-                <select class="form-control" required="true" :disabled="isUpdate" v-model="obtainRequestInformation.idUserResponsable"
-                @change="obtainRequestInfo">
-                  <option></option>
-                  <option v-for="user in Users" value="{{user.idUser}}"> {{user.username}} </option>
-                </select>
-              </div>
             </div>
             <br>
               <div class="row">
@@ -760,7 +774,7 @@
                         <label>
                           Tipo de Moneda
                         </label>
-                        <select class="form-control" v-model="estimation.idCurrency" required="true">
+                        <select class="form-control" v-model="estimation.idCurrency" required="true" @change="validateCurrency(estimation)">
                           <option></option>
                           <option v-for="curr in currencies" value="{{curr.idCurrency}}">
                             {{curr.currency}}
@@ -788,7 +802,8 @@
                         </label>
                         <div class="input-group">
                           <span class="input-group-addon">%</span>
-                          <input number class="form-control" placeholder="" v-model="estimation.rate" required="true">
+                          <input number class="form-control" placeholder="" v-model="estimation.rate"
+                            :disabled="flagrate" required="true" >
                         </div>
                       </div>
                       </div>
