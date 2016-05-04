@@ -29,7 +29,6 @@ public class CProducts implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_PRODUCT")
     @JsonView(JsonViews.Root.class)
     private Integer idProduct;
@@ -38,6 +37,11 @@ public class CProducts implements Serializable {
     @Column(name = "PRODUCT")
     @JsonView(JsonViews.Root.class)
     private String product;
+
+    @Size(max = 20)
+    @Column(name = "SKU")
+    @JsonView(JsonViews.Root.class)
+    private String sku;
 
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
@@ -72,6 +76,14 @@ public class CProducts implements Serializable {
 
     public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
+    }
+
+    public String getSku() {
+        return sku;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
     }
 
     @Override
