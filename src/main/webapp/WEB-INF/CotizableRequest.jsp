@@ -725,6 +725,7 @@
               {
                 if (element.dueDate !== "")
                 {
+
                     var d = new Date(element.dueDate);
                     var n = d.toISOString();
                     element.dueDate = n.slice(0, -1);
@@ -1011,7 +1012,7 @@
                 <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
                 @change="obtainRequestInfo" :disabled="isUpdate">
                   <option></option>
-                  <option v-for="user in Users" value="{{user.idUser}}"> {{user.username}} </option>
+                  <option v-for="user in Users" value="{{user.idUser}}"> {{user.dwEmployee.employee.fullNameReverse}} </option>
                 </select>
               </div>
             </div>
@@ -1479,6 +1480,10 @@
               </div>
             </div>
           </div>
+          <pre>
+            {{ $data.Users | json}}
+          </pre>
+
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->

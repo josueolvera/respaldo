@@ -6,6 +6,7 @@
 package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +29,11 @@ public class UsersManagementController {
     @Autowired
     UsersService usersService;
     
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
     
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> getUsersList() throws Exception {
-        String response = mapper.writerWithView(JsonViews.Root.class).writeValueAsString(usersService.findAll());
+        String response = mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(usersService.findAll());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     
