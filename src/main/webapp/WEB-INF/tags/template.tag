@@ -126,7 +126,9 @@
         <script src="/BIDGroup/assets/js/accounting.js"></script>
         <script type="text/javascript">
             var ROOT_URL = "/BIDGroup";
-
+            $(function () {
+                $('[data-toggle="tooltip"]').tooltip()
+            })
             var USER_VM = new Vue({
                 el: '#main-sidebar',
                 ready: function () {

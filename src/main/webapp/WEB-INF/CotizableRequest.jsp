@@ -1102,13 +1102,13 @@
                       </div>
                       <div class="col-xs-2 text-right">
                         <button type="button" class="btn btn-sm btn-default"
-                          @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" >
+                          @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip" data-placement="top" title="Eliminar Cotización">
                           <span class="glyphicon glyphicon-remove"></span>
                         </button>
                       </div>
 
                       <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation > 0">
-                        <button class="btn btn-sm btn-default" :disabled="isSavingNow">
+                        <button class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="top" title="Agregar Cotización">
                           <span class="glyphicon glyphicon-pencil"></span>
                         </button>
                       </div>
