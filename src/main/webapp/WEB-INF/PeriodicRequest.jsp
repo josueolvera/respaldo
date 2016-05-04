@@ -145,18 +145,17 @@
             Periods: '',
             userInSession: '',
             isSavingNow: false,
-            isCollapsed: false,
             isAutoriced: true,
             infoAutorization: '',
             userRequest: ''
           },
           methods:
           {
-            setIsCollapsed: function () {
-              if (this.isCollapsed == true) {
-                this.isCollapsed = false;
+            setIsCollapsed: function (cotizacion) {
+              if (cotizacion.isCollapsed == true) {
+                cotizacion.isCollapsed = false;
               } else {
-                this.isCollapsed = true;
+                Vue.set(cotizacion, "isCollapsed", true);
               }
 
             },
@@ -987,7 +986,7 @@
                   <div class="row">
                     <div data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" aria-expanded="false"
                          aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer"
-                         @click="setIsCollapsed">
+                         @click="setIsCollapsed(cotizacion)">
                       <div class="col-xs-4 text-left">
                         <div class="col-xs-6">
                           <h3>Cotización
@@ -1017,10 +1016,11 @@
                         </button>
                       </div>
 
-                        <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation > 0 || isCollapsed == true">
+                        <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation > 0 && cotizacion.isCollapsed == true">
                         <button class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="top" title="Modificar Cotización">
                           <span class="glyphicon glyphicon-pencil"></span>
                         </button>
+                        </div>
                       </div>
                     </div>
                   </div>
