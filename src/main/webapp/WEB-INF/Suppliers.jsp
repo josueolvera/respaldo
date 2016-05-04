@@ -343,8 +343,8 @@
                     <th>
                       Clabe
                     </th>
-                    <th style="color: red">
-                      Eliminar la Cuenta
+                    <th>
+                      Opción
                     </th>
                   </thead>
                   <tbody>
@@ -462,8 +462,8 @@
                   <th>
                     Clabe
                   </th>
-                  <th style="color: red">
-                    Eliminar la Cuenta
+                  <th>
+                    Opción
                   </th>
                   </thead>
                   <tbody>

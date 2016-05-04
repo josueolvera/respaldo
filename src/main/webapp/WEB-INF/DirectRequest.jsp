@@ -635,7 +635,7 @@
               <div class="col-xs-1">
                 <div class="col-xs-6">
                   <button type="button" class="btn btn-default" style="margin-top: 25px; margin-left: -33px"
-                  :disabled="isUpdate"  v-on:click="saveProduct">
+                  :disabled="isUpdate"  v-on:click="saveProduct" data-toggle="tooltip" data-placement="top" title="Agregar Producto">
                     <span class="glyphicon glyphicon-plus"></span>
                   </button>
                 </div>
