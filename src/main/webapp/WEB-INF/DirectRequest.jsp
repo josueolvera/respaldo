@@ -89,7 +89,6 @@
               amount: '',
               rate: '',
               fileName: '',
-              sku: '',
               outOfBudget: '',
               idRequest: '',
               idEstimationStatus: '',
@@ -413,7 +412,6 @@
                 self.estimation.idEstimation= element.idEstimation;
                 self.estimation.amount = element.amount;
                 self.estimation.rate= element.rate;
-                self.estimation.sku= element.sku;
                 self.estimation.outOfBudget = element.outOfBudget;
                 self.estimation.idRequest = element.idRequest;
                 self.estimation.idEstimationStatus = element.idEstimationStatus;

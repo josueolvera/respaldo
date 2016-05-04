@@ -298,7 +298,6 @@
               amount: '',
               rate: '',
               fileName: '',
-              sku: '',
               outOfBudget: '',
               idRequest: '',
               idEstimationStatus: '',
@@ -565,7 +564,6 @@
                   cotizacion.idEstimation= element.idEstimation;
                   cotizacion.amount = element.amount;
                   cotizacion.rate= element.rate;
-                  cotizacion.sku= element.sku;
                   cotizacion.outOfBudget = element.outOfBudget;
                   cotizacion.idRequest = element.idRequest;
                   cotizacion.idEstimationStatus = element.idEstimationStatus;
