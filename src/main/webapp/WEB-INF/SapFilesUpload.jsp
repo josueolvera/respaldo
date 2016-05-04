@@ -56,7 +56,9 @@
             <form id="formSap" enctype="multipart/form-data" v-on:submit.prevent="checkExistingSale">
                 <div class="form-group">
                     <label for="sapInputFile">SAP ventas</label>
-                    <input type="file" name="file" id="sapInputFile">
+                    <input type="file" name="file" id="sapInputFile"
+                           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
+                           application/vnd.ms-excel">
                     <br>
                     <button class="btn btn-success" type="submit">
                         Cargar archivo SAP

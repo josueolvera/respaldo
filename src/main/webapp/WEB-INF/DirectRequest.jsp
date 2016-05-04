@@ -792,12 +792,6 @@
                       </div>
                       <div class="col-xs-2">
                         <label>
-                          SKU(Opcional)
-                        </label>
-                        <input class="form-control" v-model="estimation.sku">
-                      </div>
-                      <div class="col-xs-2">
-                        <label>
                           Tipo de Cambio
                         </label>
                         <div class="input-group">
