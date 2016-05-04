@@ -27,23 +27,17 @@
           {
             this.timePicker = $('#datetimepicker1').datetimepicker({
               locale: 'es',
-              format: 'DD-MM-YYYY',
-              useCurrent: false,
-              minDate: moment().add(1, 'minutes')
+              format: 'YYYY/MM/DD'
               }).data();
 
             this.timePickerPagoInicial = $('#datePagoInicial').datetimepicker({
               locale: 'es',
-              format: 'DD-MM-YYYY',
-              useCurrent: false,
-              minDate: moment().add(1, 'minutes')
+              format: 'YYYY/MM/DD'
               }).data();
 
               this.timePickerFechaVencimiento = $('#dateFechaVencimiento').datetimepicker({
                 locale: 'es',
-                format: 'DD-MM-YYYY',
-                useCurrent: false,
-                minDate: moment().add(1, 'minutes')
+                format: 'YYYY/MM/DD'
                 }).data();
 
             this.obtainUserInSession();
@@ -188,7 +182,6 @@
                       .success(function (data)
                       {
                          this.ResponseRequestInformation= data;
-                         this.obtainRequestInformation.applyingDate = date.format("DD-MM-YYYY");
                          this.matchInformation(this.ResponseRequestInformation);
                       }).error(function(data)
                       {
@@ -207,9 +200,7 @@
             matchInformation: function(requestInformation)
             {
               this.objectRequest.request.idRequestTypesProduct= requestInformation.requestTypesProduct.idRequestTypeProduct;
-              var date = this.timePicker.DateTimePicker.date();
-              var dateiso= date.toISOString();
-              this.objectRequest.request.applyingDate= dateiso.slice(0, -1);
+              this.objectRequest.request.applyingDate= this.obtainRequestInformation.applyingDate;
               this.objectRequest.request.idUserResponsable= this.obtainRequestInformation.idUserResponsable;
               this.objectRequest.request.idBudgetMonthBranch = requestInformation.budgetMonthBranch.idBudgetMonthBranch;
 
@@ -521,7 +512,6 @@
             },
             matchInformationUpdate: function(data)
             {
-              //console.log(data);
               var self= this;
               this.isUpdate= true;
               this.obtainRequestInformation.idRequestType= data.requestTypeProduct.idRequestType;
@@ -530,8 +520,8 @@
               this.periodicPayment.folio= data.folio;
               this.objectRequest.request.idRequest= data.idRequest;
               this.objectRequest.request.folio= data.folio;
-              this.objectRequest.request.creationDate= data.creationDateFormats.dateNumber;
-              this.objectRequest.request.applyingDate= data.applyingDateFormats.dateNumber;
+              this.objectRequest.request.creationDate= this.convertDates(data.creationDateFormats.dateNumber);
+              this.objectRequest.request.applyingDate= this.convertDates(data.applyingDateFormats.dateNumber);
               this.objectRequest.request.idUserRequest= data.userRequest.idUser;
               this.objectRequest.request.idUserResponsable= data.idUserResponsible;
               this.objectRequest.request.idBudgetMonthBranch= data.idBudgetMonthBranch;
@@ -539,8 +529,7 @@
               this.objectRequest.request.idRequestStatus= data.idRequestStatus;
               this.objectRequest.request.description= data.description;
               this.objectRequest.request.purpose= data.purpose;
-              this.userRequest = data.userRequest.dwEmployee.employee.fullName;
-
+              this.userRequest = data.userRequest.mail;
               data.requestProductsList.forEach(function(element)
               {
               var producto= self.createProduct();
@@ -586,7 +575,9 @@
               this.$http.get(ROOT_URL+"/providers-accounts/account/"+cotizacion.idAccount).
               success(function(data)
               {
-                  cotizacion.idSupplier = data.idProvider;
+                data.forEach(function(element)
+                {
+                  cotizacion.idSupplier= element.idProvider;
 
                   self.$http.get(ROOT_URL + "/providers-accounts/provider/"+cotizacion.idSupplier).
                   success(function (data)
@@ -595,8 +586,9 @@
                    });
                   cotizacion.indexOfForm = self.estimations.length;
                   self.estimations.push(cotizacion);
+                });
               }).error(function(data){
-                showAlert("Ha habido un error al llenar los proveedores ");
+                showAlert("Ha habido un error al obtener la informacion de las cotizacion");
               });
             },
             downloadFile: function(idEstimation)
@@ -1014,6 +1006,7 @@
                 </div>
               </div>
 
+
               <div class="col-xs-5">
                 <label>
                   Responsable
@@ -1043,7 +1036,7 @@
                     {{produc.descripcion}}
                   </div>
                   <div class="col-xs-2 text-left">
-                    <button class="btn btn-link" @click="deleteProduct(produc)" :disabled="isUpdate">
+                    <button class="btn btn-default" @click="deleteProduct(produc)" :disabled="isUpdate">
                       <span class="glyphicon glyphicon-remove"></span>
                     </button>
                   </div>
@@ -1089,12 +1082,12 @@
             <form v-on:submit.prevent="saveEstimations(cotizacion)" id="form-{{cotizacion.indexOfForm}}">
             <div class="col-xs-12">
               <div class="panel panel-default">
-                <div class="panel-heading">
+                <div class="panel-heading" data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" aria-expanded="false"
+                     aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer">
                   <div class="row">
                     <div class="col-xs-4 text-left">
                       <div class="col-xs-6">
-                        <h3 class="panel-title" data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" aria-expanded="false"
-                          aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer">Cotización
+                        <h3 class="panel-title">Cotización
                         </h3>
                       </div>
                       <div class="col-xs-6">
@@ -1191,15 +1184,19 @@
                   </div>
                   <br>
                   <div class="row">
-                    <div class="col-xs-3">
+                    <div class="col-xs-5">
                       <label>
                         Archivo de la Cotización
                       </label>
                       <input type="file" name="file" class="form-control"
-                       v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}">
+                       v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}"
+                             accept="application/pdf,
+                                     image/*,
+                                     application/msword,
+                                     application/vnd.openxmlformats-officedocument.wordprocessingml.document">
                     </div>
                     <div class="col-xs-2" v-if="cotizacion.idEstimation > 0">
-                      <!-- <button type="button" class="btn btn-link"
+                      <!-- <button type="button" class="btn btn-default"
                         @click="downloadFile(cotizacion.idEstimation)" style="margin-top: 25px">Ver archivo
                       </button>
                     -->
@@ -1210,29 +1207,29 @@
                     </p>
                     </div>
                     <div class="col-xs-2">
-                      <button type="button" class="btn btn-link" @click="prepareModalPeriodicPayment(cotizacion)"
+                      <button type="button" class="btn btn-default" @click="prepareModalPeriodicPayment(cotizacion)"
                        style="margin-top: 25px" v-if="cotizacion.idEstimationStatus== 2">Agregar Informacion de Pago
                       </button>
                     </div>
 
-                    <div class="col-xs-3">
+                    <div class="col-xs-1">
 
                     </div>
                     <div class="col-xs-2 text-right">
-                      <button type="button" class="btn btn-link" name="button"
+                      <button type="button" class="btn btn-default" name="button"
                         v-if="cotizacion.idEstimationStatus== 1" style="margin-top:25px"
                         @click="autorizarCotizacion(cotizacion)">
-                        Autorizar Cotización
+                        Autorizar Cotizacion
                       </button>
-                      <button type="button" class="btn btn-link" name="button"
+                      <button type="button" class="btn btn-default" name="button"
                         v-if="cotizacion.idEstimationStatus== 2 && isAutoriced" style="margin-top:25px"
                         @click="cancelarAutorizacion">
-                        Cancelar Aprobación
+                        Cancelar Aprobacion
                       </button>
-                      <button type="button" class="btn btn-link" name="button"
+                      <button type="button" class="btn btn-default" name="button"
                         v-if="!(isAutoriced)" style="margin-top:25px"
                         @click="autorizarCotizacion(cotizacion)">
-                        Autorizar Cotización
+                        Autorizar Cotizacion
                       </button>
 
                     </div>
@@ -1246,7 +1243,7 @@
             <div class="row">
               <div class="col-xs-12">
                 <label>
-                  Autorizaciones de la Solicitud
+                  Autorizaciones de la Solicitud.
                 </label>
                 <table class="table table-striped">
                   <thead>
@@ -1302,13 +1299,13 @@
               <div class="modal-content">
                 <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                  <h4 class="modal-title">Introduzca el Esquema de Pagos</h4>
+                  <h4 class="modal-title">Introduzca el esquema de Pagos</h4>
                 </div>
                 <div class="modal-body">
                   <div class="row">
                     <div class="col-xs-4">
                       <label>
-                        Monto de la Cotizacion
+                        Monto de la Cotizacion:
                       </label>
                       <div class="input-group">
                         <span class="input-group-addon">$</span>
@@ -1403,7 +1400,7 @@
                     <div class="row">
                       <div class="col-xs-7" v-if="AccountsPayables.length> 0">
                         <label>
-                          Información de Pagos
+                          Informacion de Pagos
                         </label>
 
                         <div class="row">
@@ -1450,7 +1447,7 @@
 
                       <div class="col-xs-5" v-if="showAsignacionAnterior">
                         <label>
-                          Asignación Anterior
+                          Asignacion Anterior
                         </label>
                         <table class="table table-striped">
                           <thead>
@@ -1492,10 +1489,6 @@
               </div>
             </div>
           </div>
-          <pre>
-            {{ $data.currencies | json}}
-          </pre>
-
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->
