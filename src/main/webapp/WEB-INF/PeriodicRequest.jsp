@@ -1007,8 +1007,8 @@
                          aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer">
                       <div class="col-xs-4 text-left">
                         <div class="col-xs-6">
-                          <h3>Cotización
-                          </h3>
+                          <h4 class="panel-title">Cotización
+                          </h4>
                         </div>
                         <div class="col-xs-6">
                           <h4 class="panel-title">Monto $ {{cotizacion.amount}}</h4>

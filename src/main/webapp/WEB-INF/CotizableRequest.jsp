@@ -577,9 +577,8 @@
               this.$http.get(ROOT_URL+"/providers-accounts/account/"+cotizacion.idAccount).
               success(function(data)
               {
-                data.forEach(function(element)
-                {
-                  cotizacion.idSupplier= element.idProvider;
+                  cotizacion.idSupplier= data.idProvider;
+                  alert(cotizacion.idSupplier);
 
                   self.$http.get(ROOT_URL + "/providers-accounts/provider/"+cotizacion.idSupplier).
                   success(function (data)
@@ -588,7 +587,6 @@
                    });
                   cotizacion.indexOfForm = self.estimations.length;
                   self.estimations.push(cotizacion);
-                });
               }).error(function(data){
                 showAlert("Ha habido un error al obtener la informacion de las cotizacion");
               });
@@ -859,7 +857,6 @@
               this.$http.post(ROOT_URL+"/folios/authorizations/"+ info.idAuthorization +"/authorize",JSON.stringify(detalle)).
               success(function(data)
               {
-                showAlert(data);
                 setInterval(function()
                 {
                   window.location.reload()
