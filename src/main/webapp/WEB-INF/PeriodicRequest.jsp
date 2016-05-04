@@ -895,7 +895,7 @@
               <div class="col-xs-1">
                 <div class="col-xs-6">
                   <button type="button" class="btn btn-default" style="margin-top: 25px; margin-left: -33px"
-                    v-on:click="saveProduct" :disabled="isUpdate">
+                    v-on:click="saveProduct" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Agregar Producto">
                     <span class="glyphicon glyphicon-plus"></span>
                   </button>
                 </div>
@@ -1008,18 +1008,18 @@
 
                       </div>
                       <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0" :disabled="isSavingNow">
-                        <button class="btn btn-sm btn-default">
+                        <button class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="top" title="Agregar Cotización">
                           <span class="glyphicon glyphicon-floppy-disk"></span>
                         </button>
                       </div>
                       <div class="col-xs-2 text-right">
-                        <button type="button" class="btn btn-sm btn-default" @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" >
+                        <button type="button" class="btn btn-sm btn-default" @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip" data-placement="top" title="Eliminar Cotización">
                           <span class="glyphicon glyphicon-remove"></span>
                         </button>
                       </div>
 
                       <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation > 0">
-                        <button class="btn btn-sm btn-default" :disabled="isSavingNow">
+                        <button class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="top" title="Modificar Cotización">
                           <span class="glyphicon glyphicon-pencil"></span>
                         </button>
                       </div>
