@@ -1031,7 +1031,7 @@
 
                       </div>
                       <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0" :disabled="isSavingNow">
-                        <button class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="top" title="Agregar Cotización">
+                        <button type="submit" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="top" title="Agregar Cotización">
                           <span class="glyphicon glyphicon-floppy-disk"></span>
                         </button>
                       </div>
