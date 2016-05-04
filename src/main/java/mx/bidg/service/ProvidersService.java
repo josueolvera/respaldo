@@ -14,5 +14,8 @@ import mx.bidg.model.Providers;
  */
 public interface ProvidersService {
     List<Providers> findAll();
+    Providers findById(Integer idProvider);
     Providers save(Providers providers);
+    Providers update(Providers providers);
+    Boolean delete(Providers providers);
 }

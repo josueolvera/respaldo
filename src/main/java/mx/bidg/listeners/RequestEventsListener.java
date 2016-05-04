@@ -48,6 +48,9 @@ public class RequestEventsListener {
     private AuthorizationTreeRulesService authorizationTreeRulesService;
 
     @Autowired
+    private PriceEstimationsService priceEstimationsService;
+
+    @Autowired
     private AuthorizationsService authorizationsService;
 
     @Autowired
@@ -87,13 +90,11 @@ public class RequestEventsListener {
     @EventListener
     @SuppressWarnings("unchecked")
     public void buildRequestAuthorizationsTree(RequestCompletedEvent event) {
-        Requests requests = event.getResource();
-        if (authorizationsService.countByFolio(requests.getFolio()) > 0) {
-            return;
-        }
+        Requests request = event.getResource();
+        request.setPriceEstimationsList(priceEstimationsService.findByIdRequest(request.getIdRequest()));
         AuthorizationTreeRules rule = authorizationTreeRulesService.findByRuleName(AUTHORIZATIONS_RULE_NAME);
         Binding binding = new Binding();
-        binding.setProperty("request", requests);
+        binding.setProperty("request", request);
         GroovyShell shell = new GroovyShell(binding);
         TreeMap<Integer, Integer> users = new TreeMap<>();
         try {
@@ -105,11 +106,11 @@ public class RequestEventsListener {
         } finally {
             Map.Entry<Integer, Integer> firstEntry = users.firstEntry();
             Users user = usersService.findById(firstEntry.getValue());
-            notificationsService.createNotification(user, requests);
+            notificationsService.createNotification(user, request);
 
             for (Map.Entry<Integer, Integer> entry : users.entrySet()) {
                 Authorizations auth = new Authorizations();
-                auth.setFolio(requests.getFolio());
+                auth.setFolio(request.getFolio());
                 auth.setUsers(new Users(entry.getValue()));
                 auth.setAuthorizationType(CAuthorizationTypes.SOLICITUD);
                 auth.setAuthorizationOrder(entry.getKey());

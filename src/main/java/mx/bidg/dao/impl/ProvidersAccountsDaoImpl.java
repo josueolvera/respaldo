@@ -42,7 +42,8 @@ public class ProvidersAccountsDaoImpl extends AbstractDao<Integer, ProvidersAcco
 
     @Override
     public boolean delete(ProvidersAccounts entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        remove(entity);
+        return true;
     }
 
     @Override
@@ -54,11 +55,10 @@ public class ProvidersAccountsDaoImpl extends AbstractDao<Integer, ProvidersAcco
     }
 
     @Override
-    public List<ProvidersAccounts> findByAccount(Accounts a) {
+    public ProvidersAccounts findByAccount(Accounts a) {
         Criteria criteria = createEntityCriteria()
                 .add(Restrictions.eq("account", a))
                 .setFetchMode("provider", FetchMode.JOIN);
-        return (List<ProvidersAccounts>) criteria.list();
+        return (ProvidersAccounts) criteria.uniqueResult();
     }
-    
 }

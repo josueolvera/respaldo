@@ -10,12 +10,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
+
+import mx.bidg.service.AccountsService;
+import mx.bidg.service.ProvidersAccountsService;
 
 /**
  *
@@ -28,6 +29,12 @@ public class ProvidersController {
     @Autowired
     private ProvidersService providersService;
     
+    @Autowired
+    private AccountsService accountService;
+    
+    @Autowired
+    private ProvidersAccountsService providersAccountsService;
+    
     private ObjectMapper mapper = new ObjectMapper();
     
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -36,6 +43,19 @@ public class ProvidersController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/{idProvider}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> updateProvider(@PathVariable int idProvider, @RequestBody String data) throws IOException {
+        JsonNode jnode = mapper.readTree(data);
+        Providers provider = providersService.findById(idProvider);
+        provider.setProviderName(jnode.get("providerName").asText());
+        provider.setBusinessName(jnode.get("businessName").asText());
+        provider.setRfc(jnode.get("rfc").asText());
+        provider.setIdAccessLevel(1);
+        providersService.update(provider);
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Root.class).writeValueAsString(provider), HttpStatus.OK
+        );
+    }
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> saveProvider(@RequestBody String data) throws IOException {
@@ -59,10 +79,23 @@ public class ProvidersController {
 
             providerAccount.setAccount(account);
             providerAccount.setProvider(provider);
+            accountService.save(account);
+            providersAccountsService.save(providerAccount);
         }
 
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(provider), HttpStatus.OK
         );
+    }
+
+    @RequestMapping(value = "/{idProvider}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> deleteProvider(@PathVariable int idProvider) {
+        Providers provider = providersService.findById(idProvider);
+        List<ProvidersAccounts> providersAccounts = providersAccountsService.findByProvider(provider);
+        for (ProvidersAccounts pa : providersAccounts) {
+            providersAccountsService.delete(pa);
+        }
+        providersService.delete(provider);
+        return new ResponseEntity<>("Proveedor eliminado", HttpStatus.OK);
     }
 }

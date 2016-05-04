@@ -15,9 +15,6 @@ import mx.bidg.model.ProvidersAccounts;
  * @author sistemask
  */
 public interface ProvidersAccountsDao extends InterfaceDao<ProvidersAccounts> {
-    
-    public List<ProvidersAccounts> findByProvider(Providers p);
-    
-    public List<ProvidersAccounts> findByAccount(Accounts a);
-    
+    List<ProvidersAccounts> findByProvider(Providers p);
+    ProvidersAccounts findByAccount(Accounts a);
 }

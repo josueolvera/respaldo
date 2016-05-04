@@ -20,12 +20,12 @@ public class SIADController {
     public String budgetsView() {
         return "BudgetPruebas";
     }
-    
+
     @RequestMapping(value = "/individual-budget", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public String individualBudget() {
         return "Budgets";
     }
-    
+
 
     @RequestMapping(value = "/stock", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public String stockView() {
@@ -40,11 +40,33 @@ public class SIADController {
         return model;
     }
 
-    @RequestMapping(value="/request", method = RequestMethod.GET, produces= {"text/html;charset=UTF-8"})
-    public String serviceRequest(){
-        return "Request";
+    @RequestMapping(value = "/directa", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView directaRequestType() {
+        ModelAndView model= new ModelAndView();
+        model.addObject("idRequest", 0);
+        model.addObject("cat", CRequestsCategories.DIRECTA);
+        model.setViewName("DirectRequest");
+        return model;
     }
-    
+
+    @RequestMapping(value = "/cotizable", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView cotizableRequestTypeSearch() {
+        ModelAndView model= new ModelAndView();
+        model.addObject("idRequest", 0);
+        model.addObject("cat", CRequestsCategories.COTIZABLE);
+        model.setViewName("CotizableRequest");
+        return model;
+    }
+
+    @RequestMapping(value = "/periodica", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView periodicRequestTypeSearch() {
+        ModelAndView model= new ModelAndView();
+        model.addObject("idRequest", 0);
+        model.addObject("cat", CRequestsCategories.PERIODICA);
+        model.setViewName("PeriodicRequest");
+        return model;
+    }
+
     @RequestMapping(value = "/directa/{idRequest}", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public ModelAndView directaRequestType(@PathVariable int idRequest) {
         ModelAndView model= new ModelAndView();
@@ -53,8 +75,8 @@ public class SIADController {
         model.setViewName("DirectRequest");
         return model;
     }
-    
-        @RequestMapping(value = "/cotizable/{idRequest}", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+
+    @RequestMapping(value = "/cotizable/{idRequest}", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public ModelAndView cotizableRequestTypeSearch(@PathVariable int idRequest) {
         ModelAndView model= new ModelAndView();
         model.addObject("idRequest", idRequest);
@@ -62,10 +84,9 @@ public class SIADController {
         model.setViewName("CotizableRequest");
         return model;
     }
-    
 
     @RequestMapping(value = "/periodica/{idRequest}", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public ModelAndView periodicRequestTypeSearch(@PathVariable int idRequest) 
+    public ModelAndView periodicRequestTypeSearch(@PathVariable int idRequest)
     {
         ModelAndView model= new ModelAndView();
         model.addObject("idRequest", idRequest);
@@ -73,10 +94,18 @@ public class SIADController {
         model.setViewName("PeriodicRequest");
         return model;
     }
-    
+
     @RequestMapping(value = "/search-request", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public String searchRequest() {
         return "SearchRequest";
     }
-        
+
+        @RequestMapping(value = "/suppliers", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView suppliersView( ) 
+    {
+        ModelAndView model= new ModelAndView();
+        model.setViewName("Suppliers");
+        return model;
+    }
+
 }

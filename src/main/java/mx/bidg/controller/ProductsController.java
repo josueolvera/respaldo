@@ -8,6 +8,7 @@ import mx.bidg.model.CProducts;
 import mx.bidg.service.CProductsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,17 +29,17 @@ public class ProductsController {
 
     ObjectMapper mapper = new ObjectMapper();
 
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody String findProducts() throws Exception {
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(productsService.findAll());
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody String findProductsById(@PathVariable int id) throws Exception {
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(productsService.findById(id));
     }
     
-    @RequestMapping(value = "/product-type/{idProductType}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/product-type/{idProductType}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> findByProductType(@PathVariable int idProductType) throws Exception {
         
         List<CProducts> list = productsService.findByProductTypes(new CProductTypes(idProductType));

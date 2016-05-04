@@ -27,7 +27,9 @@
         {
           this.timePicker = $('#datetimepicker1').datetimepicker({
             locale: 'es',
-            format: 'YYYY/MM/DD'
+            format: 'DD-MM-YYYY',
+            useCurrent: false,
+            minDate: moment().add(1, 'minutes')
             }).data();
 
           this.obtainRequestInformation.idRequestCategory= this.RequestCategory;
@@ -194,6 +196,7 @@
                     .success(function (data)
                     {
                        this.ResponseRequestInformation= data;
+                       this.obtainRequestInformation.applyingDate = date.format("DD-MM-YYYY");
                        this.matchInformation(this.ResponseRequestInformation);
                     }).error(function(data)
                     {
@@ -210,7 +213,9 @@
           matchInformation: function(requestInformation)
           {
             this.objectRequest.request.idRequestTypesProduct= requestInformation.requestTypesProduct.idRequestTypeProduct;
-            this.objectRequest.request.applyingDate= this.obtainRequestInformation.applyingDate;
+            var date = this.timePicker.DateTimePicker.date();
+            var dateiso= date.toISOString();
+            this.objectRequest.request.applyingDate= dateiso.slice(0, -1);
             this.objectRequest.request.idUserResponsable= this.obtainRequestInformation.idUserResponsable;
             this.objectRequest.request.idBudgetMonthBranch = requestInformation.budgetMonthBranch.idBudgetMonthBranch;
           },
@@ -333,10 +338,10 @@
                       {
                           element.idAccountPayable = el.idAccountPayable;
                           element.paidAmount = el.paidAmount;
-                          element.creationDate = self.convertDates(el.creationDateFormats.dateNumber);
+                          element.creationDate = el.creationDateFormats.dateNumber;
                           if (element.dueDate !== "")
                           {
-                             element.dueDate = self.convertDates(el.dueDateFormats.dateNumber);
+                             element.dueDate = el.dueDateFormats.dateNumber;
                           }
                           element.idAccountPayableStatus = el.accountPayableStatus.idAccountPayableStatus;
                           element.idOperationType = el.operationType.idOperationType;
@@ -374,15 +379,15 @@
             this.objectRequest.request.description= data.description;
             this.objectRequest.request.purpose= data.purpose;
             this.objectRequest.request.folio= data.folio;
-            this.objectRequest.request.creationDate= this.convertDates(data.creationDateFormats.dateNumber);
-            this.objectRequest.request.applyingDate= this.convertDates(data.applyingDateFormats.dateNumber);
+            this.objectRequest.request.creationDate= data.creationDateFormats.dateNumber;
+            this.objectRequest.request.applyingDate= data.applyingDateFormats.dateNumber;
             this.objectRequest.request.idUserRequest= data.userRequest.idUser;
             this.objectRequest.request.idUserResponsable= data.idUserResponsible;
             this.objectRequest.request.idBudgetMonthBranch= data.idBudgetMonthBranch;
             this.objectRequest.request.idRequestTypeProduct= data.idRequestTypeProduct;
             this.objectRequest.request.idRequestStatus= data.idRequestStatus;
             this.obtainInformationAutorization();
-            this.userRequest = data.userRequest.mail;
+            this.userRequest = data.userRequest.dwEmployee.employee.fullName;
             data.requestProductsList.forEach(function(element)
             {
             var producto= self.createProduct();
@@ -426,16 +431,15 @@
             this.$http.get(ROOT_URL+"/providers-accounts/account/"+cotizacion.idAccount).
             success(function(data)
             {
-              data.forEach(function(element)
-              {
-                self.estimation.idSupplier= element.idProvider;
+              cotizacion.idSupplier = data.idProvider;
 
-                self.$http.get(ROOT_URL + "/providers-accounts/provider/"+cotizacion.idSupplier).
-                success(function (data)
-                 {
-                      self.estimation.accountSupplier= data;
-                 });
-              });
+              self.$http.get(ROOT_URL + "/providers-accounts/provider/"+cotizacion.idSupplier).
+              success(function (data)
+               {
+                    cotizacion.accountSupplier= data;
+               });
+              cotizacion.indexOfForm = self.estimations.length;
+              self.estimations.push(cotizacion);
 
             }).error(function(data){
               showAlert("Ha habido un error al obtener la informacion de las cotizaciones");
@@ -479,7 +483,7 @@
             success(function (data)
              {
                this.userInSession = data;
-               this.userRequest = data.mail;
+               this.userRequest = data.dwEmployee.employee.fullName;
 
              }).error(function(data)
              {
@@ -589,7 +593,7 @@
               </div>
               <div class="col-xs-4 col-xs-offset-4">
                 <label>
-                  Solicitante:
+                  Solicitante
                 </label>
                 <input class="form-control" type="text" name="name" value="" disabled="true" v-model="userRequest">
               </div>
@@ -598,7 +602,7 @@
             <div class="row">
               <div class="col-xs-2">
                <label>
-                 Tipo de Solicitud:
+                 Tipo de Solicitud
                </label>
                <select class="form-control" v-model="obtainRequestInformation.idRequestType" :disabled="desactivarCombos || isUpdate" @change="obtainProductType" required>
                  <option v-for="RequestType in RequestTypes"
@@ -609,7 +613,7 @@
 
               <div class="col-xs-2">
                 <label>
-                  Tipo de producto
+                  Tipo de Producto
                 </label>
                 <select class="form-control" v-model="obtainRequestInformation.idProductType" :disabled="desactivarCombos || isUpdate"
                   @change="obtainProducts" required>
@@ -641,7 +645,7 @@
 
               <div class="col-xs-2">
                 <label>
-                  Fecha Aplicacion
+                  Fecha Aplicación
                 </label>
                 <div class="form-group">
                 <div class='input-group date' id='datetimepicker1'>
@@ -655,7 +659,7 @@
               </div>
               <div class="col-xs-2">
                 <label>
-                  Responsable:
+                  Responsable
                 </label>
                 <select class="form-control" required="true" :disabled="isUpdate" v-model="obtainRequestInformation.idUserResponsable"
                 @change="obtainRequestInfo">
@@ -690,7 +694,7 @@
             <div class="row">
               <div class="col-xs-12">
                 <label>
-                  Descripcion de la Solicitud:
+                  Descripción de la Solicitud
                 </label>
                 <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.description"
                   :disabled="isUpdate" required></textarea>
@@ -700,7 +704,7 @@
             <div class="row">
               <div class="col-xs-12">
                 <label>
-                  Motivo de la Solicitud:
+                  Motivo de la Solicitud
                 </label>
                 <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.purpose"
                   :disabled="isUpdate" required></textarea>
@@ -718,7 +722,7 @@
                         <h3 class="panel-title">Informacion del Pago</h3>
                       </div>
                       <div class="col-xs-4" >
-                        <span class="label label-danger" v-if="estimation.outOfBudget == 1">Cotizacion Fuera de Presupuesto</span>
+                        <span class="label label-danger" v-if="estimation.outOfBudget == 1">Cotización Fuera de Presupuesto</span>
                       </div>
                       <div class="col-xs-4">
                         <div class="col-xs-8">
@@ -804,7 +808,7 @@
               <div class="row">
                 <div class="col-xs-12">
                   <label>
-                    Autorizaciones de la Solicitud.
+                    Autorizaciones de la Solicitud
                   </label>
                   <table class="table table-striped">
                     <thead>

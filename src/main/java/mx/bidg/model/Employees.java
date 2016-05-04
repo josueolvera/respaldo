@@ -30,6 +30,7 @@ import mx.bidg.config.JsonViews;
 import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateConverter;
 import mx.bidg.utils.DateTimeConverter;
+import mx.bidg.utils.StringFormatter;
 import org.hibernate.annotations.DynamicUpdate;
 
 
@@ -468,6 +469,14 @@ public class Employees implements Serializable {
             return null;
         }
         return new DateFormatsPojo(birthday);
+    }
+
+    public String getFullName() {
+        return StringFormatter.concatWithoutNull(firstName, middleName, parentalLast, motherLast);
+    }
+
+    public String getFullNameReverse() {
+        return StringFormatter.concatWithoutNull(parentalLast, motherLast, firstName, middleName);
     }
 
     @Override

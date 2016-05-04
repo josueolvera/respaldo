@@ -37,7 +37,8 @@ public class AccountsDaoImpl extends AbstractDao<Integer, Accounts> implements A
 
     @Override
     public boolean delete(Accounts entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        remove(entity);
+        return true;
     }
     
 }

@@ -927,7 +927,7 @@
                     {{produc.descripcion}}
                   </div>
                   <div class="col-xs-2 text-left">
-                    <button class="btn btn-default" @click="deleteProduct(produc)" :disabled="isUpdate">
+                    <button class="btn btn-link" @click="deleteProduct(produc)" :disabled="isUpdate">
                       <span class="glyphicon glyphicon-remove"></span>
                     </button>
                   </div>
@@ -1088,7 +1088,7 @@
                     </p>
                     </div>
                     <div class="col-xs-2">
-                      <button type="button" class="btn btn-default" @click="prepareModalPeriodicPayment(cotizacion)"
+                      <button type="button" class="btn btn-link" @click="prepareModalPeriodicPayment(cotizacion)"
                        style="margin-top: 25px" v-if="cotizacion.idEstimationStatus== 2">Agregar Informacion de Pago
                       </button>
                     </div>
@@ -1096,17 +1096,17 @@
 
                     </div>
                     <div class="col-xs-2 text-right">
-                      <button type="button" class="btn btn-default" name="button"
+                      <button type="button" class="btn btn-link" name="button"
                         v-if="cotizacion.idEstimationStatus== 1" style="margin-top:25px"
                         @click="autorizarCotizacion(cotizacion)">
                         Autorizar Cotizacion
                       </button>
-                      <button type="button" class="btn btn-default" name="button"
+                      <button type="button" class="btn btn-link" name="button"
                         v-if="cotizacion.idEstimationStatus== 2 && isAutoriced" style="margin-top:25px"
                         @click="cancelarAutorizacion">
                         Cancelar Aprobacion
                       </button>
-                      <button type="button" class="btn btn-default" name="button"
+                      <button type="button" class="btn btn-link" name="button"
                         v-if="!(isAutoriced)" style="margin-top:25px"
                         @click="autorizarCotizacion(cotizacion)">
                         Autorizar Cotizacion
