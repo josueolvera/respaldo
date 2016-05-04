@@ -976,40 +976,44 @@
             <form v-on:submit.prevent="saveEstimations(cotizacion)" id="form-{{cotizacion.indexOfForm}}">
             <div class="col-xs-12">
               <div class="panel panel-default">
-                <div class="panel-heading" class="panel-title" data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" aria-expanded="false"
-                     aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer">
+                <div class="panel-heading" class="panel-title">
                   <div class="row">
-                    <div class="col-xs-4 text-left">
-                      <div class="col-xs-6">
-                        <h3>Cotización
-                        </h3>
+                    <div data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" aria-expanded="false"
+                         aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer">
+                      <div class="col-xs-4 text-left">
+                        <div class="col-xs-6">
+                          <h3>Cotización
+                          </h3>
+                        </div>
+                        <div class="col-xs-6">
+                          <h4 class="panel-title">Monto $ {{cotizacion.amount}}</h4>
+                        </div>
                       </div>
-                      <div class="col-xs-6">
-                        <h4 class="panel-title">Monto $ {{cotizacion.amount}}</h4>
+                      <div class="col-xs-4" >
+                        <span class="label label-danger" v-if="cotizacion.outOfBudget>0">Cotización Fuera de Presupuesto</span>
                       </div>
                     </div>
-                    <div class="col-xs-4" >
-                      <span class="label label-danger" v-if="cotizacion.outOfBudget>0">Cotización Fuera de Presupuesto</span>
-                    </div>
-                    <div class="col-xs-4">
-                      <div class="col-xs-6">
+                    <div>
+                      <div class="col-xs-4">
+                        <div class="col-xs-6">
 
-                      </div>
-                      <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0" :disabled="isSavingNow">
-                        <button class="btn btn-sm btn-default">
-                          <span class="glyphicon glyphicon-floppy-disk"></span>
-                        </button>
-                      </div>
-                      <div class="col-xs-2 text-right">
-                        <button type="button" class="btn btn-sm btn-default" @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" >
-                          <span class="glyphicon glyphicon-remove"></span>
-                        </button>
-                      </div>
+                        </div>
+                        <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0" :disabled="isSavingNow">
+                          <button class="btn btn-sm btn-default">
+                            <span class="glyphicon glyphicon-floppy-disk"></span>
+                          </button>
+                        </div>
+                        <div class="col-xs-2 text-right">
+                          <button type="button" class="btn btn-sm btn-default" @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" >
+                            <span class="glyphicon glyphicon-remove"></span>
+                          </button>
+                        </div>
 
-                      <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation > 0">
-                        <button class="btn btn-sm btn-default" :disabled="isSavingNow">
-                          <span class="glyphicon glyphicon-pencil"></span>
-                        </button>
+                        <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation > 0">
+                          <button class="btn btn-sm btn-default" :disabled="isSavingNow">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
