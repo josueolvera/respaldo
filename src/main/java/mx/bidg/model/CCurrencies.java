@@ -80,15 +80,11 @@ public class CCurrencies implements Serializable {
     }
 
     public BigDecimal getRate() {
-        return rate;
+        return BigDecimal.ONE.divide(rate, 2, BigDecimal.ROUND_FLOOR);
     }
 
     public void setRate(BigDecimal rate) {
         this.rate = rate;
-    }
-
-    public BigDecimal getNaturalRate() {
-        return BigDecimal.ONE.divide(rate, 2, BigDecimal.ROUND_FLOOR);
     }
 
     @Override
