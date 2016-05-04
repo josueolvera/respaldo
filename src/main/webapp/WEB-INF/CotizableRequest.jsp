@@ -1175,12 +1175,6 @@
                         <input number class="form-control" :disabled="flagrate" v-model="cotizacion.rate" required="true">
                       </div>
                     </div>
-                    <div class="col-xs-2">
-                      <label>
-                        SKU
-                      </label>
-                      <input class="form-control" v-model="cotizacion.sku">
-                    </div>
                   </div>
                   <br>
                   <div class="row">
