@@ -1113,9 +1113,6 @@
                       <div class="col-xs-4" >
                         <span class="label label-danger" v-if="cotizacion.outOfBudget == 1">Cotización Fuera de Presupuesto</span>
                       </div>
-                      <%--<div class="col-xs-6">--%>
-
-                      <%--</div>--%>
                     </div>
                     <div>
                       <div class="col-xs-4">
@@ -1123,7 +1120,7 @@
 
                       </div>
                       <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0">
-                        <button type="button" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Agregar Cotización">
+                        <button type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Agregar Cotización">
                           <span class="glyphicon glyphicon-floppy-disk"></span>
                         </button>
                       </div>
