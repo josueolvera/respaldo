@@ -584,7 +584,6 @@
               success(function(data)
               {
                   cotizacion.idSupplier= data.idProvider;
-                  alert(cotizacion.idSupplier);
 
                   self.$http.get(ROOT_URL + "/providers-accounts/provider/"+cotizacion.idSupplier).
                   success(function (data)
@@ -1506,9 +1505,6 @@
               </div>
             </div>
           </div>
-          <pre>
-            {{ $data.currencies | json}}
-          </pre>
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->
