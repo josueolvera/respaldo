@@ -87,6 +87,10 @@ public class CCurrencies implements Serializable {
         this.rate = rate;
     }
 
+    public BigDecimal getNaturalRate() {
+        return BigDecimal.ONE.divide(rate, 2, BigDecimal.ROUND_FLOOR);
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
