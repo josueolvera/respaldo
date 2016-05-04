@@ -715,6 +715,8 @@
               var self= this;
               var totalPayments = this.AccountsPayables.length;
               var counter= 1;
+              var aux = 0;
+              var res = "";
               this.AccountsPayables.forEach(function(element)
               {
                 element.totalPayments= totalPayments;
@@ -729,7 +731,15 @@
                     var n = d.toISOString();
                     element.dueDate = n.slice(0, -1);
                 }
+                aux = aux + parseFloat(element.amount);
+
               });
+
+              if(this.periodicPayment.amount != aux){
+                  showAlert("La cantidad no coincide");
+                  this.isSavingNow= false;
+                  return;
+              }
 
               this.$http.post(ROOT_URL+"/accounts-payable/folio?folio="+this.periodicPayment.folio, JSON.stringify(this.AccountsPayables)).
               success(function(data)
@@ -1096,19 +1106,19 @@
 
                       </div>
                       <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0">
-                        <button class="btn btn-sm btn-default" :disabled="isSavingNow">
+                        <button type="button" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Agregar Cotización">
                           <span class="glyphicon glyphicon-floppy-disk"></span>
                         </button>
                       </div>
                       <div class="col-xs-2 text-right">
                         <button type="button" class="btn btn-sm btn-default"
-                          @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip" data-placement="top" title="Eliminar Cotización">
+                          @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Eliminar Cotización">
                           <span class="glyphicon glyphicon-remove"></span>
                         </button>
                       </div>
 
                       <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation > 0">
-                        <button class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="top" title="Agregar Cotización">
+                        <button type="button" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Modificar Cotización">
                           <span class="glyphicon glyphicon-pencil"></span>
                         </button>
                       </div>
