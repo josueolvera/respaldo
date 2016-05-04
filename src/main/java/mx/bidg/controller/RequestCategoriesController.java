@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.service.CRequestCategoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,13 +25,13 @@ public class RequestCategoriesController {
 
     ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody
     String findAllRequestCategories() throws Exception {
         return mapper.writerWithView(JsonViews.EmbeddedRequestCategory.class).writeValueAsString(categoriesService.findAll());
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody String findRequestCategoryById(@PathVariable int id) throws Exception {
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(categoriesService.findById(id));
     }

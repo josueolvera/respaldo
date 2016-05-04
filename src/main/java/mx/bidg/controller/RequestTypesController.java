@@ -5,6 +5,7 @@ import mx.bidg.config.JsonViews;
 import mx.bidg.model.CRequestsCategories;
 import mx.bidg.service.CRequestTypesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,18 +26,18 @@ public class RequestTypesController {
     ObjectMapper mapper = new ObjectMapper();
 
 
-    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody
     String findAllRequestTypes() throws Exception {
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(requestTypesService.findAll());
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody String findRequestById(@PathVariable int id) throws Exception {
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(requestTypesService.findById(id));
     }
-    
-    @RequestMapping(value = "/request-category/{idRequestCategory}", method = RequestMethod.GET, produces = "application/json")
+
+    @RequestMapping(value = "/request-category/{idRequestCategory}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody String getListByRequestCategory(@PathVariable int idRequestCategory) throws Exception {
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(requestTypesService
             .findByRequestCategory(new CRequestsCategories(idRequestCategory)));
