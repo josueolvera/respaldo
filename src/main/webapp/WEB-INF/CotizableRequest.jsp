@@ -27,23 +27,17 @@
           {
             this.timePicker = $('#datetimepicker1').datetimepicker({
               locale: 'es',
-              format: 'DD-MM-YYYY',
-              useCurrent: false,
-              minDate: moment().add(1, 'minutes')
+              format: 'YYYY/MM/DD'
               }).data();
 
             this.timePickerPagoInicial = $('#datePagoInicial').datetimepicker({
               locale: 'es',
-              format: 'DD-MM-YYYY',
-              useCurrent: false,
-              minDate: moment().add(1, 'minutes')
+              format: 'YYYY/MM/DD'
               }).data();
 
               this.timePickerFechaVencimiento = $('#dateFechaVencimiento').datetimepicker({
                 locale: 'es',
-                format: 'DD-MM-YYYY',
-                useCurrent: false,
-                minDate: moment().add(1, 'minutes')
+                format: 'YYYY/MM/DD'
                 }).data();
 
             this.obtainUserInSession();
@@ -154,7 +148,8 @@
           AccountsPayablesInfo: [],
           isAutoriced: true,
           infoAutorization: '',
-          userRequest: ''
+          userRequest: '',
+          flagrate: false
           },
           methods:
           {
@@ -187,7 +182,6 @@
                       .success(function (data)
                       {
                          this.ResponseRequestInformation= data;
-                         this.obtainRequestInformation.applyingDate = date.format("DD-MM-YYYY");
                          this.matchInformation(this.ResponseRequestInformation);
                       }).error(function(data)
                       {
@@ -206,9 +200,7 @@
             matchInformation: function(requestInformation)
             {
               this.objectRequest.request.idRequestTypesProduct= requestInformation.requestTypesProduct.idRequestTypeProduct;
-              var date = this.timePicker.DateTimePicker.date();
-              var dateiso= date.toISOString();
-              this.objectRequest.request.applyingDate= dateiso.slice(0, -1);
+              this.objectRequest.request.applyingDate= this.obtainRequestInformation.applyingDate;
               this.objectRequest.request.idUserResponsable= this.obtainRequestInformation.idUserResponsable;
               this.objectRequest.request.idBudgetMonthBranch = requestInformation.budgetMonthBranch.idBudgetMonthBranch;
 
@@ -520,7 +512,6 @@
             },
             matchInformationUpdate: function(data)
             {
-              //console.log(data);
               var self= this;
               this.isUpdate= true;
               this.obtainRequestInformation.idRequestType= data.requestTypeProduct.idRequestType;
@@ -529,8 +520,8 @@
               this.periodicPayment.folio= data.folio;
               this.objectRequest.request.idRequest= data.idRequest;
               this.objectRequest.request.folio= data.folio;
-              this.objectRequest.request.creationDate= data.creationDateFormats.dateNumber;
-              this.objectRequest.request.applyingDate= data.applyingDateFormats.dateNumber;
+              this.objectRequest.request.creationDate= this.convertDates(data.creationDateFormats.dateNumber);
+              this.objectRequest.request.applyingDate= this.convertDates(data.applyingDateFormats.dateNumber);
               this.objectRequest.request.idUserRequest= data.userRequest.idUser;
               this.objectRequest.request.idUserResponsable= data.idUserResponsible;
               this.objectRequest.request.idBudgetMonthBranch= data.idBudgetMonthBranch;
@@ -538,8 +529,7 @@
               this.objectRequest.request.idRequestStatus= data.idRequestStatus;
               this.objectRequest.request.description= data.description;
               this.objectRequest.request.purpose= data.purpose;
-              this.userRequest = data.userRequest.dwEmployee.employee.fullName;
-
+              this.userRequest = data.userRequest.mail;
               data.requestProductsList.forEach(function(element)
               {
               var producto= self.createProduct();
@@ -585,7 +575,9 @@
               this.$http.get(ROOT_URL+"/providers-accounts/account/"+cotizacion.idAccount).
               success(function(data)
               {
-                  cotizacion.idSupplier = data.idProvider;
+                data.forEach(function(element)
+                {
+                  cotizacion.idSupplier= element.idProvider;
 
                   self.$http.get(ROOT_URL + "/providers-accounts/provider/"+cotizacion.idSupplier).
                   success(function (data)
@@ -594,8 +586,9 @@
                    });
                   cotizacion.indexOfForm = self.estimations.length;
                   self.estimations.push(cotizacion);
+                });
               }).error(function(data){
-                showAlert("Ha habido un error al llenar los proveedores ");
+                showAlert("Ha habido un error al obtener la informacion de las cotizacion");
               });
             },
             downloadFile: function(idEstimation)
@@ -727,6 +720,7 @@
               {
                 if (element.dueDate !== "")
                 {
+
                     var d = new Date(element.dueDate);
                     var n = d.toISOString();
                     element.dueDate = n.slice(0, -1);
@@ -900,6 +894,30 @@
               }).error(function() {
                 showAlert("Ha habido un error al cancelar la solicitud, intente nuevamente");
               });
+            },
+            validateCurrency: function(cotizacion)
+            {
+              var self = this;
+              if (cotizacion.idCurrency== '')
+              {
+                cotizacion.rate = '';
+                this.flagrate = false;
+              }
+              if (cotizacion.idCurrency == 1)
+              {
+                cotizacion.rate = 1;
+                this.flagrate = true;
+              }
+              else
+              {
+                this.currencies.forEach(function(element){
+                    if (cotizacion.idCurrency == element.idCurrency)
+                    {
+                        cotizacion.rate= element.rate;
+                    }
+                });
+                this.flagrate = false;
+              }
             }
           },
         filters:
@@ -998,30 +1016,18 @@
                 </div>
               </div>
 
-              <div class="col-xs-2">
-                <label>
-                  Fecha Aplicación
-                </label>
-                <div class="form-group">
-                <div class='input-group date' id='datetimepicker1'>
-                    <input type='text' class="form-control" v-model="obtainRequestInformation.applyingDate"
-                      @change="obtainRequestInfo" :disabled="isUpdate">
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-                </div>
-                </div>
 
-              </div>
-
-              <div class="col-xs-2">
+              <div class="col-xs-5">
                 <label>
                   Responsable
                 </label>
                 <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
                 @change="obtainRequestInfo" :disabled="isUpdate">
                   <option></option>
-                  <option v-for="user in Users" value="{{user.idUser}}"> {{user.username}} </option>
+                  <option v-for="user in Users" value="{{user.idUser}}">
+                    <span v-if="user.dwEmployee.employee.fullNameReverse != '' ">{{user.dwEmployee.employee.fullNameReverse}}</span>
+                    <span v-if="user.dwEmployee.employee.fullNameReverse == ''"><{{user.mail}}></span>
+                  </option>
                 </select>
               </div>
             </div>
@@ -1040,7 +1046,7 @@
                     {{produc.descripcion}}
                   </div>
                   <div class="col-xs-2 text-left">
-                    <button class="btn btn-link" @click="deleteProduct(produc)" :disabled="isUpdate">
+                    <button class="btn btn-default" @click="deleteProduct(produc)" :disabled="isUpdate">
                       <span class="glyphicon glyphicon-remove"></span>
                     </button>
                   </div>
@@ -1088,21 +1094,27 @@
               <div class="panel panel-default">
                 <div class="panel-heading">
                   <div class="row">
-                    <div class="col-xs-4 text-left">
-                      <div class="col-xs-6">
-                        <h3 class="panel-title" data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" aria-expanded="false"
-                          aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer">Cotización
-                        </h3>
+                    <div data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" aria-expanded="false"
+                         aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer">
+                      <div class="col-xs-4 text-left">
+                        <div class="col-xs-6">
+                          <h3 class="panel-title">Cotización
+                          </h3>
+                        </div>
+                        <div class="col-xs-6">
+                          <h4 class="panel-title">Monto $ {{cotizacion.amount}}</h4>
+                        </div>
                       </div>
-                      <div class="col-xs-6">
-                        <h4 class="panel-title">Monto $ {{cotizacion.amount}}</h4>
+                      <div class="col-xs-4" >
+                        <span class="label label-danger" v-if="cotizacion.outOfBudget == 1">Cotización Fuera de Presupuesto</span>
                       </div>
+                      <%--<div class="col-xs-6">--%>
+
+                      <%--</div>--%>
                     </div>
-                    <div class="col-xs-4" >
-                      <span class="label label-danger" v-if="cotizacion.outOfBudget == 1">Cotización Fuera de Presupuesto</span>
-                    </div>
-                    <div class="col-xs-4">
-                      <div class="col-xs-6">
+                    <div>
+                      <div class="col-xs-4">
+                        <div class="col-xs-6">
 
                       </div>
                       <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0">
@@ -1154,7 +1166,7 @@
                       <label>
                         Tipo de Moneda
                       </label>
-                      <select class="form-control" v-model="cotizacion.idCurrency" required="true">
+                      <select class="form-control" v-model="cotizacion.idCurrency" required="true" @change="validateCurrency(cotizacion)">
                         <option></option>
                         <option v-for="curr in currencies" value="{{curr.idCurrency}}">
                           {{curr.currency}}
@@ -1176,27 +1188,25 @@
                       </label>
                       <div class="input-group">
                         <span class="input-group-addon">%</span>
-                        <input number class="form-control" placeholder="" v-model="cotizacion.rate" required="true">
+                        <input number class="form-control" :disabled="flagrate" v-model="cotizacion.rate" required="true">
                       </div>
-                    </div>
-                    <div class="col-xs-2">
-                      <label>
-                        SKU
-                      </label>
-                      <input class="form-control" v-model="cotizacion.sku">
                     </div>
                   </div>
                   <br>
                   <div class="row">
-                    <div class="col-xs-3">
+                    <div class="col-xs-5">
                       <label>
                         Archivo de la Cotización
                       </label>
                       <input type="file" name="file" class="form-control"
-                       v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}">
+                       v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}"
+                             accept="application/pdf,
+                                     image/*,
+                                     application/msword,
+                                     application/vnd.openxmlformats-officedocument.wordprocessingml.document">
                     </div>
                     <div class="col-xs-2" v-if="cotizacion.idEstimation > 0">
-                      <!-- <button type="button" class="btn btn-link"
+                      <!-- <button type="button" class="btn btn-default"
                         @click="downloadFile(cotizacion.idEstimation)" style="margin-top: 25px">Ver archivo
                       </button>
                     -->
@@ -1207,29 +1217,29 @@
                     </p>
                     </div>
                     <div class="col-xs-2">
-                      <button type="button" class="btn btn-link" @click="prepareModalPeriodicPayment(cotizacion)"
+                      <button type="button" class="btn btn-default" @click="prepareModalPeriodicPayment(cotizacion)"
                        style="margin-top: 25px" v-if="cotizacion.idEstimationStatus== 2">Agregar Informacion de Pago
                       </button>
                     </div>
 
-                    <div class="col-xs-3">
+                    <div class="col-xs-1">
 
                     </div>
                     <div class="col-xs-2 text-right">
-                      <button type="button" class="btn btn-link" name="button"
+                      <button type="button" class="btn btn-default" name="button"
                         v-if="cotizacion.idEstimationStatus== 1" style="margin-top:25px"
                         @click="autorizarCotizacion(cotizacion)">
-                        Autorizar Cotización
+                        Autorizar Cotizacion
                       </button>
-                      <button type="button" class="btn btn-link" name="button"
+                      <button type="button" class="btn btn-default" name="button"
                         v-if="cotizacion.idEstimationStatus== 2 && isAutoriced" style="margin-top:25px"
                         @click="cancelarAutorizacion">
-                        Cancelar Aprobación
+                        Cancelar Aprobacion
                       </button>
-                      <button type="button" class="btn btn-link" name="button"
+                      <button type="button" class="btn btn-default" name="button"
                         v-if="!(isAutoriced)" style="margin-top:25px"
                         @click="autorizarCotizacion(cotizacion)">
-                        Autorizar Cotización
+                        Autorizar Cotizacion
                       </button>
 
                     </div>
@@ -1243,7 +1253,7 @@
             <div class="row">
               <div class="col-xs-12">
                 <label>
-                  Autorizaciones de la Solicitud
+                  Autorizaciones de la Solicitud.
                 </label>
                 <table class="table table-striped">
                   <thead>
@@ -1299,13 +1309,13 @@
               <div class="modal-content">
                 <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                  <h4 class="modal-title">Introduzca el Esquema de Pagos</h4>
+                  <h4 class="modal-title">Introduzca el esquema de Pagos</h4>
                 </div>
                 <div class="modal-body">
                   <div class="row">
                     <div class="col-xs-4">
                       <label>
-                        Monto de la Cotizacion
+                        Monto de la Cotizacion:
                       </label>
                       <div class="input-group">
                         <span class="input-group-addon">$</span>
@@ -1400,7 +1410,7 @@
                     <div class="row">
                       <div class="col-xs-7" v-if="AccountsPayables.length> 0">
                         <label>
-                          Información de Pagos
+                          Informacion de Pagos
                         </label>
 
                         <div class="row">
@@ -1447,7 +1457,7 @@
 
                       <div class="col-xs-5" v-if="showAsignacionAnterior">
                         <label>
-                          Asignación Anterior
+                          Asignacion Anterior
                         </label>
                         <table class="table table-striped">
                           <thead>

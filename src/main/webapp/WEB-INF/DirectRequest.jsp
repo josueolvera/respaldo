@@ -643,20 +643,20 @@
                 </div>
               </div>
 
-              <div class="col-xs-2">
+              <div class="col-xs-5">
                 <label>
-                  Fecha Aplicación
+                  Responsable
                 </label>
-                <div class="form-group">
-                <div class='input-group date' id='datetimepicker1'>
-                    <input type='text' class="form-control" v-model="obtainRequestInformation.applyingDate"
-                      :disabled="isUpdate" @change="obtainRequestInfo">
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-                </div>
-                </div>
+                <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
+                @change="obtainRequestInfo" :disabled="isUpdate">
+                  <option></option>
+                  <option v-for="user in Users" value="{{user.idUser}}">
+                    <span v-if="user.dwEmployee.employee.fullNameReverse != '' ">{{user.dwEmployee.employee.fullNameReverse}}</span>
+                    <span v-if="user.dwEmployee.employee.fullNameReverse == ''"><{{user.mail}}></span>
+                  </option>
+                </select>
               </div>
+
               <div class="col-xs-2">
                 <label>
                   Responsable
@@ -683,7 +683,7 @@
                     {{produc.descripcion}}
                   </div>
                   <div class="col-xs-2 text-left">
-                    <button class="btn btn-link" @click="deleteProduct(produc)" :disabled="isUpdate">
+                    <button class="btn btn-default" @click="deleteProduct(produc)" :disabled="isUpdate">
                       <span class="glyphicon glyphicon-remove"></span>
                     </button>
                   </div>
@@ -775,12 +775,6 @@
                           <span class="input-group-addon">$</span>
                           <input number class="form-control" placeholder="" v-model="estimation.amount" required="true">
                         </div>
-                      </div>
-                      <div class="col-xs-2">
-                        <label>
-                          SKU(Opcional)
-                        </label>
-                        <input class="form-control" v-model="estimation.sku">
                       </div>
                       <div class="col-xs-2">
                         <label>
