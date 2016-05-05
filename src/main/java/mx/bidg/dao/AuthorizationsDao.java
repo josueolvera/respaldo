@@ -13,5 +13,5 @@ public interface AuthorizationsDao extends InterfaceDao<Authorizations> {
     List<Authorizations> findByFolio(String folio);
     List<Authorizations> findByFolioAndStatus(String folio, CAuthorizationStatus status);
     Long countByFolio(String folio);
-    
+    Boolean deleteByFolio(String folio);
 }

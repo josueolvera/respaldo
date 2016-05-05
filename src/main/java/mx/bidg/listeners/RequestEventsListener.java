@@ -104,6 +104,7 @@ public class RequestEventsListener {
                     .log(Level.SEVERE, "Error al evaluar la regla del arbol de autorizaciones", e);
             users.put(1, DEFAULT_USER_ID);
         } finally {
+            authorizationsService.deleteByFolio(request.getFolio());
             Map.Entry<Integer, Integer> firstEntry = users.firstEntry();
             Users user = usersService.findById(firstEntry.getValue());
             notificationsService.createNotification(user, request);

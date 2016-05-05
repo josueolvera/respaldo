@@ -78,6 +78,11 @@ public class AuthorizationsServiceImpl implements AuthorizationsService {
     }
 
     @Override
+    public Boolean deleteByFolio(String folio) {
+        return authorizationsDao.deleteByFolio(folio);
+    }
+
+    @Override
     public Long countByFolio(String folio) {
         return authorizationsDao.countByFolio(folio);
     }

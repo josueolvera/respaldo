@@ -66,6 +66,14 @@ public class AuthorizationsDaoImpl extends AbstractDao<Integer, Authorizations> 
     }
 
     @Override
+    public Boolean deleteByFolio(String folio) {
+        getSession().createQuery("delete from Authorizations auth where auth.folio = :folio")
+                .setString("folio", folio)
+                .executeUpdate();
+        return true;
+    }
+
+    @Override
     public Long countByFolio(String folio) {
         return (Long) getSession().createQuery("select count(*) from Authorizations auth where auth.folio = :folio")
                 .setString("folio", folio)
