@@ -182,15 +182,11 @@
             obtainRequestInfo: function()
             {
               var self= this;
-              var date = this.timePicker.DateTimePicker.date();
-              var dateiso= date.toISOString();
-              this.obtainRequestInformation.applyingDate= dateiso.slice(0, -1);
 
               this.$http.post(ROOT_URL+"/requests/month-branch-product-type", JSON.stringify(this.obtainRequestInformation))
                       .success(function (data)
                       {
                          this.ResponseRequestInformation= data;
-                         this.obtainRequestInformation.applyingDate = date.format("DD-MM-YYYY");
                          this.matchInformation(this.ResponseRequestInformation);
 
                       }).error(function(data)
@@ -209,13 +205,10 @@
             ,
             matchInformation: function(requestInformation)
             {
-              this.objectRequest.request.idRequestTypesProduct= requestInformation.requestTypesProduct.idRequestTypeProduct;
-              var date = this.timePicker.DateTimePicker.date();
-              var dateiso= date.toISOString();
-              this.objectRequest.request.applyingDate= dateiso.slice(0, -1);
+              console.log(requestInformation.requestTypesProduct.idRequestTypeProduct);
               this.objectRequest.request.idUserResponsable= this.obtainRequestInformation.idUserResponsable;
               this.objectRequest.request.idBudgetMonthBranch = requestInformation.budgetMonthBranch.idBudgetMonthBranch;
-
+              this.objectRequest.request.idRequestTypesProduct =requestInformation.requestTypesProduct.idRequestTypeProduct
             },
             saveProduct: function()
             {
@@ -662,12 +655,15 @@
               this.periodicPayment.amount= cotizacion.amount;
               this.periodicPayment.idCurrency= cotizacion.idCurrency;
               this.periodicPayment.rate= cotizacion.rate;
+              this.fillPeriodicPayments();
             },
             fillPeriodicPayments: function()
             {
+
               this.$http.get(ROOT_URL + "/periodic-payment/folio?folio="+this.periodicPayment.folio).
               success(function (data)
                {
+                 console.log(data);
                  this.periodicPayment.idPeriodicPayment = data.idPeriodicPayment;
                  this.periodicPayment.folio = data.folio;
                  this.periodicPayment.amount = data.amount;
@@ -1182,7 +1178,7 @@
                   <tbody>
                     <tr v-for="info in infoAutorization.authorizations">
                       <td>
-                        {{info.idUser | obtainMailUser}}
+                      {{info.users.dwEmployee.employee.fullName}}
                       </td>
                       <td>
                         <span class="label label-success" v-if="info.idAuthorizationStatus == 2">Autorizado</span>

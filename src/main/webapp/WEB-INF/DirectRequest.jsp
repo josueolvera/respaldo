@@ -188,15 +188,10 @@
           },
           obtainRequestInfo: function()
           {
-            var date = this.timePicker.DateTimePicker.date();
-            var dateiso= date.toISOString();
-            this.obtainRequestInformation.applyingDate= dateiso.slice(0, -1);
-
             this.$http.post(ROOT_URL+"/requests/month-branch-product-type", JSON.stringify(this.obtainRequestInformation))
                     .success(function (data)
                     {
                        this.ResponseRequestInformation= data;
-                       this.obtainRequestInformation.applyingDate = date.format("DD-MM-YYYY");
                        this.matchInformation(this.ResponseRequestInformation);
                     }).error(function(data)
                     {
@@ -204,7 +199,6 @@
                       this.obtainRequestInformation.idRequestType= '';
                       this.obtainRequestInformation.idProductType= '';
                       this.obtainRequestInformation.idUserResponsable= '';
-                      this.obtainRequestInformation.applyingDate= '';
                       this.objectRequest.products= [];
                       this.idProducto= '';
                       this.desactivarCombos= false;
@@ -213,9 +207,6 @@
           matchInformation: function(requestInformation)
           {
             this.objectRequest.request.idRequestTypesProduct= requestInformation.requestTypesProduct.idRequestTypeProduct;
-            var date = this.timePicker.DateTimePicker.date();
-            var dateiso= date.toISOString();
-            this.objectRequest.request.applyingDate= dateiso.slice(0, -1);
             this.objectRequest.request.idUserResponsable= this.obtainRequestInformation.idUserResponsable;
             this.objectRequest.request.idBudgetMonthBranch = requestInformation.budgetMonthBranch.idBudgetMonthBranch;
           },
@@ -441,7 +432,7 @@
               self.estimations.push(cotizacion);
 
             }).error(function(data){
-              showAlert("Ha habido un error al obtener la informacion de las cotizaciones");
+              
             });
           },
           downloadFile: function(idEstimation)
@@ -835,7 +826,7 @@
                     <tbody>
                       <tr v-for="info in infoAutorization.authorizations">
                         <td>
-                          {{info.idUser | obtainMailUser}}
+                          {{info.users.dwEmployee.employee.fullName}}
                         </td>
                         <td>
                           <span class="label label-success" v-if="info.idAuthorizationStatus == 2">Autorizado</span>
