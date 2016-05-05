@@ -763,6 +763,10 @@
                 });
                 this.AccountsPayablesInfo = this.AccountsPayables;
                 $("#periodicPayment").modal("hide");
+                setInterval(function()
+                {
+                  window.location.reload()
+                },2500);
               }).error(function(data)
               {
                 showAlert("Ha fallado el registro de su informacion, intente nuevamente");
@@ -1286,7 +1290,7 @@
                   <tbody>
                     <tr v-for="info in infoAutorization.authorizations">
                       <td>
-                        {{info.idUser}}
+                        {{info.users.dwEmployee.employee.fullName}}
                       </td>
                       <td>
                         <span class="label label-success" v-if="info.idAuthorizationStatus == 2">Autorizado</span>
