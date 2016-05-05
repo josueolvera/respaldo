@@ -732,14 +732,12 @@
                 console.log(element);
                 if (element.dueDate !== "")
                 {
-                    var d = new Date(element.dueDate);
-                    var n = d.toISOString();
-                    element.dueDate = n.slice(0, -1);
-
+                    var n = moment(element.dueDate,"DD-MM-YYYY").toISOString();
+                    element.dueDate = n.slice(0,-1);
+                  console.log(element.dueDate);
                 }
                 aux = aux + parseFloat(element.amount);
-
-
+                console.log(aux);
               });
 
               if(this.periodicPayment.amount != aux){
