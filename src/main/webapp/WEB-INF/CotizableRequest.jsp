@@ -184,10 +184,6 @@
             },
             obtainRequestInfo: function()
             {
-              var date = this.timePicker.DateTimePicker.date();
-              var dateiso= date.toISOString();
-              this.obtainRequestInformation.applyingDate= dateiso.slice(0, -1);
-
               this.$http.post(ROOT_URL+"/requests/month-branch-product-type", JSON.stringify(this.obtainRequestInformation))
                       .success(function (data)
                       {
@@ -1502,6 +1498,9 @@
               </div>
             </div>
           </div>
+          <pre>
+            {{ $data.obtainRequestInformation | json}}
+          </pre>
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->
