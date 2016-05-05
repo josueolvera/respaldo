@@ -24,7 +24,7 @@
 
           },
           ready: function ()
-
+          {
             this.timePicker = $('#datetimepicker1').datetimepicker({
               locale: 'es',
               format: 'YYYY/MM/DD'
@@ -841,9 +841,9 @@
                 showAlert("Ha fallado la autorizacion de la cotizacion intente nuevamente");
               });
             },
-            cancelarAutorizacion: function()
+            cancelarAutorizacion: function(cotizacion)
             {
-              this.$http.post(ROOT_URL+"/reject/"+cotizacion.idEstimation).
+              this.$http.post(ROOT_URL+"/estimations/reject/"+cotizacion.idEstimation).
               success(function(data)
               {
                 showAlert("Se ha rechazado la cotizacion correctamente");
@@ -1245,7 +1245,7 @@
                       </button>
                       <button type="button" class="btn btn-default" name="button"
                         v-if="cotizacion.idEstimationStatus== 2 && isAutoriced" style="margin-top:25px"
-                        @click="cancelarAutorizacion">
+                        @click="cancelarAutorizacion(cotizacion)">
                         Cancelar Aprobacion
                       </button>
                       <button type="button" class="btn btn-default" name="button"
@@ -1511,9 +1511,6 @@
               </div>
             </div>
           </div>
-          <pre>
-            {{ $data.obtainRequestInformation | json}}
-          </pre>
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->
