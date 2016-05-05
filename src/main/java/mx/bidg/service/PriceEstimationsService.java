@@ -28,5 +28,6 @@ public interface PriceEstimationsService {
     PriceEstimations estimationAuthorization(int idEstimation, Users user);
 
     boolean delete(Integer idEstimation);
+    boolean reject(Integer idEstimation);
     
 }
