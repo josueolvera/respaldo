@@ -24,7 +24,7 @@
 
           },
           ready: function ()
-          {
+
             this.timePicker = $('#datetimepicker1').datetimepicker({
               locale: 'es',
               format: 'YYYY/MM/DD'
@@ -843,7 +843,20 @@
             },
             cancelarAutorizacion: function()
             {
-              this.isAutoriced = false;
+              this.$http.post(ROOT_URL+"/reject/"+cotizacion.idEstimation).
+              success(function(data)
+              {
+                showAlert("Se ha rechazado la cotizacion correctamente");
+                setInterval(function()
+                {
+                  window.location.reload()
+                },2500);
+
+              }).error(function(data)
+              {
+                showAlert("Ha fallado la autorizacion de la cotizacion intente nuevamente");
+              });
+
             },
             obtainInformationAutorization: function()
             {

@@ -109,7 +109,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             estimation.setUserEstimation(user);
             //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
             estimation.setOutOfBudget((residualAmount.compareTo(amount) == -1)? 1 : 0);
-            estimation.setSku((json.get("sku").asText() != null) ? json.get("sku").asText() : "");
+            
             return estimation;
         } else {
             throw new ValidationException("No se puede modificar una cotizacion ya autorizada", 
