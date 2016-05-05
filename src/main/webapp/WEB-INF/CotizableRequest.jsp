@@ -679,6 +679,23 @@
                 minDate: moment().add(1, 'minutes')
                 }).data();
             },
+            dateValidation: function (dueDate,idDatePicker) {
+
+              this.AccountsPayables.forEach(function(element)
+              {
+                data.forEach(function(el)
+                {
+                  if (el.dueDate == dueDate)
+                  {
+                    $('#datetimepickerEsquema'+idDatePicker).datetimepicker({
+                      disabledDates:[
+                        moment(dueDate)
+                      ]
+                    });
+                  }
+                });
+              });
+            },
             emptyEsquema: function()
             {
               this.AccountsPayables= [];
@@ -1453,7 +1470,10 @@
                             <label>
                               <div class="form-group">
                               <div class='input-group date' id='datetimepickerEsquema{{ap.idDatePicker}}'>
-                                  <input type='text' class="form-control" @click="activarTimePicker(ap.idDatePicker)" v-model="ap.dueDate">
+                                  <input type='text' class="form-control"
+                                         @change="dateValidation(ap.dueDate,ap.idDatePicker)"
+                                         @click="activarTimePicker(ap.idDatePicker)"
+                                         v-model="ap.dueDate">
                                   <span class="input-group-addon">
                                       <span class="glyphicon glyphicon-calendar"></span>
                                   </span>
