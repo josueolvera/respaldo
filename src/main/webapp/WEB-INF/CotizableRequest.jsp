@@ -1516,9 +1516,6 @@
               </div>
             </div>
           </div>
-          <pre>
-            {{ $data.AccountsPayables | json}}
-          </pre>
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->
