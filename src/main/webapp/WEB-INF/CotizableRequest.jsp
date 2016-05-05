@@ -729,14 +729,16 @@
 
               this.AccountsPayables.forEach(function(element)
               {
+                console.log(element);
                 if (element.dueDate !== "")
                 {
-
                     var d = new Date(element.dueDate);
                     var n = d.toISOString();
                     element.dueDate = n.slice(0, -1);
+
                 }
                 aux = aux + parseFloat(element.amount);
+
 
               });
 
@@ -771,6 +773,10 @@
                 });
                 this.AccountsPayablesInfo = this.AccountsPayables;
                 $("#periodicPayment").modal("hide");
+                setInterval(function()
+                {
+                  window.location.reload()
+                },2500);
               }).error(function(data)
               {
                 showAlert("Ha fallado el registro de su informacion, intente nuevamente");
@@ -795,7 +801,6 @@
                     var accounts;
                     data.forEach(function(element)
                     {
-
                       var accountPayable = self.createAccountPayable();
                       accountPayable.idAccountPayable = element.idAccountPayable;
                       accountPayable.folio = element.folio;
@@ -1295,7 +1300,7 @@
                   <tbody>
                     <tr v-for="info in infoAutorization.authorizations">
                       <td>
-                        {{info.idUser | obtainMailUser}}
+                        {{info.users.dwEmployee.employee.fullName}}
                       </td>
                       <td>
                         <span class="label label-success" v-if="info.idAuthorizationStatus == 2">Autorizado</span>
