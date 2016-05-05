@@ -166,6 +166,18 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     }
 
     @Override
+    public boolean reject(Integer idEstimation) {
+        PriceEstimations estimation = priceEstimationsDao.findByIdFetchRequestStatus(idEstimation);
+        Requests request = estimation.getRequest();
+        List<PriceEstimations> estimations = priceEstimationsDao.findByIdRequest(request.getIdRequest());
+
+        for (PriceEstimations e : estimations) {
+            e.setEstimationStatus(new CEstimationStatus(CEstimationStatus.PENDIENTE));
+        }
+        return true;
+    }
+
+    @Override
     public boolean delete(Integer idEstimation) {
         PriceEstimations estimation = priceEstimationsDao.findByIdFetchRequestStatus(idEstimation);
         if(estimation.getIdEstimationStatus() == CEstimationStatus.PENDIENTE){

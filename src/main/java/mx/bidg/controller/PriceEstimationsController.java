@@ -179,6 +179,12 @@ public class PriceEstimationsController {
         eventPublisher.publishEvent(new PriceEstimationAuthorizedEvent(estimation.getRequest()));
         return "Cotizacion autorizada";
     }
+
+    @RequestMapping(value = "/reject/{idEstimation}", method = RequestMethod.POST)
+    public ResponseEntity<String> rejectAuthorization(@PathVariable int idEstimation) {
+        estimationsService.reject(idEstimation);
+        return new ResponseEntity<>("Cotizacion cancelada", HttpStatus.OK);
+    }
     
     
     @RequestMapping(value = "/{idEstimation}", method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"})
