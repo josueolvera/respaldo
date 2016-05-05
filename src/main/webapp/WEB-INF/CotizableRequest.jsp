@@ -136,22 +136,22 @@
             idCurrency: '',
             rate: ''
           },
-          timePickerPagoInicial: '',
-          timePickerFechaVencimiento: '',
-          Periods: '',
-          AccountsPayables: [],
-          optionPago: '',
-          numberOfPay: '',
-          amountOfPay: '',
-          timePickerEsquema: '',
-          userInSession: '',
-          isSavingNow: false,
-          showAsignacionAnterior: false,
-          AccountsPayablesInfo: [],
-          isAutoriced: true,
-          infoAutorization: '',
-          userRequest: '',
-          flagrate: false
+            timePickerPagoInicial: '',
+            timePickerFechaVencimiento: '',
+            Periods: '',
+            AccountsPayables: [],
+            optionPago: '',
+            numberOfPay: '',
+            amountOfPay: '',
+            timePickerEsquema: '',
+            userInSession: '',
+            isSavingNow: false,
+            showAsignacionAnterior: false,
+            AccountsPayablesInfo: [],
+            isAutoriced: true,
+            infoAutorization: '',
+            userRequest: '',
+            flagrate: false
           },
           methods:
           {
@@ -670,31 +670,24 @@
                 this.AccountsPayables.push(accountPayable);
               }
             },
-            activarTimePicker: function(idDatePicker)
+            activarTimePicker: function(idDatePicker,dueDate)
             { //aQUI ME QUEDE
+              var disableDates = [];
+              this.AccountsPayables.forEach(function(element)
+              {
+                if (moment(element.dueDate, 'DD-MM-YYYY').format('YYYY-MM-DD') != 'Invalid date') {
+                  disableDates.push(moment(element.dueDate, 'DD-MM-YYYY').format('YYYY-MM-DD'));
+                }
+              });
+
+              console.log(disableDates);
               this.timePickerEsquema = $('#datetimepickerEsquema'+idDatePicker).datetimepicker({
                 locale: 'es',
                 format: 'DD-MM-YYYY',
                 useCurrent: false,
-                minDate: moment().add(1, 'minutes')
-                }).data();
-            },
-            dateValidation: function (dueDate,idDatePicker) {
-
-              this.AccountsPayables.forEach(function(element)
-              {
-                data.forEach(function(el)
-                {
-                  if (el.dueDate == dueDate)
-                  {
-                    $('#datetimepickerEsquema'+idDatePicker).datetimepicker({
-                      disabledDates:[
-                        moment(dueDate)
-                      ]
-                    });
-                  }
-                });
-              });
+                minDate: moment().add(1, 'minutes'),
+                disabledDates: disableDates
+              }).data();
             },
             emptyEsquema: function()
             {
@@ -1472,7 +1465,7 @@
                               <div class='input-group date' id='datetimepickerEsquema{{ap.idDatePicker}}'>
                                   <input type='text' class="form-control"
                                          @change="dateValidation(ap.dueDate,ap.idDatePicker)"
-                                         @click="activarTimePicker(ap.idDatePicker)"
+                                         @click="activarTimePicker(ap.idDatePicker,ap.dueDate)"
                                          v-model="ap.dueDate">
                                   <span class="input-group-addon">
                                       <span class="glyphicon glyphicon-calendar"></span>
