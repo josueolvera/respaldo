@@ -26,7 +26,7 @@ public class CAreasDaoImpl extends AbstractDao<Integer, CAreas> implements CArea
 
     @Override
     public CAreas findById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getByKey(id);
     }
 
     @Override

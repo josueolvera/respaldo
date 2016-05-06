@@ -16,29 +16,42 @@
                 },
                 methods: {
 
-                    uploadSapSales: function () {
-//                        var formElement = document.getElementById("formSap");
-//                        var formData = new FormData(formElement);
-//                        this.$http.post(ROOT_URL + '/sap-sale/check-existing-sale', formData)
-//                                .success(function (data) {
-//                                    console.log(data);
-//                                    if (data = true) {
-//                                        $('#checkExistigSaleModal').modal('show');
-//                                    }
-//                                })
-//                                .error(function (data) {
-//                                    console.log(data);
-//                                });
+                    saveSapSales: function () {
+                        var formElement = document.getElementById("formSap");
+                        var formData = new FormData(formElement);
+                        this.$http.post(ROOT_URL + '/sap-sale/excel', formData)
+                                .success(function (data) {
+                                    console.log(data);
+                                    $('#checkExistigSaleModal').modal('hide');
+                                })
+                                .error(function (data) {
+                                    console.log(data);
+                                });
+
+                    },
+                    updateSapSales: function () {
+                        var formElement = document.getElementById("formSap");
+                        var formData = new FormData(formElement);
+                        this.$http.put(ROOT_URL + '/sap-sale/excel', formData)
+                                .success(function (data) {
+                                    console.log(data);
+                                    $('#checkExistigSaleModal').modal('hide');
+                                })
+                                .error(function (data) {
+                                    console.log(data);
+                                });
 
                     },
                     checkExistingSale: function () {
                         var formElement = document.getElementById("formSap");
                         var formData = new FormData(formElement);
-                        this.$http.get(ROOT_URL + '/sap-sale/check-existing-sale', formData)
+                        this.$http.post(ROOT_URL + '/sap-sale/check-existing-sale', formData)
                                 .success(function (data) {
                                     console.log(data);
-                                    if (data = true) {
+                                    if (data == true) {
                                         $('#checkExistigSaleModal').modal('show');
+                                    } else {
+                                        this.saveSapSales();
                                     }
                                 })
                                 .error(function (data) {
@@ -69,17 +82,17 @@
             <div class="modal fade" id="checkExistigSaleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="myModalLabel">Aviso</h4>
-                        </div>
+                        <%--<div class="modal-header">--%>
+                            <%--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
+                            <%--<h4 class="modal-title" id="myModalLabel">Aviso</h4>--%>
+                        <%--</div>--%>
                         <div class="modal-body">
-                            Estas ventas ya existen, ¿desea sobreescribir los registros o guardar como nuevos?.
+                            Algunas de estas ventas ya existen, ¿desea sobreescribir los registros o guardarlos como nuevos?.
                         </div>
                         <div class="modal-footer">
+                            <button type="button" class="btn btn-success" @click="saveSapSales">Guardar</button>
+                            <button type="button" class="btn btn-primary" @click="updateSapSales">Sobreescribir</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-success">Guardar</button>
-                            <button type="button" class="btn btn-primary">Sobreescribir</button>
                         </div>
                     </div>
                 </div>
