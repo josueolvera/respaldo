@@ -472,13 +472,13 @@
                                         </div>
                                     </div>
                                     <div class="col-xs-2">
-                                        <button @click="showEditArticleModal(article)" class="btn btn-default">
+                                        <button @click="showEditArticleModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Editar un Articulo">
                                             <span class="glyphicon glyphicon-pencil"></span>
                                         </button>
-                                        <button @click="showAttachmentsModal(article)" class="btn btn-default">
+                                        <button @click="showAttachmentsModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Adjuntar Archivos">
                                             <span class="glyphicon glyphicon-paperclip"></span>
                                         </button>
-                                        <button @click="showAssignmentsModal(article)" class="btn btn-default">
+                                        <button @click="showAssignmentsModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Reasiganaciones">
                                             <span class="glyphicon glyphicon-user"></span>
                                         </button>
                                     </div>
@@ -713,7 +713,8 @@
                                             <td class="col-xs-2">
                                                 <button @click="removeProperty(editModal.article, property)"
                                                         :disabled="isSaving"
-                                                        class="btn btn-default">
+                                                        class="btn btn-default"
+                                                        data-toggle="tooltip" data-placement="top" title="Eliminar Propiedad">
                                                     <span class="glyphicon glyphicon-remove"></span>
                                                 </button>
                                             </td>
@@ -734,7 +735,8 @@
                                     <div class="col-xs-2">
                                         <button @click="addProperty(editModal.article)"
                                                 :disabled="isSaving"
-                                                class="btn btn-default" style="margin-top: 2.5rem">
+                                                class="btn btn-default" style="margin-top: 2.5rem"
+                                                data-toggle="tooltip" data-placement="top" title="Agregar Propiedad">
                                             <span class="glyphicon glyphicon-plus"></span>
                                         </button>
                                     </div>
