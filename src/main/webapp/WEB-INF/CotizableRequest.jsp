@@ -165,12 +165,18 @@
             },
             obtainProductType: function()
             {
+              this.obtainRequestInformation.idUserResponsable='';
               this.ProductTypes= {};
+              this.Productos= {};
               this.$http.get(ROOT_URL+"/product-types/request-category-type/"+this.obtainRequestInformation.idRequestCategory+"/"+this.obtainRequestInformation.idRequestType)
                       .success(function (data)
                       {
                          this.ProductTypes= data;
                       });
+              this.objectRequest.request.description='';
+              this.objectRequest.request.purpose= '';
+              this.idProducto= '';
+              this.obtainRequestInformation.idProductType='';
 
             },
             obtainProducts: function()
@@ -199,6 +205,9 @@
                         this.objectRequest.products= [];
                         this.idProducto= '';
                         this.desactivarCombos= false;
+                        this.ProductTypes= {};
+                        this.Productos= {};
+
                       });
 
             }
@@ -234,7 +243,8 @@
             {
               var producto= {
                 idProduct: '',
-                descripcion: ''
+                descripcion: '',
+                sku: ''
               };
               return producto;
             },
@@ -245,6 +255,9 @@
                 {
                   this.desactivarCombos= false;
                   this.desactivarGuardar = true;
+                  this.objectRequest.request.description='';
+                  this.objectRequest.request.purpose= '';
+                  this.idProducto= '';
                 }
             },
             saveRequest: function(event)
@@ -540,6 +553,7 @@
               var producto= self.createProduct();
               producto.idProduct= element.product.idProduct;
               producto.descripcion= element.product.product;
+              producto.sku = element.product.sku;
               self.objectRequest.products.push(producto);
               });
 
@@ -861,7 +875,7 @@
               this.$http.post(ROOT_URL+"/estimations/reject/"+cotizacion.idEstimation).
               success(function(data)
               {
-                showAlert("Se ha rechazado la cotizacion correctamente");
+                showAlert("Se ha cancelado la aprobacion de la cotizacion correctamente");
                 setInterval(function()
                 {
                   window.location.reload()
@@ -928,8 +942,8 @@
               var self = this;
               if (cotizacion.idCurrency== '')
               {
-                cotizacion.rate = '';
                 this.flagrate = false;
+
               }
               if (cotizacion.idCurrency == 1)
               {
@@ -941,10 +955,26 @@
                 this.currencies.forEach(function(element){
                     if (cotizacion.idCurrency == element.idCurrency)
                     {
-                        cotizacion.rate= element.naturalRate;
+                        cotizacion.rate= element.rate;
                     }
                 });
                 this.flagrate = false;
+              }
+            },
+            validateAmount: function(cotizacion)
+            {
+              if (cotizacion.amount <= 0)
+              {
+                  cotizacion.amount=1;
+                  showAlert("No puedes tener numeros negativos para montos de las cotizaciones");
+              }
+            },
+            validateRate: function(cotizacion)
+            {
+              if (cotizacion.rate <= 0)
+              {
+                  cotizacion.rate=1;
+                  showAlert("No puedes tener numeros negativos para tipo de cambio de las cotizaciones");
               }
             }
           },
@@ -1018,6 +1048,7 @@
                 </label>
                 <select class="form-control" v-model="obtainRequestInformation.idProductType" :disabled="desactivarCombos || isUpdate"
                   @change="obtainProducts" required>
+                  <option></option>
                   <option v-for="ProductType in ProductTypes" value="{{ProductType.idProductType}}">
                     {{ProductType.productType}}
                   </option>
@@ -1029,6 +1060,7 @@
                   Productos
                 </label>
                 <select class="form-control" v-model="idProducto" id="selectProducto" :disabled="isUpdate" required>
+                  <option></option>
                   <option v-for="Product in Productos" value="{{Product.idProduct}}">
                     {{Product.product}}
                   </option>
@@ -1047,7 +1079,7 @@
 
               <div class="col-xs-5">
                 <label>
-                  Responsable
+                  Centro de Costos
                 </label>
                 <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
                 @change="obtainRequestInfo" :disabled="isUpdate">
@@ -1206,7 +1238,8 @@
                       </label>
                       <div class="input-group">
                         <span class="input-group-addon">$</span>
-                        <input number class="form-control" placeholder="" v-model="cotizacion.amount" required="true">
+                        <input number class="form-control" placeholder="" v-model="cotizacion.amount"
+                          @change="validateAmount(cotizacion)" required="true">
                       </div>
                     </div>
                     <div class="col-xs-2">
@@ -1214,8 +1247,9 @@
                         Tipo de Cambio
                       </label>
                       <div class="input-group">
-                        <span class="input-group-addon">%</span>
-                        <input number class="form-control" :disabled="flagrate" v-model="cotizacion.rate" required="true">
+                        <span class="input-group-addon">$</span>
+                        <input number class="form-control" :disabled="flagrate"
+                          v-model="cotizacion.rate" @change="validateRate(cotizacion)" required="true">
                       </div>
                     </div>
                   </div>
@@ -1237,9 +1271,11 @@
                         @click="downloadFile(cotizacion.idEstimation)" style="margin-top: 25px">Ver archivo
                       </button>
                     -->
-                    <p style="margin-top: 30px">
+                    <p style="margin-top: 25px">
                     <a href="../../estimations/attachment/download/{{cotizacion.idEstimation}}">
-                      Ver archivo
+                      <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Descargar">
+                        <span class="glyphicon glyphicon-download" style="font-size: 17px"><span>
+                      </button>
                     </a>
                     </p>
                     </div>
@@ -1368,7 +1404,7 @@
                         Tipo de Cambio
                       </label>
                       <div class="input-group">
-                        <span class="input-group-addon">%</span>
+                        <span class="input-group-addon">$</span>
                         <input number class="form-control" placeholder="" v-model="periodicPayment.rate"
                           disabled="true">
                       </div>
@@ -1381,7 +1417,7 @@
                         <input type="radio" id="pagoFijo" value="1" v-model="optionPago" @change="emptyEsquema">
                         <label>Esquema de Pagos Fijos</label>
                         <input type="radio" id="pagoVariable" value="2" v-model="optionPago" @change="emptyEsquema">
-                        <label>Esquema de Pagos Variable</label>
+                        <label>Esquema de Pagos Variable/Pago Unico</label>
                       </div>
                     </div>
                     <div class="row">
@@ -1398,7 +1434,7 @@
                           </div>
                           <div class="col-xs-6">
                             <label>
-                              Monto de Pago
+                              Monto
                             </label>
                             <div class="input-group">
                               <span class="input-group-addon">$</span>
@@ -1529,6 +1565,10 @@
               </div>
             </div>
           </div>
+          <pre>
+            {{ $data.obtainRequestInfo | json}}
+          </pre>
+
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->

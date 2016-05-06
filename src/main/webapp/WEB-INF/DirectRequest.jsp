@@ -126,12 +126,18 @@
         {
           obtainProductType: function()
           {
+            this.obtainRequestInformation.idUserResponsable='';
             this.ProductTypes= {};
+            this.Productos= {};
             this.$http.get(ROOT_URL+"/product-types/request-category-type/"+this.obtainRequestInformation.idRequestCategory+"/"+this.obtainRequestInformation.idRequestType)
                     .success(function (data)
                     {
                        this.ProductTypes= data;
                     });
+            this.objectRequest.request.description='';
+            this.objectRequest.request.purpose= '';
+            this.idProducto= '';
+            this.obtainRequestInformation.idProductType='';
 
           },
           obtainProducts: function()
@@ -172,12 +178,15 @@
           },
           deleteProduct: function(product)
           {
-              this.objectRequest.products.$remove(product);
-              if (this.objectRequest.products.length == 0)
-              {
-                this.desactivarCombos= false;
-                this.desactivarGuardar = true;
-              }
+            this.objectRequest.products.$remove(product);
+            if (this.objectRequest.products.length == 0)
+            {
+              this.desactivarCombos= false;
+              this.desactivarGuardar = true;
+              this.objectRequest.request.description='';
+              this.objectRequest.request.purpose= '';
+              this.idProducto= '';
+            }
           },
           obtainAllUsers: function()
           {
@@ -202,6 +211,8 @@
                       this.objectRequest.products= [];
                       this.idProducto= '';
                       this.desactivarCombos= false;
+                      this.ProductTypes= {};
+                      this.Productos= {};
                     });
           },
           matchInformation: function(requestInformation)
@@ -432,7 +443,7 @@
               self.estimations.push(cotizacion);
 
             }).error(function(data){
-              
+
             });
           },
           downloadFile: function(idEstimation)
@@ -555,7 +566,7 @@
               this.currencies.forEach(function(element){
                   if (cotizacion.idCurrency == element.idCurrency)
                   {
-                      cotizacion.rate= element.naturalRate;
+                      cotizacion.rate= element.rate;
                   }
               });
               this.flagrate = false;
@@ -631,6 +642,7 @@
                 </label>
                 <select class="form-control" v-model="obtainRequestInformation.idProductType" :disabled="desactivarCombos || isUpdate"
                   @change="obtainProducts" required>
+                  <option></option>
                   <option v-for="ProductType in ProductTypes" value="{{ProductType.idProductType}}">
                     {{ProductType.productType}}
                   </option>
@@ -641,7 +653,8 @@
                 <label>
                   Productos
                 </label>
-                <select class="form-control" v-model="idProducto" id="selectProducto" :disabled="isUpdate" required>
+                <select class="form-control" v-model="idProducto" :disabled="isUpdate" required>
+                  <option></option>
                   <option v-for="Product in Productos" value="{{Product.idProduct}}">
                     {{Product.product}}
                   </option>
@@ -659,7 +672,7 @@
 
               <div class="col-xs-5">
                 <label>
-                  Responsable
+                  Centro de Costos
                 </label>
                 <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
                 @change="obtainRequestInfo" :disabled="isUpdate">
@@ -784,7 +797,7 @@
                           Tipo de Cambio
                         </label>
                         <div class="input-group">
-                          <span class="input-group-addon">%</span>
+                          <span class="input-group-addon">$</span>
                           <input number class="form-control" placeholder="" v-model="estimation.rate"
                             :disabled="flagrate" required="true" >
                         </div>
