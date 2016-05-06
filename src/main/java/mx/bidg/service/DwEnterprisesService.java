@@ -26,4 +26,6 @@ public interface DwEnterprisesService {
     public DwEnterprises findByIdUser(int idUser);
 
     List<HierarchicalLevel> findHierarchicalStructure();
+
+    List<DwEnterprises>  findByDistributor(Integer idDistributor);
 }

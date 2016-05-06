@@ -137,4 +137,9 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
         }
         return hierarchicalGroups;
     }
+
+    @Override
+    public List<DwEnterprises> findByDistributor(Integer idDistributor) {
+        return dao.findByDistributor(idDistributor);
+    }
 }

@@ -9,10 +9,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.CAreas;
+import mx.bidg.model.CGroups;
+import mx.bidg.model.DwEnterprises;
 import mx.bidg.service.CAreasService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
@@ -33,5 +39,9 @@ public class CAreasController {
         List<CAreas> list = cAreasService.findAll();
         return map.writerWithView(JsonViews.Root.class).writeValueAsString(list);
     }
-    
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody String findSapSaleById(@PathVariable int id) throws Exception {
+        return map.writerWithView(JsonViews.Root.class).writeValueAsString(cAreasService.findById(id));
+    }
 }

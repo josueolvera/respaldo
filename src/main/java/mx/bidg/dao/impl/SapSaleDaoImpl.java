@@ -45,6 +45,7 @@ public class SapSaleDaoImpl extends AbstractDao<Integer, SapSale> implements Sap
 
     @Override
     public SapSale findByIdSale(String idSale) {
+        // esta mal
         return (SapSale) getSession().createCriteria(SapSale.class)
                 .add(Restrictions.eq("idSale", idSale)).uniqueResult();
     }
