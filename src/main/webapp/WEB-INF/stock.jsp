@@ -458,7 +458,7 @@
                                             <p>{{ article.serialNumber }}</p>
                                         </div>
                                         <div class="col-md-3 col-xs-6">
-                                            <p><strong>Fecha de Ingreso</strong></p>
+                                            <p><strong>Fecha de alta</strong></p>
                                             <p>{{ article.creationDateFormats.dateNumber }}</p>
                                         </div>
                                         <div class="col-md-3 col-xs-6">
@@ -589,7 +589,9 @@
                                         <td>
                                             <input @change="validateFile($event)" type="file" class="form-control"
                                                    :disabled="isSaving"
-                                                   :name="attachmentsModal.fileInput + docType.idDocumentType">
+                                                   :name="attachmentsModal.fileInput + docType.idDocumentType"
+                                                   accept="application/pdf,
+                                                         image/png,image/jpg">
                                         </td>
                                     </tr>
                                 </table>
@@ -654,29 +656,29 @@
                                     <label>No. de Serie </label>
                                     {{ editModal.article.serialNumber }}
                                 </div>
-                                <div class="col-md-4 col-xs-12">
-                                    <label>Asignado a </label>
-                                    {{ editModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
-                                    {{ editModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
-                                    {{ editModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
-                                    {{ editModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}
-                                </div>
+                                <%--<div class="col-md-4 col-xs-12">--%>
+                                    <%--<label>Asignado a </label>--%>
+                                    <%--{{ editModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}--%>
+                                    <%--{{ editModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}--%>
+                                    <%--{{ editModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}--%>
+                                    <%--{{ editModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}--%>
+                                <%--</div>--%>
                             </div>
                             <hr />
                             <div class="row line">
-                                <div class="col-md-8 col-xs-12">
-                                    <label>Asignar a</label>
-                                    <select v-model="editModal.selectedEmployee.idEmployee"
-                                            :disabled="isSaving" class="form-control">
-                                        <option v-for="employee in editModal.employees"
-                                                :value="employee.idEmployee">
-                                                {{ employee.firstName }}
-                                                {{ employee.middleName }}
-                                                {{ employee.parentalLast }}
-                                                {{ employee.motherLast }}
-                                            </option>
-                                    </select>
-                                </div>
+                                <%--<div class="col-md-8 col-xs-12">--%>
+                                    <%--<label>Asignar a</label>--%>
+                                    <%--<select v-model="editModal.selectedEmployee.idEmployee"--%>
+                                            <%--:disabled="isSaving" class="form-control">--%>
+                                        <%--<option v-for="employee in editModal.employees"--%>
+                                                <%--:value="employee.idEmployee">--%>
+                                                <%--{{ employee.firstName }}--%>
+                                                <%--{{ employee.middleName }}--%>
+                                                <%--{{ employee.parentalLast }}--%>
+                                                <%--{{ employee.motherLast }}--%>
+                                            <%--</option>--%>
+                                    <%--</select>--%>
+                                <%--</div>--%>
                                 <div class="col-md-4 col-xs-6">
                                     <label>No. de Serie</label>
                                     <input v-model="editModal.serialNumber"
@@ -828,7 +830,7 @@
                                             <th>Región</th>
                                             <th>Sucursal</th>
                                             <th>Área</th>
-                                            <th>Fecha de Asignación</th>
+                                            <th>Fecha de alta</th>
                                         </tr>
                                     </thead>
                                     <tr class="success">
