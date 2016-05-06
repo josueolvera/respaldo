@@ -1,6 +1,7 @@
 package mx.bidg.controller;
 
 import mx.bidg.model.CRequestsCategories;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,9 +28,11 @@ public class SIADController {
     }
 
 
-    @RequestMapping(value = "/stock", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public String stockView() {
-        return "stock";
+    @RequestMapping(value = "/stock", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ModelAndView stockView() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("stock");
+        return model;
     }
 
     @RequestMapping(value = "/stock/{idStock}", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")

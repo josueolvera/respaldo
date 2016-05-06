@@ -162,12 +162,18 @@
             },
             obtainProductType: function()
             {
+              this.obtainRequestInformation.idUserResponsable='';
               this.ProductTypes= {};
+              this.Productos= {};
               this.$http.get(ROOT_URL+"/product-types/request-category-type/"+this.obtainRequestInformation.idRequestCategory+"/"+this.obtainRequestInformation.idRequestType)
                       .success(function (data)
                       {
                          this.ProductTypes= data;
                       });
+              this.objectRequest.request.description='';
+              this.objectRequest.request.purpose= '';
+              this.idProducto= '';
+              this.obtainRequestInformation.idProductType='';
 
             },
             obtainProducts: function()
@@ -191,6 +197,7 @@
 
                       }).error(function(data)
                       {
+
                         showAlert("No existe presupuesto para este tipo de solicitud");
                         this.obtainRequestInformation.idRequestType= '';
                         this.obtainRequestInformation.idProductType= '';
@@ -199,6 +206,8 @@
                         this.objectRequest.products= [];
                         this.idProducto= '';
                         this.desactivarCombos= false;
+                        this.ProductTypes= {};
+                        this.Productos= {};
                       });
 
             }
@@ -239,12 +248,15 @@
             },
             deleteProduct: function(product)
             {
-                this.objectRequest.products.$remove(product);
-                if (this.objectRequest.products.length == 0)
-                {
-                  this.desactivarCombos= false;
-                  this.desactivarGuardar = true;
-                }
+              this.objectRequest.products.$remove(product);
+              if (this.objectRequest.products.length == 0)
+              {
+                this.desactivarCombos= false;
+                this.desactivarGuardar = true;
+                this.objectRequest.request.description='';
+                this.objectRequest.request.purpose= '';
+                this.idProducto= '';
+              }
             },
             saveRequest: function(event)
             {
@@ -825,11 +837,15 @@
                 this.currencies.forEach(function(element){
                     if (cotizacion.idCurrency == element.idCurrency)
                     {
-                        cotizacion.rate= element.naturalRate;
+                        cotizacion.rate= element.rate;
                     }
                 });
                 this.flagrate = false;
               }
+            },
+            validateAmount: function(cotizacion)
+            {
+              alert(cotizacion.amount);
             }
 
           },
@@ -931,7 +947,7 @@
 
               <div class="col-xs-5">
                 <label>
-                  Responsable
+                  Centro de Costos
                 </label>
                 <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
                 @change="obtainRequestInfo" :disabled="isUpdate">
@@ -958,7 +974,7 @@
                     {{produc.descripcion}}
                   </div>
                   <div class="col-xs-2 text-left">
-                    <button class="btn btn-default" @click="deleteProduct(produc)" :disabled="isUpdate">
+                    <button class="btn btn-default" @click="deleteProduct(produc)" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Quitar Producto">
                       <span class="glyphicon glyphicon-remove"></span>
                     </button>
                   </div>
@@ -1027,7 +1043,7 @@
 
                       </div>
                       <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0" :disabled="isSavingNow">
-                        <button type="submit" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="top" title="Agregar Cotización">
+                        <button type="submit" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="top" title="Guardar Cotización">
                           <span class="glyphicon glyphicon-floppy-disk"></span>
                         </button>
                       </div>
@@ -1088,7 +1104,7 @@
                       </label>
                       <div class="input-group">
                         <span class="input-group-addon">$</span>
-                        <input number class="form-control" placeholder="" v-model="cotizacion.amount" required="true">
+                        <input number class="form-control" placeholder="" v-model="cotizacion.amount" @change="validateAmount(cotizacion)" required="true">
                       </div>
                     </div>
                     <div class="col-xs-2">
@@ -1096,7 +1112,7 @@
                         Tipo de Cambio
                       </label>
                       <div class="input-group">
-                        <span class="input-group-addon">%</span>
+                        <span class="input-group-addon">$</span>
                         <input number class="form-control" placeholder="" v-model="cotizacion.rate"
                           :disabled="flagrate" required="true">
                       </div>
@@ -1116,11 +1132,13 @@
                                      application/vnd.openxmlformats-officedocument.wordprocessingml.document">
                     </div>
                     <div class="col-xs-2" v-if="cotizacion.idEstimation > 0">
-                    <p style="margin-top: 30px">
-                    <a href="../../estimations/attachment/download/{{cotizacion.idEstimation}}">
-                      Ver Archivo
-                    </a>
-                    </p>
+                      <p style="margin-top: 25px">
+                      <a href="../../estimations/attachment/download/{{cotizacion.idEstimation}}">
+                        <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Descargar">
+                          <span class="glyphicon glyphicon-download" style="font-size: 17px"><span>
+                        </button>
+                      </a>
+                      </p>
                     </div>
                     <div class="col-xs-2">
                       <button type="button" class="btn btn-default" @click="prepareModalPeriodicPayment(cotizacion)"
@@ -1293,7 +1311,7 @@
                           Tipo de Cambio
                         </label>
                         <div class="input-group">
-                          <span class="input-group-addon">%</span>
+                          <span class="input-group-addon">$</span>
                           <input number class="form-control" placeholder="" v-model="periodicPayment.rate"
                             disabled="true">
                         </div>

@@ -13,7 +13,8 @@ import mx.bidg.model.CAreas;
  * @author sistemask
  */
 public interface CAreasService {
-    
-    public List<CAreas> findAll();
+
+    List<CAreas> findAll();
+    CAreas findById(Integer idArea);
     
 }

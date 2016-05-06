@@ -9,12 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.DwEnterprisesDao;
-import mx.bidg.model.CAreas;
-import mx.bidg.model.CBranchs;
-import mx.bidg.model.CDistributors;
-import mx.bidg.model.CGroups;
-import mx.bidg.model.CRegions;
-import mx.bidg.model.DwEnterprises;
+import mx.bidg.model.*;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.Restrictions;
@@ -24,6 +19,7 @@ import org.springframework.stereotype.Repository;
  *
  * @author sistemask
  */
+@SuppressWarnings("unchecked")
 @Repository
 public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> implements DwEnterprisesDao {
 
@@ -38,7 +34,6 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<DwEnterprises> findAll() {
         return (List<DwEnterprises>) createEntityCriteria()
                 .setFetchMode("group", FetchMode.JOIN)
@@ -67,6 +62,13 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
         map.put("area", idArea);
         map.put("budgetable", 1);
         return (List<DwEnterprises>) criteria.add(Restrictions.allEq(map)).list();
+    }
+
+    @Override
+    public List<DwEnterprises> findByDistributor(Integer idDistributor) {
+
+        return (List<DwEnterprises>) getSession().createCriteria(DwEnterprises.class)
+                .add(Restrictions.eq("idDistributor", idDistributor)).list();
     }
 
     @Override

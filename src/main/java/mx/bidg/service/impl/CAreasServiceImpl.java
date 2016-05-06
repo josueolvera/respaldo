@@ -28,5 +28,10 @@ public class CAreasServiceImpl implements CAreasService {
     public List<CAreas> findAll() {
         return dao.findAll();
     }
-    
+
+    @Override
+    public CAreas findById(Integer idArea) {
+        return dao.findById(idArea);
+    }
+
 }

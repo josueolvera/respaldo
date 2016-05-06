@@ -14,5 +14,6 @@ public interface SapSaleService {
     List<SapSale> findAll();
     SapSale findById(Integer id);
     List<SapSale> saveFromExcel(MultipartFile file) throws IOException, InvalidFormatException;
-    boolean existsSales(MultipartFile file) throws IOException, InvalidFormatException;
+    List<SapSale> updateFromExcel(MultipartFile file) throws IOException, InvalidFormatException;
+    Boolean existsSales(MultipartFile file) throws IOException, InvalidFormatException;
 }

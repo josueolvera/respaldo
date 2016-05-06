@@ -46,6 +46,12 @@ public class DwEnterprisesController {
         List<DwEnterprises> list = dwEnterprisesService.findByGroupArea(new CGroups(idGroup), new CAreas(idArea));
         return new ResponseEntity<>(map.writerWithView(JsonViews.IdsEnterprises.class).writeValueAsString(list), HttpStatus.OK);
     }
+
+    @RequestMapping(value = "distributor/{idDistributor}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody ResponseEntity<String> getByDistrubutor(@PathVariable int idDistributor) throws Exception {
+        List<DwEnterprises> list = dwEnterprisesService.findByDistributor(idDistributor);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.IdsEnterprises.class).writeValueAsString(list), HttpStatus.OK);
+    }
     
     @RequestMapping(value = "/user/{idUser}", produces = "application/json;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> getByIdUser(@PathVariable int idUser) throws JsonProcessingException {
