@@ -276,14 +276,14 @@
                                         {{ notification.dueDate.dateElements.interval.name }}
                                     </span>
                                 </span>
-                                <a v-if="notification.idUser == idUser" @click.prevent="markAsRead(notification)" href="#">
+                                <a v-if="notification.idUser == idUser" @click.prevent="markAsRead(notification)" href="#" data-toggle="tooltip" data-placement="top" title="No tomar Importancia">
                                     <span class="glyphicon glyphicon-ok"></span>
                                 </a>
-                                <a v-if="notification.idUser == idUser" @click.prevent="showDelayModal(notification)" href="#">
+                                <a v-if="notification.idUser == idUser" @click.prevent="showDelayModal(notification)" href="#" data-toggle="tooltip" data-placement="top" title="Posponer">
                                     <span class="glyphicon glyphicon-calendar"></span>
                                 </a>
                                 <a href="{{ notification.resourcesTasks.view.cTasks.taskName | resourceViewURI notification.idResource }}"
-                                   target="_blank">
+                                   target="_blank" data-toggle="tooltip" data-placement="top" title="Ver Cotización">
                                     <span class="glyphicon glyphicon-new-window"></span>
                                 </a>
                             </div>

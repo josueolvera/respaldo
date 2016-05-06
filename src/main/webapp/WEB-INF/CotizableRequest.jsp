@@ -1072,7 +1072,7 @@
                     {{produc.descripcion}}
                   </div>
                   <div class="col-xs-2 text-left">
-                    <button class="btn btn-default" @click="deleteProduct(produc)" :disabled="isUpdate">
+                    <button class="btn btn-default" @click="deleteProduct(produc)" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Quitar Producto">
                       <span class="glyphicon glyphicon-remove"></span>
                     </button>
                   </div>
@@ -1142,7 +1142,7 @@
 
                       </div>
                       <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0">
-                        <button type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Agregar Cotización">
+                        <button type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Guardar Cotización">
                           <span class="glyphicon glyphicon-floppy-disk"></span>
                         </button>
                       </div>
@@ -1426,7 +1426,7 @@
                         </div>
                         <div class="col-xs-6">
                           <button type="button" class="btn btn-default" name="button"
-                            style="margin-top: 25px" @click="generarPagosVariables">
+                            style="margin-top: 25px" @click="generarPagosVariables" data-toggle="tooltip" data-placement="top" title="Agregar Monto">
                             <span class="glyphicon glyphicon-plus"></span>
                           </button>
                         </div>

@@ -130,7 +130,6 @@
                 el: '#main-sidebar',
                 ready: function () {
                     this.fetchApp();
-                    this.openToolTips();
                 },
                 data: {
                     sidebar: {
@@ -186,9 +185,6 @@
                             Vue.set(item, "expanded", true);
                         }
                         this.sidebar.itemsExpanded.module = item;
-                    },
-                    openToolTips: function () {
-                        $('[data-toggle="tooltip"]').tooltip('');
                     },
                 }
             });
