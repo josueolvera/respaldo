@@ -845,7 +845,19 @@
             },
             validateAmount: function(cotizacion)
             {
-              alert(cotizacion.amount);
+              if (cotizacion.amount <= 0)
+              {
+                  cotizacion.amount=1;
+                  showAlert("No puedes tener numeros negativos para montos de las cotizaciones");
+              }
+            },
+            validateRate: function(cotizacion)
+            {
+              if (cotizacion.rate <= 0)
+              {
+                  cotizacion.rate=1;
+                  showAlert("No puedes tener numeros negativos para tipo de cambio de las cotizaciones");
+              }
             }
 
           },
@@ -1113,7 +1125,7 @@
                       </label>
                       <div class="input-group">
                         <span class="input-group-addon">$</span>
-                        <input number class="form-control" placeholder="" v-model="cotizacion.rate"
+                        <input number class="form-control" placeholder="" v-model="cotizacion.rate" @change="validateRate(cotizacion)"
                           :disabled="flagrate" required="true">
                       </div>
                     </div>

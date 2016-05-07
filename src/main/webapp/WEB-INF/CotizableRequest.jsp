@@ -337,11 +337,27 @@
             },
             newCotizacion: function()
             {
+              /*var self= this;
+              if (this.estimations.length>0)
+              {
+                self.estimations.forEach(function(element)
+                {
+                  self.suppliers.forEach(function(elemento){
+                    if (element.idSupplier == elemento.idProvider)
+                    {
+                        alert("Existe una coincidencia");
+                    }
+                  });
+                });
+                Revisar este codigo para no alta de proveedores
+              }*/
+
               var cotizacion= this.createCotizacion();
               cotizacion.idRequest= this.objectRequest.request.idRequest;
               cotizacion.indexOfForm= this.estimations.length;
               cotizacion.expanded= 'in';
               this.estimations.push(cotizacion);
+
             },
             deleteCotizacion: function(cotizacion)
             {
@@ -394,6 +410,7 @@
             },
             obtainAccounts: function(cotizacion)
             {
+
               this.$http.get(ROOT_URL + "/providers-accounts/provider/"+cotizacion.idSupplier).success(function (data)
                {
                     cotizacion.accountSupplier= data;
@@ -685,7 +702,7 @@
               }
             },
             activarTimePicker: function(idDatePicker,dueDate)
-            { //aQUI ME QUEDE
+            {
               var disableDates = [];
               this.AccountsPayables.forEach(function(element)
               {
@@ -1564,7 +1581,7 @@
             </div>
           </div>
           <pre>
-            {{ $data.obtainRequestInfo | json}}
+            {{ $data.suppliers | json}}
           </pre>
 
           </div> <!-- container-fluid -->
