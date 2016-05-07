@@ -39,7 +39,7 @@
                         area: null,
                         distributor: null
                     },
-                    attachmentsModal: {
+                    historicalModal: {
                         article: null,
                         fileInput: "file-type-"
                     },
@@ -61,6 +61,7 @@
                             branch: null,
                             area: null
                         },
+                        fileInput: "file-type-",
                         article: null
                     },
                     attachmentsDownloadUrl: ROOT_URL + "/stock/attachments/download/"
@@ -115,7 +116,7 @@
                                 ROOT_URL + "/stock/" + article.idStock + "/attachments/record"
                         ).success(function (data) {
                             Vue.set(article, "documentsRecord", data);
-                            $("#attachmentsModal").modal("show");
+                            $("#historicalModal").modal("show");
                             this.isSaving = false;
                         }).error(function () {
                             showAlert("Permiso denegado", {type: 3});
@@ -278,7 +279,7 @@
                             showAlert("Ha habido un problema con su solicitud, intente nuevamente", {type:3})
                         });
                     },
-                    uploadAttachments: function (article) {
+                    uploadHistorical: function (article) {
                         this.isSaving = true;
                         var form = document.getElementById("attachments-form");
                         this.$http.post(ROOT_URL + "/stock/" + article.idStock + "/attachments", new FormData(form)).success(function () {
@@ -318,8 +319,8 @@
                             return item;
                         }
                     },
-                    showAttachmentsModal: function (article) {
-                        this.attachmentsModal.article = article;
+                    showHistoricalModal: function (article) {
+                        this.historicalModal.article = article;
                         this.fetchStockDocumentsRecord(article);
                     },
                     showEditArticleModal: function (article) {
@@ -341,9 +342,9 @@
                         this.editModal.selectAttr[0].selectize.destroy();
                         $("#editModal").modal("hide");
                     },
-                    closeAttachmentsModal: function () {
+                    closeHistoricalModal: function () {
                         document.getElementById("attachments-form").reset();
-                        $("#attachmentsModal").modal("hide");
+                        $("#historicalModal").modal("hide");
                     },
                     closeAssignmentsModal: function () {
                         $("#assignmentsModal").modal("hide");
@@ -383,6 +384,7 @@
                             this.isSaving = false;
                             showAlert("Asignación exitosa");
                             this.fetchStock(this.selectedOptions.distributor);
+                            this.uploadHistorical(article);
                             this.closeAssignmentsModal();
                         }).error(function (data) {
                             this.isSaving = false;
@@ -472,13 +474,13 @@
                                         </div>
                                     </div>
                                     <div class="col-xs-2">
-                                        <button @click="showEditArticleModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Editar un Articulo">
+                                        <button @click="showEditArticleModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Editar artículo">
                                             <span class="glyphicon glyphicon-pencil"></span>
                                         </button>
-                                        <button @click="showAttachmentsModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Adjuntar Archivos">
-                                            <span class="glyphicon glyphicon-paperclip"></span>
+                                        <button @click="showHistoricalModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Adjuntar archivos">
+                                            <span class="glyphicon glyphicon-book"></span>
                                         </button>
-                                        <button @click="showAssignmentsModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Reasiganaciones">
+                                        <button @click="showAssignmentsModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Reasignar artículo">
                                             <span class="glyphicon glyphicon-user"></span>
                                         </button>
                                     </div>
@@ -536,103 +538,109 @@
                 </div>
             </div>
             <%-- Modal para carga de archivos adjuntos --%>
-            <div id="attachmentsModal" class="modal fade" data-backdrop="static" data-keyboard="false">
+            <div id="historicalModal" class="modal fade" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button @click.prevent="closeAttachmentsModal" class="close"><span aria-hidden="true">&times;</span>
+                            <button @click.prevent="closeHistoricalModal" class="close"><span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title">Documentos Adjuntos</h4>
+                            <h3 class="modal-title">Historial</h3>
                         </div>
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-4 col-xs-6">
                                     <label>Artículo </label>
-                                    {{ attachmentsModal.article.article.articleName }}
+                                    {{ historicalModal.article.article.articleName }}
                                 </div>
                                 <div class="col-md-4 col-xs-6">
                                     <label>No. de Serie </label>
-                                    {{ attachmentsModal.article.serialNumber }}
+                                    {{ historicalModal.article.serialNumber }}
                                 </div>
                                 <div class="col-md-4 col-xs-12">
                                     <label>Asignado a </label>
-                                    {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
-                                    {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
-                                    {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
-                                    {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}
+                                    {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
+                                    {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
+                                    {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
+                                    {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}
                                 </div>
                             </div>
-                            <hr>
-                            <form id="attachments-form"
-                                  method="post" enctype="multipart/form-data">
+                            <div class="flex-row flex-content">
+                                <hr>
+                                <h4 class="text-left">Historial de asignaciones</h4>
                                 <table class="table table-striped">
                                     <thead>
-                                        <tr>
-                                            <th>Documento</th>
-                                            <th>Documento Actual</th>
-                                            <th>Fecha de Envío</th>
-                                            <th>Nuevo Documento</th>
-                                        </tr>
+                                    <tr>
+                                        <th>Asignado a</th>
+                                        <th>Distribuidor</th>
+                                        <th>Región</th>
+                                        <th>Sucursal</th>
+                                        <th>Área</th>
+                                        <th>Fecha de alta</th>
+                                    </tr>
                                     </thead>
-                                    <tr v-for="docType in selectOptions.documentTypes">
-                                        <td>{{ docType.documentName }}</td>
+                                    <tr class="success">
                                         <td>
-                                            <a v-if="attachmentsModal.article.stockDocumentsList[$index]"
-                                               :href="attachmentsDownloadUrl + attachmentsModal.article.stockDocumentsList[$index].idStockDocument">
-                                                {{ attachmentsModal.article.stockDocumentsList[$index].documentName }}
-                                            </a>
+                                            {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
+                                            {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
+                                            {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
+                                            {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}
                                         </td>
+                                        <td>{{ historicalModal.article.dwEnterprises.distributor.distributorName }}</td>
+                                        <td>{{ historicalModal.article.dwEnterprises.region.regionName }}</td>
+                                        <td>{{ historicalModal.article.dwEnterprises.branch.branchName }}</td>
+                                        <td>{{ historicalModal.article.dwEnterprises.area.areaName }}</td>
                                         <td>
-                                            {{ attachmentsModal.article.stockDocumentsList[$index].uploadingDateFormats.dateNumber }},
-                                            {{ attachmentsModal.article.stockDocumentsList[$index].uploadingDateFormats.time12 }}
-                                        </td>
-                                        <td>
-                                            <input @change="validateFile($event)" type="file" class="form-control"
-                                                   :disabled="isSaving"
-                                                   :name="attachmentsModal.fileInput + docType.idDocumentType"
-                                                   accept="application/pdf,
-                                                         image/png,image/jpg">
+                                            {{ historicalModal.article.stockEmployeeAssignmentsList[0].assignmentDateFormats.dateNumber }}
+                                            <span class="label label-success">Actual</span>
                                         </td>
                                     </tr>
+                                    <tr class="text-center">
+                                        <td colspan="6"><label>Historial de Asignaciones</label></td>
+                                    </tr>
+                                    <tr v-for="assignment in historicalModal.article.assignmentsRecord">
+                                        <td>
+                                            {{ assignment.employee.firstName }}
+                                            {{ assignment.employee.middleName }}
+                                            {{ assignment.employee.parentalLast }}
+                                            {{ assignment.employee.motherLast }}
+                                        </td>
+                                        <td>{{ assignment.dwEnterprises.distributor.distributorName }}</td>
+                                        <td>{{ assignment.dwEnterprises.region.regionName }}</td>
+                                        <td>{{ assignment.dwEnterprises.branch.branchName }}</td>
+                                        <td>{{ assignment.dwEnterprises.area.areaName }}</td>
+                                        <td>{{ assignment.assignmentDateFormats.dateNumber }}</td>
+                                    </tr>
                                 </table>
-                                <div v-if="isSaving" class="progress">
-                                    <div class="progress-bar progress-bar-striped active" style="width: 100%"></div>
-                                </div>
-                                <hr />
-                                <div class="text-right">
-                                    <button @click.prevent="closeAttachmentsModal" :disabled="isSaving" class="btn btn-default">Cancelar</button>
-                                    <button @click.prevent="uploadAttachments(attachmentsModal.article)"
-                                            :disabled="isSaving"
-                                            class="btn btn-success">
-                                        Guardar
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <h4 class="text-left">Historial de Documentos</h4>
-                            <table class="table table-striped text-left">
-                                <thead>
+                            </div>
+                            <div class="flex-row flex-content">
+                                <hr>
+                                <h4 class="text-left">Historial de Documentos</h4>
+                                <table class="table table-striped text-left">
+                                    <thead>
                                     <tr>
                                         <th>Documento</th>
                                         <th>Archivo</th>
                                         <th>Fecha de Envío</th>
                                     </tr>
-                                </thead>
-                                <tr v-for="document in attachmentsModal.article.documentsRecord"
-                                    v-if="document.currentDocument == 0">
-                                    <td>{{ document.documentType.documentName }}</td>
-                                    <td>
-                                        <a :href="attachmentsDownloadUrl + document.idStockDocument">
-                                            {{ document.documentName }}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        {{ document.uploadingDateFormats.dateNumber }},
-                                        {{ document.uploadingDateFormats.time12 }}
-                                    </td>
-                                </tr>
-                            </table>
+                                    </thead>
+                                    <tr v-for="document in historicalModal.article.documentsRecord"
+                                        v-if="document.currentDocument == 0">
+                                        <td>{{ document.documentType.documentName }}</td>
+                                        <td>
+                                            <a :href="attachmentsDownloadUrl + document.idStockDocument">
+                                                {{ document.documentName }}
+                                            </a>
+                                        </td>
+                                        <td>
+                                            {{ document.uploadingDateFormats.dateNumber }},
+                                            {{ document.uploadingDateFormats.time12 }}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button @click.prevent="closeHistoricalModal" :disabled="isSaving" class="btn btn-default">Cancelar</button>
                         </div>
                     </div>
                 </div>
@@ -821,52 +829,51 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="flex-row flex-content">
+                            <hr>
+                            <form id="attachments-form"
+                                  method="post" enctype="multipart/form-data">
                                 <table class="table table-striped">
                                     <thead>
-                                        <tr>
-                                            <th>Asignado a</th>
-                                            <th>Distribuidor</th>
-                                            <th>Región</th>
-                                            <th>Sucursal</th>
-                                            <th>Área</th>
-                                            <th>Fecha de alta</th>
-                                        </tr>
+                                    <tr>
+                                        <th>Documento</th>
+                                        <th>Documento Actual</th>
+                                        <th>Fecha de Envío</th>
+                                        <th>Nuevo Documento</th>
+                                    </tr>
                                     </thead>
-                                    <tr class="success">
+                                    <tr v-for="docType in selectOptions.documentTypes">
+                                        <td>{{ docType.documentName }}</td>
                                         <td>
-                                            {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
-                                            {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
-                                            {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
-                                            {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}
+                                            <a v-if="assignmentsModal.article.stockDocumentsList[$index]"
+                                               :href="attachmentsDownloadUrl + historicalModal.article.stockDocumentsList[$index].idStockDocument">
+                                                {{ assignmentsModal.article.stockDocumentsList[$index].documentName }}
+                                            </a>
                                         </td>
-                                        <td>{{ assignmentsModal.article.dwEnterprises.distributor.distributorName }}</td>
-                                        <td>{{ assignmentsModal.article.dwEnterprises.region.regionName }}</td>
-                                        <td>{{ assignmentsModal.article.dwEnterprises.branch.branchName }}</td>
-                                        <td>{{ assignmentsModal.article.dwEnterprises.area.areaName }}</td>
                                         <td>
-                                            {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].assignmentDateFormats.dateNumber }}
-                                            <span class="label label-success">Actual</span>
+                                            {{ assignmentsModal.article.stockDocumentsList[$index].uploadingDateFormats.dateNumber }},
+                                            {{ assignmentsModal.article.stockDocumentsList[$index].uploadingDateFormats.time12 }}
                                         </td>
-                                    </tr>
-                                    <tr class="text-center">
-                                        <td colspan="6"><label>Historial de Asignaciones</label></td>
-                                    </tr>
-                                    <tr v-for="assignment in assignmentsModal.article.assignmentsRecord">
                                         <td>
-                                            {{ assignment.employee.firstName }}
-                                            {{ assignment.employee.middleName }}
-                                            {{ assignment.employee.parentalLast }}
-                                            {{ assignment.employee.motherLast }}
+                                            <input @change="validateFile($event)" type="file" class="form-control"
+                                                   :disabled="isSaving"
+                                                   :name="assignmentsModal.fileInput + docType.idDocumentType"
+                                                   accept="application/pdf,
+                                                         image/png,image/jpg">
                                         </td>
-                                        <td>{{ assignment.dwEnterprises.distributor.distributorName }}</td>
-                                        <td>{{ assignment.dwEnterprises.region.regionName }}</td>
-                                        <td>{{ assignment.dwEnterprises.branch.branchName }}</td>
-                                        <td>{{ assignment.dwEnterprises.area.areaName }}</td>
-                                        <td>{{ assignment.assignmentDateFormats.dateNumber }}</td>
                                     </tr>
                                 </table>
-                            </div>
+                                <div v-if="isSaving" class="progress">
+                                    <div class="progress-bar progress-bar-striped active" style="width: 100%"></div>
+                                </div>
+                                <%--<hr />--%>
+                                <%--<div class="text-right">--%>
+                                    <%--<button @click.prevent="uploadHistorical(historicalModal.article)"--%>
+                                            <%--:disabled="isSaving"--%>
+                                            <%--class="btn btn-success">--%>
+                                        <%--Guardar--%>
+                                    <%--</button>--%>
+                                <%--</div>--%>
+                            </form>
                         </div>
                         <div class="text-right modal-footer flex-row flex-footer">
                             <button :disabled="isSaving" class="btn btn-default" @click="closeAssignmentsModal">Cancelar</button>
