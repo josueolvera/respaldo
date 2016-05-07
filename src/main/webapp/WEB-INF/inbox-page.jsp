@@ -268,7 +268,7 @@
                                         {{ notification.dueDate.dateElements.interval.name }}
                                     </span>
                                 </span>
-                                <a v-if="notification.idUser == idUser" @click.prevent="markAsRead(notification)" href="#" data-toggle="tooltip" data-placement="top" title="No tomar Importancia">
+                                <a v-if="notification.idUser == idUser" @click.prevent="markAsRead(notification)" href="#" data-toggle="tooltip" data-placement="top" title="Archivar Notificación">
                                     <span class="glyphicon glyphicon-ok"></span>
                                 </a>
                                 <a href="{{ notification.resourcesTasks.view.cTasks.taskName | resourceViewURI notification.idResource }}"
