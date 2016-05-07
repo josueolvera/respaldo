@@ -21,6 +21,13 @@ body {
     background: url("../img/BID_Blanco.png") no-repeat 0 10px;
 }
 
+/* Messenger */
+
+.messenger-message-inner {
+    font-size: 1.34rem;
+    font-weight: 700;
+}
+
 /* Sidebar */
 
 .fa-2x {
