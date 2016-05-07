@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.*;
+import mx.bidg.service.PhoneNumbersService;
 import mx.bidg.service.ProvidersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,9 @@ public class ProvidersController {
     
     @Autowired
     private ProvidersAccountsService providersAccountsService;
+
+    @Autowired
+    private PhoneNumbersService phoneNumbersService;
     
     private ObjectMapper mapper = new ObjectMapper();
     
@@ -81,6 +85,13 @@ public class ProvidersController {
             providerAccount.setProvider(provider);
             accountService.save(account);
             providersAccountsService.save(providerAccount);
+        }
+
+        for (JsonNode node : jnode.get("phoneNumberList")){
+            PhoneNumbers phone = new PhoneNumbers();
+            phone.setPhoneNumber(node.get("phoneNumber").asInt());
+            phone.setIdAccessLevel(1);
+            phone.setIdProvider(provider);
         }
 
         return new ResponseEntity<>(
