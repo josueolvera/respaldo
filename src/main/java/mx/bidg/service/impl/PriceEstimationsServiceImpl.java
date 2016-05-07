@@ -59,7 +59,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         Accounts account = accountsDao.findById(json.get("idAccount").asInt());
         int idCurrency = json.get("idCurrency").asInt();
         BigDecimal rate = ((json.get("rate").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("rate").decimalValue() : BigDecimal.ONE;
-        BigDecimal amount = ((json.get("amount").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("amount").decimalValue().divide(rate, 6, RoundingMode.DOWN) : BigDecimal.ZERO;
+        BigDecimal amount = ((json.get("amount").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("amount").decimalValue() : BigDecimal.ZERO;
 
         PriceEstimations estimation = new PriceEstimations();
         estimation.setRequest(request);
@@ -100,8 +100,8 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             BigDecimal residualAmount = budgetAmount.subtract(expendedAmount);
             BigDecimal rate = ((json.get("rate").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("rate").decimalValue() : BigDecimal.ONE;
             BigDecimal amount = ((json.get("amount").decimalValue().compareTo(BigDecimal.ZERO)) == 1)?
-                    json.get("amount").decimalValue().divide(rate, 6, RoundingMode.DOWN) : BigDecimal.ZERO;
-            
+                    json.get("amount").decimalValue() : BigDecimal.ZERO;
+
             estimation.setAccount(new Accounts(json.get("idAccount").asInt()));
             estimation.setAmount(amount);
             estimation.setCurrency(new CCurrencies(json.get("idCurrency").asInt()));

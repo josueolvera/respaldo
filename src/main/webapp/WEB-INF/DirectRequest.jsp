@@ -627,7 +627,7 @@
             <div class="row">
               <div class="col-xs-2">
                <label>
-                 Tipo de Solicitud
+                   Rubro
                </label>
                <select class="form-control" v-model="obtainRequestInformation.idRequestType" :disabled="desactivarCombos || isUpdate" @change="obtainProductType" required>
                  <option v-for="RequestType in RequestTypes"
@@ -638,7 +638,7 @@
 
               <div class="col-xs-2">
                 <label>
-                  Tipo de Producto
+                    Tipo de Producto
                 </label>
                 <select class="form-control" v-model="obtainRequestInformation.idProductType" :disabled="desactivarCombos || isUpdate"
                   @change="obtainProducts" required>

@@ -188,14 +188,6 @@
                             });
                         }
                     },
-                    showDelayModal: function (notification) {
-                        $('#delayModal').modal("show");
-                        console.log(notification);
-                    },
-                    saveNotificationDelay: function (notification) {
-                        var date = this.delayModal.datePicker.DateTimePicker.date();
-                        console.log(date.toISOString());
-                    },
                     markAsRead: function (notification) {
                         this.$http.put(
                                 ROOT_URL + "/notifications/archive/" + notification.idNotification
@@ -276,11 +268,8 @@
                                         {{ notification.dueDate.dateElements.interval.name }}
                                     </span>
                                 </span>
-                                <a v-if="notification.idUser == idUser" @click.prevent="markAsRead(notification)" href="#" data-toggle="tooltip" data-placement="top" title="No tomar Importancia">
+                                <a v-if="notification.idUser == idUser" @click.prevent="markAsRead(notification)" href="#" data-toggle="tooltip" data-placement="top" title="Archivar Notificación">
                                     <span class="glyphicon glyphicon-ok"></span>
-                                </a>
-                                <a v-if="notification.idUser == idUser" @click.prevent="showDelayModal(notification)" href="#" data-toggle="tooltip" data-placement="top" title="Posponer">
-                                    <span class="glyphicon glyphicon-calendar"></span>
                                 </a>
                                 <a href="{{ notification.resourcesTasks.view.cTasks.taskName | resourceViewURI notification.idResource }}"
                                    target="_blank" data-toggle="tooltip" data-placement="top" title="Ver Cotización">
@@ -294,34 +283,6 @@
                                     :notification="notification"
                                     :resource="notification.details">
                             </component>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <%-- Modal: Posponer notificacion --%>
-            <div id="delayModal" class="modal fade">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            <h4 class="modal-title">Posponer notificación</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div id="delayDateTimePicker"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button @click="saveNotificationDelay(delayModal.notification)"
-                                    class="btn btn-success">
-                                    Guardar
-                            </button>
                         </div>
                     </div>
                 </div>

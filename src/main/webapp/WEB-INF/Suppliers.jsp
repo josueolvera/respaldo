@@ -27,6 +27,7 @@
         {
           this.obtainBanks();
           this.getProviders();
+          this.obtainCurrencies();
           },
         data:
         {
@@ -35,23 +36,33 @@
             providerName: '',
             businessName: '',
             rfc: '',
-            providersAccountsList: []
+            accountingAccount: '',
+            providersAccountsList: [],
+            phoneNumbersList:[]
           },
           provider: {
             providerName: '',
             businessName: '',
             rfc: '',
-            providersAccountsList: []
+            accountingAccount: '',
+            providersAccountsList: [],
+            phoneNumbersList:[]
           },
           idBanks: '',
           banks: [],
           providers: '',
           search: '',
+          provider:'',
+          providerLastName:'',
+          providerSecondName:'',
+          currencies: {},
+          idCurrency:'',
           cuenta:
           {
             accountNumber: '',
             accountClabe: '',
             idBank: '',
+            idCurrency: '',
           },
 
           },
@@ -63,18 +74,21 @@
             {
               accountNumber: '',
               accountClabe: '',
-              idBank: ''
+              idBank: '',
+              idCurrency:''
             }
 
             cuenta.accountNumber= this.accountNumbers;
             cuenta.accountClabe= this.clabes;
             cuenta.idBank= this.idBanks;
+            cuenta.idCurrency= this.idCurrency;
 
             this.supplier.providersAccountsList.push(cuenta);
 
             this.idBanks= ''
             this.accountNumbers= ''
             this.clabes=''
+            this.idCurrency='';
 
           },
           obtainBanks: function()
@@ -170,7 +184,15 @@
           filterNumber: function(val)
           {
             return isNaN(val) ? '' : val;
-          }
+          },
+          obtainCurrencies: function()
+          {
+            this.$http.get(ROOT_URL + "/currencies").success(function (data)
+            {
+              this.currencies= data;
+            });
+
+          },
         },
         filters:
         {
@@ -274,29 +296,129 @@
               </h4>
             </div>
             <div class="modal-body">
-
-              <div class="row">
+           <div class="row">
+              <div class="col-xs-4">
+                <label>
+                  RFC
+                </label>
+                <input class="form-control" name="name" v-model="supplier.rfc">
+              </div>
+              </div>
+              <div class="row" v-if="(supplier.rfc).length==12">
                 <div class="col-xs-4">
                   <label>
-                    Nombre del Proveedor
+                    Razón Social
                   </label>
                   <input class="form-control" name="name" v-model="supplier.providerName">
                 </div>
                 <div class="col-xs-4">
                   <label>
-                    Razón Social
+                    Cuenta Contable
                   </label>
-                  <input class="form-control" name="name" v-model="supplier.businessName">
+                  <input class="form-control" name="name" v-model="supplier.accountingAccount">
                 </div>
+              </div>
+              <div class="row" v-if="(supplier.rfc).length==13">
+                <div class="col-xs-3">
+                  <label>
+                    Nombre
+                  </label>
+                  <input class="form-control" name="name" v-model="providerName">
+                </div>
+                <div class="col-xs-3">
+                  <label>
+                    Apellido Paterno
+                  </label>
+                  <input class="form-control" name="name" v-model="providerLastName">
+                </div>
+                <div class="col-xs-3">
+                  <label>
+                    Apellido Materno
+                  </label>
+                  <input class="form-control" name="name" v-model="providerSecondName">
+                </div>
+                <div class="col-xs-3">
+                  <label>
+                    Cuenta Contable
+                  </label>
+                  <input class="form-control" name="name" v-model="supplier.accountingAccount">
+                </div>
+              </div>
+              <br>
+              <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
                 <div class="col-xs-4">
                   <label>
-                    RFC
+                    Dirección
+                  </label>
+                </div>
+              </div>
+              <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
+                <div class="col-xs-3">
+                  <label>
+                    Calle
+                  </label>
+                  <input class="form-control" name="name" v-model="supplier.rfc">
+                </div>
+                <div class="col-xs-3">
+                  <label>
+                    # Ext
+                  </label>
+                  <input class="form-control" name="name" v-model="supplier.rfc">
+                </div>
+                <div class="col-xs-3">
+                  <label>
+                    # Int
+                  </label>
+                  <input class="form-control" name="name" v-model="supplier.rfc">
+                </div>
+                <div class="col-xs-3">
+                  <label>
+                    C.P.
                   </label>
                   <input class="form-control" name="name" v-model="supplier.rfc">
                 </div>
               </div>
               <br>
-                <div class="row">
+              <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
+                <div class="col-xs-4">
+                  <label>
+                    Colonia
+                  </label>
+                  <select class="form-control" name="" v-model="cuenta.idBank">
+                    <option></option>
+                    <option v-for="bank in banks" value="{{bank.idBank}}">{{bank.acronyms}}</option>
+                  </select>
+                </div>
+                <div class="col-xs-4">
+                <label>
+                  Municipio/Delegación
+                </label>
+                <select class="form-control" name="" v-model="cuenta.idBank">
+                  <option></option>
+                  <option v-for="bank in banks" value="{{bank.idBank}}">{{bank.acronyms}}</option>
+                </select>
+                </div>
+                <div class="col-xs-4">
+              <label>
+                Estado
+              </label>
+              <select class="form-control" name="" v-model="cuenta.idBank">
+                <option></option>
+                <option v-for="bank in banks" value="{{bank.idBank}}">{{bank.acronyms}}</option>
+              </select>
+              </div>
+            </div>
+              <br>
+              <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
+                <div class="col-xs-4">
+                  <label>
+                    Teléfono
+                  </label>
+                  <input class="form-control" name="name" v-model="supplier.rfc">
+                </div>
+              </div>
+              <br>
+                <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
                   <div class="col-xs-3">
                     <label>
                       Banco
@@ -326,10 +448,20 @@
                       <input type="text" class="form-control" maxlength="18" v-model="clabes" onkeypress="return isNumberKey(event)">
                     </div>
                   </div>
-
-                  <button type="button" class="btn btn-default" @click="saveAccount" style="margin-top: 25px">
-                  Agregar Cuenta
+                  <div class="col-xs-2">
+                    <label>
+                      Moneda
+                    </label>
+                    <select class="form-control" name="" v-model="idCurrency">
+                      <option></option>
+                      <option v-for="curre in currencies" value="{{curre.idCurrency}}">{{curre.currency}}</option>
+                    </select>
+                  </div>
+                  <div class="col-xs-1">
+                  <button type="button" class="btn btn-sm btn-default"  data-toggle="tooltip" data-placement="bottom" title="Agregar" style="margin-top: 25px" @click="saveAccount">
+                    <span class="glyphicon glyphicon-plus"></span>
                   </button>
+                  </div>
                 </div>
 
                 <table class="table table-striped" v-if="supplier.providersAccountsList.length> 0">
@@ -341,7 +473,10 @@
                       Número de Cuenta
                     </th>
                     <th>
-                      Clabe
+                      CLABE
+                    </th>
+                    <th>
+                      Moneda
                     </th>
                     <th>
                       Opción
@@ -359,25 +494,24 @@
                         {{supplier.accountClabe}}
                       </td>
                       <td>
-                        <button type="button" class="btn btn-danger" @click="eliminarCuenta(supplier)">
-                          Eliminar Cuenta
-                        </button>
+                        {{supplier.idCurrency}}
                       </td>
+                      <td>
+                        <button type="button" class="btn btn-sm btn-default"  data-toggle="tooltip" data-placement="bottom" title="Eliminar" style="margin-top: 15px" @click="eliminarCuenta(supplier)">
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </button>
                     </tr>
                   </tbody>
                 </table>
 
-                <div class="row"  v-if="supplier.providersAccountsList.length> 0">
-                  <div class="col-xs-12 text-left">
-                    <button type="button" class="btn btn-success" @click="saveProvider">
-                      Guardar Proveedor
-                    </button>
-                  </div>
-                </div>
-
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <div class="col-xs-10 text-right" v-if="supplier.providersAccountsList.length> 0">
+                <button type="button" class="btn btn-default" @click="saveProvider">
+                  Guardar Proveedor
+                </button>
+              </div>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
             </div>
           </div>
         </div>
@@ -460,10 +594,10 @@
                     Número de Cuenta
                   </th>
                   <th>
-                    Clabe
+                    CLABE
                   </th>
-                  <th>
-                    Opción
+                  <th style="color: red">
+                    Eliminar la Cuenta
                   </th>
                   </thead>
                   <tbody>
