@@ -21,6 +21,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -74,6 +75,10 @@ public class Providers implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "provider")
     @JsonView(JsonViews.Embedded.class)
     private List<CProductTypes> productTypesList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProvider")
+    @JsonView(JsonViews.Embedded.class)
+    private List<PhoneNumbers> phoneNumbersList;
 
     public Providers() {
     }
@@ -167,6 +172,15 @@ public class Providers implements Serializable {
     @Override
     public String toString() {
         return "mx.bidg.model.Providers[ idProvider=" + idProvider + " ]";
+    }
+
+    @XmlTransient
+    public List<PhoneNumbers> getPhoneNumbersList() {
+        return phoneNumbersList;
+    }
+
+    public void setPhoneNumbersList(List<PhoneNumbers> phoneNumbersList) {
+        this.phoneNumbersList = phoneNumbersList;
     }
     
 }

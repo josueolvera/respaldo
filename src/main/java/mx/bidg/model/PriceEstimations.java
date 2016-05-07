@@ -352,6 +352,13 @@ public class PriceEstimations implements Serializable {
         this.rate = rate;
     }
 
+    public BigDecimal getAmountMXN() {
+        if (amount == null) return null;
+        if (rate == null || rate.compareTo(BigDecimal.ZERO) == 0) return null;
+        if (rate.compareTo(BigDecimal.ONE) == 0) return null;
+        return amount.multiply(rate).setScale(2);
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
