@@ -491,8 +491,8 @@
                     </select>
                 </div>
                 <div style="visibility: hidden" class="col-md-1 col-xs-6">
-                        <%--<label>Añadir artículo</label>--%>
-                    <button class="btn btn-dafault">
+                    <button class="btn btn-dafault"
+                            data-toggle="tooltip" data-placement="top" title="Buscar artículo">
                         <span class="glyphicon glyphicon-search"></span>
                     </button>
                 </div>
