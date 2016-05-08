@@ -55,10 +55,14 @@ public class PhoneNumbers implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     private int idAccessLevel;
 
+    @Column(name="ID_PROVIDER", insertable=false, updatable=false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idProvider;
+
     @JoinColumn(name = "ID_PROVIDER", referencedColumnName = "ID_PROVIDER")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private Providers idProvider;
+    private Providers providers;
 
     public PhoneNumbers() {
     }
@@ -90,11 +94,11 @@ public class PhoneNumbers implements Serializable {
     }
 
     public Providers getIdProvider() {
-        return idProvider;
+        return providers;
     }
 
-    public void setIdProvider(Providers idProvider) {
-        this.idProvider = idProvider;
+    public void setIdProvider(Providers providers) {
+        this.providers = providers;
     }
 
     public int getIdAccessLevel() {
