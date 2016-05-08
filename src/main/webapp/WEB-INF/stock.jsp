@@ -401,13 +401,13 @@
                         this.isSaving = true;
 
                     },
-                    saveStockAssignment: function (article) {
+                    saveStockAssignment: function (article,idEmployee) {
                         if (this.assignmentsModal.selected.area == null) {
                             showAlert("Distribudor, region, sucursal y area son requeridos", {type:3});
                             return;
                         }
                         this.isSaving = true;
-                        this.$http.post(ROOT_URL + "/stock/" + article.idStock + "/assignments", {
+                        this.$http.post(ROOT_URL + "/stock/" + article.idStock + "/assignments/" + idEmployee, {
                             idDwEnterprise: this.assignmentsModal.selected.area.dwEnterprise.idDwEnterprise
                         }).success(function () {
                             this.isSaving = false;
@@ -917,7 +917,7 @@
                             <button :disabled="isSaving" class="btn btn-default" @click="closeAssignmentsModal">
                                 Cancelar
                             </button>
-                            <button @click="saveStockAssignment(assignmentsModal.article)"
+                            <button @click="saveStockAssignment(assignmentsModal.article,assignmentsModal.selected.dwEmployees.employee._id)"
                                     :disabled="isSaving"
                                     class="btn btn-success">
                                 Guardar
