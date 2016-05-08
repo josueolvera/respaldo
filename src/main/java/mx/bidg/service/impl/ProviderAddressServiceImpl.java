@@ -2,11 +2,13 @@ package mx.bidg.service.impl;
 
 import mx.bidg.dao.ProviderAddressDao;
 import mx.bidg.model.ProviderAddress;
+import mx.bidg.model.Providers;
 import mx.bidg.service.ProviderAddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**

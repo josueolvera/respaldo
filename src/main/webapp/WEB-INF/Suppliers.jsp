@@ -91,6 +91,14 @@
 
           },
         methods: {
+          providerRfc: function () {
+            var providerNames = this.providerNames;
+            var providerLastName = this.providerLastName;
+            var providerSecondName = this.providerSecondName;
+
+            this.supplier.providerName=(providerNames+":"+providerLastName+":"+providerSecondName);
+
+          },
           saveAccount: function () {
             var cuenta =
             {
@@ -124,9 +132,13 @@
             this.supplier.providersAccountsList.$remove(cuenta);
           },
           saveProvider: function () {
-            console.log(this.supplier);
+
+            if(this.supplier.rfc.length==13){
+              this.providerRfc();
+            }
             this.$http.post(ROOT_URL + "/providers", JSON.stringify(this.supplier)).success(function (data) {
               showAlert("Registro de Proveedor Exitoso");
+              $('#modalAlta').modal('hide');
               this.getProviders();
 
             }).error(function () {
@@ -220,6 +232,7 @@
             var telephone = {
               phoneNumber: '',
             };
+
             telephone.phoneNumber = this.phoneNumbers;
 
             this.supplier.phoneNumbersList.push(telephone);

@@ -28,7 +28,6 @@ public class ProviderAddress implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @NotNull
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_PROVIDER_ADDRESS")
     @JsonView(JsonViews.Root.class)
