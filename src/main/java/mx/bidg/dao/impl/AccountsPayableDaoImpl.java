@@ -11,6 +11,7 @@ import mx.bidg.dao.AccountsPayableDao;
 import mx.bidg.model.AccountsPayable;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -49,7 +50,8 @@ public class AccountsPayableDaoImpl extends AbstractDao<Integer, AccountsPayable
     public List<AccountsPayable> findByFolio(String folio) {
         Criteria criteria = createEntityCriteria()
                 .add(Restrictions.eq("folio", folio))
-                .setFetchMode("accountPayableStatus", FetchMode.JOIN);
+                .setFetchMode("accountPayableStatus", FetchMode.JOIN)
+                .addOrder(Order.asc("dueDate"));
         return (List<AccountsPayable>) criteria.list();
     }
 }
