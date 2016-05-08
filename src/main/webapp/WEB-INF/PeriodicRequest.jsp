@@ -556,7 +556,7 @@
               {
                 this.matchInformationEstimationsUpdate(data);
               }).error(function(data){
-                showAlert("Ha habido un error al obtener la informacion de las cotizacion");
+                showAlert("Ha habido un error al obtener la informacion de las cotizacion", {type:3});
               });
               this.obtainInformationAutorization(); Checar
             },

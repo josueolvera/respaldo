@@ -151,7 +151,8 @@
             isAutoriced: true,
             infoAutorization: '',
             userRequest: '',
-            flagrate: false
+            flagrate: false,
+            desaparecer: true
           },
           methods:
           {
@@ -286,10 +287,11 @@
               this.objectRequest.request.isSaved = true;
               this.desactivarGuardar= true;
               this.isSavingNow= false;
-              setInterval(function()
+              this,desaparecer= true;
+              /*setInterval(function()
               {
                 window.location.href= ROOT_URL+"/siad/cotizable/"+datos.idRequest
-              },3000);
+              },3000);*/
 
             }
             ,
@@ -547,6 +549,7 @@
             },
             matchInformationUpdate: function(data)
             {
+              console.log(data);
               var self= this;
               this.isUpdate= true;
               this.obtainRequestInformation.idRequestType= data.requestTypeProduct.idRequestType;
@@ -564,7 +567,7 @@
               this.objectRequest.request.idRequestStatus= data.idRequestStatus;
               this.objectRequest.request.description= data.description;
               this.objectRequest.request.purpose= data.purpose;
-              this.userRequest = data.userRequest.mail;
+              this.userRequest = data.userRequest.dwEmployee.employee.fullNameReverse;
               data.requestProductsList.forEach(function(element)
               {
               var producto= self.createProduct();
@@ -1152,7 +1155,8 @@
             <br>
             <div class="row">
               <div class="col-xs-6 text-left">
-                <button class="btn btn-success" :disabled="desactivarGuardar||isSavingNow">Guardar Solicitud</button>
+                <button class="btn btn-success" :disabled="desactivarGuardar||isSavingNow" v-if="desaparecer">Guardar Solicitud</button>
+                <button class="btn btn-success" v-if="!desaparecer">Salir</button>
               </div>
               <div class="col-xs-6 text-right">
                 <button type="button" class="btn btn-default" @click="newCotizacion"
@@ -1581,7 +1585,7 @@
             </div>
           </div>
           <pre>
-            {{ $data.suppliers | json}}
+            {{ $data.desaparecer | json}}
           </pre>
 
           </div> <!-- container-fluid -->
