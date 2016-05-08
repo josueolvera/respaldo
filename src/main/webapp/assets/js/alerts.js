@@ -12,7 +12,7 @@ function showAlert(description, parameters) {
 
   Messenger.options = {
       extraClasses: 'messenger-fixed messenger-on-top messenger-on-right',
-      theme: 'air'
+      theme: 'flat'
   };
 
   var typeAlert;
@@ -34,8 +34,7 @@ function showAlert(description, parameters) {
     Messenger().post({
         message: description,
         type: typeAlert,
-        id: "Only-one-message",
-        singleton: false,
-        hideAfter: parameters.interval
+        hideAfter: parameters.interval,
+        showCloseButton: true
     });
 }

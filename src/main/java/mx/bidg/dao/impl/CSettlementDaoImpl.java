@@ -1,9 +1,8 @@
 package mx.bidg.dao.impl;
 
 import mx.bidg.dao.AbstractDao;
-import mx.bidg.dao.PhoneNumbersDao;
-import mx.bidg.model.PhoneNumbers;
-import mx.bidg.model.Providers;
+import mx.bidg.dao.CSettlementDao;
+import mx.bidg.model.CSettlement;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -11,37 +10,37 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Created by jolvera on 6/05/16.
+ * Created by jolvera on 7/05/16.
  */
 @Repository
-public class PhoneNumbersDaoImpl extends AbstractDao<Integer,PhoneNumbers> implements PhoneNumbersDao {
+public class CSettlementDaoImpl extends AbstractDao<Integer,CSettlement> implements CSettlementDao {
     @Override
-    public PhoneNumbers save(PhoneNumbers entity) {
+    public CSettlement save(CSettlement entity) {
         persist(entity);
         return entity;
     }
 
     @Override
-    public PhoneNumbers findById(int id) {
-        return (PhoneNumbers) createEntityCriteria()
+    public CSettlement findById(int id) {
+        return (CSettlement) createEntityCriteria()
                 .add(Restrictions.idEq(id))
                 .uniqueResult();
     }
 
     @Override
-    public List<PhoneNumbers> findAll() {
+    public List<CSettlement> findAll() {
         Criteria criteria = createEntityCriteria();
-        return (List<PhoneNumbers>) criteria.list();
+        return (List<CSettlement>) criteria.list();
     }
 
     @Override
-    public PhoneNumbers update(PhoneNumbers entity) {
+    public CSettlement update(CSettlement entity) {
         modify(entity);
         return entity;
     }
 
     @Override
-    public boolean delete(PhoneNumbers entity) {
+    public boolean delete(CSettlement entity) {
         remove(entity);
         return true;
     }

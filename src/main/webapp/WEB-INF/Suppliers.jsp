@@ -28,6 +28,9 @@
           this.obtainBanks();
           this.getProviders();
           this.obtainCurrencies();
+          this.obtainSettlements();
+          this.obtainStates();
+          this.obtainMunicipalities();
           },
         data:
         {
@@ -36,7 +39,7 @@
             providerName: '',
             businessName: '',
             rfc: '',
-            accountingAccount: '',
+            accountingaccount: '',
             providersAccountsList: [],
             phoneNumbersList:[]
           },
@@ -44,7 +47,7 @@
             providerName: '',
             businessName: '',
             rfc: '',
-            accountingAccount: '',
+            accountingaccount: '',
             providersAccountsList: [],
             phoneNumbersList:[]
           },
@@ -52,11 +55,17 @@
           banks: [],
           providers: '',
           search: '',
-          provider:'',
+          providerNames:'',
           providerLastName:'',
           providerSecondName:'',
           currencies: {},
+          states:{},
           idCurrency:'',
+          idState:'',
+          settlements:{},
+          idSettlement:'',
+          municipalities:{},
+          idMunicipality:'',
           cuenta:
           {
             accountNumber: '',
@@ -64,6 +73,15 @@
             idBank: '',
             idCurrency: '',
           },
+          direccion:{
+            cp: '',
+            ext:'',
+            int:'',
+            street:'',
+            idSettlement: '',
+            idState:'',
+            idMunicipality:'',
+          }
 
           },
         methods:
@@ -193,6 +211,21 @@
             });
 
           },
+          obtainStates: function () {
+            this.$http.get(ROOT_URL + "/states").success(function (data) {
+                this.states = data;
+            });
+          },
+          obtainSettlements: function () {
+            this.$http.get(ROOT_URL + "/settlements").success(function (data) {
+              this.settlements = data;
+            });
+          },
+          obtainMunicipalities: function () {
+            this.$http.get(ROOT_URL + "/municipalities").success(function (data) {
+              this.municipalities = data;
+            });
+          },
         },
         filters:
         {
@@ -206,6 +239,18 @@
               name= element.acronyms;
             }
           });
+            return name;
+          },
+          changeidCurrency: function(value)
+          {
+            var name;
+            this.currencies.forEach(function (element)
+            {
+              if (value == element.idCurrency)
+              {
+                name= element.currency;
+              }
+            });
             return name;
           }
 
@@ -243,10 +288,10 @@
           <table class="table table-striped">
             <thead>
               <th>
-                Nombre del Proveedor
+                Nombre del Proveedor/Razón Social
               </th>
               <th>
-                Razón Social
+                Cuneta Contable
               </th>
               <th>
                 RFC
@@ -265,7 +310,7 @@
                   {{provider.providerName}}
                 </td>
                 <td>
-                  {{provider.businessName}}
+                  {{provider.accountingaccount}}
                 </td>
                 <td>
                   {{provider.rfc}}
@@ -315,7 +360,7 @@
                   <label>
                     Cuenta Contable
                   </label>
-                  <input class="form-control" name="name" v-model="supplier.accountingAccount">
+                  <input class="form-control" name="name" v-model="supplier.accountingaccount">
                 </div>
               </div>
               <div class="row" v-if="(supplier.rfc).length==13">
@@ -323,7 +368,7 @@
                   <label>
                     Nombre
                   </label>
-                  <input class="form-control" name="name" v-model="providerName">
+                  <input class="form-control" name="name" v-model="providerNames">
                 </div>
                 <div class="col-xs-3">
                   <label>
@@ -341,7 +386,7 @@
                   <label>
                     Cuenta Contable
                   </label>
-                  <input class="form-control" name="name" v-model="supplier.accountingAccount">
+                  <input class="form-control" name="name" v-model="supplier.accountingaccount">
                 </div>
               </div>
               <br>
@@ -357,25 +402,25 @@
                   <label>
                     Calle
                   </label>
-                  <input class="form-control" name="name" v-model="supplier.rfc">
+                  <input class="form-control" name="name" v-model="direccion.street">
                 </div>
                 <div class="col-xs-3">
                   <label>
                     # Ext
                   </label>
-                  <input class="form-control" name="name" v-model="supplier.rfc">
+                  <input class="form-control" name="name" v-model="direccion.ext">
                 </div>
                 <div class="col-xs-3">
                   <label>
                     # Int
                   </label>
-                  <input class="form-control" name="name" v-model="supplier.rfc">
+                  <input class="form-control" name="name" v-model="direccion.int">
                 </div>
                 <div class="col-xs-3">
                   <label>
                     C.P.
                   </label>
-                  <input class="form-control" name="name" v-model="supplier.rfc">
+                  <input class="form-control" name="name" v-model="direccion.cp">
                 </div>
               </div>
               <br>
@@ -384,27 +429,27 @@
                   <label>
                     Colonia
                   </label>
-                  <select class="form-control" name="" v-model="cuenta.idBank">
+                  <select class="form-control" name="" v-model="idSettlement">
                     <option></option>
-                    <option v-for="bank in banks" value="{{bank.idBank}}">{{bank.acronyms}}</option>
+                    <option v-for="set in settlements" value="{{set.idSettlement}}">{{set.settlementName}}</option>
                   </select>
                 </div>
                 <div class="col-xs-4">
                 <label>
                   Municipio/Delegación
                 </label>
-                <select class="form-control" name="" v-model="cuenta.idBank">
+                <select class="form-control" name="" v-model="idMunicipality">
                   <option></option>
-                  <option v-for="bank in banks" value="{{bank.idBank}}">{{bank.acronyms}}</option>
+                  <option v-for="mun in municipalities" value="{{mun.idMunicipality}">{{mun.municipalityName}}</option>
                 </select>
                 </div>
                 <div class="col-xs-4">
               <label>
                 Estado
               </label>
-              <select class="form-control" name="" v-model="cuenta.idBank">
+              <select class="form-control" name="" v-model="idState">
                 <option></option>
-                <option v-for="bank in banks" value="{{bank.idBank}}">{{bank.acronyms}}</option>
+                <option v-for="state in states" value="{{state.idState}}">{{state.stateName}}</option>
               </select>
               </div>
             </div>
@@ -494,7 +539,7 @@
                         {{supplier.accountClabe}}
                       </td>
                       <td>
-                        {{supplier.idCurrency}}
+                        {{supplier.idCurrency | changeidCurrency}}
                       </td>
                       <td>
                         <button type="button" class="btn btn-sm btn-default"  data-toggle="tooltip" data-placement="bottom" title="Eliminar" style="margin-top: 15px" @click="eliminarCuenta(supplier)">

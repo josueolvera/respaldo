@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="/BIDGroup/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="/BIDGroup/assets/css/styles.css">
     <link rel="stylesheet" href="/BIDGroup/assets/css/messenger.css">
-    <link rel="stylesheet" href="/BIDGroup/assets/css/messenger-theme-air.css">
+    <link rel="stylesheet" href="/BIDGroup/assets/css/messenger-theme-flat.css">
     <link rel="stylesheet" href="/BIDGroup/assets/css/selectize.css">
     <link rel="stylesheet" href="/BIDGroup/assets/css/selectize.bootstrap3.css">
     <link rel="stylesheet" href="/BIDGroup/assets/css/bootstrap-toggle.min.css">
@@ -122,6 +122,7 @@
         <script src="/BIDGroup/assets/js/selectize.standalone.min.js"></script>
         <script src="/BIDGroup/assets/js/bootstrap-toggle.min.js"></script>
         <script src="/BIDGroup/assets/js/messenger.min.js"></script>
+        <script src="/BIDGroup/assets/js/messenger-theme-flat.js"></script>
         <script src="/BIDGroup/assets/js/alerts.js"></script>
         <script src="/BIDGroup/assets/js/accounting.js"></script>
         <script type="text/javascript">

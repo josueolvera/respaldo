@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -19,6 +20,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
@@ -35,15 +38,16 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "PROVIDERS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Providers implements Serializable {
-    
+
+
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_PROVIDER")
     @JsonView(JsonViews.Root.class)
     private Integer idProvider;
-    
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
@@ -55,23 +59,33 @@ public class Providers implements Serializable {
     @Size(max = 1024)
     @JsonView(JsonViews.Root.class)
     private String businessName;
-    
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 13)
     @Column(name = "RFC")
     @JsonView(JsonViews.Root.class)
     private String rfc;
-    
+
+    @Size(max = 15)
+    @Column(name = "ACCOUNTINGACCOUNT")
+    @JsonView(JsonViews.Root.class)
+    private String accountingaccount;
+
+    @Column(name = "SUPPLIER_LOW")
+    @Temporal(TemporalType.DATE)
+    @JsonView(JsonViews.Root.class)
+    private Date supplierLow;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
     private int idAccessLevel;
-    
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "provider")
     @JsonView(JsonViews.Embedded.class)
     private List<ProvidersAccounts> providersAccountsList;
-    
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "provider")
     @JsonView(JsonViews.Embedded.class)
     private List<CProductTypes> productTypesList;
@@ -79,6 +93,10 @@ public class Providers implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProvider")
     @JsonView(JsonViews.Embedded.class)
     private List<PhoneNumbers> phoneNumbersList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProvider")
+    @JsonView(JsonViews.Embedded.class)
+    private List<ProviderAddress> providerAddressList;
 
     public Providers() {
     }
@@ -149,6 +167,38 @@ public class Providers implements Serializable {
         this.productTypesList = productTypesList;
     }
 
+    public List<PhoneNumbers> getPhoneNumbersList() {
+        return phoneNumbersList;
+    }
+
+    public void setPhoneNumbersList(List<PhoneNumbers> phoneNumbersList) {
+        this.phoneNumbersList = phoneNumbersList;
+    }
+
+    public String getAccountingaccount() {
+        return accountingaccount;
+    }
+
+    public void setAccountingaccount(String accountingaccount) {
+        this.accountingaccount = accountingaccount;
+    }
+
+    public Date getSupplierLow() {
+        return supplierLow;
+    }
+
+    public void setSupplierLow(Date supplierLow) {
+        this.supplierLow = supplierLow;
+    }
+
+    public List<ProviderAddress> getProviderAddressList() {
+        return providerAddressList;
+    }
+
+    public void setProviderAddressList(List<ProviderAddress> providerAddressList) {
+        this.providerAddressList = providerAddressList;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -174,13 +224,4 @@ public class Providers implements Serializable {
         return "mx.bidg.model.Providers[ idProvider=" + idProvider + " ]";
     }
 
-    @XmlTransient
-    public List<PhoneNumbers> getPhoneNumbersList() {
-        return phoneNumbersList;
-    }
-
-    public void setPhoneNumbersList(List<PhoneNumbers> phoneNumbersList) {
-        this.phoneNumbersList = phoneNumbersList;
-    }
-    
 }

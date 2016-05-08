@@ -14,6 +14,7 @@ import java.util.List;
  * @author Rafael Viveros
  * Created on 27/01/16.
  */
+@SuppressWarnings("unchecked")
 @Repository
 public class DwEmployeesDaoImpl extends AbstractDao<Integer, DwEmployees> implements DwEmployeesDao {
     @Override
@@ -34,6 +35,13 @@ public class DwEmployeesDaoImpl extends AbstractDao<Integer, DwEmployees> implem
                 .add(Restrictions.eq("idEmployee", employee.getIdEmployee()))
                 .add(Restrictions.eq("idDwEnterprise", dwEnterprises.getIdDwEnterprise()))
                 .uniqueResult();
+    }
+
+    @Override
+    public List<DwEmployees> findByDwEnterprisesId(DwEnterprises dwEnterprises) {
+        return (List<DwEmployees>) createEntityCriteria()
+                .add(Restrictions.eq("idDwEnterprise", dwEnterprises.getIdDwEnterprise()))
+                .list();
     }
 
     @Override

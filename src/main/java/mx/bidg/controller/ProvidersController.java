@@ -68,6 +68,7 @@ public class ProvidersController {
         provider.setProviderName(jnode.get("providerName").asText());
         provider.setBusinessName(jnode.get("businessName").asText());
         provider.setRfc(jnode.get("rfc").asText());
+        provider.setAccountingaccount(jnode.get("accountingaccount").asText());
         provider.setIdAccessLevel(1);
         providersService.save(provider);
 

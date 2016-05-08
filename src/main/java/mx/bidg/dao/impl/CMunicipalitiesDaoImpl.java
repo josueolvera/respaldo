@@ -1,9 +1,8 @@
 package mx.bidg.dao.impl;
 
 import mx.bidg.dao.AbstractDao;
-import mx.bidg.dao.PhoneNumbersDao;
-import mx.bidg.model.PhoneNumbers;
-import mx.bidg.model.Providers;
+import mx.bidg.dao.CMunicipalitiesDao;
+import mx.bidg.model.CMunicipalities;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -11,37 +10,37 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Created by jolvera on 6/05/16.
+ * Created by jolvera on 7/05/16.
  */
 @Repository
-public class PhoneNumbersDaoImpl extends AbstractDao<Integer,PhoneNumbers> implements PhoneNumbersDao {
+public class CMunicipalitiesDaoImpl extends AbstractDao<Integer,CMunicipalities> implements CMunicipalitiesDao {
     @Override
-    public PhoneNumbers save(PhoneNumbers entity) {
+    public CMunicipalities save(CMunicipalities entity) {
         persist(entity);
         return entity;
     }
 
     @Override
-    public PhoneNumbers findById(int id) {
-        return (PhoneNumbers) createEntityCriteria()
+    public CMunicipalities findById(int id) {
+        return (CMunicipalities) createEntityCriteria()
                 .add(Restrictions.idEq(id))
                 .uniqueResult();
     }
 
     @Override
-    public List<PhoneNumbers> findAll() {
+    public List<CMunicipalities> findAll() {
         Criteria criteria = createEntityCriteria();
-        return (List<PhoneNumbers>) criteria.list();
+        return (List<CMunicipalities>) criteria.list();
     }
 
     @Override
-    public PhoneNumbers update(PhoneNumbers entity) {
+    public CMunicipalities update(CMunicipalities entity) {
         modify(entity);
         return entity;
     }
 
     @Override
-    public boolean delete(PhoneNumbers entity) {
+    public boolean delete(CMunicipalities entity) {
         remove(entity);
         return true;
     }
