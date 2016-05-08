@@ -90,134 +90,118 @@
           },
 
           },
-        methods:
-        {
-          saveAccount: function()
-          {
-            var cuenta=
+        methods: {
+          saveAccount: function () {
+            var cuenta =
             {
               accountNumber: '',
               accountClabe: '',
               idBank: '',
-              idCurrency:''
+              idCurrency: ''
             }
 
-            cuenta.accountNumber= this.accountNumbers;
-            cuenta.accountClabe= this.clabes;
-            cuenta.idBank= this.idBanks;
-            cuenta.idCurrency= this.idCurrency;
+            cuenta.accountNumber = this.accountNumbers;
+            cuenta.accountClabe = this.clabes;
+            cuenta.idBank = this.idBanks;
+            cuenta.idCurrency = this.idCurrency;
 
             this.supplier.providersAccountsList.push(cuenta);
 
-            this.idBanks= ''
-            this.accountNumbers= ''
-            this.clabes=''
-            this.idCurrency='';
+            this.idBanks = ''
+            this.accountNumbers = ''
+            this.clabes = ''
+            this.idCurrency = '';
 
           },
-          obtainBanks: function()
-          {
+          obtainBanks: function () {
             this.$http.get(ROOT_URL + "/banks")
-                    .success(function (data)
-                    {
-                       this.banks= data;
+                    .success(function (data) {
+                      this.banks = data;
 
                     });
           },
-          eliminarCuenta: function(cuenta)
-          {
+          eliminarCuenta: function (cuenta) {
             this.supplier.providersAccountsList.$remove(cuenta);
           },
-          saveProvider: function()
-          {
-            this.$http.post(ROOT_URL + "/providers", JSON.stringify(this.supplier)).
-            success(function(data)
-            {
+          saveProvider: function () {
+            console.log(this.supplier);
+            this.$http.post(ROOT_URL + "/providers", JSON.stringify(this.supplier)).success(function (data) {
               showAlert("Registro de Proveedor Exitoso");
               this.getProviders();
 
-            }).error(function(){
-              showAlert("Ha habido un error con la solicitud, intente nuevamente");
+            }).error(function () {
+             showAlert("Ha habido un error con la solicitud, intente nuevamente");
             });
 
           },
-          getProviders: function()
-          {
+          getProviders: function () {
             this.$http.get(ROOT_URL + "/providers")
-                    .success(function (data)
-                    {
-                       this.providers= data;
+                    .success(function (data) {
+                      this.providers = data;
 
                     });
           },
-          modifyProvider: function(provider) {
+          modifyProvider: function (provider) {
             this.provider = (JSON.parse(JSON.stringify(provider)));
             $('#modalModi').modal('show');
-            this.$http.get(ROOT_URL+"/accounts/provider/"+this.provider.idProvider)
+            this.$http.get(ROOT_URL + "/accounts/provider/" + this.provider.idProvider)
                     .success(function (data) {
                       Vue.set(this.provider, 'providersAccountsList', data);
                     });
           },
-          deleteAccount: function (account)
-          {
-            this.$http.delete(ROOT_URL+"/accounts/"+account.idAccount)
-                    .success(function (data)
-                    {
+          deleteAccount: function (account) {
+            this.$http.delete(ROOT_URL + "/accounts/" + account.idAccount)
+                    .success(function (data) {
                       showAlert("Cuenta Eliminada");
                       this.provider.providersAccountsList.$remove(account);
                     });
 
 
           },
-          addProviderAccount: function (supplier,cuenta)
-          {
-            this.$http.post(ROOT_URL+"/accounts/provider/"+supplier.idProvider,cuenta)
-                    .success(function (data)
-                    {
+          addProviderAccount: function (supplier, cuenta) {
+            this.$http.post(ROOT_URL + "/accounts/provider/" + supplier.idProvider, cuenta)
+                    .success(function (data) {
                       showAlert("Cuenta Guardada con Exito");
-                      this.$http.get(ROOT_URL+"/accounts/provider/"+this.provider.idProvider)
+                      this.$http.get(ROOT_URL + "/accounts/provider/" + this.provider.idProvider)
                               .success(function (data) {
                                 Vue.set(this.provider, 'providersAccountsList', data);
                               });
-                      cuenta.accountNumber="";
-                      cuenta.accountClabe="";
-                      cuenta.idBank="";
-                     });
+                      cuenta.accountNumber = "";
+                      cuenta.accountClabe = "";
+                      cuenta.idBank = "";
+                    });
 
           },
           updateProvider: function (provider) {
-           this.$http.post(ROOT_URL+"/providers/"+provider.idProvider,provider)
+            this.$http.post(ROOT_URL + "/providers/" + provider.idProvider, provider)
                     .success(function (data) {
-                          showAlert("Proveedor Actualizado");
-                          $('#modalModi').modal('hide');
-                          this.getProviders();
-                    }).error(function(){
-                          showAlert("Ha habido un error con la solicitud, intente nuevamente");
+                      showAlert("Proveedor Actualizado");
+                      $('#modalModi').modal('hide');
+                      this.getProviders();
+                    }).error(function () {
+              showAlert("Ha habido un error con la solicitud, intente nuevamente");
             });
 
           },
           deleteProvider: function (provider) {
-              this.$http.delete(ROOT_URL+"/providers/"+provider.idProvider)
-                      .success(function (data) {
-                        showAlert("Provedor Eliminado");
-                        this.getProviders();
-                      });
+            this.$http.delete(ROOT_URL + "/providers/" + provider.idProvider)
+                    .success(function (data) {
+                      showAlert("Provedor Eliminado");
+                      this.getProviders();
+                    });
           },
-          filterNumber: function(val)
-          {
+          filterNumber: function (val) {
             return isNaN(val) ? '' : val;
           },
-          obtainCurrencies: function()
-          {
-            this.$http.get(ROOT_URL + "/currencies").success(function (data)
-            {
-              this.currencies= data;
+          obtainCurrencies: function () {
+            this.$http.get(ROOT_URL + "/currencies").success(function (data) {
+              this.currencies = data;
             });
 
           },
           obtainStates: function () {
             this.$http.get(ROOT_URL + "/states").success(function (data) {
-                this.states = data;
+              this.states = data;
             });
           },
           obtainSettlements: function () {
@@ -231,16 +215,29 @@
             });
           },
           savePhone: function () {
-            var self= this;
+            var self = this;
 
-            var direccion={
+            var telephone = {
+              phoneNumber: '',
+            };
+            telephone.phoneNumber = this.phoneNumbers;
+
+            this.supplier.phoneNumbersList.push(telephone);
+            this.phoneNumbers = ''
+          },
+          deletePhone: function (phone) {
+            this.supplier.phoneNumbersList.$remove(phone);
+            this.phoneNumbers = ''
+          },
+          saveAdrress: function () {
+            var direccion = {
               cp: '',
-              ext:'',
-              int:'',
-              street:'',
+              ext: '',
+              int: '',
+              street: '',
               idSettlement: '',
-              idState:'',
-              idMunicipality:'',
+              idState: '',
+              idMunicipality: '',
             };
             direccion.cp = this.direccion.cp;
             direccion.ext = this.direccion.ext;
@@ -251,18 +248,6 @@
             direccion.idMunicipality = this.direccion.idMunicipality;
 
             this.supplier.addressProvider.push(direccion);
-
-            var telephone={
-              phoneNumber:'',
-            };
-            telephone.phoneNumber = this.phoneNumbers;
-
-            this.supplier.phoneNumbersList.push(telephone);
-            this.phoneNumbers=''
-          },
-          deletePhone: function (phone) {
-            this.supplier.phoneNumbersList.$remove(phone);
-            this.phoneNumbers=''
           },
         },
         filters:
@@ -466,7 +451,7 @@
               </div>
               <br>
               <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
-                <div class="col-xs-4">
+                <div class="col-xs-3">
                   <label>
                     Colonia
                   </label>
@@ -475,7 +460,7 @@
                     <option v-for="set in settlements" value="{{set.idSettlement}}">{{set.settlementName}}</option>
                   </select>
                 </div>
-                <div class="col-xs-4">
+                <div class="col-xs-3">
                 <label>
                   Municipio/Delegación
                 </label>
@@ -484,7 +469,7 @@
                   <option v-for="mun in municipalities" value="{{mun.idMunicipality}}">{{mun.municipalityName}}</option>
                 </select>
                 </div>
-                <div class="col-xs-4">
+                <div class="col-xs-3">
               <label>
                 Estado
               </label>
@@ -493,6 +478,11 @@
                 <option v-for="state in states" value="{{state.idState}}">{{state.stateName}}</option>
               </select>
               </div>
+                <div class="col-xs-2 text-left">
+                  <button class="btn btn-default" @click="saveAdrress()" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Agregar">
+                    <span class="glyphicon glyphicon-plus"></span>
+                  </button>
+                </div>
             </div>
               <br>
               <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">

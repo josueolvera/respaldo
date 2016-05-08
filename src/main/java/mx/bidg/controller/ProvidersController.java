@@ -89,21 +89,21 @@ public class ProvidersController {
 
         for (JsonNode node : jnode.get("addressProvider")){
             ProviderAddress providerAddress = new ProviderAddress();
-            providerAddress.setStreet(node.get("address").asText());
+            providerAddress.setStreet(node.get("street").asText());
             providerAddress.setCp(node.get("cp").asInt());
             providerAddress.setNumExt(node.get("ext").asInt());
             providerAddress.setNumInt(node.get("int").asInt());
-            providerAddress.setIdState(new CStates(node.get("idState").asInt()));
-            providerAddress.setIdMunicipality(new CMunicipalities(node.get("idMunicipality").asInt()));
             providerAddress.setIdSettlement(new CSettlement(node.get("idSettlement").asInt()));
-            providerAddress.setIdAccessLevel(1);
+            providerAddress.setIdMunicipality(new CMunicipalities(node.get("idMunicipality").asInt()));
+            providerAddress.setIdState(new CStates(node.get("idState").asInt()));
             providerAddress.setIdProvider(provider);
+            providerAddress.setIdAccessLevel(1);
 
             providerAddressService.save(providerAddress);
 
         }
 
-        for (JsonNode node : jnode.get("phoneNumberList")){
+        for (JsonNode node : jnode.get("phoneNumbersList")){
             PhoneNumbers phone = new PhoneNumbers();
             phone.setPhoneNumber(node.get("phoneNumber").asInt());
             phone.setIdAccessLevel(1);
