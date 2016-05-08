@@ -60,6 +60,7 @@ public class AccountsPayableController {
     public ResponseEntity<String> updatePeriodic(@RequestParam(name = "folio", required = true) String folio,
                                                  @RequestBody String data) throws Exception {
         List<AccountsPayable> accountsPayables = accountsPayableService.updatePeriodic(folio, data);
+        eventPublisher.publishEvent(new RequestCompletedEvent(requestsService.findByFolio(folio)));
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(accountsPayables),
                 HttpStatus.OK
