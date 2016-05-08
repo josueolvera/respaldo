@@ -54,12 +54,31 @@
                         selectedEmployee: null,
                         article: null
                     },
+                    newArticleModal: {
+                        selectAttr: null,
+                        selectValue: null,
+                        serialNumber: 0,
+                        stockFolio: 0,
+                        articleStatus: null,
+                        purchasePrice: 0,
+                        employees: null,
+                        selectedEmployee: null,
+                        article: null,
+                        selected: {
+                            distributor: null,
+                            region: null,
+                            branch: null,
+                            area: null,
+                            dwEmployeesList:null
+                        },
+                    },
                     assignmentsModal: {
                         selected: {
                             distributor: null,
                             region: null,
                             branch: null,
-                            area: null
+                            area: null,
+                            dwEmployeesList:null
                         },
                         fileInput: "file-type-",
                         article: null
@@ -246,7 +265,7 @@
                             this.isSaving = false;
                         }).error(function () {
                             this.isSaving = false;
-                            showAlert("Ha habido un problema con su solicitud, intente nuevamente", {type:3});
+                            showAlert("No se pudo elimnar la propiedad, intente nuevamente", {type:3});
                         });
                     },
                     addProperty: function (article) {
@@ -276,7 +295,7 @@
                             this.isSaving = false;
                         }).error(function () {
                             this.isSaving = false;
-                            showAlert("Ha habido un problema con su solicitud, intente nuevamente", {type:3})
+                            showAlert("No se pudo agregar la propiedad, intente nuevamente", {type:3})
                         });
                     },
                     uploadHistorical: function (article) {
@@ -304,6 +323,10 @@
                     },
                     branchChanged: function () {
                         this.assignmentsModal.selected.area = null;
+                        this.assignmentsModal.selected.dwEmployeesList = null;
+                    },
+                    areaChanged: function () {
+                        this.assignmentsModal.selected.dwEmployeesList = null;
                     },
                     validateFile: function (event) {
                         if (! event.target.files[0].name.match(/(\.jpg|\.jpeg|\.pdf|\.png)$/i)) {
@@ -390,6 +413,12 @@
                             this.isSaving = false;
                             showAlert(data.error.message, {type:3});
                         })
+                    },
+                    showNewArticleModal: function () {
+                        $("#newArticleModal").modal("show");
+                    },
+                    closeNewArticleModal: function () {
+                        $("#newArticleModal").modal("hide");
                     }
                 }
             });
@@ -411,21 +440,23 @@
         <div id="content">
             <div class="col-lg-12"><h2 class="text-center">Inventario</h2></div>
             <div class="col-lg-12">
-                <div class="col-md-3 col-xs-6">
-                    <label>Distribuidor</label>
+                <div class="col-md-2 col-xs-6">
+                    <%--<label>Distribuidor</label>--%>
                     <select v-model="selectedOptions.distributor" class="form-control"
-                            @change="fetchStock(selectedOptions.distributor)">
+                            @change="fetchStock(selectedOptions.distributor)"
+                            data-toggle="tooltip" data-placement="top" title="Selecciona un distribuidor">
                         <option v-for="distributor in selectOptions.distributors"
                                 :value="distributor">
                                 {{ distributor.distributorName }}
                         </option>
                     </select>
                 </div>
-                <div class="col-md-3 col-xs-6">
-                    <label>Área</label>
+                <div class="col-md-2 col-xs-6">
+                    <%--<label>Área</label>--%>
                     <select v-model="selectedOptions.area" class="form-control"
                             @change="attachOnScreen"
-                            :disabled="selectOptions.areas.length < 2">
+                            :disabled="selectOptions.areas.length < 2"
+                            data-toggle="tooltip" data-placement="top" title="Selecciona una área">
                         <option value="0" selected>Todas las Áreas</option>
                         <option v-for="area in selectOptions.areas"
                                 :value="area">
@@ -433,13 +464,31 @@
                         </option>
                     </select>
                 </div>
-                <div style="visibility: hidden" class="col-md-3 col-xs-6">
-                    <label>Región</label>
-                    <select class="form-control"></select>
+                <div class="col-md-1 col-xs-6">
+                        <%--<label>Añadir artículo</label>--%>
+                    <button class="btn btn-success" @click="showNewArticleModal"
+                            data-toggle="tooltip" data-placement="top" title="Añadir artículo">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
                 </div>
-                <div style="visibility: hidden" class="col-md-3 col-xs-6">
-                    <label>Sucursal</label>
-                    <select class="form-control"></select>
+                <div style="visibility: hidden" class="col-md-2 col-xs-6">
+                    <%--<label>Región</label>--%>
+                    <select class="form-control"
+                            data-toggle="tooltip" data-placement="top" title="Selecciona una región">
+                            </select>
+                </div>
+                <div style="visibility: hidden" class="col-md-2 col-xs-6">
+                    <%--<label>Sucursal</label>--%>
+                    <select class="form-control"
+                            data-toggle="tooltip" data-placement="top" title="Selecciona una sucursal">
+
+                    </select>
+                </div>
+                <div style="visibility: hidden" class="col-md-1 col-xs-6">
+                        <%--<label>Añadir artículo</label>--%>
+                    <button class="btn btn-dafault">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
                 </div>
             </div>
             <div class="stock-groups col-xs-12">
@@ -767,14 +816,14 @@
             <%-- Modal de asignaciones --%>
             <div id="assignmentsModal" class="modal fade" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog modal-lg" style="height: 90%;">
-                    <div class="modal-content flex-box">
-                        <div class="modal-header flex-row flex-header">
+                    <div class="modal-content">
+                        <div class="modal-header">
                             <button class="close" @click="closeAssignmentsModal"><span aria-hidden="true">&times;</span>
                             </button>
                             <h4 class="modal-title">Modificar Asignación</h4>
                         </div>
-                        <div class="modal-body flex-box">
-                            <div class="row flex-row flex-header">
+                        <div class="modal-body">
+                            <div class="row">
                                 <div class="col-md-4 col-xs-6">
                                     <label>Artículo </label>
                                     {{ assignmentsModal.article.article.articleName }}
@@ -821,10 +870,22 @@
                                 <div class="col-md-3 col-xs-6">
                                     <label>Área</label>
                                     <select v-model="assignmentsModal.selected.area" class="form-control"
-                                            @change="" :disabled="assignmentsModal.selected.branch == null">
+                                            @change="areaChanged" :disabled="assignmentsModal.selected.branch == null">
                                         <option v-for="area in assignmentsModal.selected.branch.subLevels"
                                                 :value="area">
                                             {{ area.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 col-xs-6">
+                                    <label>Empleado / Almacén</label>
+                                    <select v-model="assignmentsModal.selected.dwEmployeesList" class="form-control"
+                                            :disabled="assignmentsModal.selected.area == null">
+                                        <option v-for="dwEmployeesList in assignmentsModal.selected.area.subLevels"
+                                                :value="dwEmployeesList">
+                                            {{ dwEmployeesList.employee.firstName }}
                                         </option>
                                     </select>
                                 </div>
@@ -858,26 +919,185 @@
                                                    :disabled="isSaving"
                                                    :name="assignmentsModal.fileInput + docType.idDocumentType"
                                                    accept="application/pdf,
-                                                         image/png,image/jpg">
+                                                         image/png,image/jpg,image/jpeg,">
                                         </td>
                                     </tr>
                                 </table>
                                 <div v-if="isSaving" class="progress">
                                     <div class="progress-bar progress-bar-striped active" style="width: 100%"></div>
                                 </div>
-                                <%--<hr />--%>
-                                <%--<div class="text-right">--%>
-                                    <%--<button @click.prevent="uploadHistorical(historicalModal.article)"--%>
-                                            <%--:disabled="isSaving"--%>
-                                            <%--class="btn btn-success">--%>
-                                        <%--Guardar--%>
-                                    <%--</button>--%>
-                                <%--</div>--%>
                             </form>
                         </div>
-                        <div class="text-right modal-footer flex-row flex-footer">
-                            <button :disabled="isSaving" class="btn btn-default" @click="closeAssignmentsModal">Cancelar</button>
+                        <div class="text-right modal-footer flex-footer">
+                            <button :disabled="isSaving" class="btn btn-default" @click="closeAssignmentsModal">
+                                Cancelar
+                            </button>
                             <button @click="saveStockAssignment(assignmentsModal.article)"
+                                    :disabled="isSaving"
+                                    class="btn btn-success">
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                <%--modal de nuevo articulo--%>
+            <div id="newArticleModal" class="modal fade" data-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button class="close" @click="closeNewArticleModal()"><span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title">Nuevo de Artículo</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-xs-12"><label>Asignar a</label></div>
+                                <div class="col-md-3 col-xs-6">
+                                    <label>Distribuidor</label>
+                                    <select v-model="newArticleModal.selected.distributor" class="form-control"
+                                            @change="distributorChanged">
+                                        <option v-for="distributor in selectOptions.hierarchy[0].subLevels"
+                                                :value="distributor">
+                                            {{ distributor.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 col-xs-6">
+                                    <label>Región</label>
+                                    <select v-model="newArticleModal.selected.region" class="form-control"
+                                            @change="regionChanged" :disabled="newArticleModal.selected.distributor == null">
+                                        <option v-for="region in newArticleModal.selected.distributor.subLevels"
+                                                :value="region">
+                                            {{ region.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 col-xs-6">
+                                    <label>Sucursal</label>
+                                    <select v-model="newArticleModal.selected.branch" class="form-control"
+                                            @change="branchChanged" :disabled="newArticleModal.selected.region == null">
+                                        <option v-for="branch in newArticleModal.selected.region.subLevels"
+                                                :value="branch">
+                                            {{ branch.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 col-xs-6">
+                                    <label>Área</label>
+                                    <select v-model="newArticleModal.selected.area" class="form-control"
+                                            @change="areaChanged" :disabled="newArticleModal.selected.branch == null">
+                                        <option v-for="area in newArticleModal.selected.branch.subLevels"
+                                                :value="area">
+                                            {{ area.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 col-xs-6">
+                                    <label>Empleado / Almacén</label>
+                                    <select v-model="newArticleModal.selected.dwEmployeesList" class="form-control"
+                                            :disabled="newArticleModal.selected.area == null">
+                                        <option v-for="dwEmployeesList in newArticleModal.selected.area.subLevels"
+                                                :value="dwEmployeesList">
+                                            {{ dwEmployeesList.employee.firstName }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <%--<div class="row">--%>
+                                <%--<div class="col-md-4 col-xs-6">--%>
+                                    <%--<label>Artículo </label>--%>
+                                    <%--{{ newArticleModal.article.article.articleName }}--%>
+                                <%--</div>--%>
+                                <%--<div class="col-md-4 col-xs-6">--%>
+                                    <%--<label>No. de Serie </label>--%>
+                                    <%--{{ newArticleModal.article.serialNumber }}--%>
+                                <%--</div>--%>
+                                    <%--<div class="col-md-4 col-xs-12">--%>
+                                    <%--<label>Asignado a </label>--%>
+                                    <%--{{ newArticleModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}--%>
+                                    <%--{{ newArticleModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}--%>
+                                    <%--{{ newArticleModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}--%>
+                                    <%--{{ newArticleModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}--%>
+                                    <%--</div>--%>
+                            <%--</div>--%>
+                            <hr />
+                            <div class="row line">
+                                    <%--<div class="col-md-8 col-xs-12">--%>
+                                        <%--<label>Asignar a</label>--%>
+                                        <%--<select v-model="newArticleModal.selectedEmployee.idEmployee"--%>
+                                        <%--:disabled="isSaving" class="form-control">--%>
+                                        <%--<option v-for="employee in newArticleModal.employees"--%>
+                                        <%--:value="employee.idEmployee">--%>
+                                        <%--{{ employee.firstName }}--%>
+                                        <%--{{ employee.middleName }}--%>
+                                        <%--{{ employee.parentalLast }}--%>
+                                        <%--{{ employee.motherLast }}--%>
+                                        <%--</option>--%>
+                                        <%--</select>--%>
+                                    <%--</div>--%>
+                                <div class="col-md-4 col-xs-6">
+                                    <label>No. de Serie</label>
+                                    <input v-model="newArticleModal.serialNumber"
+                                           :disabled="isSaving" type="text" class="form-control">
+                                </div>
+                                <div class="col-md-4 col-xs-6">
+                                    <label>Folio de Inventario</label>
+                                    <input v-model="newArticleModal.stockFolio"
+                                           :disabled="isSaving" type="text" class="form-control">
+                                </div>
+                                <div class="col-md-4 col-xs-6">
+                                    <label>Estado de Artículo</label>
+                                    <select v-model="newArticleModal.articleStatus"
+                                            :disabled="isSaving" class="form-control">
+                                        <option v-for="status in selectOptions.articleStatus"
+                                                :value="status">{{ status.articleStatus }}</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 col-xs-6">
+                                    <label>Precio de Compra</label>
+                                    <input v-model="newArticleModal.purchasePrice"
+                                           :disabled="isSaving" type="text" class="form-control">
+                                </div>
+                            </div>
+                            <div class="row line">
+                                <div class="text-center line col-xs-12"><strong>Propiedades</strong></div>
+                                <div class="col-xs-12 col-md-8 col-md-push-2">
+                                    <table class="table table-striped line">
+                                        <tr v-for="property in newArticleModal.article.propertiesList">
+                                            <td class="col-xs-5">
+                                                {{ property.attributesArticles.attributes.attributeName }}
+                                            </td>
+                                            <td class="col-xs-5">{{ property.value.value }}</td>
+                                            <td class="col-xs-2">
+                                                <button @click="removeProperty(newArticleModal.article, property)"
+                                                        :disabled="isSaving"
+                                                        class="btn btn-default"
+                                                        data-toggle="tooltip" data-placement="top" title="Eliminar Propiedad">
+                                                    <span class="glyphicon glyphicon-remove"></span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-md-8 col-md-push-2">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-right modal-footer">
+                            <button :disabled="isSaving" class="btn btn-default"
+                                    @click="closeNewArticleModal"
+                                >
+                                Cancelar
+                            </button>
+                            <button
+                                    <%--@click="saveStockAssignment(assignmentsModal.article)"--%>
                                     :disabled="isSaving"
                                     class="btn btn-success">
                                 Guardar

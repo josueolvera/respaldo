@@ -7,14 +7,11 @@ package mx.bidg.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import mx.bidg.dao.DwEmployeesDao;
 import mx.bidg.dao.DwEnterprisesDao;
 import mx.bidg.dao.UsersDao;
-import mx.bidg.model.CAreas;
-import mx.bidg.model.CBranchs;
-import mx.bidg.model.CDistributors;
-import mx.bidg.model.CGroups;
-import mx.bidg.model.CRegions;
-import mx.bidg.model.DwEnterprises;
+import mx.bidg.model.*;
 import mx.bidg.pojos.HierarchicalLevel;
 import mx.bidg.service.DwEnterprisesService;
 import mx.bidg.utils.GroupArrays;
@@ -28,7 +25,10 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
 
     @Autowired
     DwEnterprisesDao dao;
-    
+
+    @Autowired
+    DwEmployeesDao dwEmployeesDao;
+
     @Autowired
     UsersDao usersDao;
     
@@ -128,6 +128,7 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
                             level3.addSubLevel(level4);
 
                             for (DwEnterprises item : dwAreasList) {
+                                item.setDwEmployeesList(dwEmployeesDao.findByDwEnterprisesId(item));
                                 level4.setDwEnterprise(item);
                             }
                         }
