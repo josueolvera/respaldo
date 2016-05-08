@@ -198,7 +198,7 @@
                       }).error(function(data)
                       {
 
-                        showAlert("No existe presupuesto para este tipo de solicitud");
+                        showAlert("No existe presupuesto para este tipo de solicitud", {type: 3});
                         this.obtainRequestInformation.idRequestType= '';
                         this.obtainRequestInformation.idProductType= '';
                         this.obtainRequestInformation.idUserResponsable= '';
