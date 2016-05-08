@@ -30,6 +30,7 @@
     <jsp:invoke fragment="styles" />
 </head>
     <body>
+        <div id="global-loader" class="loading hidden">Loading&#8230;</div>
         <div class="main-container">
             <c:if test="${user.username == null}">
                 <div class="row">
@@ -118,7 +119,7 @@
         <script src="/BIDGroup/assets/js/bootstrap-datetimepicker.min.js"></script>
         <script src="/BIDGroup/assets/js/jquery.onscreen.min.js"></script>
         <script src="/BIDGroup/assets/js/vue-1.0.7.js"></script>
-        <script src="/BIDGroup/assets/js/vue-resource-0.1.17.min.js"></script>
+        <script src="/BIDGroup/assets/js/vue-resource.min.js"></script>
         <script src="/BIDGroup/assets/js/selectize.standalone.min.js"></script>
         <script src="/BIDGroup/assets/js/bootstrap-toggle.min.js"></script>
         <script src="/BIDGroup/assets/js/messenger.min.js"></script>
@@ -126,6 +127,30 @@
         <script src="/BIDGroup/assets/js/alerts.js"></script>
         <script src="/BIDGroup/assets/js/accounting.js"></script>
         <script type="text/javascript">
+            Vue.http.interceptors.push({
+                request: function (request) {
+                    switch (request.method) {
+                        case 'POST':
+                        case 'DELETE':
+                        case 'PUT':
+                        case 'post':
+                        case 'delete':
+                        case 'put':
+                            var loader = document.getElementById('global-loader');
+                            if (loader == null) return request;
+                            loader.classList.remove('hidden');
+                            break;
+                    }
+                    return request;
+                },
+
+                response: function (response) {
+                    var loader = document.getElementById('global-loader');
+                    if (loader == null) return response;
+                    loader.classList.add('hidden');
+                    return response;
+                }
+            });
             var ROOT_URL = "/BIDGroup";
             var USER_VM = new Vue({
                 el: '#main-sidebar',
