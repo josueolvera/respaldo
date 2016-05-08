@@ -22,10 +22,10 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "C_ACCOUNTS_PAYABLE_STATUS")
 public class CAccountsPayableStatus implements Serializable {
 
-    public static final int INACTIVA = 1;
-    public static final int PENDIENTE = 2;
-    public static final int FINALIZADA = 3;
-    public static final int CANCELADA = 4;
+    public static final CAccountsPayableStatus INACTIVA = new CAccountsPayableStatus(1);
+    public static final CAccountsPayableStatus PENDIENTE = new CAccountsPayableStatus(2);
+    public static final CAccountsPayableStatus FINALIZADA = new CAccountsPayableStatus(3);
+    public static final CAccountsPayableStatus CANCELADA = new CAccountsPayableStatus(4);
 
     private static final long serialVersionUID = 1L;
     

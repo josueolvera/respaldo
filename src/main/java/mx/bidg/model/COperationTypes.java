@@ -33,7 +33,10 @@ import org.hibernate.annotations.DynamicUpdate;
 public class COperationTypes implements Serializable {
     
     private static final long serialVersionUID = 1L;
-    
+
+    public static final COperationTypes EGRESO = new COperationTypes(1);
+    public static final COperationTypes INGRESO = new COperationTypes(2);
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)

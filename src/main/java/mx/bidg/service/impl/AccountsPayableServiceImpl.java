@@ -7,18 +7,19 @@ package mx.bidg.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import mx.bidg.dao.AccountsPayableDao;
+import mx.bidg.dao.CPeriodsDao;
 import mx.bidg.dao.RequestsDao;
-import mx.bidg.model.AccountsPayable;
-import mx.bidg.model.CAccountsPayableStatus;
-import mx.bidg.model.CCurrencies;
-import mx.bidg.model.COperationTypes;
+import mx.bidg.model.*;
 import mx.bidg.service.AccountsPayableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,12 +30,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountsPayableServiceImpl implements AccountsPayableService {
     
     @Autowired
-    AccountsPayableDao accountsPayableDao;
+    private AccountsPayableDao accountsPayableDao;
     
     @Autowired
-    RequestsDao requestsDao;
+    private RequestsDao requestsDao;
+
+    @Autowired
+    private CPeriodsDao periodsDao;
     
-    ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper = new ObjectMapper();
 
 
     @Override
@@ -43,10 +47,54 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
     }
 
     @Override
+    public List<AccountsPayable> updatePeriodic(String folio, String data) throws IOException {
+        List<AccountsPayable> accountsPayables = findByFolio(folio);
+        for (AccountsPayable accountPayable : accountsPayables) {
+            if (accountPayable.getAccountPayableStatus().equals(CAccountsPayableStatus.INACTIVA)) {
+                accountsPayableDao.delete(accountPayable);
+            }
+        }
+
+        accountsPayables = new ArrayList<>();
+        JsonNode node = mapper.readTree(data);
+        LocalDateTime initialDate = LocalDateTime.parse(node.get("initialDate").asText());
+        CPeriods period = periodsDao.findById(node.get("idPeriod").asInt());
+        BigDecimal amount = node.get("amount").decimalValue();
+        CCurrencies currency = new CCurrencies(node.get("idCurrency").asInt());
+        BigDecimal rate = node.get("rate").decimalValue();
+        Integer totalPayments = node.get("totalPayments").asInt();
+        Period datePeriod = Period.of(period.getYears(), period.getMonths(), period.getDays());
+
+        for (Integer paymentNumber = 0; paymentNumber < totalPayments; paymentNumber++) {
+            AccountsPayable accountPayable = new AccountsPayable();
+            Period currentPeriod = datePeriod.multipliedBy(paymentNumber);
+            accountPayable.setFolio(folio);
+            accountPayable.setAmount(amount);
+            accountPayable.setPaidAmount(BigDecimal.ZERO);
+            accountPayable.setPayNum(paymentNumber + 1);
+            accountPayable.setTotalPayments(totalPayments);
+            accountPayable.setCreationDate(LocalDateTime.now());
+            accountPayable.setDueDate(initialDate.plus(currentPeriod));
+            accountPayable.setAccountPayableStatus(CAccountsPayableStatus.INACTIVA);
+            accountPayable.setOperationType(COperationTypes.EGRESO);
+            accountPayable.setCurrency(currency);
+            accountPayable.setRate(rate);
+            accountPayable.setIdAccessLevel(1);
+
+            accountsPayableDao.save(accountPayable);
+            accountsPayables.add(accountPayable);
+        }
+
+        return accountsPayables;
+    }
+
+    @Override
     public List<AccountsPayable> update(String folio, String data) throws Exception {
         List<AccountsPayable> accounts = findByFolio(folio);
-        for(AccountsPayable payable : accounts) {
-            accountsPayableDao.delete(payable);
+        for (AccountsPayable payable : accounts) {
+            if (payable.getAccountPayableStatus().equals(CAccountsPayableStatus.INACTIVA)) {
+                accountsPayableDao.delete(payable);
+            }
         }
 
         AccountsPayable accountsPayable;
@@ -74,7 +122,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
             accountsPayable.setCreationDate(LocalDateTime.now());
             accountsPayable.setDueDate(dueDate);
             //Estatus de AccountPayable Inactiva = 1
-            accountsPayable.setAccountPayableStatus(new CAccountsPayableStatus(1));
+            accountsPayable.setAccountPayableStatus(CAccountsPayableStatus.INACTIVA);
             accountsPayable.setIdAccessLevel(1);
             accountsPayable.setCurrency(currency);
             accountsPayable = accountsPayableDao.save(accountsPayable);

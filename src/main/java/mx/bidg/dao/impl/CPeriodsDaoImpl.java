@@ -9,6 +9,7 @@ import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CPeriodsDao;
 import mx.bidg.model.CPeriods;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -21,7 +22,9 @@ public class CPeriodsDaoImpl extends AbstractDao<Integer, CPeriods> implements C
 
     @Override
     public CPeriods findById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return (CPeriods) createEntityCriteria()
+                .add(Restrictions.idEq(id))
+                .uniqueResult();
     }
 
     @Override

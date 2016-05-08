@@ -56,6 +56,16 @@ public class AccountsPayableController {
         return mapper.writeValueAsString(accountsPayables);
     }
 
+    @RequestMapping(value = "/periodic", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> updatePeriodic(@RequestParam(name = "folio", required = true) String folio,
+                                                 @RequestBody String data) throws Exception {
+        List<AccountsPayable> accountsPayables = accountsPayableService.updatePeriodic(folio, data);
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(accountsPayables),
+                HttpStatus.OK
+        );
+    }
+
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findAll() throws IOException{
         List<AccountsPayable> accountsPayables = accountsPayableService.findAll();
