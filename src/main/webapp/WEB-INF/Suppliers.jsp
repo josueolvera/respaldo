@@ -41,7 +41,8 @@
             rfc: '',
             accountingaccount: '',
             providersAccountsList: [],
-            phoneNumbersList:[]
+            phoneNumbersList: [],
+            addressProvider: []
           },
           provider: {
             providerName: '',
@@ -49,7 +50,8 @@
             rfc: '',
             accountingaccount: '',
             providersAccountsList: [],
-            phoneNumbersList:[]
+            phoneNumbersList:[],
+            addressProvider: []
           },
           idBanks: '',
           banks: [],
@@ -66,6 +68,10 @@
           idSettlement:'',
           municipalities:{},
           idMunicipality:'',
+          telephone:
+          {
+            phoneNumbers:'',
+          },
           cuenta:
           {
             accountNumber: '',
@@ -81,7 +87,7 @@
             idSettlement: '',
             idState:'',
             idMunicipality:'',
-          }
+          },
 
           },
         methods:
@@ -124,8 +130,6 @@
           },
           saveProvider: function()
           {
-            var self= this;
-
             this.$http.post(ROOT_URL + "/providers", JSON.stringify(this.supplier)).
             success(function(data)
             {
@@ -225,6 +229,40 @@
             this.$http.get(ROOT_URL + "/municipalities").success(function (data) {
               this.municipalities = data;
             });
+          },
+          savePhone: function () {
+            var self= this;
+
+            var direccion={
+              cp: '',
+              ext:'',
+              int:'',
+              street:'',
+              idSettlement: '',
+              idState:'',
+              idMunicipality:'',
+            };
+            direccion.cp = this.direccion.cp;
+            direccion.ext = this.direccion.ext;
+            direccion.int = this.direccion.int;
+            direccion.street = this.direccion.street;
+            direccion.idState = this.direccion.idState;
+            direccion.idSettlement = this.direccion.idSettlement;
+            direccion.idMunicipality = this.direccion.idMunicipality;
+
+            this.supplier.addressProvider.push(direccion);
+
+            var telephone={
+              phoneNumber:'',
+            };
+            telephone.phoneNumber = this.phoneNumbers;
+
+            this.supplier.phoneNumbersList.push(telephone);
+            this.phoneNumbers=''
+          },
+          deletePhone: function (phone) {
+            this.supplier.phoneNumbersList.$remove(phone);
+            this.phoneNumbers=''
           },
         },
         filters:
@@ -329,6 +367,9 @@
           </table>
 
         </div>
+        <pre>
+              {{$data|json}}
+            </pre>
       </div> <!-- container-fluid -->
 
       <div class="modal fade" id="modalAlta" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
@@ -408,19 +449,19 @@
                   <label>
                     # Ext
                   </label>
-                  <input class="form-control" name="name" v-model="direccion.ext">
+                  <input class="form-control" name="name" maxlength="5" v-model="direccion.ext" onkeypress="return isNumberKey(event)">
                 </div>
                 <div class="col-xs-3">
                   <label>
                     # Int
                   </label>
-                  <input class="form-control" name="name" v-model="direccion.int">
+                  <input class="form-control" name="name" maxlength="5" v-model="direccion.int" onkeypress="return isNumberKey(event)">
                 </div>
                 <div class="col-xs-3">
                   <label>
                     C.P.
                   </label>
-                  <input class="form-control" name="name" v-model="direccion.cp">
+                  <input class="form-control" name="name" maxlength="5" v-model="direccion.cp" onkeypress="return isNumberKey(event)">
                 </div>
               </div>
               <br>
@@ -429,7 +470,7 @@
                   <label>
                     Colonia
                   </label>
-                  <select class="form-control" name="" v-model="idSettlement">
+                  <select class="form-control" name="" v-model="direccion.idSettlement">
                     <option></option>
                     <option v-for="set in settlements" value="{{set.idSettlement}}">{{set.settlementName}}</option>
                   </select>
@@ -438,16 +479,16 @@
                 <label>
                   Municipio/Delegación
                 </label>
-                <select class="form-control" name="" v-model="idMunicipality">
+                <select class="form-control" name="" v-model="direccion.idMunicipality">
                   <option></option>
-                  <option v-for="mun in municipalities" value="{{mun.idMunicipality}">{{mun.municipalityName}}</option>
+                  <option v-for="mun in municipalities" value="{{mun.idMunicipality}}">{{mun.municipalityName}}</option>
                 </select>
                 </div>
                 <div class="col-xs-4">
               <label>
                 Estado
               </label>
-              <select class="form-control" name="" v-model="idState">
+              <select class="form-control" name="" v-model="direccion.idState">
                 <option></option>
                 <option v-for="state in states" value="{{state.idState}}">{{state.stateName}}</option>
               </select>
@@ -459,8 +500,27 @@
                   <label>
                     Teléfono
                   </label>
-                  <input class="form-control" name="name" v-model="supplier.rfc">
+                  <input class="form-control" name="name" v-model="phoneNumbers" onkeypress="return isNumberKey(event)">
                 </div>
+                <div class="col-xs-1">
+                  <button type="button" class="btn btn-sm btn-default"  data-toggle="tooltip" data-placement="bottom" title="Agregar" style="margin-top: 25px" @click="savePhone()">
+                    <span class="glyphicon glyphicon-plus"></span>
+                  </button>
+                </div>
+              </div>
+              <br>
+              <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13" v-for=" phone in supplier.phoneNumbersList">
+                <div class="col-xs-4">
+                  <div class="col-xs-4">
+                    {{phone.phoneNumber}}
+                  </div>
+                  <div class="col-xs-2 text-left">
+                    <button class="btn btn-default" @click="deletePhone(phone)" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Quitar Numero">
+                      <span class="glyphicon glyphicon-remove"></span>
+                    </button>
+                  </div>
+                </div>
+
               </div>
               <br>
                 <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
@@ -550,6 +610,9 @@
                 </table>
 
             </div>
+            <pre>
+              {{$data|json}}
+            </pre>
             <div class="modal-footer">
               <div class="col-xs-10 text-right" v-if="supplier.providersAccountsList.length> 0">
                 <button type="button" class="btn btn-default" @click="saveProvider">

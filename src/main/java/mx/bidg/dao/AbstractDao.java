@@ -65,7 +65,7 @@ public abstract class AbstractDao<PK extends Serializable, T> {
                 getSession().delete(entity);
             } else {
                 throw new ValidationException(
-                        "Operación DELETE sobre Registro: " + entity.hashCode() + "no autorizada",
+                        "Operación DELETE sobre Registro: " + entity.hashCode() + entity.getClass() + " no autorizada",
                         "Operación no autorizada",
                         HttpStatus.UNAUTHORIZED
                 );
@@ -83,7 +83,7 @@ public abstract class AbstractDao<PK extends Serializable, T> {
                 globalTracer("UPDATE", entity);
             } else {
                 throw new ValidationException(
-                        "Operación UPDATE sobre Registro: " + entity.hashCode() + "no autorizada",
+                        "Operación UPDATE sobre Registro: " + entity.hashCode() + entity.getClass() + " no autorizada",
                         "Operación no autorizada",
                         HttpStatus.UNAUTHORIZED
                 );
@@ -124,12 +124,11 @@ public abstract class AbstractDao<PK extends Serializable, T> {
 
         Users user = (Users) session.getAttribute("user");
         if (user != null && user.getIdUser() != null && user.getUsername() != null) {
-            return false;
+            AccessLevelFilterable enty = (AccessLevelFilterable) entity;
+            return user.getAccessLevels().contains(enty.getIdAccessLevel());
         }
 
-        AccessLevelFilterable enty = (AccessLevelFilterable) entity;
-        return user.getAccessLevels().contains(enty.getIdAccessLevel());
-
+        return false;
     }
     
     public void globalTracer(String operationType, T entity) {
