@@ -4,6 +4,10 @@
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <jta-data-source>BID_NEW</jta-data-source>
     <class>mx.bidg.model.PhoneNumbers</class>
+    <class>mx.bidg.model.CSettlement</class>
+    <class>mx.bidg.model.CStates</class>
+    <class>mx.bidg.model.ProviderAddress</class>
+    <class>mx.bidg.model.CMunicipalities</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties/>
   </persistence-unit>
