@@ -600,9 +600,6 @@
                 </table>
 
             </div>
-            <pre>
-              {{$data|json}}
-            </pre>
             <div class="modal-footer">
               <div class="col-xs-10 text-right" v-if="supplier.providersAccountsList.length> 0">
                 <button type="button" class="btn btn-default" @click="saveProvider">
