@@ -69,7 +69,7 @@
                             region: null,
                             branch: null,
                             area: null,
-                            dwEmployeesList:null
+                            dwEmployees:null
                         },
                     },
                     assignmentsModal: {
@@ -78,7 +78,7 @@
                             region: null,
                             branch: null,
                             area: null,
-                            dwEmployeesList:null
+                            dwEmployees:null
                         },
                         fileInput: "file-type-",
                         article: null
@@ -316,17 +316,19 @@
                         this.assignmentsModal.selected.region = null;
                         this.assignmentsModal.selected.branch = null;
                         this.assignmentsModal.selected.area = null;
+                        this.assignmentsModal.selected.dwEmployees = null;
                     },
                     regionChanged: function () {
                         this.assignmentsModal.selected.branch = null;
                         this.assignmentsModal.selected.area = null;
+                        this.assignmentsModal.selected.dwEmployees = null;
                     },
                     branchChanged: function () {
                         this.assignmentsModal.selected.area = null;
-                        this.assignmentsModal.selected.dwEmployeesList = null;
+                        this.assignmentsModal.selected.dwEmployees = null;
                     },
                     areaChanged: function () {
-                        this.assignmentsModal.selected.dwEmployeesList = null;
+                        this.assignmentsModal.selected.dwEmployees = null;
                     },
                     validateFile: function (event) {
                         if (! event.target.files[0].name.match(/(\.jpg|\.jpeg|\.pdf|\.png)$/i)) {
@@ -394,6 +396,10 @@
                             this.isSaving = false;
                             showAlert(data.error.message, {type: 3});
                         });
+                    },
+                    saveNewStockArticle: function (article) {
+                        this.isSaving = true;
+
                     },
                     saveStockAssignment: function (article) {
                         if (this.assignmentsModal.selected.area == null) {
@@ -615,7 +621,7 @@
                             </div>
                             <div class="flex-row flex-content">
                                 <hr>
-                                <h4 class="text-left">Historial de asignaciones</h4>
+                                <h4 class="text-center">Historial de asignaciones</h4>
                                 <table class="table table-striped">
                                     <thead>
                                     <tr>
@@ -642,9 +648,6 @@
                                             {{ historicalModal.article.stockEmployeeAssignmentsList[0].assignmentDateFormats.dateNumber }}
                                             <span class="label label-success">Actual</span>
                                         </td>
-                                    </tr>
-                                    <tr class="text-center">
-                                        <td colspan="6"><label>Historial de Asignaciones</label></td>
                                     </tr>
                                     <tr v-for="assignment in historicalModal.article.assignmentsRecord">
                                         <td>
@@ -689,7 +692,9 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button @click.prevent="closeHistoricalModal" :disabled="isSaving" class="btn btn-default">Cancelar</button>
+                            <button @click.prevent="closeHistoricalModal" :disabled="isSaving" class="btn btn-default">
+                                Salir
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -713,29 +718,9 @@
                                     <label>No. de Serie </label>
                                     {{ editModal.article.serialNumber }}
                                 </div>
-                                <%--<div class="col-md-4 col-xs-12">--%>
-                                    <%--<label>Asignado a </label>--%>
-                                    <%--{{ editModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}--%>
-                                    <%--{{ editModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}--%>
-                                    <%--{{ editModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}--%>
-                                    <%--{{ editModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}--%>
-                                <%--</div>--%>
                             </div>
                             <hr />
                             <div class="row line">
-                                <%--<div class="col-md-8 col-xs-12">--%>
-                                    <%--<label>Asignar a</label>--%>
-                                    <%--<select v-model="editModal.selectedEmployee.idEmployee"--%>
-                                            <%--:disabled="isSaving" class="form-control">--%>
-                                        <%--<option v-for="employee in editModal.employees"--%>
-                                                <%--:value="employee.idEmployee">--%>
-                                                <%--{{ employee.firstName }}--%>
-                                                <%--{{ employee.middleName }}--%>
-                                                <%--{{ employee.parentalLast }}--%>
-                                                <%--{{ employee.motherLast }}--%>
-                                            <%--</option>--%>
-                                    <%--</select>--%>
-                                <%--</div>--%>
                                 <div class="col-md-4 col-xs-6">
                                     <label>No. de Serie</label>
                                     <input v-model="editModal.serialNumber"
@@ -881,11 +866,11 @@
                             <div class="row">
                                 <div class="col-md-3 col-xs-6">
                                     <label>Empleado / Almacén</label>
-                                    <select v-model="assignmentsModal.selected.dwEmployeesList" class="form-control"
+                                    <select v-model="assignmentsModal.selected.dwEmployees" class="form-control"
                                             :disabled="assignmentsModal.selected.area == null">
-                                        <option v-for="dwEmployeesList in assignmentsModal.selected.area.subLevels"
-                                                :value="dwEmployeesList">
-                                            {{ dwEmployeesList.employee.firstName }}
+                                        <option v-for="dwEmployees in assignmentsModal.selected.area.dwEnterprise.dwEmployeesList"
+                                                :value="dwEmployees">
+                                            {{ dwEmployees.employee.firstName }} {{ dwEmployees.employee.middleName }} {{ dwEmployees.employee.parentalLast }} {{ dwEmployees.employee.motherLast }}
                                         </option>
                                     </select>
                                 </div>
@@ -952,61 +937,6 @@
                             <h4 class="modal-title">Nuevo de Artículo</h4>
                         </div>
                         <div class="modal-body">
-                            <div class="row">
-                                <div class="col-xs-12"><label>Asignar a</label></div>
-                                <div class="col-md-3 col-xs-6">
-                                    <label>Distribuidor</label>
-                                    <select v-model="newArticleModal.selected.distributor" class="form-control"
-                                            @change="distributorChanged">
-                                        <option v-for="distributor in selectOptions.hierarchy[0].subLevels"
-                                                :value="distributor">
-                                            {{ distributor.name }}
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3 col-xs-6">
-                                    <label>Región</label>
-                                    <select v-model="newArticleModal.selected.region" class="form-control"
-                                            @change="regionChanged" :disabled="newArticleModal.selected.distributor == null">
-                                        <option v-for="region in newArticleModal.selected.distributor.subLevels"
-                                                :value="region">
-                                            {{ region.name }}
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3 col-xs-6">
-                                    <label>Sucursal</label>
-                                    <select v-model="newArticleModal.selected.branch" class="form-control"
-                                            @change="branchChanged" :disabled="newArticleModal.selected.region == null">
-                                        <option v-for="branch in newArticleModal.selected.region.subLevels"
-                                                :value="branch">
-                                            {{ branch.name }}
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3 col-xs-6">
-                                    <label>Área</label>
-                                    <select v-model="newArticleModal.selected.area" class="form-control"
-                                            @change="areaChanged" :disabled="newArticleModal.selected.branch == null">
-                                        <option v-for="area in newArticleModal.selected.branch.subLevels"
-                                                :value="area">
-                                            {{ area.name }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-3 col-xs-6">
-                                    <label>Empleado / Almacén</label>
-                                    <select v-model="newArticleModal.selected.dwEmployeesList" class="form-control"
-                                            :disabled="newArticleModal.selected.area == null">
-                                        <option v-for="dwEmployeesList in newArticleModal.selected.area.subLevels"
-                                                :value="dwEmployeesList">
-                                            {{ dwEmployeesList.employee.firstName }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
                             <%--<div class="row">--%>
                                 <%--<div class="col-md-4 col-xs-6">--%>
                                     <%--<label>Artículo </label>--%>
@@ -1085,8 +1015,58 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-xs-12 col-md-8 col-md-push-2">
-
+                                <div class="col-xs-12"><label>Asignar a</label></div>
+                                <div class="col-md-3 col-xs-6">
+                                    <label>Distribuidor</label>
+                                    <select v-model="newArticleModal.selected.distributor" class="form-control"
+                                            @change="distributorChanged">
+                                        <option v-for="distributor in selectOptions.hierarchy[0].subLevels"
+                                                :value="distributor">
+                                            {{ distributor.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 col-xs-6">
+                                    <label>Región</label>
+                                    <select v-model="newArticleModal.selected.region" class="form-control"
+                                            @change="regionChanged" :disabled="newArticleModal.selected.distributor == null">
+                                        <option v-for="region in newArticleModal.selected.distributor.subLevels"
+                                                :value="region">
+                                            {{ region.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 col-xs-6">
+                                    <label>Sucursal</label>
+                                    <select v-model="newArticleModal.selected.branch" class="form-control"
+                                            @change="branchChanged" :disabled="newArticleModal.selected.region == null">
+                                        <option v-for="branch in newArticleModal.selected.region.subLevels"
+                                                :value="branch">
+                                            {{ branch.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 col-xs-6">
+                                    <label>Área</label>
+                                    <select v-model="newArticleModal.selected.area" class="form-control"
+                                            @change="areaChanged" :disabled="newArticleModal.selected.branch == null">
+                                        <option v-for="area in newArticleModal.selected.branch.subLevels"
+                                                :value="area">
+                                            {{ area.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 col-xs-6">
+                                    <label>Empleado / Almacén</label>
+                                    <select v-model="newArticleModal.selected.dwEmployees" class="form-control"
+                                            :disabled="newArticleModal.selected.area == null">
+                                        <option v-for="dwEmployees in newArticleModal.selected.area.dwEnterprise.dwEmployeesList"
+                                                :value="dwEmployees">
+                                            {{ dwEmployees.employee.firstName }} {{ dwEmployees.employee.middleName }} {{ dwEmployees.employee.parentalLast }} {{ dwEmployees.employee.motherLast }}
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
