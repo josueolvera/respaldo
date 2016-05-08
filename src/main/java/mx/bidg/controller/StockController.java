@@ -74,6 +74,20 @@ public class StockController {
         );
     }
 
+//    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//    public ResponseEntity<String> save(@RequestBody) Integer idDistributor) throws IOException {
+//        List<Stocks> stock;
+//        if (idDistributor != null) {
+//            stock = stockService.findByDistributor(idDistributor);
+//        } else {
+//            stock = stockService.findAll();
+//        }
+//        return new ResponseEntity<>(
+//                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(stock),
+//                HttpStatus.OK
+//        );
+//    }
+
     @RequestMapping(
             value = "/{idStock}", method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE

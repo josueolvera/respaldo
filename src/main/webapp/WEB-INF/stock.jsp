@@ -21,6 +21,7 @@
                     this.fetchValues();
                     this.fetchArticleStatus();
                     this.fetchHierarchy();
+                    this.getArticles();
                 },
                 data: {
                     isSaving: false,
@@ -57,13 +58,14 @@
                     newArticleModal: {
                         selectAttr: null,
                         selectValue: null,
-                        serialNumber: 0,
-                        stockFolio: 0,
+                        serialNumber: null,
+                        stockFolio: null,
                         articleStatus: null,
-                        purchasePrice: 0,
+                        purchasePrice: null,
                         employees: null,
                         selectedEmployee: null,
                         article: null,
+                        articles: [],
                         selected: {
                             distributor: null,
                             region: null,
@@ -86,6 +88,11 @@
                     attachmentsDownloadUrl: ROOT_URL + "/stock/attachments/download/"
                 },
                 methods: {
+                    getArticles : function () {
+                        this.$http.get(ROOT_URL + "/articles").success(function (data) {
+                            this.newArticleModal.articles = data;
+                        });
+                    },
                     groupBy: function (array, filter) {
                         var groups = {};
                         array.forEach(function (element) {
@@ -203,6 +210,19 @@
                             });
                         });
                     },
+                    fetchAttributesNewArticle: function (idArticle) {
+                        this.$http.get(ROOT_URL + "/attributes/" + idArticle).success(function (data) {
+                            this.selectOptions.attributes = data;
+                            this.newArticleModal.selectAttr = $('#select-attribute2').selectize({
+                                maxItems: 1,
+                                valueField: 'idAttribute',
+                                labelField: 'attributeName',
+                                searchField: 'attributeName',
+                                options: data,
+                                create: false
+                            });
+                        });
+                    },
                     fetchArticleStatus: function () {
                         this.$http.get(ROOT_URL + "/stock-status").success(function (data) {
                             this.selectOptions.articleStatus = data;
@@ -222,6 +242,29 @@
                         this.$http.get(ROOT_URL + "/values").success(function (data) {
                             var self = this;
                             this.selectOptions.values = data;
+                            this.newArticleModal.selectValue = $('#select-value2').selectize({
+                                maxItems: 1,
+                                valueField: 'idValue',
+                                labelField: 'value',
+                                searchField: 'value',
+                                options: data,
+                                create: function (input, callback) {
+                                    self.$http.post(ROOT_URL + "/values", {
+                                        value: input
+                                    }).success(function (data){
+                                        callback(data);
+                                    }).error(function (){
+                                        callback();
+                                    });
+                                },
+                                render: {
+                                    option_create: function(data, escape) {
+                                        return '<div data-selectable class="create">' +
+                                                'Agregar <strong>' + escape(data.input) + '</strong>' +
+                                                '</div>'
+                                    }
+                                }
+                            });
                             this.editModal.selectValue = $('#select-value').selectize({
                                 maxItems: 1,
                                 valueField: 'idValue',
@@ -297,6 +340,28 @@
                             this.isSaving = false;
                             showAlert("No se pudo agregar la propiedad, intente nuevamente", {type:3})
                         });
+                    },
+                    addPropertyNewArticle: function (article) {
+
+                        this.isSaving = true;
+                        var idAttr = this.newArticleModal.selectAttr[0].selectize.getValue();
+                        var idVal = this.newArticleModal.selectValue[0].selectize.getValue();
+                        var property = {
+                            value: {
+                                idValue: idVal,
+                                value: this.newArticleModal.selectValue[0].selectize.getOption(idVal).text()
+                            },
+                            attributesArticles: {
+                                idArticle: article.idArticle,
+                                idAttribute: idAttr,
+                                attributes: {
+                                    idAttribute: idAttr,
+                                    attributeName: this.newArticleModal.selectAttr[0].selectize.getOption(idAttr).text()
+                                }
+                            }
+                        };
+                        this.newArticleModal.article.propertiesList.push(property);
+                        this.isSaving = false;
                     },
                     uploadHistorical: function (article) {
                         this.isSaving = true;
@@ -397,9 +462,19 @@
                             showAlert(data.error.message, {type: 3});
                         });
                     },
-                    saveNewStockArticle: function (article) {
+                    saveNewStockArticle: function (stock) {
                         this.isSaving = true;
-
+                        console.log(JSON.stringify(stock));
+                        this.$http.post(ROOT_URL + "/stock", {
+                            stock
+                        }).success(function () {
+                            this.isSaving = false;
+                            showAlert("Registro exitoso");
+                            this.closeNewArticleModal();
+                        }).error(function (data) {
+                            this.isSaving = false;
+                            showAlert(data.error.message, {type:3});
+                        })
                     },
                     saveStockAssignment: function (article,idEmployee) {
                         if (this.assignmentsModal.selected.area == null) {
@@ -937,38 +1012,7 @@
                             <h4 class="modal-title">Nuevo de Artículo</h4>
                         </div>
                         <div class="modal-body">
-                            <%--<div class="row">--%>
-                                <%--<div class="col-md-4 col-xs-6">--%>
-                                    <%--<label>Artículo </label>--%>
-                                    <%--{{ newArticleModal.article.article.articleName }}--%>
-                                <%--</div>--%>
-                                <%--<div class="col-md-4 col-xs-6">--%>
-                                    <%--<label>No. de Serie </label>--%>
-                                    <%--{{ newArticleModal.article.serialNumber }}--%>
-                                <%--</div>--%>
-                                    <%--<div class="col-md-4 col-xs-12">--%>
-                                    <%--<label>Asignado a </label>--%>
-                                    <%--{{ newArticleModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}--%>
-                                    <%--{{ newArticleModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}--%>
-                                    <%--{{ newArticleModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}--%>
-                                    <%--{{ newArticleModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}--%>
-                                    <%--</div>--%>
-                            <%--</div>--%>
-                            <hr />
                             <div class="row line">
-                                    <%--<div class="col-md-8 col-xs-12">--%>
-                                        <%--<label>Asignar a</label>--%>
-                                        <%--<select v-model="newArticleModal.selectedEmployee.idEmployee"--%>
-                                        <%--:disabled="isSaving" class="form-control">--%>
-                                        <%--<option v-for="employee in newArticleModal.employees"--%>
-                                        <%--:value="employee.idEmployee">--%>
-                                        <%--{{ employee.firstName }}--%>
-                                        <%--{{ employee.middleName }}--%>
-                                        <%--{{ employee.parentalLast }}--%>
-                                        <%--{{ employee.motherLast }}--%>
-                                        <%--</option>--%>
-                                        <%--</select>--%>
-                                    <%--</div>--%>
                                 <div class="col-md-4 col-xs-6">
                                     <label>No. de Serie</label>
                                     <input v-model="newArticleModal.serialNumber"
@@ -984,13 +1028,25 @@
                                     <select v-model="newArticleModal.articleStatus"
                                             :disabled="isSaving" class="form-control">
                                         <option v-for="status in selectOptions.articleStatus"
-                                                :value="status">{{ status.articleStatus }}</option>
+                                                :value="status">
+                                            {{ status.articleStatus }}
+                                        </option>
                                     </select>
                                 </div>
                                 <div class="col-md-4 col-xs-6">
                                     <label>Precio de Compra</label>
                                     <input v-model="newArticleModal.purchasePrice"
                                            :disabled="isSaving" type="text" class="form-control">
+                                </div>
+                                <div class="col-md-4 col-xs-6">
+                                    <label>Tipo de articulo</label>
+                                    <select v-model="newArticleModal.article" @change="fetchAttributesNewArticle(newArticleModal.article.idArticle)"
+                                            :disabled="isSaving" class="form-control">
+                                        <option v-for="article in newArticleModal.articles"
+                                                :value="article">
+                                            {{ article.articleName }}
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="row line">
@@ -1012,6 +1068,26 @@
                                             </td>
                                         </tr>
                                     </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-md-8 col-md-push-2">
+                                    <div class="col-xs-5">
+                                        <label>Atributo</label>
+                                        <select id="select-attribute2" class="form-control"></select>
+                                    </div>
+                                    <div class="col-xs-5">
+                                        <label>Valor</label>
+                                        <select id="select-value2" class="form-control"></select>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <button @click="addPropertyNewArticle(newArticleModal.article)"
+                                                :disabled="isSaving"
+                                                class="btn btn-default" style="margin-top: 2.5rem"
+                                                data-toggle="tooltip" data-placement="top" title="Agregar Propiedad">
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
@@ -1072,12 +1148,11 @@
                         </div>
                         <div class="text-right modal-footer">
                             <button :disabled="isSaving" class="btn btn-default"
-                                    @click="closeNewArticleModal"
-                                >
+                                    @click="closeNewArticleModal">
                                 Cancelar
                             </button>
                             <button
-                                    <%--@click="saveStockAssignment(assignmentsModal.article)"--%>
+                                    @click="saveNewStockArticle(newArticleModal)"
                                     :disabled="isSaving"
                                     class="btn btn-success">
                                 Guardar
