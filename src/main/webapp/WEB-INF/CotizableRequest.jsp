@@ -1548,7 +1548,7 @@
                             <label>
                               Monto
                             </label>
-                            <div class="input-group">
+                            <div class="input-group has-success">
                               <span class="input-group-addon">$</span>
                               <input number class="form-control" placeholder="" v-model="pagofijo.amount">
                             </div>
