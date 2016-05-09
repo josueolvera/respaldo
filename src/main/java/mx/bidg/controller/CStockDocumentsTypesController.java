@@ -21,7 +21,7 @@ import java.util.List;
  * Created on 29/12/15.
  */
 @Controller
-@RequestMapping("/document-types")
+@RequestMapping("/stock-document-types")
 public class CStockDocumentsTypesController {
 
     @Autowired

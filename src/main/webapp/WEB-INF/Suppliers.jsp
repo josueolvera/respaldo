@@ -365,9 +365,6 @@
           </table>
 
         </div>
-        <pre>
-              {{$data|json}}
-            </pre>
       </div> <!-- container-fluid -->
 
       <div class="modal fade" id="modalAlta" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">

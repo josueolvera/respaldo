@@ -945,7 +945,7 @@
                                             :disabled="assignmentsModal.selected.area == null">
                                         <option v-for="dwEmployees in assignmentsModal.selected.area.dwEnterprise.dwEmployeesList"
                                                 :value="dwEmployees">
-                                            {{ dwEmployees.employee.firstName }} {{ dwEmployees.employee.middleName }} {{ dwEmployees.employee.parentalLast }} {{ dwEmployees.employee.motherLast }}
+                                            {{ dwEmployees.employee.fullName }}
                                         </option>
                                     </select>
                                 </div>
@@ -1140,7 +1140,7 @@
                                             :disabled="newArticleModal.selected.area == null">
                                         <option v-for="dwEmployees in newArticleModal.selected.area.dwEnterprise.dwEmployeesList"
                                                 :value="dwEmployees">
-                                            {{ dwEmployees.employee.firstName }} {{ dwEmployees.employee.middleName }} {{ dwEmployees.employee.parentalLast }} {{ dwEmployees.employee.motherLast }}
+                                            {{ dwEmployees.employee.fullName }}
                                         </option>
                                     </select>
                                 </div>

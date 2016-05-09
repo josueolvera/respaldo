@@ -274,6 +274,9 @@
               success(function(data)
               {
                 showAlert("Registro de solicitud exitoso, ahora puedes agregar las cotizaciones")
+                history.pushState("", "BID Group: Solicitudes", "cotizable/" + data.idRequest)
+                this.idRequest = data.idRequest;
+                this.isUpdate = true;
                 this.fillRequestInformation(data);
               }).error(function(data)
               {
@@ -505,7 +508,7 @@
               console.log(cotizacion);
               cotizacion.amountmx = responseOfEstimation.amountMXN;
               cotizacion.idEstimation= responseOfEstimation.idEstimation;
-              cotizacion.fileName= responseOfFileUpload.fileName;
+              cotizacion.fileNameActual= responseOfFileUpload.fileName;
               cotizacion.outOfBudget= responseOfEstimation.outOfBudget;
               cotizacion.idEstimationStatus= responseOfEstimation.estimationStatus.idEstimationStatus;
               cotizacion.idUserEstimation= responseOfEstimation.userEstimation.idUser;
@@ -585,6 +588,7 @@
                   cotizacion.idCurrency = element.idCurrency;
                   cotizacion.idUserEstimation = element.idUserEstimation;
                   cotizacion.creationDate = element.creationDateFormats.iso;
+                  cotizacion.fileNameActual = element.fileName;
                   cotizacion.requiredFile = false;
                   cotizacion.nameCurrency= element.currency.acronym;
                   if (data.amountMXN != null)
