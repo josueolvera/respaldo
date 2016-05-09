@@ -535,6 +535,7 @@
             },
             matchInformationUpdate: function(data)
             {
+              console.log(data);
               var self= this;
               this.isUpdate= true;
               this.obtainRequestInformation.idRequestType= data.requestTypeProduct.idRequestType;
@@ -554,6 +555,7 @@
               this.objectRequest.request.purpose= data.purpose;
               this.userRequest = data.userRequest.dwEmployee.employee.fullNameReverse;
               this.desaparecer = false;
+              $("#productTypesin").append("<option>"+data.requestTypeProduct.productType.productType+"</option>");
               data.requestProductsList.forEach(function(element)
               {
               var producto= self.createProduct();
@@ -597,6 +599,7 @@
                   }
                   self.fillSuppliers(cotizacion);
                 });
+
                 this.obtainInformationAutorization();
             },
             fillSuppliers: function(cotizacion)
@@ -1155,7 +1158,7 @@
                   Producto
                 </label>
                 <select class="form-control" v-model="obtainRequestInformation.idProductType" :disabled="desactivarCombos || isUpdate"
-                  @change="obtainProducts" required>
+                  @change="obtainProducts" id="productTypesin" required>
                   <option></option>
                   <option v-for="ProductType in ProductTypes" value="{{ProductType.idProductType}}">
                     {{ProductType.productType}}
@@ -1272,7 +1275,7 @@
                           </h3>
                         </div>
                         <div class="col-xs-8">
-                          <h4 class="panel-title">Monto MXN: {{cotizacion.amount * cotizacion.rate}} <br> Monto en {{cotizacion.nameCurrency}}: {{cotizacion.amount}}</h4>
+                          <h4 class="panel-title" v-if="cotizacion.idCurrency> 0">Monto MXN: {{cotizacion.amount * cotizacion.rate}} <br> Monto en {{cotizacion.idCurrency | filterCurrency}}: {{cotizacion.amount}}</h4>
                         </div>
                       </div>
                       <div class="col-xs-4" >
@@ -1392,7 +1395,7 @@
                         {{cotizacion.fileNameActual}}
                       </p>
                     </div>
-                    <div class="col-xs-2">
+                    <div class="col-xs-3">
                       <button type="button" class="btn btn-default" @click="prepareModalPeriodicPayment(cotizacion)"
                        style="margin-top: 25px" v-if="cotizacion.idEstimationStatus== 2">Agregar Informacion de Pago
                       </button>
@@ -1691,10 +1694,6 @@
               </div>
             </div>
           </div>
-          <pre>
-            {{ $data.estimations | json}}
-          </pre>
-
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->

@@ -605,9 +605,19 @@
           {
             return param;
           }
-
+        },
+        filterCurrency: function(idCurrency)
+        {
+          var retorno;
+          this.currencies.forEach(function(element)
+          {
+              if (idCurrency == element.idCurrency)
+            {
+             retorno= element.acronym;
+            }
+          });
+          return retorno;
         }
-
       }
       });
 
@@ -742,7 +752,12 @@
                   <div class="panel-heading">
                     <div class="row">
                       <div class="col-xs-4 text-left">
-                        <h3 class="panel-title">Informacion del Pago</h3>
+                        <div class="col-xs-4">
+                          <h4 class="panel-title">Informacion del Pago</h4>
+                        </div>
+                        <div class="col-xs-8">
+                          <h4 class="panel-title" v-if="estimation.idCurrency > 0">Monto MXN: {{estimation.amount * estimation.rate}} <br> Monto en {{estimation.idCurrency | filterCurrency}}: {{estimation.amount}}</h4>
+                        </div>
                       </div>
                       <div class="col-xs-4" >
                         <span class="label label-danger" v-if="estimation.outOfBudget == 1">Cotización Fuera de Presupuesto</span>

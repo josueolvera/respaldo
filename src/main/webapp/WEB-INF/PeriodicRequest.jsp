@@ -39,18 +39,12 @@
               minDate: moment().add(1, 'minutes')
               }).data();
 
-              this.timePickerFechaVencimiento = $('#dateFechaVencimiento').datetimepicker({
-                locale: 'es',
-                format: 'DD-MM-YYYY',
-                useCurrent: false,
-                minDate: moment().add(1, 'minutes')
-                }).data();
-
             this.obtainUserInSession();
             this.obtainAllUsers();
             this.obtainSuppliers();
             this.obtainCurrencies();
             this.obtainAllPeriods();
+            this.obtainInformationAutorization();
             this.obtainRequestInformation.idRequestCategory= this.RequestCategory;
             this.$http.get(ROOT_URL+"/request-types/request-category/"+ this.obtainRequestInformation.idRequestCategory)
                     .success(function (data)
@@ -266,7 +260,10 @@
               this.$http.post(ROOT_URL+"/requests", JSON.stringify(this.objectRequest)).
               success(function(data)
               {
-                showAlert("Registro de solicitud exitoso, ahora puedes agregar las cotizaciones")
+                showAlert("Registro de solicitud exitoso, ahora puedes agregar las cotizaciones");
+                history.pushState("", "BID Group: Solicitudes", "periodica/" + data.idRequest)
+                this.idRequest = data.idRequest;
+                this.isUpdate = true;
                 this.fillRequestInformation(data);
               }).error(function(data)
               {
@@ -494,7 +491,7 @@
             matchEstimationInfo: function(responseOfEstimation, responseOfFileUpload, cotizacion)
             {
               cotizacion.idEstimation= responseOfEstimation.idEstimation;
-              cotizacion.fileName= responseOfFileUpload.fileName;
+              cotizacion.fileNameActual= responseOfFileUpload.fileName;
               cotizacion.outOfBudget= responseOfEstimation.outOfBudget;
               cotizacion.idEstimationStatus= responseOfEstimation.estimationStatus.idEstimationStatus;
               cotizacion.idUserEstimation= responseOfEstimation.userEstimation.idUser;
@@ -521,6 +518,7 @@
             },
             matchInformationUpdate: function(data)
             {
+
               var self= this;
               this.isUpdate= true;
               this.obtainRequestInformation.idRequestType= data.requestTypeProduct.idRequestType;
@@ -556,15 +554,17 @@
               }).error(function(data){
                 showAlert("Ha habido un error al obtener la informacion de las cotizacion", {type:3});
               });
-              this.obtainInformationAutorization(); Checar
+
             },
             matchInformationEstimationsUpdate: function(data)
             {
               var self = this;
                 data.forEach(function(element)
                 {
+                  console.log(data);
                   var cotizacion= self.createCotizacion();
                   cotizacion.idEstimation= element.idEstimation;
+                  cotizacion.fileNameActual= element.fileName;
                   cotizacion.amount = element.amount;
                   cotizacion.rate= element.rate;
                   cotizacion.outOfBudget = element.outOfBudget;
@@ -661,6 +661,7 @@
             },
             prepareModalPeriodicPayment: function(cotizacion)
             {
+              console.log(cotizacion);
               $("#periodicPayment").modal("show");
               this.periodicPayment.amount= cotizacion.amount;
               this.periodicPayment.idCurrency= cotizacion.idCurrency;
@@ -684,7 +685,7 @@
                  this.periodicPayment.rate = data.rate;
                  this.periodicPayment.initialDate = data.initialDateFormats.dateNumber;
                  this.periodicPayment.dueDate = data.dueDateFormats.dateNumber;
-                 this.obtainInformationAutorization();
+
 
                }).error(function(data)
                {
@@ -775,7 +776,7 @@
 
               }).error(function(data)
               {
-                showAlert("No se ha podido obtener la informacion de la autorizacion");
+                //showAlert("No se ha podido obtener la informacion de la autorizacion");
               });
             },
             autorizarSolicitudIndividual: function(info)
@@ -860,6 +861,19 @@
             exit: function()
             {
               window.location.href= ROOT_URL;
+            },
+            activarTimePickerFinal: function(fechainicial)
+            {
+              var fecha= moment(fechainicial, 'DD-MM-YYYY').format('YYYY-MM-DD');
+              var fechafinal = moment(fecha).add(1, "day");
+
+                this.timePickerFechaVencimiento = $('#dateFechaVencimiento').datetimepicker({
+                locale: 'es',
+                format: 'DD-MM-YYYY',
+                useCurrent: false,
+                minDate: fechafinal
+              }).data();
+
             }
 
           },
@@ -911,355 +925,359 @@
     <jsp:body>
       <div id="contenidos">
 
-          <div class="container-fluid" style="margin-left: 100px">
+        <div class="container-fluid" style="margin-left: 100px">
 
-            <form v-on:submit.prevent="saveRequest">
-            <div class="row">
-              <div class="col-xs-4">
-              <h1>Solicitud Periodica</h1>
-              </div>
-              <div class="col-xs-4 col-xs-offset-4">
-                <label>
-                  Solicitante
-                </label>
-                <input class="form-control" type="text" name="name" value="" disabled="true" v-model="userRequest">
-              </div>
+          <form v-on:submit.prevent="saveRequest">
+          <div class="row">
+            <div class="col-xs-4">
+            <h1>Solicitud Periodica</h1>
             </div>
-            <br>
-            <div class="row">
-              <div class="col-xs-2">
-               <label>
-                 Tipo de Solicitud
-               </label>
-               <select class="form-control" v-model="obtainRequestInformation.idRequestType" :disabled="desactivarCombos || isUpdate" @change="obtainProductType" required>
-                 <option v-for="RequestType in RequestTypes"
-                   value="{{RequestType.idRequestType}}">{{RequestType.requestType}}
-                 </option>
-               </select>
-              </div>
-
-              <div class="col-xs-2">
-                <label>
-                  Tipo de Producto
-                </label>
-                <select class="form-control" v-model="obtainRequestInformation.idProductType" :disabled="desactivarCombos || isUpdate"
-                  @change="obtainProducts" required>
-                  <option v-for="ProductType in ProductTypes" value="{{ProductType.idProductType}}">
-                    {{ProductType.productType}}
-                  </option>
-                </select>
-              </div>
-
-              <div class="col-xs-2">
-                <label>
-                  Productos
-                </label>
-                <select class="form-control" v-model="idProducto" id="selectProducto" :disabled="isUpdate" required>
-                  <option v-for="Product in Productos" value="{{Product.idProduct}}">
-                    {{Product.product}}
-                  </option>
-                </select>
-              </div>
-
-              <div class="col-xs-1">
-                <div class="col-xs-6">
-                  <button type="button" class="btn btn-default" style="margin-top: 25px; margin-left: -33px"
-                    v-on:click="saveProduct" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Agregar Producto">
-                    <span class="glyphicon glyphicon-plus"></span>
-                  </button>
-                </div>
-              </div>
-
-              <div class="col-xs-5">
-                <label>
-                  Centro de Costos
-                </label>
-                <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
-                @change="obtainRequestInfo" :disabled="isUpdate">
-                  <option></option>
-                  <option v-for="user in Users" value="{{user.idUser}}">
-                    <span v-if="user.dwEmployee.employee.fullNameReverse != '' ">{{user.dwEmployee.employee.fullNameReverse}}</span>
-                    <span v-if="user.dwEmployee.employee.fullNameReverse == ''"><{{user.mail}}></span>
-                  </option>
-                </select>
-              </div>
+            <div class="col-xs-4 col-xs-offset-4">
+              <label>
+                Solicitante
+              </label>
+              <input class="form-control" type="text" name="name" value="" disabled="true" v-model="userRequest">
             </div>
-            <br>
-              <div class="row">
-                <div class="col-xs-12">
-                  <label>
-                    Lista de Productos
-                  </label>
-                </div>
-              </div>
-
-              <div class="row" v-for="produc in objectRequest.products">
-                <div class="col-xs-4">
-                  <div class="col-xs-4">
-                    {{produc.descripcion}}
-                  </div>
-                  <div class="col-xs-2 text-left">
-                    <button class="btn btn-default" @click="deleteProduct(produc)" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Quitar Producto">
-                      <span class="glyphicon glyphicon-remove"></span>
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-              <br>
-            <div class="row">
-              <div class="col-xs-12">
-                <label>
-                  Descripción del Servicio
-                </label>
-                <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.description"
-                  :disabled="isUpdate" required></textarea>
-              </div>
-            </div>
-            <br>
-            <div class="row">
-              <div class="col-xs-12">
-                <label>
-                  Motivo de Contratación
-                </label>
-                <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.purpose"
-                  :disabled="isUpdate" required></textarea>
-              </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-xs-2">
+             <label>
+               Rubro
+             </label>
+             <select class="form-control" v-model="obtainRequestInformation.idRequestType" :disabled="desactivarCombos || isUpdate" @change="obtainProductType" required>
+               <option v-for="RequestType in RequestTypes"
+                 value="{{RequestType.idRequestType}}">{{RequestType.requestType}}
+               </option>
+             </select>
             </div>
 
-            <br>
-            <div class="row">
-              <div class="col-xs-6 text-left">
-                <button class="btn btn-success" :disabled="desactivarGuardar||isSavingNow" v-if="desaparecer">Guardar Solicitud</button>
-                <button type="button" class="btn btn-success" v-if="!desaparecer" @click="exit">Salir</button>
-              </div>
-              <div class="col-xs-6 text-right">
-                <button type="button" class="btn btn-default" @click="newCotizacion" v-if="objectRequest.request.isSaved || isUpdate">Agregar Cotización
+            <div class="col-xs-2">
+              <label>
+                Producto
+              </label>
+              <select class="form-control" v-model="obtainRequestInformation.idProductType" :disabled="desactivarCombos || isUpdate"
+                @change="obtainProducts" required>
+                <option></option>
+                <option v-for="ProductType in ProductTypes" value="{{ProductType.idProductType}}">
+                  {{ProductType.productType}}
+                </option>
+              </select>
+            </div>
+
+            <div class="col-xs-2">
+              <label>
+                Tipo de Producto
+              </label>
+              <select class="form-control" v-model="idProducto" id="selectProducto" :disabled="isUpdate" required>
+                <option></option>
+                <option v-for="Product in Productos" value="{{Product.idProduct}}">
+                  {{Product.product}}
+                </option>
+              </select>
+            </div>
+
+            <div class="col-xs-1">
+              <div class="col-xs-6">
+                <button type="button" class="btn btn-default" style="margin-top: 25px; margin-left: -33px"
+                  v-on:click="saveProduct" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Agregar Producto">
+                  <span class="glyphicon glyphicon-plus"></span>
                 </button>
               </div>
             </div>
 
-          </form>
-          <br>
-          <div class="row" v-for="cotizacion in estimations">
-            <form v-on:submit.prevent="saveEstimations(cotizacion)" id="form-{{cotizacion.indexOfForm}}">
-            <div class="col-xs-12">
-              <div class="panel panel-default">
-                <div class="panel-heading" class="panel-title">
-                  <div class="row">
-                    <div data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" aria-expanded="false"
-                         aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer"
-                         @click="setIsCollapsed(cotizacion)">
-                      <div class="col-xs-4 text-left">
-                        <div class="col-xs-4">
-                          <h4 class="panel-title">Cotización
-                          </h4>
-                        </div>
-                        <div class="col-xs-8">
-                          <h4 class="panel-title">Monto MXN: {{cotizacion.amount * cotizacion.rate}} <br> Monto en {{cotizacion.idCurrency | filterCurrency}}: {{cotizacion.amount}}</h4>
-                        </div>
-                        </div>
-                      </div>
-                      <div class="col-xs-4" >
-                        <span class="label label-danger" v-if="cotizacion.outOfBudget>0">Cotización Fuera de Presupuesto</span>
-                      </div>
-                    </div>
-                    <div>
-                      <div class="col-xs-4">
-                        <div class="col-xs-6">
 
-                      </div>
-                      <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0" :disabled="isSavingNow">
-                        <button type="submit" class="btn btn-sm btn-default" data-toggle="tooltip" data-placement="top" title="Guardar Cotización">
-                          <span class="glyphicon glyphicon-floppy-disk"></span>
-                        </button>
-                      </div>
-                      <div class="col-xs-2 text-right">
-                        <button type="button" class="btn btn-sm btn-default" @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip" data-placement="top" title="Eliminar Cotización">
-                          <span class="glyphicon glyphicon-remove"></span>
-                        </button>
-                      </div>
-
-                        <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation > 0 && cotizacion.isCollapsed == true">
-                        <button class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="top" title="Modificar Cotización">
-                          <span class="glyphicon glyphicon-pencil"></span>
-                        </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="panel-body collapse {{cotizacion.expanded}}" id="collapse{{cotizacion.indexOfForm}}">
-                  <div class="row">
-                    <div class="col-xs-2">
-                      <label>
-                        Proveedor
-                      </label>
-                      <select class="form-control" v-model="cotizacion.idSupplier"
-                        @change="obtainAccounts(cotizacion)" required="true">
-                        <option></option>
-                        <option v-for="supplier in suppliers" value="{{supplier.idProvider}}">
-                          {{supplier.providerName}}
-                        </option>
-                      </select>
-                    </div>
-                    <div class="col-xs-2">
-                      <label>
-                        Cuenta Bancaria
-                      </label>
-                      <select class="form-control" v-model="cotizacion.idAccount" required="true">
-                        <option></option>
-                        <option v-for="accounts in cotizacion.accountSupplier" value="{{accounts.idAccount}}">
-                          {{accounts.account.accountNumber}}
-                        </option>
-                      </select>
-                    </div>
-                    <div class="col-xs-2">
-                      <label>
-                        Tipo de Moneda
-                      </label>
-                      <select class="form-control" v-model="cotizacion.idCurrency" required="true" @change="validateCurrency(cotizacion)">
-                        <option></option>
-                        <option v-for="curr in currencies" value="{{curr.idCurrency}}">
-                          {{curr.currency}}
-                        </option>
-                      </select>
-                    </div>
-                    <div class="col-xs-2">
-                      <label>
-                        Monto
-                      </label>
-                      <div class="input-group">
-                        <span class="input-group-addon">$</span>
-                        <input number class="form-control" placeholder="" v-model="cotizacion.amount" @change="validateAmount(cotizacion)" required="true">
-                      </div>
-                    </div>
-                    <div class="col-xs-2">
-                      <label>
-                        Tipo de Cambio
-                      </label>
-                      <div class="input-group">
-                        <span class="input-group-addon">$</span>
-                        <input number class="form-control" placeholder="" v-model="cotizacion.rate" @change="validateRate(cotizacion)"
-                          :disabled="flagrate" required="true">
-                      </div>
-                    </div>
-                  </div>
-                  <br>
-                  <div class="row">
-                    <div class="col-xs-4">
-                      <label>
-                        Archivo de la Cotización
-                      </label>
-                      <input type="file" name="file" class="form-control"
-                       v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}"
-                             accept="application/pdf,
-                                     image/*,
-                                     application/msword,
-                                     application/vnd.openxmlformats-officedocument.wordprocessingml.document">
-                    </div>
-                    <div class="col-xs-1" v-if="cotizacion.idEstimation > 0">
-                      <p style="margin-top: 25px">
-                      <a :href="attachment + cotizacion.idEstimation">
-                        <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Descargar">
-                          <span class="glyphicon glyphicon-download" style="font-size: 17px"><span>
-                        </button>
-                      </a>
-                      </p>
-                    </div>
-                    <div class="col-xs-2">
-                      <label>
-                        Archivo Actual
-                      </label>
-                      <p>
-                        {{cotizacion.fileNameActual}}
-                      </p>
-                    </div>
-                    <div class="col-xs-2">
-                      <button type="button" class="btn btn-default" @click="prepareModalPeriodicPayment(cotizacion)"
-                       style="margin-top: 25px" v-if="cotizacion.idEstimationStatus== 2">Agregar Informacion de Pago
-                      </button>
-                    </div>
-                    <div class="col-xs-2 text-right">
-                      <button type="button" class="btn btn-default" name="button"
-                        v-if="cotizacion.idEstimationStatus== 1" style="margin-top:25px"
-                        @click="autorizarCotizacion(cotizacion)">
-                        Autorizar Cotización
-                      </button>
-                      <button type="button" class="btn btn-default" name="button"
-                        v-if="cotizacion.idEstimationStatus== 2 && isAutoriced" style="margin-top:25px"
-                        @click="cancelarAutorizacion">
-                        Cancelar Aprobación
-                      </button>
-                      <button type="button" class="btn btn-default" name="button"
-                        v-if="!(isAutoriced)" style="margin-top:25px"
-                        @click="autorizarCotizacion(cotizacion)">
-                        Autorizar Cotización
-                      </button>
-
-                    </div>
-
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </form>
+            <div class="col-xs-5">
+              <label>
+                Centro de Costos
+              </label>
+              <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
+              @change="obtainRequestInfo" :disabled="isUpdate">
+                <option></option>
+                <option v-for="user in Users" value="{{user.idUser}}">
+                  <span v-if="user.dwEmployee.employee.fullNameReverse != '' ">{{user.dwEmployee.employee.fullNameReverse}}</span>
+                  <span v-if="user.dwEmployee.employee.fullNameReverse == ''"><{{user.mail}}></span>
+                </option>
+              </select>
             </div>
+          </div>
+          <br>
             <div class="row">
               <div class="col-xs-12">
                 <label>
-                  Autorizaciones de la Solicitud
+                  Lista de Productos
                 </label>
-                <table class="table table-striped">
-                  <thead>
-                    <th>
-                      Usuario
-                    </th>
-                    <th>
-                      Estatus
-                    </th>
-                    <th>
-                      Autorizar
-                    </th>
-                    <th>
-                      Detalles
-                    </th>
-                  </thead>
-                  <tbody>
-                    <tr v-for="info in infoAutorization.authorizations">
-                      <td>
-                      {{info.users.dwEmployee.employee.fullName}}
-                      </td>
-                      <td>
-                        <span class="label label-success" v-if="info.idAuthorizationStatus == 2">Autorizado</span>
-                        <span class="label label-info" v-if="info.idAuthorizationStatus == 1">Pendiente</span>
-                        <span class="label label-danger" v-if="info.idAuthorizationStatus == 3">Rechazado</span>
-                      </td>
-                      <td>
-                        <button type="button" class="btn btn-success btn-sm" name="button" @click="autorizarSolicitudIndividual(info)"
-                          v-if="info.idAuthorizationStatus == 1 & info.idUser == userInSession.idUser">Autorizar</button>
-                        <button type="button" class="btn btn-danger btn-sm" name="button" @click="rechazarSolicitudIndividual(info)"
-                          v-if="info.idAuthorizationStatus == 1 & info.idUser == userInSession.idUser">Rechazar</button>
-
-                      </td>
-                      <td>
-                        <textarea name="name" rows="3" cols="40" v-model="info.details" v-if="info.idAuthorizationStatus == 1">
-
-                        </textarea>
-                        <textarea name="name" rows="3" cols="40" v-model="info.details | filterNull"
-                          v-if="info.idAuthorizationStatus == 3 || info.idAuthorizationStatus == 2" disabled="true" >
-
-                        </textarea>
-                      </td>
-                    </tr>
-                  </tbody>
-
-                </table>
-
               </div>
             </div>
 
+            <div class="row" v-for="produc in objectRequest.products">
+              <div class="col-xs-4">
+                <div class="col-xs-4">
+                  {{produc.descripcion}}
+                </div>
+                <div class="col-xs-2 text-left">
+                  <button class="btn btn-default" @click="deleteProduct(produc)" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Quitar Producto">
+                    <span class="glyphicon glyphicon-remove"></span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+            <br>
+          <div class="row">
+            <div class="col-xs-12">
+              <label>
+                Descripción del Servicio
+              </label>
+              <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.description"
+                :disabled="isUpdate" required></textarea>
+            </div>
           </div>
+          <br>
+          <div class="row">
+            <div class="col-xs-12">
+              <label>
+                Motivo del Servicio
+              </label>
+              <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.purpose"
+                :disabled="isUpdate" required></textarea>
+            </div>
+          </div>
+
+          <br>
+          <div class="row">
+            <div class="col-xs-6 text-left">
+              <button class="btn btn-success" :disabled="desactivarGuardar||isSavingNow" v-if="desaparecer">Guardar Solicitud</button>
+              <button type="button" class="btn btn-success" v-if="!desaparecer" @click="exit">Salir</button>
+            </div>
+            <div class="col-xs-6 text-right">
+              <button type="button" class="btn btn-default" @click="newCotizacion"
+                v-if="objectRequest.request.isSaved || isUpdate ">Agregar Cotización
+              </button>
+            </div>
+          </div>
+
+        </form>
+        <br>
+        <div class="row" v-for="cotizacion in estimations">
+          <form v-on:submit.prevent="saveEstimations(cotizacion)" id="form-{{cotizacion.indexOfForm}}">
+          <div class="col-xs-12">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <div class="row">
+                  <div data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" aria-expanded="false"
+                       aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer"
+                       @click="setIsCollapsed(cotizacion)">
+                    <div class="col-xs-4 text-left">
+                      <div class="col-xs-4">
+                        <h3 class="panel-title">Cotización
+                        </h3>
+                      </div>
+                      <div class="col-xs-8">
+                        <h4 class="panel-title" v-if="cotizacion.idCurrency> 0">Monto MXN: {{cotizacion.amount * cotizacion.rate}} <br> Monto en {{cotizacion.idCurrency | filterCurrency}}: {{cotizacion.amount}}</h4>
+                      </div>
+                    </div>
+                    <div class="col-xs-4" >
+                      <span class="label label-danger" v-if="cotizacion.outOfBudget == 1">Cotización Fuera de Presupuesto</span>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="col-xs-4">
+                      <div class="col-xs-6">
+
+                    </div>
+                    <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0">
+                      <button type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Guardar Cotización">
+                        <span class="glyphicon glyphicon-floppy-disk"></span>
+                      </button>
+                    </div>
+                    <div class="col-xs-2 text-right">
+                      <button type="button" class="btn btn-sm btn-default"
+                        @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Eliminar Cotización">
+                        <span class="glyphicon glyphicon-remove"></span>
+                      </button>
+                    </div>
+
+                      <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation > 0 && cotizacion.isCollapsed == true">
+                      <button type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Modificar Cotización">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                      </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="panel-body collapse {{cotizacion.expanded}}" id="collapse{{cotizacion.indexOfForm}}">
+                <div class="row">
+                  <div class="col-xs-2">
+                    <label>
+                      Proveedor
+                    </label>
+                    <select class="form-control" v-model="cotizacion.idSupplier"
+                      @change="obtainAccounts(cotizacion)" required="true">
+                      <option></option>
+                      <option v-for="supplier in suppliers" value="{{supplier.idProvider}}">
+                        {{supplier.providerName}}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="col-xs-2">
+                    <label>
+                      Cuenta Bancaria
+                    </label>
+                    <select class="form-control" v-model="cotizacion.idAccount" required="true">
+                      <option></option>
+                      <option v-for="accounts in cotizacion.accountSupplier" value="{{accounts.idAccount}}">
+                        {{accounts.account.accountNumber}}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="col-xs-2">
+                    <label>
+                      Tipo de Moneda
+                    </label>
+                    <select class="form-control" v-model="cotizacion.idCurrency" required="true" @change="validateCurrency(cotizacion)">
+                      <option></option>
+                      <option v-for="curr in currencies" value="{{curr.idCurrency}}">
+                        {{curr.currency}}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="col-xs-2">
+                    <label>
+                      Monto
+                    </label>
+                    <div class="input-group">
+                      <span class="input-group-addon">$</span>
+                      <input number class="form-control" placeholder="" v-model="cotizacion.amount"
+                        @change="validateAmount(cotizacion)" required="true">
+                    </div>
+                  </div>
+                  <div class="col-xs-2">
+                    <label>
+                      Tipo de Cambio
+                    </label>
+                    <div class="input-group">
+                      <span class="input-group-addon">$</span>
+                      <input number class="form-control" :disabled="flagrate"
+                        v-model="cotizacion.rate" @change="validateRate(cotizacion)" required="true">
+                    </div>
+                  </div>
+                </div>
+                <br>
+                <div class="row">
+                  <div class="col-xs-4">
+                    <label>
+                      Archivo de la Cotización
+                    </label>
+                    <input type="file" name="file" class="form-control"
+                     v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}"
+                           accept="application/pdf,
+                                   image/*,
+                                   application/msword,
+                                   application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+                  </div>
+                  <div class="col-xs-1" v-if="cotizacion.idEstimation > 0">
+                  <p style="margin-top: 25px">
+                  <a :href="attachment + cotizacion.idEstimation">
+                    <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Descargar">
+                      <span class="glyphicon glyphicon-download" style="font-size: 17px"><span>
+                    </button>
+                  </a>
+                  </p>
+                  </div>
+                  <div class="col-xs-2">
+                    <label>
+                      Archivo Actual
+                    </label>
+                    <p>
+                      {{cotizacion.fileNameActual}}
+                    </p>
+                  </div>
+                  <div class="col-xs-3">
+                    <button type="button" class="btn btn-default" @click="prepareModalPeriodicPayment(cotizacion)"
+                     style="margin-top: 25px" v-if="cotizacion.idEstimationStatus== 2">Agregar Informacion de Pago
+                    </button>
+                  </div>
+                  <div class="col-xs-2 text-right">
+                    <button type="button" class="btn btn-default" name="button"
+                      v-if="cotizacion.idEstimationStatus== 1" style="margin-top:25px"
+                      @click="autorizarCotizacion(cotizacion)">
+                      Autorizar Cotizacion
+                    </button>
+                    <button type="button" class="btn btn-default" name="button"
+                      v-if="cotizacion.idEstimationStatus== 2 && isAutoriced" style="margin-top:25px"
+                      @click="cancelarAutorizacion(cotizacion)">
+                      Cancelar Aprobacion
+                    </button>
+                    <button type="button" class="btn btn-default" name="button"
+                      v-if="!(isAutoriced)" style="margin-top:25px"
+                      @click="autorizarCotizacion(cotizacion)">
+                      Autorizar Cotizacion
+                    </button>
+
+                  </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <label>
+                Autorizaciones de la Solicitud.
+              </label>
+              <table class="table table-striped">
+                <thead>
+                  <th>
+                    Usuario
+                  </th>
+                  <th>
+                    Estatus
+                  </th>
+                  <th>
+                    Autorizar
+                  </th>
+                  <th>
+                    Detalles
+                  </th>
+                </thead>
+                <tbody>
+                  <tr v-for="info in infoAutorization.authorizations">
+                    <td>
+                      {{info.users.dwEmployee.employee.fullName}}
+                    </td>
+                    <td>
+                      <span class="label label-success" v-if="info.idAuthorizationStatus == 2">Autorizado</span>
+                      <span class="label label-info" v-if="info.idAuthorizationStatus == 1">Pendiente</span>
+                      <span class="label label-danger" v-if="info.idAuthorizationStatus == 3">Rechazado</span>
+                    </td>
+                    <td>
+                      <button type="button" class="btn btn-success btn-sm" name="button" @click="autorizarSolicitudIndividual(info)"
+                        v-if="info.idAuthorizationStatus == 1 & info.idUser == userInSession.idUser">Autorizar</button>
+                      <button type="button" class="btn btn-danger btn-sm" name="button" @click="rechazarSolicitudIndividual(info)"
+                        v-if="info.idAuthorizationStatus == 1 & info.idUser == userInSession.idUser">Rechazar</button>
+
+                    </td>
+                    <td>
+                      <textarea name="name" rows="3" cols="40" v-model="info.details" v-if="info.idAuthorizationStatus == 1">
+
+                      </textarea>
+                      <textarea name="name" rows="3" cols="40" v-model="info.details | filterNull"
+                        v-if="info.idAuthorizationStatus == 3 || info.idAuthorizationStatus == 2" disabled="true" >
+
+                      </textarea>
+                    </td>
+                  </tr>
+                </tbody>
+
+              </table>
+
+            </div>
+          </div>
+        </div>
           <div class="modal fade" id="periodicPayment" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
@@ -1316,9 +1334,9 @@
                       </label>
                       <div class="form-group">
                       <div class='input-group date' id='dateFechaVencimiento'>
-                          <input type='text' class="form-control" v-model="periodicPayment.dueDate">
+                          <input type='text' class="form-control" v-model="periodicPayment.dueDate" >
                           <span class="input-group-addon">
-                              <span class="glyphicon glyphicon-calendar"></span>
+                              <span class="glyphicon glyphicon-calendar" @click="activarTimePickerFinal(periodicPayment.initialDate)"></span>
                           </span>
                       </div>
                       </div>
@@ -1366,9 +1384,6 @@
               </div>
             </div>
           </div>
-          <pre>
-            {{ $data.suppliers | json}}
-          </pre>
 
           </div> <!-- container-fluid -->
 
