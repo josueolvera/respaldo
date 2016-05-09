@@ -148,7 +148,8 @@
           isAutoriced: true,
           infoAutorization: '',
           userRequest: '',
-          flagrate: false
+          flagrate: false,
+          desaparecer: true
           },
           methods:
           {
@@ -284,10 +285,7 @@
               this.objectRequest.request.isSaved = true;
               this.desactivarGuardar= true;
               this.isSavingNow= false;
-              setInterval(function()
-              {
-                window.location.href= ROOT_URL+"/siad/periodica/"+datos.idRequest
-              },2000);
+              this.desaparecer= false;
             }
             ,
             obtainAllUsers: function()
@@ -305,6 +303,7 @@
               amount: '',
               rate: '',
               fileName: '',
+              fileNameActual: '',
               outOfBudget: '',
               idRequest: '',
               idEstimationStatus: '',
@@ -473,12 +472,9 @@
                 success(function(data)
                 {
                   showAlert("Registro de cotizacion Exitoso");
+                  cotizacion.fileNameActual= data.fileName;
                   responseOfFileUpload= data;
                   this.matchEstimationInfo(responseOfEstimation, responseOfFileUpload, cotizacion);
-                  setInterval(function()
-                  {
-                    window.location.reload()
-                  },2500);
                   //window.location.href= ROOT_URL+"/siad/periodica/54";
                 }).error(function(data){
                   showAlert("La cotizacion se ha guardado, pero hubo un error al guardar el archivo");
@@ -858,6 +854,10 @@
                   cotizacion.rate=1;
                   showAlert("No puedes tener numeros negativos para tipo de cambio de las cotizaciones");
               }
+            },
+            exit: function()
+            {
+              window.location.href= ROOT_URL;
             }
 
           },
@@ -886,7 +886,18 @@
             {
               return param;
             }
+          },
+          filterCurrency: function(idCurrency)
+          {
+            var retorno;
+            this.currencies.forEach(function(element){
+                if (idCurrency == element.idCurrency)
+              {
+               retorno= element.acronym;
+              }
+            });
 
+            return retorno;
           }
 
         }
@@ -1017,7 +1028,8 @@
             <br>
             <div class="row">
               <div class="col-xs-6 text-left">
-                <button class="btn btn-success" :disabled="desactivarGuardar || isSavingNow">Guardar Solicitud</button>
+                <button class="btn btn-success" :disabled="desactivarGuardar||isSavingNow" v-if="desaparecer">Guardar Solicitud</button>
+                <button type="button" class="btn btn-success" v-if="!desaparecer" @click="exit">Salir</button>
               </div>
               <div class="col-xs-6 text-right">
                 <button type="button" class="btn btn-default" @click="newCotizacion" v-if="objectRequest.request.isSaved || isUpdate">Agregar Cotización
@@ -1037,12 +1049,13 @@
                          aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer"
                          @click="setIsCollapsed(cotizacion)">
                       <div class="col-xs-4 text-left">
-                        <div class="col-xs-6">
+                        <div class="col-xs-4">
                           <h4 class="panel-title">Cotización
                           </h4>
                         </div>
-                        <div class="col-xs-6">
-                          <h4 class="panel-title">Monto $ {{cotizacion.amount}}</h4>
+                        <div class="col-xs-8">
+                          <h4 class="panel-title">Monto MXN: {{cotizacion.amount * cotizacion.rate}} <br> Monto en {{cotizacion.idCurrency | filterCurrency}}: {{cotizacion.amount}}</h4>
+                        </div>
                         </div>
                       </div>
                       <div class="col-xs-4" >
@@ -1132,7 +1145,7 @@
                   </div>
                   <br>
                   <div class="row">
-                    <div class="col-xs-5">
+                    <div class="col-xs-4">
                       <label>
                         Archivo de la Cotización
                       </label>
@@ -1143,7 +1156,7 @@
                                      application/msword,
                                      application/vnd.openxmlformats-officedocument.wordprocessingml.document">
                     </div>
-                    <div class="col-xs-2" v-if="cotizacion.idEstimation > 0">
+                    <div class="col-xs-1" v-if="cotizacion.idEstimation > 0">
                       <p style="margin-top: 25px">
                       <a href="../../estimations/attachment/download/{{cotizacion.idEstimation}}">
                         <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Descargar">
@@ -1153,12 +1166,17 @@
                       </p>
                     </div>
                     <div class="col-xs-2">
+                      <label>
+                        Archivo Actual
+                      </label>
+                      <p>
+                        {{cotizacion.fileNameActual}}
+                      </p>
+                    </div>
+                    <div class="col-xs-2">
                       <button type="button" class="btn btn-default" @click="prepareModalPeriodicPayment(cotizacion)"
                        style="margin-top: 25px" v-if="cotizacion.idEstimationStatus== 2">Agregar Informacion de Pago
                       </button>
-                    </div>
-                    <div class="col-xs-1">
-
                     </div>
                     <div class="col-xs-2 text-right">
                       <button type="button" class="btn btn-default" name="button"

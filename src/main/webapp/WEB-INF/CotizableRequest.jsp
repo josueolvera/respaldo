@@ -25,10 +25,6 @@
           },
           ready: function ()
           {
-            this.timePicker = $('#datetimepicker1').datetimepicker({
-              locale: 'es',
-              format: 'YYYY/MM/DD'
-              }).data();
 
             this.timePickerPagoInicial = $('#datePagoInicial').datetimepicker({
               locale: 'es',
@@ -152,7 +148,16 @@
             infoAutorization: '',
             userRequest: '',
             flagrate: false,
-            desaparecer: true
+            desaparecer: true,
+            pagofijo: {
+              initialDateView: '',
+              initialDate: '',
+              idPeriod: '',
+              amount: '',
+              totalPayments: '',
+              idCurrency: '',
+              rate: ''
+            }
           },
           methods:
           {
@@ -287,7 +292,7 @@
               this.objectRequest.request.isSaved = true;
               this.desactivarGuardar= true;
               this.isSavingNow= false;
-              this,desaparecer= true;
+              this.desaparecer= false;
               /*setInterval(function()
               {
                 window.location.href= ROOT_URL+"/siad/cotizable/"+datos.idRequest
@@ -310,6 +315,7 @@
               amount: '',
               rate: '',
               fileName: '',
+              fileNameActual: '',
               outOfBudget: '',
               idRequest: '',
               idEstimationStatus: '',
@@ -445,17 +451,10 @@
                     success(function(data)
                     {
                       showAlert("Modificacion Realizada con Exito");
-                      setInterval(function()
-                      {
-                        window.location.reload()
-                      },2500);
+                      console.log(data);
                       this.isSavingNow= false;
                     }).error(function(data){
                       showAlert("La modificacion se ha realizado, pero hubo un error al guardar el archivo");
-                      setInterval(function()
-                      {
-                        window.location.reload()
-                      },2500);
                       this.isSavingNow= false;
                     });
 
@@ -498,19 +497,12 @@
                 success(function(data)
                 {
                   showAlert("Registro de cotizacion Exitoso");
-                  setInterval(function()
-                  {
-                    window.location.reload()
-                  },2500);
+                  cotizacion.fileNameActual= data.fileName;
                   responseOfFileUpload= data;
                   this.isSavingNow= false;
                   this.matchEstimationInfo(responseOfEstimation, responseOfFileUpload, cotizacion);
                 }).error(function(data){
                   showAlert("La cotizacion se ha guardado, pero hubo un error al guardar el archivo");
-                  setInterval(function()
-                  {
-                    window.location.reload()
-                  },2500);
                   this.isSavingNow= false;
                 });
 
@@ -533,6 +525,7 @@
               cotizacion.userEstimation.mail= responseOfEstimation.userEstimation.mail;
               cotizacion.isSaved= false;
               cotizacion.requiredFile= false;
+
             },
             verifyUpdateOrSave: function()
             {
@@ -549,7 +542,6 @@
             },
             matchInformationUpdate: function(data)
             {
-              console.log(data);
               var self= this;
               this.isUpdate= true;
               this.obtainRequestInformation.idRequestType= data.requestTypeProduct.idRequestType;
@@ -685,9 +677,18 @@
             prepareModalPeriodicPayment: function(cotizacion)
             {
               $("#periodicPayment").modal("show");
+              $('#datetimepicker1').datetimepicker({
+                locale: 'es',
+                format: 'DD-MM-YYYY',
+                useCurrent: false,
+                minDate: moment().add(1, 'minutes')
+                });
               this.periodicPayment.amount= cotizacion.amount;
               this.periodicPayment.idCurrency= cotizacion.idCurrency;
               this.periodicPayment.rate= cotizacion.rate;
+              this.pagofijo.idCurrency= cotizacion.idCurrency;
+              this.pagofijo.rate= cotizacion.rate;
+
               this.obtainAllAccountsPayable();
             },
             generarPagosFijos: function()
@@ -723,6 +724,15 @@
                 disabledDates: disableDates
               }).data();
             },
+            activarTimePickerPagosFijos: function()
+            {
+              this.timePicker = $('#datetimepicker1').datetimepicker({
+                locale: 'es',
+                format: 'DD-MM-YYYY',
+                useCurrent: false,
+                minDate: moment().add(1, 'minutes')
+                }).data();
+            },
             emptyEsquema: function()
             {
               this.AccountsPayables= [];
@@ -731,6 +741,7 @@
             },
             generarPagosVariables: function()
             {
+              var self= this;
               var accountPayable = this.createAccountPayable();
               accountPayable.folio= this.periodicPayment.folio;
               accountPayable.amount=this.amountOfPay;
@@ -744,76 +755,143 @@
               {
                 accountPayable.idDatePicker= Math.round(Math.random()*1000);
               }
-              this.AccountsPayables.push(accountPayable);
+
+              if (this.AccountsPayables.length == 0)
+              {
+                  if (this.amountOfPay > this.periodicPayment.amount)
+                  {
+                    showAlert("El monto(s) del pago deben de ser igual al total de la cotizacion");
+                  }
+                  else
+                  {
+                    this.AccountsPayables.push(accountPayable);
+                  }
+              }
+              else
+              {
+               var total= 0;
+               this.AccountsPayables.forEach(function(element)
+               {
+                 total += element.amount;
+               });
+               total += this.amountOfPay;
+               if (total > self.periodicPayment.amount)
+               {
+                 showAlert("El monto(s) del pago deben de ser igual al total de la cotizacion");
+               }
+               else
+               {
+                 this.AccountsPayables.push(accountPayable);
+               }
+
+
+              }
+
+
 
             },
             saveAccountPayable: function()
             {
-              this.isSavingNow= true;
-              var self= this;
-              var totalPayments = this.AccountsPayables.length;
-              var counter= 1;
-              var aux = 0;
-              var res = "";
-              this.AccountsPayables.forEach(function(element)
+              if (this.optionPago == 1)
               {
-                element.totalPayments= totalPayments;
-                element.payNum= counter++;
-              });
+                this.pagofijo.initialDate = this.pagofijo.initialDateView;
+                var n = moment(this.pagofijo.initialDate,"DD-MM-YYYY").toISOString();
+                this.pagofijo.initialDate = n.slice(0,-1);
+                var montoTotalUsuario= this.pagofijo.totalPayments * this.pagofijo.amount ;
 
-              this.AccountsPayables.forEach(function(element)
-              {
-                console.log(element);
-                if (element.dueDate !== "")
+                if (montoTotalUsuario != this.periodicPayment.amount)
                 {
-                    var n = moment(element.dueDate,"DD-MM-YYYY").toISOString();
-                    element.dueDate = n.slice(0,-1);
-                  console.log(element.dueDate);
+                  showAlert("El monto(s) del pago deben de ser igual al total de la cotizacion");
                 }
-                aux = aux + parseFloat(element.amount);
-                console.log(aux);
-              });
+                else{
 
-              if(this.periodicPayment.amount != aux){
-                  showAlert("La cantidad no coincide");
+                this.$http.post(ROOT_URL+"/accounts-payable/periodic?folio="+this.periodicPayment.folio, JSON.stringify(this.pagofijo)).
+                success(function(data)
+                {
+                  showAlert("Registro de informacion de pago exitoso");
                   this.isSavingNow= false;
-                  return;
+                  $("#periodicPayment").modal("hide");
+                  setInterval(function()
+                  {
+                    window.location.reload()
+                  },2500);
+                }).error(function(data)
+                {
+                  showAlert("Ha fallado el registro de su informacion, intente nuevamente");
+                  this.isSavingNow= false;
+                });
+                }
+              }
+              else
+              {
+                  this.isSavingNow= true;
+                  var self= this;
+                  var totalPayments = this.AccountsPayables.length;
+                  var counter= 1;
+                  var aux = 0;
+                  var res = "";
+                  this.AccountsPayables.forEach(function(element)
+                  {
+                    element.totalPayments= totalPayments;
+                    element.payNum= counter++;
+                  });
+
+                  this.AccountsPayables.forEach(function(element)
+                  {
+                    console.log(element);
+                    if (element.dueDate !== "")
+                    {
+                        var n = moment(element.dueDate,"DD-MM-YYYY").toISOString();
+                        element.dueDate = n.slice(0,-1);
+                      console.log(element.dueDate);
+                    }
+                    aux = aux + parseFloat(element.amount);
+                    console.log(aux);
+                  });
+
+                  if(this.periodicPayment.amount != aux){
+                      showAlert("La cantidad no coincide");
+                      this.isSavingNow= false;
+                      return;
+                  }
+
+                  this.$http.post(ROOT_URL+"/accounts-payable/folio?folio="+this.periodicPayment.folio, JSON.stringify(this.AccountsPayables)).
+                  success(function(data)
+                  {
+                    showAlert("Registro de informacion de pago exitoso");
+                    this.isSavingNow= false;
+                    this.AccountsPayables.forEach(function(element)
+                    {
+                        data.forEach(function(el)
+                        {
+                          if (el.payNum == element.payNum)
+                          {
+                              element.idAccountPayable = el.idAccountPayable;
+                              element.paidAmount = el.paidAmount;
+                              element.creationDate = el.creationDateFormats.dateNumber;
+                              if (element.dueDate !== "")
+                              {
+                                 element.dueDate = el.dueDateFormats.dateNumber;
+                              }
+                              element.idAccountPayableStatus = el.accountPayableStatus.idAccountPayableStatus;
+                              element.idOperationType = el.operationType.idOperationType;
+                          }
+                        });
+                    });
+                    this.AccountsPayablesInfo = this.AccountsPayables;
+                    $("#periodicPayment").modal("hide");
+                    setInterval(function()
+                    {
+                      window.location.reload()
+                    },2500);
+                  }).error(function(data)
+                  {
+                    showAlert("Ha fallado el registro de su informacion, intente nuevamente");
+                    this.isSavingNow= false;
+                  });
+
               }
 
-              this.$http.post(ROOT_URL+"/accounts-payable/folio?folio="+this.periodicPayment.folio, JSON.stringify(this.AccountsPayables)).
-              success(function(data)
-              {
-                showAlert("Registro de informacion de pago exitoso");
-                this.isSavingNow= false;
-                this.AccountsPayables.forEach(function(element)
-                {
-                    data.forEach(function(el)
-                    {
-                      if (el.payNum == element.payNum)
-                      {
-                          element.idAccountPayable = el.idAccountPayable;
-                          element.paidAmount = el.paidAmount;
-                          element.creationDate = el.creationDateFormats.dateNumber;
-                          if (element.dueDate !== "")
-                          {
-                             element.dueDate = el.dueDateFormats.dateNumber;
-                          }
-                          element.idAccountPayableStatus = el.accountPayableStatus.idAccountPayableStatus;
-                          element.idOperationType = el.operationType.idOperationType;
-                      }
-                    });
-                });
-                this.AccountsPayablesInfo = this.AccountsPayables;
-                $("#periodicPayment").modal("hide");
-                setInterval(function()
-                {
-                  window.location.reload()
-                },2500);
-              }).error(function(data)
-              {
-                showAlert("Ha fallado el registro de su informacion, intente nuevamente");
-                this.isSavingNow= false;
-              });
             },
             convertDates: function(date)
             {
@@ -994,6 +1072,10 @@
                   cotizacion.rate=1;
                   showAlert("No puedes tener numeros negativos para tipo de cambio de las cotizaciones");
               }
+            },
+            exit: function()
+            {
+              window.location.href= ROOT_URL;
             }
           },
         filters:
@@ -1021,7 +1103,18 @@
             {
               return param;
             }
+          },
+          filterCurrency: function(idCurrency)
+          {
+            var retorno;
+            this.currencies.forEach(function(element){
+                if (idCurrency == element.idCurrency)
+              {
+               retorno= element.acronym;
+              }
+            });
 
+            return retorno;
           }
 
         }
@@ -1156,7 +1249,7 @@
             <div class="row">
               <div class="col-xs-6 text-left">
                 <button class="btn btn-success" :disabled="desactivarGuardar||isSavingNow" v-if="desaparecer">Guardar Solicitud</button>
-                <button class="btn btn-success" v-if="!desaparecer">Salir</button>
+                <button type="button" class="btn btn-success" v-if="!desaparecer" @click="exit">Salir</button>
               </div>
               <div class="col-xs-6 text-right">
                 <button type="button" class="btn btn-default" @click="newCotizacion"
@@ -1177,12 +1270,12 @@
                          aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer"
                          @click="setIsCollapsed(cotizacion)">
                       <div class="col-xs-4 text-left">
-                        <div class="col-xs-6">
+                        <div class="col-xs-4">
                           <h3 class="panel-title">Cotización
                           </h3>
                         </div>
-                        <div class="col-xs-6">
-                          <h4 class="panel-title">Monto $ {{cotizacion.amount}}</h4>
+                        <div class="col-xs-8">
+                          <h4 class="panel-title">Monto MXN: {{cotizacion.amount * cotizacion.rate}} <br> Monto en {{cotizacion.idCurrency | filterCurrency}}: {{cotizacion.amount}}</h4>
                         </div>
                       </div>
                       <div class="col-xs-4" >
@@ -1274,7 +1367,7 @@
                   </div>
                   <br>
                   <div class="row">
-                    <div class="col-xs-5">
+                    <div class="col-xs-4">
                       <label>
                         Archivo de la Cotización
                       </label>
@@ -1285,11 +1378,7 @@
                                      application/msword,
                                      application/vnd.openxmlformats-officedocument.wordprocessingml.document">
                     </div>
-                    <div class="col-xs-2" v-if="cotizacion.idEstimation > 0">
-                      <!-- <button type="button" class="btn btn-default"
-                        @click="downloadFile(cotizacion.idEstimation)" style="margin-top: 25px">Ver archivo
-                      </button>
-                    -->
+                    <div class="col-xs-1" v-if="cotizacion.idEstimation > 0">
                     <p style="margin-top: 25px">
                     <a href="../../estimations/attachment/download/{{cotizacion.idEstimation}}">
                       <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Descargar">
@@ -1299,13 +1388,17 @@
                     </p>
                     </div>
                     <div class="col-xs-2">
+                      <label>
+                        Archivo Actual
+                      </label>
+                      <p>
+                        {{cotizacion.fileNameActual}}
+                      </p>
+                    </div>
+                    <div class="col-xs-2">
                       <button type="button" class="btn btn-default" @click="prepareModalPeriodicPayment(cotizacion)"
                        style="margin-top: 25px" v-if="cotizacion.idEstimationStatus== 2">Agregar Informacion de Pago
                       </button>
-                    </div>
-
-                    <div class="col-xs-1">
-
                     </div>
                     <div class="col-xs-2 text-right">
                       <button type="button" class="btn btn-default" name="button"
@@ -1440,38 +1533,55 @@
                       </div>
                     </div>
                     <div class="row">
-                      <div class="col-xs-6" v-if="optionPago==1">
+                      <div class="col-xs-12" v-if="optionPago==1">
                         <div class="row">
-                          <div class="col-xs-6">
+                          <div class="col-xs-3">
                             <label>
                               Numero de Pagos
                             </label>
                             <div class="input-group">
                               <span class="input-group-addon">#</span>
-                              <input type="text" class="form-control" placeholder="" v-model="numberOfPay">
+                              <input number class="form-control" placeholder="" v-model="pagofijo.totalPayments">
                             </div>
                           </div>
-                          <div class="col-xs-6">
+                          <div class="col-xs-3">
                             <label>
                               Monto
                             </label>
                             <div class="input-group">
                               <span class="input-group-addon">$</span>
-                              <input number class="form-control" placeholder="" v-model="amountOfPay">
+                              <input number class="form-control" placeholder="" v-model="pagofijo.amount">
+                            </div>
+                          </div>
+                          <div class="col-xs-3">
+                            <label>
+                              Periodicidad
+                            </label>
+                            <select class="form-control" name="" v-model="pagofijo.idPeriod">
+                              <option></option>
+                              <option v-for="periodo in Periods" value="{{periodo.idPeriod}}">
+                                {{ periodo.period}}
+                              </option>
+                            </select>
+                          </div>
+                          <div class="col-xs-3">
+                            <label>
+                              Fecha Inicial de pago
+                            </label>
+                            <div class="form-group">
+                            <div class='input-group date' id='datetimepicker1' @click= "activarTimePickerPagosFijos">
+                                <input type='text' class="form-control"
+                                       v-model="pagofijo.initialDateView">
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
                             </div>
                           </div>
                         </div>
                         <br>
-                        <div class="row">
-                          <div class="col-xs-12 text-right">
-                            <button type="button" class="btn btn-default" name="button" @click="generarPagosFijos">
-                              Generar
-                            </button>
-                          </div>
-                        </div>
-
                       </div>
-                      <div class="col-xs-7" v-if="optionPago==2">
+                      <div class="col-xs-8" v-if="optionPago==2">
                         <div class="col-xs-6">
                           <label>
                             Monto de Pago
@@ -1516,7 +1626,7 @@
                             <div class="input-group">
                               <span class="input-group-addon">$</span>
                               <input number class="form-control"
-                              v-model="ap.amount">
+                              v-model="ap.amount" disabled="true">
                             </div>
                           </div>
                           <div class="col-xs-4">
@@ -1575,7 +1685,7 @@
                     </div>
                       <div class="row">
                         <div class="col-xs-12 text-right">
-                          <button type="button" class="btn btn-success" @click="saveAccountPayable" :disabled="isSavingNow">
+                          <button type="button" class="btn btn-success" @click="saveAccountPayable(optionPago)" :disabled="isSavingNow">
                             Guardar
                           </button>
                         </div>
@@ -1585,7 +1695,7 @@
             </div>
           </div>
           <pre>
-            {{ $data.desaparecer | json}}
+            {{ $data.pagofijo | json}}
           </pre>
 
           </div> <!-- container-fluid -->

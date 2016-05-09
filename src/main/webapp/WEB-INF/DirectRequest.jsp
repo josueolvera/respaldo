@@ -119,7 +119,8 @@
             AccountsPayables: [],
             infoAutorization: '',
             userRequest: '',
-            flagrate: false
+            flagrate: false,
+            desaparecer: true
 
         },
         methods:
@@ -364,6 +365,7 @@
               this.$http.get(ROOT_URL+"/requests/"+this.idRequest).
               success(function(data)
               {
+                this.desaparecer = false;
                 this.matchInformationUpdate(data);
               }).error(function(data){
                 showAlert("Ha habido un error al obtener la informacion");
@@ -571,6 +573,10 @@
               });
               this.flagrate = false;
             }
+          },
+          exit: function()
+          {
+            window.location.href= ROOT_URL;
           }
         },
       filters:
@@ -808,7 +814,8 @@
 
                   <div class="row">
                     <div class="col-xs-12 text-right">
-                      <button class="btn btn-success" :disabled="desactivarGuardar || isSavingNow">Guardar Solicitud</button>
+                      <button class="btn btn-success" :disabled="desactivarGuardar||isSavingNow" v-if="desaparecer">Guardar Solicitud</button>
+                      <button type="button" class="btn btn-success" v-if="!desaparecer" @click="exit">Salir</button>
                     </div>
                   </div>
                 </div>
