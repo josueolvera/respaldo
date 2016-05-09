@@ -1,6 +1,8 @@
 package mx.bidg.service;
 
+import mx.bidg.model.Accounts;
 import mx.bidg.model.ProviderAddress;
+import mx.bidg.model.Providers;
 
 import java.util.List;
 

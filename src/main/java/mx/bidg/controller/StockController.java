@@ -55,6 +55,9 @@ public class StockController {
     @Autowired
     private DwEmployeesService dwEmployeesService;
 
+    @Autowired
+    private EmployeesService employeesService;
+
     private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -70,6 +73,20 @@ public class StockController {
                 HttpStatus.OK
         );
     }
+
+//    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//    public ResponseEntity<String> save(@RequestBody) Integer idDistributor) throws IOException {
+//        List<Stocks> stock;
+//        if (idDistributor != null) {
+//            stock = stockService.findByDistributor(idDistributor);
+//        } else {
+//            stock = stockService.findAll();
+//        }
+//        return new ResponseEntity<>(
+//                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(stock),
+//                HttpStatus.OK
+//        );
+//    }
 
     @RequestMapping(
             value = "/{idStock}", method = RequestMethod.POST,
@@ -302,8 +319,8 @@ public class StockController {
         );
     }
 
-    @RequestMapping(value = "/{idStock}/assignments", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> saveAssignment(@PathVariable int idStock, @RequestBody String data) throws IOException {
+    @RequestMapping(value = "/{idStock}/assignments/{idEmployee}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> saveAssignment(@PathVariable int idStock,@PathVariable int idEmployee, @RequestBody String data) throws IOException {
         JsonNode jnode = mapper.readTree(data);
         DwEnterprises dwEnterprises = new DwEnterprises(jnode.get("idDwEnterprise").asInt());
         Stocks stock = stockService.findSimpleById(idStock);
@@ -312,9 +329,10 @@ public class StockController {
 
         stock.setDwEnterprises(dwEnterprises);
         assignment.setCurrentAssignment(0);
+        newAssignment.setIdEmmployee(idEmployee);
         newAssignment.setStocks(stock);
         newAssignment.setDwEnterprises(stock.getDwEnterprises());
-        newAssignment.setEmployee(assignment.getEmployee());
+        newAssignment.setEmployee(employeesService.findById(idEmployee));
         newAssignment.setAssignmentDate(LocalDateTime.now());
         newAssignment.setCurrentAssignment(1);
         newAssignment.setIdAccessLevel(1);

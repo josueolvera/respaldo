@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * @author Rafael Viveros
  * Created on 9/12/15.
@@ -22,5 +24,10 @@ public class CArticlesServiceImpl implements CArticlesService {
     @Override
     public CArticles findByProduct(CProducts product) {
         return articlesDao.findByProduct(product);
+    }
+
+    @Override
+    public List<CArticles> findAll() {
+        return articlesDao.findAll();
     }
 }

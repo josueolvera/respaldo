@@ -4,8 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.*;
-import mx.bidg.service.PhoneNumbersService;
-import mx.bidg.service.ProvidersService;
+import mx.bidg.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,9 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
-
-import mx.bidg.service.AccountsService;
-import mx.bidg.service.ProvidersAccountsService;
 
 /**
  *
@@ -38,6 +34,9 @@ public class ProvidersController {
 
     @Autowired
     private PhoneNumbersService phoneNumbersService;
+
+    @Autowired
+    private ProviderAddressService providerAddressService;
     
     private ObjectMapper mapper = new ObjectMapper();
     
@@ -88,11 +87,29 @@ public class ProvidersController {
             providersAccountsService.save(providerAccount);
         }
 
-        for (JsonNode node : jnode.get("phoneNumberList")){
+        for (JsonNode node : jnode.get("addressProvider")){
+            ProviderAddress providerAddress = new ProviderAddress();
+            providerAddress.setStreet(node.get("street").asText());
+            providerAddress.setCp(node.get("cp").asInt());
+            providerAddress.setNumExt(node.get("ext").asInt());
+            providerAddress.setNumInt(node.get("int").asInt());
+            providerAddress.setIdSettlement(new CSettlement(node.get("idSettlement").asInt()));
+            providerAddress.setIdMunicipality(new CMunicipalities(node.get("idMunicipality").asInt()));
+            providerAddress.setIdState(new CStates(node.get("idState").asInt()));
+            providerAddress.setIdProvider(provider);
+            providerAddress.setIdAccessLevel(1);
+
+            providerAddressService.save(providerAddress);
+
+        }
+
+        for (JsonNode node : jnode.get("phoneNumbersList")){
             PhoneNumbers phone = new PhoneNumbers();
             phone.setPhoneNumber(node.get("phoneNumber").asInt());
             phone.setIdAccessLevel(1);
             phone.setIdProvider(provider);
+
+            phoneNumbersService.save(phone);
         }
 
         return new ResponseEntity<>(

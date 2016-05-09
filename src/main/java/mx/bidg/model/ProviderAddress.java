@@ -10,15 +10,7 @@ import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -36,8 +28,7 @@ public class ProviderAddress implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @Basic(optional = false)
-    @NotNull
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_PROVIDER_ADDRESS")
     @JsonView(JsonViews.Root.class)
     private Integer idProviderAddress;
@@ -69,17 +60,17 @@ public class ProviderAddress implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idProviders;
 
-    @Column(name="ID_STATES", insertable=false, updatable=false)
+    @Column(name="ID_STATE", insertable=false, updatable=false)
     @JsonView(JsonViews.Root.class)
-    private Integer idStates;
+    private Integer idState;
 
     @Column(name="ID_SETTLEMENT", insertable=false, updatable=false)
     @JsonView(JsonViews.Root.class)
-    private Integer idSettlements;
+    private Integer idSettlement;
 
     @Column(name="ID_MUNICIPALITY", insertable=false, updatable=false)
     @JsonView(JsonViews.Root.class)
-    private Integer idMunicipalitys;
+    private Integer idMunicipality;
 
     @JoinColumn(name = "ID_PROVIDER", referencedColumnName = "ID_PROVIDER")
     @ManyToOne(optional = false)
@@ -89,17 +80,17 @@ public class ProviderAddress implements Serializable {
     @JoinColumn(name = "ID_STATE", referencedColumnName = "ID_STATE")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CStates idState;
+    private CStates state;
 
     @JoinColumn(name = "ID_SETTLEMENT", referencedColumnName = "ID_SETTLEMENT")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CSettlement idSettlement;
+    private CSettlement settlement;
 
     @JoinColumn(name = "ID_MUNICIPALITY", referencedColumnName = "ID_MUNICIPALITY")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CMunicipalities idMunicipality;
+    private CMunicipalities municipality;
 
     public ProviderAddress() {
     }
@@ -170,27 +161,27 @@ public class ProviderAddress implements Serializable {
     }
 
     public CStates getIdState() {
-        return idState;
+        return state;
     }
 
-    public void setIdState(CStates idState) {
-        this.idState = idState;
+    public void setIdState(CStates state) {
+        this.state = state;
     }
 
     public CSettlement getIdSettlement() {
-        return idSettlement;
+        return settlement;
     }
 
-    public void setIdSettlement(CSettlement idSettlement) {
-        this.idSettlement = idSettlement;
+    public void setIdSettlement(CSettlement settlement) {
+        this.settlement = settlement;
     }
 
     public CMunicipalities getIdMunicipality() {
-        return idMunicipality;
+        return municipality;
     }
 
-    public void setIdMunicipality(CMunicipalities idMunicipality) {
-        this.idMunicipality = idMunicipality;
+    public void setIdMunicipality(CMunicipalities municipality) {
+        this.municipality = municipality;
     }
 
     @Override

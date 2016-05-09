@@ -13,6 +13,7 @@ import java.util.List;
  * @author Rafael Viveros
  * Created on 9/12/15.
  */
+@SuppressWarnings("unchecked")
 @Repository
 public class CArticlesDaoImpl extends AbstractDao<Integer, CArticles> implements CArticlesDao {
     @Override
@@ -33,7 +34,7 @@ public class CArticlesDaoImpl extends AbstractDao<Integer, CArticles> implements
 
     @Override
     public List<CArticles> findAll() {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return createEntityCriteria().list();
     }
 
     @Override
