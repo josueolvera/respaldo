@@ -273,6 +273,9 @@
               success(function(data)
               {
                 showAlert("Registro de solicitud exitoso, ahora puedes agregar las cotizaciones")
+                history.pushState("", "BID Group: Solicitudes", "cotizable/" + data.idRequest)
+                this.idRequest = data.idRequest;
+                this.isUpdate = true;
                 this.fillRequestInformation(data);
               }).error(function(data)
               {
