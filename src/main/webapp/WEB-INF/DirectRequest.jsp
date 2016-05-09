@@ -392,6 +392,7 @@
             this.objectRequest.request.idRequestStatus= data.idRequestStatus;
             this.obtainInformationAutorization();
             this.userRequest = data.userRequest.dwEmployee.employee.fullName;
+            this.desaparecer = false;
             data.requestProductsList.forEach(function(element)
             {
             var producto= self.createProduct();

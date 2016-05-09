@@ -538,6 +538,7 @@
               this.objectRequest.request.description= data.description;
               this.objectRequest.request.purpose= data.purpose;
               this.userRequest = data.userRequest.dwEmployee.employee.fullName;
+              this.desaparecer = false;
 
               data.requestProductsList.forEach(function(element)
               {
@@ -1364,6 +1365,9 @@
               </div>
             </div>
           </div>
+          <pre>
+            {{ $data.suppliers | json}}
+          </pre>
 
           </div> <!-- container-fluid -->
 

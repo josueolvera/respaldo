@@ -345,27 +345,12 @@
             },
             newCotizacion: function()
             {
-              /*var self= this;
-              if (this.estimations.length>0)
-              {
-                self.estimations.forEach(function(element)
-                {
-                  self.suppliers.forEach(function(elemento){
-                    if (element.idSupplier == elemento.idProvider)
-                    {
-                        alert("Existe una coincidencia");
-                    }
-                  });
-                });
-                Revisar este codigo para no alta de proveedores
-              }*/
-
+              var self= this;
               var cotizacion= this.createCotizacion();
               cotizacion.idRequest= this.objectRequest.request.idRequest;
               cotizacion.indexOfForm= this.estimations.length;
               cotizacion.expanded= 'in';
               this.estimations.push(cotizacion);
-
             },
             deleteCotizacion: function(cotizacion)
             {
@@ -560,6 +545,7 @@
               this.objectRequest.request.description= data.description;
               this.objectRequest.request.purpose= data.purpose;
               this.userRequest = data.userRequest.dwEmployee.employee.fullNameReverse;
+              this.desaparecer = false;
               data.requestProductsList.forEach(function(element)
               {
               var producto= self.createProduct();
@@ -784,11 +770,7 @@
                  this.AccountsPayables.push(accountPayable);
                }
 
-
               }
-
-
-
             },
             saveAccountPayable: function()
             {
@@ -932,6 +914,7 @@
 
                     });
                     this.AccountsPayablesInfo = (JSON.parse(JSON.stringify(this.AccountsPayables))); //Se realiza copia del objeto de cuentas
+                    $("#form"+cotizacion.indexOfForm).empty();
                  }
 
                });
@@ -1669,7 +1652,7 @@
                           <tbody>
                             <tr v-for="accounts in AccountsPayablesInfo">
                                 <td>
-                                  {{accounts.payNum}}
+                                  {{$index + 1}}
                                 </td>
                                 <td>
                                   {{accounts.amount}}
@@ -1695,7 +1678,7 @@
             </div>
           </div>
           <pre>
-            {{ $data.pagofijo | json}}
+            {{ $data.estimations | json}}
           </pre>
 
           </div> <!-- container-fluid -->
