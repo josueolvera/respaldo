@@ -5,6 +5,8 @@ import mx.bidg.dao.PhoneNumbersDao;
 import mx.bidg.model.PhoneNumbers;
 import mx.bidg.model.Providers;
 import org.hibernate.Criteria;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 

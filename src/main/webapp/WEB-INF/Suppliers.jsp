@@ -132,6 +132,24 @@
             this.supplier.providersAccountsList.$remove(cuenta);
           },
           saveProvider: function () {
+            var direccion = {
+              cp: '',
+              ext: '',
+              int: '',
+              street: '',
+              idSettlement: '',
+              idState: '',
+              idMunicipality: '',
+            };
+            direccion.cp = this.direccion.cp;
+            direccion.ext = this.direccion.ext;
+            direccion.int = this.direccion.int;
+            direccion.street = this.direccion.street;
+            direccion.idState = this.direccion.idState;
+            direccion.idSettlement = this.direccion.idSettlement;
+            direccion.idMunicipality = this.direccion.idMunicipality;
+
+            this.supplier.addressProvider.push(direccion);
 
             if(this.supplier.rfc.length==13){
               this.providerRfc();
@@ -150,7 +168,6 @@
             this.$http.get(ROOT_URL + "/providers")
                     .success(function (data) {
                       this.providers = data;
-
                     });
           },
           modifyProvider: function (provider) {
@@ -242,26 +259,6 @@
             this.supplier.phoneNumbersList.$remove(phone);
             this.phoneNumbers = ''
           },
-          saveAdrress: function () {
-            var direccion = {
-              cp: '',
-              ext: '',
-              int: '',
-              street: '',
-              idSettlement: '',
-              idState: '',
-              idMunicipality: '',
-            };
-            direccion.cp = this.direccion.cp;
-            direccion.ext = this.direccion.ext;
-            direccion.int = this.direccion.int;
-            direccion.street = this.direccion.street;
-            direccion.idState = this.direccion.idState;
-            direccion.idSettlement = this.direccion.idSettlement;
-            direccion.idMunicipality = this.direccion.idMunicipality;
-
-            this.supplier.addressProvider.push(direccion);
-          },
         },
         filters:
         {
@@ -285,6 +282,15 @@
               if (value == element.idCurrency)
               {
                 name= element.currency;
+              }
+            });
+            return name;
+          },
+          separateProviderName: function (value) {
+            var name;
+            this.providers.forEach(function (element) {
+              if(value == element.providerName){
+                name = element.providerName.replace(/:/g," ");
               }
             });
             return name;
@@ -343,7 +349,7 @@
             <tbody>
               <tr v-for="provider in providers | filterBy search">
                 <td>
-                  {{provider.providerName}}
+                  {{provider.providerName | separateProviderName}}
                 </td>
                 <td>
                   {{provider.accountingaccount}}
@@ -373,7 +379,7 @@
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
               <h4 class="modal-title" id="">
-                Alta de Proveedores
+                Registro de Proveedor
               </h4>
             </div>
             <div class="modal-body">
@@ -488,11 +494,11 @@
                 <option v-for="state in states" value="{{state.idState}}">{{state.stateName}}</option>
               </select>
               </div>
-                <div class="col-xs-2 text-left">
+         <!--       <div class="col-xs-2 text-left">
                   <button class="btn btn-default" @click="saveAdrress()" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Agregar">
                     <span class="glyphicon glyphicon-plus"></span>
                   </button>
-                </div>
+                </div> -->
             </div>
               <br>
               <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
@@ -603,7 +609,7 @@
                       </td>
                       <td>
                         <button type="button" class="btn btn-sm btn-default"  data-toggle="tooltip" data-placement="bottom" title="Eliminar" style="margin-top: 15px" @click="eliminarCuenta(supplier)">
-                          <span class="glyphicon glyphicon-remove"></span>
+                          <span class="glyphicon glyphicon-trash"></span>
                         </button>
                     </tr>
                   </tbody>
@@ -613,7 +619,7 @@
             <div class="modal-footer">
               <div class="col-xs-10 text-right" v-if="supplier.providersAccountsList.length> 0">
                 <button type="button" class="btn btn-default" @click="saveProvider">
-                  Guardar Proveedor
+                  Guardar
                 </button>
               </div>
               <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -702,7 +708,7 @@
                     CLABE
                   </th>
                   <th style="color: red">
-                    Eliminar la Cuenta
+                    Eliminar Cuenta
                   </th>
                   </thead>
                   <tbody>
@@ -717,8 +723,8 @@
                       {{account.accountClabe}}
                     </td>
                     <td>
-                      <button type="button" class="btn btn-danger" @click="deleteAccount(account)">
-                        Eliminar Cuenta
+                      <button type="button" class="btn btn-sm btn-default"  data-toggle="tooltip" data-placement="bottom" title="Eliminar"  @click="deleteAccount(account)">
+                        <span class="glyphicon glyphicon-trash"></span>
                       </button>
                     </td>
                   </tr>
