@@ -314,7 +314,6 @@
               {
               idEstimation: '',
               amount: '',
-              amountmx: '',
               rate: '',
               fileName: '',
               fileNameActual: '',
@@ -341,20 +340,18 @@
               },
               isSaved: true,
               requiredFile: true,
-              expanded: ''
+              expanded: '',
+              amountmx: '',
+              nameCurrency: ''
               }
               return cotizacion;
             },
             newCotizacion: function()
             {
               var cotizacion= this.createCotizacion();
-              console.log(cotizacion);
-              cotizacion.idRequest= this.objectRequest.request.idRequest;
-              console.log(cotizacion.idRequest);
+              cotizacion.idRequest= this.objectRequest.request.idRequest
               cotizacion.indexOfForm= this.estimations.length;
-              console.log(cotizacion.indexOfForm);
               cotizacion.expanded= 'in';
-              console.log(cotizacion.expanded);
               this.estimations.push(cotizacion);
             },
             deleteCotizacion: function(cotizacion)
@@ -453,7 +450,6 @@
                     showAlert("Ha fallado el registro de su cotizacion, intente nuevamente");
                     this.isSavingNow= false;
                   });
-
                 }
                 else{
                   this.$http.post(ROOT_URL+"/estimations/"+cotizacion.idEstimation, JSON.stringify(cotizacion)).
@@ -474,7 +470,7 @@
               }
               else
               {
-                this.isSavingNow= true;
+              this.isSavingNow= true;
               var form = document.getElementById("form-"+cotizacion.indexOfForm);
               var formData = new FormData(form);
               var responseOfEstimation;
@@ -504,6 +500,10 @@
             },
             matchEstimationInfo: function(responseOfEstimation, responseOfFileUpload, cotizacion)
             {
+              console.log(responseOfEstimation);
+              console.log(responseOfFileUpload);
+              console.log(cotizacion);
+              cotizacion.amountmx = responseOfEstimation.amountMXN;
               cotizacion.idEstimation= responseOfEstimation.idEstimation;
               cotizacion.fileName= responseOfFileUpload.fileName;
               cotizacion.outOfBudget= responseOfEstimation.outOfBudget;
@@ -586,11 +586,11 @@
                   cotizacion.idUserEstimation = element.idUserEstimation;
                   cotizacion.creationDate = element.creationDateFormats.iso;
                   cotizacion.requiredFile = false;
-                  if (data.amountMXN == null)
+                  cotizacion.nameCurrency= element.currency.acronym;
+                  if (data.amountMXN != null)
                   {
-                    cotizacion.amountmx = data.amount;
+                    cotizacion.amountmx = data.amountMXN;
                   }
-                  cotizacion.amountmx = data.amountMXN;
                   self.fillSuppliers(cotizacion);
                 });
                 this.obtainInformationAutorization();
@@ -835,7 +835,7 @@
                     {
                         var n = moment(element.dueDate,"DD-MM-YYYY").toISOString();
                         element.dueDate = n.slice(0,-1);
-                      console.log(element.dueDate);
+
                     }
                     aux = aux + parseFloat(element.amount);
                     console.log(aux);
@@ -1268,7 +1268,7 @@
                           </h3>
                         </div>
                         <div class="col-xs-8">
-                          <h4 class="panel-title">Monto MXN: {{cotizacion.amount * cotizacion.rate}} <br> Monto en {{cotizacion.idCurrency | filterCurrency}}: {{cotizacion.amount}}</h4>
+                          <h4 class="panel-title">Monto MXN: {{cotizacion.amount * cotizacion.rate}} <br> Monto en {{cotizacion.nameCurrency}}: {{cotizacion.amount}}</h4>
                         </div>
                       </div>
                       <div class="col-xs-4" >
