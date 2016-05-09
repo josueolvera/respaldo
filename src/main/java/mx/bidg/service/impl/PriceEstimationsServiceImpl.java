@@ -60,6 +60,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         int idCurrency = json.get("idCurrency").asInt();
         BigDecimal rate = ((json.get("rate").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("rate").decimalValue() : BigDecimal.ONE;
         BigDecimal amount = ((json.get("amount").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("amount").decimalValue() : BigDecimal.ZERO;
+        BigDecimal tempAmount = amount.multiply(rate);
 
         PriceEstimations estimation = new PriceEstimations();
         estimation.setRequest(request);
@@ -74,7 +75,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         estimation.setIdAccessLevel(1);
         estimation.setEstimationStatus(new CEstimationStatus(CEstimationStatus.PENDIENTE));
         //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
-        estimation.setOutOfBudget((residualAmount.compareTo(amount) == -1)? 1 : 0);
+        estimation.setOutOfBudget((residualAmount.compareTo(tempAmount) == -1)? 1 : 0);
         estimation = priceEstimationsDao.save(estimation);
 
         request.setRequestStatus(CRequestStatus.COTIZADA);

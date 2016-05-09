@@ -47,4 +47,10 @@ public class PhoneNumbersDaoImpl extends AbstractDao<Integer,PhoneNumbers> imple
         remove(entity);
         return true;
     }
+
+    @Override
+    public List<PhoneNumbers> findByProvider(Providers p) {
+        Criteria criteria = createEntityCriteria();
+        return (List<PhoneNumbers>) criteria.add(Restrictions.eq("providers",p)).list();
+    }
 }

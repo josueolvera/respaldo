@@ -9,4 +9,5 @@ import java.util.List;
  * Created by jolvera on 6/05/16.
  */
 public interface PhoneNumbersDao  extends InterfaceDao<PhoneNumbers>{
+    List<PhoneNumbers> findByProvider (Providers p);
 }
