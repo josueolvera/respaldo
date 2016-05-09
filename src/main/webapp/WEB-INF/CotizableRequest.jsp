@@ -500,7 +500,7 @@
             matchEstimationInfo: function(responseOfEstimation, responseOfFileUpload, cotizacion)
             {
               cotizacion.idEstimation= responseOfEstimation.idEstimation;
-              cotizacion.fileName= responseOfFileUpload.fileName;
+              cotizacion.fileNameActual= responseOfFileUpload.fileName;
               cotizacion.outOfBudget= responseOfEstimation.outOfBudget;
               cotizacion.idEstimationStatus= responseOfEstimation.estimationStatus.idEstimationStatus;
               cotizacion.idUserEstimation= responseOfEstimation.userEstimation.idUser;
@@ -580,6 +580,7 @@
                   cotizacion.idCurrency = element.idCurrency;
                   cotizacion.idUserEstimation = element.idUserEstimation;
                   cotizacion.creationDate = element.creationDateFormats.iso;
+                  cotizacion.fileNameActual = element.fileName;
                   cotizacion.requiredFile = false;
                   self.fillSuppliers(cotizacion);
                 });
