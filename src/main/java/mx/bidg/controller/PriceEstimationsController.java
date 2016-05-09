@@ -168,7 +168,7 @@ public class PriceEstimationsController {
     @RequestMapping(value = "/request/{idRequest}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> getEstimationsByRequest(@PathVariable int idRequest) throws Exception {
         List<PriceEstimations> list = estimationsService.findByIdRequest(idRequest);
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(list), HttpStatus.OK);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(list), HttpStatus.OK);
     }
     
     
