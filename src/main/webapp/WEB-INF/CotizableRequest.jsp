@@ -8,13 +8,34 @@
     <jsp:attribute name="scripts">
 
         <script type="text/javascript">
-        function isNumberKey(evt)
-        {
-        var charCode = (evt.which) ? evt.which : event.keyCode
-        if (charCode > 31 && (charCode < 48 || charCode > 57))
-        return false;
-        return true;
+        function validateFloatKeyPress(el, evt) {
+          var charCode = (evt.which) ? evt.which : event.keyCode;
+          var number = el.value.split('.');
+          if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+          }
+          //just one dot
+          if(number.length>1 && charCode == 46){
+            return false;
+          }
+          //get the carat position
+          var caratPos = getSelectionStart(el);
+          var dotPos = el.value.indexOf(".");
+          if( caratPos > dotPos && dotPos>-1 && (number[1].length > 1)){
+            return false;
+          }
+          return true;
         }
+
+          //thanks: http://javascript.nwbox.com/cursor_position/
+          function getSelectionStart(o) {
+	           if (o.createTextRange) {
+		             var r = document.selection.createRange().duplicate()
+		               r.moveEnd('character', o.value.length)
+		                 if (r.text == '') return o.value.length
+		                   return o.value.lastIndexOf(r.text)
+	                    } else return o.selectionStart
+                    }
         </script>
 
         <script type="text/javascript">
@@ -158,7 +179,8 @@
               idCurrency: '',
               rate: ''
             },
-            attachment: ROOT_URL +"/estimations/attachment/download/"
+            attachment: ROOT_URL +"/estimations/attachment/download/",
+            montoTotal: ''
           },
           methods:
           {
@@ -503,9 +525,6 @@
             },
             matchEstimationInfo: function(responseOfEstimation, responseOfFileUpload, cotizacion)
             {
-              console.log(responseOfEstimation);
-              console.log(responseOfFileUpload);
-              console.log(cotizacion);
               cotizacion.amountmx = responseOfEstimation.amountMXN;
               cotizacion.idEstimation= responseOfEstimation.idEstimation;
               cotizacion.fileNameActual= responseOfFileUpload.fileName;
@@ -780,7 +799,7 @@
                total += this.amountOfPay;
                if (total > self.periodicPayment.amount)
                {
-                 showAlert("El monto(s) del pago deben de ser igual al total de la cotizacion");
+                 showAlert("El monto a pagar es mayor al monto de la cotización");
                }
                else
                {
@@ -797,7 +816,7 @@
                 var n = moment(this.pagofijo.initialDate,"DD-MM-YYYY").toISOString();
                 this.pagofijo.initialDate = n.slice(0,-1);
                 var montoTotalUsuario= this.pagofijo.totalPayments * this.pagofijo.amount ;
-
+                this.montoTotal = montoTotalUsuario;
                 if (montoTotalUsuario != this.periodicPayment.amount)
                 {
                   showAlert("El monto(s) del pago deben de ser igual al total de la cotizacion");
@@ -1238,7 +1257,7 @@
             <div class="row">
               <div class="col-xs-12">
                 <label>
-                  Motivo de la Solicitud
+                  Justificación de la Solicitud
                 </label>
                 <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.purpose"
                   :disabled="isUpdate" required></textarea>
@@ -1278,8 +1297,11 @@
                           <h4 class="panel-title" v-if="cotizacion.idCurrency> 0">Monto MXN: {{cotizacion.amount * cotizacion.rate}} <br> Monto en {{cotizacion.idCurrency | filterCurrency}}: {{cotizacion.amount}}</h4>
                         </div>
                       </div>
-                      <div class="col-xs-4" >
-                        <span class="label label-danger" v-if="cotizacion.outOfBudget == 1">Cotización Fuera de Presupuesto</span>
+                      <div class="col-xs-2" >
+                        <span class="label label-danger" v-if="cotizacion.outOfBudget == 1">Fuera de Presupuesto</span>
+                      </div>
+                      <div class="col-xs-2 text-right">
+                        <label v-if="cotizacion.idEstimationStatus== 2">Cotización Propuesta</label>
                       </div>
                     </div>
                     <div>
@@ -1337,7 +1359,8 @@
                       <label>
                         Tipo de Moneda
                       </label>
-                      <select class="form-control" v-model="cotizacion.idCurrency" required="true" @change="validateCurrency(cotizacion)">
+                      <select class="form-control" v-model="cotizacion.idCurrency" required="true"
+                        @change="validateCurrency(cotizacion)">
                         <option></option>
                         <option v-for="curr in currencies" value="{{curr.idCurrency}}">
                           {{curr.currency}}
@@ -1351,7 +1374,8 @@
                       <div class="input-group">
                         <span class="input-group-addon">$</span>
                         <input number class="form-control" placeholder="" v-model="cotizacion.amount"
-                          @change="validateAmount(cotizacion)" required="true">
+                          @change="validateAmount(cotizacion)" required="true"
+                          onkeypress="return validateFloatKeyPress(this,event)">
                       </div>
                     </div>
                     <div class="col-xs-2">
@@ -1361,7 +1385,8 @@
                       <div class="input-group">
                         <span class="input-group-addon">$</span>
                         <input number class="form-control" :disabled="flagrate"
-                          v-model="cotizacion.rate" @change="validateRate(cotizacion)" required="true">
+                          v-model="cotizacion.rate" @change="validateRate(cotizacion)"
+                          onkeypress="return validateFloatKeyPress(this,event)" required="true">
                       </div>
                     </div>
                   </div>
@@ -1373,10 +1398,7 @@
                       </label>
                       <input type="file" name="file" class="form-control"
                        v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}"
-                             accept="application/pdf,
-                                     image/*,
-                                     application/msword,
-                                     application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+                             accept="application/pdf">
                     </div>
                     <div class="col-xs-1" v-if="cotizacion.idEstimation > 0">
                     <p style="margin-top: 25px">
@@ -1404,17 +1426,17 @@
                       <button type="button" class="btn btn-default" name="button"
                         v-if="cotizacion.idEstimationStatus== 1" style="margin-top:25px"
                         @click="autorizarCotizacion(cotizacion)">
-                        Autorizar Cotizacion
+                        Cotización Aprobada
                       </button>
                       <button type="button" class="btn btn-default" name="button"
                         v-if="cotizacion.idEstimationStatus== 2 && isAutoriced" style="margin-top:25px"
                         @click="cancelarAutorizacion(cotizacion)">
-                        Cancelar Aprobacion
+                        Rechazar
                       </button>
                       <button type="button" class="btn btn-default" name="button"
                         v-if="!(isAutoriced)" style="margin-top:25px"
                         @click="autorizarCotizacion(cotizacion)">
-                        Autorizar Cotizacion
+                        Autorizar
                       </button>
 
                     </div>
@@ -1433,7 +1455,7 @@
                 <table class="table table-striped">
                   <thead>
                     <th>
-                      Usuario
+                      Nombre
                     </th>
                     <th>
                       Estatus
@@ -1527,9 +1549,11 @@
                     <div class="row">
                       <div class="col-xs-12">
                         <input type="radio" id="pagoFijo" value="1" v-model="optionPago" @change="emptyEsquema">
-                        <label>Esquema de Pagos Fijos</label>
+                        <label>Pagos Fijos</label>
                         <input type="radio" id="pagoVariable" value="2" v-model="optionPago" @change="emptyEsquema">
-                        <label>Esquema de Pagos Variable/Pago Unico</label>
+                        <label>Pagos Variables</label>
+                        <input type="radio" id="pagounico" value="3" v-model="optionPago" @change="emptyEsquema">
+                        <label>Pago Único</label>
                       </div>
                     </div>
                     <div class="row">
@@ -1646,6 +1670,11 @@
                           </div>
                           <div class="col-xs-2">
 
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-xs-12 text-left">
+                            Total a Pagar:
                           </div>
                         </div>
                       </div>
