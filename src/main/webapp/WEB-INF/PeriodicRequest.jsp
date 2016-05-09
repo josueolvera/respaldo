@@ -149,7 +149,8 @@
           infoAutorization: '',
           userRequest: '',
           flagrate: false,
-          desaparecer: true
+          desaparecer: true,
+          attachment: ROOT_URL +"/estimations/attachment/download/"
           },
           methods:
           {
@@ -1159,7 +1160,7 @@
                     </div>
                     <div class="col-xs-1" v-if="cotizacion.idEstimation > 0">
                       <p style="margin-top: 25px">
-                      <a href="../../estimations/attachment/download/{{cotizacion.idEstimation}}">
+                      <a :href="attachment + cotizacion.idEstimation">
                         <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Descargar">
                           <span class="glyphicon glyphicon-download" style="font-size: 17px"><span>
                         </button>

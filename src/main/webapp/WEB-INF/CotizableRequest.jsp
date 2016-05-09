@@ -157,7 +157,8 @@
               totalPayments: '',
               idCurrency: '',
               rate: ''
-            }
+            },
+            attachment: ROOT_URL +"/estimations/attachment/download/"
           },
           methods:
           {
@@ -313,6 +314,7 @@
               {
               idEstimation: '',
               amount: '',
+              amountmx: '',
               rate: '',
               fileName: '',
               fileNameActual: '',
@@ -345,11 +347,14 @@
             },
             newCotizacion: function()
             {
-              var self= this;
               var cotizacion= this.createCotizacion();
+              console.log(cotizacion);
               cotizacion.idRequest= this.objectRequest.request.idRequest;
+              console.log(cotizacion.idRequest);
               cotizacion.indexOfForm= this.estimations.length;
+              console.log(cotizacion.indexOfForm);
               cotizacion.expanded= 'in';
+              console.log(cotizacion.expanded);
               this.estimations.push(cotizacion);
             },
             deleteCotizacion: function(cotizacion)
@@ -581,6 +586,11 @@
                   cotizacion.idUserEstimation = element.idUserEstimation;
                   cotizacion.creationDate = element.creationDateFormats.iso;
                   cotizacion.requiredFile = false;
+                  if (data.amountMXN == null)
+                  {
+                    cotizacion.amountmx = data.amount;
+                  }
+                  cotizacion.amountmx = data.amountMXN;
                   self.fillSuppliers(cotizacion);
                 });
                 this.obtainInformationAutorization();
@@ -1363,7 +1373,7 @@
                     </div>
                     <div class="col-xs-1" v-if="cotizacion.idEstimation > 0">
                     <p style="margin-top: 25px">
-                    <a href="../../estimations/attachment/download/{{cotizacion.idEstimation}}">
+                    <a :href="attachment + cotizacion.idEstimation">
                       <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Descargar">
                         <span class="glyphicon glyphicon-download" style="font-size: 17px"><span>
                       </button>
