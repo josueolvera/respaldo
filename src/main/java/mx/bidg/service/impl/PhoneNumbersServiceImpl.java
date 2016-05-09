@@ -2,6 +2,7 @@ package mx.bidg.service.impl;
 
 import mx.bidg.dao.PhoneNumbersDao;
 import mx.bidg.model.PhoneNumbers;
+import mx.bidg.model.Providers;
 import mx.bidg.service.PhoneNumbersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,11 @@ public class PhoneNumbersServiceImpl implements PhoneNumbersService {
 
     @Autowired
     PhoneNumbersDao dao;
+
+    @Override
+    public List<PhoneNumbers> findByProvider(Providers provider) {
+        return dao.findByProvider(provider);
+    }
 
     @Override
     public List<PhoneNumbers> findAll() {
