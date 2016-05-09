@@ -1315,7 +1315,7 @@
                         Proveedor
                       </label>
                       <select class="form-control" v-model="cotizacion.idSupplier"
-                        @change="obtainAccounts(cotizacion)" required="true">
+                        @change="obtainAccounts(cotizacion)" required="true" :disabled="cotizacion.idEstimationStatus != 1">
                         <option></option>
                         <option v-for="supplier in suppliers" value="{{supplier.idProvider}}">
                           {{supplier.providerName}}
@@ -1326,7 +1326,8 @@
                       <label>
                         Cuenta Bancaria
                       </label>
-                      <select class="form-control" v-model="cotizacion.idAccount" required="true">
+                      <select class="form-control" v-model="cotizacion.idAccount" required="true"
+                              :disabled="cotizacion.idEstimationStatus != 1">
                         <option></option>
                         <option v-for="accounts in cotizacion.accountSupplier" value="{{accounts.idAccount}}">
                           {{accounts.account.accountNumber}}
@@ -1337,7 +1338,8 @@
                       <label>
                         Tipo de Moneda
                       </label>
-                      <select class="form-control" v-model="cotizacion.idCurrency" required="true" @change="validateCurrency(cotizacion)">
+                      <select class="form-control" v-model="cotizacion.idCurrency" required="true"
+                              @change="validateCurrency(cotizacion)" :disabled="cotizacion.idEstimationStatus != 1">
                         <option></option>
                         <option v-for="curr in currencies" value="{{curr.idCurrency}}">
                           {{curr.currency}}
@@ -1351,7 +1353,7 @@
                       <div class="input-group">
                         <span class="input-group-addon">$</span>
                         <input number class="form-control" placeholder="" v-model="cotizacion.amount"
-                          @change="validateAmount(cotizacion)" required="true">
+                          @change="validateAmount(cotizacion)" required="true" :disabled="cotizacion.idEstimationStatus != 1">
                       </div>
                     </div>
                     <div class="col-xs-2">
@@ -1360,7 +1362,7 @@
                       </label>
                       <div class="input-group">
                         <span class="input-group-addon">$</span>
-                        <input number class="form-control" :disabled="flagrate"
+                        <input number class="form-control" :disabled="flagrate || cotizacion.idEstimationStatus != 1"
                           v-model="cotizacion.rate" @change="validateRate(cotizacion)" required="true">
                       </div>
                     </div>
@@ -1371,7 +1373,7 @@
                       <label>
                         Archivo de la Cotización
                       </label>
-                      <input type="file" name="file" class="form-control"
+                      <input type="file" name="file" class="form-control" :disabled="cotizacion.idEstimationStatus != 1"
                        v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}"
                              accept="application/pdf,
                                      image/*,
