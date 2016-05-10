@@ -1375,8 +1375,7 @@
                       <div class="input-group">
                         <span class="input-group-addon">$</span>
                         <input number class="form-control" placeholder="" v-model="cotizacion.amount"
-                          @change="validateAmount(cotizacion)" required="true" :disabled="cotizacion.idEstimationStatus != 1">
-                          @change="validateAmount(cotizacion)" required="true"
+                          @change="validateAmount(cotizacion)" required="true" :disabled="cotizacion.idEstimationStatus != 1"
                           onkeypress="return validateFloatKeyPress(this,event)">
                       </div>
                     </div>
@@ -1387,10 +1386,8 @@
                       <div class="input-group">
                         <span class="input-group-addon">$</span>
                         <input number class="form-control" :disabled="flagrate || cotizacion.idEstimationStatus != 1"
-                          v-model="cotizacion.rate" @change="validateRate(cotizacion)" required="true">
-                        <input number class="form-control" :disabled="flagrate"
-                          v-model="cotizacion.rate" @change="validateRate(cotizacion)"
-                          onkeypress="return validateFloatKeyPress(this,event)" required="true">
+                          v-model="cotizacion.rate" @change="validateRate(cotizacion)" onkeypress="return validateFloatKeyPress(this,event)"
+                           required="true">
                       </div>
                     </div>
                   </div>
