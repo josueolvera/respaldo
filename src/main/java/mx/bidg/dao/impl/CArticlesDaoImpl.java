@@ -29,7 +29,7 @@ public class CArticlesDaoImpl extends AbstractDao<Integer, CArticles> implements
 
     @Override
     public CArticles findById(int id) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return getByKey(id);
     }
 
     @Override

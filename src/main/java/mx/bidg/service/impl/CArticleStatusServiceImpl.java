@@ -24,4 +24,9 @@ public class CArticleStatusServiceImpl implements CArticleStatusService {
     public List<CArticleStatus> findAll() {
         return statusDao.findAll();
     }
+
+    @Override
+    public CArticleStatus findById(Integer id) {
+        return statusDao.findById(id);
+    }
 }
