@@ -29,6 +29,10 @@ public class CStockDocumentsTypes implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String documentName;
 
+    @Column(name = "REQUIRED")
+    @JsonView(JsonViews.Root.class)
+    private int required;
+
     public CStockDocumentsTypes() {
     }
 
@@ -50,6 +54,14 @@ public class CStockDocumentsTypes implements Serializable {
 
     public void setDocumentName(String documentName) {
         this.documentName = documentName;
+    }
+
+    public int getRequired() {
+        return required;
+    }
+
+    public void setRequired(int required) {
+        this.required = required;
     }
 
     @Override

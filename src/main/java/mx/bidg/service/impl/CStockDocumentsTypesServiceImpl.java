@@ -24,4 +24,14 @@ public class CStockDocumentsTypesServiceImpl implements CStockDocumentsTypesServ
     public List<CStockDocumentsTypes> findAll() {
         return stockDocumentsTypesDao.findAll();
     }
+
+    @Override
+    public List<CStockDocumentsTypes> findAllRequired() {
+        return stockDocumentsTypesDao.findAllRequired();
+    }
+
+    @Override
+    public List<CStockDocumentsTypes> findAllNoRequired() {
+        return stockDocumentsTypesDao.findAllNoRequired();
+    }
 }

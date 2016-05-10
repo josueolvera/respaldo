@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
+import mx.bidg.dao.CArticleStatusDao;
+import mx.bidg.dao.CArticlesDao;
+import mx.bidg.dao.DwEnterprisesDao;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
 import mx.bidg.service.*;
@@ -56,6 +59,15 @@ public class StockController {
     private DwEmployeesService dwEmployeesService;
 
     @Autowired
+    private DwEnterprisesService dwEnterprisesService;
+
+    @Autowired
+    private CArticlesService cArticlesService;
+
+    @Autowired
+    private CArticleStatusService cArticleStatusService;
+
+    @Autowired
     private EmployeesService employeesService;
 
     private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
@@ -74,19 +86,32 @@ public class StockController {
         );
     }
 
-//    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-//    public ResponseEntity<String> save(@RequestBody) Integer idDistributor) throws IOException {
-//        List<Stocks> stock;
-//        if (idDistributor != null) {
-//            stock = stockService.findByDistributor(idDistributor);
-//        } else {
-//            stock = stockService.findAll();
-//        }
-//        return new ResponseEntity<>(
-//                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(stock),
-//                HttpStatus.OK
-//        );
-//    }
+    @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> save(@RequestBody String data) throws IOException {
+
+        JsonNode jnode = mapper.readTree(data);
+        System.out.println(data);
+        Stocks stocks = new Stocks();
+        StockEmployeeAssignments stockEmployeeAssignments = new StockEmployeeAssignments();
+
+        BigDecimal purchasePrice = new BigDecimal(jnode.get("purchasePrice").asDouble());
+
+        stocks.setArticle(cArticlesService.findById(jnode.get("idArticle").asInt()));
+        stocks.setArticleStatus(cArticleStatusService.findById(jnode.get("idArticleStatus").asInt()));
+        stocks.setPurchasePrice(purchasePrice);
+        stocks.setDwEnterprises(dwEnterprisesService.findById(jnode.get("idDwEnterprise").asInt()));
+//        stocks.setFolio(jnode.get("stockFolio").asText());
+        stocks.setSerialNumber(jnode.get("serialNumber").asText());
+        stocks.setIdAccessLevel(1);
+
+        stockEmployeeAssignments.setEmployee(employeesService.findById(jnode.get("idEmployee").asInt()));
+
+
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(stockService.save(stocks)),
+                HttpStatus.OK
+        );
+    }
 
     @RequestMapping(
             value = "/{idStock}", method = RequestMethod.POST,
@@ -166,6 +191,29 @@ public class StockController {
         property.setValue(value);
 
         propertiesService.save(property, article, attribute);
+
+        return new ResponseEntity<>("Registro almacenado con exito", HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/{idStock}/propertiesList", method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE
+    )
+    public ResponseEntity<String> saveProperties(@PathVariable int idStock, @RequestBody String data) throws IOException {
+        JsonNode jnode = mapper.readTree(data);
+
+        Stocks stocks = stockService.findById(idStock);
+
+        for (JsonNode node : jnode) {
+            CArticles article = new CArticles(node.get("attributesArticles").get("idArticle").asInt());
+            CValues value = mapper.treeToValue(node.get("value"), CValues.class);
+            CAttributes attribute = mapper.treeToValue(node.get("attributesArticles").get("attributes"), CAttributes.class);
+
+            Properties property = new Properties();
+            property.setStocks(stocks);
+            property.setValue(value);
+
+            propertiesService.save(property, article, attribute);
+        }
 
         return new ResponseEntity<>("Registro almacenado con exito", HttpStatus.CREATED);
     }

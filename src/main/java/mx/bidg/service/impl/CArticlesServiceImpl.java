@@ -30,4 +30,11 @@ public class CArticlesServiceImpl implements CArticlesService {
     public List<CArticles> findAll() {
         return articlesDao.findAll();
     }
+
+    @Override
+    public CArticles findById(Integer id) {
+        return articlesDao.findById(id);
+    }
+
+
 }
