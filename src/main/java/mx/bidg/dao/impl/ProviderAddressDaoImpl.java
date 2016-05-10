@@ -3,6 +3,7 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.ProviderAddressDao;
 import mx.bidg.model.ProviderAddress;
+import mx.bidg.model.Providers;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -43,5 +44,11 @@ public class ProviderAddressDaoImpl extends AbstractDao<Integer,ProviderAddress>
     public boolean delete(ProviderAddress entity) {
         remove(entity);
         return true;
+    }
+
+    @Override
+    public List<ProviderAddress> findByProvider(Providers p) {
+        Criteria criteria = createEntityCriteria();
+        return (List<ProviderAddress>) criteria.add(Restrictions.eq("provider",p)).list();
     }
 }

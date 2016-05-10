@@ -58,7 +58,7 @@ public class ProviderAddress implements Serializable {
 
     @Column(name="ID_PROVIDER", insertable=false, updatable=false)
     @JsonView(JsonViews.Root.class)
-    private Integer idProviders;
+    private Integer idProvider;
 
     @Column(name="ID_STATE", insertable=false, updatable=false)
     @JsonView(JsonViews.Root.class)
@@ -75,7 +75,7 @@ public class ProviderAddress implements Serializable {
     @JoinColumn(name = "ID_PROVIDER", referencedColumnName = "ID_PROVIDER")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private Providers idProvider;
+    private Providers provider;
 
     @JoinColumn(name = "ID_STATE", referencedColumnName = "ID_STATE")
     @ManyToOne(optional = false)
@@ -110,6 +110,18 @@ public class ProviderAddress implements Serializable {
 
     public void setIdProviderAddress(Integer idProviderAddress) {
         this.idProviderAddress = idProviderAddress;
+    }
+
+    public void setIdState(Integer idState) {
+        this.idState = idState;
+    }
+
+    public void setIdSettlement(Integer idSettlement) {
+        this.idSettlement = idSettlement;
+    }
+
+    public void setIdMunicipality(Integer idMunicipality) {
+        this.idMunicipality = idMunicipality;
     }
 
     public Integer getCp() {
@@ -153,36 +165,17 @@ public class ProviderAddress implements Serializable {
     }
 
     public Providers getIdProvider() {
-        return idProvider;
+        return provider;
     }
 
-    public void setIdProvider(Providers idProvider) {
-        this.idProvider = idProvider;
+    public void setIdProvider(Providers provider) {
+        this.provider = provider;
     }
 
-    public CStates getIdState() {
+    public CStates getState() {
         return state;
     }
 
-    public void setIdState(CStates state) {
-        this.state = state;
-    }
-
-    public CSettlement getIdSettlement() {
-        return settlement;
-    }
-
-    public void setIdSettlement(CSettlement settlement) {
-        this.settlement = settlement;
-    }
-
-    public CMunicipalities getIdMunicipality() {
-        return municipality;
-    }
-
-    public void setIdMunicipality(CMunicipalities municipality) {
-        this.municipality = municipality;
-    }
 
     @Override
     public int hashCode() {

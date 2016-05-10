@@ -6,21 +6,12 @@
 package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
@@ -34,6 +25,8 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "ACCOUNTS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Accounts implements Serializable {
+
+
     
     private static final long serialVersionUID = 1L;
     
@@ -64,6 +57,15 @@ public class Accounts implements Serializable {
     @Column(name = "ID_ACCOUNT_TYPE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idAccountType;
+
+    @Column(name = "ID_CURRENCY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idCurrency;
+
+    @JsonIgnore
+    @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
+    @OneToOne(optional = false)
+    private CCurrencies currencies;
     
     @JoinColumn(name = "ID_BANK")
     @ManyToOne(optional = false)
@@ -92,6 +94,22 @@ public class Accounts implements Serializable {
 
     public Accounts(Integer idAccount) {
         this.idAccount = idAccount;
+    }
+
+    public CCurrencies getCurrencies() {
+        return currencies;
+    }
+
+    public void setCurrencies(CCurrencies currencies) {
+        this.currencies = currencies;
+    }
+
+    public Integer getIdCurrency() {
+        return idCurrency;
+    }
+
+    public void setIdCurrency(Integer idCurrency) {
+        this.idCurrency = idCurrency;
     }
 
     public Integer getIdAccount() {
@@ -206,5 +224,6 @@ public class Accounts implements Serializable {
     public String toString() {
         return "mx.bidg.model.Accounts[ idAccount=" + idAccount + " ]";
     }
+
     
 }
