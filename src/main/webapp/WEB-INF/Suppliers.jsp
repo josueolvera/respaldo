@@ -132,6 +132,24 @@
             this.supplier.providersAccountsList.$remove(cuenta);
           },
           saveProvider: function () {
+            var direccion = {
+              cp: '',
+              ext: '',
+              int: '',
+              street: '',
+              idSettlement: '',
+              idState: '',
+              idMunicipality: '',
+            };
+            direccion.cp = this.direccion.cp;
+            direccion.ext = this.direccion.ext;
+            direccion.int = this.direccion.int;
+            direccion.street = this.direccion.street;
+            direccion.idState = this.direccion.idState;
+            direccion.idSettlement = this.direccion.idSettlement;
+            direccion.idMunicipality = this.direccion.idMunicipality;
+
+            this.supplier.addressProvider.push(direccion);
 
             if(this.supplier.rfc.length==13){
               this.providerRfc();
@@ -150,7 +168,6 @@
             this.$http.get(ROOT_URL + "/providers")
                     .success(function (data) {
                       this.providers = data;
-
                     });
           },
           modifyProvider: function (provider) {
@@ -160,6 +177,11 @@
                     .success(function (data) {
                       Vue.set(this.provider, 'providersAccountsList', data);
                     });
+            this.$http.get(ROOT_URL + "/phone-numbers/provider/"+this.provider.idProvider)
+                    .success(function (data) {
+                      Vue.set(this.provider,'phoneNumbersList', data);
+                    });
+            console.log(this.provider);
           },
           deleteAccount: function (account) {
             this.$http.delete(ROOT_URL + "/accounts/" + account.idAccount)
@@ -242,26 +264,6 @@
             this.supplier.phoneNumbersList.$remove(phone);
             this.phoneNumbers = ''
           },
-          saveAdrress: function () {
-            var direccion = {
-              cp: '',
-              ext: '',
-              int: '',
-              street: '',
-              idSettlement: '',
-              idState: '',
-              idMunicipality: '',
-            };
-            direccion.cp = this.direccion.cp;
-            direccion.ext = this.direccion.ext;
-            direccion.int = this.direccion.int;
-            direccion.street = this.direccion.street;
-            direccion.idState = this.direccion.idState;
-            direccion.idSettlement = this.direccion.idSettlement;
-            direccion.idMunicipality = this.direccion.idMunicipality;
-
-            this.supplier.addressProvider.push(direccion);
-          },
         },
         filters:
         {
@@ -285,6 +287,15 @@
               if (value == element.idCurrency)
               {
                 name= element.currency;
+              }
+            });
+            return name;
+          },
+          separateProviderName: function (value) {
+            var name;
+            this.providers.forEach(function (element) {
+              if(value == element.providerName){
+                name = element.providerName.replace(/:/g," ");
               }
             });
             return name;
@@ -343,7 +354,7 @@
             <tbody>
               <tr v-for="provider in providers | filterBy search">
                 <td>
-                  {{provider.providerName}}
+                  {{provider.providerName | separateProviderName}}
                 </td>
                 <td>
                   {{provider.accountingaccount}}
@@ -373,7 +384,7 @@
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
               <h4 class="modal-title" id="">
-                Alta de Proveedores
+                Registro de Proveedor
               </h4>
             </div>
             <div class="modal-body">
@@ -488,11 +499,11 @@
                 <option v-for="state in states" value="{{state.idState}}">{{state.stateName}}</option>
               </select>
               </div>
-                <div class="col-xs-2 text-left">
+         <!--       <div class="col-xs-2 text-left">
                   <button class="btn btn-default" @click="saveAdrress()" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Agregar">
                     <span class="glyphicon glyphicon-plus"></span>
                   </button>
-                </div>
+                </div> -->
             </div>
               <br>
               <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
@@ -603,7 +614,7 @@
                       </td>
                       <td>
                         <button type="button" class="btn btn-sm btn-default"  data-toggle="tooltip" data-placement="bottom" title="Eliminar" style="margin-top: 15px" @click="eliminarCuenta(supplier)">
-                          <span class="glyphicon glyphicon-remove"></span>
+                          <span class="glyphicon glyphicon-trash"></span>
                         </button>
                     </tr>
                   </tbody>
@@ -613,7 +624,7 @@
             <div class="modal-footer">
               <div class="col-xs-10 text-right" v-if="supplier.providersAccountsList.length> 0">
                 <button type="button" class="btn btn-default" @click="saveProvider">
-                  Guardar Proveedor
+                  Guardar
                 </button>
               </div>
               <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -622,13 +633,15 @@
         </div>
       </div>
 
+
+
         <div class="modal fade" id="modalModi" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
           <div class="modal-dialog modal-lg">
             <div class="modal-content">
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title" id="">
-                  Modificación de Proveedores
+                  Modificar Proveedor
                 </h4>
               </div>
               <div class="modal-body">
@@ -636,25 +649,145 @@
                 <div class="row">
                   <div class="col-xs-4">
                     <label>
-                      Nombre del Proveedor
-                    </label>
-                    <input class="form-control" name="name" v-model="provider.providerName" >
-                  </div>
-                  <div class="col-xs-4">
-                    <label>
-                      Razón Social
-                    </label>
-                    <input class="form-control" name="name" v-model="provider.businessName">
-                  </div>
-                  <div class="col-xs-4">
-                    <label>
                       RFC
                     </label>
                     <input class="form-control" name="name" v-model="provider.rfc">
                   </div>
                 </div>
+                <div class="row" v-if="(provider.rfc).length==12">
+                  <div class="col-xs-4">
+                    <label>
+                      Razón Social
+                    </label>
+                    <input class="form-control" name="name" v-model="provider.providerName">
+                  </div>
+                  <div class="col-xs-4">
+                    <label>
+                      Cuenta Contable
+                    </label>
+                    <input class="form-control" name="name" v-model="provider.accountingaccount">
+                  </div>
+                </div>
+                <div class="row" v-if="(provider.rfc).length==13">
+                  <div class="col-xs-3">
+                    <label>
+                      Nombre
+                    </label>
+                    <input class="form-control" name="name" v-model="providerNames">
+                  </div>
+                  <div class="col-xs-3">
+                    <label>
+                      Apellido Paterno
+                    </label>
+                    <input class="form-control" name="name" v-model="providerLastName">
+                  </div>
+                  <div class="col-xs-3">
+                    <label>
+                      Apellido Materno
+                    </label>
+                    <input class="form-control" name="name" v-model="providerSecondName">
+                  </div>
+                  <div class="col-xs-3">
+                    <label>
+                      Cuenta Contable
+                    </label>
+                    <input class="form-control" name="name" v-model="provider.accountingaccount">
+                  </div>
+                </div>
                 <br>
-                <div class="row">
+                <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13">
+                  <div class="col-xs-4">
+                    <label>
+                      Dirección
+                    </label>
+                  </div>
+                </div>
+                <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13">
+                  <div class="col-xs-3">
+                    <label>
+                      Calle
+                    </label>
+                    <input class="form-control" name="name" v-model="direccion.street">
+                  </div>
+                  <div class="col-xs-3">
+                    <label>
+                      # Ext
+                    </label>
+                    <input class="form-control" name="name" maxlength="5" v-model="direccion.ext" onkeypress="return isNumberKey(event)">
+                  </div>
+                  <div class="col-xs-3">
+                    <label>
+                      # Int
+                    </label>
+                    <input class="form-control" name="name" maxlength="5" v-model="direccion.int" onkeypress="return isNumberKey(event)">
+                  </div>
+                  <div class="col-xs-3">
+                    <label>
+                      C.P.
+                    </label>
+                    <input class="form-control" name="name" maxlength="5" v-model="direccion.cp" onkeypress="return isNumberKey(event)">
+                  </div>
+                </div>
+                <br>
+                <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13">
+                  <div class="col-xs-3">
+                    <label>
+                      Colonia
+                    </label>
+                    <select class="form-control" name="" v-model="direccion.idSettlement">
+                      <option></option>
+                      <option v-for="set in settlements" value="{{set.idSettlement}}">{{set.settlementName}}</option>
+                    </select>
+                  </div>
+                  <div class="col-xs-3">
+                    <label>
+                      Municipio/Delegación
+                    </label>
+                    <select class="form-control" name="" v-model="direccion.idMunicipality">
+                      <option></option>
+                      <option v-for="mun in municipalities" value="{{mun.idMunicipality}}">{{mun.municipalityName}}</option>
+                    </select>
+                  </div>
+                  <div class="col-xs-3">
+                    <label>
+                      Estado
+                    </label>
+                    <select class="form-control" name="" v-model="direccion.idState">
+                      <option></option>
+                      <option v-for="state in states" value="{{state.idState}}">{{state.stateName}}</option>
+                    </select>
+                  </div>
+                </div>
+                <br>
+                <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13">
+                  <div class="col-xs-4">
+                    <label>
+                      Teléfono
+                    </label>
+                    <input class="form-control" name="name" v-model="phoneNumbers" onkeypress="return isNumberKey(event)">
+                  </div>
+                  <div class="col-xs-1">
+                    <button type="button" class="btn btn-sm btn-default"  data-toggle="tooltip" data-placement="bottom" title="Agregar" style="margin-top: 25px" @click="savePhone()">
+                      <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                  </div>
+                </div>
+                <br>
+                <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13" v-for=" phone in provider.phoneNumbersList">
+                  <div class="col-xs-4">
+                    <div class="col-xs-4">
+                      {{phone.phoneNumber}}
+                    </div>
+                    <div class="col-xs-2 text-left">
+                      <button class="btn btn-default" @click="deletePhone(phone)" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Quitar Numero">
+                        <span class="glyphicon glyphicon-remove"></span>
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+                <br>
+                <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13">
                   <div class="col-xs-3">
                     <label>
                       Banco
@@ -702,7 +835,7 @@
                     CLABE
                   </th>
                   <th style="color: red">
-                    Eliminar la Cuenta
+                    Eliminar Cuenta
                   </th>
                   </thead>
                   <tbody>
@@ -717,26 +850,22 @@
                       {{account.accountClabe}}
                     </td>
                     <td>
-                      <button type="button" class="btn btn-danger" @click="deleteAccount(account)">
-                        Eliminar Cuenta
+                      <button type="button" class="btn btn-sm btn-default"  data-toggle="tooltip" data-placement="bottom" title="Eliminar"  @click="deleteAccount(account)">
+                        <span class="glyphicon glyphicon-trash"></span>
                       </button>
                     </td>
                   </tr>
                   </tbody>
                 </table>
 
-
-                <div class="row"  v-if="provider.providersAccountsList.length> 0">
-                  <div class="col-xs-12 text-left">
-                    <button type="button" class="btn btn-success" @click="updateProvider(provider)">
-                      Guardar Proveedor
-                    </button>
-                  </div>
-                </div>
-
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <div class="col-xs-10 text-right" v-if="supplier.providersAccountsList.length> 0">
+                  <button type="button" class="btn btn-default" @click="updateProvider(provider)">
+                    Guardar
+                  </button>
+                </div>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
               </div>
             </div>
           </div>

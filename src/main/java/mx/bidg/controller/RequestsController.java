@@ -2,6 +2,7 @@ package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import mx.bidg.events.requests.RequestCompletedEvent;
 import mx.bidg.events.requests.RequestCreatedEvent;
 import mx.bidg.model.AccountsPayable;
 import mx.bidg.model.PeriodicsPayments;
@@ -73,6 +74,7 @@ public class RequestsController {
             produces = "application/json;charset=UTF-8")
     public @ResponseBody String savePeriodicPayment(@RequestBody String data) throws Exception {
         PeriodicsPayments periodicsPayment = periodicPaymentsService.saveData(data);
+        eventPublisher.publishEvent(new RequestCompletedEvent(requestsService.findByFolio(periodicsPayment.getFolio())));
         return mapper.writeValueAsString(periodicsPayment);
     }
     

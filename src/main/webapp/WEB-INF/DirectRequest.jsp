@@ -7,13 +7,34 @@
 <t:template pageTitle="BID Group: Presupuestos">
     <jsp:attribute name="scripts">
         <script type="text/javascript">
-        function isNumberKey(evt)
-        {
-        var charCode = (evt.which) ? evt.which : event.keyCode
-        if (charCode > 31 && (charCode < 48 || charCode > 57))
-        return false;
-        return true;
+        function validateFloatKeyPress(el, evt) {
+          var charCode = (evt.which) ? evt.which : event.keyCode;
+          var number = el.value.split('.');
+          if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+          }
+          //just one dot
+          if(number.length>1 && charCode == 46){
+            return false;
+          }
+          //get the carat position
+          var caratPos = getSelectionStart(el);
+          var dotPos = el.value.indexOf(".");
+          if( caratPos > dotPos && dotPos>-1 && (number[1].length > 1)){
+            return false;
+          }
+          return true;
         }
+
+          //thanks: http://javascript.nwbox.com/cursor_position/
+          function getSelectionStart(o) {
+             if (o.createTextRange) {
+                 var r = document.selection.createRange().duplicate()
+                   r.moveEnd('character', o.value.length)
+                     if (r.text == '') return o.value.length
+                       return o.value.lastIndexOf(r.text)
+                      } else return o.selectionStart
+                    }
         </script>
 
         <script type="text/javascript">
@@ -605,9 +626,19 @@
           {
             return param;
           }
-
+        },
+        filterCurrency: function(idCurrency)
+        {
+          var retorno;
+          this.currencies.forEach(function(element)
+          {
+              if (idCurrency == element.idCurrency)
+            {
+             retorno= element.acronym;
+            }
+          });
+          return retorno;
         }
-
       }
       });
 
@@ -727,7 +758,7 @@
             <div class="row">
               <div class="col-xs-12">
                 <label>
-                  Motivo de la Solicitud
+                  Justificación de la Solicitud
                 </label>
                 <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.purpose"
                   :disabled="isUpdate" required></textarea>
@@ -742,10 +773,18 @@
                   <div class="panel-heading">
                     <div class="row">
                       <div class="col-xs-4 text-left">
-                        <h3 class="panel-title">Informacion del Pago</h3>
+                        <div class="col-xs-4">
+                          <h4 class="panel-title">Informacion del Pago</h4>
+                        </div>
+                        <div class="col-xs-8">
+                          <h4 class="panel-title" v-if="estimation.idCurrency > 0">Monto MXN: {{estimation.amount * estimation.rate}} <br> Monto en {{estimation.idCurrency | filterCurrency}}: {{estimation.amount}}</h4>
+                        </div>
                       </div>
-                      <div class="col-xs-4" >
-                        <span class="label label-danger" v-if="estimation.outOfBudget == 1">Cotización Fuera de Presupuesto</span>
+                      <div class="col-xs-2" >
+                        <span class="label label-danger" v-if="cotizacion.outOfBudget == 1">Fuera de Presupuesto</span>
+                      </div>
+                      <div class="col-xs-2 text-right">
+                        <label v-if="cotizacion.idEstimationStatus== 2">Cotización Propuesta</label>
                       </div>
                       <div class="col-xs-4">
                         <div class="col-xs-8">
@@ -796,7 +835,8 @@
                         </label>
                         <div class="input-group">
                           <span class="input-group-addon">$</span>
-                          <input number class="form-control" placeholder="" v-model="estimation.amount" required="true">
+                          <input number class="form-control" placeholder="" v-model="estimation.amount"
+                            onkeypress="return validateFloatKeyPress(this,event)" required="true">
                         </div>
                       </div>
                       <div class="col-xs-2">
@@ -806,7 +846,7 @@
                         <div class="input-group">
                           <span class="input-group-addon">$</span>
                           <input number class="form-control" placeholder="" v-model="estimation.rate"
-                            :disabled="flagrate" required="true" >
+                            onkeypress="return validateFloatKeyPress(this,event)" :disabled="flagrate" required="true" >
                         </div>
                       </div>
                       </div>
@@ -832,7 +872,7 @@
                   <table class="table table-striped">
                     <thead>
                       <th>
-                        Usuario
+                        Nombre
                       </th>
                       <th>
                         Estatus
