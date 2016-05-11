@@ -102,6 +102,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             BigDecimal rate = ((json.get("rate").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("rate").decimalValue() : BigDecimal.ONE;
             BigDecimal amount = ((json.get("amount").decimalValue().compareTo(BigDecimal.ZERO)) == 1)?
                     json.get("amount").decimalValue() : BigDecimal.ZERO;
+            BigDecimal tempAmount = amount.multiply(rate);
 
             estimation.setAccount(new Accounts(json.get("idAccount").asInt()));
             estimation.setAmount(amount);
@@ -109,7 +110,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             estimation.setRate(rate);
             estimation.setUserEstimation(user);
             //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
-            estimation.setOutOfBudget((residualAmount.compareTo(amount) == -1)? 1 : 0);
+            estimation.setOutOfBudget((residualAmount.compareTo(tempAmount) == -1)? 1 : 0);
             
             return estimation;
         } else {
