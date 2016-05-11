@@ -12,6 +12,7 @@ import java.util.List;
  * @author Rafael Viveros
  * Created on 25/01/16.
  */
+@SuppressWarnings("unchecked")
 @Repository
 public class CArticleStatusDaoImpl extends AbstractDao<Integer, CArticleStatus> implements CArticleStatusDao {
     @Override
@@ -28,7 +29,6 @@ public class CArticleStatusDaoImpl extends AbstractDao<Integer, CArticleStatus> 
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<CArticleStatus> findAll() {
         return (List<CArticleStatus>) createEntityCriteria()
                 .list();

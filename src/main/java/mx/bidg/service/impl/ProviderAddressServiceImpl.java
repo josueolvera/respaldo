@@ -22,6 +22,11 @@ public class ProviderAddressServiceImpl implements ProviderAddressService {
     ProviderAddressDao dao;
 
     @Override
+    public List<ProviderAddress> findByProvider(Providers provider) {
+        return dao.findByProvider(provider);
+    }
+
+    @Override
     public List<ProviderAddress> findAll() {
         return dao.findAll();
     }

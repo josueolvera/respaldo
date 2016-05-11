@@ -21,7 +21,6 @@
                         var formData = new FormData(formElement);
                         this.$http.post(ROOT_URL + '/sap-sale/excel', formData)
                                 .success(function (data) {
-                                    console.log(data);
                                     $('#checkExistigSaleModal').modal('hide');
                                 })
                                 .error(function (data) {
@@ -32,9 +31,8 @@
                     updateSapSales: function () {
                         var formElement = document.getElementById("formSap");
                         var formData = new FormData(formElement);
-                        this.$http.put(ROOT_URL + '/sap-sale/excel', formData)
+                        this.$http.post(ROOT_URL + '/sap-sale/update-excel', formData)
                                 .success(function (data) {
-                                    console.log(data);
                                     $('#checkExistigSaleModal').modal('hide');
                                 })
                                 .error(function (data) {
@@ -47,7 +45,6 @@
                         var formData = new FormData(formElement);
                         this.$http.post(ROOT_URL + '/sap-sale/check-existing-sale', formData)
                                 .success(function (data) {
-                                    console.log(data);
                                     if (data == true) {
                                         $('#checkExistigSaleModal').modal('show');
                                     } else {

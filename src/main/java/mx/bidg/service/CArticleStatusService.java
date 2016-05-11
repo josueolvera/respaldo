@@ -10,4 +10,6 @@ import java.util.List;
  */
 public interface CArticleStatusService {
     List<CArticleStatus> findAll();
+
+    CArticleStatus findById(Integer id);
 }

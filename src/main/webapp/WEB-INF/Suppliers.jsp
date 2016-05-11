@@ -181,6 +181,15 @@
                     .success(function (data) {
                       Vue.set(this.provider,'phoneNumbersList', data);
                     });
+            this.$http.get(ROOT_URL + "/provider-address/provider/"+this.provider.idProvider)
+                    .success(function (data) {
+
+                      Vue.set(this.provider,'addressProvider',data);
+                    });
+
+         //     this.obtainAddressNames(this.provider);
+
+
             console.log(this.provider);
           },
           deleteAccount: function (account) {
@@ -189,8 +198,13 @@
                       showAlert("Cuenta Eliminada");
                       this.provider.providersAccountsList.$remove(account);
                     });
-
-
+          },
+          removePhone: function (phone) {
+            this.$http.delete(ROOT_URL + "/phone-numbers/" + phone.idPhoneNumber)
+                    .success(function (data) {
+                      showAlert("Telefono Eliminado");
+                      this.provider.phoneNumbersList.$remove(phone);
+                    });
           },
           addProviderAccount: function (supplier, cuenta) {
             this.$http.post(ROOT_URL + "/accounts/provider/" + supplier.idProvider, cuenta)
@@ -264,6 +278,52 @@
             this.supplier.phoneNumbersList.$remove(phone);
             this.phoneNumbers = ''
           },
+          addProviderPhone: function (supplier, phone) {
+            this.$http.post(ROOT_URL + "/phone-numbers/provider/" + supplier.idProvider, phone)
+                    .success(function (data) {
+                      showAlert("Teléfono Guardado con Éxito");
+
+                      this.provider.phoneNumbersList.push(phone);
+                      this.phoneNumbers = ''
+
+                      //this.$http.get(ROOT_URL + "/phone-numbers/provider/" + this.provider.idProvider)
+                      //        .success(function (data) {
+                        //        Vue.set(this.provider, 'phoneNumbersList', data);
+                       //       });
+                      this.telephone.phoneNumbers = '';
+                    });
+          },
+          cancelar: function () {
+
+            this.cuenta.accountNumber= '';
+            this.cuenta.accountClabe= '';
+            this.cuenta.idBank='';
+            this.cuenta.idCurrency= '';
+            this.direccion.cp= '';
+            this.direccion.ext='';
+            this.direccion.int='';
+            this.direccion.street='';
+            this.direccion.idSettlement= '';
+            this.direccion.idState='';
+            this.direccion.idMunicipality='';
+            this.idBanks= '';
+            this.providerNames='';
+            this.providerLastName='';
+            this.providerSecondName='';
+            this.idCurrency='';
+            this.idState='';
+            this.idSettlement='';
+            this.idMunicipality='';
+            this.telephone.phoneNumbers='';
+            this.supplier.providerName= '';
+            this.supplier.businessName= '';
+            this.supplier.rfc= '';
+            this.supplier.accountingaccount= '';
+
+            $('#modalAlta').modal('hide');
+          }
+
+
         },
         filters:
         {
@@ -627,7 +687,7 @@
                   Guardar
                 </button>
               </div>
-              <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+              <button type="button" class="btn btn-default" @click="cancelar">Cancelar</button>
             </div>
           </div>
         </div>
@@ -702,30 +762,30 @@
                     </label>
                   </div>
                 </div>
-                <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13">
+                <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13" v-for="address in provider.addressProvider">
                   <div class="col-xs-3">
                     <label>
                       Calle
                     </label>
-                    <input class="form-control" name="name" v-model="direccion.street">
+                    <input class="form-control" name="name" v-model="address.street">
                   </div>
                   <div class="col-xs-3">
                     <label>
                       # Ext
                     </label>
-                    <input class="form-control" name="name" maxlength="5" v-model="direccion.ext" onkeypress="return isNumberKey(event)">
+                    <input class="form-control" name="name" maxlength="5" v-model="address.numExt" onkeypress="return isNumberKey(event)">
                   </div>
                   <div class="col-xs-3">
                     <label>
                       # Int
                     </label>
-                    <input class="form-control" name="name" maxlength="5" v-model="direccion.int" onkeypress="return isNumberKey(event)">
+                    <input class="form-control" name="name" maxlength="5" v-model="address.numInt" onkeypress="return isNumberKey(event)">
                   </div>
                   <div class="col-xs-3">
                     <label>
                       C.P.
                     </label>
-                    <input class="form-control" name="name" maxlength="5" v-model="direccion.cp" onkeypress="return isNumberKey(event)">
+                    <input class="form-control" name="name" maxlength="5" v-model="address.cp" onkeypress="return isNumberKey(event)">
                   </div>
                 </div>
                 <br>
@@ -767,7 +827,7 @@
                     <input class="form-control" name="name" v-model="phoneNumbers" onkeypress="return isNumberKey(event)">
                   </div>
                   <div class="col-xs-1">
-                    <button type="button" class="btn btn-sm btn-default"  data-toggle="tooltip" data-placement="bottom" title="Agregar" style="margin-top: 25px" @click="savePhone()">
+                    <button type="button" class="btn btn-sm btn-default"  data-toggle="tooltip" data-placement="bottom" title="Agregar" style="margin-top: 25px" @click="addProviderPhone(provider,phoneNumbers)">
                       <span class="glyphicon glyphicon-plus"></span>
                     </button>
                   </div>
@@ -779,7 +839,7 @@
                       {{phone.phoneNumber}}
                     </div>
                     <div class="col-xs-2 text-left">
-                      <button class="btn btn-default" @click="deletePhone(phone)" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Quitar Numero">
+                      <button class="btn btn-default" @click="removePhone(phone)" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Quitar Numero">
                         <span class="glyphicon glyphicon-remove"></span>
                       </button>
                     </div>
@@ -860,7 +920,7 @@
 
               </div>
               <div class="modal-footer">
-                <div class="col-xs-10 text-right" v-if="supplier.providersAccountsList.length> 0">
+                <div class="col-xs-10 text-right" >
                   <button type="button" class="btn btn-default" @click="updateProvider(provider)">
                     Guardar
                   </button>

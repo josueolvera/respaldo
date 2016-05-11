@@ -93,9 +93,9 @@ public class ProvidersController {
             providerAddress.setCp(node.get("cp").asInt());
             providerAddress.setNumExt(node.get("ext").asInt());
             providerAddress.setNumInt(node.get("int").asInt());
-            providerAddress.setIdSettlement(new CSettlement(node.get("idSettlement").asInt()));
-            providerAddress.setIdMunicipality(new CMunicipalities(node.get("idMunicipality").asInt()));
-            providerAddress.setIdState(new CStates(node.get("idState").asInt()));
+            providerAddress.setIdSettlement(node.get("idSettlement").asInt());
+            providerAddress.setIdMunicipality(node.get("idMunicipality").asInt());
+            providerAddress.setIdState(node.get("idState").asInt());
             providerAddress.setIdProvider(provider);
             providerAddress.setIdAccessLevel(1);
 
