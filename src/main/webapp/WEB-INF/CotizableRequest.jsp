@@ -180,7 +180,8 @@
               rate: ''
             },
             attachment: ROOT_URL +"/estimations/attachment/download/",
-            montoTotal: ''
+            montoTotal: '',
+            totalApagar: 0
           },
           methods:
           {
@@ -554,7 +555,6 @@
             },
             matchInformationUpdate: function(data)
             {
-              console.log(data);
               var self= this;
               this.isUpdate= true;
               this.obtainRequestInformation.idRequestType= data.requestTypeProduct.idRequestType;
@@ -574,7 +574,15 @@
               this.objectRequest.request.purpose= data.purpose;
               this.userRequest = data.userRequest.dwEmployee.employee.fullNameReverse;
               this.desaparecer = false;
-              $("#productTypesin").append("<option>"+data.requestTypeProduct.productType.productType+"</option>");
+              var producTypein= [{
+                idProductType: '',
+                productType: ''
+              }];
+              producTypein[0].idProductType = data.requestTypeProduct.idProductType;
+              producTypein[0].productType = data.requestTypeProduct.productType.productType;
+              this.ProductTypes= producTypein;
+              this.obtainRequestInformation.idProductType = data.requestTypeProduct.idProductType;
+
               data.requestProductsList.forEach(function(element)
               {
               var producto= self.createProduct();
@@ -764,48 +772,63 @@
             generarPagosVariables: function()
             {
               var self= this;
-              var accountPayable = this.createAccountPayable();
-              accountPayable.folio= this.periodicPayment.folio;
-              accountPayable.amount=this.amountOfPay;
-              accountPayable.idCurrency=this.periodicPayment.idCurrency
-              accountPayable.rate=this.periodicPayment.rate
-              if (this.AccountsPayables.length == 0)
+              if (this.amountOfPay < 0 || this.amountOfPay == '')
               {
-                accountPayable.idDatePicker= 0;
+                showAlert("No puede haber pagos menores a 0");
+                this.amountOfPay = '';
               }
               else
               {
-                accountPayable.idDatePicker= Math.round(Math.random()*1000);
-              }
+                var amountOfPays = (JSON.parse(JSON.stringify(this.amountOfPay)));
+                this.amountOfPay= '';
+                var accountPayable = this.createAccountPayable();
+                accountPayable.folio= this.periodicPayment.folio;
+                accountPayable.amount= amountOfPays;
+                accountPayable.idCurrency=this.periodicPayment.idCurrency
+                accountPayable.rate=this.periodicPayment.rate
+                if (this.AccountsPayables.length == 0)
+                {
+                  accountPayable.idDatePicker= 0;
+                }
+                else
+                {
+                  accountPayable.idDatePicker= Math.round(Math.random()*1000);
+                }
 
-              if (this.AccountsPayables.length == 0)
-              {
-                  if (this.amountOfPay > this.periodicPayment.amount)
-                  {
-                    showAlert("El monto(s) del pago deben de ser igual al total de la cotizacion");
-                  }
-                  else
-                  {
-                    this.AccountsPayables.push(accountPayable);
-                  }
-              }
-              else
-              {
-               var total= 0;
-               this.AccountsPayables.forEach(function(element)
-               {
-                 total += element.amount;
-               });
-               total += this.amountOfPay;
-               if (total > self.periodicPayment.amount)
-               {
-                 showAlert("El monto a pagar es mayor al monto de la cotización");
-               }
-               else
-               {
-                 this.AccountsPayables.push(accountPayable);
-               }
+                if (this.AccountsPayables.length == 0)
+                {
+                      self.totalApagar = amountOfPays;
+                    if (amountOfPays > this.periodicPayment.amount)
+                    {
+                      showAlert("El monto(s) del pago deben de ser igual al total de la cotizacion");
+                      this.totalApagar = 0;
+                    }
+                    else
+                    {
+                      this.totalApagar = amountOfPays;
+                      this.AccountsPayables.push(accountPayable);
+                    }
+                }
+                else
+                {
+                 var total= 0;
+                 this.AccountsPayables.forEach(function(element)
+                 {
+                   total += element.amount;
+                 });
+                 total += amountOfPays;
 
+                 if (total > self.periodicPayment.amount)
+                 {
+                   showAlert("El monto a pagar es mayor al monto de la cotización");
+                 }
+                 else
+                 {
+                   this.AccountsPayables.push(accountPayable);
+                   this.totalApagar = total;
+                 }
+
+                }
               }
             },
             saveAccountPayable: function()
@@ -933,6 +956,9 @@
                       accountPayable.idAccountPayable = element.idAccountPayable;
                       accountPayable.folio = element.folio;
                       accountPayable.amount = element.amount;
+                      console.log(element.amount);
+                      self.totalApagar += parseFloat(element.amount);
+
                       accountPayable.paidAmount = element.paidAmount;
                       accountPayable.payNum = element.payNum;
                       accountPayable.totalPayments = element.totalPayments;
@@ -950,7 +976,7 @@
 
                     });
                     this.AccountsPayablesInfo = (JSON.parse(JSON.stringify(this.AccountsPayables))); //Se realiza copia del objeto de cuentas
-                    $("#form"+cotizacion.indexOfForm).empty();
+                    accounting.formatNumber(self.totalApagar);
                  }
 
                });
@@ -975,6 +1001,7 @@
               success(function(data)
               {
                 showAlert("Se ha autorizado la cotizacion correctamente");
+                showAlert("Es necesario agregar la información de pago");
                 setInterval(function()
                 {
                   window.location.reload()
@@ -1290,7 +1317,7 @@
                          @click="setIsCollapsed(cotizacion)">
                       <div class="col-xs-4 text-left">
                         <div class="col-xs-4">
-                          <h3 class="panel-title">Cotización
+                          <h3 class="panel-title"> Ver Cotización
                           </h3>
                         </div>
                         <div class="col-xs-8">
@@ -1674,8 +1701,11 @@
                           </div>
                         </div>
                         <div class="row">
-                          <div class="col-xs-12 text-left">
-                            Total a Pagar:
+                          <div class="col-xs-3 text-left">
+                            <b>Total a Pagar:</b>
+                          </div>
+                          <div class="col-xs-9 text-left">
+                            <b>$ {{totalApagar}}</b>
                           </div>
                         </div>
                       </div>
