@@ -53,8 +53,26 @@ public class ProvidersController {
         provider.setProviderName(jnode.get("providerName").asText());
         provider.setBusinessName(jnode.get("businessName").asText());
         provider.setRfc(jnode.get("rfc").asText());
+        provider.setAccountingaccount(jnode.get("accountingaccount").asText());
         provider.setIdAccessLevel(1);
         providersService.update(provider);
+
+        for (JsonNode node : jnode.get("addressProvider")){
+            ProviderAddress providerAddress = providerAddressService.findById(node.get("idProviderAddress").asInt());
+            providerAddress.setStreet(node.get("street").asText());
+            providerAddress.setCp(node.get("cp").asInt());
+            providerAddress.setNumExt(node.get("numExt").asInt());
+            providerAddress.setNumInt(node.get("numInt").asInt());
+            providerAddress.setSettlement(new CSettlement(node.get("idSettlement").asInt()));
+            providerAddress.setMunicipality(new CMunicipalities(node.get("idMunicipality").asInt()));
+            providerAddress.setState(new CStates(node.get("idState").asInt()));
+            providerAddress.setIdProvider(provider);
+            providerAddress.setIdAccessLevel(1);
+
+            providerAddressService.update(providerAddress);
+
+        }
+
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Root.class).writeValueAsString(provider), HttpStatus.OK
         );
@@ -62,6 +80,7 @@ public class ProvidersController {
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> saveProvider(@RequestBody String data) throws IOException {
+        System.out.println(data);
         JsonNode jnode = mapper.readTree(data);
         Providers provider = new Providers();
         provider.setProviderName(jnode.get("providerName").asText());
@@ -78,6 +97,7 @@ public class ProvidersController {
             account.setAccountNumber(node.get("accountNumber").asText());
             account.setAccountClabe(node.get("accountClabe").asText());
             account.setBank(new CBanks(node.get("idBank").asInt()));
+            account.setCurrencies(new CCurrencies(node.get("idCurrency").asInt()));
             account.setAccountType(CAccountsTypes.DEFINITIVA);
             account.setIdAccessLevel(1);
 
@@ -93,9 +113,9 @@ public class ProvidersController {
             providerAddress.setCp(node.get("cp").asInt());
             providerAddress.setNumExt(node.get("ext").asInt());
             providerAddress.setNumInt(node.get("int").asInt());
-            providerAddress.setIdSettlement(node.get("idSettlement").asInt());
-            providerAddress.setIdMunicipality(node.get("idMunicipality").asInt());
-            providerAddress.setIdState(node.get("idState").asInt());
+            providerAddress.setSettlement(new CSettlement(node.get("idSettlement").asInt()));
+            providerAddress.setMunicipality(new CMunicipalities(node.get("idMunicipality").asInt()));
+            providerAddress.setState(new CStates(node.get("idState").asInt()));
             providerAddress.setIdProvider(provider);
             providerAddress.setIdAccessLevel(1);
 
