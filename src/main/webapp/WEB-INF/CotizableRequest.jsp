@@ -1433,21 +1433,19 @@
                        v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}"
                              accept="application/pdf">
                     </div>
-                    <div class="col-xs-1" v-if="cotizacion.idEstimation > 0">
-                    <p style="margin-top: 25px">
-                    <a :href="attachment + cotizacion.idEstimation">
-                      <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Descargar">
-                        <span class="glyphicon glyphicon-download" style="font-size: 17px"><span>
-                      </button>
-                    </a>
-                    </p>
-                    </div>
                     <div class="col-xs-2">
                       <label>
                         Archivo Actual
                       </label>
                       <p>
                         {{cotizacion.fileNameActual}}
+                      </p>
+                    </div>
+                    <div class="col-xs-1" v-if="cotizacion.idEstimation > 0">
+                      <p style="margin-top: 25px">
+                        <a :href="attachment + cotizacion.idEstimation" class="btn btn-default" title="Descargar">
+                          <span class="glyphicon glyphicon-download" style="font-size: 17px"></span>
+                        </a>
                       </p>
                     </div>
                     <div class="col-xs-3">
