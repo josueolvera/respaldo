@@ -12,5 +12,6 @@ import mx.bidg.model.Accounts;
  * @author sistemask
  */
 public interface AccountsDao extends InterfaceDao<Accounts> {
+
     
 }

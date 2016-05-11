@@ -36,7 +36,7 @@ public class ProviderAddressDaoImpl extends AbstractDao<Integer,ProviderAddress>
 
     @Override
     public ProviderAddress update(ProviderAddress entity) {
-        update(entity);
+        modify(entity);
         return entity;
     }
 

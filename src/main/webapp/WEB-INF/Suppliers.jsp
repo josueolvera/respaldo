@@ -60,6 +60,9 @@
           providerNames:'',
           providerLastName:'',
           providerSecondName:'',
+          supplierNames:'',
+          supplierLastName:'',
+          supplierSecondName:'',
           currencies: {},
           states:{},
           idCurrency:'',
@@ -98,6 +101,20 @@
 
             this.supplier.providerName=(providerNames+":"+providerLastName+":"+providerSecondName);
 
+          },
+          showName: function (provider) {
+            var array;
+            array = provider.providerName.split(":");
+            this.supplierNames = array[0];
+            this.supplierLastName = array[1];
+            this.supplierSecondName = array[2];
+          },
+          modifyName: function () {
+            var providerNames = this.supplierNames;
+            var providerLastName = this.supplierLastName;
+            var providerSecondName = this.supplierSecondName;
+
+            this.provider.providerName=(providerNames+":"+providerLastName+":"+providerSecondName);
           },
           saveAccount: function () {
             var cuenta =
@@ -162,7 +179,7 @@
             }).error(function () {
              showAlert("Ha habido un error con la solicitud, intente nuevamente");
             });
-
+            this.cancelar();
           },
           getProviders: function () {
             this.$http.get(ROOT_URL + "/providers")
@@ -172,7 +189,16 @@
           },
           modifyProvider: function (provider) {
             this.provider = (JSON.parse(JSON.stringify(provider)));
+
+            if(this.provider.rfc.length==13){
+              this.showName(this.provider);
+            }
             $('#modalModi').modal('show');
+
+            this.$http.get(ROOT_URL + "/provider-address/provider/"+this.provider.idProvider)
+                    .success(function (data) {
+                      this.provider.addressProvider = data;
+                    });
             this.$http.get(ROOT_URL + "/accounts/provider/" + this.provider.idProvider)
                     .success(function (data) {
                       Vue.set(this.provider, 'providersAccountsList', data);
@@ -181,23 +207,14 @@
                     .success(function (data) {
                       Vue.set(this.provider,'phoneNumbersList', data);
                     });
-            this.$http.get(ROOT_URL + "/provider-address/provider/"+this.provider.idProvider)
-                    .success(function (data) {
-
-                      Vue.set(this.provider,'addressProvider',data);
-                    });
-
-         //     this.obtainAddressNames(this.provider);
-
-
-            console.log(this.provider);
           },
           deleteAccount: function (account) {
-            this.$http.delete(ROOT_URL + "/accounts/" + account.idAccount)
+           this.$http.delete(ROOT_URL + "/accounts/" + account.idAccount)
                     .success(function (data) {
-                      showAlert("Cuenta Eliminada");
                       this.provider.providersAccountsList.$remove(account);
+                      showAlert("Cuenta Eliminada");
                     });
+
           },
           removePhone: function (phone) {
             this.$http.delete(ROOT_URL + "/phone-numbers/" + phone.idPhoneNumber)
@@ -217,10 +234,14 @@
                       cuenta.accountNumber = "";
                       cuenta.accountClabe = "";
                       cuenta.idBank = "";
+                      cuenta.idCurrency = "";
                     });
 
           },
           updateProvider: function (provider) {
+            if(provider.rfc.length==13){
+              this.modifyName();
+            }
             this.$http.post(ROOT_URL + "/providers/" + provider.idProvider, provider)
                     .success(function (data) {
                       showAlert("Proveedor Actualizado");
@@ -229,7 +250,6 @@
                     }).error(function () {
               showAlert("Ha habido un error con la solicitud, intente nuevamente");
             });
-
           },
           deleteProvider: function (provider) {
             this.$http.delete(ROOT_URL + "/providers/" + provider.idProvider)
@@ -276,24 +296,18 @@
           },
           deletePhone: function (phone) {
             this.supplier.phoneNumbersList.$remove(phone);
-            this.phoneNumbers = ''
+            this.phoneNumbers = '';
           },
           addProviderPhone: function (supplier, phone) {
-            this.$http.post(ROOT_URL + "/phone-numbers/provider/" + supplier.idProvider, phone)
+            this.$http.post(ROOT_URL + "/phone-numbers/provider/" + supplier.idProvider, {phoneNumbers : phone})
                     .success(function (data) {
+                      this.provider.phoneNumbersList.push(data);
+                      this.phoneNumbers = '';
                       showAlert("Teléfono Guardado con Éxito");
-
-                      this.provider.phoneNumbersList.push(phone);
-                      this.phoneNumbers = ''
-
-                      //this.$http.get(ROOT_URL + "/phone-numbers/provider/" + this.provider.idProvider)
-                      //        .success(function (data) {
-                        //        Vue.set(this.provider, 'phoneNumbersList', data);
-                       //       });
                       this.telephone.phoneNumbers = '';
                     });
           },
-          cancelar: function () {
+         cancelar: function () {
 
             this.cuenta.accountNumber= '';
             this.cuenta.accountClabe= '';
@@ -317,6 +331,8 @@
             this.telephone.phoneNumbers='';
             this.supplier.providerName= '';
             this.supplier.businessName= '';
+            this.supplier.providersAccountsList=[];
+            this.supplier.phoneNumbersList=[];
             this.supplier.rfc= '';
             this.supplier.accountingaccount= '';
 
@@ -423,12 +439,12 @@
                   {{provider.rfc}}
                 </td>
                 <td>
-                  <button type="button" class="btn btn-success" name="button"
-                   @click="modifyProvider(provider)">Modificar</button>
+                  <button type="button" class="btn btn-default" name="button" data-toggle="tooltip" data-placement="bottom" title="Modificar Proveedor"
+                   @click="modifyProvider(provider)"><span class="glyphicon glyphicon-pencil"></span></button>
                 </td>
                 <td>
-                  <button type="button" class="btn btn-danger" name="button"
-                  @click="deleteProvider(provider)">Eliminar</button>
+                  <button type="button" class="btn btn-default" name="button" data-toggle="tooltip" data-placement="bottom" title="Eliminar Proveedor"
+                  @click="deleteProvider(provider)"><span class="glyphicon glyphicon-trash"></span></button>
                 </td>
               </tr>
             </tbody>
@@ -453,7 +469,7 @@
                 <label>
                   RFC
                 </label>
-                <input class="form-control" name="name" v-model="supplier.rfc">
+                <input maxlength="13" class="form-control" name="name" v-model="supplier.rfc">
               </div>
               </div>
               <div class="row" v-if="(supplier.rfc).length==12">
@@ -513,15 +529,15 @@
                 </div>
                 <div class="col-xs-3">
                   <label>
-                    # Ext
+                    No. Exterior
                   </label>
-                  <input class="form-control" name="name" maxlength="5" v-model="direccion.ext" onkeypress="return isNumberKey(event)">
+                  <input class="form-control" name="name" maxlength="5" v-model="direccion.ext" >
                 </div>
                 <div class="col-xs-3">
                   <label>
-                    # Int
+                    No. Interior
                   </label>
-                  <input class="form-control" name="name" maxlength="5" v-model="direccion.int" onkeypress="return isNumberKey(event)">
+                  <input class="form-control" name="name" maxlength="5" v-model="direccion.int" >
                 </div>
                 <div class="col-xs-3">
                   <label>
@@ -569,9 +585,9 @@
               <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
                 <div class="col-xs-4">
                   <label>
-                    Teléfono
+                    Teléfono (10 dígitos)
                   </label>
-                  <input class="form-control" name="name" v-model="phoneNumbers" onkeypress="return isNumberKey(event)">
+                  <input maxlength="10" class="form-control" name="name" v-model="phoneNumbers" onkeypress="return isNumberKey(event)">
                 </div>
                 <div class="col-xs-1">
                   <button type="button" class="btn btn-sm btn-default"  data-toggle="tooltip" data-placement="bottom" title="Agregar" style="margin-top: 25px" @click="savePhone()">
@@ -711,7 +727,7 @@
                     <label>
                       RFC
                     </label>
-                    <input class="form-control" name="name" v-model="provider.rfc">
+                    <input  maxlength="13" class="form-control" name="name" v-model="provider.rfc">
                   </div>
                 </div>
                 <div class="row" v-if="(provider.rfc).length==12">
@@ -733,19 +749,19 @@
                     <label>
                       Nombre
                     </label>
-                    <input class="form-control" name="name" v-model="providerNames">
+                    <input class="form-control" name="name" v-model="supplierNames">
                   </div>
                   <div class="col-xs-3">
                     <label>
                       Apellido Paterno
                     </label>
-                    <input class="form-control" name="name" v-model="providerLastName">
+                    <input class="form-control" name="name" v-model="supplierLastName">
                   </div>
                   <div class="col-xs-3">
                     <label>
                       Apellido Materno
                     </label>
-                    <input class="form-control" name="name" v-model="providerSecondName">
+                    <input class="form-control" name="name" v-model="supplierSecondName">
                   </div>
                   <div class="col-xs-3">
                     <label>
@@ -771,15 +787,15 @@
                   </div>
                   <div class="col-xs-3">
                     <label>
-                      # Ext
+                      No. Exterior
                     </label>
-                    <input class="form-control" name="name" maxlength="5" v-model="address.numExt" onkeypress="return isNumberKey(event)">
+                    <input class="form-control" name="name" maxlength="5" v-model="address.numExt">
                   </div>
                   <div class="col-xs-3">
                     <label>
-                      # Int
+                      No. Interior
                     </label>
-                    <input class="form-control" name="name" maxlength="5" v-model="address.numInt" onkeypress="return isNumberKey(event)">
+                    <input class="form-control" name="name" maxlength="5" v-model="address.numInt">
                   </div>
                   <div class="col-xs-3">
                     <label>
@@ -787,14 +803,11 @@
                     </label>
                     <input class="form-control" name="name" maxlength="5" v-model="address.cp" onkeypress="return isNumberKey(event)">
                   </div>
-                </div>
-                <br>
-                <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13">
                   <div class="col-xs-3">
                     <label>
                       Colonia
                     </label>
-                    <select class="form-control" name="" v-model="direccion.idSettlement">
+                    <select class="form-control" name="" v-model="address.idSettlement">
                       <option></option>
                       <option v-for="set in settlements" value="{{set.idSettlement}}">{{set.settlementName}}</option>
                     </select>
@@ -803,7 +816,7 @@
                     <label>
                       Municipio/Delegación
                     </label>
-                    <select class="form-control" name="" v-model="direccion.idMunicipality">
+                    <select class="form-control" name="" v-model="address.idMunicipality">
                       <option></option>
                       <option v-for="mun in municipalities" value="{{mun.idMunicipality}}">{{mun.municipalityName}}</option>
                     </select>
@@ -812,7 +825,7 @@
                     <label>
                       Estado
                     </label>
-                    <select class="form-control" name="" v-model="direccion.idState">
+                    <select class="form-control" name="" v-model="address.idState">
                       <option></option>
                       <option v-for="state in states" value="{{state.idState}}">{{state.stateName}}</option>
                     </select>
@@ -822,9 +835,9 @@
                 <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13">
                   <div class="col-xs-4">
                     <label>
-                      Teléfono
+                      Teléfono (10 dígitos)
                     </label>
-                    <input class="form-control" name="name" v-model="phoneNumbers" onkeypress="return isNumberKey(event)">
+                    <input maxlength="10" class="form-control" name="name" v-model="phoneNumbers" onkeypress="return isNumberKey(event)">
                   </div>
                   <div class="col-xs-1">
                     <button type="button" class="btn btn-sm btn-default"  data-toggle="tooltip" data-placement="bottom" title="Agregar" style="margin-top: 25px" @click="addProviderPhone(provider,phoneNumbers)">
@@ -878,9 +891,21 @@
                     </div>
                   </div>
 
-                  <button type="button" class="btn btn-default" @click="addProviderAccount(provider,cuenta)" style="margin-top: 25px">
-                    Agregar Cuenta
-                  </button>
+                  <div class="col-xs-2">
+                    <label>
+                      Moneda
+                    </label>
+                    <select class="form-control" name="" v-model="cuenta.idCurrency">
+                      <option></option>
+                      <option v-for="curre in currencies" value="{{curre.idCurrency}}">{{curre.currency}}</option>
+                    </select>
+                  </div>
+
+                  <div class="col-xs-1">
+                    <button type="button" class="btn btn-sm btn-default"  data-toggle="tooltip" data-placement="bottom" title="Agregar" style="margin-top: 25px" @click="addProviderAccount(provider,cuenta)">
+                      <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                  </div>
                 </div>
 
                 <table class="table table-striped" v-if="provider.providersAccountsList.length> 0">
@@ -894,7 +919,10 @@
                   <th>
                     CLABE
                   </th>
-                  <th style="color: red">
+                  <th>
+                    Moneda
+                  </th>
+                  <th >
                     Eliminar Cuenta
                   </th>
                   </thead>
@@ -908,6 +936,9 @@
                     </td>
                     <td>
                       {{account.accountClabe}}
+                    </td>
+                    <td>
+                      {{account.idCurrency | changeidCurrency}}
                     </td>
                     <td>
                       <button type="button" class="btn btn-sm btn-default"  data-toggle="tooltip" data-placement="bottom" title="Eliminar"  @click="deleteAccount(account)">

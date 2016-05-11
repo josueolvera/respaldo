@@ -62,7 +62,6 @@ public class Accounts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idCurrency;
 
-    @JsonIgnore
     @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
     @OneToOne(optional = false)
     private CCurrencies currencies;

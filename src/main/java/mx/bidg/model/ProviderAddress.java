@@ -70,6 +70,7 @@ public class ProviderAddress implements Serializable {
 
     @Column(name="ID_MUNICIPALITY", insertable=false, updatable=false)
     @JsonView(JsonViews.Root.class)
+
     private Integer idMunicipality;
 
     @JoinColumn(name = "ID_PROVIDER", referencedColumnName = "ID_PROVIDER")
@@ -174,6 +175,26 @@ public class ProviderAddress implements Serializable {
 
     public CStates getState() {
         return state;
+    }
+
+    public CMunicipalities getMunicipality() {
+        return municipality;
+    }
+
+    public void setMunicipality(CMunicipalities municipality) {
+        this.municipality = municipality;
+    }
+
+    public CSettlement getSettlement() {
+        return settlement;
+    }
+
+    public void setSettlement(CSettlement settlement) {
+        this.settlement = settlement;
+    }
+
+    public void setState(CStates state) {
+        this.state = state;
     }
 
 
