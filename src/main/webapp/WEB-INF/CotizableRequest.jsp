@@ -1457,7 +1457,7 @@
                       <button type="button" class="btn btn-default" name="button"
                         v-if="cotizacion.idEstimationStatus== 1" style="margin-top:25px"
                         @click="autorizarCotizacion(cotizacion)">
-                        Cotización Aprobada
+                        Proponer cotización
                       </button>
                       <button type="button" class="btn btn-default" name="button"
                         v-if="cotizacion.idEstimationStatus== 2 && isAutoriced" style="margin-top:25px"
