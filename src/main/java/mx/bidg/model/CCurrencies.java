@@ -52,9 +52,6 @@ public class CCurrencies implements Serializable {
     @JsonView(JsonViews.Root.class)
     private BigDecimal rate;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idCurrency")
-    private List<Accounts> accountsList;
-
     public CCurrencies() {
     }
 
@@ -116,14 +113,4 @@ public class CCurrencies implements Serializable {
         }
         return true;
     }
-
-    @XmlTransient
-    public List<Accounts> getAccountsList() {
-        return accountsList;
-    }
-
-    public void setAccountsList(List<Accounts> accountsList) {
-        this.accountsList = accountsList;
-    }
-
 }
