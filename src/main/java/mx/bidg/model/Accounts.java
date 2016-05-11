@@ -63,7 +63,7 @@ public class Accounts implements Serializable {
     private Integer idCurrency;
 
     @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
-    @OneToOne(optional = false)
+    @ManyToOne(optional = false)
     private CCurrencies currencies;
     
     @JoinColumn(name = "ID_BANK")
