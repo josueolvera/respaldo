@@ -252,10 +252,10 @@
             });
           },
           deleteProvider: function (provider) {
-            this.$http.delete(ROOT_URL + "/providers/" + provider.idProvider)
+            this.$http.post(ROOT_URL + "/providers/low/" + provider.idProvider)
                     .success(function (data) {
-                      showAlert("Provedor Eliminado");
                       this.getProviders();
+                      showAlert("Provedor Eliminado");
                     });
           },
           filterNumber: function (val) {
@@ -428,7 +428,7 @@
             </thead>
 
             <tbody>
-              <tr v-for="provider in providers | filterBy search">
+              <tr v-for="provider in providers | filterBy search" v-if="provider.supplierLow == null">
                 <td>
                   {{provider.providerName | separateProviderName}}
                 </td>
@@ -440,11 +440,11 @@
                 </td>
                 <td>
                   <button type="button" class="btn btn-default" name="button" data-toggle="tooltip" data-placement="bottom" title="Modificar Proveedor"
-                   @click="modifyProvider(provider)"><span class="glyphicon glyphicon-pencil"></span></button>
+                          @click="modifyProvider(provider)"><span class="glyphicon glyphicon-pencil"></span></button>
                 </td>
                 <td>
                   <button type="button" class="btn btn-default" name="button" data-toggle="tooltip" data-placement="bottom" title="Eliminar Proveedor"
-                  @click="deleteProvider(provider)"><span class="glyphicon glyphicon-trash"></span></button>
+                          @click="deleteProvider(provider)"><span class="glyphicon glyphicon-trash"></span></button>
                 </td>
               </tr>
             </tbody>
