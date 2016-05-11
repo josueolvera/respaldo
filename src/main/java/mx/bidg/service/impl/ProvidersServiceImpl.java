@@ -5,6 +5,7 @@
  */
 package mx.bidg.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import mx.bidg.dao.ProvidersDao;
 import mx.bidg.model.Providers;
@@ -45,5 +46,12 @@ public class ProvidersServiceImpl implements ProvidersService {
     public Boolean delete(Providers providers) {
         dao.delete(providers);
         return true;
+    }
+
+    @Override
+    public void low(Integer idProviders) {
+        Providers providers = dao.findById(idProviders);
+        providers.setSupplierLow(new Date());
+        dao.update(providers);
     }
 }

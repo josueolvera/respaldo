@@ -1,5 +1,6 @@
 package mx.bidg.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.config.JsonViews;
@@ -145,6 +146,14 @@ public class ProvidersController {
             providersAccountsService.delete(pa);
         }
         providersService.delete(provider);
+        return new ResponseEntity<>("Proveedor eliminado", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/low/{idProvider}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> lowProvider(@PathVariable int idProvider) throws Exception {
+
+        providersService.low(idProvider);
+
         return new ResponseEntity<>("Proveedor eliminado", HttpStatus.OK);
     }
 }

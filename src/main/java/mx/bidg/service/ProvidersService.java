@@ -18,4 +18,5 @@ public interface ProvidersService {
     Providers save(Providers providers);
     Providers update(Providers providers);
     Boolean delete(Providers providers);
+    void low(Integer idProviders);
 }
