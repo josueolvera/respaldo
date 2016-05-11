@@ -482,10 +482,14 @@
                   success(function(data)
                   {
                     showAlert("Modificacion Exitosa");
-                    setInterval(function()
+                    this.$http.get(ROOT_URL+"/estimations/request/"+this.idRequest).
+                    success(function(data)
                     {
-                      window.location.reload()
-                    },2500);
+                      this.estimations = [];
+                      this.matchInformationEstimationsUpdate(data);
+                    }).error(function(data){
+                      showAlert("Ha habido un error al obtener la informacion de las cotizacion");
+                    });
                     this.isSavingNow= false;
 
                   }).error(function(data)
