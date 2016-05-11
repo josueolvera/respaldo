@@ -51,6 +51,7 @@ public class AccountsController {
         account.setAccountNumber(node.get("accountNumber").asText());
         account.setAccountClabe(node.get("accountClabe").asText());
         account.setBank(new CBanks(node.get("idBank").asInt()));
+        account.setCurrencies(new CCurrencies(node.get("idCurrency").asInt()));
         account.setAccountType(CAccountsTypes.DEFINITIVA);
         account.setIdAccessLevel(1);
         accountsService.addAccountForProvider(provider, account);
