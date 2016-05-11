@@ -414,6 +414,14 @@
             this.obtainInformationAutorization();
             this.userRequest = data.userRequest.dwEmployee.employee.fullName;
             this.desaparecer = false;
+            var producTypein= [{
+              idProductType: '',
+              productType: ''
+            }];
+            producTypein[0].idProductType = data.requestTypeProduct.idProductType;
+            producTypein[0].productType = data.requestTypeProduct.productType.productType;
+            this.ProductTypes= producTypein;
+            this.obtainRequestInformation.idProductType = data.requestTypeProduct.idProductType;
             data.requestProductsList.forEach(function(element)
             {
             var producto= self.createProduct();
@@ -800,7 +808,7 @@
                           Proveedor
                         </label>
                         <select class="form-control" v-model="estimation.idSupplier"
-                          @change="obtainAccounts(estimation)" required="true">
+                          @change="obtainAccounts(estimation)" required="true" :disabled="idRequest > 0">
                           <option></option>
                           <option v-for="supplier in suppliers" value="{{supplier.idProvider}}">
                             {{supplier.providerName}}
@@ -811,7 +819,7 @@
                         <label>
                           Cuenta Bancaria
                         </label>
-                        <select class="form-control" v-model="estimation.idAccount" required="true">
+                        <select class="form-control" v-model="estimation.idAccount" required="true" :disabled="idRequest > 0">
                           <option></option>
                           <option v-for="accounts in estimation.accountSupplier" value="{{accounts.idAccount}}">
                             {{accounts.account.accountNumber}}
@@ -822,7 +830,8 @@
                         <label>
                           Tipo de Moneda
                         </label>
-                        <select class="form-control" v-model="estimation.idCurrency" required="true" @change="validateCurrency(estimation)">
+                        <select class="form-control" v-model="estimation.idCurrency" required="true"
+                          @change="validateCurrency(estimation)" :disabled="idRequest > 0">
                           <option></option>
                           <option v-for="curr in currencies" value="{{curr.idCurrency}}">
                             {{curr.currency}}
@@ -836,7 +845,8 @@
                         <div class="input-group">
                           <span class="input-group-addon">$</span>
                           <input number class="form-control" placeholder="" v-model="estimation.amount"
-                            onkeypress="return validateFloatKeyPress(this,event)" required="true">
+                            onkeypress="return validateFloatKeyPress(this,event)" required="true"
+                            :disabled="idRequest > 0">
                         </div>
                       </div>
                       <div class="col-xs-2">
@@ -846,7 +856,7 @@
                         <div class="input-group">
                           <span class="input-group-addon">$</span>
                           <input number class="form-control" placeholder="" v-model="estimation.rate"
-                            onkeypress="return validateFloatKeyPress(this,event)" :disabled="flagrate" required="true" >
+                            onkeypress="return validateFloatKeyPress(this,event)" :disabled="flagrate || idRequest > 0" required="true" >
                         </div>
                       </div>
                       </div>

@@ -15,7 +15,8 @@
             return false;
           }
           //just one dot
-          if(number.length>1 && charCode == 46){
+          if(number.length>1 && charCode == 46)
+          {
             return false;
           }
           //get the carat position
@@ -559,6 +560,14 @@
               this.objectRequest.request.purpose= data.purpose;
               this.userRequest = data.userRequest.dwEmployee.employee.fullName;
               this.desaparecer = false;
+              var producTypein= [{
+                idProductType: '',
+                productType: ''
+              }];
+              producTypein[0].idProductType = data.requestTypeProduct.idProductType;
+              producTypein[0].productType = data.requestTypeProduct.productType.productType;
+              this.ProductTypes= producTypein;
+              this.obtainRequestInformation.idProductType = data.requestTypeProduct.idProductType;
 
               data.requestProductsList.forEach(function(element)
               {
@@ -1103,7 +1112,7 @@
                        @click="setIsCollapsed(cotizacion)">
                     <div class="col-xs-4 text-left">
                       <div class="col-xs-4">
-                        <h3 class="panel-title">Cotización
+                        <h3 class="panel-title">Ver Cotización
                         </h3>
                       </div>
                       <div class="col-xs-8">
@@ -1150,7 +1159,8 @@
                       Proveedor
                     </label>
                     <select class="form-control" v-model="cotizacion.idSupplier"
-                      @change="obtainAccounts(cotizacion)" required="true">
+                      @change="obtainAccounts(cotizacion)" required="true"
+                      :disabled="cotizacion.idEstimationStatus > 1">
                       <option></option>
                       <option v-for="supplier in suppliers" value="{{supplier.idProvider}}">
                         {{supplier.providerName}}
@@ -1161,7 +1171,8 @@
                     <label>
                       Cuenta Bancaria
                     </label>
-                    <select class="form-control" v-model="cotizacion.idAccount" required="true">
+                    <select class="form-control" v-model="cotizacion.idAccount" required="true"
+                      :disabled="cotizacion.idEstimationStatus > 1">
                       <option></option>
                       <option v-for="accounts in cotizacion.accountSupplier" value="{{accounts.idAccount}}">
                         {{accounts.account.accountNumber}}
@@ -1172,7 +1183,8 @@
                     <label>
                       Tipo de Moneda
                     </label>
-                    <select class="form-control" v-model="cotizacion.idCurrency" required="true" @change="validateCurrency(cotizacion)">
+                    <select class="form-control" v-model="cotizacion.idCurrency" required="true"
+                      @change="validateCurrency(cotizacion)" :disabled="cotizacion.idEstimationStatus > 1">
                       <option></option>
                       <option v-for="curr in currencies" value="{{curr.idCurrency}}">
                         {{curr.currency}}
@@ -1186,7 +1198,8 @@
                     <div class="input-group">
                       <span class="input-group-addon">$</span>
                       <input number class="form-control" placeholder="" v-model="cotizacion.amount"
-                        @change="validateAmount(cotizacion)" onkeypress="return validateFloatKeyPress(this,event)" required="true">
+                        @change="validateAmount(cotizacion)" onkeypress="return validateFloatKeyPress(this,event)"
+                        :disabled="cotizacion.idEstimationStatus > 1" required="true">
                     </div>
                   </div>
                   <div class="col-xs-2">
@@ -1195,7 +1208,7 @@
                     </label>
                     <div class="input-group">
                       <span class="input-group-addon">$</span>
-                      <input number class="form-control" :disabled="flagrate"
+                      <input number class="form-control" :disabled="flagrate || cotizacion.idEstimationStatus > 1"
                         v-model="cotizacion.rate" @change="validateRate(cotizacion)"
                         onkeypress="return validateFloatKeyPress(this,event)" required="true">
                     </div>
@@ -1209,7 +1222,7 @@
                     </label>
                     <input type="file" name="file" class="form-control"
                      v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}"
-                           accept="application/pdf">
+                           accept="application/pdf" :disabled="cotizacion.idEstimationStatus > 1">
                   </div>
                   <div class="col-xs-1" v-if="cotizacion.idEstimation > 0">
                   <p style="margin-top: 25px">
@@ -1418,7 +1431,6 @@
               </div>
             </div>
           </div>
-
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->
