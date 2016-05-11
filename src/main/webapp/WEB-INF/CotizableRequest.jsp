@@ -517,6 +517,7 @@
                   responseOfFileUpload= data;
                   this.isSavingNow= false;
                   this.matchEstimationInfo(responseOfEstimation, responseOfFileUpload, cotizacion);
+                  Vue.set(cotizacion, "isCollapsed", true);
                 }).error(function(data){
                   showAlert("La cotizacion se ha guardado, pero hubo un error al guardar el archivo");
                   this.isSavingNow= false;
