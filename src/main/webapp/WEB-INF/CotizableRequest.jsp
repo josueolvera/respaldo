@@ -1862,9 +1862,6 @@
               </div>
             </div>
           </div>
-          <pre>
-            {{$data.accountPayableUnico | json}}
-          </pre>
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->

@@ -471,7 +471,14 @@
                   {
                     showAlert("Modificacion Exitosa");
                     this.isSavingNow= false;
-                    this.matchInformationEstimationsUpdate(data);
+                    this.estimations= [];
+                    this.$http.get(ROOT_URL+"/estimations/request/"+this.idRequest).
+                    success(function(data)
+                    {
+                      this.matchInformationEstimationsUpdate(data);
+                    }).error(function(data){
+                      showAlert("Ha habido un error al obtener la informacion de las cotizacion", {type:3});
+                    });
 
                   }).error(function(data)
                   {
@@ -753,10 +760,14 @@
               success(function(data)
               {
                 showAlert("Se ha autorizado la cotizacion correctamente");
-                setInterval(function()
-                {
-                  window.location.reload()
-                },2500);
+                this.$http.get(ROOT_URL+"/estimations/request/"+this.idRequest).
+                  success(function(data)
+                 {
+                    this.estimations = [];
+                    this.matchInformationEstimationsUpdate(data);
+                  }).error(function(data){
+                    showAlert("Ha habido un error al obtener la informacion de las cotizacion");
+                  });
 
               }).error(function(data)
               {
@@ -769,10 +780,14 @@
               success(function(data)
               {
                 showAlert("Se ha cancelado la aprobacion de la cotizacion correctamente");
-                setInterval(function()
-                {
-                  window.location.reload()
-                },2500);
+                this.$http.get(ROOT_URL+"/estimations/request/"+this.idRequest).
+                 success(function(data)
+                 {
+                   this.estimations = [];
+                   this.matchInformationEstimationsUpdate(data);
+                 }).error(function(data){
+                   showAlert("Ha habido un error al obtener la informacion de las cotizacion");
+                 });
 
               }).error(function(data)
               {
@@ -1103,15 +1118,14 @@
 
         </form>
         <br>
-        <div class="row" v-for="cotizacion in estimations">
+        <div class="row" v-for="cotizacion in estimations  | orderBy 'idEstimationStatus'">
           <form v-on:submit.prevent="saveEstimations(cotizacion)" id="form-{{cotizacion.indexOfForm}}">
           <div class="col-xs-12">
             <div class="panel panel-default">
               <div class="panel-heading">
                 <div class="row">
-                  <div data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" aria-expanded="false"
-                       aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer"
-                       @click="setIsCollapsed(cotizacion)">
+                  <div data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" style="cursor: pointer"
+                    @click="setIsCollapsed(cotizacion)">
                     <div class="col-xs-4 text-left">
                       <div class="col-xs-4">
                         <h3 class="panel-title">Ver Cotización
@@ -1125,7 +1139,7 @@
                       <span class="label label-danger" v-if="cotizacion.outOfBudget == 1">Fuera de Presupuesto</span>
                     </div>
                     <div class="col-xs-2 text-right">
-                      <label v-if="cotizacion.idEstimationStatus== 2">Cotización Propuesta</label>
+                      <label  class="label label-info" v-if="cotizacion.idEstimationStatus== 2">Cotización Propuesta</label>
                     </div>
                   </div>
                   <div>
@@ -1160,7 +1174,8 @@
                   </div>
                 </div>
               </div>
-              <div class="panel-body collapse {{cotizacion.expanded}}" id="collapse{{cotizacion.indexOfForm}}">
+              <div id="collapse{{cotizacion.indexOfForm}}" class="panel-body collapse"
+                  :class="{ 'in' : cotizacion.expanded || cotizacion.idEstimationStatus == 2  }">
                 <div class="row">
                   <div class="col-xs-2">
                     <label>
@@ -1439,9 +1454,6 @@
               </div>
             </div>
           </div>
-          <pre>
-            {{ $data.periodicPayment | json}}
-          </pre>
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->
