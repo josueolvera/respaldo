@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mx.bidg.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -27,22 +22,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
     @Autowired
-    PriceEstimationsDao priceEstimationsDao;
+    private PriceEstimationsDao priceEstimationsDao;
 
     @Autowired
-    PeriodicPaymentsDao periodicPaymentsDao;
+    private PeriodicPaymentsDao periodicPaymentsDao;
 
     @Autowired
-    AccountsPayableDao accountsPayableDao;
-    
-    @Autowired
-    RequestsDao requestsDao;
+    private AccountsPayableDao accountsPayableDao;
 
     @Autowired
-    CCurrenciesDao currenciesDao;
+    private RequestsDao requestsDao;
 
     @Autowired
-    AccountsDao accountsDao;
+    private CCurrenciesDao currenciesDao;
+
+    @Autowired
+    private AccountsDao accountsDao;
 
     ObjectMapper mapper = new ObjectMapper();
 
@@ -176,6 +171,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         for (PriceEstimations e : estimations) {
             e.setEstimationStatus(new CEstimationStatus(CEstimationStatus.PENDIENTE));
         }
+        accountsPayableDao.deleteByFolio(request.getFolio());
         return true;
     }
 

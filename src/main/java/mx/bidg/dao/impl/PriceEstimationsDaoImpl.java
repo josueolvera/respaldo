@@ -12,6 +12,7 @@ import mx.bidg.model.PriceEstimations;
 import mx.bidg.model.Requests;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -50,7 +51,8 @@ public class PriceEstimationsDaoImpl extends AbstractDao<Integer, PriceEstimatio
     public List<PriceEstimations> findByIdRequest(int idRequest) {
         Criteria criteria = createEntityCriteria()
                 .add(Restrictions.eq("request", new Requests(idRequest)))
-                .setFetchMode("request", FetchMode.JOIN);
+                .setFetchMode("request", FetchMode.JOIN)
+                .addOrder(Order.desc("idEstimationStatus"));
         return (List<PriceEstimations>) criteria.list();
     }
 
