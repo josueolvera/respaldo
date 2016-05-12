@@ -517,6 +517,7 @@
                   responseOfFileUpload= data;
                   this.isSavingNow= false;
                   this.matchEstimationInfo(responseOfEstimation, responseOfFileUpload, cotizacion);
+                  Vue.set(cotizacion, "isCollapsed", true);
                 }).error(function(data){
                   showAlert("La cotizacion se ha guardado, pero hubo un error al guardar el archivo");
                   this.isSavingNow= false;
@@ -1339,18 +1340,24 @@
                       <div class="col-xs-4">
                         <div class="col-xs-6">
 
-                      </div>
-                      <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0">
-                        <button type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Guardar Cotización">
-                          <span class="glyphicon glyphicon-floppy-disk"></span>
-                        </button>
-                      </div>
-                      <div class="col-xs-2 text-right">
-                        <button type="button" class="btn btn-sm btn-default"
-                          @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Eliminar Cotización">
-                          <span class="glyphicon glyphicon-remove"></span>
-                        </button>
-                      </div>
+                        </div>
+                        <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0">
+                          <button type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Guardar Cotización">
+                            <span class="glyphicon glyphicon-floppy-disk"></span>
+                          </button>
+                        </div>
+                        <div v-if="cotizacion.idEstimation > 0" class="col-xs-2 text-right">
+                          <button type="button" class="btn btn-sm btn-default"
+                            @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Eliminar cotización">
+                            <span class="glyphicon glyphicon-trash"></span>
+                          </button>
+                        </div>
+                        <div v-if="cotizacion.idEstimation == ''" class="col-xs-2 text-right">
+                          <button type="button" class="btn btn-sm btn-default"
+                                  @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Cancelar">
+                            <span class="glyphicon glyphicon-remove"></span>
+                          </button>
+                        </div>
 
                         <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation > 0 && cotizacion.isCollapsed == true">
                         <button type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Modificar Cotización">
@@ -1432,21 +1439,19 @@
                        v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}"
                              accept="application/pdf">
                     </div>
-                    <div class="col-xs-1" v-if="cotizacion.idEstimation > 0">
-                    <p style="margin-top: 25px">
-                    <a :href="attachment + cotizacion.idEstimation">
-                      <button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Descargar">
-                        <span class="glyphicon glyphicon-download" style="font-size: 17px"><span>
-                      </button>
-                    </a>
-                    </p>
-                    </div>
                     <div class="col-xs-2">
                       <label>
                         Archivo Actual
                       </label>
                       <p>
                         {{cotizacion.fileNameActual}}
+                      </p>
+                    </div>
+                    <div class="col-xs-1" v-if="cotizacion.idEstimation > 0">
+                      <p style="margin-top: 25px">
+                        <a :href="attachment + cotizacion.idEstimation" class="btn btn-default" title="Descargar">
+                          <span class="glyphicon glyphicon-download" style="font-size: 17px"></span>
+                        </a>
                       </p>
                     </div>
                     <div class="col-xs-3">
@@ -1458,7 +1463,7 @@
                       <button type="button" class="btn btn-default" name="button"
                         v-if="cotizacion.idEstimationStatus== 1" style="margin-top:25px"
                         @click="autorizarCotizacion(cotizacion)">
-                        Cotización Aprobada
+                        Proponer cotización
                       </button>
                       <button type="button" class="btn btn-default" name="button"
                         v-if="cotizacion.idEstimationStatus== 2 && isAutoriced" style="margin-top:25px"
