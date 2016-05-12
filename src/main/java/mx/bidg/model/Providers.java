@@ -69,10 +69,10 @@ public class Providers implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String rfc;
 
-    @Size(max = 15)
-    @Column(name = "ACCOUNTINGACCOUNT")
+    @Size(max = 20)
+    @Column(name = "ACCOUNTING_ACCOUNT")
     @JsonView(JsonViews.Root.class)
-    private String accountingaccount;
+    private String accountingAccount;
 
     @Column(name = "SUPPLIER_LOW")
     @Temporal(TemporalType.DATE)
@@ -94,7 +94,7 @@ public class Providers implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProvider")
     @JsonView(JsonViews.Embedded.class)
-    private List<PhoneNumbers> phoneNumbersList;
+    private List<ProvidersContact> providersContactList;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProvider")
     @JsonView(JsonViews.Embedded.class)
@@ -169,21 +169,6 @@ public class Providers implements Serializable {
         this.productTypesList = productTypesList;
     }
 
-    public List<PhoneNumbers> getPhoneNumbersList() {
-        return phoneNumbersList;
-    }
-
-    public void setPhoneNumbersList(List<PhoneNumbers> phoneNumbersList) {
-        this.phoneNumbersList = phoneNumbersList;
-    }
-
-    public String getAccountingaccount() {
-        return accountingaccount;
-    }
-
-    public void setAccountingaccount(String accountingaccount) {
-        this.accountingaccount = accountingaccount;
-    }
 
     public Date getSupplierLow() {
         return supplierLow;
@@ -199,6 +184,23 @@ public class Providers implements Serializable {
 
     public void setProviderAddressList(List<ProviderAddress> providerAddressList) {
         this.providerAddressList = providerAddressList;
+    }
+
+   public String getAccountingAccount() {
+        return accountingAccount;
+    }
+
+    public void setAccountingAccount(String accountingAccount) {
+        this.accountingAccount = accountingAccount;
+    }
+
+
+    public List<ProvidersContact> getProvidersContactList() {
+        return providersContactList;
+    }
+
+    public void setProvidersContactList(List<ProvidersContact> providersContactList) {
+        this.providersContactList = providersContactList;
     }
 
     @Override
