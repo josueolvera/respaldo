@@ -13,7 +13,6 @@ import mx.bidg.model.AccountsPayable;
  * @author sistemask
  */
 public interface AccountsPayableDao extends InterfaceDao<AccountsPayable> {
-    
     List<AccountsPayable> findByFolio(String folio);
-    
+    Boolean deleteByFolio(String folio);
 }

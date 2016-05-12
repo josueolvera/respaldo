@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mx.bidg.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -27,22 +22,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
     @Autowired
-    PriceEstimationsDao priceEstimationsDao;
+    private PriceEstimationsDao priceEstimationsDao;
 
     @Autowired
-    PeriodicPaymentsDao periodicPaymentsDao;
+    private PeriodicPaymentsDao periodicPaymentsDao;
 
     @Autowired
-    AccountsPayableDao accountsPayableDao;
-    
-    @Autowired
-    RequestsDao requestsDao;
+    private AccountsPayableDao accountsPayableDao;
 
     @Autowired
-    CCurrenciesDao currenciesDao;
+    private RequestsDao requestsDao;
 
     @Autowired
-    AccountsDao accountsDao;
+    private CCurrenciesDao currenciesDao;
+
+    @Autowired
+    private AccountsDao accountsDao;
 
     ObjectMapper mapper = new ObjectMapper();
 
@@ -102,6 +97,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             BigDecimal rate = ((json.get("rate").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("rate").decimalValue() : BigDecimal.ONE;
             BigDecimal amount = ((json.get("amount").decimalValue().compareTo(BigDecimal.ZERO)) == 1)?
                     json.get("amount").decimalValue() : BigDecimal.ZERO;
+            BigDecimal tempAmount = amount.multiply(rate);
 
             estimation.setAccount(new Accounts(json.get("idAccount").asInt()));
             estimation.setAmount(amount);
@@ -109,7 +105,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             estimation.setRate(rate);
             estimation.setUserEstimation(user);
             //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
-            estimation.setOutOfBudget((residualAmount.compareTo(amount) == -1)? 1 : 0);
+            estimation.setOutOfBudget((residualAmount.compareTo(tempAmount) == -1)? 1 : 0);
             
             return estimation;
         } else {
@@ -175,6 +171,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         for (PriceEstimations e : estimations) {
             e.setEstimationStatus(new CEstimationStatus(CEstimationStatus.PENDIENTE));
         }
+        accountsPayableDao.deleteByFolio(request.getFolio());
         return true;
     }
 

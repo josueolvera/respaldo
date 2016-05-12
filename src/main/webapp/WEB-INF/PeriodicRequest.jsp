@@ -659,17 +659,15 @@
               var self= this;
               if (this.periodicPayment.dueDate !== "")
               {
-                var dateDueDate= new Date(self.periodicPayment.dueDate);
-
-                var dateisoDue= dateDueDate.toISOString();
-
+                var dateDueDate= moment(self.periodicPayment.dueDate, "DD-MM-YYYY").format("YYYY-MM-DD");
+                var dateDueDates= new Date(dateDueDate);
+                var dateisoDue= dateDueDates.toISOString();
                 self.periodicPayment.dueDate = dateisoDue.slice(0, -1);
-
               }
-              var dateInitial = new Date(this.periodicPayment.initialDate);
-              var dateisoInitial= dateInitial.toISOString();
+              var dateInitial = moment(self.periodicPayment.initialDate, "DD-MM-YYYY").format("YYYY-MM-DD");
+              var dateInitials= new Date(dateInitial);
+              var dateisoInitial= dateInitials.toISOString();
               this.periodicPayment.initialDate= dateisoInitial.slice(0, -1);
-
 
               this.$http.post(ROOT_URL+"/requests/period-payment", JSON.stringify(this.periodicPayment)).
               success(function(data)
@@ -787,12 +785,14 @@
               var self= this;
               if (this.periodicPayment.dueDate !== "")
               {
-                var dateDueDate= new Date(self.periodicPayment.dueDate);
-                var dateisoDue= dateDueDate.toISOString();
+                var dateDueDate= moment(self.periodicPayment.dueDate, "DD-MM-YYYY").format("YYYY-MM-DD");
+                var dateDueDates= new Date(dateDueDate);
+                var dateisoDue= dateDueDates.toISOString();
                 self.periodicPayment.dueDate = dateisoDue.slice(0, -1);
               }
-              var dateInitial = new Date(this.periodicPayment.initialDate);
-              var dateisoInitial= dateInitial.toISOString();
+              var dateInitial = moment(self.periodicPayment.initialDate, "DD-MM-YYYY").format("YYYY-MM-DD");
+              var dateInitials= new Date(dateInitial);
+              var dateisoInitial= dateInitials.toISOString();
               this.periodicPayment.initialDate= dateisoInitial.slice(0, -1);
 
               this.$http.post(ROOT_URL+"/periodic-payment/"+ this.periodicPayment.idPeriodicPayment, JSON.stringify(this.periodicPayment)).
@@ -954,7 +954,6 @@
                retorno= element.acronym;
               }
             });
-
             return retorno;
           }
 
@@ -1431,6 +1430,9 @@
               </div>
             </div>
           </div>
+          <pre>
+            {{ $data.periodicPayment | json}}
+          </pre>
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->

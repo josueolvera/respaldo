@@ -6,16 +6,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
@@ -30,77 +21,77 @@ import org.hibernate.annotations.DynamicUpdate;
  */
 @Entity
 @DynamicUpdate
-@Table(name = "ACCOUNTS_PAYABLE")
-
+@Table(
+        name = "ACCOUNTS_PAYABLE",
+        indexes = {@Index(name = "REQUEST_FOLIO_INDEX", columnList = "FOLIO")}
+)
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class AccountsPayable implements Serializable {
-    
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_ACCOUNT_PAYABLE")
     @JsonView(JsonViews.Root.class)
     private Integer idAccountPayable;
-    
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 40)
     @Column(name = "FOLIO")
     @JsonView(JsonViews.Root.class)
     private String folio;
-    
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "AMOUNT")
     @JsonView(JsonViews.Root.class)
     private BigDecimal amount;
-    
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "PAID_AMOUNT")
     @JsonView(JsonViews.Root.class)
     private BigDecimal paidAmount;
-    
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "PAY_NUM")
     @JsonView(JsonViews.Root.class)
     private int payNum;
-    
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "TOTAL_PAYMENTS")
     @JsonView(JsonViews.Root.class)
     private int totalPayments;
-    
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE", updatable = false)
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
-    
+
     @Column(name = "DUE_DATE")
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime dueDate;
-    
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
-    
+
     @Column(name = "ID_ACCOUNT_PAYABLE_STATUS", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idAccountPayableStatus;
-    
+
     @Column(name = "ID_OPERATION_TYPE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idOperationType;
-    
+
     @Column(name = "ID_CURRENCY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idCurrency;
@@ -110,17 +101,17 @@ public class AccountsPayable implements Serializable {
     @Column(name = "RATE")
     @JsonView(JsonViews.Root.class)
     private BigDecimal rate;
-    
+
     @JoinColumn(name = "ID_ACCOUNT_PAYABLE_STATUS", referencedColumnName = "ID_ACCOUNT_PAYABLE_STATUS")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private CAccountsPayableStatus accountPayableStatus;
-    
+
     @JoinColumn(name = "ID_OPERATION_TYPE", referencedColumnName = "ID_OPERATION_TYPE")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private COperationTypes operationType;
-    
+
     @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
@@ -304,5 +295,5 @@ public class AccountsPayable implements Serializable {
     public String toString() {
         return "mx.bidg.model.AccountsPayable[ idAccountPayable=" + idAccountPayable + " ]";
     }
-    
+
 }

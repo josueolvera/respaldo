@@ -54,4 +54,13 @@ public class AccountsPayableDaoImpl extends AbstractDao<Integer, AccountsPayable
                 .addOrder(Order.asc("dueDate"));
         return (List<AccountsPayable>) criteria.list();
     }
+
+    @Override
+    public Boolean deleteByFolio(String folio) {
+        getSession()
+                .createQuery("delete from AccountsPayable a where a.folio = :folio")
+                .setString("folio", folio)
+                .executeUpdate();
+        return true;
+    }
 }
