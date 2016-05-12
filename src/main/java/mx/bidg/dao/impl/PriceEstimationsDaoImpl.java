@@ -50,9 +50,10 @@ public class PriceEstimationsDaoImpl extends AbstractDao<Integer, PriceEstimatio
     @Override
     public List<PriceEstimations> findByIdRequest(int idRequest) {
         Criteria criteria = createEntityCriteria()
+                .addOrder(Order.asc("idEstimationStatus"))
+                .addOrder(Order.asc("amount"))
                 .add(Restrictions.eq("request", new Requests(idRequest)))
-                .setFetchMode("request", FetchMode.JOIN)
-                .addOrder(Order.desc("idEstimationStatus"));
+                .setFetchMode("request", FetchMode.JOIN);
         return (List<PriceEstimations>) criteria.list();
     }
 
