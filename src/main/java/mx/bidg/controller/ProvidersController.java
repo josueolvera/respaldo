@@ -1,6 +1,5 @@
 package mx.bidg.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.config.JsonViews;
@@ -34,7 +33,7 @@ public class ProvidersController {
     private ProvidersAccountsService providersAccountsService;
 
     @Autowired
-    private PhoneNumbersService phoneNumbersService;
+    private ProvidersContactService providersContactService;
 
     @Autowired
     private ProviderAddressService providerAddressService;
@@ -54,7 +53,7 @@ public class ProvidersController {
         provider.setProviderName(jnode.get("providerName").asText());
         provider.setBusinessName(jnode.get("businessName").asText());
         provider.setRfc(jnode.get("rfc").asText());
-        provider.setAccountingaccount(jnode.get("accountingaccount").asText());
+        provider.setAccountingAccount(jnode.get("accountingaccount").asText());
         provider.setIdAccessLevel(1);
         providersService.update(provider);
 
@@ -87,7 +86,7 @@ public class ProvidersController {
         provider.setProviderName(jnode.get("providerName").asText());
         provider.setBusinessName(jnode.get("businessName").asText());
         provider.setRfc(jnode.get("rfc").asText());
-        provider.setAccountingaccount(jnode.get("accountingaccount").asText());
+        provider.setAccountingAccount(jnode.get("accountingaccount").asText());
         provider.setIdAccessLevel(1);
         providersService.save(provider);
 
@@ -125,12 +124,15 @@ public class ProvidersController {
         }
 
         for (JsonNode node : jnode.get("phoneNumbersList")){
-            PhoneNumbers phone = new PhoneNumbers();
+            ProvidersContact phone = new ProvidersContact();
             phone.setPhoneNumber(node.get("phoneNumber").asInt());
+            phone.setEmail(node.get("email").asText());
+            phone.setName(node.get("name").asText());
+            phone.setPost(node.get("post").asText());
             phone.setIdAccessLevel(1);
-            phone.setIdProvider(provider);
+            phone.setProvider(provider);
 
-            phoneNumbersService.save(phone);
+            providersContactService.save(phone);
         }
 
         return new ResponseEntity<>(
