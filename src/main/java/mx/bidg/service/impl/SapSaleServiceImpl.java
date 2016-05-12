@@ -2,6 +2,7 @@ package mx.bidg.service.impl;
 
 
 import mx.bidg.dao.SapSaleDao;
+import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.SapSale;
 import mx.bidg.service.SapSaleService;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -296,6 +298,38 @@ public class SapSaleServiceImpl implements SapSaleService {
 
         Workbook workbook = WorkbookFactory.create(file.getInputStream());
         Sheet sheet = workbook.getSheetAt(0);
+
+        Row headerRow = sheet.getRow(0);
+        Cell currCell;
+        String[] headersToSkip = {
+                "Número de operación", "Fecha de Registro","Interloc.comercial",
+                "Apellidos","","2º apelNombre de pilalido","Apellido de soltera",
+                "2º nombre", "Nº identificación","Nº. IMSS","Nombre de un convenio",
+                "Producto", "Dependencia","Status","Fecha Última Actualización",
+                "Fecha de Aprobación", "Monto Solicitado", "Numero de pagos",
+                "Monto a depositar","Monto comisionable","Fecha de compra",
+                "EMPRESA", "Distribuidor","Vendedor","Sucursal","Region",
+                "Bonificación Autoservicio","Liquidación Intercompañias"
+        };
+
+        for (int i = 0 ; i<28 ;i++) {
+            currCell = headerRow.getCell(i);
+
+            System.out.println(currCell.getStringCellValue()+" : "+ headersToSkip[i]);
+
+        }
+
+//        if (headerRow.getPhysicalNumberOfCells() != 28) {
+//            throw new ValidationException("Tipo de formato no compatible.", "Los datos de este archivo no son los requiridos o no cumplen con");
+//        } else {
+//            for (int i = 0 ; i<28 ;i++) {
+//                currCell = headerRow.getCell(i);
+//                if (currCell.getStringCellValue().equals(headersToSkip[i])) {
+//                    throw new ValidationException("Tipo de formato no compatible.", "Los datos de este archivo no son los requiridos o no cumplen con");
+//                }
+//            }
+//        }
+
 
         boolean existsSale = false;
 
