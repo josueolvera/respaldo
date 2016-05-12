@@ -1654,6 +1654,12 @@
                           </button>
                         </div>
                       </div>
+
+                      <div class="col-xs-12" v-if="optionPago==3">
+                        <p>
+                          Pago unico
+                        </p>
+                      </div>
                     </div>
                     <div class="row">
                       <div class="col-xs-7" v-if="AccountsPayables.length> 0">
