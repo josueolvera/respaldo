@@ -857,10 +857,7 @@
                   showAlert("Registro de informacion de pago exitoso");
                   this.isSavingNow= false;
                   $("#periodicPayment").modal("hide");
-                  setInterval(function()
-                  {
-                    window.location.reload()
-                  },2500);
+                  this.obtainInformationAutorization();
                 }).error(function(data)
                 {
                   showAlert("Ha fallado el registro de su informacion, intente nuevamente");
