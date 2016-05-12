@@ -70,7 +70,6 @@ public class ProviderAddress implements Serializable {
 
     @Column(name="ID_MUNICIPALITY", insertable=false, updatable=false)
     @JsonView(JsonViews.Root.class)
-
     private Integer idMunicipality;
 
     @JoinColumn(name = "ID_PROVIDER", referencedColumnName = "ID_PROVIDER")
