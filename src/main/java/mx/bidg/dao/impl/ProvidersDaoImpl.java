@@ -8,11 +8,8 @@ package mx.bidg.dao.impl;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.ProvidersDao;
-import mx.bidg.model.PhoneNumbers;
-import mx.bidg.model.ProviderAddress;
 import mx.bidg.model.Providers;
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
