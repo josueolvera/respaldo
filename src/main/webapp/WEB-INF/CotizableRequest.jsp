@@ -181,7 +181,23 @@
             },
             attachment: ROOT_URL +"/estimations/attachment/download/",
             montoTotal: '',
-            totalApagar: 0
+            totalApagar: 0,
+            accountPayableUnico:
+            {
+              idAccountPayable: '',
+              folio: '',
+              amount: '',
+              paidAmount: '',
+              payNum: '',
+              totalPayments: '',
+              creationDate: '',
+              dueDate: '',
+              idAccountPayableStatus: '',
+              idOperationType: '',
+              idCurrency: '',
+              rate: '',
+              idDatePicker: ''
+            },
           },
           methods:
           {
@@ -768,11 +784,30 @@
                 minDate: moment().add(1, 'minutes')
                 }).data();
             },
-            emptyEsquema: function()
+            emptyEsquema: function(campo)
             {
               this.AccountsPayables= [];
               this.amountOfPay= '';
               this.numberOfPay= '';
+
+              if (campo == 3)
+              {
+                this.timePicker = $('#datetimepick').datetimepicker({
+                  locale: 'es',
+                  format: 'DD-MM-YYYY',
+                  useCurrent: false,
+                  minDate: moment().add(1, 'minutes')
+                  }).data();
+
+                  //this.AccountsPayables= [];
+                /*  accountPayableUnico.folio= this.periodicPayment.folio;
+                  accountPayableUnico.amount=this.periodicPayment.amount;
+                  accountPayableUnico.idCurrency=this.periodicPayment.idCurrency;
+                  accountPayableUnico.rate=this.periodicPayment.rate;*/
+                  //this.AccountsPayables.push(accountPayable);
+
+              }
+
             },
             generarPagosVariables: function()
             {
@@ -1585,11 +1620,11 @@
                   <br>
                     <div class="row">
                       <div class="col-xs-12">
-                        <input type="radio" id="pagoFijo" value="1" v-model="optionPago" @change="emptyEsquema">
+                        <input type="radio" id="pagoFijo" value="1" v-model="optionPago" @change="emptyEsquema(optionPago)">
                         <label>Pagos Fijos</label>
-                        <input type="radio" id="pagoVariable" value="2" v-model="optionPago" @change="emptyEsquema">
+                        <input type="radio" id="pagoVariable" value="2" v-model="optionPago" @change="emptyEsquema(optionPago)">
                         <label>Pagos Variables</label>
-                        <input type="radio" id="pagounico" value="3" v-model="optionPago" @change="emptyEsquema">
+                        <input type="radio" id="pagounico" value="3" v-model="optionPago" @change="emptyEsquema(optionPago)">
                         <label>Pago Único</label>
                       </div>
                     </div>
@@ -1661,9 +1696,27 @@
                       </div>
 
                       <div class="col-xs-12" v-if="optionPago==3">
-                        <p>
-                          Pago unico
-                        </p>
+
+                        <div class="col-xs-4">
+                          <label>
+                            Monto del Pago
+                          </label>
+                          <input number class="form-control" placeholder="" v-model="accountPayableUnico.amount" disabled="true">
+                        </div>
+
+                        <div class="col-xs-4">
+                          <label>
+                            Fecha de Vencimiento
+                          </label>
+                          <div class='input-group date' id='datetimepick' v-model="accountPayableUnico.dueDate">
+                                <input type='text' class="form-control">
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                          </div>
+                        </div>
+
+
                       </div>
                     </div>
                     <div class="row">
@@ -1769,6 +1822,9 @@
               </div>
             </div>
           </div>
+          <pre>
+            {{$data.accountPayableUnico | json}}
+          </pre>
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->
