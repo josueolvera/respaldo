@@ -171,7 +171,8 @@
           methods:
           {
             setIsCollapsed: function (cotizacion) {
-              if (cotizacion.isCollapsed == true) {
+              if (cotizacion.isCollapsed == true)
+              {
                 cotizacion.isCollapsed = false;
               } else {
                 Vue.set(cotizacion, "isCollapsed", true);
@@ -443,17 +444,18 @@
                     {
                       showAlert("Modificacion Realizada con Exito");
                       this.isSavingNow= false;
-                      setInterval(function()
+                      this.$http.get(ROOT_URL+"/estimations/request/"+this.idRequest).
+                      success(function(data)
                       {
-                        window.location.reload()
-                      },2500);
+                        this.estimations = [];
+                        this.matchInformationEstimationsUpdate(data);
+                      }).error(function(data){
+                        showAlert("Ha habido un error al obtener la informacion de las cotizacion");
+                      });
+
                     }).error(function(data){
                       showAlert("La modificacion se ha realizado, pero hubo un error al guardar el archivo");
                       this.isSavingNow= false;
-                      setInterval(function()
-                      {
-                        window.location.reload()
-                      },2500);
                     });
 
                   }).error(function(data)
@@ -469,6 +471,7 @@
                   {
                     showAlert("Modificacion Exitosa");
                     this.isSavingNow= false;
+                    this.matchInformationEstimationsUpdate(data);
 
                   }).error(function(data)
                   {
@@ -494,14 +497,13 @@
                   showAlert("Registro de cotizacion Exitoso");
                   cotizacion.fileNameActual= data.fileName;
                   responseOfFileUpload= data;
+                  this.isSavingNow = false;
                   this.matchEstimationInfo(responseOfEstimation, responseOfFileUpload, cotizacion);
-                  //window.location.href= ROOT_URL+"/siad/periodica/54";
+                  Vue.set(cotizacion, "isCollapsed", false);
+
                 }).error(function(data){
                   showAlert("La cotizacion se ha guardado, pero hubo un error al guardar el archivo");
-                  setInterval(function()
-                  {
-                    window.location.reload()
-                  },2500);
+                  this.isSavingNow= false;
                 });
                 this.isSavingNow= false;
               }).error(function(data)
@@ -865,8 +867,8 @@
               var self = this;
               if (cotizacion.idCurrency== '')
               {
-                cotizacion.rate = '';
                 this.flagrate = false;
+
               }
               if (cotizacion.idCurrency == 1)
               {
@@ -875,12 +877,7 @@
               }
               else
               {
-                this.currencies.forEach(function(element){
-                    if (cotizacion.idCurrency == element.idCurrency)
-                    {
-                        cotizacion.rate= element.rate;
-                    }
-                });
+                cotizacion.rate= '';
                 this.flagrate = false;
               }
             },
@@ -955,6 +952,12 @@
               }
             });
             return retorno;
+          },
+          filterMoney: function(monto)
+          {
+              var retorno;
+              var retorno= accounting.formatNumber(monto,2,",");
+              return retorno;
           }
 
         }
@@ -1115,7 +1118,7 @@
                         </h3>
                       </div>
                       <div class="col-xs-8">
-                        <h4 class="panel-title" v-if="cotizacion.idCurrency> 0">Monto MXN: {{cotizacion.amount * cotizacion.rate}} <br> Monto en {{cotizacion.idCurrency | filterCurrency}}: {{cotizacion.amount}}</h4>
+                        <h4 class="panel-title" v-if="cotizacion.idCurrency> 0">Monto MXN: {{cotizacion.amount * cotizacion.rate | filterMoney}} <br><span v-if="cotizacion.idCurrency != 1"> Monto en {{cotizacion.idCurrency | filterCurrency}}: {{cotizacion.amount | filterMoney}}</span></h4>
                       </div>
                     </div>
                     <div class="col-xs-2" >
@@ -1128,19 +1131,25 @@
                   <div>
                     <div class="col-xs-4">
                       <div class="col-xs-6">
+                      </div>
+                        <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0">
+                          <button type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Guardar Cotización">
+                            <span class="glyphicon glyphicon-floppy-disk"></span>
+                          </button>
+                        </div>
+                        <div v-if="cotizacion.idEstimation > 0" class="col-xs-2 text-right">
+                          <button type="button" class="btn btn-sm btn-default"
+                            @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Eliminar cotización">
+                            <span class="glyphicon glyphicon-trash"></span>
+                          </button>
+                        </div>
+                        <div v-if="cotizacion.idEstimation == ''" class="col-xs-2 text-right">
+                          <button type="button" class="btn btn-sm btn-default"
+                                  @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Cancelar">
+                            <span class="glyphicon glyphicon-remove"></span>
+                          </button>
+                        </div>
 
-                    </div>
-                    <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0">
-                      <button type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Guardar Cotización">
-                        <span class="glyphicon glyphicon-floppy-disk"></span>
-                      </button>
-                    </div>
-                    <div class="col-xs-2 text-right">
-                      <button type="button" class="btn btn-sm btn-default"
-                        @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Eliminar Cotización">
-                        <span class="glyphicon glyphicon-remove"></span>
-                      </button>
-                    </div>
 
                       <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation > 0 && cotizacion.isCollapsed == true">
                       <button type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Modificar Cotización">
@@ -1223,6 +1232,14 @@
                      v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}"
                            accept="application/pdf" :disabled="cotizacion.idEstimationStatus > 1">
                   </div>
+                  <div class="col-xs-2">
+                    <label>
+                      Archivo Actual
+                    </label>
+                    <p>
+                      {{cotizacion.fileNameActual}}
+                    </p>
+                  </div>
                   <div class="col-xs-1" v-if="cotizacion.idEstimation > 0">
                   <p style="margin-top: 25px">
                   <a :href="attachment + cotizacion.idEstimation">
@@ -1231,14 +1248,6 @@
                     </button>
                   </a>
                   </p>
-                  </div>
-                  <div class="col-xs-2">
-                    <label>
-                      Archivo Actual
-                    </label>
-                    <p>
-                      {{cotizacion.fileNameActual}}
-                    </p>
                   </div>
                   <div class="col-xs-3">
                     <button type="button" class="btn btn-default" @click="prepareModalPeriodicPayment(cotizacion)"
@@ -1249,7 +1258,7 @@
                     <button type="button" class="btn btn-default" name="button"
                       v-if="cotizacion.idEstimationStatus== 1" style="margin-top:25px"
                       @click="autorizarCotizacion(cotizacion)">
-                      Cotización Aprobada
+                      Proponer Cotización
                     </button>
                     <button type="button" class="btn btn-default" name="button"
                       v-if="cotizacion.idEstimationStatus== 2 && isAutoriced" style="margin-top:25px"

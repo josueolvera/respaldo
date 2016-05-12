@@ -585,8 +585,8 @@
             var self = this;
             if (cotizacion.idCurrency== '')
             {
-              cotizacion.rate = '';
               this.flagrate = false;
+
             }
             if (cotizacion.idCurrency == 1)
             {
@@ -595,12 +595,7 @@
             }
             else
             {
-              this.currencies.forEach(function(element){
-                  if (cotizacion.idCurrency == element.idCurrency)
-                  {
-                      cotizacion.rate= element.rate;
-                  }
-              });
+              cotizacion.rate= '';
               this.flagrate = false;
             }
           },
@@ -646,6 +641,12 @@
             }
           });
           return retorno;
+        },
+        filterMoney: function(monto)
+        {
+            var retorno;
+            var retorno= accounting.formatNumber(monto,2,",");
+            return retorno;
         }
       }
       });
@@ -785,7 +786,7 @@
                           <h4 class="panel-title">Informacion del Pago</h4>
                         </div>
                         <div class="col-xs-8">
-                          <h4 class="panel-title" v-if="estimation.idCurrency > 0">Monto MXN: {{estimation.amount * estimation.rate}} <br> Monto en {{estimation.idCurrency | filterCurrency}}: {{estimation.amount}}</h4>
+                          <h4 class="panel-title" v-if="estimation.idCurrency > 0">Monto MXN: {{cotizacion.amount * cotizacion.rate | filterMoney}} <br><span v-if="cotizacion.idCurrency != 1"> Monto en {{cotizacion.idCurrency | filterCurrency}}: {{cotizacion.amount | filterMoney}}</span></h4>
                         </div>
                       </div>
                       <div class="col-xs-2" >
