@@ -903,6 +903,7 @@
                   //this.periodicPayment.paymentNum = data.paymentNum;
                   this.isSavingNow= false;
                   $("#periodicPayment").modal("hide");
+                  this.obtainInformationAutorization();
                 }).error(function(data)
                 {
                   showAlert("Ha fallado el registro de su informacion, intente nuevamente");
@@ -994,10 +995,7 @@
                     });
                     this.AccountsPayablesInfo = this.AccountsPayables;
                     $("#periodicPayment").modal("hide");
-                    setInterval(function()
-                    {
-                      window.location.reload()
-                    },2500);
+                    this.obtainInformationAutorization();
                   }).error(function(data)
                   {
                     showAlert("Ha fallado el registro de su informacion, intente nuevamente");
@@ -1133,10 +1131,7 @@
               this.$http.post(ROOT_URL+"/folios/authorizations/"+ info.idAuthorization +"/authorize",JSON.stringify(detalle)).
               success(function(data)
               {
-                setInterval(function()
-                {
-                  window.location.reload()
-                },2500);
+                this.obtainInformationAutorization();
               }).error(function() {
                 showAlert("Ha habido un error al autorizar la solicitud, intente nuevamente");
               });
@@ -1152,10 +1147,7 @@
               success(function(data)
               {
                 showAlert(data);
-                setInterval(function()
-                {
-                  window.location.reload()
-                },2500);
+                this.obtainInformationAutorization();
               }).error(function() {
                 showAlert("Ha habido un error al cancelar la solicitud, intente nuevamente");
               });
@@ -1322,10 +1314,9 @@
                 </label>
                 <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
                 @change="obtainRequestInfo" :disabled="isUpdate">
-                  <option></option>
-                  <option v-for="user in Users" value="{{user.idUser}}">
-                    <span v-if="user.dwEmployee.employee.fullNameReverse != '' ">{{user.dwEmployee.employee.fullNameReverse}}</span>
-                    <span v-if="user.dwEmployee.employee.fullNameReverse == ''"><{{user.mail}}></span>
+                  <option value="{{userInSession.idUser}}">
+                    {{ userInSession.dwEmployee.dwEnterprise.branch.branchName }} -
+                    {{ userInSession.dwEmployee.dwEnterprise.area.areaName }}
                   </option>
                 </select>
               </div>

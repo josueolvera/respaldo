@@ -16,16 +16,10 @@ import mx.bidg.pojos.HierarchicalLevel;
  * @author sistemask
  */
 public interface DwEnterprisesService {
-    
-    public List<DwEnterprises> findByGroupArea(CGroups idGroup, CAreas idArea);
-    
-    public DwEnterprises findByCombination(int idGroup, int idDistributor, int idRegion, int idBranch, int idArea);
-    
-    public DwEnterprises findById(int idDwEnterprise);
-    
-    public DwEnterprises findByIdUser(int idUser);
-
+    List<DwEnterprises> findByGroupArea(CGroups idGroup, CAreas idArea);
+    DwEnterprises findByCombination(int idGroup, int idDistributor, int idRegion, int idBranch, int idArea);
+    DwEnterprises findById(int idDwEnterprise);
+    DwEnterprises findByIdUser(int idUser);
     List<HierarchicalLevel> findHierarchicalStructure();
-
-    List<DwEnterprises>  findByDistributor(Integer idDistributor);
+    List<DwEnterprises> findByDistributor(Integer idDistributor);
 }
