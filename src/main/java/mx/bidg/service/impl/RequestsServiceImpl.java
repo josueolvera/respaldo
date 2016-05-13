@@ -159,7 +159,7 @@ public class RequestsServiceImpl implements RequestsService {
         }
 
         if((request.getIdRequestStatus() != CRequestStatus.COTIZADA.getIdRequestStatus())
-                || request.getIdRequestStatus() != CRequestStatus.PENDIENTE.getIdRequestStatus()) {
+                && request.getIdRequestStatus() != CRequestStatus.PENDIENTE.getIdRequestStatus()) {
             throw new ValidationException("Estatus de la solicitud invalida", "Esta solicitud ya fue validada anteriormente", HttpStatus.CONFLICT);
         }
 
