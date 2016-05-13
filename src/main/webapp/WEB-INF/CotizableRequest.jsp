@@ -336,10 +336,6 @@
               this.desactivarGuardar= true;
               this.isSavingNow= false;
               this.desaparecer= false;
-              /*setInterval(function()
-              {
-                window.location.href= ROOT_URL+"/siad/cotizable/"+datos.idRequest
-              },3000);*/
 
             }
             ,
@@ -476,12 +472,15 @@
                   this.$http.post(ROOT_URL+"/estimations/"+cotizacion.idEstimation, JSON.stringify(cotizacion)).
                   success(function(data)
                   {
-                    this.matchInformationEstimationsUpdate(data);
+                    var respuestaestimation = data;
+
                     this.$http.post(ROOT_URL+"/estimations/"+cotizacion.idEstimation+"/attachment", formData).
                     success(function(data)
                     {
+                      var respuestaarchivo= data;
                       showAlert("Modificacion Realizada con Exito");
                       this.isSavingNow= false;
+                      this.matchEstimationInfo(respuestaestimation,respuestaarchivo, cotizacion);
 
                     }).error(function(data){
                       showAlert("La modificacion se ha realizado, pero hubo un error al guardar el archivo");
@@ -560,6 +559,7 @@
               cotizacion.userEstimation.mail= responseOfEstimation.userEstimation.mail;
               cotizacion.isSaved= false;
               cotizacion.requiredFile= false;
+              cotizacion.fileName= '';
 
             },
             verifyUpdateOrSave: function()
@@ -595,6 +595,7 @@
               this.objectRequest.request.description= data.description;
               this.objectRequest.request.purpose= data.purpose;
               this.userRequest = data.userRequest.dwEmployee.employee.fullNameReverse;
+
               this.desaparecer = false;
               var producTypein= [{
                 idProductType: '',
@@ -642,6 +643,7 @@
                   cotizacion.fileNameActual = element.fileName;
                   cotizacion.requiredFile = false;
                   cotizacion.nameCurrency= element.currency.acronym;
+                  cotizacion.fileName= '';
                   if (data.amountMXN != null)
                   {
                     cotizacion.amountmx = data.amountMXN;

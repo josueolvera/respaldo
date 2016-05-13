@@ -439,11 +439,14 @@
                   this.$http.post(ROOT_URL+"/estimations/"+cotizacion.idEstimation, JSON.stringify(cotizacion)).
                   success(function(data)
                   {
+                    var respuestaestimation = data;
                     this.$http.post(ROOT_URL+"/estimations/"+cotizacion.idEstimation+"/attachment", formData).
                     success(function(data)
                     {
+                      var respuestaarchivo = data
                       showAlert("Modificacion Realizada con Exito");
                       this.isSavingNow= false;
+                      cotizacion.fileName= '';
                       this.$http.get(ROOT_URL+"/estimations/request/"+this.idRequest).
                       success(function(data)
                       {
@@ -472,6 +475,7 @@
                     showAlert("Modificacion Exitosa");
                     this.isSavingNow= false;
                     this.estimations= [];
+                    cotizacion.fileName= '';
                     this.$http.get(ROOT_URL+"/estimations/request/"+this.idRequest).
                     success(function(data)
                     {
@@ -505,6 +509,7 @@
                   cotizacion.fileNameActual= data.fileName;
                   responseOfFileUpload= data;
                   this.isSavingNow = false;
+                  cotizacion.fileName= '';
                   this.matchEstimationInfo(responseOfEstimation, responseOfFileUpload, cotizacion);
                   Vue.set(cotizacion, "isCollapsed", false);
 
@@ -533,6 +538,7 @@
               cotizacion.isSaved= false;
               cotizacion.requiredFile= false;
               cotizacion.expanded= '';
+              cotizacion.fileName= '';
             },
             verifyUpdateOrSave: function()
             {
