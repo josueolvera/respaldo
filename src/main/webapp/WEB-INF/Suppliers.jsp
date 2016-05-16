@@ -146,7 +146,7 @@
 
             this.provider.providerName=(providerNames+":"+providerLastName+":"+providerSecondName);
           },
-          saveAccount: function () {
+          saveAccount: function (bank,account,clabe,currency) {
             var cuenta =
             {
               accountNumber: '',
@@ -155,10 +155,10 @@
               idCurrency: ''
             }
 
-            cuenta.accountNumber = this.accountNumbers;
-            cuenta.accountClabe = this.clabes;
-            cuenta.idBank = this.idBanks;
-            cuenta.idCurrency = this.idCurrency;
+            cuenta.accountNumber = account;
+            cuenta.accountClabe = clabe;
+            cuenta.idBank = bank;
+            cuenta.idCurrency = currency;
 
             this.supplier.providersAccountsList.push(cuenta);
 
@@ -167,6 +167,22 @@
             this.clabes = ''
             this.idCurrency = '';
 
+          },
+          validationAccount: function () {
+                if(this.supplier.providersAccountsList.length!=0) {
+                    if(this.idBanks.length!=0&&this.accountNumbers.length!=0&&this.clabes.length!=0&&this.idCurrency.length!=0){
+                        this.saveAccount(this.idBanks,this.accountNumbers,this.clabes,this.idCurrency);
+                        return true;
+                    }
+                } else {
+                    if(this.idBanks.length!=0&&this.accountNumbers.length!=0&&this.clabes.length!=0&&this.idCurrency.length!=0){
+                        this.saveAccount(this.idBanks,this.accountNumbers,this.clabes,this.idCurrency);
+                        return true;
+                    }else {
+                        showAlert("Ingresa los campos Requeridos: Banco, Número de Cuenta, CLABE, Moneda");
+                        return false;
+                    }
+                }
           },
           obtainBanks: function () {
             this.$http.get(ROOT_URL + "/banks")
@@ -201,8 +217,9 @@
           },
           saveProvider: function () {
              this.saveAddress();
-              var validation = this.validationContact();
-              if (validation == true) {
+              var validation2 = this.validationContact();
+              var validation = this.validationAccount();
+              if (validation == true && validation2 == true) {
                   if (this.supplier.rfc.length == 13) {
                       this.providerRfc();
                   }
@@ -792,7 +809,7 @@
                     </select>
                   </div>
                   <div class="col-xs-1">
-                  <button type="button" class="btn btn-sm btn-default"  data-toggle="tooltip" data-placement="bottom" title="Agregar" style="margin-top: 25px" @click="saveAccount">
+                  <button type="button" class="btn btn-sm btn-default"  data-toggle="tooltip" data-placement="bottom" title="Agregar" style="margin-top: 25px" @click="validationAccount">
                     <span class="glyphicon glyphicon-plus"></span>
                   </button>
                   </div>
