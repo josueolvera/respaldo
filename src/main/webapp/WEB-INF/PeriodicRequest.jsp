@@ -1060,10 +1060,9 @@
               </label>
               <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
               @change="obtainRequestInfo" :disabled="isUpdate">
-                <option></option>
-                <option v-for="user in Users" value="{{user.idUser}}">
-                  <span v-if="user.dwEmployee.employee.fullNameReverse != '' ">{{user.dwEmployee.employee.fullNameReverse}}</span>
-                  <span v-if="user.dwEmployee.employee.fullNameReverse == ''"><{{user.mail}}></span>
+              <option value="{{userInSession.idUser}}">
+                    {{ userInSession.dwEmployee.dwEnterprise.branch.branchName }}/
+                    {{ userInSession.dwEmployee.dwEnterprise.area.areaName }}
                 </option>
               </select>
             </div>
