@@ -1429,8 +1429,10 @@
                           </button>
                         </div>
 
-                        <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation > 0 && cotizacion.isCollapsed == true">
-                        <button type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Modificar Cotización">
+                        <div class="col-xs-2 text-right"
+                             v-if="cotizacion.idEstimationStatus > 0 && cotizacion.idEstimationStatus < 2 && cotizacion.isCollapsed == true">
+                        <button type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip"
+                                data-placement="bottom" title="Modificar Cotización">
                           <span class="glyphicon glyphicon-pencil"></span>
                         </button>
                         </div>
