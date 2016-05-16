@@ -53,7 +53,7 @@ public class ProvidersController {
         provider.setProviderName(jnode.get("providerName").asText());
         provider.setBusinessName(jnode.get("businessName").asText());
         provider.setRfc(jnode.get("rfc").asText());
-        provider.setAccountingAccount(jnode.get("accountingaccount").asText());
+        provider.setAccountingAccount(jnode.get("accountingAccount").asText());
         provider.setIdAccessLevel(1);
         providersService.update(provider);
 
@@ -61,8 +61,8 @@ public class ProvidersController {
             ProviderAddress providerAddress = providerAddressService.findById(node.get("idProviderAddress").asInt());
             providerAddress.setStreet(node.get("street").asText());
             providerAddress.setCp(node.get("cp").asInt());
-            providerAddress.setNumExt(node.get("numExt").asInt());
-            providerAddress.setNumInt(node.get("numInt").asInt());
+            providerAddress.setNumExt(node.get("numExt").asText());
+            providerAddress.setNumInt(node.get("numInt").asText());
             providerAddress.setSettlement(new CSettlement(node.get("idSettlement").asInt()));
             providerAddress.setMunicipality(new CMunicipalities(node.get("idMunicipality").asInt()));
             providerAddress.setState(new CStates(node.get("idState").asInt()));
@@ -80,13 +80,12 @@ public class ProvidersController {
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> saveProvider(@RequestBody String data) throws IOException {
-        System.out.println(data);
         JsonNode jnode = mapper.readTree(data);
         Providers provider = new Providers();
         provider.setProviderName(jnode.get("providerName").asText());
         provider.setBusinessName(jnode.get("businessName").asText());
         provider.setRfc(jnode.get("rfc").asText());
-        provider.setAccountingAccount(jnode.get("accountingaccount").asText());
+        provider.setAccountingAccount(jnode.get("accountingAccount").asText());
         provider.setIdAccessLevel(1);
         providersService.save(provider);
 
@@ -107,12 +106,12 @@ public class ProvidersController {
             providersAccountsService.save(providerAccount);
         }
 
-        for (JsonNode node : jnode.get("addressProvider")){
+        for (JsonNode node : jnode.get("addressProvider")) {
             ProviderAddress providerAddress = new ProviderAddress();
             providerAddress.setStreet(node.get("street").asText());
             providerAddress.setCp(node.get("cp").asInt());
-            providerAddress.setNumExt(node.get("ext").asInt());
-            providerAddress.setNumInt(node.get("int").asInt());
+            providerAddress.setNumExt(node.get("numExt").asText());
+            providerAddress.setNumInt(node.get("numInt").asText());
             providerAddress.setSettlement(new CSettlement(node.get("idSettlement").asInt()));
             providerAddress.setMunicipality(new CMunicipalities(node.get("idMunicipality").asInt()));
             providerAddress.setState(new CStates(node.get("idState").asInt()));
@@ -123,9 +122,9 @@ public class ProvidersController {
 
         }
 
-        for (JsonNode node : jnode.get("phoneNumbersList")){
+        for (JsonNode node : jnode.get("providersContactList")) {
             ProvidersContact phone = new ProvidersContact();
-            phone.setPhoneNumber(node.get("phoneNumber").asInt());
+            phone.setPhoneNumber(node.get("phoneNumber").asText());
             phone.setEmail(node.get("email").asText());
             phone.setName(node.get("name").asText());
             phone.setPost(node.get("post").asText());

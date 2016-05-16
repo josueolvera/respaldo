@@ -13,7 +13,6 @@ import java.io.Serializable;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -44,11 +43,11 @@ public class ProviderAddress implements Serializable {
 
     @Column(name = "NUM_EXT")
     @JsonView(JsonViews.Root.class)
-    private Integer numExt;
+    private String numExt;
 
     @Column(name = "NUM_INT")
     @JsonView(JsonViews.Root.class)
-    private Integer numInt;
+    private String numInt;
 
     @Basic(optional = false)
     @NotNull
@@ -140,19 +139,19 @@ public class ProviderAddress implements Serializable {
         this.street = street;
     }
 
-    public Integer getNumExt() {
+    public String getNumExt() {
         return numExt;
     }
 
-    public void setNumExt(Integer numExt) {
+    public void setNumExt(String numExt) {
         this.numExt = numExt;
     }
 
-    public Integer getNumInt() {
+    public String getNumInt() {
         return numInt;
     }
 
-    public void setNumInt(Integer numInt) {
+    public void setNumInt(String numInt) {
         this.numInt = numInt;
     }
 

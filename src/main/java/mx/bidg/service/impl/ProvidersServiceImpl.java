@@ -5,6 +5,7 @@
  */
 package mx.bidg.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import mx.bidg.dao.ProvidersDao;
@@ -51,7 +52,7 @@ public class ProvidersServiceImpl implements ProvidersService {
     @Override
     public void low(Integer idProviders) {
         Providers providers = dao.findById(idProviders);
-        providers.setSupplierLow(new Date());
+        providers.setSupplierLow(LocalDateTime.now());
         dao.update(providers);
     }
 }
