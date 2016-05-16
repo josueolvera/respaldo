@@ -322,30 +322,60 @@
               this.municipalities = data;
             });
           },
-          savePhone: function () {
-            var self = this;
+          savePhone: function (names,phones,emails,posts) {
+              var contact={
+                  phoneNumber:"",
+                  email: "",
+                  post: "",
+                  name: "",
 
-            var telephone = {
-              phoneNumber: '',
-            };
+              }
 
-            telephone.phoneNumber = this.phoneNumbers;
+              contact.phoneNumber = phones;
+              contact.email = emails;
+              contact.post = posts;
+              contact.name = names;
 
-            this.supplier.phoneNumbersList.push(telephone);
-            this.phoneNumbers = ''
+              this.supplier.providersContactList.push(contact);
+
+                  this.phoneNumber = "";
+                  this.email = "";
+                  this.post = "";
+                  this.name = "";
+
           },
+            validationContact: function () {
+                if(this.supplier.providersContactList.length!=0) {
+                    if(this.name.length!=0&&this.phoneNumber.length!=0&&this.email.length!=0){
+                        this.savePhone(this.name,this.phoneNumber,this.email,this.post);
+                        return true;
+                    }
+                } else {
+                if(this.name.length!=0&&this.phoneNumber.length!=0&&this.email.length!=0){
+                    this.savePhone(this.name,this.phoneNumber,this.email,this.post);
+                    return true;
+                }else {
+                    showAlert("Ingresa los campos Requeridos: Nombre, Teléfono, Email");
+                    return false;
+                }
+                }
+            },
           deletePhone: function (phone) {
-            this.supplier.phoneNumbersList.$remove(phone);
+            this.supplier.providersContactList.$remove(phone);
             this.phoneNumbers = '';
           },
           addProviderPhone: function (supplier, phone) {
-            this.$http.post(ROOT_URL + "/phone-numbers/provider/" + supplier.idProvider, {phoneNumbers : phone})
+            this.$http.post(ROOT_URL + "/provider-contact/provider/" + supplier.idProvider, phone)
                     .success(function (data) {
-                      this.provider.phoneNumbersList.push(data);
+                      this.provider.providersContactList.push(data);
                       this.phoneNumbers = '';
                       showAlert("Teléfono Guardado con Éxito");
                       this.telephone.phoneNumbers = '';
                     });
+              this.telephone.name="";
+              this.telephone.email="";
+              this.telephone.phoneNumber="";
+              this.telephone.post="";
           },
          cancelar: function () {
 
