@@ -369,7 +369,7 @@
                     .success(function (data) {
                       this.provider.providersContactList.push(data);
                       this.phoneNumbers = '';
-                      showAlert("Teléfono Guardado con Éxito");
+                      showAlert("Contacto Guardado con Éxito");
                       this.telephone.phoneNumbers = '';
                     });
               this.telephone.name="";
