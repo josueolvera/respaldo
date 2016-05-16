@@ -39,23 +39,23 @@
             providerName: '',
             businessName: '',
             rfc: '',
-            accountingaccount: '',
+            accountingAccount: '',
             providersAccountsList: [],
-            phoneNumbersList: [],
+            providersContactList: [],
             addressProvider: []
           },
           provider: {
             providerName: '',
             businessName: '',
             rfc: '',
-            accountingaccount: '',
+              accountingAccount: '',
             providersAccountsList: [],
-            phoneNumbersList:[],
+            providersContactList:[],
             addressProvider: []
           },
           idBanks: '',
           banks: [],
-          providers: '',
+          providers: {},
           search: '',
           providerNames:'',
           providerLastName:'',
@@ -73,7 +73,10 @@
           idMunicipality:'',
           telephone:
           {
-            phoneNumbers:'',
+              phoneNumber:'',
+            email: "",
+            post: "",
+            name: "",
           },
           cuenta:
           {
@@ -84,13 +87,21 @@
           },
           direccion:{
             cp: '',
-            ext:'',
-            int:'',
+              numExt:'',
+            numInt:'',
             street:'',
             idSettlement: '',
             idState:'',
             idMunicipality:'',
           },
+            modalPregunta:{
+                provider:{
+                    providerName: ""
+                }
+            },
+            phoneNumber:'',
+            email:'',
+            name:'',
 
           },
         methods: {
@@ -148,38 +159,47 @@
           eliminarCuenta: function (cuenta) {
             this.supplier.providersAccountsList.$remove(cuenta);
           },
+
+          saveAddress: function () {
+              var direccion = {
+                  cp: '',
+                  numExt: '',
+                  numInt: '',
+                  street: '',
+                  idSettlement: '',
+                  idState: '',
+                  idMunicipality: '',
+              };
+              direccion.cp = this.direccion.cp;
+              direccion.numExt = this.direccion.numExt;
+              direccion.numInt = this.direccion.numInt;
+              direccion.street = this.direccion.street;
+              direccion.idState = this.direccion.idState;
+              direccion.idSettlement = this.direccion.idSettlement;
+              direccion.idMunicipality = this.direccion.idMunicipality;
+
+              this.supplier.addressProvider.push(direccion);
+          },
           saveProvider: function () {
-            var direccion = {
-              cp: '',
-              ext: '',
-              int: '',
-              street: '',
-              idSettlement: '',
-              idState: '',
-              idMunicipality: '',
-            };
-            direccion.cp = this.direccion.cp;
-            direccion.ext = this.direccion.ext;
-            direccion.int = this.direccion.int;
-            direccion.street = this.direccion.street;
-            direccion.idState = this.direccion.idState;
-            direccion.idSettlement = this.direccion.idSettlement;
-            direccion.idMunicipality = this.direccion.idMunicipality;
+             this.saveAddress();
+              var validation = this.validationContact();
+              if (validation == true) {
+                  if (this.supplier.rfc.length == 13) {
+                      this.providerRfc();
+                  }
 
-            this.supplier.addressProvider.push(direccion);
+                  this.$http.post(ROOT_URL + "/providers", JSON.stringify(this.supplier)).success(function (data) {
+                      showAlert("Registro de Proveedor Exitoso");
+                      $('#modalAlta').modal('hide');
+                      this.getProviders();
 
-            if(this.supplier.rfc.length==13){
-              this.providerRfc();
-            }
-            this.$http.post(ROOT_URL + "/providers", JSON.stringify(this.supplier)).success(function (data) {
-              showAlert("Registro de Proveedor Exitoso");
-              $('#modalAlta').modal('hide');
-              this.getProviders();
+                  }).error(function () {
+                      showAlert("Ha habido un error con la solicitud, intente nuevamente");
+                  });
 
-            }).error(function () {
-             showAlert("Ha habido un error con la solicitud, intente nuevamente");
-            });
-            this.cancelar();
+                  this.cancelar();
+              }
+
           },
           getProviders: function () {
             this.$http.get(ROOT_URL + "/providers")
@@ -203,9 +223,9 @@
                     .success(function (data) {
                       Vue.set(this.provider, 'providersAccountsList', data);
                     });
-            this.$http.get(ROOT_URL + "/phone-numbers/provider/"+this.provider.idProvider)
+            this.$http.get(ROOT_URL + "/provider-contact/provider/"+this.provider.idProvider)
                     .success(function (data) {
-                      Vue.set(this.provider,'phoneNumbersList', data);
+                      Vue.set(this.provider,'providersContactList', data);
                     });
           },
           deleteAccount: function (account) {
@@ -217,10 +237,10 @@
 
           },
           removePhone: function (phone) {
-            this.$http.delete(ROOT_URL + "/phone-numbers/" + phone.idPhoneNumber)
+            this.$http.delete(ROOT_URL + "/provider-contact/" + phone.idProviderContact)
                     .success(function (data) {
                       showAlert("Telefono Eliminado");
-                      this.provider.phoneNumbersList.$remove(phone);
+                      this.provider.providersContactList.$remove(phone);
                     });
           },
           addProviderAccount: function (supplier, cuenta) {
@@ -313,9 +333,11 @@
             this.cuenta.accountClabe= '';
             this.cuenta.idBank='';
             this.cuenta.idCurrency= '';
+            this.clabes="",
+            this.accountNumbers="";
             this.direccion.cp= '';
-            this.direccion.ext='';
-            this.direccion.int='';
+            this.direccion.numExt='';
+            this.direccion.numInt='';
             this.direccion.street='';
             this.direccion.idSettlement= '';
             this.direccion.idState='';
@@ -329,17 +351,26 @@
             this.idSettlement='';
             this.idMunicipality='';
             this.telephone.phoneNumbers='';
+             this.telephone.email='';
+             this.telephone.name='';
+             this.telephone.post='';
             this.supplier.providerName= '';
             this.supplier.businessName= '';
             this.supplier.providersAccountsList=[];
-            this.supplier.phoneNumbersList=[];
+            this.supplier.providersContactList=[];
             this.supplier.rfc= '';
-            this.supplier.accountingaccount= '';
+            this.supplier.accountingAccount= '';
+             this.name="";
+             this.email="";
+             this.phoneNumber="";
+             this.post="";
 
             $('#modalAlta').modal('hide');
-          }
-
-
+          },
+         question: function (provider) {
+             this.modalPregunta.provider = provider;
+             $('#modalPregunta').modal('show');
+         }
         },
         filters:
         {
@@ -375,8 +406,10 @@
               }
             });
             return name;
-          }
-
+          },
+            separate: function (value) {
+                return value.replace(/:/g," ");
+            }
         }
       });
 
@@ -433,7 +466,7 @@
                   {{provider.providerName | separateProviderName}}
                 </td>
                 <td>
-                  {{provider.accountingaccount}}
+                  {{provider.accountingAccount}}
                 </td>
                 <td>
                   {{provider.rfc}}
@@ -444,7 +477,7 @@
                 </td>
                 <td>
                   <button type="button" class="btn btn-default" name="button" data-toggle="tooltip" data-placement="bottom" title="Eliminar Proveedor"
-                          @click="deleteProvider(provider)"><span class="glyphicon glyphicon-trash"></span></button>
+                          @click="question(provider)"><span class="glyphicon glyphicon-trash"></span></button>
                 </td>
               </tr>
             </tbody>
@@ -531,13 +564,13 @@
                   <label>
                     No. Exterior
                   </label>
-                  <input class="form-control" name="name" maxlength="5" v-model="direccion.ext" >
+                  <input class="form-control" name="name" maxlength="5" v-model="direccion.numExt" >
                 </div>
                 <div class="col-xs-3">
                   <label>
                     No. Interior
                   </label>
-                  <input class="form-control" name="name" maxlength="5" v-model="direccion.int" >
+                  <input class="form-control" name="name" maxlength="5" v-model="direccion.numInt" >
                 </div>
                 <div class="col-xs-3">
                   <label>
@@ -582,34 +615,91 @@
                 </div> -->
             </div>
               <br>
-              <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
-                <div class="col-xs-4">
-                  <label>
-                    Teléfono (10 dígitos)
-                  </label>
-                  <input maxlength="10" class="form-control" name="name" v-model="phoneNumbers" onkeypress="return isNumberKey(event)">
+                <label v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">Información de Contacto</label>
+                <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
+                    <div class="col-xs-12">
+                        <hr>
+                    </div>
                 </div>
+              <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
+                <div class="col-xs-3">
+                  <label>
+                        Nombre
+                  </label>
+                  <input class="form-control" name="name" v-model="name" onkeypress="return isLetterKey(event)">
+                </div>
+                  <div class="col-xs-2">
+                      <label>
+                          Puesto
+                      </label>
+                      <input class="form-control" name="name" v-model="post" onkeypress="return isLetterKey(event)">
+                  </div>
+                  <div class="col-xs-3">
+                      <label>
+                          Teléfono (10 dígitos)
+                      </label>
+                      <input maxlength="10" class="form-control" name="name" v-model="phoneNumber" onkeypress="return isNumberKey(event)">
+                  </div>
+                  <div class="col-xs-3">
+                      <label>
+                          Correo
+                      </label>
+                      <input class="form-control" name="name" v-model="email" >
+                  </div>
                 <div class="col-xs-1">
-                  <button type="button" class="btn btn-sm btn-default"  data-toggle="tooltip" data-placement="bottom" title="Agregar" style="margin-top: 25px" @click="savePhone()">
+                  <button type="button" class="btn btn-sm btn-default"  data-toggle="tooltip" data-placement="bottom" title="Agregar" style="margin-top: 25px" @click="validationContact()">
                     <span class="glyphicon glyphicon-plus"></span>
                   </button>
                 </div>
               </div>
               <br>
-              <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13" v-for=" phone in supplier.phoneNumbersList">
-                <div class="col-xs-4">
-                  <div class="col-xs-4">
-                    {{phone.phoneNumber}}
-                  </div>
-                  <div class="col-xs-2 text-left">
-                    <button class="btn btn-default" @click="deletePhone(phone)" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Quitar Numero">
-                      <span class="glyphicon glyphicon-remove"></span>
-                    </button>
-                  </div>
-                </div>
-
-              </div>
+                <table class="table table-striped" v-if="supplier.providersContactList.length> 0">
+                    <thead>
+                    <th class="col-xs-3">
+                        Nombre
+                    </th>
+                    <th class="col-xs-2">
+                        Puesto
+                    </th>
+                    <th class="col-xs-3">
+                        Teléfono (10 dígitos)
+                    </th>
+                    <th class="col-xs-3">
+                        Correo
+                    </th>
+                    <th class="col-xs-1">
+                        Opción
+                    </th>
+                    </thead>
+                    <tbody>
+                    <tr v-for="phone in supplier.providersContactList">
+                        <td class="col-xs-3">
+                            {{phone.name}}
+                        </td>
+                        <td class="col-xs-2">
+                            {{phone.post}}
+                        </td>
+                        <td class="col-xs-3">
+                            {{phone.phoneNumber}}
+                        </td>
+                        <td class="col-xs-3">
+                            {{phone.email}}
+                        </td>
+                        <td class="col-xs-1">
+                            <button class="btn btn-default" @click="deletePhone(phone)" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Quitar Numero">
+                                <span class="glyphicon glyphicon-remove"></span>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
               <br>
+                <label v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">Cuentas Bancarias</label>
+                <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
+                    <div class="col-xs-12">
+                        <hr>
+                    </div>
+                </div>
                 <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
                   <div class="col-xs-3">
                     <label>
@@ -698,7 +788,7 @@
 
             </div>
             <div class="modal-footer">
-              <div class="col-xs-10 text-right" v-if="supplier.providersAccountsList.length> 0">
+              <div class="col-xs-10 text-right">
                 <button type="button" class="btn btn-default" @click="saveProvider">
                   Guardar
                 </button>
@@ -831,35 +921,92 @@
                     </select>
                   </div>
                 </div>
-                <br>
-                <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13">
-                  <div class="col-xs-4">
-                    <label>
-                      Teléfono (10 dígitos)
-                    </label>
-                    <input maxlength="10" class="form-control" name="name" v-model="phoneNumbers" onkeypress="return isNumberKey(event)">
+                  <br>
+                  <label v-if="(provider.rfc).length==12||(provider.rfc).length==13">Información de Contacto</label>
+                  <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13">
+                      <div class="col-xs-12">
+                          <hr>
+                      </div>
                   </div>
-                  <div class="col-xs-1">
-                    <button type="button" class="btn btn-sm btn-default"  data-toggle="tooltip" data-placement="bottom" title="Agregar" style="margin-top: 25px" @click="addProviderPhone(provider,phoneNumbers)">
-                      <span class="glyphicon glyphicon-plus"></span>
-                    </button>
+                  <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13">
+                      <div class="col-xs-3">
+                          <label>
+                              Nombre
+                          </label>
+                          <input class="form-control" name="name" v-model="telephone.name" onkeypress="return isLetterKey(event)">
+                      </div>
+                      <div class="col-xs-2">
+                          <label>
+                              Puesto
+                          </label>
+                          <input class="form-control" name="name" v-model="telephone.post" onkeypress="return isLetterKey(event)">
+                      </div>
+                      <div class="col-xs-3">
+                          <label>
+                              Teléfono (10 dígitos)
+                          </label>
+                          <input maxlength="10" class="form-control" name="name" v-model="telephone.phoneNumber" onkeypress="return isNumberKey(event)">
+                      </div>
+                      <div class="col-xs-3">
+                          <label>
+                              Correo
+                          </label>
+                          <input class="form-control" name="name" v-model="telephone.email" >
+                      </div>
+                      <div class="col-xs-1">
+                          <button type="button" class="btn btn-sm btn-default"  data-toggle="tooltip" data-placement="bottom" title="Agregar" style="margin-top: 25px" @click="addProviderPhone(provider, telephone)">
+                              <span class="glyphicon glyphicon-plus"></span>
+                          </button>
+                      </div>
                   </div>
-                </div>
-                <br>
-                <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13" v-for=" phone in provider.phoneNumbersList">
-                  <div class="col-xs-4">
-                    <div class="col-xs-4">
-                      {{phone.phoneNumber}}
-                    </div>
-                    <div class="col-xs-2 text-left">
-                      <button class="btn btn-default" @click="removePhone(phone)" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Quitar Numero">
-                        <span class="glyphicon glyphicon-remove"></span>
-                      </button>
-                    </div>
+                  <br>
+                  <table class="table table-striped" v-if="provider.providersContactList.length> 0">
+                      <thead>
+                      <th class="col-xs-3">
+                          Nombre
+                      </th>
+                      <th class="col-xs-2">
+                          Puesto
+                      </th>
+                      <th class="col-xs-3">
+                          Teléfono (10 dígitos)
+                      </th>
+                      <th class="col-xs-3">
+                          Correo
+                      </th>
+                      <th class="col-xs-1">
+                          Opción
+                      </th>
+                      </thead>
+                      <tbody>
+                      <tr v-for="phone in provider.providersContactList">
+                          <td class="col-xs-3">
+                              {{phone.name}}
+                          </td>
+                          <td class="col-xs-2">
+                              {{phone.post}}
+                          </td>
+                          <td class="col-xs-3">
+                              {{phone.phoneNumber}}
+                          </td>
+                          <td class="col-xs-3">
+                              {{phone.email}}
+                          </td>
+                          <td class="col-xs-1">
+                              <button class="btn btn-default" @click="removePhone(phone)" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Quitar Numero">
+                                  <span class="glyphicon glyphicon-remove"></span>
+                              </button>
+                          </td>
+                      </tr>
+                      </tbody>
+                  </table>
+                  <br>
+                  <label v-if="(provider.rfc).length==12||(provider.rfc).length==13">Cuentas Bancarias</label>
+                  <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13">
+                      <div class="col-xs-12">
+                          <hr>
+                      </div>
                   </div>
-
-                </div>
-                <br>
                 <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13">
                   <div class="col-xs-3">
                     <label>
@@ -961,6 +1108,27 @@
             </div>
           </div>
         </div>
+          <div class="modal fade" id="modalPregunta" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+              <div class="modal-dialog ">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                          <h4 class="modal-title">
+                              Eliminar proveedor
+                          </h4>
+                      </div>
+                      <div class="modal-body">
+                          <p>El provedor con nombre {{modalPregunta.provider.providerName|separate}} sera eliminado</p>
+                      </div>
+                      <div class="modal-footer">
+                          <button id="btnFlag" type="button" class="btn btn-default" @click="deleteProvider">
+                              Aceptar
+                          </button>
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
       </div> <!-- #contenidos -->
 
       <!-- Fecha de Termino- Agregar fecha dia de solicitud-->
