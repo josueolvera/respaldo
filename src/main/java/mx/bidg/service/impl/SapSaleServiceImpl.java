@@ -300,10 +300,9 @@ public class SapSaleServiceImpl implements SapSaleService {
         Sheet sheet = workbook.getSheetAt(0);
 
         Row headerRow = sheet.getRow(0);
-        Cell currCell;
         String[] headersToSkip = {
                 "Número de operación", "Fecha de Registro","Interloc.comercial",
-                "Apellidos","","2º apelNombre de pilalido","Apellido de soltera",
+                "Apellidos","Nombre de pila","2º apellido","Apellido de soltera",
                 "2º nombre", "Nº identificación","Nº. IMSS","Nombre de un convenio",
                 "Producto", "Dependencia","Status","Fecha Última Actualización",
                 "Fecha de Aprobación", "Monto Solicitado", "Numero de pagos",
@@ -312,23 +311,17 @@ public class SapSaleServiceImpl implements SapSaleService {
                 "Bonificación Autoservicio","Liquidación Intercompañias"
         };
 
-        for (int i = 0 ; i<28 ;i++) {
-            currCell = headerRow.getCell(i);
-
-            System.out.println(currCell.getStringCellValue()+" : "+ headersToSkip[i]);
-
+        if (headerRow.getPhysicalNumberOfCells() != 28) {
+            throw new ValidationException("Tipo de formato no compatible.",
+                    "Los datos de este archivo no son los correctos o no cumplen con los datos de venta.");
+        } else {
+            for (int i = 0 ; i < 28 ;i++) {
+                if (!headerRow.getCell(i).getStringCellValue().equals(headersToSkip[i])) {
+                    throw new ValidationException("Tipo de formato no compatible.",
+                            "Los datos de este archivo no son los correctos o no cumplen con los datos de venta.");
+                }
+            }
         }
-
-//        if (headerRow.getPhysicalNumberOfCells() != 28) {
-//            throw new ValidationException("Tipo de formato no compatible.", "Los datos de este archivo no son los requiridos o no cumplen con");
-//        } else {
-//            for (int i = 0 ; i<28 ;i++) {
-//                currCell = headerRow.getCell(i);
-//                if (currCell.getStringCellValue().equals(headersToSkip[i])) {
-//                    throw new ValidationException("Tipo de formato no compatible.", "Los datos de este archivo no son los requiridos o no cumplen con");
-//                }
-//            }
-//        }
 
 
         boolean existsSale = false;

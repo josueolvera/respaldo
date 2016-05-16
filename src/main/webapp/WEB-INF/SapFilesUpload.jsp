@@ -12,38 +12,104 @@
         <script type="text/javascript">
             var vm= new Vue({
                 el: '#filesUpload',
+                ready: function () {
+                    this.getTypesFile();
+                },
                 data: {
+                    errorData:{},
+                    typesFile: [],
+                    typeFile:{
+                        idSapFile:'',
+                        sapFileName: '',
+                        fileName: '',
+                        lastUploadedDate: '',
+                        lastUploadedDateFormats: ''
+                    }
                 },
                 methods: {
+                    validateForm:function () {
+                    },
+                    clearFileForm:function () {
+                        document.getElementById("inputFile").value = null;
+                    },
+                    saveFile: function () {
+                        if (this.typeFile.idSapFile == 1) {
 
-                    saveSapSales: function () {
-                        var formElement = document.getElementById("formSap");
+                        }
+                        if (this.typeFile.idSapFile == 2) {
+
+                        }
+                        if (this.typeFile.idSapFile == 3) {
+
+                        }
+                        if (this.typeFile.idSapFile == 4) {
+
+                        }
+                        if (this.typeFile.idSapFile == 5) {
+
+                        }
+                        if (this.typeFile.idSapFile == 6) {
+
+                        }
+                        if (this.typeFile.idSapFile == 7) {
+
+                        }
+                        if (this.typeFile.idSapFile == 8) {
+                            this.checkExistingSale();
+                        }
+                        if (this.typeFile.idSapFile == 9) {
+
+                        }
+                        if (this.typeFile.idSapFile == 10) {
+
+                        }
+                    },
+                    getFileFormData:function () {
+                        var formElement = document.getElementById("fileForm");
                         var formData = new FormData(formElement);
-                        this.$http.post(ROOT_URL + '/sap-sale/excel', formData)
-                                .success(function (data) {
-                                    $('#checkExistigSaleModal').modal('hide');
+                        return formData;
+                    },
+                    updateTypeFile: function () {
+
+                        this.$http.post(ROOT_URL + '/sap-file/' + this.typeFile.idSapFile,this.getFileFormData()
+                        ).success(function (data) {
+
                                 })
                                 .error(function (data) {
-                                    console.log(data);
+
+                                });
+                    },
+                    getTypesFile: function () {
+                        this.$http.get(ROOT_URL + '/sap-file')
+                                .success(function (data) {
+                                    this.typesFile = data;
+                        })
+                                .error(function (data) {
+
+                        })
+                    },
+                    saveSapSales: function () {
+                        this.$http.post(ROOT_URL + '/sap-sale/excel', this.getFileFormData())
+                                .success(function (data) {
+                                    $('#checkExistigSaleModal').modal('hide');
+                                    this.updateTypeFile();
+                                })
+                                .error(function (data) {
                                 });
 
                     },
                     updateSapSales: function () {
-                        var formElement = document.getElementById("formSap");
-                        var formData = new FormData(formElement);
-                        this.$http.post(ROOT_URL + '/sap-sale/update-excel', formData)
+                        this.$http.post(ROOT_URL + '/sap-sale/update-excel', this.getFileFormData())
                                 .success(function (data) {
                                     $('#checkExistigSaleModal').modal('hide');
+                                    this.updateTypeFile();
                                 })
                                 .error(function (data) {
-                                    console.log(data);
                                 });
 
                     },
                     checkExistingSale: function () {
-                        var formElement = document.getElementById("formSap");
-                        var formData = new FormData(formElement);
-                        this.$http.post(ROOT_URL + '/sap-sale/check-existing-sale', formData)
+                        this.$http.post(ROOT_URL + '/sap-sale/check-existing-sale', this.getFileFormData())
                                 .success(function (data) {
                                     if (data == true) {
                                         $('#checkExistigSaleModal').modal('show');
@@ -52,7 +118,9 @@
                                     }
                                 })
                                 .error(function (data) {
-                                    console.log(data);
+                                    this.errorData = data;
+                                    $('#errorModal').modal('show');
+                                    console.log(this.errorData.error.message);
                                 });
                     }
                 }
@@ -63,26 +131,84 @@
     <jsp:body>
         <div id="filesUpload">
             <h1>Carga de archivos SAP</h1>
-            <form id="formSap" enctype="multipart/form-data" v-on:submit.prevent="checkExistingSale">
-                <div class="form-group">
-                    <label for="sapInputFile">SAP ventas</label>
-                    <input type="file" name="file" id="sapInputFile"
-                           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
+            <br>
+            <div class="col-md-offset-2 col-md-8">
+
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-4">Selecciona archivo a subir</label>
+                        <div class="col-sm-6">
+                            <select class="form-control" v-model="typeFile" @change="clearFileForm">
+                                <option></option>
+                                <option v-for="typeFile in typesFile" value="{{typeFile}}">
+                                    {{typeFile.sapFileName}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="panel panel-default" v-if="typeFile.sapFileName != ''">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">{{typeFile.sapFileName}}</div>
+                    <div class="panel-body">
+                        <div>
+                            <form id="fileForm" enctype="multipart/form-data" v-on:submit.prevent="saveFile">
+                                <div class="form-group">
+                                    <input id="inputFile" type="file" name="file"
+                                           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
                            application/vnd.ms-excel">
-                    <br>
-                    <button class="btn btn-success" type="submit">
-                        Cargar archivo SAP
-                    </button>
+                                    <br>
+                                    <button class="btn btn-success" type="submit">
+                                        Subir archivo
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
                 </div>
-            </form>
+                <div class="panel panel-default" v-if="typeFile != ''">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">Archivos</div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Archivo
+                                            </th>
+                                            <th>
+                                                Nombre
+                                            </th>
+                                            <th>
+                                                Fecha ultima vez subido
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                <tbody>
+                                <tr v-for="typeFile in typesFile">
+                                    <td>
+                                        {{typeFile.sapFileName}}
+                                    </td>
+                                    <td>
+                                        {{typeFile.fileName}}
+                                    </td>
+                                    <td>
+                                        {{typeFile.lastUploadedDateFormats.dateNumber}}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="modal fade" id="checkExistigSaleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <%--<div class="modal-header">--%>
-                            <%--<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>--%>
-                            <%--<h4 class="modal-title" id="myModalLabel">Aviso</h4>--%>
-                        <%--</div>--%>
                         <div class="modal-body">
                             Algunas de estas ventas ya existen, ¿desea sobreescribir los registros o guardarlos como nuevos?.
                         </div>
@@ -97,6 +223,23 @@
 
 
 
+            <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">Error</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="alert alert-danger" role="alert">
+                                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                                <span class="sr-only">Error:</span>
+                                {{errorData.error.message}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </jsp:body>
 </t:template>
