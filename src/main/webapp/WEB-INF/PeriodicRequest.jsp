@@ -548,6 +548,7 @@
                 success(function(data)
                 {
                   this.matchInformationUpdate(data);
+
                 }).error(function(data){
                   //showAlert("Ha habido un error al obtener la informacion");
                 });
@@ -638,7 +639,7 @@
                    });
                   cotizacion.indexOfForm = self.estimations.length;
                   self.estimations.push(cotizacion);
-
+                  this.obtainInformationAutorization();
               }).error(function(data){
                 showAlert("Ha habido un error al obtener la informacion de las cotizacion");
               });
@@ -825,6 +826,7 @@
                 this.periodicPayment.initialDate= dateInitialWithout;
                 this.periodicPayment.dueDate= datedueDateWithout;
                 this.isSavingNow = false;
+                this.obtainInformationAutorization();
                 $("#periodicPayment").modal("hide");
               }).error(function(data)
               {
