@@ -290,12 +290,13 @@
               showAlert("Ha habido un error con la solicitud, intente nuevamente");
             });
           },
-          deleteProvider: function (provider) {
-            this.$http.post(ROOT_URL + "/providers/low/" + provider.idProvider)
-                    .success(function (data) {
-                      this.getProviders();
-                      showAlert("Provedor Eliminado");
-                    });
+          deleteProvider: function () {
+              this.$http.post(ROOT_URL + "/providers/low/" + this.modalPregunta.provider.idProvider)
+                      .success(function (data) {
+                          this.getProviders();
+                          $('#modalPregunta').modal('hide');
+                          showAlert("Provedor Eliminado");
+                      });
           },
           filterNumber: function (val) {
             return isNaN(val) ? '' : val;
