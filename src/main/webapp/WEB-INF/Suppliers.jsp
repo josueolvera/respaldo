@@ -16,6 +16,25 @@
         }
         </script>
 
+        <script>
+            function isLetterKey(evt)
+            {
+                var charCode = (evt.which) ? evt.which : event.keyCode
+                if (charCode === 32 ||
+                        charCode === 13 ||
+                        (charCode > 64 && charCode < 91) ||
+                        (charCode > 96 && charCode < 123) ||
+                        charCode === 8
+                )
+                {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        </script>
+
         <script type="text/javascript">
         var vm= new Vue({
         el: '#contenidos',
