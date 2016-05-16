@@ -9,25 +9,14 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlTransient;
+
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 
@@ -75,9 +64,9 @@ public class Providers implements Serializable {
     private String accountingAccount;
 
     @Column(name = "SUPPLIER_LOW")
-    @Temporal(TemporalType.DATE)
+    @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
-    private Date supplierLow;
+    private LocalDateTime supplierLow;
 
     @Basic(optional = false)
     @NotNull
@@ -170,11 +159,11 @@ public class Providers implements Serializable {
     }
 
 
-    public Date getSupplierLow() {
+    public LocalDateTime getSupplierLow() {
         return supplierLow;
     }
 
-    public void setSupplierLow(Date supplierLow) {
+    public void setSupplierLow(LocalDateTime supplierLow) {
         this.supplierLow = supplierLow;
     }
 

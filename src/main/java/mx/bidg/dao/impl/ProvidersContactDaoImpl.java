@@ -49,6 +49,6 @@ public class ProvidersContactDaoImpl extends AbstractDao<Integer,ProvidersContac
     @Override
     public List<ProvidersContact> findByProvider(Providers p) {
         Criteria criteria = createEntityCriteria();
-        return (List<ProvidersContact>) criteria.add(Restrictions.eq("providers",p)).list();
+        return (List<ProvidersContact>) criteria.add(Restrictions.eq("provider",p)).list();
     }
 }

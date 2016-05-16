@@ -31,6 +31,12 @@ public class ProvidersContactController {
 
     private ObjectMapper mapper = new ObjectMapper();
 
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody ResponseEntity<String> getPhoneList() throws Exception {
+        String response = mapper.writerWithView(JsonViews.Root.class).writeValueAsString(providersContactService.findAll());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/provider/{idProvider}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody public ResponseEntity<String> phonesByProvider(@PathVariable int idProvider)throws Exception{
         String response = mapper.writerWithView(JsonViews.Root.class).writeValueAsString(providersContactService
@@ -38,20 +44,20 @@ public class ProvidersContactController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/{idPhoneNumber}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> deleteAccount(@PathVariable int idPhoneNumber) throws IOException {
-        ProvidersContact  phone= providersContactService.findById(idPhoneNumber);
+    @RequestMapping(value = "/{idProviderContact}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> deletePhone(@PathVariable int idProviderContact) throws IOException {
+        ProvidersContact  phone= providersContactService.findById(idProviderContact);
         providersContactService.delete(phone);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/provider/{idProvider}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
                    produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public @ResponseBody ResponseEntity<String> addProviderPhone(@PathVariable int idProvider, @RequestBody String data) throws IOException {
+    public @ResponseBody ResponseEntity<String> addProviderContact(@PathVariable int idProvider, @RequestBody String data) throws IOException {
         JsonNode node = mapper.readTree(data);
         Providers provider = providersService.findById(idProvider);
         ProvidersContact phone = new ProvidersContact();
-        phone.setPhoneNumber(node.get("phoneNumber").asInt());
+        phone.setPhoneNumber(node.get("phoneNumber").asText());
         phone.setEmail(node.get("email").asText());
         phone.setName(node.get("name").asText());
         phone.setPost(node.get("post").asText());
