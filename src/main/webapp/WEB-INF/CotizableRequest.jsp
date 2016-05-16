@@ -1582,7 +1582,7 @@
                       </td>
                       <td>
                         <span class="label label-success" v-if="info.idAuthorizationStatus == 2">Autorizado</span>
-                        <span class="label label-info" v-if="info.idAuthorizationStatus == 1">Pendiente</span>
+                        <span class="label label-warning" v-if="info.idAuthorizationStatus == 1">Pendiente</span>
                         <span class="label label-danger" v-if="info.idAuthorizationStatus == 3">Rechazado</span>
                       </td>
                       <td>
