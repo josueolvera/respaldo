@@ -198,6 +198,10 @@
               rate: '',
               idDatePicker: ''
             },
+            authModal: {
+              authorize: false,
+              authorization: null
+            }
           },
           methods:
           {
@@ -1122,36 +1126,43 @@
                 showAlert("No se ha podido obtener la informacion de la autorizacion");
               });
             },
+            commitAuthorization: function (auth, authorize) {
+              if (authorize) {
+                this.$http.post(ROOT_URL+"/folios/authorizations/"+ auth.idAuthorization +"/authorize",{
+                  details: auth.details
+                }).
+                success(function(data)
+                {
+                  this.obtainInformationAutorization();
+                  $("#auth-confirmation-modal").modal("hide");
+                }).error(function() {
+                  showAlert("Ha habido un error al autorizar la solicitud, intente nuevamente");
+                });
+              } else {
+                this.$http.post(ROOT_URL+"/folios/authorizations/"+ auth.idAuthorization +"/reject", {
+                  details: auth.details
+                }).
+                success(function(data)
+                {
+                  showAlert(data);
+                  this.obtainInformationAutorization();
+                  $("#auth-confirmation-modal").modal("hide");
+                }).error(function() {
+                  showAlert("Ha habido un error al cancelar la solicitud, intente nuevamente");
+                });
+              }
+            },
             autorizarSolicitudIndividual: function(info)
             {
-              var detalle= {
-                details: ''
-              }
-              detalle.details = info.details;
-
-              this.$http.post(ROOT_URL+"/folios/authorizations/"+ info.idAuthorization +"/authorize",JSON.stringify(detalle)).
-              success(function(data)
-              {
-                this.obtainInformationAutorization();
-              }).error(function() {
-                showAlert("Ha habido un error al autorizar la solicitud, intente nuevamente");
-              });
+              this.authModal.authorization = info;
+              this.authModal.authorize = true;
+              $("#auth-confirmation-modal").modal("show");
             },
             rechazarSolicitudIndividual: function(info)
             {
-              var detalle= {
-                details: ''
-              }
-              detalle.details = info.details;
-
-              this.$http.post(ROOT_URL+"/folios/authorizations/"+ info.idAuthorization +"/reject", JSON.stringify(detalle)).
-              success(function(data)
-              {
-                showAlert(data);
-                this.obtainInformationAutorization();
-              }).error(function() {
-                showAlert("Ha habido un error al cancelar la solicitud, intente nuevamente");
-              });
+              this.authModal.authorization = info;
+              this.authModal.authorize = false;
+              $("#auth-confirmation-modal").modal("show");
             },
             validateCurrency: function(cotizacion)
             {
@@ -1860,8 +1871,25 @@
               </div>
             </div>
           </div>
-          </div> <!-- container-fluid -->
+          <div id="auth-confirmation-modal" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title">¿Confirma que desea autorizar la solicitud?</h4>
+                </div>
+              <div class="modal-body">
+                  <p></p>
+                </div>
+              <div class="modal-footer">
+                  <button @click="commitAuthorization(authModal.authorization, authModal.authorize)" class="btn btn-default">Aceptar</button>
+                  <button class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                </div>
+            </div>
+              </div>
+          </div>
 
+        </div> <!-- container-fluid -->
       </div> <!-- #contenidos -->
       <!-- Fecha de Termino- Agregar fecha dia de solicitud-->
     </jsp:body>
