@@ -444,7 +444,7 @@
       <div class="container-fluid" style="margin-left: 100px">
         <div class="row">
           <div class="col-xs-6 text-left">
-          <h1>Búsqueda de Proveedores</h1>
+          <h1>Búsqueda de proveedores</h1>
           </div>
 
           <div class="col-xs-3">
@@ -464,10 +464,10 @@
           <table class="table table-striped">
             <thead>
               <th>
-                Nombre del Proveedor/Razón Social
+                Nombre/Razón social
               </th>
               <th>
-                Cuneta Contable
+                Cuenta Contable
               </th>
               <th>
                 RFC
@@ -512,8 +512,8 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-              <h4 class="modal-title" id="">
-                Registro de Proveedor
+              <h4 class="modal-title">
+                Registro de proveedor
               </h4>
             </div>
             <div class="modal-body">
@@ -528,41 +528,43 @@
               <div class="row" v-if="(supplier.rfc).length==12">
                 <div class="col-xs-4">
                   <label>
-                    Razón Social
+                    Razón social
                   </label>
                   <input class="form-control" name="name" v-model="supplier.providerName">
                 </div>
                 <div class="col-xs-4">
                   <label>
-                    Cuenta Contable
+                    Cuenta contable
                   </label>
-                  <input class="form-control" name="name" v-model="supplier.accountingaccount">
+                  <input class="form-control" name="name" v-model="supplier.accountingAccount">
                 </div>
               </div>
+                <br>
+                <br>
               <div class="row" v-if="(supplier.rfc).length==13">
                 <div class="col-xs-3">
                   <label>
                     Nombre
                   </label>
-                  <input class="form-control" name="name" v-model="providerNames">
+                  <input class="form-control" name="name" v-model="providerNames" onkeypress="return isLetterKey(event)">
                 </div>
                 <div class="col-xs-3">
                   <label>
-                    Apellido Paterno
+                    Apellido paterno
                   </label>
-                  <input class="form-control" name="name" v-model="providerLastName">
+                  <input class="form-control" name="name" v-model="providerLastName" onkeypress="return isLetterKey(event)">
                 </div>
                 <div class="col-xs-3">
                   <label>
-                    Apellido Materno
+                    Apellido materno
                   </label>
-                  <input class="form-control" name="name" v-model="providerSecondName">
+                  <input class="form-control" name="name" v-model="providerSecondName" onkeypress="return isLetterKey(event)">
                 </div>
                 <div class="col-xs-3">
                   <label>
-                    Cuenta Contable
+                    Cuenta contable
                   </label>
-                  <input class="form-control" name="name" v-model="supplier.accountingaccount">
+                  <input class="form-control" name="name" v-model="supplier.accountingAccount">
                 </div>
               </div>
               <br>
@@ -772,7 +774,7 @@
                       Banco
                     </th>
                     <th>
-                      Número de Cuenta
+                      Número de cuenta
                     </th>
                     <th>
                       CLABE
@@ -826,8 +828,8 @@
             <div class="modal-content">
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="">
-                  Modificar Proveedor
+                <h4 class="modal-title">
+                  Modificar proveedor
                 </h4>
               </div>
               <div class="modal-body">
@@ -843,15 +845,15 @@
                 <div class="row" v-if="(provider.rfc).length==12">
                   <div class="col-xs-4">
                     <label>
-                      Razón Social
+                      Razón social
                     </label>
                     <input class="form-control" name="name" v-model="provider.providerName">
                   </div>
                   <div class="col-xs-4">
                     <label>
-                      Cuenta Contable
+                      Cuenta contable
                     </label>
-                    <input class="form-control" name="name" v-model="provider.accountingaccount">
+                    <input class="form-control" name="name" v-model="provider.accountingAccount">
                   </div>
                 </div>
                 <div class="row" v-if="(provider.rfc).length==13">
@@ -859,25 +861,25 @@
                     <label>
                       Nombre
                     </label>
-                    <input class="form-control" name="name" v-model="supplierNames">
+                    <input class="form-control" name="name" v-model="supplierNames" onkeypress="return isLetterKey(event)">
                   </div>
                   <div class="col-xs-3">
                     <label>
-                      Apellido Paterno
+                      Apellido paterno
                     </label>
-                    <input class="form-control" name="name" v-model="supplierLastName">
+                    <input class="form-control" name="name" v-model="supplierLastName" onkeypress="return isLetterKey(event)">
                   </div>
                   <div class="col-xs-3">
                     <label>
-                      Apellido Materno
+                      Apellido materno
                     </label>
-                    <input class="form-control" name="name" v-model="supplierSecondName">
+                    <input class="form-control" name="name" v-model="supplierSecondName" onkeypress="return isLetterKey(event)">
                   </div>
                   <div class="col-xs-3">
                     <label>
-                      Cuenta Contable
+                      Cuenta contable
                     </label>
-                    <input class="form-control" name="name" v-model="provider.accountingaccount">
+                    <input class="form-control" name="name" v-model="provider.accountingAccount">
                   </div>
                 </div>
                 <br>
@@ -1040,7 +1042,7 @@
 
                   <div class="col-xs-3">
                     <label>
-                      Número de Cuenta
+                      Número de cuenta
                     </label>
                     <div class="input-group">
                       <span class="input-group-addon">#</span>
@@ -1081,7 +1083,7 @@
                     Banco
                   </th>
                   <th>
-                    Número de Cuenta
+                    Número de cuenta
                   </th>
                   <th>
                     CLABE
@@ -1090,7 +1092,7 @@
                     Moneda
                   </th>
                   <th >
-                    Eliminar Cuenta
+                    Eliminar cuenta
                   </th>
                   </thead>
                   <tbody>
