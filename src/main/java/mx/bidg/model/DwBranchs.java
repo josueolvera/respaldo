@@ -5,22 +5,14 @@
  */
 package mx.bidg.model;
 
+import mx.bidg.utils.DateTimeConverter;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -48,8 +40,8 @@ public class DwBranchs implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "UPLOADED_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date uploadedDate;
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime uploadedDate;
     @Basic(optional = false)
     @NotNull
     @Column(name = "STATUS")
@@ -60,12 +52,6 @@ public class DwBranchs implements Serializable {
 
     public DwBranchs(Integer idBranch) {
         this.idBranch = idBranch;
-    }
-
-    public DwBranchs(Integer idBranch, Date uploadedDate, int status) {
-        this.idBranch = idBranch;
-        this.uploadedDate = uploadedDate;
-        this.status = status;
     }
 
     public Integer getIdBranch() {
@@ -108,11 +94,11 @@ public class DwBranchs implements Serializable {
         this.pttoPromReal = pttoPromReal;
     }
 
-    public Date getUploadedDate() {
+    public LocalDateTime getUploadedDate() {
         return uploadedDate;
     }
 
-    public void setUploadedDate(Date uploadedDate) {
+    public void setUploadedDate(LocalDateTime uploadedDate) {
         this.uploadedDate = uploadedDate;
     }
 

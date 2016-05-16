@@ -43,7 +43,7 @@
 
                         }
                         if (this.typeFile.idSapFile == 4) {
-
+                            this.updateDwBranchs();
                         }
                         if (this.typeFile.idSapFile == 5) {
 
@@ -73,7 +73,7 @@
 
                         this.$http.post(ROOT_URL + '/sap-file/' + this.typeFile.idSapFile,this.getFileFormData()
                         ).success(function (data) {
-
+                                    this.getTypesFile();
                                 })
                                 .error(function (data) {
 
@@ -121,6 +121,14 @@
                                     this.errorData = data;
                                     $('#errorModal').modal('show');
                                     console.log(this.errorData.error.message);
+                                });
+                    },
+                    updateDwBranchs:function () {
+                        this.$http.post(ROOT_URL + '/dw-branchs/update-excel', this.getFileFormData())
+                                .success(function (data) {
+                                    this.updateTypeFile();
+                                })
+                                .error(function (data) {
                                 });
                     }
                 }

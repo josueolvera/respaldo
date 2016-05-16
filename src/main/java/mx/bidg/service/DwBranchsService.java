@@ -14,6 +14,5 @@ public interface DwBranchsService {
 
     List<DwBranchs> findAll();
     DwBranchs findById(Integer id);
-    List<DwBranchs> saveFromExcel(MultipartFile file) throws IOException, InvalidFormatException;
     List<DwBranchs> updateFromExcel(MultipartFile file) throws IOException, InvalidFormatException;
 }
