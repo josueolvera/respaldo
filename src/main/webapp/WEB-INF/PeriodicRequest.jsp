@@ -1110,17 +1110,20 @@
           </div>
 
           <br>
-          <div class="row">
-            <div class="col-xs-6 text-left">
-              <button class="btn btn-success" :disabled="desactivarGuardar||isSavingNow" v-if="desaparecer">Guardar Solicitud</button>
-              <button type="button" class="btn btn-success" v-if="!desaparecer" @click="exit">Salir</button>
+
+            <div class="row">
+              <div class="col-xs-2 text-left">
+                <button class="btn btn-success" :disabled="desactivarGuardar||isSavingNow" v-if="desaparecer">Guardar Solicitud</button>
+              </div>
+
+              <div class="col-xs-4 col-xs-offset-6 text-right">
+                <button type="button" class="btn btn-default" @click="newCotizacion"
+                  v-if="objectRequest.request.isSaved || isUpdate ">Agregar Cotización
+                </button>
+                <button type="button" class="btn btn-default" v-if="!desaparecer" @click="exit">Enviar</button>
+                <button type="button" class="btn btn-default" v-if="!desaparecer" @click="exit">Salir</button>
+              </div>
             </div>
-            <div class="col-xs-6 text-right">
-              <button type="button" class="btn btn-default" @click="newCotizacion"
-                v-if="objectRequest.request.isSaved || isUpdate ">Agregar Cotización
-              </button>
-            </div>
-          </div>
 
         </form>
         <br>
