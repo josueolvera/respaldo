@@ -181,7 +181,23 @@
             },
             attachment: ROOT_URL +"/estimations/attachment/download/",
             montoTotal: '',
-            totalApagar: 0
+            totalApagar: 0,
+            accountPayableUnico:
+            {
+              idAccountPayable: '',
+              folio: '',
+              amount: '',
+              paidAmount: '',
+              payNum: '',
+              totalPayments: '',
+              creationDate: '',
+              dueDate: '',
+              idAccountPayableStatus: '',
+              idOperationType: '',
+              idCurrency: '',
+              rate: '',
+              idDatePicker: ''
+            },
           },
           methods:
           {
@@ -320,10 +336,6 @@
               this.desactivarGuardar= true;
               this.isSavingNow= false;
               this.desaparecer= false;
-              /*setInterval(function()
-              {
-                window.location.href= ROOT_URL+"/siad/cotizable/"+datos.idRequest
-              },3000);*/
 
             }
             ,
@@ -460,12 +472,16 @@
                   this.$http.post(ROOT_URL+"/estimations/"+cotizacion.idEstimation, JSON.stringify(cotizacion)).
                   success(function(data)
                   {
+                    var respuestaestimation = data;
+
                     this.$http.post(ROOT_URL+"/estimations/"+cotizacion.idEstimation+"/attachment", formData).
                     success(function(data)
                     {
+                      var respuestaarchivo= data;
                       showAlert("Modificacion Realizada con Exito");
-                      console.log(data);
                       this.isSavingNow= false;
+                      this.matchEstimationInfo(respuestaestimation,respuestaarchivo, cotizacion);
+
                     }).error(function(data){
                       showAlert("La modificacion se ha realizado, pero hubo un error al guardar el archivo");
                       this.isSavingNow= false;
@@ -543,6 +559,7 @@
               cotizacion.userEstimation.mail= responseOfEstimation.userEstimation.mail;
               cotizacion.isSaved= false;
               cotizacion.requiredFile= false;
+              cotizacion.fileName= '';
 
             },
             verifyUpdateOrSave: function()
@@ -578,6 +595,7 @@
               this.objectRequest.request.description= data.description;
               this.objectRequest.request.purpose= data.purpose;
               this.userRequest = data.userRequest.dwEmployee.employee.fullNameReverse;
+
               this.desaparecer = false;
               var producTypein= [{
                 idProductType: '',
@@ -625,6 +643,7 @@
                   cotizacion.fileNameActual = element.fileName;
                   cotizacion.requiredFile = false;
                   cotizacion.nameCurrency= element.currency.acronym;
+                  cotizacion.fileName= '';
                   if (data.amountMXN != null)
                   {
                     cotizacion.amountmx = data.amountMXN;
@@ -768,11 +787,32 @@
                 minDate: moment().add(1, 'minutes')
                 }).data();
             },
-            emptyEsquema: function()
+            emptyEsquema: function(campo)
             {
               this.AccountsPayables= [];
               this.amountOfPay= '';
               this.numberOfPay= '';
+
+              if (campo == 3)
+              {
+                this.timePicker = $('#datetimepick').datetimepicker({
+                  locale: 'es',
+                  format: 'DD-MM-YYYY',
+                  useCurrent: false,
+                  minDate: moment().add(1, 'minutes')
+                  }).data();
+
+                  this.accountPayableUnico.folio= this.periodicPayment.folio;
+                  this.accountPayableUnico.amount=this.periodicPayment.amount;
+                  this.accountPayableUnico.idCurrency=this.periodicPayment.idCurrency;
+                  this.accountPayableUnico.rate=this.periodicPayment.rate;
+                  this.accountPayableUnico.payNum= 1;
+                  this.accountPayableUnico.totalPayments= 1;
+                  this.accountPayableUnico.idDatePicker= "datetimepick";
+                  this.AccountsPayables.push(this.accountPayableUnico);
+
+              }
+
             },
             generarPagosVariables: function()
             {
@@ -838,7 +878,39 @@
             },
             saveAccountPayable: function()
             {
-              if (this.optionPago == 1)
+              if (this.optionPago == 3)
+              {
+                console.log(this.AccountsPayables);
+                this.isSavingNow= true;
+                var datedueDateWithout= this.accountPayableUnico.dueDate;
+                var self= this;
+                if (this.accountPayableUnico.dueDate !== "")
+                {
+                  var dateDueDate= moment(self.accountPayableUnico.dueDate, "DD-MM-YYYY").format("YYYY-MM-DD");
+                  var dateDueDates= new Date(dateDueDate);
+                  var dateisoDue= dateDueDates.toISOString();
+                  self.accountPayableUnico.dueDate = dateisoDue.slice(0, -1);
+                }
+
+                this.$http.post(ROOT_URL+"/accounts-payable/folio?folio="+this.accountPayableUnico.folio, JSON.stringify(this.AccountsPayables)).
+                success(function(data)
+                {
+                  showAlert("Registro de informacion de pago exitoso");
+                  //this.periodicPayment.idPeriodicPayment= data.idPeriodicPayment;
+                  //this.periodicPayment.initialDate= dateInitialWithout;
+                  this.accountPayableUnico.dueDate= datedueDateWithout;
+                  //this.periodicPayment.idPeriodicPaymentStatus= data.periodicPaymentStatus.idPeriodicPaymentStatus;
+                  //this.periodicPayment.paymentNum = data.paymentNum;
+                  this.isSavingNow= false;
+                  $("#periodicPayment").modal("hide");
+                  this.obtainInformationAutorization();
+                }).error(function(data)
+                {
+                  showAlert("Ha fallado el registro de su informacion, intente nuevamente");
+                  this.isSavingNow= false;
+                });
+
+              }else if (this.optionPago == 1)
               {
                 this.pagofijo.initialDate = this.pagofijo.initialDateView;
                 var n = moment(this.pagofijo.initialDate,"DD-MM-YYYY").toISOString();
@@ -923,10 +995,7 @@
                     });
                     this.AccountsPayablesInfo = this.AccountsPayables;
                     $("#periodicPayment").modal("hide");
-                    setInterval(function()
-                    {
-                      window.location.reload()
-                    },2500);
+                    this.obtainInformationAutorization();
                   }).error(function(data)
                   {
                     showAlert("Ha fallado el registro de su informacion, intente nuevamente");
@@ -1062,10 +1131,7 @@
               this.$http.post(ROOT_URL+"/folios/authorizations/"+ info.idAuthorization +"/authorize",JSON.stringify(detalle)).
               success(function(data)
               {
-                setInterval(function()
-                {
-                  window.location.reload()
-                },2500);
+                this.obtainInformationAutorization();
               }).error(function() {
                 showAlert("Ha habido un error al autorizar la solicitud, intente nuevamente");
               });
@@ -1081,10 +1147,7 @@
               success(function(data)
               {
                 showAlert(data);
-                setInterval(function()
-                {
-                  window.location.reload()
-                },2500);
+                this.obtainInformationAutorization();
               }).error(function() {
                 showAlert("Ha habido un error al cancelar la solicitud, intente nuevamente");
               });
@@ -1104,12 +1167,7 @@
               }
               else
               {
-                this.currencies.forEach(function(element){
-                    if (cotizacion.idCurrency == element.idCurrency)
-                    {
-                        cotizacion.rate= element.rate;
-                    }
-                });
+                cotizacion.rate= '';
                 this.flagrate = false;
               }
             },
@@ -1171,6 +1229,12 @@
             });
 
             return retorno;
+          },
+          filterMoney: function(monto)
+          {
+              var retorno;
+              var retorno= accounting.formatNumber(monto,2,",");
+              return retorno;
           }
 
         }
@@ -1250,10 +1314,9 @@
                 </label>
                 <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
                 @change="obtainRequestInfo" :disabled="isUpdate">
-                  <option></option>
-                  <option v-for="user in Users" value="{{user.idUser}}">
-                    <span v-if="user.dwEmployee.employee.fullNameReverse != '' ">{{user.dwEmployee.employee.fullNameReverse}}</span>
-                    <span v-if="user.dwEmployee.employee.fullNameReverse == ''"><{{user.mail}}></span>
+                  <option value="{{userInSession.idUser}}">
+                    {{ userInSession.dwEmployee.dwEnterprise.branch.branchName }} -
+                    {{ userInSession.dwEmployee.dwEnterprise.area.areaName }}
                   </option>
                 </select>
               </div>
@@ -1330,7 +1393,7 @@
                           </h3>
                         </div>
                         <div class="col-xs-8">
-                          <h4 class="panel-title" v-if="cotizacion.idCurrency> 0">Monto MXN: {{cotizacion.amount * cotizacion.rate}} <br> Monto en {{cotizacion.idCurrency | filterCurrency}}: {{cotizacion.amount}}</h4>
+                          <h4 class="panel-title" v-if="cotizacion.idCurrency> 0">Monto MXN: {{cotizacion.amount * cotizacion.rate | filterMoney}} <br><span v-if="cotizacion.idCurrency != 1"> Monto en {{cotizacion.idCurrency | filterCurrency}}: {{cotizacion.amount | filterMoney}}</span></h4>
                         </div>
                       </div>
                       <div class="col-xs-2" >
@@ -1590,11 +1653,11 @@
                   <br>
                     <div class="row">
                       <div class="col-xs-12">
-                        <input type="radio" id="pagoFijo" value="1" v-model="optionPago" @change="emptyEsquema">
+                        <input type="radio" id="pagoFijo" value="1" v-model="optionPago" @change="emptyEsquema(optionPago)">
                         <label>Pagos Fijos</label>
-                        <input type="radio" id="pagoVariable" value="2" v-model="optionPago" @change="emptyEsquema">
+                        <input type="radio" id="pagoVariable" value="2" v-model="optionPago" @change="emptyEsquema(optionPago)">
                         <label>Pagos Variables</label>
-                        <input type="radio" id="pagounico" value="3" v-model="optionPago" @change="emptyEsquema">
+                        <input type="radio" id="pagounico" value="3" v-model="optionPago" @change="emptyEsquema(optionPago)">
                         <label>Pago Único</label>
                       </div>
                     </div>
@@ -1664,9 +1727,33 @@
                           </button>
                         </div>
                       </div>
+
+                      <div class="col-xs-12" v-if="optionPago==3">
+
+                        <div class="col-xs-4">
+                          <label>
+                            Monto del Pago
+                          </label>
+                          <input number class="form-control" placeholder="" v-model="accountPayableUnico.amount" disabled="true">
+                        </div>
+
+                        <div class="col-xs-4">
+                          <label>
+                            Fecha de Vencimiento
+                          </label>
+                          <div class='input-group date' id='datetimepick' >
+                                <input type='text' class="form-control" v-model="accountPayableUnico.dueDate">
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                          </div>
+                        </div>
+
+
+                      </div>
                     </div>
                     <div class="row">
-                      <div class="col-xs-7" v-if="AccountsPayables.length> 0">
+                      <div class="col-xs-7" v-if="AccountsPayables.length> 0 && optionPago !=3">
                         <label>
                           Informacion de Pagos
                         </label>

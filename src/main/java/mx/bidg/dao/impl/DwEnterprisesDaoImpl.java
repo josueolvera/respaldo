@@ -83,5 +83,4 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
         map.put("budgetable", 1);
         return (DwEnterprises) criteria.add(Restrictions.allEq(map)).uniqueResult();
     }
-    
 }

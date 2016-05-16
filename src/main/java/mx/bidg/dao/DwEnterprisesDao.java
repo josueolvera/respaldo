@@ -18,10 +18,7 @@ import mx.bidg.model.DwEnterprises;
  * @author sistemask
  */
 public interface DwEnterprisesDao extends InterfaceDao<DwEnterprises> {
-    
     List<DwEnterprises> findByGroupArea(CGroups idGroup, CAreas idArea);
-    
     DwEnterprises findByCombination(CGroups group, CDistributors distributor, CRegions region, CBranchs branch, CAreas area);
-
     List<DwEnterprises> findByDistributor(Integer idDistributor);
 }

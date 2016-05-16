@@ -171,7 +171,8 @@
           methods:
           {
             setIsCollapsed: function (cotizacion) {
-              if (cotizacion.isCollapsed == true) {
+              if (cotizacion.isCollapsed == true)
+              {
                 cotizacion.isCollapsed = false;
               } else {
                 Vue.set(cotizacion, "isCollapsed", true);
@@ -438,22 +439,26 @@
                   this.$http.post(ROOT_URL+"/estimations/"+cotizacion.idEstimation, JSON.stringify(cotizacion)).
                   success(function(data)
                   {
+                    var respuestaestimation = data;
                     this.$http.post(ROOT_URL+"/estimations/"+cotizacion.idEstimation+"/attachment", formData).
                     success(function(data)
                     {
+                      var respuestaarchivo = data
                       showAlert("Modificacion Realizada con Exito");
                       this.isSavingNow= false;
-                      setInterval(function()
+                      cotizacion.fileName= '';
+                      this.$http.get(ROOT_URL+"/estimations/request/"+this.idRequest).
+                      success(function(data)
                       {
-                        window.location.reload()
-                      },2500);
+                        this.estimations = [];
+                        this.matchInformationEstimationsUpdate(data);
+                      }).error(function(data){
+                        showAlert("Ha habido un error al obtener la informacion de las cotizacion");
+                      });
+
                     }).error(function(data){
                       showAlert("La modificacion se ha realizado, pero hubo un error al guardar el archivo");
                       this.isSavingNow= false;
-                      setInterval(function()
-                      {
-                        window.location.reload()
-                      },2500);
                     });
 
                   }).error(function(data)
@@ -469,6 +474,15 @@
                   {
                     showAlert("Modificacion Exitosa");
                     this.isSavingNow= false;
+                    this.estimations= [];
+                    cotizacion.fileName= '';
+                    this.$http.get(ROOT_URL+"/estimations/request/"+this.idRequest).
+                    success(function(data)
+                    {
+                      this.matchInformationEstimationsUpdate(data);
+                    }).error(function(data){
+                      showAlert("Ha habido un error al obtener la informacion de las cotizacion", {type:3});
+                    });
 
                   }).error(function(data)
                   {
@@ -494,14 +508,14 @@
                   showAlert("Registro de cotizacion Exitoso");
                   cotizacion.fileNameActual= data.fileName;
                   responseOfFileUpload= data;
+                  this.isSavingNow = false;
+                  cotizacion.fileName= '';
                   this.matchEstimationInfo(responseOfEstimation, responseOfFileUpload, cotizacion);
-                  //window.location.href= ROOT_URL+"/siad/periodica/54";
+                  Vue.set(cotizacion, "isCollapsed", false);
+
                 }).error(function(data){
                   showAlert("La cotizacion se ha guardado, pero hubo un error al guardar el archivo");
-                  setInterval(function()
-                  {
-                    window.location.reload()
-                  },2500);
+                  this.isSavingNow= false;
                 });
                 this.isSavingNow= false;
               }).error(function(data)
@@ -524,6 +538,7 @@
               cotizacion.isSaved= false;
               cotizacion.requiredFile= false;
               cotizacion.expanded= '';
+              cotizacion.fileName= '';
             },
             verifyUpdateOrSave: function()
             {
@@ -751,10 +766,14 @@
               success(function(data)
               {
                 showAlert("Se ha autorizado la cotizacion correctamente");
-                setInterval(function()
-                {
-                  window.location.reload()
-                },2500);
+                this.$http.get(ROOT_URL+"/estimations/request/"+this.idRequest).
+                  success(function(data)
+                 {
+                    this.estimations = [];
+                    this.matchInformationEstimationsUpdate(data);
+                  }).error(function(data){
+                    showAlert("Ha habido un error al obtener la informacion de las cotizacion");
+                  });
 
               }).error(function(data)
               {
@@ -767,10 +786,14 @@
               success(function(data)
               {
                 showAlert("Se ha cancelado la aprobacion de la cotizacion correctamente");
-                setInterval(function()
-                {
-                  window.location.reload()
-                },2500);
+                this.$http.get(ROOT_URL+"/estimations/request/"+this.idRequest).
+                 success(function(data)
+                 {
+                   this.estimations = [];
+                   this.matchInformationEstimationsUpdate(data);
+                 }).error(function(data){
+                   showAlert("Ha habido un error al obtener la informacion de las cotizacion");
+                 });
 
               }).error(function(data)
               {
@@ -865,8 +888,8 @@
               var self = this;
               if (cotizacion.idCurrency== '')
               {
-                cotizacion.rate = '';
                 this.flagrate = false;
+
               }
               if (cotizacion.idCurrency == 1)
               {
@@ -875,12 +898,7 @@
               }
               else
               {
-                this.currencies.forEach(function(element){
-                    if (cotizacion.idCurrency == element.idCurrency)
-                    {
-                        cotizacion.rate= element.rate;
-                    }
-                });
+                cotizacion.rate= '';
                 this.flagrate = false;
               }
             },
@@ -955,6 +973,12 @@
               }
             });
             return retorno;
+          },
+          filterMoney: function(monto)
+          {
+              var retorno;
+              var retorno= accounting.formatNumber(monto,2,",");
+              return retorno;
           }
 
         }
@@ -1100,47 +1124,52 @@
 
         </form>
         <br>
-        <div class="row" v-for="cotizacion in estimations">
+        <div class="row" v-for="cotizacion in estimations  | orderBy 'idEstimationStatus'">
           <form v-on:submit.prevent="saveEstimations(cotizacion)" id="form-{{cotizacion.indexOfForm}}">
           <div class="col-xs-12">
             <div class="panel panel-default">
               <div class="panel-heading">
                 <div class="row">
-                  <div data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" aria-expanded="false"
-                       aria-controls="collapse{{cotizacion.indexOfForm}}" style="cursor: pointer"
-                       @click="setIsCollapsed(cotizacion)">
+                  <div data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" style="cursor: pointer"
+                    @click="setIsCollapsed(cotizacion)">
                     <div class="col-xs-4 text-left">
                       <div class="col-xs-4">
                         <h3 class="panel-title">Ver Cotización
                         </h3>
                       </div>
                       <div class="col-xs-8">
-                        <h4 class="panel-title" v-if="cotizacion.idCurrency> 0">Monto MXN: {{cotizacion.amount * cotizacion.rate}} <br> Monto en {{cotizacion.idCurrency | filterCurrency}}: {{cotizacion.amount}}</h4>
+                        <h4 class="panel-title" v-if="cotizacion.idCurrency> 0">Monto MXN: {{cotizacion.amount * cotizacion.rate | filterMoney}} <br><span v-if="cotizacion.idCurrency != 1"> Monto en {{cotizacion.idCurrency | filterCurrency}}: {{cotizacion.amount | filterMoney}}</span></h4>
                       </div>
                     </div>
                     <div class="col-xs-2" >
                       <span class="label label-danger" v-if="cotizacion.outOfBudget == 1">Fuera de Presupuesto</span>
                     </div>
                     <div class="col-xs-2 text-right">
-                      <label v-if="cotizacion.idEstimationStatus== 2">Cotización Propuesta</label>
+                      <label  class="label label-info" v-if="cotizacion.idEstimationStatus== 2">Cotización Propuesta</label>
                     </div>
                   </div>
                   <div>
                     <div class="col-xs-4">
                       <div class="col-xs-6">
+                      </div>
+                        <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0">
+                          <button type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Guardar Cotización">
+                            <span class="glyphicon glyphicon-floppy-disk"></span>
+                          </button>
+                        </div>
+                        <div v-if="cotizacion.idEstimation > 0" class="col-xs-2 text-right">
+                          <button type="button" class="btn btn-sm btn-default"
+                            @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Eliminar cotización">
+                            <span class="glyphicon glyphicon-trash"></span>
+                          </button>
+                        </div>
+                        <div v-if="cotizacion.idEstimation == ''" class="col-xs-2 text-right">
+                          <button type="button" class="btn btn-sm btn-default"
+                                  @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Cancelar">
+                            <span class="glyphicon glyphicon-remove"></span>
+                          </button>
+                        </div>
 
-                    </div>
-                    <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0">
-                      <button type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Guardar Cotización">
-                        <span class="glyphicon glyphicon-floppy-disk"></span>
-                      </button>
-                    </div>
-                    <div class="col-xs-2 text-right">
-                      <button type="button" class="btn btn-sm btn-default"
-                        @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Eliminar Cotización">
-                        <span class="glyphicon glyphicon-remove"></span>
-                      </button>
-                    </div>
 
                       <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation > 0 && cotizacion.isCollapsed == true">
                       <button type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Modificar Cotización">
@@ -1151,7 +1180,8 @@
                   </div>
                 </div>
               </div>
-              <div class="panel-body collapse {{cotizacion.expanded}}" id="collapse{{cotizacion.indexOfForm}}">
+              <div id="collapse{{cotizacion.indexOfForm}}" class="panel-body collapse"
+                  :class="{ 'in' : cotizacion.expanded || cotizacion.idEstimationStatus == 2  }">
                 <div class="row">
                   <div class="col-xs-2">
                     <label>
@@ -1223,6 +1253,14 @@
                      v-model="cotizacion.fileName" required="{{cotizacion.requiredFile}}"
                            accept="application/pdf" :disabled="cotizacion.idEstimationStatus > 1">
                   </div>
+                  <div class="col-xs-2">
+                    <label>
+                      Archivo Actual
+                    </label>
+                    <p>
+                      {{cotizacion.fileNameActual}}
+                    </p>
+                  </div>
                   <div class="col-xs-1" v-if="cotizacion.idEstimation > 0">
                   <p style="margin-top: 25px">
                   <a :href="attachment + cotizacion.idEstimation">
@@ -1231,14 +1269,6 @@
                     </button>
                   </a>
                   </p>
-                  </div>
-                  <div class="col-xs-2">
-                    <label>
-                      Archivo Actual
-                    </label>
-                    <p>
-                      {{cotizacion.fileNameActual}}
-                    </p>
                   </div>
                   <div class="col-xs-3">
                     <button type="button" class="btn btn-default" @click="prepareModalPeriodicPayment(cotizacion)"
@@ -1249,7 +1279,7 @@
                     <button type="button" class="btn btn-default" name="button"
                       v-if="cotizacion.idEstimationStatus== 1" style="margin-top:25px"
                       @click="autorizarCotizacion(cotizacion)">
-                      Cotización Aprobada
+                      Proponer Cotización
                     </button>
                     <button type="button" class="btn btn-default" name="button"
                       v-if="cotizacion.idEstimationStatus== 2 && isAutoriced" style="margin-top:25px"
@@ -1430,9 +1460,6 @@
               </div>
             </div>
           </div>
-          <pre>
-            {{ $data.periodicPayment | json}}
-          </pre>
           </div> <!-- container-fluid -->
 
       </div> <!-- #contenidos -->
