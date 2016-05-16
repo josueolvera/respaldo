@@ -1149,7 +1149,7 @@
                       <span class="label label-danger" v-if="cotizacion.outOfBudget == 1">Fuera de Presupuesto</span>
                     </div>
                     <div class="col-xs-2 text-right">
-                      <label  class="label label-info" v-if="cotizacion.idEstimationStatus== 2">Cotización Propuesta</label>
+                      <label  class="label label-primary" v-if="cotizacion.idEstimationStatus== 2">Cotización Propuesta</label>
                     </div>
                   </div>
                   <div>
