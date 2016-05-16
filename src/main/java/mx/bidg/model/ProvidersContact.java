@@ -18,12 +18,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -63,7 +60,7 @@ public class ProvidersContact implements Serializable {
     @NotNull
     @Column(name = "PHONE_NUMBER")
     @JsonView(JsonViews.Root.class)
-    private int phoneNumber;
+    private String phoneNumber;
 
     @Basic(optional = false)
     @NotNull
@@ -87,7 +84,7 @@ public class ProvidersContact implements Serializable {
         this.idProviderContact = idProviderContact;
     }
 
-    public ProvidersContact(Integer idProviderContact, int phoneNumber, int idAccessLevel) {
+    public ProvidersContact(Integer idProviderContact, String phoneNumber, int idAccessLevel) {
         this.idProviderContact = idProviderContact;
         this.phoneNumber = phoneNumber;
         this.idAccessLevel = idAccessLevel;
@@ -125,11 +122,11 @@ public class ProvidersContact implements Serializable {
         this.email = email;
     }
 
-    public int getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 

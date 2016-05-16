@@ -36,20 +36,20 @@ public class ProvidersContactServiceImpl implements ProvidersContactService {
     }
 
     @Override
-    public ProvidersContact save(ProvidersContact ProvidersContact) {
-        dao.save(ProvidersContact);
-        return ProvidersContact;
+    public ProvidersContact save(ProvidersContact providersContact) {
+        dao.save(providersContact);
+        return providersContact;
     }
 
     @Override
-    public ProvidersContact update(ProvidersContact ProvidersContact) {
-        dao.update(ProvidersContact);
-        return ProvidersContact;
+    public ProvidersContact update(ProvidersContact providersContact) {
+        dao.update(providersContact);
+        return providersContact;
     }
 
     @Override
-    public Boolean delete(ProvidersContact ProvidersContact) {
-        dao.delete(ProvidersContact);
+    public Boolean delete(ProvidersContact providersContact) {
+        dao.delete(providersContact);
         return true;
     }
 }
