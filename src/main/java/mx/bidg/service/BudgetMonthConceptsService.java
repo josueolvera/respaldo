@@ -14,11 +14,9 @@ import mx.bidg.model.CBudgetConcepts;
  * @author sistemask
  */
 public interface BudgetMonthConceptsService {
-    
+
     List<BudgetMonthConcepts> saveList(String data) throws Exception;
     boolean delete(BudgetMonthConcepts budgetMonthConcepts);
     List<BudgetMonthConcepts> findByConcept(CBudgetConcepts budgetConcept);
     List<BudgetMonthConcepts> findByConcept(Integer idBudgetConcept);
-
-    
 }
