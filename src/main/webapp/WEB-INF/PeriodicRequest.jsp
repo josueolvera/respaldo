@@ -1138,11 +1138,10 @@
             <div class="panel panel-default">
               <div class="panel-heading">
                 <div class="row">
-                  <div data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" style="cursor: pointer"
-                    @click="setIsCollapsed(cotizacion)">
+                  <div href="#collapse{{cotizacion.indexOfForm}}">
                     <div class="col-xs-4 text-left">
                       <div class="col-xs-4">
-                        <h3 class="panel-title">Ver Cotización
+                        <h3 class="panel-title">Cotización
                         </h3>
                       </div>
                       <div class="col-xs-8">
@@ -1157,35 +1156,31 @@
                     </div>
                   </div>
                   <div>
-                    <div class="col-xs-4">
-                      <div class="col-xs-6">
-                      </div>
-                        <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0">
-                          <button type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Guardar Cotización">
-                            <span class="glyphicon glyphicon-floppy-disk"></span>
-                          </button>
-                        </div>
-                        <div v-if="cotizacion.idEstimation > 0" class="col-xs-2 text-right">
-                          <button type="button" class="btn btn-sm btn-default"
-                            @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Eliminar cotización">
-                            <span class="glyphicon glyphicon-trash"></span>
-                          </button>
-                        </div>
-                        <div v-if="cotizacion.idEstimation == ''" class="col-xs-2 text-right">
-                          <button type="button" class="btn btn-sm btn-default"
-                                  @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Cancelar">
-                            <span class="glyphicon glyphicon-remove"></span>
-                          </button>
-                        </div>
-
-
-                      <div class="col-xs-2 text-right"
-                           v-if="cotizacion.idEstimationStatus > 0 && cotizacion.idEstimationStatus < 2 && cotizacion.isCollapsed == true">
-                        <button type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip"
-                                data-placement="bottom" title="Modificar Cotización">
-                          <span class="glyphicon glyphicon-pencil"></span>
-                        </button>
-                      </div>
+                    <div class="col-xs-4 text-right">
+                      <button type="submit" class="btn btn-sm btn-default" v-if="cotizacion.idEstimation == 0"
+                              :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Guardar Cotización">
+                        <span class="glyphicon glyphicon-floppy-disk"></span>
+                      </button>
+                      <button v-if="cotizacion.idEstimation > 0" type="button" class="btn btn-sm btn-default"
+                              @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip"
+                              data-placement="bottom" title="Eliminar cotización">
+                        <span class="glyphicon glyphicon-trash"></span>
+                      </button>
+                      <button v-if="cotizacion.idEstimation == ''" type="button" class="btn btn-sm btn-default"
+                              @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip"
+                              data-placement="bottom" title="Cancelar">
+                        <span class="glyphicon glyphicon-remove"></span>
+                      </button>
+                      <button v-if="cotizacion.idEstimationStatus > 0 && cotizacion.idEstimationStatus < 2 && cotizacion.isCollapsed == true"
+                              type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip"
+                              data-placement="bottom" title="Modificar Cotización">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                      </button>
+                      <button href="#collapse{{cotizacion.indexOfForm}}" @click="setIsCollapsed(cotizacion)"
+                              data-toggle="collapse" class="btn btn-sm btn-default" type="button">
+                        <span :class="{ 'glyphicon-menu-down': cotizacion.isCollapsed, 'glyphicon-menu-up': ! cotizacion.isCollapsed }"
+                              class="glyphicon" ></span>
+                      </button>
                     </div>
                   </div>
                 </div>
