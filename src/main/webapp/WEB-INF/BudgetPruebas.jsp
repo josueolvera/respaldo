@@ -119,7 +119,8 @@
               year: 0
             },
             showInfo: false,
-            sucursal: {}
+            sucursal: {},
+            distributors: {}
           },
           methods:
           {
@@ -530,6 +531,20 @@
           }).error(function(){
             showAlert("Ha habido un error con la solicitud, intente nuevamente");
           });
+        },
+        getDistributors: function()
+        {
+          this.$http.get(ROOT_URL + "/distributors")
+                  .success(function (data)
+                  {
+                    this.distributors = data;
+                  });
+        },
+        showModalProrrateo: function(concepto)
+        {
+          this.getDistributors();
+          $("#prorrateo").modal("show");
+
         }
         },
         filters: {
@@ -737,8 +752,16 @@
 
                           <div class="row" style="margin-left: 0px" v-for="concepto in conte.conceptos">
                             <div class="col-xs-2" style="padding-left: 0px; padding-right: 1px">
-                              <input type="text" name="name" class="form-control input-sm" style="font-size: 10px"
-                                v-model="concepto.conceptName" :disabled="isAutorized">
+                              <div class="col-xs-9">
+                                <input type="text" name="name" class="form-control input-sm" style="font-size: 10px"
+                                  v-model="concepto.conceptName" :disabled="isAutorized">
+
+                              </div>
+                              <div class="col-xs-3" style="padding-left: 0px; padding-right: 1px">
+                                <button type="button" class="btn btn-default" @click="showModalProrrateo(concepto)">
+                                  <span class="glyphicon glyphicon-align-left"></span>
+                                </button>
+                              </div>
                             </div>
                             <div class="col-xs-9">
                               <div class="col-xs-1" v-for="mess in concepto.conceptMonth"
@@ -807,6 +830,75 @@
                 </div> <!-- /#container-fluid -->
             </div> <!-- /#Page Content -->
         </div> <!-- /#wrapper -->
+
+        <div class="modal fade" id="prorrateo" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content modal-lg">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="">Prorrateo de Conceptos</h4>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-xs-4">
+                    <label>
+                      Concepto
+                    </label>
+                    <input class="form-control" disabled="true">
+                  </div>
+                  <div class="col-xs-4">
+                    <label>
+                      Monto
+                    </label>
+                    <input class="form-control" disabled="true">
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-xs-4">
+                    <label>
+                      Información del Prorrateo
+                    </label>
+                  </div>
+                </div>
+
+                <div class="row">
+
+                  <div class="col-xs-4">
+                    <label>
+                      Empresas
+                    </label>
+                    <div class="checkbox" v-for="distributor in distributors">
+                      <label>
+                        <input type="checkbox" value="{{distributor.idDistributor}}">
+                          {{distributor.distributorName}}
+                      </label>
+                    </div>
+
+                  </div>
+
+                  <div class="col-xs-4">
+
+                  </div>
+
+                  <div class="col-xs-4">
+
+                  </div>
+
+                </div>
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
       </div> <!-- #contenidos -->
     </jsp:body>
 </t:template>
