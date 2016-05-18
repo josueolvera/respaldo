@@ -865,10 +865,14 @@
                   </div>
 
                   <div class="row">
-                    <div class="col-xs-12 text-right">
-                      <button class="btn btn-success" :disabled="desactivarGuardar||isSavingNow" v-if="desaparecer">Guardar Solicitud</button>
-                      <button type="button" class="btn btn-success" v-if="!desaparecer" @click="exit">Salir</button>
-                    </div>
+
+                      <div class="col-xs-2">
+                        <button class="btn btn-success" :disabled="desactivarGuardar||isSavingNow" v-if="desaparecer">Guardar Solicitud</button>
+                      </div>
+                      <div class="col-xs-4 col-xs-offset-6 text-right">
+                        <button type="button" class="btn btn-default" v-if="!desaparecer" @click="exit">Enviar</button>
+                        <button type="button" class="btn btn-default" v-if="!desaparecer" @click="exit">Salir</button>
+                      </div>
                   </div>
                 </div>
 
@@ -902,7 +906,7 @@
                         </td>
                         <td>
                           <span class="label label-success" v-if="info.idAuthorizationStatus == 2">Autorizado</span>
-                          <span class="label label-info" v-if="info.idAuthorizationStatus == 1">Pendiente</span>
+                          <span class="label label-warning" v-if="info.idAuthorizationStatus == 1">Pendiente</span>
                           <span class="label label-danger" v-if="info.idAuthorizationStatus == 3">Rechazado</span>
                         </td>
                         <td>

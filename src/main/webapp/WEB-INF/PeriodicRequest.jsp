@@ -166,7 +166,11 @@
           userRequest: '',
           flagrate: false,
           desaparecer: true,
-          attachment: ROOT_URL +"/estimations/attachment/download/"
+          attachment: ROOT_URL +"/estimations/attachment/download/",
+          authModal: {
+            authorize: false,
+            authorization: null
+          }
           },
           methods:
           {
@@ -548,6 +552,7 @@
                 success(function(data)
                 {
                   this.matchInformationUpdate(data);
+
                 }).error(function(data){
                   //showAlert("Ha habido un error al obtener la informacion");
                 });
@@ -638,7 +643,7 @@
                    });
                   cotizacion.indexOfForm = self.estimations.length;
                   self.estimations.push(cotizacion);
-
+                  this.obtainInformationAutorization();
               }).error(function(data){
                 showAlert("Ha habido un error al obtener la informacion de las cotizacion");
               });
@@ -694,6 +699,7 @@
                 this.periodicPayment.idPeriodicPaymentStatus= data.periodicPaymentStatus.idPeriodicPaymentStatus;
                 this.periodicPayment.paymentNum = data.paymentNum;
                 this.isSavingNow= false;
+                this.obtainInformationAutorization();
                 $("#periodicPayment").modal("hide");
               }).error(function(data)
               {
@@ -825,6 +831,7 @@
                 this.periodicPayment.initialDate= dateInitialWithout;
                 this.periodicPayment.dueDate= datedueDateWithout;
                 this.isSavingNow = false;
+                this.obtainInformationAutorization();
                 $("#periodicPayment").modal("hide");
               }).error(function(data)
               {
@@ -844,44 +851,43 @@
                 //showAlert("No se ha podido obtener la informacion de la autorizacion");
               });
             },
+            commitAuthorization: function (auth, authorize) {
+              if (authorize) {
+                this.$http.post(ROOT_URL+"/folios/authorizations/"+ auth.idAuthorization +"/authorize",{
+                  details: auth.details
+                }).
+                success(function(data)
+                {
+                  this.obtainInformationAutorization();
+                  $("#auth-confirmation-modal").modal("hide");
+                }).error(function() {
+                  showAlert("Ha habido un error al autorizar la solicitud, intente nuevamente");
+                });
+              } else {
+                this.$http.post(ROOT_URL+"/folios/authorizations/"+ auth.idAuthorization +"/reject", {
+                  details: auth.details
+                }).
+                success(function(data)
+                {
+                  showAlert(data);
+                  this.obtainInformationAutorization();
+                  $("#auth-confirmation-modal").modal("hide");
+                }).error(function() {
+                  showAlert("Ha habido un error al cancelar la solicitud, intente nuevamente");
+                });
+              }
+            },
             autorizarSolicitudIndividual: function(info)
             {
-              var detalle= {
-                details: ''
-              }
-              detalle.details = info.details;
-
-              this.$http.post(ROOT_URL+"/folios/authorizations/"+ info.idAuthorization +"/authorize",JSON.stringify(detalle)).
-              success(function(data)
-              {
-                showAlert(data);
-                setInterval(function()
-                {
-                  window.location.reload()
-                },2500);
-              }).error(function() {
-                showAlert("Ha habido un error al autorizar la solicitud, intente nuevamente");
-              });
-
+              this.authModal.authorization = info;
+              this.authModal.authorize = true;
+              $("#auth-confirmation-modal").modal("show");
             },
             rechazarSolicitudIndividual: function(info)
             {
-              var detalle= {
-                details: ''
-              }
-              detalle.details = info.details;
-
-              this.$http.post(ROOT_URL+"/folios/authorizations/"+ info.idAuthorization +"/reject", JSON.stringify(detalle)).
-              success(function(data)
-              {
-                showAlert(data);
-                setInterval(function()
-                {
-                  window.location.reload()
-                },2500);
-              }).error(function() {
-                showAlert("Ha habido un error al cancelar la solicitud, intente nuevamente");
-              });
+              this.authModal.authorization = info;
+              this.authModal.authorize = false;
+              $("#auth-confirmation-modal").modal("show");
             },
             validateCurrency: function(cotizacion)
             {
@@ -1058,10 +1064,9 @@
               </label>
               <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
               @change="obtainRequestInfo" :disabled="isUpdate">
-                <option></option>
-                <option v-for="user in Users" value="{{user.idUser}}">
-                  <span v-if="user.dwEmployee.employee.fullNameReverse != '' ">{{user.dwEmployee.employee.fullNameReverse}}</span>
-                  <span v-if="user.dwEmployee.employee.fullNameReverse == ''"><{{user.mail}}></span>
+              <option value="{{userInSession.idUser}}">
+                    {{ userInSession.dwEmployee.dwEnterprise.branch.branchName }}/
+                    {{ userInSession.dwEmployee.dwEnterprise.area.areaName }}
                 </option>
               </select>
             </div>
@@ -1110,17 +1115,20 @@
           </div>
 
           <br>
-          <div class="row">
-            <div class="col-xs-6 text-left">
-              <button class="btn btn-success" :disabled="desactivarGuardar||isSavingNow" v-if="desaparecer">Guardar Solicitud</button>
-              <button type="button" class="btn btn-success" v-if="!desaparecer" @click="exit">Salir</button>
+
+            <div class="row">
+              <div class="col-xs-2 text-left">
+                <button class="btn btn-success" :disabled="desactivarGuardar||isSavingNow" v-if="desaparecer">Guardar Solicitud</button>
+              </div>
+
+              <div class="col-xs-4 col-xs-offset-6 text-right">
+                <button type="button" class="btn btn-default" @click="newCotizacion"
+                  v-if="objectRequest.request.isSaved || isUpdate ">Agregar Cotización
+                </button>
+                <button type="button" class="btn btn-default" v-if="!desaparecer" @click="exit">Enviar</button>
+                <button type="button" class="btn btn-default" v-if="!desaparecer" @click="exit">Salir</button>
+              </div>
             </div>
-            <div class="col-xs-6 text-right">
-              <button type="button" class="btn btn-default" @click="newCotizacion"
-                v-if="objectRequest.request.isSaved || isUpdate ">Agregar Cotización
-              </button>
-            </div>
-          </div>
 
         </form>
         <br>
@@ -1130,11 +1138,10 @@
             <div class="panel panel-default">
               <div class="panel-heading">
                 <div class="row">
-                  <div data-toggle="collapse" href="#collapse{{cotizacion.indexOfForm}}" style="cursor: pointer"
-                    @click="setIsCollapsed(cotizacion)">
+                  <div href="#collapse{{cotizacion.indexOfForm}}">
                     <div class="col-xs-4 text-left">
                       <div class="col-xs-4">
-                        <h3 class="panel-title">Ver Cotización
+                        <h3 class="panel-title">Cotización
                         </h3>
                       </div>
                       <div class="col-xs-8">
@@ -1145,37 +1152,35 @@
                       <span class="label label-danger" v-if="cotizacion.outOfBudget == 1">Fuera de Presupuesto</span>
                     </div>
                     <div class="col-xs-2 text-right">
-                      <label  class="label label-info" v-if="cotizacion.idEstimationStatus== 2">Cotización Propuesta</label>
+                      <label  class="label label-primary" v-if="cotizacion.idEstimationStatus== 2">Cotización Propuesta</label>
                     </div>
                   </div>
                   <div>
-                    <div class="col-xs-4">
-                      <div class="col-xs-6">
-                      </div>
-                        <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation == 0">
-                          <button type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Guardar Cotización">
-                            <span class="glyphicon glyphicon-floppy-disk"></span>
-                          </button>
-                        </div>
-                        <div v-if="cotizacion.idEstimation > 0" class="col-xs-2 text-right">
-                          <button type="button" class="btn btn-sm btn-default"
-                            @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Eliminar cotización">
-                            <span class="glyphicon glyphicon-trash"></span>
-                          </button>
-                        </div>
-                        <div v-if="cotizacion.idEstimation == ''" class="col-xs-2 text-right">
-                          <button type="button" class="btn btn-sm btn-default"
-                                  @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Cancelar">
-                            <span class="glyphicon glyphicon-remove"></span>
-                          </button>
-                        </div>
-
-
-                      <div class="col-xs-2 text-right" v-if="cotizacion.idEstimation > 0 && cotizacion.isCollapsed == true">
-                      <button type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Modificar Cotización">
+                    <div class="col-xs-4 text-right">
+                      <button type="submit" class="btn btn-sm btn-default" v-if="cotizacion.idEstimation == 0"
+                              :disabled="isSavingNow" data-toggle="tooltip" data-placement="bottom" title="Guardar Cotización">
+                        <span class="glyphicon glyphicon-floppy-disk"></span>
+                      </button>
+                      <button v-if="cotizacion.idEstimation > 0" type="button" class="btn btn-sm btn-default"
+                              @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip"
+                              data-placement="bottom" title="Eliminar cotización">
+                        <span class="glyphicon glyphicon-trash"></span>
+                      </button>
+                      <button v-if="cotizacion.idEstimation == ''" type="button" class="btn btn-sm btn-default"
+                              @click="deleteCotizacion(cotizacion)" :disabled="isSavingNow" data-toggle="tooltip"
+                              data-placement="bottom" title="Cancelar">
+                        <span class="glyphicon glyphicon-remove"></span>
+                      </button>
+                      <button v-if="cotizacion.idEstimationStatus > 0 && cotizacion.idEstimationStatus < 2 && cotizacion.isCollapsed == true"
+                              type="submit" class="btn btn-sm btn-default" :disabled="isSavingNow" data-toggle="tooltip"
+                              data-placement="bottom" title="Modificar Cotización">
                         <span class="glyphicon glyphicon-pencil"></span>
                       </button>
-                      </div>
+                      <button href="#collapse{{cotizacion.indexOfForm}}" @click="setIsCollapsed(cotizacion)"
+                              data-toggle="collapse" class="btn btn-sm btn-default" type="button">
+                        <span :class="{ 'glyphicon-menu-down': cotizacion.isCollapsed, 'glyphicon-menu-up': ! cotizacion.isCollapsed }"
+                              class="glyphicon" ></span>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -1327,7 +1332,7 @@
                     </td>
                     <td>
                       <span class="label label-success" v-if="info.idAuthorizationStatus == 2">Autorizado</span>
-                      <span class="label label-info" v-if="info.idAuthorizationStatus == 1">Pendiente</span>
+                      <span class="label label-warning" v-if="info.idAuthorizationStatus == 1">Pendiente</span>
                       <span class="label label-danger" v-if="info.idAuthorizationStatus == 3">Rechazado</span>
                     </td>
                     <td>
@@ -1456,6 +1461,23 @@
                           </button>
                         </div>
                       </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="auth-confirmation-modal" class="modal fade">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title">¿Confirma que desea autorizar la solicitud?</h4>
+                </div>
+                <div class="modal-body">
+                  <p></p>
+                </div>
+                <div class="modal-footer">
+                  <button @click="commitAuthorization(authModal.authorization, authModal.authorize)" class="btn btn-default">Aceptar</button>
+                  <button class="btn btn-default" data-dismiss="modal">Cancelar</button>
                 </div>
               </div>
             </div>
