@@ -45,4 +45,9 @@ public class BudgetConceptDistributorServiceImpl implements BudgetConceptDistrib
     public List<BudgetConceptDistributor> findAll() {
         return budgetConceptDistributorDao.findAll();
     }
+
+    @Override
+    public List<BudgetConceptDistributor> findByConcept(CBudgetConcepts concept) {
+        return budgetConceptDistributorDao.findByConcept(concept);
+    }
 }
