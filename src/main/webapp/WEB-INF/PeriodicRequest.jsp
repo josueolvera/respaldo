@@ -1115,7 +1115,6 @@
           </div>
 
           <br>
-
             <div class="row">
               <div class="col-md-2 col-md-offset-10 text-right" v-if="desaparecer">
                 <button class="btn btn-success" :disabled="desactivarGuardar||isSavingNow">Guardar</button>

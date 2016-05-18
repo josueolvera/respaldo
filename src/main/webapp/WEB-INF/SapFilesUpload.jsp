@@ -13,6 +13,7 @@
             var vm= new Vue({
                 el: '#filesUpload',
                 ready: function () {
+                    this.typeFile = '';
                     this.getTypesFile();
                 },
                 data: {
@@ -83,6 +84,8 @@
                         this.$http.post(ROOT_URL + '/sap-file/' + this.typeFile.idSapFile,this.getFileFormData()
                         ).success(function (data) {
                                     this.getTypesFile();
+                                    this.typeFile = '';
+                                    showAlert("Registros guardados con exito");
                                 })
                                 .error(function (data) {
 
@@ -98,9 +101,9 @@
                         })
                     },
                     saveSapSales: function () {
+                        $('#checkExistigSaleModal').modal('hide');
                         this.$http.post(ROOT_URL + '/sap-sale/excel', this.getFileFormData())
                                 .success(function (data) {
-                                    $('#checkExistigSaleModal').modal('hide');
                                     this.updateTypeFile();
                                 })
                                 .error(function (data) {
@@ -109,9 +112,9 @@
 
                     },
                     updateSapSales: function () {
+                        $('#checkExistigSaleModal').modal('hide');
                         this.$http.post(ROOT_URL + '/sap-sale/update-excel', this.getFileFormData())
                                 .success(function (data) {
-                                    $('#checkExistigSaleModal').modal('hide');
                                     this.updateTypeFile();
                                 })
                                 .error(function (data) {
@@ -150,6 +153,8 @@
                         this.$http.post(ROOT_URL + '/outsourcing/excel', this.getFileFormData())
                                 .success(function (data) {
                                     this.updateTypeFile();
+                                    this.calculateDate = '';
+                                    $('#checkExistigOutsourcingModal').modal('hide');
                                 }).error(function (data) {
                             this.errorData = data;
                             $('#errorModal').modal('show');
@@ -159,6 +164,7 @@
                         this.$http.post(ROOT_URL + '/outsourcing/update-excel', this.getFileFormData())
                                 .success(function (data) {
                                     this.updateTypeFile();
+                                    $('#checkExistigOutsourcingModal').modal('hide');
                                 }).error(function (data) {
                             this.errorData = data;
                             $('#errorModal').modal('show');
@@ -183,7 +189,7 @@
         <div id="filesUpload">
             <h1>Carga de archivos SAP</h1>
             <br>
-            <div class="col-md-offset-2 col-md-8">
+            <div class="col-md-offset-1 col-md-10">
 
                 <form class="form-horizontal">
                     <div class="form-group">
@@ -199,7 +205,7 @@
                     </div>
                 </form>
 
-                <div class="panel panel-default" v-if="typeFile.sapFileName != ''">
+                <div class="panel panel-default" v-if="typeFile != ''">
                     <!-- Default panel contents -->
                     <div class="panel-heading">{{typeFile.sapFileName}}</div>
                     <div class="panel-body">
@@ -233,7 +239,7 @@
                     </div>
 
                 </div>
-                <div class="panel panel-default" v-if="typeFile != ''">
+                <div class="panel panel-default">
                     <!-- Default panel contents -->
                     <div class="panel-heading">Archivos</div>
                     <div class="panel-body">
@@ -266,7 +272,7 @@
                                     <td>
                                         {{typeFile.lastUploadedDateFormats.dateTextLong}} - {{typeFile.lastUploadedDateFormats.time12}}
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <button class="btn btn-default">
                                             <span class="glyphicon glyphicon-download-alt">
 
@@ -300,10 +306,10 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-body">
-                            Ya existen registros para esta fecha. ¿Desea sobreescribirlos?
+                            Ya existen registros para esta fecha. ¿Desea sobreescribir los registros?
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" @click="updateSapSales">Sobreescribir</button>
+                            <button type="button" class="btn btn-primary" @click="updateOutsourcing">Aceptar</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
                     </div>
