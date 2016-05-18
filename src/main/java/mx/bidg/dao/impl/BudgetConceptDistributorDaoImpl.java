@@ -45,4 +45,12 @@ public class BudgetConceptDistributorDaoImpl extends AbstractDao<Integer, Budget
         remove(entity);
         return true;
     }
+
+    @Override
+    public List<BudgetConceptDistributor> findByConcept(CBudgetConcepts concept) {
+        return (List<BudgetConceptDistributor>) createEntityCriteria()
+                .createCriteria("budgetMonthConcept")
+                    .add(Restrictions.eq("idBudgetConcept", concept.getIdBudgetConcept()))
+                .list();
+    }
 }

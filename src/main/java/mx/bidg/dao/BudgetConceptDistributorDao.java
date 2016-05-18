@@ -10,4 +10,5 @@ import java.util.List;
  * Created on 17/05/16.
  */
 public interface BudgetConceptDistributorDao extends InterfaceDao<BudgetConceptDistributor> {
+    List<BudgetConceptDistributor> findByConcept(CBudgetConcepts concept);
 }

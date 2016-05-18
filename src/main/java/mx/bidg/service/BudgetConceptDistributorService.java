@@ -16,4 +16,5 @@ public interface BudgetConceptDistributorService {
     BudgetConceptDistributor update(BudgetConceptDistributor entity);
     Boolean delete(BudgetConceptDistributor entity);
     List<BudgetConceptDistributor> findAll();
+    List<BudgetConceptDistributor> findByConcept(CBudgetConcepts concept);
 }
