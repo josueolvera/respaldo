@@ -120,7 +120,9 @@
             },
             showInfo: false,
             sucursal: {},
-            distributors: {}
+            distributors: {},
+            conceptoProrrateo: '',
+            distributorChecked: []
           },
           methods:
           {
@@ -542,6 +544,8 @@
         },
         showModalProrrateo: function(concepto)
         {
+          this.conceptoProrrateo = concepto;
+          console.log(concepto);
           this.getDistributors();
           $("#prorrateo").modal("show");
 
@@ -844,13 +848,13 @@
                     <label>
                       Concepto
                     </label>
-                    <input class="form-control" disabled="true">
+                    <input class="form-control" disabled="true" v-model="conceptoProrrateo.conceptName">
                   </div>
                   <div class="col-xs-4">
                     <label>
-                      Monto
+                      Monto Anual
                     </label>
-                    <input class="form-control" disabled="true">
+                    <input class="form-control" disabled="true" v-model="conceptoProrrateo.total">
                   </div>
                 </div>
 
@@ -863,28 +867,37 @@
                 </div>
 
                 <div class="row">
-
-                  <div class="col-xs-4">
+                  <div class="col-xs-3">
                     <label>
-                      Empresas
+                      Selecciona las empresas
                     </label>
                     <div class="checkbox" v-for="distributor in distributors">
                       <label>
-                        <input type="checkbox" value="{{distributor.idDistributor}}">
+                        <input type="checkbox" value="{{distributor}}" v-model="distributorChecked">
                           {{distributor.distributorName}}
                       </label>
                     </div>
+                  </div>
 
+                  <div class="col-xs-5">
+                    <label>
+                      ¿Como te gustaría prorratear el producto?
+                    </label>
+                    <br>
+                      <label class="radio-inline"><input type="radio" name="optradio">Anual</label>
+                      <label class="radio-inline"><input type="radio" name="optradio">Mensual</label>
                   </div>
 
                   <div class="col-xs-4">
+                    <label>
+                      Ingresa los montos o porcentajes a cada empresa
+                    </label>
 
                   </div>
+                </div>
 
-                  <div class="col-xs-4">
-
-                  </div>
-
+                <div class="row">
+                  {{$data.distributorChecked | json}}
                 </div>
 
               </div>
