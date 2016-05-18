@@ -24,13 +24,25 @@
                         fileName: '',
                         lastUploadedDate: '',
                         lastUploadedDateFormats: ''
-                    }
+                    },
+                    calculateDate:'',
+                    datetimepickerCalculateDate:''
                 },
                 methods: {
+                    setUpTimePickerCalculateDate:function () {
+                        this.datetimepickerCalculateDate = $('#datetimepickerCalculateDate').datetimepicker({
+                            locale: 'es',
+                            format: 'DD-MM-YYYY',
+                            useCurrent: false,
+                            minDate: moment().add(1, 'minutes')
+                        }).data();
+                    },
                     validateForm:function () {
                     },
                     clearFileForm:function () {
                         document.getElementById("inputFile").value = null;
+                        this.errorData = '';
+                        this.calculateDate = '';
                     },
                     saveFile: function () {
                         if (this.typeFile.idSapFile == 1) {
@@ -58,10 +70,7 @@
                             this.checkExistingSale();
                         }
                         if (this.typeFile.idSapFile == 9) {
-
-                        }
-                        if (this.typeFile.idSapFile == 10) {
-
+                            this.checkExistingOutsourcing();
                         }
                     },
                     getFileFormData:function () {
@@ -95,6 +104,7 @@
                                     this.updateTypeFile();
                                 })
                                 .error(function (data) {
+
                                 });
 
                     },
@@ -120,8 +130,39 @@
                                 .error(function (data) {
                                     this.errorData = data;
                                     $('#errorModal').modal('show');
-                                    console.log(this.errorData.error.message);
                                 });
+                    },
+                    checkExistingOutsourcing:function () {
+                        this.$http.post(ROOT_URL + '/outsourcing/check-existing-outsourcing', this.getFileFormData())
+                                .success(function (data) {
+                                    if (data == true) {
+                                        $('#checkExistigOutsourcingModal').modal('show');
+                                    } else {
+                                        this.saveOutsourcing();
+                                    }
+                                })
+                                .error(function (data) {
+                                    this.errorData = data;
+                                    $('#errorModal').modal('show');
+                                });
+                    },
+                    saveOutsourcing:function () {
+                        this.$http.post(ROOT_URL + '/outsourcing/excel', this.getFileFormData())
+                                .success(function (data) {
+                                    this.updateTypeFile();
+                                }).error(function (data) {
+                            this.errorData = data;
+                            $('#errorModal').modal('show');
+                        });
+                    },
+                    updateOutsourcing:function () {
+                        this.$http.post(ROOT_URL + '/outsourcing/update-excel', this.getFileFormData())
+                                .success(function (data) {
+                                    this.updateTypeFile();
+                                }).error(function (data) {
+                            this.errorData = data;
+                            $('#errorModal').modal('show');
+                        });
                     },
                     updateDwBranchs:function () {
                         this.$http.post(ROOT_URL + '/dw-branchs/update-excel', this.getFileFormData())
@@ -129,6 +170,8 @@
                                     this.updateTypeFile();
                                 })
                                 .error(function (data) {
+                                    this.errorData = data;
+                                    $('#errorModal').modal('show');
                                 });
                     }
                 }
@@ -160,18 +203,32 @@
                     <!-- Default panel contents -->
                     <div class="panel-heading">{{typeFile.sapFileName}}</div>
                     <div class="panel-body">
-                        <div>
-                            <form id="fileForm" enctype="multipart/form-data" v-on:submit.prevent="saveFile">
-                                <div class="form-group">
-                                    <input id="inputFile" type="file" name="file"
-                                           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
-                           application/vnd.ms-excel">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <form id="fileForm" enctype="multipart/form-data" v-on:submit.prevent="saveFile">
+                                    <div class="form-group">
+                                        <input id="inputFile" type="file" name="file"
+                                               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
+                                                    application/vnd.ms-excel">
+                                    </div>
+                                    <div class="form-group" v-if="typeFile.idSapFile == 9">
+                                        <label>
+                                            Fecha de calcuo
+                                        </label>
+                                        <div class="input-group date" id="datetimepickerCalculateDate"
+                                             @click="setUpTimePickerCalculateDate()">
+                                            <input type='text' name="calculateDate" class="form-control" v-model="calculateDate">
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                        </div>
+                                    </div>
                                     <br>
                                     <button class="btn btn-success" type="submit">
                                         Subir archivo
                                     </button>
-                                </div>
-                            </form>
+                                </form>
+                            </div>
                         </div>
                     </div>
 
@@ -193,6 +250,9 @@
                                             <th>
                                                 Fecha ultima vez subido
                                             </th>
+                                            <th>
+                                                Layout
+                                            </th>
                                         </tr>
                                     </thead>
                                 <tbody>
@@ -204,7 +264,14 @@
                                         {{typeFile.fileName}}
                                     </td>
                                     <td>
-                                        {{typeFile.lastUploadedDateFormats.dateNumber}}
+                                        {{typeFile.lastUploadedDateFormats.dateTextLong}} - {{typeFile.lastUploadedDateFormats.time12}}
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-default">
+                                            <span class="glyphicon glyphicon-download-alt">
+
+                                            </span>
+                                        </button>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -218,10 +285,24 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-body">
-                            Algunas de estas ventas ya existen, ¿desea sobreescribir los registros o guardarlos como nuevos?.
+                            Algunas de estas ventas ya existen. ¿Desea sobreescribir los registros o guardarlos como nuevos?.
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-success" @click="saveSapSales">Guardar</button>
+                            <button type="button" class="btn btn-primary" @click="updateSapSales">Sobreescribir</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="checkExistigOutsourcingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            Ya existen registros para esta fecha. ¿Desea sobreescribirlos?
+                        </div>
+                        <div class="modal-footer">
                             <button type="button" class="btn btn-primary" @click="updateSapSales">Sobreescribir</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>

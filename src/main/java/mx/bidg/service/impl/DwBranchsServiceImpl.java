@@ -1,6 +1,7 @@
 package mx.bidg.service.impl;
 
 import mx.bidg.dao.DwBranchsDao;
+import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.DwBranchs;
 import mx.bidg.service.DwBranchsService;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -40,6 +41,19 @@ public class DwBranchsServiceImpl implements DwBranchsService {
         Workbook workbook = WorkbookFactory.create(file.getInputStream());
         Sheet sheet = workbook.getSheetAt(0);
 
+        Row headerRow = sheet.getRow(0);
+        String[] headersToSkip = {
+                "ID SUCURSAL SISCOM", "INDICE REPROCESO","PRODUCTIVIDAD",
+                "PROMOTORES CON VENTA","PROMOTORES CON VENTA REAL"
+        };
+
+        for (int i = 0 ; i < 5 ;i++) {
+            if (!headerRow.getCell(i).getStringCellValue().equals(headersToSkip[i])) {
+                throw new ValidationException("Tipo de formato no compatible.",
+                        "Los datos de este archivo no son los correctos o no cumplen con los datos de venta.");
+            }
+        }
+
         for (int i=1;i<=sheet.getLastRowNum();i++) {
             Row currentRow = sheet.getRow(i);
             Cell idBranch = currentRow.getCell(0);
@@ -68,7 +82,7 @@ public class DwBranchsServiceImpl implements DwBranchsService {
 
                 dwBranchs.setUploadedDate(LocalDateTime.now());
 
-                dwBranchsDao.save(dwBranchs);
+                dwBranchsDao.update(dwBranchs);
             }
         }
 
