@@ -866,12 +866,12 @@
 
                   <div class="row">
 
-                      <div class="col-xs-2">
-                        <button class="btn btn-success" :disabled="desactivarGuardar||isSavingNow" v-if="desaparecer">Guardar Solicitud</button>
+                      <div class="col-md-2 col-md-offset-10 text-right" v-if="desaparecer">
+                        <button class="btn btn-success" :disabled="desactivarGuardar||isSavingNow" >Guardar</button>
                       </div>
-                      <div class="col-xs-4 col-xs-offset-6 text-right">
-                        <button type="button" class="btn btn-default" v-if="!desaparecer" @click="exit">Enviar</button>
-                        <button type="button" class="btn btn-default" v-if="!desaparecer" @click="exit">Salir</button>
+                      <div class="col-md-2 col-md-offset-10 text-right"  v-if="!desaparecer" >
+                        <button type="button" class="btn btn-default" @click="exit">Enviar</button>
+                        <button type="button" class="btn btn-default" @click="exit">Salir</button>
                       </div>
                   </div>
                 </div>
