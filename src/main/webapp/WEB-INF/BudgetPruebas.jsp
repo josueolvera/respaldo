@@ -122,7 +122,8 @@
             sucursal: {},
             distributors: {},
             conceptoProrrateo: '',
-            distributorChecked: []
+            distributorChecked: [],
+            prorrateoOpcion: ''
           },
           methods:
           {
@@ -688,7 +689,6 @@
                         </div>
                         <div class="col-xs-6 text-right">
                           <h3>{{sucss.idArea | areaName}}</h3>
-
                           <div class="col-xs-6 col-xs-offset-6">
                             <div class="input-group">
                               <span class="input-group-addon">$</span>
@@ -884,8 +884,22 @@
                       ¿Como te gustaría prorratear el producto?
                     </label>
                     <br>
-                      <label class="radio-inline"><input type="radio" name="optradio">Anual</label>
-                      <label class="radio-inline"><input type="radio" name="optradio">Mensual</label>
+                      <label class="radio-inline"><input type="radio" name="optradio" value="1" v-model="prorrateoOpcion">Anual</label>
+                      <label class="radio-inline"><input type="radio" name="optradio" value="2" v-model="prorrateoOpcion">Mensual</label>
+                      <br>
+                      <div class="row">
+                        <div class="col-xs-12" v-if="prorrateoOpcion== 1">
+                          <label>
+                            Monto total a prorratear
+                          </label>
+                          <div class="input-group">
+                            <span class="input-group-addon">$</span>
+                            <input type="text" class="form-control" disabled="true" v-model="conceptoProrrateo.total">
+                          </div>
+                        </div>
+
+                      </div>
+
                   </div>
 
                   <div class="col-xs-4">
