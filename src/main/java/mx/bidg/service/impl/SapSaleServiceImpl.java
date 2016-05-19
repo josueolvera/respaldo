@@ -336,13 +336,13 @@ public class SapSaleServiceImpl implements SapSaleService {
                 sapSale.setIdSale(idSale.getStringCellValue());
             }
 
-                List<SapSale> sapSales = sapSaleDao.findAllByIdSale(sapSale.getIdSale());
+            List<SapSale> sapSales = sapSaleDao.findAllByIdSale(sapSale.getIdSale());
 
-                for (SapSale sapSaleFromDB: sapSales) {
-                    if (sapSaleFromDB != null) {
-                        existsSale = true;
-                    }
+            for (SapSale sapSaleFromDB: sapSales) {
+                if (sapSaleFromDB != null) {
+                    existsSale = true;
                 }
+            }
         }
         return existsSale;
     }

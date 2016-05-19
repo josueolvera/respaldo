@@ -31,7 +31,8 @@ public class DwBranchsDaoImpl extends AbstractDao<Integer, DwBranchs> implements
 
     @Override
     public DwBranchs update(DwBranchs entity) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        modify(entity);
+        return entity;
     }
 
     @Override
