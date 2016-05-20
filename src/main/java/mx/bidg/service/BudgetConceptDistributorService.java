@@ -1,9 +1,11 @@
 package mx.bidg.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import mx.bidg.model.BudgetConceptDistributor;
 import mx.bidg.model.BudgetMonthConcepts;
 import mx.bidg.model.CBudgetConcepts;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,5 +18,6 @@ public interface BudgetConceptDistributorService {
     BudgetConceptDistributor update(BudgetConceptDistributor entity);
     Boolean delete(BudgetConceptDistributor entity);
     List<BudgetConceptDistributor> findAll();
-    List<BudgetConceptDistributor> findByConcept(CBudgetConcepts concept);
+    ArrayList<ArrayList<BudgetConceptDistributor>> findByConcept(CBudgetConcepts concept);
+    List<BudgetConceptDistributor> saveJsonNode(JsonNode node);
 }

@@ -1,5 +1,6 @@
 package mx.bidg.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
@@ -12,10 +13,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,7 +36,17 @@ public class BudgetConceptDistributorController {
 
     @RequestMapping(value = "/concept/{idConcept}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findByConcept(@PathVariable int idConcept) throws IOException {
-        List<BudgetConceptDistributor> list = budgetConceptDistributorService.findByConcept(new CBudgetConcepts(idConcept));
+        ArrayList<ArrayList<BudgetConceptDistributor>> list = budgetConceptDistributorService.findByConcept(new CBudgetConcepts(idConcept));
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(list),
+                HttpStatus.OK
+        );
+    }
+
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> save(@RequestBody String data) throws IOException {
+        JsonNode node = mapper.readTree(data);
+        List<BudgetConceptDistributor> list = budgetConceptDistributorService.saveJsonNode(node);
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(list),
                 HttpStatus.OK
