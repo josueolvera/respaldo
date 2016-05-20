@@ -19,7 +19,7 @@
         </script>
 
         <script type="text/javascript">
-    var vm= new Vue({
+          var vm= new Vue({
           el: '#contenidos',
           created: function(){
             this.$http.get(ROOT_URL + "/areas")
@@ -879,7 +879,7 @@
                     </div>
                   </div>
 
-                  <div class="col-xs-5">
+                  <div class="col-xs-4">
                     <label>
                       ¿Como te gustaría prorratear el producto?
                     </label>
@@ -904,8 +904,22 @@
 
                   <div class="col-xs-4">
                     <label>
-                      Ingresa los montos o porcentajes a cada empresa
+                      Ingresa los porcentajes de pago a cada empresa
                     </label>
+
+                    <div class="row" v-for="distributor in distributorChecked">
+                      <div class="col-xs-7">
+                        <label>
+                          {{distributor.distributorName}}
+                        </label>
+                      </div>
+                      <div class="col-xs-5">
+                        <div class="input-group">
+                          <span class="input-group-addon">%</span>
+                          <input type="text" class="form-control">
+                        </div>
+                      </div>
+                    </div>
 
                   </div>
                 </div>
