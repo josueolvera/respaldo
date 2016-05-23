@@ -19,6 +19,41 @@
         </script>
 
         <script type="text/javascript">
+
+            Vue.directive('radio', {
+              twoWay: true,
+              bind: function() {
+                var self = this;
+                var btns = $(self.el).find('.btn');
+                btns.each(function() {
+                  $(this).on('click', function() {
+                    var v = $(this).find('input').get(0).value
+                    self.set(v);
+                  })
+                });
+              },
+              update: function() {
+                var value = this._watcher.value;
+                if (value) {
+                  this.set(value);
+                  var btns = $(this.el).find('.btn')
+                  btns.each(function() {
+                    $(this).removeClass('active');
+                    var v = $(this).find('input').get(0).value;
+
+                    if (v === value) {
+                      $(this).addClass('active');
+                    }
+                  });
+                } else {
+                  var input = $(this.el).find('.active input').get(0);
+                  if (input) {
+                    this.set(input.value);
+                  }
+                }
+              }
+            });
+
           var vm= new Vue({
           el: '#contenidos',
           created: function(){
@@ -123,7 +158,9 @@
             distributors: {},
             conceptoProrrateo: '',
             distributorChecked: [],
-            prorrateoOpcion: ''
+            prorrateoOpcion: '',
+            monthChecked: [],
+            idAreaforModal: 0
           },
           methods:
           {
@@ -543,10 +580,11 @@
                     this.distributors = data;
                   });
         },
-        showModalProrrateo: function(concepto)
+        showModalProrrateo: function(concepto, idArea)
         {
           this.conceptoProrrateo = concepto;
-          console.log(concepto);
+          console.log(idArea);
+          this.idAreaforModal= idArea;
           this.getDistributors();
           $("#prorrateo").modal("show");
 
@@ -611,6 +649,12 @@
                   name = elemento.branchShort;
                 }
             });
+            return name;
+          },
+          shortName: function(nombre)
+          {
+            var name;
+            name = nombre.substring(0, 3);
             return name;
           }
         }
@@ -762,7 +806,7 @@
 
                               </div>
                               <div class="col-xs-3" style="padding-left: 0px; padding-right: 1px">
-                                <button type="button" class="btn btn-default" @click="showModalProrrateo(concepto)">
+                                <button type="button" class="btn btn-default" @click="showModalProrrateo(concepto, sucss.idArea)">
                                   <span class="glyphicon glyphicon-align-left"></span>
                                 </button>
                               </div>
@@ -848,7 +892,7 @@
                     <label>
                       Área
                     </label>
-                    <input class="form-control" disabled="true" v-model="conceptoProrrateo.conceptName">
+                    <input class="form-control" disabled="true" value="{{idAreaforModal | areaName}}">
                   </div>
                   <div class="col-xs-4">
                     <label>
@@ -869,10 +913,10 @@
                     <label>
                       Empresas
                     </label>
-                    <div class="checkbox" v-for="distributor in distributors">
+                    <div class="checkbox" v-for="distributor in distributors" v-if="distributor.budgetShare">
                       <label>
-                        <input type="checkbox" value="{{distributor}}" v-model="distributorChecked">
-                          {{distributor.distributorName}}
+                        <input type="checkbox" value="{{distributor}}" v-model="distributorChecked" >
+                        <span v-if="distributor.budgetShare">{{distributor.distributorName}}</span>
                       </label>
                     </div>
                   </div>
@@ -883,10 +927,10 @@
                     </label>
 
                     <div class="row">
-                      <div class="col-xs-3" v-for="n in 12">
-                        <div class="btn-group" data-toggle="buttons" style="margin-bottom: 5px">
+                      <div class="col-xs-3" v-for="meses in conceptoProrrateo.conceptMonth">
+                        <div class="btn-group" style="margin-bottom: 5px">
                             <label class="btn btn-default" style="width: 60px">
-                              <input type="checkbox" autocomplete="off">Mes{{n}}
+                              <input type="checkbox" value="{{meses}}" v-model="monthChecked">{{meses.name | shortName}}
                             </label>
                         </div>
                       </div>
@@ -926,13 +970,13 @@
                 </div>
 
                 <div class="row">
-                  {{$data.distributorChecked | json}}
+                  {{$data.monthChecked | json}}
                 </div>
 
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary"></button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success">Guardar</button>
               </div>
             </div>
           </div>
