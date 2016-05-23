@@ -17,88 +17,16 @@
             var vm = new Vue({
                 el: '#content',
                 ready: function () {
-//                    this.getTickets();
-//                    this.getIncidences();
-//                    this.getPriorities();
-//                    this.getUserInSession();
-//                    this.getTicketStatus();
+                    this.getTicketByFolio();
                 },
                 data: {
                     ticket:{},
-                    incidences:[],
-                    priorities:[],
-                    ticketStatusList:[],
-                    userInSession:'',
-                    incidence:'',
-                    priority:'',
-                    ticketStatus:'',
-                    correo:''
+                    folio: "${folio}"
                 },
                 methods: {
-                    getTickets:function () {
-                        this.$http.get(ROOT_URL + '/ticket').success(function (data) {
-                            this.tickets = data;
-                        }).error(function (data) {
-
-                        });
-                    },
-                    changeTicketStatus:function (ticket) {
-
-                        this.$http.post(
-                                ROOT_URL + '/ticket/change-ticket-status/' + ticket.idTicket,
-                                ticket.ticketStatus
-                        ).success(function (data) {
-                            this.getTicketsByTicketStatusPriority();
-                        }).error(function (data) {
-
-                        });
-                    },
-                    getTicketsByTicketStatusPriority:function () {
-
-                        if (this.priority != '' && this.ticketStatus != '') {
-                            this.$http.get(ROOT_URL + '/ticket/' + this.ticketStatus.idTicketStatus + '/' + this.priority.idPriority).success(function (data) {
-                                this.tickets = data;
-                            }).error(function (data) {
-
-                            });
-                        } else {
-                            if (this.priority != '') {
-                                this.$http.get(ROOT_URL + '/ticket/priority/' + this.priority.idPriority).success(function (data) {
-                                    this.tickets = data;
-                                }).error(function (data) {
-
-                                });
-                            } else {
-                                this.getTickets();
-                            }
-                            if (this.ticketStatus != '') {
-                                this.$http.get(ROOT_URL + '/ticket/ticket-status/' + this.ticketStatus.idTicketStatus).success(function (data) {
-                                    this.tickets = data;
-                                }).error(function (data) {
-
-                                });
-                            } else {
-                                this.getTickets();
-                            }
-                        }
-                    },
-                    getIncidences:function () {
-                        this.$http.get(ROOT_URL + '/incidence').success(function (data) {
-                            this.incidences = data;
-                        }).error(function (data) {
-
-                        });
-                    },
-                    getPriorities:function () {
-                        this.$http.get(ROOT_URL + '/priority').success(function (data) {
-                            this.priorities = data;
-                        }).error(function (data) {
-
-                        });
-                    },
-                    getTicketStatus:function () {
-                        this.$http.get(ROOT_URL + '/ticket-status').success(function (data) {
-                            this.ticketStatusList = data;
+                    getTicketByFolio:function () {
+                        this.$http.post(ROOT_URL + '/ticket/folio', this.folio).success(function (data) {
+                            this.ticket = data;
                         }).error(function (data) {
 
                         });
@@ -114,16 +42,7 @@
                             showAlert("Ha habido un error al obtener al usuario en sesion");
                         });
 
-                    },
-                    toggle: function (ticket) {
-                        if (ticket.show) {
-                            ticket.show = false;
-                            $("#ticket-" + ticket.idTicket).collapse('hide');
-                            return;
-                        }
-                        Vue.set(ticket, "show", true );
-                        $("#ticket-" + ticket.idTicket).collapse('show');
-                    },
+                    }
                 }
             });
         </script>
@@ -133,7 +52,6 @@
         <style>
             .ticket-list {
                 height: 500px;
-                overflow-y: scroll;
                 overflow-x: hidden;
             }
             .btn-toggle-ticket:hover {
@@ -165,33 +83,27 @@
             <h1 class="text-center">Ticket</h1>
             <br>
             <div class="col-xs-offset-1 col-xs-10">
-                <div class="panel-group ticket-list">
+                <div class="panel-group ticket-list" v-if="ticket">
                     <div class="ticket panel panel-default">
                         <div class="panel-heading">
                             <div class="row table-header">
                                 <div class="col-xs-2"><strong>Folio</strong></div>
                                 <div class="col-xs-2"><strong>Correo</strong></div>
                                 <div class="col-xs-6"><strong>Descripción</strong></div>
-                                <div class="col-xs-2"><strong>Estado</strong></div>
+                                <div class="col-xs-2"><strong>Status</strong></div>
                             </div>
                             <div class="row table-row">
                                 <div class="col-xs-2"><p>{{ ticket.folio }}</p></div>
                                 <div class="col-xs-2"><p>{{ ticket.correo }}</p></div>
                                 <div class="col-xs-6"><p>{{ ticket.descripcionProblema }}</p></div>
-                                <div class="col-xs-2">
-                                    <select v-model="ticket.ticketStatus" class="form-control" @change="changeTicketStatus(ticket)">
-                                        <option v-for="ticketStatus in ticketStatusList" value="{{ticketStatus}}">
-                                            {{ticketStatus.ticketStatusName}}
-                                        </option>
-                                    </select>
-                                </div>
+                                <div class="col-xs-2"><p>{{ ticket.ticketStatus.ticketStatusName }}</p></div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="panel">
                                 <div class="panel-body">
                                     <div class="col-xs-12 details-header">
-                                        <div class="col-xs-4"><strong>Tipo de Incidencia</strong></div>
+                                        <div class="col-xs-4"><strong>Tipo de solicitud</strong></div>
                                         <div class="col-xs-2"><strong>Prioridad</strong></div>
                                         <div class="col-xs-3"><strong>Fecha de inicio</strong></div>
                                         <div class="col-xs-3"><strong>Fecha de fin</strong></div>

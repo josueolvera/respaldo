@@ -89,6 +89,11 @@
                     saveTicket:function () {
                         if (this.formValidation()) {
                             this.$http.post(ROOT_URL + '/ticket',this.ticket).success(function (data) {
+
+                                this.ticket.incidence = '';
+                                this.ticket.priority = '';
+                                this.ticket.descripcionProblema = '';
+
                                 showAlert("Registro guardado con exito");
                             }).error(function (data) {
 
@@ -106,7 +111,6 @@
         <style>
             .ticket-list {
                 height: 500px;
-                /*overflow-y: scroll;*/
                 overflow-x: hidden;
             }
             .btn-toggle-ticket:hover {
@@ -200,7 +204,7 @@
                                 <div class="col-xs-2"><strong>Folio</strong></div>
                                 <div class="col-xs-2"><strong>Correo</strong></div>
                                 <div class="col-xs-6"><strong>Descripción</strong></div>
-                                <div class="col-xs-2"><strong>Estado</strong></div>
+                                <div class="col-xs-2"><strong>Status</strong></div>
                             </div>
                             <div class="row table-row">
                                 <div class="col-xs-2"><p>{{ ticketFound.folio }}</p></div>
@@ -213,7 +217,7 @@
                             <div class="panel">
                                 <div class="panel-body">
                                     <div class="col-xs-12 details-header">
-                                        <div class="col-xs-4"><strong>Tipo de Incidencia</strong></div>
+                                        <div class="col-xs-4"><strong>Tipo de solicitud</strong></div>
                                         <div class="col-xs-2"><strong>Prioridad</strong></div>
                                         <div class="col-xs-3"><strong>Fecha de inicio</strong></div>
                                         <div class="col-xs-3"><strong>Fecha de fin</strong></div>
