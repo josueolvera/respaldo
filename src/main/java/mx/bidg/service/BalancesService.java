@@ -9,4 +9,8 @@ import java.util.List;
  */
 public interface BalancesService {
     List<Balances> findAll();
+    Balances findById(Integer id);
+    Balances save(Balances balance);
+    Balances update(Balances balance);
+    boolean delete(Balances balance);
 }
