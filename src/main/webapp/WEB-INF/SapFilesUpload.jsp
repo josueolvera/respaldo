@@ -296,7 +296,7 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-success" @click="saveSapSales">Guardar</button>
                             <button type="button" class="btn btn-primary" @click="updateSapSales">Sobreescribir</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         </div>
                     </div>
                 </div>
@@ -310,7 +310,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-primary" @click="updateOutsourcing">Aceptar</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         </div>
                     </div>
                 </div>
