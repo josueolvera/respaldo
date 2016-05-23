@@ -4,6 +4,7 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CStatesDao;
 import mx.bidg.model.CStates;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -27,7 +28,10 @@ public class CStatesDaoImpl extends AbstractDao<Integer,CStates> implements CSta
 
     @Override
     public List<CStates> findAll() {
-        return (List<CStates>) createEntityCriteria().list();
+        Criteria criteria = createEntityCriteria();
+        return (List<CStates>) criteria
+                .addOrder(Order.asc("stateName"))
+                .list();
     }
 
     @Override

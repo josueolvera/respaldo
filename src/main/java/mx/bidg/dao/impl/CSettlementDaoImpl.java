@@ -4,6 +4,7 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CSettlementDao;
 import mx.bidg.model.CSettlement;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -30,7 +31,9 @@ public class CSettlementDaoImpl extends AbstractDao<Integer,CSettlement> impleme
     @Override
     public List<CSettlement> findAll() {
         Criteria criteria = createEntityCriteria();
-        return (List<CSettlement>) criteria.list();
+        return (List<CSettlement>) criteria
+                .addOrder(Order.asc("settlementName"))
+                .list();
     }
 
     @Override

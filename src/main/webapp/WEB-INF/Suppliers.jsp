@@ -400,7 +400,7 @@
             this.cuenta.accountClabe= '';
             this.cuenta.idBank='';
             this.cuenta.idCurrency= '';
-            this.clabes="",
+            this.clabes="";
             this.accountNumbers="";
             this.direccion.cp= '';
             this.direccion.numExt='';
@@ -418,19 +418,19 @@
             this.idSettlement='';
             this.idMunicipality='';
             this.telephone.phoneNumbers='';
-             this.telephone.email='';
-             this.telephone.name='';
-             this.telephone.post='';
+            this.telephone.email='';
+            this.telephone.name='';
+            this.telephone.post='';
             this.supplier.providerName= '';
             this.supplier.businessName= '';
             this.supplier.providersAccountsList=[];
             this.supplier.providersContactList=[];
             this.supplier.rfc= '';
             this.supplier.accountingAccount= '';
-             this.name="";
-             this.email="";
-             this.phoneNumber="";
-             this.post="";
+            this.name="";
+            this.email="";
+            this.phoneNumber="";
+            this.post="";
 
             $('#modalAlta').modal('hide');
           },
@@ -487,24 +487,25 @@
 
     <jsp:body>
       <div id="contenidos">
-
+          <br>
       <div class="container-fluid" style="margin-left: 100px">
         <div class="row">
-          <div class="col-xs-6 text-left">
-          <h1>Búsqueda de proveedores</h1>
+          <div class="col-xs-8 text-left" style="padding: 0px">
+          <h1>Proveedores</h1>
           </div>
 
-          <div class="col-xs-3">
+            <div class="col-xs-4 text-right" style="padding: 0px">
+                <div class="col-xs-7 text-left" style="padding: 0px">
             <label>
               Buscar por RFC
             </label>
             <input class="form-control" maxlength="13" v-model="search">
-          </div>
+            </div>
 
-          <div class="col-xs-3">
+
             <button type="button" class="btn btn-default" name="button"
               style="margin-top: 25px" data-toggle="modal" data-target="#modalAlta">
-              Agregar Nuevo Proveedor
+             Nuevo Proveedor
             </button>
           </div>
 
@@ -514,7 +515,7 @@
                 Nombre/Razón social
               </th>
               <th>
-                Cuenta Contable
+                Cuenta contable
               </th>
               <th>
                 RFC
@@ -572,7 +573,8 @@
                 <input maxlength="13" class="form-control" name="name" v-model="supplier.rfc">
               </div>
               </div>
-              <div class="row" v-if="(supplier.rfc).length==12">
+                <br>
+              <div class="row" v-show="(supplier.rfc).length==12">
                 <div class="col-xs-4">
                   <label>
                     Razón social
@@ -586,9 +588,7 @@
                   <input class="form-control" name="name" v-model="supplier.accountingAccount">
                 </div>
               </div>
-                <br>
-                <br>
-              <div class="row" v-if="(supplier.rfc).length==13">
+              <div class="row" v-show="(supplier.rfc).length==13">
                 <div class="col-xs-3">
                   <label>
                     Nombre
@@ -615,14 +615,14 @@
                 </div>
               </div>
               <br>
-              <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
+              <div class="row" v-show="(supplier.rfc).length==12||(supplier.rfc).length==13">
                 <div class="col-xs-4">
                   <label>
                     Dirección
                   </label>
                 </div>
               </div>
-              <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
+              <div class="row" v-show="(supplier.rfc).length==12||(supplier.rfc).length==13">
                 <div class="col-xs-3">
                   <label>
                     Calle
@@ -649,7 +649,7 @@
                 </div>
               </div>
               <br>
-              <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
+              <div class="row" v-show="(supplier.rfc).length==12||(supplier.rfc).length==13">
                 <div class="col-xs-3">
                   <label>
                     Colonia
@@ -684,13 +684,13 @@
                 </div> -->
             </div>
               <br>
-                <label v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">Información de Contacto</label>
+                <label v-show="(supplier.rfc).length==12||(supplier.rfc).length==13">Información de Contacto</label>
                 <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
                     <div class="col-xs-12">
                         <hr>
                     </div>
                 </div>
-              <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
+              <div class="row" v-show="(supplier.rfc).length==12||(supplier.rfc).length==13">
                 <div class="col-xs-3">
                   <label>
                         Nombre
@@ -722,7 +722,7 @@
                 </div>
               </div>
               <br>
-                <table class="table table-striped" v-if="supplier.providersContactList.length> 0">
+                <table class="table table-striped" v-show="supplier.providersContactList.length> 0">
                     <thead>
                     <th class="col-xs-3">
                         Nombre
@@ -763,13 +763,13 @@
                     </tbody>
                 </table>
               <br>
-                <label v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">Cuentas Bancarias</label>
-                <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
+                <label v-show="(supplier.rfc).length==12||(supplier.rfc).length==13">Cuentas Bancarias</label>
+                <div class="row" v-show="(supplier.rfc).length==12||(supplier.rfc).length==13">
                     <div class="col-xs-12">
                         <hr>
                     </div>
                 </div>
-                <div class="row" v-if="(supplier.rfc).length==12||(supplier.rfc).length==13">
+                <div class="row" v-show="(supplier.rfc).length==12||(supplier.rfc).length==13">
                   <div class="col-xs-3">
                     <label>
                       Banco
@@ -815,7 +815,7 @@
                   </div>
                 </div>
 
-                <table class="table table-striped" v-if="supplier.providersAccountsList.length> 0">
+                <table class="table table-striped" v-show="supplier.providersAccountsList.length> 0">
                   <thead>
                     <th>
                       Banco
@@ -857,11 +857,11 @@
 
             </div>
             <div class="modal-footer">
-              <div class="col-xs-10 text-right">
+
                 <button type="button" class="btn btn-default" @click="saveProvider">
                   Guardar
                 </button>
-              </div>
+
               <button type="button" class="btn btn-default" @click="cancelar">Cancelar</button>
             </div>
           </div>
@@ -886,10 +886,10 @@
                     <label>
                       RFC
                     </label>
-                    <input  maxlength="13" class="form-control" name="name" v-model="provider.rfc">
+                    <input  maxlength="13" class="form-control" name="name" v-model="provider.rfc" disabled="true">
                   </div>
                 </div>
-                <div class="row" v-if="(provider.rfc).length==12">
+                <div class="row" v-show="(provider.rfc).length==12">
                   <div class="col-xs-4">
                     <label>
                       Razón social
@@ -903,7 +903,7 @@
                     <input class="form-control" name="name" v-model="provider.accountingAccount">
                   </div>
                 </div>
-                <div class="row" v-if="(provider.rfc).length==13">
+                <div class="row" v-show="(provider.rfc).length==13">
                   <div class="col-xs-3">
                     <label>
                       Nombre
@@ -930,14 +930,14 @@
                   </div>
                 </div>
                 <br>
-                <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13">
+                <div class="row" v-show="(provider.rfc).length==12||(provider.rfc).length==13">
                   <div class="col-xs-4">
                     <label>
                       Dirección
                     </label>
                   </div>
                 </div>
-                <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13" v-for="address in provider.addressProvider">
+                <div class="row" v-show="(provider.rfc).length==12||(provider.rfc).length==13" v-for="address in provider.addressProvider">
                   <div class="col-xs-3">
                     <label>
                       Calle
@@ -991,13 +991,13 @@
                   </div>
                 </div>
                   <br>
-                  <label v-if="(provider.rfc).length==12||(provider.rfc).length==13">Información de Contacto</label>
-                  <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13">
+                  <label v-show="(provider.rfc).length==12||(provider.rfc).length==13">Información de Contacto</label>
+                  <div class="row" v-show="(provider.rfc).length==12||(provider.rfc).length==13">
                       <div class="col-xs-12">
                           <hr>
                       </div>
                   </div>
-                  <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13">
+                  <div class="row" v-show="(provider.rfc).length==12||(provider.rfc).length==13">
                       <div class="col-xs-3">
                           <label>
                               Nombre
@@ -1029,7 +1029,7 @@
                       </div>
                   </div>
                   <br>
-                  <table class="table table-striped" v-if="provider.providersContactList.length> 0">
+                  <table class="table table-striped" v-show="provider.providersContactList.length> 0">
                       <thead>
                       <th class="col-xs-3">
                           Nombre
@@ -1070,13 +1070,13 @@
                       </tbody>
                   </table>
                   <br>
-                  <label v-if="(provider.rfc).length==12||(provider.rfc).length==13">Cuentas Bancarias</label>
-                  <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13">
+                  <label v-show="(provider.rfc).length==12||(provider.rfc).length==13">Cuentas Bancarias</label>
+                  <div class="row" v-show="(provider.rfc).length==12||(provider.rfc).length==13">
                       <div class="col-xs-12">
                           <hr>
                       </div>
                   </div>
-                <div class="row" v-if="(provider.rfc).length==12||(provider.rfc).length==13">
+                <div class="row" v-show="(provider.rfc).length==12||(provider.rfc).length==13">
                   <div class="col-xs-3">
                     <label>
                       Banco
@@ -1124,7 +1124,7 @@
                   </div>
                 </div>
 
-                <table class="table table-striped" v-if="provider.providersAccountsList.length> 0">
+                <table class="table table-striped" v-show="provider.providersAccountsList.length> 0">
                   <thead>
                   <th>
                     Banco
@@ -1167,11 +1167,11 @@
 
               </div>
               <div class="modal-footer">
-                <div class="col-xs-10 text-right" >
+
                   <button type="button" class="btn btn-default" @click="updateProvider(provider)">
                     Guardar
                   </button>
-                </div>
+
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
               </div>
             </div>
