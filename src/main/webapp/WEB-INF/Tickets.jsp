@@ -81,7 +81,7 @@
                                 this.ticket.incidence != '' &&
                                 this.ticket.priority != '' &&
                                 this.ticket.descripcionProblema != '' &&
-                                this.tickets.correo != ''
+                                this.ticket.correo != ''
                         ) {
                             return true;
                         } else return false;
