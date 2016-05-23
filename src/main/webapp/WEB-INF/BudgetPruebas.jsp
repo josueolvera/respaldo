@@ -840,10 +840,16 @@
             <div class="modal-content modal-lg">
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="">Prorrateo de Conceptos</h4>
+                <h4 class="modal-title" id="">Prorrateo</h4>
               </div>
               <div class="modal-body">
                 <div class="row">
+                  <div class="col-xs-4">
+                    <label>
+                      Área
+                    </label>
+                    <input class="form-control" disabled="true" v-model="conceptoProrrateo.conceptName">
+                  </div>
                   <div class="col-xs-4">
                     <label>
                       Concepto
@@ -857,19 +863,11 @@
                     <input class="form-control" disabled="true" v-model="conceptoProrrateo.total">
                   </div>
                 </div>
-
-                <div class="row">
-                  <div class="col-xs-4">
-                    <label>
-                      Información del Prorrateo
-                    </label>
-                  </div>
-                </div>
-
+                <br>
                 <div class="row">
                   <div class="col-xs-3">
                     <label>
-                      Selecciona las empresas
+                      Empresas
                     </label>
                     <div class="checkbox" v-for="distributor in distributors">
                       <label>
@@ -881,30 +879,33 @@
 
                   <div class="col-xs-4">
                     <label>
-                      ¿Como te gustaría prorratear el producto?
+                      Período
                     </label>
-                    <br>
-                      <label class="radio-inline"><input type="radio" name="optradio" value="1" v-model="prorrateoOpcion">Anual</label>
-                      <label class="radio-inline"><input type="radio" name="optradio" value="2" v-model="prorrateoOpcion">Mensual</label>
-                      <br>
-                      <div class="row">
-                        <div class="col-xs-12" v-if="prorrateoOpcion== 1">
-                          <label>
-                            Monto total a prorratear
-                          </label>
-                          <div class="input-group">
-                            <span class="input-group-addon">$</span>
-                            <input type="text" class="form-control" disabled="true" v-model="conceptoProrrateo.total">
-                          </div>
-                        </div>
 
+                    <div class="row">
+                      <div class="col-xs-3" v-for="n in 12">
+                        <div class="btn-group" data-toggle="buttons" style="margin-bottom: 5px">
+                            <label class="btn btn-default" style="width: 60px">
+                              <input type="checkbox" autocomplete="off">Mes{{n}}
+                            </label>
+                        </div>
                       </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-xs-12 text-left">
+                        <input type="checkbox">
+                          <label>
+                            Seleccionar todos
+                          </label>
+                      </div>
+                    </div>
 
                   </div>
 
-                  <div class="col-xs-4">
+                  <div class="col-xs-5">
                     <label>
-                      Ingresa los porcentajes de pago a cada empresa
+                      Porcentajes
                     </label>
 
                     <div class="row" v-for="distributor in distributorChecked">
