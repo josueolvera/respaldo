@@ -12,8 +12,9 @@ import mx.bidg.model.Users;
  * @author sistemask
  */
 public interface UsersDao extends InterfaceDao<Users> {
-    
-    public Users findByUsername(String username);
-    public Users findByIdFetchDwEmployee(int id);
-    
+
+    Users findByUsername(String username);
+    Users findByIdFetchDwEmployee(int id);
+    Users findByEmail(String email);
+
 }

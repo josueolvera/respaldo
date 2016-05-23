@@ -71,5 +71,12 @@ public class UsersDaoImpl extends AbstractDao<Integer, Users> implements UsersDa
                 .setFetchMode("dwEmployee.role", FetchMode.JOIN);
         return (Users) criteria.uniqueResult();
     }
-    
+
+    @Override
+    public Users findByEmail(String email) {
+        return (Users) createEntityCriteria()
+                .add(Restrictions.eq("mail",email))
+                .uniqueResult();
+    }
+
 }

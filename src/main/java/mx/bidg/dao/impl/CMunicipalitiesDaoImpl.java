@@ -4,6 +4,7 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CMunicipalitiesDao;
 import mx.bidg.model.CMunicipalities;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -30,7 +31,9 @@ public class CMunicipalitiesDaoImpl extends AbstractDao<Integer,CMunicipalities>
     @Override
     public List<CMunicipalities> findAll() {
         Criteria criteria = createEntityCriteria();
-        return (List<CMunicipalities>) criteria.list();
+        return (List<CMunicipalities>) criteria
+                .addOrder(Order.asc("municipalityName"))
+                .list();
     }
 
     @Override

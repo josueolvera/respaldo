@@ -18,6 +18,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Type;
 
 
 /**
@@ -54,6 +55,10 @@ public class CDistributors implements Serializable {
     @Column(name = "HAS_STOCK")
     @JsonView(JsonViews.Root.class)
     private Integer hasStock;
+
+    @Column(name = "BUDGET_SHARE", columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    private Boolean budgetShare;
 
     public CDistributors() {
     }
@@ -97,6 +102,14 @@ public class CDistributors implements Serializable {
 
     public void setHasStock(Integer hasStock) {
         this.hasStock = hasStock;
+    }
+
+    public Boolean getBudgetShare() {
+        return budgetShare;
+    }
+
+    public void setBudgetShare(Boolean budgetShare) {
+        this.budgetShare = budgetShare;
     }
 
     @Override
