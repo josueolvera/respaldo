@@ -197,7 +197,7 @@
                             </select>
                         </div>
                         <div class="col-xs-4">
-                            <label>Estado</label>
+                            <label>Status</label>
                             <select v-model="ticketStatus" class="form-control" @change="getTicketsByTicketStatusPriority">
                                 <option></option>
                                 <option v-for="ticketStatus in ticketStatusList" value="{{ticketStatus}}">
@@ -215,7 +215,7 @@
                                 <div class="col-xs-2"><strong>Folio</strong></div>
                                 <div class="col-xs-2"><strong>Correo</strong></div>
                                 <div class="col-xs-6"><strong>Descripción</strong></div>
-                                <div class="col-xs-2"><strong>Estado</strong></div>
+                                <div class="col-xs-2"><strong>Status</strong></div>
                             </div>
                             <div class="row table-row">
                                 <div class="col-xs-2"><p>{{ ticket.folio }}</p></div>
@@ -234,7 +234,7 @@
                             <div id="ticket-{{ ticket.idTicket }}" class="panel-collapse collapse">
                                 <div class="panel-body">
                                     <div class="col-xs-12 details-header">
-                                        <div class="col-xs-4"><strong>Tipo de Incidencia</strong></div>
+                                        <div class="col-xs-4"><strong>Tipo de solicitud</strong></div>
                                         <div class="col-xs-2"><strong>Prioridad</strong></div>
                                         <div class="col-xs-3"><strong>Fecha de inicio</strong></div>
                                         <div class="col-xs-3"><strong>Fecha de fin</strong></div>
