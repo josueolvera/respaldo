@@ -48,7 +48,7 @@ public class BudgetConceptDistributorController {
         JsonNode node = mapper.readTree(data);
         List<BudgetConceptDistributor> list = budgetConceptDistributorService.saveJsonNode(node);
         return new ResponseEntity<>(
-                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(list),
+                "Registro guardado con exito",
                 HttpStatus.OK
         );
     }
