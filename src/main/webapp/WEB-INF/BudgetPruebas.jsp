@@ -19,7 +19,42 @@
         </script>
 
         <script type="text/javascript">
-    var vm= new Vue({
+
+            Vue.directive('radio', {
+              twoWay: true,
+              bind: function() {
+                var self = this;
+                var btns = $(self.el).find('.btn');
+                btns.each(function() {
+                  $(this).on('click', function() {
+                    var v = $(this).find('input').get(0).value
+                    self.set(v);
+                  })
+                });
+              },
+              update: function() {
+                var value = this._watcher.value;
+                if (value) {
+                  this.set(value);
+                  var btns = $(this.el).find('.btn')
+                  btns.each(function() {
+                    $(this).removeClass('active');
+                    var v = $(this).find('input').get(0).value;
+
+                    if (v === value) {
+                      $(this).addClass('active');
+                    }
+                  });
+                } else {
+                  var input = $(this.el).find('.active input').get(0);
+                  if (input) {
+                    this.set(input.value);
+                  }
+                }
+              }
+            });
+
+          var vm= new Vue({
           el: '#contenidos',
           created: function(){
             this.$http.get(ROOT_URL + "/areas")
@@ -119,7 +154,13 @@
               year: 0
             },
             showInfo: false,
-            sucursal: {}
+            sucursal: {},
+            distributors: {},
+            conceptoProrrateo: '',
+            distributorChecked: [],
+            prorrateoOpcion: '',
+            monthChecked: [],
+            idAreaforModal: 0
           },
           methods:
           {
@@ -530,6 +571,22 @@
           }).error(function(){
             showAlert("Ha habido un error con la solicitud, intente nuevamente");
           });
+        },
+        getDistributors: function()
+        {
+          this.$http.get(ROOT_URL + "/distributors")
+                  .success(function (data)
+                  {
+                    this.distributors = data;
+                  });
+        },
+        showModalProrrateo: function(concepto, idArea)
+        {
+          this.conceptoProrrateo = concepto;
+          this.idAreaforModal= idArea;
+          this.getDistributors();
+          $("#prorrateo").modal("show");
+
         }
         },
         filters: {
@@ -591,6 +648,12 @@
                   name = elemento.branchShort;
                 }
             });
+            return name;
+          },
+          shortName: function(nombre)
+          {
+            var name;
+            name = nombre.substring(0, 3);
             return name;
           }
         }
@@ -669,7 +732,6 @@
                         </div>
                         <div class="col-xs-6 text-right">
                           <h3>{{sucss.idArea | areaName}}</h3>
-
                           <div class="col-xs-6 col-xs-offset-6">
                             <div class="input-group">
                               <span class="input-group-addon">$</span>
@@ -737,8 +799,16 @@
 
                           <div class="row" style="margin-left: 0px" v-for="concepto in conte.conceptos">
                             <div class="col-xs-2" style="padding-left: 0px; padding-right: 1px">
-                              <input type="text" name="name" class="form-control input-sm" style="font-size: 10px"
-                                v-model="concepto.conceptName" :disabled="isAutorized">
+                              <div class="col-xs-9">
+                                <input type="text" name="name" class="form-control input-sm" style="font-size: 10px"
+                                  v-model="concepto.conceptName" :disabled="isAutorized">
+
+                              </div>
+                              <div class="col-xs-3" style="padding-left: 0px; padding-right: 1px">
+                                <button type="button" class="btn btn-default" @click="showModalProrrateo(concepto, sucss.idArea)">
+                                  <span class="glyphicon glyphicon-align-left"></span>
+                                </button>
+                              </div>
                             </div>
                             <div class="col-xs-9">
                               <div class="col-xs-1" v-for="mess in concepto.conceptMonth"
@@ -807,6 +877,109 @@
                 </div> <!-- /#container-fluid -->
             </div> <!-- /#Page Content -->
         </div> <!-- /#wrapper -->
+
+        <div class="modal fade" id="prorrateo" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content modal-lg">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="">Prorrateo</h4>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-xs-4">
+                    <label>
+                      Área
+                    </label>
+                    <input class="form-control" disabled="true" value="{{idAreaforModal | areaName}}">
+                  </div>
+                  <div class="col-xs-4">
+                    <label>
+                      Concepto
+                    </label>
+                    <input class="form-control" disabled="true" v-model="conceptoProrrateo.conceptName">
+                  </div>
+                  <div class="col-xs-4">
+                    <label>
+                      Monto Anual
+                    </label>
+                    <input class="form-control" disabled="true" v-model="conceptoProrrateo.total">
+                  </div>
+                </div>
+                <br>
+                <div class="row">
+                  <div class="col-xs-3">
+                    <label>
+                      Empresas
+                    </label>
+                    <div class="checkbox" v-for="distributor in distributors" v-if="distributor.budgetShare">
+                      <label>
+                        <input type="checkbox" value="{{distributor}}" v-model="distributorChecked" >
+                        <span v-if="distributor.budgetShare">{{distributor.distributorName}}</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="col-xs-4" v-if="distributorChecked.length>0">
+                    <label>
+                      Período
+                    </label>
+
+                    <div class="row">
+                      <div class="col-xs-3" v-for="meses in conceptoProrrateo.conceptMonth">
+                        <div class="btn-group" style="margin-bottom: 5px">
+                            <label class="btn btn-default" style="width: 60px">
+                              <input type="checkbox" value="{{meses}}" v-model="monthChecked">{{meses.name | shortName}}
+                            </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-xs-12 text-left">
+                        <input type="checkbox">
+                          <label>
+                            Seleccionar todos
+                          </label>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div class="col-xs-5" v-if="distributorChecked.length>0 && monthChecked.length > 0 ">
+                    <label>
+                      Porcentajes
+                    </label>
+
+                    <div class="row" v-for="distributor in distributorChecked">
+                      <div class="col-xs-7">
+                        <label>
+                          {{distributor.distributorName}}
+                        </label>
+                      </div>
+                      <div class="col-xs-5">
+                        <div class="input-group">
+                          <span class="input-group-addon">%</span>
+                          <input type="text" class="form-control">
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success">Guardar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
       </div> <!-- #contenidos -->
     </jsp:body>
 </t:template>
