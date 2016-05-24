@@ -200,7 +200,7 @@
                                 ROOT_URL + "/stock/" + article.idStock + "/attachments/record"
                         ).success(function (data) {
                             Vue.set(article, "documentsRecord", data);
-                            $("#historicalModal").modal("show");
+//                            $("#historicalModal").modal("show");
                             this.isSaving = false;
                         }).error(function () {
                             showAlert("Permiso denegado", {type: 3});
