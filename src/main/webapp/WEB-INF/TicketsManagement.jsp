@@ -34,7 +34,11 @@
                     ticketStatus:'',
                     correo:'',
                     question:'',
-                    currentTicket:''
+                    currentTicket:{
+                        ticketStatus:'',
+                        idTicket:''
+                    },
+                    selectedTicketStatus:''
                 },
                 methods: {
                     getTickets:function () {
@@ -46,18 +50,21 @@
                     },
                     closeAskModal:function () {
                         this.question = '';
-                        this.currentTicket = '';
+                        this.currentTicket.idTicket = '';
+                        this.currentTicket.ticketStatus = '';
                         $('#askModal').modal('hide');
                     },
                     acceptAction:function (data) {
+                        this.getTicketsByTicketStatusPriority();
                         this.question = '¿Estas suguro que quieres dar por terminado el ticket?';
-                        this.currentTicket = data;
+                        this.currentTicket.idTicket = data.idTicket;
+                        this.currentTicket.ticketStatus = this.selectedTicketStatus;
 
-                        if(this.currentTicket.ticketStatus.idTicketStatus == 4) {
-                            $('#askModal').modal('show');
-                        } else {
+                        if(this.currentTicket.ticketStatus.idTicketStatus != 4) {
                             this.changeTicketStatus();
+                            return;
                         }
+                        $('#askModal').modal('show');
 
                     },
                     changeTicketStatus:function () {
@@ -66,9 +73,11 @@
                                 ROOT_URL + '/ticket/change-ticket-status/' + this.currentTicket.idTicket,
                                 this.currentTicket.ticketStatus
                         ).success(function (data) {
-                            $('#askModal').modal('hide');
                             this.question = '';
-                            this.currentTicket = '';
+                            this.currentTicket.idTicket = '';
+                            this.currentTicket.ticketStatus = '';
+                            $('#askModal').modal('hide');
+                            showAlert("Status de ticket cambiado");
                             this.getTicketsByTicketStatusPriority();
                         }).error(function (data) {
 
@@ -76,7 +85,7 @@
                     },
                     getTicketsByTicketStatusPriority:function () {
 
-                        if (this.priority != '' && this.ticketStatus != '') {
+                        if (this.priority != 'Todos' && this.ticketStatus != 'Todos') {
                             this.$http.get(ROOT_URL + '/ticket/' + this.ticketStatus.idTicketStatus + '/' + this.priority.idPriority).success(function (data) {
                                 this.tickets = data;
                             }).error(function (data) {
@@ -85,7 +94,7 @@
                             return;
                         }
 
-                        if (this.priority != '') {
+                        if (this.priority != 'Todos') {
                             this.$http.get(ROOT_URL + '/ticket/priority/' + this.priority.idPriority).success(function (data) {
                                 this.tickets = data;
                             }).error(function (data) {
@@ -93,7 +102,7 @@
                             });
                             return;
                         }
-                        if (this.ticketStatus != '') {
+                        if (this.ticketStatus != 'Todos') {
                             this.$http.get(ROOT_URL + '/ticket/ticket-status/' + this.ticketStatus.idTicketStatus).success(function (data) {
                                 this.tickets = data;
                             }).error(function (data) {
@@ -197,7 +206,7 @@
                         <div class="col-xs-4">
                             <label>Prioridad</label>
                             <select v-model="priority" class="form-control" @change="getTicketsByTicketStatusPriority">
-                                <option></option>
+                                <option selected>Todos</option>
                                 <option v-for="priority in priorities" value="{{priority}}">
                                     {{priority.priorityName}}
                                 </option>
@@ -206,7 +215,7 @@
                         <div class="col-xs-4">
                             <label>Status</label>
                             <select v-model="ticketStatus" class="form-control" @change="getTicketsByTicketStatusPriority">
-                                <option></option>
+                                <option selected>Todos</option>
                                 <option v-for="ticketStatus in ticketStatusList" value="{{ticketStatus}}">
                                     {{ticketStatus.ticketStatusName}}
                                 </option>
@@ -216,24 +225,30 @@
                 </div>
                 <div class="panel-group ticket-list">
                     <div class="ticket panel panel-default"
-                         v-for="ticket in tickets | filterBy correo">
+                         v-for="ticket in tickets | filterBy correo in 'correo'">
                         <div class="panel-heading">
                             <div class="row table-header">
                                 <div class="col-xs-2"><strong>Folio</strong></div>
                                 <div class="col-xs-2"><strong>Correo</strong></div>
                                 <div class="col-xs-6"><strong>Descripción</strong></div>
-                                <div class="col-xs-2" v-if="ticket.ticketStatus.idTicketStatus != 4"><strong>Status</strong></div>
+                                <div class="col-xs-2"><strong>Status</strong></div>
                             </div>
                             <div class="row table-row">
                                 <div class="col-xs-2"><p>{{ ticket.folio }}</p></div>
                                 <div class="col-xs-2"><p>{{ ticket.correo }}</p></div>
                                 <div class="col-xs-6"><p>{{ ticket.descripcionProblema }}</p></div>
                                 <div class="col-xs-2" v-if="ticket.ticketStatus.idTicketStatus != 4">
-                                    <select v-model="ticket.ticketStatus" class="form-control" @change="acceptAction(ticket)">
+                                    <select v-model="selectedTicketStatus" class="form-control" @change="acceptAction(ticket)">
+                                        <option selected hidden value="{{ticket.ticketStatus}}">
+                                            {{ ticket.ticketStatus.ticketStatusName }}
+                                        </option>
                                         <option v-for="ticketStatus in ticketStatusList" value="{{ticketStatus}}">
                                             {{ticketStatus.ticketStatusName}}
                                         </option>
                                     </select>
+                                </div>
+                                <div class="col-xs-2" v-if="ticket.ticketStatus.idTicketStatus == 4">
+                                    <p>{{ ticket.ticketStatus.ticketStatusName }}</p>
                                 </div>
                             </div>
                         </div>
