@@ -583,7 +583,6 @@
         showModalProrrateo: function(concepto, idArea)
         {
           this.conceptoProrrateo = concepto;
-          console.log(idArea);
           this.idAreaforModal= idArea;
           this.getDistributors();
           $("#prorrateo").modal("show");
@@ -921,7 +920,7 @@
                     </div>
                   </div>
 
-                  <div class="col-xs-4">
+                  <div class="col-xs-4" v-if="distributorChecked.length>0">
                     <label>
                       Período
                     </label>
@@ -947,7 +946,7 @@
 
                   </div>
 
-                  <div class="col-xs-5">
+                  <div class="col-xs-5" v-if="distributorChecked.length>0 && monthChecked.length > 0 ">
                     <label>
                       Porcentajes
                     </label>
@@ -967,10 +966,6 @@
                     </div>
 
                   </div>
-                </div>
-
-                <div class="row">
-                  {{$data.monthChecked | json}}
                 </div>
 
               </div>
