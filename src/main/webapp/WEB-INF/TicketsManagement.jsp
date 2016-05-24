@@ -206,7 +206,7 @@
                         <div class="col-xs-4">
                             <label>Prioridad</label>
                             <select v-model="priority" class="form-control" @change="getTicketsByTicketStatusPriority">
-                                <option></option>
+                                <option>Todos</option>
                                 <option v-for="priority in priorities" value="{{priority}}">
                                     {{priority.priorityName}}
                                 </option>
@@ -215,7 +215,7 @@
                         <div class="col-xs-4">
                             <label>Status</label>
                             <select v-model="ticketStatus" class="form-control" @change="getTicketsByTicketStatusPriority">
-                                <option></option>
+                                <option>Todos</option>
                                 <option v-for="ticketStatus in ticketStatusList" value="{{ticketStatus}}">
                                     {{ticketStatus.ticketStatusName}}
                                 </option>
