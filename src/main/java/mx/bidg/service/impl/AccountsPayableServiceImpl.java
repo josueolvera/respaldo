@@ -89,6 +89,18 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
     }
 
     @Override
+    public boolean delete(AccountsPayable accountPayable) {
+        accountsPayableDao.delete(accountPayable);
+        return true;
+    }
+
+    @Override
+    public AccountsPayable save(AccountsPayable accountPayable) {
+        accountsPayableDao.save(accountPayable);
+        return accountPayable;
+    }
+
+    @Override
     public List<AccountsPayable> update(String folio, String data) throws Exception {
         List<AccountsPayable> accounts = findByFolio(folio);
         for (AccountsPayable payable : accounts) {
