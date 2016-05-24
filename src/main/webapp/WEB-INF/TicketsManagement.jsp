@@ -34,7 +34,11 @@
                     ticketStatus:'',
                     correo:'',
                     question:'',
-                    currentTicket:''
+                    currentTicket:{
+                        ticketStatus:'',
+                        idTicket:''
+                    },
+                    selectedTicketStatus:''
                 },
                 methods: {
                     getTickets:function () {
@@ -46,18 +50,21 @@
                     },
                     closeAskModal:function () {
                         this.question = '';
-                        this.currentTicket = '';
+                        this.currentTicket.idTicket = '';
+                        this.currentTicket.ticketStatus = '';
                         $('#askModal').modal('hide');
                     },
                     acceptAction:function (data) {
+                        this.getTickets();
                         this.question = '¿Estas suguro que quieres dar por terminado el ticket?';
-                        this.currentTicket = data;
+                        this.currentTicket.idTicket = data.idTicket;
+                        this.currentTicket.ticketStatus = this.selectedTicketStatus;
 
-                        if(this.currentTicket.ticketStatus.idTicketStatus == 4) {
-                            $('#askModal').modal('show');
-                        } else {
+                        if(this.currentTicket.ticketStatus.idTicketStatus != 4) {
                             this.changeTicketStatus();
+                            return;
                         }
+                        $('#askModal').modal('show');
 
                     },
                     changeTicketStatus:function () {
@@ -66,9 +73,11 @@
                                 ROOT_URL + '/ticket/change-ticket-status/' + this.currentTicket.idTicket,
                                 this.currentTicket.ticketStatus
                         ).success(function (data) {
-                            $('#askModal').modal('hide');
                             this.question = '';
-                            this.currentTicket = '';
+                            this.currentTicket.idTicket = '';
+                            this.currentTicket.ticketStatus = '';
+                            $('#askModal').modal('hide');
+                            showAlert("Status cambiado");
                             this.getTicketsByTicketStatusPriority();
                         }).error(function (data) {
 
@@ -229,7 +238,10 @@
                                 <div class="col-xs-2"><p>{{ ticket.correo }}</p></div>
                                 <div class="col-xs-6"><p>{{ ticket.descripcionProblema }}</p></div>
                                 <div class="col-xs-2" v-if="ticket.ticketStatus.idTicketStatus != 4">
-                                    <select v-model="ticket.ticketStatus" class="form-control" @change="acceptAction(ticket)">
+                                    <select v-model="selectedTicketStatus" class="form-control" @change="acceptAction(ticket)">
+                                        <option selected hidden value="{{ticket.ticketStatus}}">
+                                            {{ ticket.ticketStatus.ticketStatusName }}
+                                        </option>
                                         <option v-for="ticketStatus in ticketStatusList" value="{{ticketStatus}}">
                                             {{ticketStatus.ticketStatusName}}
                                         </option>
