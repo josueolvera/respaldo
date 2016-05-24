@@ -160,7 +160,8 @@
             distributorChecked: [],
             prorrateoOpcion: '',
             monthChecked: [],
-            idAreaforModal: 0
+            idAreaforModal: 0,
+            monthsOfConcept: {}
           },
           methods:
           {
@@ -582,11 +583,20 @@
         },
         showModalProrrateo: function(concepto, idArea)
         {
+
           this.conceptoProrrateo = concepto;
           this.idAreaforModal= idArea;
           this.getDistributors();
+          this.getMonthsConcept(concepto.idConcept);
           $("#prorrateo").modal("show");
-
+        },
+        getMonthsConcept : function(idConcept)
+        {
+          this.$http.get(ROOT_URL + "/budget-month-concepts/"+idConcept)
+                  .success(function (data)
+                  {
+                    this.monthsOfConcept= data;
+                  });
         }
         },
         filters: {
@@ -926,10 +936,10 @@
                     </label>
 
                     <div class="row">
-                      <div class="col-xs-3" v-for="meses in conceptoProrrateo.conceptMonth">
+                      <div class="col-xs-3" v-for="meses in monthsOfConcept">
                         <div class="btn-group" style="margin-bottom: 5px">
                             <label class="btn btn-default" style="width: 60px">
-                              <input type="checkbox" value="{{meses}}" v-model="monthChecked">{{meses.name | shortName}}
+                              <input type="checkbox" value="{{meses}}" v-model="monthChecked">{{meses.budgetMonthBranch.month.month | shortName}}
                             </label>
                         </div>
                       </div>
