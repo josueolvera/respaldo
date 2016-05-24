@@ -9,6 +9,40 @@
     <jsp:attribute name="scripts">
 
         <script type="text/javascript">
+
+        function validateFloatKeyPress(el, evt) {
+          var charCode = (evt.which) ? evt.which : event.keyCode;
+          var number = el.value.split('.');
+          if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+          }
+          //just one dot
+          if(number.length>1 && charCode == 46){
+            return false;
+          }
+          //get the carat position
+          var caratPos = getSelectionStart(el);
+          var dotPos = el.value.indexOf(".");
+          if( caratPos > dotPos && dotPos>-1 && (number[1].length > 1)){
+            return false;
+          }
+          return true;
+        }
+
+          //thanks: http://javascript.nwbox.com/cursor_position/
+          function getSelectionStart(o) {
+	           if (o.createTextRange) {
+		             var r = document.selection.createRange().duplicate()
+		               r.moveEnd('character', o.value.length)
+		                 if (r.text == '') return o.value.length
+		                   return o.value.lastIndexOf(r.text)
+	                    } else return o.selectionStart
+                    }
+
+
+
+
+
         function isNumberKey(evt)
         {
         var charCode = (evt.which) ? evt.which : event.keyCode
@@ -20,39 +54,6 @@
 
         <script type="text/javascript">
 
-            Vue.directive('radio', {
-              twoWay: true,
-              bind: function() {
-                var self = this;
-                var btns = $(self.el).find('.btn');
-                btns.each(function() {
-                  $(this).on('click', function() {
-                    var v = $(this).find('input').get(0).value
-                    self.set(v);
-                  })
-                });
-              },
-              update: function() {
-                var value = this._watcher.value;
-                if (value) {
-                  this.set(value);
-                  var btns = $(this.el).find('.btn')
-                  btns.each(function() {
-                    $(this).removeClass('active');
-                    var v = $(this).find('input').get(0).value;
-
-                    if (v === value) {
-                      $(this).addClass('active');
-                    }
-                  });
-                } else {
-                  var input = $(this.el).find('.active input').get(0);
-                  if (input) {
-                    this.set(input.value);
-                  }
-                }
-              }
-            });
 
           var vm= new Vue({
           el: '#contenidos',
@@ -396,8 +397,8 @@
           },
           moneyFormat: function(mes, concepto, budget)
           {
-            var total= accounting.formatNumber(mes.amountConcept);
-            mes.amountConcept= '$'+total;
+            var total= accounting.formatMoney(mes.amountConcept);
+            mes.amountConcept= total;
             this.obtainTotalConcept(concepto, budget);
           },
           equalsImport: function(concepto, budget)
@@ -410,6 +411,7 @@
                 $.each(concepto.conceptMonth, function(index, el)
                 {
                   el.amountConcept= concepto.conceptMonth[0].amountConcept;
+
                 });
               }
               else{
@@ -446,17 +448,17 @@
               {
                  totalMes+=accounting.unformat(element.conceptMonth[key].amountConcept);
               });
-              elemento.montoConcept= "$"+accounting.formatNumber(totalMes);
+              elemento.montoConcept= accounting.formatMoney(totalMes);
             });
 
 
             $.each(concepto.conceptMonth, function(index, el)
             {
               var totals= accounting.unformat(el.amountConcept);
-              concepto.total+= parseInt(totals);
+              concepto.total+= parseFloat(totals);
             });
 
-            concepto.total= accounting.formatNumber(concepto.total);
+            concepto.total= accounting.formatMoney(concepto.total);
 
             $.each(budget.conceptos, function(index, el)
             {
@@ -464,7 +466,7 @@
               budget.granTotal += total;
             });
 
-          budget.granTotal= accounting.formatNumber(budget.granTotal);
+          budget.granTotal= accounting.formatMoney(budget.granTotal);
           //this.totalArea += budget.granTotal;
 
         },
@@ -481,7 +483,7 @@
               }
             });
           });
-          this.totalArea = accounting.formatNumber(this.totalArea);
+          this.totalArea = accounting.formatMoney(this.totalArea);
           this.cargando= false;
         },
         obtainConceptsYear: function()
@@ -742,9 +744,10 @@
                         </div>
                         <div class="col-xs-6 text-right">
                           <h3>{{sucss.idArea | areaName}}</h3>
+
                           <div class="col-xs-6 col-xs-offset-6">
                             <div class="input-group">
-                              <span class="input-group-addon">$</span>
+                              <%-- <span class="input-group-addon">$</span> --%>
                               <input type="text" class="form-control" disabled="true" v-model="totalArea">
                             </div>
                           </div>
@@ -825,7 +828,7 @@
                                 style="padding-left: 0px; padding-right: 1px">
                                   <input type="text" class="form-control input-sm" placeholder=""
                                     id="{{mess.month}}" v-model="mess.amountConcept" @change="moneyFormat(mess, concepto, conte)"
-                                    style="font-size: 10px" onkeypress="return isNumberKey(event)" :disabled="isAutorized">
+                                    style="font-size: 10px" onkeypress="return validateFloatKeyPress(this,event)" :disabled="isAutorized">
                               </div>
                             </div>
                             <div class="col-xs-1" style="padding-left: 0px; padding-right: 0px">
@@ -868,7 +871,7 @@
 
                               <div class="col-xs-1 text-left" style="padding-left: 0px; padding-right: 1px">
                                 <label>
-                                  $ {{conte.granTotal}}
+                                  {{conte.granTotal}}
                                 </label>
                               </div>
                             </div>

@@ -9,6 +9,40 @@
     <jsp:attribute name="scripts">
 
         <script type="text/javascript">
+
+        function validateFloatKeyPress(el, evt) {
+          var charCode = (evt.which) ? evt.which : event.keyCode;
+          var number = el.value.split('.');
+          if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+          }
+          //just one dot
+          if(number.length>1 && charCode == 46){
+            return false;
+          }
+          //get the carat position
+          var caratPos = getSelectionStart(el);
+          var dotPos = el.value.indexOf(".");
+          if( caratPos > dotPos && dotPos>-1 && (number[1].length > 1)){
+            return false;
+          }
+          return true;
+        }
+
+          //thanks: http://javascript.nwbox.com/cursor_position/
+          function getSelectionStart(o) {
+	           if (o.createTextRange) {
+		             var r = document.selection.createRange().duplicate()
+		               r.moveEnd('character', o.value.length)
+		                 if (r.text == '') return o.value.length
+		                   return o.value.lastIndexOf(r.text)
+	                    } else return o.selectionStart
+                    }
+
+
+
+
+
         function isNumberKey(evt)
         {
         var charCode = (evt.which) ? evt.which : event.keyCode
@@ -113,8 +147,20 @@
             newSearch: false,
             year: 0,
             isAutorized: false,
-	    showInfo: false,
-	    sucursal: {}
+            autorizacion: {
+              idGroup: '',
+              idArea: '',
+              year: 0
+            },
+            showInfo: false,
+            sucursal: {},
+            distributors: {},
+            conceptoProrrateo: '',
+            distributorChecked: [],
+            prorrateoOpcion: '',
+            monthChecked: [],
+            idAreaforModal: 0,
+            monthsOfConcept: {}
           },
           methods:
           {
@@ -349,8 +395,8 @@
           },
           moneyFormat: function(mes, concepto, budget)
           {
-            var total= accounting.formatNumber(mes.amountConcept);
-            mes.amountConcept= '$'+total;
+            var total= accounting.formatMoney(mes.amountConcept);
+            mes.amountConcept= total;
             this.obtainTotalConcept(concepto, budget);
           },
           equalsImport: function(concepto, budget)
@@ -363,6 +409,7 @@
                 $.each(concepto.conceptMonth, function(index, el)
                 {
                   el.amountConcept= concepto.conceptMonth[0].amountConcept;
+
                 });
               }
               else{
@@ -399,17 +446,17 @@
               {
                  totalMes+=accounting.unformat(element.conceptMonth[key].amountConcept);
               });
-              elemento.montoConcept= "$"+accounting.formatNumber(totalMes);
+              elemento.montoConcept= accounting.formatMoney(totalMes);
             });
 
 
             $.each(concepto.conceptMonth, function(index, el)
             {
               var totals= accounting.unformat(el.amountConcept);
-              concepto.total+= parseInt(totals);
+              concepto.total+= parseFloat(totals);
             });
 
-            concepto.total= accounting.formatNumber(concepto.total);
+            concepto.total= accounting.formatMoney(concepto.total);
 
             $.each(budget.conceptos, function(index, el)
             {
@@ -417,7 +464,7 @@
               budget.granTotal += total;
             });
 
-          budget.granTotal= accounting.formatNumber(budget.granTotal);
+          budget.granTotal= accounting.formatMoney(budget.granTotal);
           //this.totalArea += budget.granTotal;
 
         },
@@ -434,7 +481,7 @@
               }
             });
           });
-          this.totalArea = accounting.formatNumber(this.totalArea);
+          this.totalArea = accounting.formatMoney(this.totalArea);
           this.cargando= false;
         },
         obtainConceptsYear: function()
@@ -525,6 +572,31 @@
           }).error(function(){
             showAlert("Ha habido un error con la solicitud, intente nuevamente");
           });
+        },
+        getDistributors: function()
+        {
+          this.$http.get(ROOT_URL + "/distributors")
+                  .success(function (data)
+                  {
+                    this.distributors = data;
+                  });
+        },
+        showModalProrrateo: function(concepto, idArea)
+        {
+
+          this.conceptoProrrateo = concepto;
+          this.idAreaforModal= idArea;
+          this.getDistributors();
+          this.getMonthsConcept(concepto.idConcept);
+          $("#prorrateo").modal("show");
+        },
+        getMonthsConcept : function(idConcept)
+        {
+          this.$http.get(ROOT_URL + "/budget-month-concepts/"+idConcept)
+                  .success(function (data)
+                  {
+                    this.monthsOfConcept= data;
+                  });
         }
         },
         filters: {
@@ -586,6 +658,12 @@
                   name = elemento.branchShort;
                 }
             });
+            return name;
+          },
+          shortName: function(nombre)
+          {
+            var name;
+            name = nombre.substring(0, 3);
             return name;
           }
         }
@@ -667,7 +745,7 @@
 
                           <div class="col-xs-6 col-xs-offset-6">
                             <div class="input-group">
-                              <span class="input-group-addon">$</span>
+                              <%-- <span class="input-group-addon">$</span> --%>
                               <input type="text" class="form-control" disabled="true" v-model="totalArea">
                             </div>
                           </div>
@@ -732,15 +810,23 @@
 
                           <div class="row" style="margin-left: 0px" v-for="concepto in conte.conceptos">
                             <div class="col-xs-2" style="padding-left: 0px; padding-right: 1px">
-                              <input type="text" name="name" class="form-control input-sm" style="font-size: 10px"
-                                v-model="concepto.conceptName" :disabled="isAutorized">
+                              <div class="col-xs-9">
+                                <input type="text" name="name" class="form-control input-sm" style="font-size: 10px"
+                                  v-model="concepto.conceptName" :disabled="isAutorized">
+
+                              </div>
+                              <div class="col-xs-3" style="padding-left: 0px; padding-right: 1px">
+                                <button type="button" class="btn btn-default" @click="showModalProrrateo(concepto, sucss.idArea)">
+                                  <span class="glyphicon glyphicon-align-left"></span>
+                                </button>
+                              </div>
                             </div>
                             <div class="col-xs-9">
                               <div class="col-xs-1" v-for="mess in concepto.conceptMonth"
                                 style="padding-left: 0px; padding-right: 1px">
                                   <input type="text" class="form-control input-sm" placeholder=""
                                     id="{{mess.month}}" v-model="mess.amountConcept" @change="moneyFormat(mess, concepto, conte)"
-                                    style="font-size: 10px" onkeypress="return isNumberKey(event)" :disabled="isAutorized">
+                                    style="font-size: 10px" onkeypress="return validateFloatKeyPress(this,event)" :disabled="isAutorized">
                               </div>
                             </div>
                             <div class="col-xs-1" style="padding-left: 0px; padding-right: 0px">
@@ -783,7 +869,7 @@
 
                               <div class="col-xs-1 text-left" style="padding-left: 0px; padding-right: 1px">
                                 <label>
-                                  $ {{conte.granTotal}}
+                                  {{conte.granTotal}}
                                 </label>
                               </div>
                             </div>
