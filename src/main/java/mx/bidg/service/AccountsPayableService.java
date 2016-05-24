@@ -19,4 +19,6 @@ public interface AccountsPayableService {
     List<AccountsPayable> update(String folio, String data) throws Exception;
     List<AccountsPayable> findAll();
     List<AccountsPayable> updatePeriodic(String folio, String data) throws IOException;
+    boolean delete(AccountsPayable accountPayable);
+    AccountsPayable save(AccountsPayable accountPayable);
 }

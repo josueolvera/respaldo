@@ -24,4 +24,27 @@ public class AdmonAccountsServiceImpl implements AdmonAccountsService {
     public List<AdmonAccounts> findAll() {
         return admonAccountsDao.findAll();
     }
+
+    @Override
+    public AdmonAccounts save(AdmonAccounts admonAccount) {
+        admonAccountsDao.save(admonAccount);
+        return admonAccount;
+    }
+
+    @Override
+    public AdmonAccounts update(AdmonAccounts admonAccount) {
+        admonAccountsDao.update(admonAccount);
+        return admonAccount;
+    }
+
+    @Override
+    public AdmonAccounts findById(Integer id) {
+        return admonAccountsDao.findById(id);
+    }
+
+    @Override
+    public boolean delete(AdmonAccounts admonAccount) {
+        admonAccountsDao.delete(admonAccount);
+        return true;
+    }
 }

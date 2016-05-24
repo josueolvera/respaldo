@@ -105,7 +105,7 @@
                                     <div class="col-xs-12 details-header">
                                         <div class="col-xs-4"><strong>Tipo de solicitud</strong></div>
                                         <div class="col-xs-2"><strong>Prioridad</strong></div>
-                                        <div class="col-xs-3"><strong>Fecha de inicio</strong></div>
+                                        <div class="col-xs-3"><strong>Fecha de solicitud</strong></div>
                                         <div class="col-xs-3"><strong>Fecha de fin</strong></div>
                                     </div>
                                     <div class="col-xs-12 details-row">

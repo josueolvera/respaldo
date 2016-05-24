@@ -107,7 +107,10 @@ public class TicketServiceImpl implements TicketService {
     public Ticket changeTicketStatus(Integer idTicket, CTicketStatus ticketStatus) {
         Ticket ticket = ticketDao.findById(idTicket);
         ticket.setTicketStatus(ticketStatus);
-        ticket.setFechaFinal(LocalDateTime.now());
+
+        if (ticketStatus.getIdTicketStatus() == 4) {
+            ticket.setFechaFinal(LocalDateTime.now());
+        }
         return ticketDao.update(ticket);
     }
 

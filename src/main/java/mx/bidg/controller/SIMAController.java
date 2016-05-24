@@ -29,7 +29,7 @@ public class SIMAController {
     }
 
     @RequestMapping(value = "/ticket",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ModelAndView ticket(@RequestParam(name = "folio", required = true) String folio) {
+    public ModelAndView ticket(@RequestParam(name = "folio") String folio) {
         ModelAndView model = new ModelAndView();
         model.addObject("folio", folio);
         model.setViewName("Ticket");
