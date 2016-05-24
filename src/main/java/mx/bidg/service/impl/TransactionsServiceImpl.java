@@ -20,6 +20,29 @@ public class TransactionsServiceImpl implements TransactionsService {
     TransactionsDao transactionsDao;
 
     @Override
+    public Transactions findById(Integer id) {
+        return transactionsDao.findById(id);
+    }
+
+    @Override
+    public Transactions save(Transactions transaction) {
+        transactionsDao.save(transaction);
+        return transaction;
+    }
+
+    @Override
+    public Transactions update(Transactions transaction) {
+        transactionsDao.update(transaction);
+        return transaction;
+    }
+
+    @Override
+    public boolean delete(Transactions transaction) {
+        transactionsDao.delete(transaction);
+        return true;
+    }
+
+    @Override
     public List<Transactions> findAll() {
         return transactionsDao.findAll();
     }

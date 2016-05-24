@@ -23,4 +23,27 @@ public class BalancesServiceImpl implements BalancesService {
     public List<Balances> findAll() {
         return balancesDao.findAll();
     }
+
+    @Override
+    public Balances findById(Integer id) {
+        return balancesDao.findById(id);
+    }
+
+    @Override
+    public Balances save(Balances balance) {
+        balancesDao.save(balance);
+        return balance;
+    }
+
+    @Override
+    public Balances update(Balances balance) {
+        balancesDao.update(balance);
+        return balance;
+    }
+
+    @Override
+    public boolean delete(Balances balance) {
+        balancesDao.delete(balance);
+        return true;
+    }
 }

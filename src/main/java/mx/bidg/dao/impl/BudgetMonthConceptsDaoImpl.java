@@ -26,17 +26,21 @@ public class BudgetMonthConceptsDaoImpl extends AbstractDao<Integer, BudgetMonth
 
     @Override
     public BudgetMonthConcepts findById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return (BudgetMonthConcepts) createEntityCriteria()
+                .add(Restrictions.idEq(id))
+                .uniqueResult();
     }
 
     @Override
     public List<BudgetMonthConcepts> findAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return createEntityCriteria()
+                .list();
     }
 
     @Override
     public BudgetMonthConcepts update(BudgetMonthConcepts entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        modify(entity);
+        return entity;
     }
 
     @Override
