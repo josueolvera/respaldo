@@ -184,10 +184,10 @@
                     </div>
                 </form>
             </div>
-            <br>
-            <br>
             <div class="col-xs-offset-1 col-xs-10">
-                <h3 class="text-center"><strong>Consultar estado de ticket</strong></h3>
+                <br>
+                <br>
+                <h3 class="text-center">Consultar estado de ticket</h3>
                 <br>
                 <form class="form-inline text-center" v-on:submit.prevent="getTicketByFolio">
                     <div class="form-group">
@@ -225,8 +225,16 @@
                                     <div class="col-xs-12 details-row">
                                         <div class="col-xs-4"><p>{{ ticketFound.incidence.incidenceName }}</p></div>
                                         <div class="col-xs-2"><p>{{ ticketFound.priority.priorityName }}</p></div>
-                                        <div class="col-xs-3"><p>{{ ticketFound.fechaInicioFormats.dateTextLong }}</p></div>
-                                        <div class="col-xs-3"><p>{{ ticketFound.fechaFinalFormats.dateTextLong }}</p></div>
+                                        <div class="col-xs-3">
+                                            <p>
+                                                {{ ticketFound.fechaInicioFormats.dateTextLong }} - {{ ticketFound.fechaInicioFormats.time24 }}
+                                            </p>
+                                        </div>
+                                        <div class="col-xs-3">
+                                            <p>
+                                                {{ ticketFound.fechaFinalFormats.dateTextLong }} - {{ ticketFound.fechaFinalFormats.time24 }}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

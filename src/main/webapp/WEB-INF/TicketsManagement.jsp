@@ -249,8 +249,16 @@
                                     <div class="col-xs-12 details-row">
                                         <div class="col-xs-4"><p>{{ ticket.incidence.incidenceName }}</p></div>
                                         <div class="col-xs-2"><p>{{ ticket.priority.priorityName }}</p></div>
-                                        <div class="col-xs-3"><p>{{ ticket.fechaInicioFormats.dateTextLong }}</p></div>
-                                        <div class="col-xs-3"><p>{{ ticket.fechaFinalFormats.dateTextLong }}</p></div>
+                                        <div class="col-xs-3">
+                                            <p>
+                                                {{ ticket.fechaInicioFormats.dateTextLong }} - {{ ticket.fechaInicioFormats.time24 }}
+                                            </p>
+                                        </div>
+                                        <div class="col-xs-3">
+                                            <p>
+                                                {{ ticket.fechaFinalFormats.dateTextLong }} - {{ ticket.fechaFinalFormats.time24 }}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
