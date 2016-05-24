@@ -3,6 +3,7 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.TicketDao;
 import mx.bidg.model.Ticket;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -27,7 +28,9 @@ public class TicketDaoImpl extends AbstractDao<Integer,Ticket> implements Ticket
 
     @Override
     public List<Ticket> findAll() {
-        return createEntityCriteria().list();
+        return createEntityCriteria()
+                .addOrder( Order.asc("ticketStatus.idTicketStatus") )
+                .list();
     }
 
     @Override
