@@ -50,9 +50,14 @@
                         $('#askModal').modal('hide');
                     },
                     acceptAction:function (data) {
-                        this.question = '¿Estas suguro de que quieres cambiar el estado de este ticket?';
+                        this.question = '¿Estas suguro que quieres dar por terminado el ticket?';
                         this.currentTicket = data;
-                        $('#askModal').modal('show');
+
+                        if(this.currentTicket.ticketStatus.idTicketStatus == 4) {
+                            $('#askModal').modal('show');
+                        } else {
+                            this.changeTicketStatus();
+                        }
 
                     },
                     changeTicketStatus:function () {
@@ -77,26 +82,28 @@
                             }).error(function (data) {
 
                             });
-                        } else {
-                            if (this.priority != '') {
-                                this.$http.get(ROOT_URL + '/ticket/priority/' + this.priority.idPriority).success(function (data) {
-                                    this.tickets = data;
-                                }).error(function (data) {
-
-                                });
-                            } else {
-                                this.getTickets();
-                            }
-                            if (this.ticketStatus != '') {
-                                this.$http.get(ROOT_URL + '/ticket/ticket-status/' + this.ticketStatus.idTicketStatus).success(function (data) {
-                                    this.tickets = data;
-                                }).error(function (data) {
-
-                                });
-                            } else {
-                                this.getTickets();
-                            }
+                            return;
                         }
+
+                        if (this.priority != '') {
+                            this.$http.get(ROOT_URL + '/ticket/priority/' + this.priority.idPriority).success(function (data) {
+                                this.tickets = data;
+                            }).error(function (data) {
+
+                            });
+                            return;
+                        }
+                        if (this.ticketStatus != '') {
+                            this.$http.get(ROOT_URL + '/ticket/ticket-status/' + this.ticketStatus.idTicketStatus).success(function (data) {
+                                this.tickets = data;
+                            }).error(function (data) {
+
+                            });
+                            return;
+                        }
+
+                        this.getTickets();
+
                     },
                     getIncidences:function () {
                         this.$http.get(ROOT_URL + '/incidence').success(function (data) {
@@ -209,19 +216,19 @@
                 </div>
                 <div class="panel-group ticket-list">
                     <div class="ticket panel panel-default"
-                         v-for="ticket in tickets | filterBy correo" v-if="ticket.ticketStatus.idTicketStatus != 4">
+                         v-for="ticket in tickets | filterBy correo">
                         <div class="panel-heading">
                             <div class="row table-header">
                                 <div class="col-xs-2"><strong>Folio</strong></div>
                                 <div class="col-xs-2"><strong>Correo</strong></div>
                                 <div class="col-xs-6"><strong>Descripción</strong></div>
-                                <div class="col-xs-2"><strong>Status</strong></div>
+                                <div class="col-xs-2" v-if="ticket.ticketStatus.idTicketStatus != 4"><strong>Status</strong></div>
                             </div>
                             <div class="row table-row">
                                 <div class="col-xs-2"><p>{{ ticket.folio }}</p></div>
                                 <div class="col-xs-2"><p>{{ ticket.correo }}</p></div>
                                 <div class="col-xs-6"><p>{{ ticket.descripcionProblema }}</p></div>
-                                <div class="col-xs-2">
+                                <div class="col-xs-2" v-if="ticket.ticketStatus.idTicketStatus != 4">
                                     <select v-model="ticket.ticketStatus" class="form-control" @change="acceptAction(ticket)">
                                         <option v-for="ticketStatus in ticketStatusList" value="{{ticketStatus}}">
                                             {{ticketStatus.ticketStatusName}}
@@ -236,7 +243,7 @@
                                     <div class="col-xs-12 details-header">
                                         <div class="col-xs-4"><strong>Tipo de solicitud</strong></div>
                                         <div class="col-xs-2"><strong>Prioridad</strong></div>
-                                        <div class="col-xs-3"><strong>Fecha de inicio</strong></div>
+                                        <div class="col-xs-3"><strong>Fecha de solicitud</strong></div>
                                         <div class="col-xs-3"><strong>Fecha de fin</strong></div>
                                     </div>
                                     <div class="col-xs-12 details-row">
