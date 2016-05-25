@@ -157,7 +157,19 @@
                     monthChecked: [],
                     idAreaforModal: 0,
                     monthsOfConcept: {},
-                    budgetConceptShare: null
+                    budgetConceptShare: null,
+                    idConcepto: 0
+                },
+                computed: {
+                  totalPorcentaje: function()
+                  {
+                    var total= 0;
+                      this.distributorChecked.forEach(function(element)
+                      {
+                          total += parseFloat(element.percent);
+                      });
+                      return (isNaN(total))?0:total;
+                  }
                 },
                 methods:
                 {
@@ -580,6 +592,9 @@
                     },
                     showModalProrrateo: function(concepto, idArea)
                     {
+                        this.distributorChecked= [];
+                        this.monthChecked= [];
+                        this.monthsOfConcept= {};
                         this.conceptoProrrateo = concepto;
                         this.idAreaforModal= idArea;
                         this.getDistributors();
@@ -589,6 +604,7 @@
                     },
                     getMonthsConcept : function(idConcept)
                     {
+                       this.idConcepto = idConcept;
                         this.$http.get(ROOT_URL + "/budget-month-concepts/"+idConcept)
                                 .success(function (data)
                                 {
@@ -612,8 +628,10 @@
                         var self = this;
                         var request = [];
                         this.monthChecked.forEach(function (month) {
+
                             var distributorShare = [];
                             self.distributorChecked.forEach(function (distributor) {
+
                                 distributorShare.push({
                                     idBudgetMonthConcept: month.idBudgetMonthConcept,
                                     idDistributor: distributor.idDistributor,
@@ -622,8 +640,11 @@
                             });
                             request.push(distributorShare);
                         });
-                        this.$http.post(ROOT_URL + "/budget-concept-distributor", JSON.stringify(request)).then(function (response) {
-                            console.log(response);
+                        this.$http.post(ROOT_URL + "/budget-concept-distributor", JSON.stringify(request)).then(function (response)
+                        {
+                            showAlert("Información almacenada correctamente");
+                            this.monthChecked= [];
+                            this.fetchBudgetConceptShare(this.idConcepto);
                         }, function (response) {
                             console.log(response);
                         });
@@ -846,7 +867,8 @@
 
                                                 </div>
                                                 <div class="col-xs-3" style="padding-left: 0px; padding-right: 1px">
-                                                    <button type="button" class="btn btn-default" @click="showModalProrrateo(concepto, sucss.idArea)">
+                                                    <button type="button" class="btn btn-default"
+                                                      @click="showModalProrrateo(concepto, sucss.idArea)" v-if="concepto.idConcept>0">
                                                         <span class="glyphicon glyphicon-align-left"></span>
                                                     </button>
                                                 </div>
@@ -997,6 +1019,11 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div class="row">
+                                                  <div class="col-xs-12 text-left">
+                                                    <label> %  Total:  {{totalPorcentaje}}</label>
+                                                  </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1015,7 +1042,8 @@
                                 </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                                <button @click="saveBudgetShare" type="button" class="btn btn-success">Guardar</button>
+                                <button @click="saveBudgetShare" type="button"
+                                  class="btn btn-success" v-if="distributorChecked.length>0 && monthChecked.length > 0 && (totalPorcentaje == 100 ) ">Guardar</button>
                             </div>
                         </div>
                     </div>
