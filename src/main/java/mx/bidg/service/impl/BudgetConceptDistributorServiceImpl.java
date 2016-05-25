@@ -96,7 +96,9 @@ public class BudgetConceptDistributorServiceImpl implements BudgetConceptDistrib
 
             if (totalPercent.compareTo(BigDecimal.ONE) != 0) {
                 throw new ValidationException(
-                        "Porcentaje " + totalPercent + " es diferente de " + BigDecimal.ONE, "El porcentaje total debe ser igual a 100%", HttpStatus.BAD_REQUEST
+                        "Porcentaje " + totalPercent + " es diferente de " + BigDecimal.ONE,
+                        "El porcentaje total debe ser igual a 100%",
+                        HttpStatus.BAD_REQUEST
                 );
             }
         }
