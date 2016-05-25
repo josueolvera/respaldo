@@ -81,6 +81,7 @@ public class BudgetConceptDistributorServiceImpl implements BudgetConceptDistrib
             BigDecimal totalAmount = BigDecimal.ZERO;
             BigDecimal totalPercent = BigDecimal.ZERO;
 
+            budgetConceptDistributorDao.deleteByBudgetMonthConcept(budgetMonthConcept);
             for (JsonNode budgetPart : arrayNode) {
                 BigDecimal percent = budgetPart.get("percent").decimalValue();
                 totalPercent = totalPercent.add(percent);

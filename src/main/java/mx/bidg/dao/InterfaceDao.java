@@ -5,6 +5,8 @@
  */
 package mx.bidg.dao;
 
+import mx.bidg.model.BudgetMonthConcepts;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -13,15 +15,9 @@ import java.util.List;
  * @author sistemask
  */
 public interface InterfaceDao<T extends Serializable> {
-    
-    public T save(T entity);
-    
-    public T findById(int id);
-    
-    public List<T> findAll();
-    
-    public T update(T entity);
-    
-    public boolean delete(T entity);
-    
+    T save(T entity);
+    T findById(int id);
+    List<T> findAll();
+    T update(T entity);
+    boolean delete(T entity);
 }
