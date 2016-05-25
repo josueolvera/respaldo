@@ -867,7 +867,7 @@
 
                                                 </div>
                                                 <div class="col-xs-3" style="padding-left: 0px; padding-right: 1px">
-                                                    <button type="button" class="btn btn-default"
+                                                    <button type="button" class="btn btn-default" title="Prorrateo"
                                                       @click="showModalProrrateo(concepto, sucss.idArea)" v-if="concepto.idConcept>0">
                                                         <span class="glyphicon glyphicon-align-left"></span>
                                                     </button>
