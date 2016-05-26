@@ -274,12 +274,12 @@
                                         <div class="col-xs-2"><p>{{ ticket.priority.priorityName }}</p></div>
                                         <div class="col-xs-3">
                                             <p>
-                                                {{ ticket.fechaInicioFormats.dateTextLong }} - {{ ticket.fechaInicioFormats.time24 }}
+                                                {{ ticket.fechaInicioFormats.dateTextLong }} - {{ ticket.fechaInicioFormats.time12 }}
                                             </p>
                                         </div>
                                         <div class="col-xs-3">
                                             <p>
-                                                {{ ticket.fechaFinalFormats.dateTextLong }} - {{ ticket.fechaFinalFormats.time24 }}
+                                                {{ ticket.fechaFinalFormats.dateTextLong }} - {{ ticket.fechaFinalFormats.time12 }}
                                             </p>
                                         </div>
                                     </div>
