@@ -34,19 +34,18 @@ import javax.xml.bind.annotation.XmlTransient;
 public class CIncidence implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_INCIDENCE")
     private Integer idIncidence;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "INCIDENCE_NAME")
     private String incidenceName;
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "incidence",orphanRemoval = true)
-    private List<Ticket> tickets;
 
     public CIncidence() {
     }
@@ -70,14 +69,6 @@ public class CIncidence implements Serializable {
 
     public void setIncidenceName(String incidenceName) {
         this.incidenceName = incidenceName;
-    }
-
-    public List<Ticket> getTickets() {
-        return tickets;
-    }
-
-    public void setTickets(List<Ticket> tickets) {
-        this.tickets = tickets;
     }
 
     @Override

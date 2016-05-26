@@ -32,21 +32,24 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "C_TICKET_STATUS")
 public class CTicketStatus implements Serializable {
-
     private static final long serialVersionUID = 1L;
+
+    public static final CTicketStatus ABIERTO = new CTicketStatus(1);
+    public static final CTicketStatus EN_REVISION = new CTicketStatus(2);
+    public static final CTicketStatus ASIGNADO = new CTicketStatus(3);
+    public static final CTicketStatus CERRADO = new CTicketStatus(4);
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_TICKET_STATUS")
     private Integer idTicketStatus;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
     @Column(name = "TICKET_STATUS_NAME")
     private String ticketStatusName;
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "ticketStatus",orphanRemoval = true)
-    private List<Ticket> tickets;
 
     public CTicketStatus() {
     }
@@ -69,14 +72,6 @@ public class CTicketStatus implements Serializable {
 
     public void setTicketStatusName(String ticketStatusName) {
         this.ticketStatusName = ticketStatusName;
-    }
-
-    public List<Ticket> getTickets() {
-        return tickets;
-    }
-
-    public void setTickets(List<Ticket> tickets) {
-        this.tickets = tickets;
     }
 
     @Override

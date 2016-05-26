@@ -25,7 +25,7 @@
                 },
                 methods: {
                     getTicketByFolio:function () {
-                        this.$http.post(ROOT_URL + '/ticket/folio', this.folio).success(function (data) {
+                        this.$http.get(ROOT_URL + '/ticket/folio?folio=' + this.folio).success(function (data) {
                             this.ticket = data;
                         }).error(function (data) {
 
@@ -88,14 +88,14 @@
                         <div class="panel-heading">
                             <div class="row table-header">
                                 <div class="col-xs-2"><strong>Folio</strong></div>
-                                <div class="col-xs-2"><strong>Correo</strong></div>
-                                <div class="col-xs-6"><strong>Descripción</strong></div>
+                                <div class="col-xs-3"><strong>Solicitante</strong></div>
+                                <div class="col-xs-5"><strong>Descripción</strong></div>
                                 <div class="col-xs-2"><strong>Status</strong></div>
                             </div>
                             <div class="row table-row">
                                 <div class="col-xs-2"><p>{{ ticket.folio }}</p></div>
-                                <div class="col-xs-2"><p>{{ ticket.correo }}</p></div>
-                                <div class="col-xs-6"><p>{{ ticket.descripcionProblema }}</p></div>
+                                <div class="col-xs-3"><p>{{ ticket.user.dwEmployee.employee.fullName }}</p></div>
+                                <div class="col-xs-5"><p>{{ ticket.descripcionProblema }}</p></div>
                                 <div class="col-xs-2"><p>{{ ticket.ticketStatus.ticketStatusName }}</p></div>
                             </div>
                         </div>
@@ -113,12 +113,12 @@
                                         <div class="col-xs-2"><p>{{ ticket.priority.priorityName }}</p></div>
                                         <div class="col-xs-3">
                                             <p>
-                                                {{ ticket.fechaInicioFormats.dateTextLong }} - {{ ticket.fechaInicioFormats.time24 }}
+                                                {{ ticket.fechaInicioFormats.dateTextLong }} - {{ ticket.fechaInicioFormats.time12 }}
                                             </p>
                                         </div>
                                         <div class="col-xs-3">
                                             <p>
-                                                {{ ticket.fechaFinalFormats.dateTextLong }} - {{ ticket.fechaFinalFormats.time24 }}
+                                                {{ ticket.fechaFinalFormats.dateTextLong }} - {{ ticket.fechaFinalFormats.time12 }}
                                             </p>
                                         </div>
                                     </div>

@@ -5,6 +5,10 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import mx.bidg.config.JsonViews;
 import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
 
@@ -19,46 +23,78 @@ import javax.validation.constraints.Size;
  * @author gerardo8
  */
 @Entity
-@Table(name = "TICKET")
+@Table(name = "TICKET", uniqueConstraints = {
+        @UniqueConstraint(name = "UNIQUE_TICKET_FOLIO", columnNames = {"FOLIO"})
+})
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Ticket implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_TICKET")
+    @JsonView(JsonViews.Root.class)
     private Integer idTicket;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 25)
     @Column(name = "FOLIO")
+    @JsonView(JsonViews.Root.class)
     private String folio;
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 60)
-    @Column(name = "CORREO")
-    private String correo;
+
+    @Column(name = "ID_USER", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idUser;
+
+    @Column(name = "ID_INCIDENCE", updatable = false, insertable = false)
+    private Integer idIncidence;
+
+    @Column(name = "ID_PRIORITY", updatable = false, insertable = false)
+    private Integer idPriority;
+
+    @Column(name = "ID_TICKET_STATUS", insertable = false, updatable = false)
+    private Integer idTicketStatus;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 200)
     @Column(name = "DESCRIPCION_PROBLEMA")
+    @JsonView(JsonViews.Root.class)
     private String descripcionProblema;
+
     @Basic(optional = false)
     @NotNull
-    @Column(name = "FECHA_INICIO")
+    @Column(name = "FECHA_INICIO", updatable = false)
     @Convert(converter = DateTimeConverter.class)
+    @JsonView(JsonViews.Root.class)
     private LocalDateTime fechaInicio;
+
     @Column(name = "FECHA_FINAL")
     @Convert(converter = DateTimeConverter.class)
+    @JsonView(JsonViews.Root.class)
     private LocalDateTime fechaFinal;
+
+    @JoinColumn(name = "ID_USER", referencedColumnName = "ID_USER", updatable = false)
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private Users user;
+
     @JoinColumn(name = "ID_INCIDENCE", referencedColumnName = "ID_INCIDENCE")
     @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
     private CIncidence incidence;
+
     @JoinColumn(name = "ID_PRIORITY", referencedColumnName = "ID_PRIORITY")
     @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
     private CPriority priority;
+
     @JoinColumn(name = "ID_TICKET_STATUS", referencedColumnName = "ID_TICKET_STATUS")
     @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
     private CTicketStatus ticketStatus;
 
     public Ticket() {
@@ -68,9 +104,8 @@ public class Ticket implements Serializable {
         this.idTicket = idTicket;
     }
 
-    public Ticket(String folio, String correo, String descripcionProblema, LocalDateTime fechaInicio, LocalDateTime fechaFinal, CIncidence incidence, CPriority priority, CTicketStatus ticketStatus) {
+    public Ticket(String folio, String descripcionProblema, LocalDateTime fechaInicio, LocalDateTime fechaFinal, CIncidence incidence, CPriority priority, CTicketStatus ticketStatus) {
         this.folio = folio;
-        this.correo = correo;
         this.descripcionProblema = descripcionProblema;
         this.fechaInicio = fechaInicio;
         this.fechaFinal = fechaFinal;
@@ -95,12 +130,36 @@ public class Ticket implements Serializable {
         this.folio = folio;
     }
 
-    public String getCorreo() {
-        return correo;
+    public Integer getIdUser() {
+        return idUser;
     }
 
-    public void setCorreo(String correo) {
-        this.correo = correo;
+    public void setIdUser(Integer idUser) {
+        this.idUser = idUser;
+    }
+
+    public Integer getIdIncidence() {
+        return idIncidence;
+    }
+
+    public void setIdIncidence(Integer idIncidence) {
+        this.idIncidence = idIncidence;
+    }
+
+    public Integer getIdPriority() {
+        return idPriority;
+    }
+
+    public void setIdPriority(Integer idPriority) {
+        this.idPriority = idPriority;
+    }
+
+    public Integer getIdTicketStatus() {
+        return idTicketStatus;
+    }
+
+    public void setIdTicketStatus(Integer idTicketStatus) {
+        this.idTicketStatus = idTicketStatus;
     }
 
     public String getDescripcionProblema() {
@@ -157,6 +216,14 @@ public class Ticket implements Serializable {
 
     public void setTicketStatus(CTicketStatus ticketStatus) {
         this.ticketStatus = ticketStatus;
+    }
+
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
     }
 
     @Override

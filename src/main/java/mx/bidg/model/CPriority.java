@@ -34,19 +34,18 @@ import javax.xml.bind.annotation.XmlTransient;
 public class CPriority implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_PRIORITY")
     private Integer idPriority;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 20)
     @Column(name = "PRIORITY_NAME")
     private String priorityName;
-    @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "priority",orphanRemoval = true)
-    private List<Ticket> tickets;
 
     public CPriority() {
     }
@@ -69,14 +68,6 @@ public class CPriority implements Serializable {
 
     public void setPriorityName(String priorityName) {
         this.priorityName = priorityName;
-    }
-
-    public List<Ticket> getTickets() {
-        return tickets;
-    }
-
-    public void setTickets(List<Ticket> tickets) {
-        this.tickets = tickets;
     }
 
     @Override
