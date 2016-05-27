@@ -15,7 +15,6 @@ import java.util.List;
  * @author Rafael Viveros
  * Created on 8/12/15.
  */
-@SuppressWarnings("unchecked")
 @Repository
 public class StockDaoImpl extends AbstractDao<Integer, Stocks> implements StockDao {
     @Override
@@ -41,12 +40,14 @@ public class StockDaoImpl extends AbstractDao<Integer, Stocks> implements StockD
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Stocks> findAll() {
         return (List<Stocks>) createEntityCriteria().setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
                 .setFetchMode("propertiesList", FetchMode.JOIN).list();
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Stocks> findByDistributor(Integer idDistributor) {
         return (List<Stocks>) createEntityCriteria()
                 .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)

@@ -23,6 +23,8 @@ import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.time.LocalDateTime;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -156,6 +158,7 @@ public abstract class AbstractDao<PK extends Serializable, T> {
             try {
                 tracer.setInfo(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(entity));
             } catch (JsonProcessingException ex) {
+                Logger.getLogger("AbstractDao.globalTracer").log(Level.WARNING, ex.getMessage(), ex);
                 throw new ValidationException(ex.getMessage());
             }
             getSession().save(tracer);

@@ -18,15 +18,11 @@
                     this.fetchDistributors();
                     this.fetchAreas();
                     this.fetchDocumentTypes();
-                    this.fetchDocumentTypesRequired();
-                    this.fetchDocumentTypesNoRequired();
                     this.fetchValues();
                     this.fetchArticleStatus();
                     this.fetchHierarchy();
-                    this.getArticles();
                 },
                 data: {
-                    assign:false,
                     isSaving: false,
                     stockGroups: {},
                     selectOptions: {
@@ -34,18 +30,16 @@
                         areas: [],
                         attributes: [],
                         values: [],
-                        articleStatus:[],
+                        articleStatus: [],
                         employees: [],
                         hierarchy: [],
-                        documentTypes: [],
-                        documentTypesRequired: [],
-                        documentTypesNoRequired: []
+                        documentTypes: []
                     },
                     selectedOptions: {
                         area: null,
                         distributor: null
                     },
-                    historicalModal: {
+                    attachmentsModal: {
                         article: null,
                         fileInput: "file-type-"
                     },
@@ -60,94 +54,18 @@
                         selectedEmployee: null,
                         article: null
                     },
-                    newArticleModal: {
-                        selectAttr: null,
-                        selectValue: null,
-                        serialNumber: null,
-                        stockFolio: null,
-                        articleStatus: null,
-                        idArticleStatus:null,
-                        purchasePrice: null,
-                        employees: null,
-                        selectedEmployee: null,
-                        article: {
-                            properties : [],
-                        },
-                        articles: [],
-                        selected: {
-                            distributor: null,
-                            region: null,
-                            branch: null,
-                            area: null,
-                            dwEmployees:null
-                        },
-                    },
                     assignmentsModal: {
                         selected: {
                             distributor: null,
                             region: null,
                             branch: null,
-                            area: null,
-                            dwEmployees:null
+                            area: null
                         },
-                        fileInput: "file-type-",
                         article: null
                     },
                     attachmentsDownloadUrl: ROOT_URL + "/stock/attachments/download/"
                 },
                 methods: {
-                    validateNewArticleForm: function () {
-                        if (!this.newArticleModal.stockFolio) {
-                            return false;
-                        } else {
-                            if (!this.newArticleModal.serialNumber) {
-                                return false;
-                            } else {
-                                if (!this.newArticleModal.articleStatus) {
-                                    return false;
-                                } else {
-                                    if (!this.newArticleModal.purchasePrice) {
-                                        return false;
-                                    } else {
-                                        if (!this.newArticleModal.selected.distributor) {
-                                            return false;
-                                        } else {
-                                            if (!this.newArticleModal.selected.region) {
-                                                return false;
-                                            } else {
-                                                if (!this.newArticleModal.selected.branch) {
-                                                    return false;
-                                                } else {
-                                                    if (!this.newArticleModal.selected.area) {
-                                                        return false;
-                                                    } else {
-                                                        if (!this.newArticleModal.selected.dwEmployees) {
-                                                            return false;
-                                                        } else {
-                                                            return true;
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-
-                    },
-                    dontSeeAssignView: function () {
-                        this.assign = false;
-                    },
-                    seeAssignView: function () {
-                        this.assign = true;
-                    },
-                    getArticles : function () {
-                        this.$http.get(ROOT_URL + "/articles").success(function (data) {
-                            this.newArticleModal.articles = data;
-                        });
-                    },
                     groupBy: function (array, filter) {
                         var groups = {};
                         array.forEach(function (element) {
@@ -186,9 +104,6 @@
                             article.propertiesList = data;
                         });
                     },
-                    fetchStockPropertiesNewArticle: function (article,property) {
-                        article.properties.push(property);
-                    },
                     fetchStockDocuments: function (article) {
                         this.$http.get(ROOT_URL + "/stock/" + article.idStock + "/attachments").success(function (data) {
                             article.stockDocumentsList = data;
@@ -200,7 +115,7 @@
                                 ROOT_URL + "/stock/" + article.idStock + "/attachments/record"
                         ).success(function (data) {
                             Vue.set(article, "documentsRecord", data);
-//                            $("#historicalModal").modal("show");
+                            $("#attachmentsModal").modal("show");
                             this.isSaving = false;
                         }).error(function () {
                             showAlert("Permiso denegado", {type: 3});
@@ -251,37 +166,14 @@
                         });
                     },
                     fetchDocumentTypes: function () {
-                        this.$http.get(ROOT_URL + "/stock-document-types").success(function (data) {
+                        this.$http.get(ROOT_URL + "/document-types").success(function (data) {
                             this.selectOptions.documentTypes = data;
-                        });
-                    },
-                    fetchDocumentTypesRequired: function () {
-                        this.$http.get(ROOT_URL + "/stock-document-types/required").success(function (data) {
-                            this.selectOptions.documentTypesRequired = data
-                        });
-                    },
-                    fetchDocumentTypesNoRequired: function () {
-                        this.$http.get(ROOT_URL + "/stock-document-types/no-required").success(function (data) {
-                            this.selectOptions.documentTypesNoRequired = data;
                         });
                     },
                     fetchAttributes: function (idArticle) {
                         this.$http.get(ROOT_URL + "/attributes/" + idArticle).success(function (data) {
                             this.selectOptions.attributes = data;
                             this.editModal.selectAttr = $('#select-attribute').selectize({
-                                maxItems: 1,
-                                valueField: 'idAttribute',
-                                labelField: 'attributeName',
-                                searchField: 'attributeName',
-                                options: data,
-                                create: false
-                            });
-                        });
-                    },
-                    fetchAttributesNewArticle: function (idArticle) {
-                        this.$http.get(ROOT_URL + "/attributes/" + idArticle).success(function (data) {
-                            this.selectOptions.attributes = data;
-                            this.newArticleModal.selectAttr = $('#select-attribute2').selectize({
                                 maxItems: 1,
                                 valueField: 'idAttribute',
                                 labelField: 'attributeName',
@@ -310,29 +202,6 @@
                         this.$http.get(ROOT_URL + "/values").success(function (data) {
                             var self = this;
                             this.selectOptions.values = data;
-                            this.newArticleModal.selectValue = $('#select-value2').selectize({
-                                maxItems: 1,
-                                valueField: 'idValue',
-                                labelField: 'value',
-                                searchField: 'value',
-                                options: data,
-                                create: function (input, callback) {
-                                    self.$http.post(ROOT_URL + "/values", {
-                                        value: input
-                                    }).success(function (data){
-                                        callback(data);
-                                    }).error(function (){
-                                        callback();
-                                    });
-                                },
-                                render: {
-                                    option_create: function(data, escape) {
-                                        return '<div data-selectable class="create">' +
-                                                'Agregar <strong>' + escape(data.input) + '</strong>' +
-                                                '</div>'
-                                    }
-                                }
-                            });
                             this.editModal.selectValue = $('#select-value').selectize({
                                 maxItems: 1,
                                 valueField: 'idValue',
@@ -376,15 +245,7 @@
                             this.isSaving = false;
                         }).error(function () {
                             this.isSaving = false;
-                            showAlert("No se pudo elimnar la propiedad, intente nuevamente", {type:3});
-                        });
-                    },
-                    addProperties: function (article,properties) {
-                        this.$http.post(ROOT_URL + "/stock/" + article.idStock + "/propertiesList", properties).success(function () {
-                            this.isSaving = false;
-                        }).error(function () {
-                            this.isSaving = false;
-                            showAlert("No se pudo agregar la propiedad, intente nuevamente", {type:3})
+                            showAlert("Ha habido un problema con su solicitud, intente nuevamente", {type:3});
                         });
                     },
                     addProperty: function (article) {
@@ -414,36 +275,10 @@
                             this.isSaving = false;
                         }).error(function () {
                             this.isSaving = false;
-                            showAlert("No se pudo agregar la propiedad, intente nuevamente", {type:3})
+                            showAlert("Ha habido un problema con su solicitud, intente nuevamente", {type:3})
                         });
                     },
-                    addPropertyNewArticle: function (article) {
-
-                        this.isSaving = true;
-                        var idAttr = this.newArticleModal.selectAttr[0].selectize.getValue();
-                        var idVal = this.newArticleModal.selectValue[0].selectize.getValue();
-                        var property = {
-                            value: {
-                                idValue: idVal,
-                                value: this.newArticleModal.selectValue[0].selectize.getOption(idVal).text()
-                            },
-                            attributesArticles: {
-                                idArticle: article.idArticle,
-                                idAttribute: idAttr,
-                                attributes: {
-                                    idAttribute: idAttr,
-                                    attributeName: this.newArticleModal.selectAttr[0].selectize.getOption(idAttr).text()
-                                }
-                            }
-                        };
-                        this.newArticleModal.selectAttr[0].selectize.clear();
-                        this.newArticleModal.selectValue[0].selectize.clear();
-                        this.newArticleModal.article.properties = [];
-//                        this.fetchStockPropertiesNewArticle(article,property);
-                        this.newArticleModal.article.properties.push(property);
-                        this.isSaving = false;
-                    },
-                    uploadFilesAssignments: function (article) {
+                    uploadAttachments: function (article) {
                         this.isSaving = true;
                         var form = document.getElementById("attachments-form");
                         this.$http.post(ROOT_URL + "/stock/" + article.idStock + "/attachments", new FormData(form)).success(function () {
@@ -457,49 +292,17 @@
                             showAlert(data.error.message, {type:3})
                         });
                     },
-                    uploadFilesNewArticleRequired: function (article) {
-                        this.isSaving = true;
-                        var form = document.getElementById("attachments-form-required");
-                        this.$http.post(ROOT_URL + "/stock/" + article.idStock + "/attachments", new FormData(form)).success(function () {
-                            form.reset();
-//                            this.fetchStockDocuments(article);
-//                            this.fetchStockDocumentsRecord(article);
-                        }).error(function (data) {
-                            this.isSaving = false;
-                            form.reset();
-                            showAlert(data.error.message, {type:3})
-                        });
-                    },
-                    uploadFilesNewArticleNoRequired: function (article) {
-                        this.isSaving = true;
-                        var form = document.getElementById("attachments-form-no-required");
-                        this.$http.post(ROOT_URL + "/stock/" + article.idStock + "/attachments", new FormData(form)).success(function () {
-                            form.reset();
-//                            this.fetchStockDocuments(article);
-//                            this.fetchStockDocumentsRecord(article);
-                        }).error(function (data) {
-                            this.isSaving = false;
-                            form.reset();
-                            showAlert(data.error.message, {type:3})
-                        });
-                    },
                     distributorChanged: function () {
                         this.assignmentsModal.selected.region = null;
                         this.assignmentsModal.selected.branch = null;
                         this.assignmentsModal.selected.area = null;
-                        this.assignmentsModal.selected.dwEmployees = null;
                     },
                     regionChanged: function () {
                         this.assignmentsModal.selected.branch = null;
                         this.assignmentsModal.selected.area = null;
-                        this.assignmentsModal.selected.dwEmployees = null;
                     },
                     branchChanged: function () {
                         this.assignmentsModal.selected.area = null;
-                        this.assignmentsModal.selected.dwEmployees = null;
-                    },
-                    areaChanged: function () {
-                        this.assignmentsModal.selected.dwEmployees = null;
                     },
                     validateFile: function (event) {
                         if (! event.target.files[0].name.match(/(\.jpg|\.jpeg|\.pdf|\.png)$/i)) {
@@ -515,8 +318,8 @@
                             return item;
                         }
                     },
-                    showHistoricalModal: function (article) {
-                        this.historicalModal.article = article;
+                    showAttachmentsModal: function (article) {
+                        this.attachmentsModal.article = article;
                         this.fetchStockDocumentsRecord(article);
                     },
                     showEditArticleModal: function (article) {
@@ -525,7 +328,9 @@
                         this.editModal.stockFolio = article.stockFolio;
                         this.editModal.articleStatus = article.articleStatus;
                         this.editModal.purchasePrice = article.purchasePrice;
-                        this.editModal.selectedEmployee = article.stockEmployeeAssignmentsList[0].employee;
+                        if (article.stockEmployeeAssignmentsList[0]) {
+                            this.editModal.selectedEmployee = article.stockEmployeeAssignmentsList[0].employee;
+                        }
                         this.fetchAttributes(article.article.idArticle);
                         this.fetchEmployees(article.idDwEnterprises);
                         $("#editModal").modal("show");
@@ -538,9 +343,9 @@
                         this.editModal.selectAttr[0].selectize.destroy();
                         $("#editModal").modal("hide");
                     },
-                    closeHistoricalModal: function () {
+                    closeAttachmentsModal: function () {
                         document.getElementById("attachments-form").reset();
-                        $("#historicalModal").modal("hide");
+                        $("#attachmentsModal").modal("hide");
                     },
                     closeAssignmentsModal: function () {
                         $("#assignmentsModal").modal("hide");
@@ -560,7 +365,7 @@
                             article.stockFolio = this.editModal.stockFolio;
                             article.articleStatus = this.editModal.articleStatus;
                             article.purchasePrice = this.editModal.purchasePrice;
-                            article.stockEmployeeAssignmentsList[0].employee = this.editModal.selectedEmployee;
+                            this.buildArticle(article);
                             this.isSaving = false;
                             showAlert("Articulo modificado con exito", {type: 1});
                         }).error(function (data) {
@@ -568,64 +373,23 @@
                             showAlert(data.error.message, {type: 3});
                         });
                     },
-                    saveNewStockArticle: function () {
-                        this.isSaving = true;
-
-                        if (this.newArticleModal.selected.dwEmployees.employee.idEmployee) {
-                            this.newArticleModal.idArticleStatus = 2;
-                        } else {
-                            this.newArticleModal.idArticleStatus = 1;
-                        }
-                        this.$http.post(ROOT_URL + "/stock", {
-
-
-                            idArticleStatus: this.newArticleModal.idArticleStatus,
-
-                            serialNumber: this.newArticleModal.serialNumber,
-                            stockFolio: this.newArticleModal.stockFolio,
-                            purchasePrice: this.newArticleModal.purchasePrice,
-                            idArticle: this.newArticleModal.article.idArticle,
-                            properties:this.newArticleModal.article.properties,
-                            idEmployee:this.newArticleModal.selected.dwEmployees.employee.idEmployee,
-                            idDwEnterprise:this.newArticleModal.selected.area.dwEnterprise.idDwEnterprise
-                        }).success(function (data) {
-                            this.isSaving = false;
-                            this.uploadFilesNewArticleRequired(data);
-                            this.uploadFilesNewArticleNoRequired(data);
-                            this.newArticleModal.article.properties.forEach(function (property) {
-
-                            });
-//                            this.addProperties(data,)
-                            showAlert("Registro exitoso");
-                            this.closeNewArticleModal();
-                        }).error(function (data) {
-                            this.isSaving = false;
-                        })
-                    },
-                    saveStockAssignment: function (article,idEmployee) {
+                    saveStockAssignment: function (article) {
                         if (this.assignmentsModal.selected.area == null) {
                             showAlert("Distribudor, region, sucursal y area son requeridos", {type:3});
                             return;
                         }
                         this.isSaving = true;
-                        this.$http.post(ROOT_URL + "/stock/" + article.idStock + "/assignments/" + idEmployee, {
+                        this.$http.post(ROOT_URL + "/stock/" + article.idStock + "/assignments", {
                             idDwEnterprise: this.assignmentsModal.selected.area.dwEnterprise.idDwEnterprise
                         }).success(function () {
                             this.isSaving = false;
                             showAlert("Asignación exitosa");
                             this.fetchStock(this.selectedOptions.distributor);
-                            this.uploadFilesAssignments(article);
                             this.closeAssignmentsModal();
                         }).error(function (data) {
                             this.isSaving = false;
                             showAlert(data.error.message, {type:3});
                         })
-                    },
-                    showNewArticleModal: function () {
-                        $("#newArticleModal").modal("show");
-                    },
-                    closeNewArticleModal: function () {
-                        $("#newArticleModal").modal("hide");
                     }
                 }
             });
@@ -647,57 +411,40 @@
         <div id="content">
             <div class="col-lg-12"><h2 class="text-center">Inventario</h2></div>
             <div class="col-lg-12">
-                <div class="col-md-2 col-xs-6">
+                <div class="col-md-3 col-xs-6">
+                    <label>Distribuidor</label>
                     <select v-model="selectedOptions.distributor" class="form-control"
-                            @change="fetchStock(selectedOptions.distributor)"
-                            data-toggle="tooltip" data-placement="top" title="Selecciona un distribuidor">
+                            @change="fetchStock(selectedOptions.distributor)">
                         <option v-for="distributor in selectOptions.distributors"
                                 :value="distributor">
                                 {{ distributor.distributorName }}
                         </option>
                     </select>
                 </div>
-                <div class="col-md-2 col-xs-6">
+                <div class="col-md-3 col-xs-6">
+                    <label>Area</label>
                     <select v-model="selectedOptions.area" class="form-control"
                             @change="attachOnScreen"
-                            :disabled="selectOptions.areas.length < 2"
-                            data-toggle="tooltip" data-placement="top" title="Selecciona una área">
-                        <option value="0" selected>Todas las Áreas</option>
+                            :disabled="selectOptions.areas.length < 2">
+                        <option value="0" selected>Todas</option>
                         <option v-for="area in selectOptions.areas"
                                 :value="area">
                                 {{ area.areaName }}
                         </option>
                     </select>
                 </div>
-                <div class="col-md-1 col-xs-6">
-                    <button class="btn btn-default" @click="showNewArticleModal"
-                            data-toggle="tooltip" data-placement="top" title="Añadir artículo">
-                        <span class="glyphicon glyphicon-plus"></span>
-                    </button>
+                <div style="visibility: hidden" class="col-md-3 col-xs-6">
+                    <label>Region</label>
+                    <select class="form-control"></select>
                 </div>
-                <div style="visibility: hidden" class="col-md-2 col-xs-6">
-                    <select class="form-control"
-                            data-toggle="tooltip" data-placement="top" title="Selecciona una región">
-                            </select>
-                </div>
-                <div style="visibility: hidden" class="col-md-2 col-xs-6">
-                    <select class="form-control"
-                            data-toggle="tooltip" data-placement="top" title="Selecciona una sucursal">
-
-                    </select>
-                </div>
-                <div style="visibility: hidden" class="col-md-1 col-xs-6">
-                    <button class="btn btn-dafault"
-                            data-toggle="tooltip" data-placement="top" title="Buscar artículo">
-                        <span class="glyphicon glyphicon-search"></span>
-                    </button>
+                <div style="visibility: hidden" class="col-md-3 col-xs-6">
+                    <label>Sucursal</label>
+                    <select class="form-control"></select>
                 </div>
             </div>
             <div class="stock-groups col-xs-12">
                 <div v-for="stock in stockGroups | filterBy areaFilter" class="">
-                    <div class="text-center col-xs-12">
-                        <h4>{{ stock[0].dwEnterprises.branch.branchShort }} - {{ stock[0].dwEnterprises.area.areaName }}</h4>
-                    </div>
+                    <div class="text-center col-xs-12"><h4>{{ stock[0].dwEnterprises.area.areaName }}</h4></div>
                     <div class="col-xs-12 panel-group">
                         <div v-for="article in stock" @build="buildArticle(article)"
                              class="lazy panel panel-default">
@@ -709,11 +456,11 @@
                                             <p>{{ article.article.articleName }}</p>
                                         </div>
                                         <div class="col-md-3 col-xs-6">
-                                            <p><strong>No. de Serie</strong></p>
+                                            <p><strong>No. de serie</strong></p>
                                             <p>{{ article.serialNumber }}</p>
                                         </div>
                                         <div class="col-md-3 col-xs-6">
-                                            <p><strong>Fecha de alta</strong></p>
+                                            <p><strong>Fecha de ingreso</strong></p>
                                             <p>{{ article.creationDateFormats.dateNumber }}</p>
                                         </div>
                                         <div class="col-md-3 col-xs-6">
@@ -727,13 +474,13 @@
                                         </div>
                                     </div>
                                     <div class="col-xs-2">
-                                        <button @click="showEditArticleModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Editar artículo">
+                                        <button @click="showEditArticleModal(article)" class="btn btn-default">
                                             <span class="glyphicon glyphicon-pencil"></span>
                                         </button>
-                                        <button @click="showHistoricalModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Adjuntar archivos">
-                                            <span class="glyphicon glyphicon-book"></span>
+                                        <button @click="showAttachmentsModal(article)" class="btn btn-default">
+                                            <span class="glyphicon glyphicon-paperclip"></span>
                                         </button>
-                                        <button @click="showAssignmentsModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Reasignar artículo">
+                                        <button @click="showAssignmentsModal(article)" class="btn btn-default">
                                             <span class="glyphicon glyphicon-user"></span>
                                         </button>
                                     </div>
@@ -755,7 +502,7 @@
                                                 <td>{{ article.articleStatus.articleStatus }}</td>
                                             </tr>
                                             <tr>
-                                                <td>Folio de Inventario</td>
+                                                <td>Folio de inventario</td>
                                                 <td>{{ article.stockFolio }}</td>
                                             </tr>
                                             <tr>
@@ -791,108 +538,101 @@
                 </div>
             </div>
             <%-- Modal para carga de archivos adjuntos --%>
-            <div id="historicalModal" class="modal fade" data-backdrop="static" data-keyboard="false">
+            <div id="attachmentsModal" class="modal fade" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button @click.prevent="closeHistoricalModal" class="close"><span aria-hidden="true">&times;</span>
+                            <button @click.prevent="closeAttachmentsModal" class="close"><span aria-hidden="true">&times;</span>
                             </button>
-                            <h3 class="modal-title">Historial</h3>
+                            <h4 class="modal-title">Documentos adjuntos</h4>
                         </div>
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-4 col-xs-6">
-                                    <label>Artículo </label>
-                                    {{ historicalModal.article.article.articleName }}
+                                    <label>Artículo: </label>
+                                    {{ attachmentsModal.article.article.articleName }}
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>No. de Serie </label>
-                                    {{ historicalModal.article.serialNumber }}
+                                    <label>No. de Serie: </label>
+                                    {{ attachmentsModal.article.serialNumber }}
                                 </div>
                                 <div class="col-md-4 col-xs-12">
-                                    <label>Asignado a </label>
-                                    {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
-                                    {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
-                                    {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
-                                    {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}
+                                    <label>Asignado a: </label>
+                                    {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
+                                    {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
+                                    {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
+                                    {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}
                                 </div>
                             </div>
-                            <div class="flex-row flex-content">
-                                <hr>
-                                <h4 class="text-center">Historial de asignaciones</h4>
+                            <hr>
+                            <form id="attachments-form"
+                                  method="post" enctype="multipart/form-data">
                                 <table class="table table-striped">
                                     <thead>
-                                    <tr>
-                                        <th>Asignado a</th>
-                                        <th>Distribuidor</th>
-                                        <th>Región</th>
-                                        <th>Sucursal</th>
-                                        <th>Área</th>
-                                        <th>Fecha de alta</th>
-                                    </tr>
+                                        <tr>
+                                            <th>Documento</th>
+                                            <th>Documento actual</th>
+                                            <th>Fecha de envío</th>
+                                            <th>Nuevo documento</th>
+                                        </tr>
                                     </thead>
-                                    <tr class="success">
+                                    <tr v-for="docType in selectOptions.documentTypes">
+                                        <td>{{ docType.documentName }}</td>
                                         <td>
-                                            {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
-                                            {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
-                                            {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
-                                            {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}
-                                        </td>
-                                        <td>{{ historicalModal.article.dwEnterprises.distributor.distributorName }}</td>
-                                        <td>{{ historicalModal.article.dwEnterprises.region.regionName }}</td>
-                                        <td>{{ historicalModal.article.dwEnterprises.branch.branchName }}</td>
-                                        <td>{{ historicalModal.article.dwEnterprises.area.areaName }}</td>
-                                        <td>
-                                            {{ historicalModal.article.stockEmployeeAssignmentsList[0].assignmentDateFormats.dateNumber }}
-                                            <span class="label label-success">Actual</span>
-                                        </td>
-                                    </tr>
-                                    <tr v-for="assignment in historicalModal.article.assignmentsRecord">
-                                        <td>
-                                            {{ assignment.employee.firstName }}
-                                            {{ assignment.employee.middleName }}
-                                            {{ assignment.employee.parentalLast }}
-                                            {{ assignment.employee.motherLast }}
-                                        </td>
-                                        <td>{{ assignment.dwEnterprises.distributor.distributorName }}</td>
-                                        <td>{{ assignment.dwEnterprises.region.regionName }}</td>
-                                        <td>{{ assignment.dwEnterprises.branch.branchName }}</td>
-                                        <td>{{ assignment.dwEnterprises.area.areaName }}</td>
-                                        <td>{{ assignment.assignmentDateFormats.dateNumber }}</td>
-                                    </tr>
-                                </table>
-                            </div>
-                            <div class="flex-row flex-content">
-                                <hr>
-                                <h4 class="text-left">Historial de Documentos</h4>
-                                <table class="table table-striped text-left">
-                                    <thead>
-                                    <tr>
-                                        <th>Documento</th>
-                                        <th>Archivo</th>
-                                        <th>Fecha de Envío</th>
-                                    </tr>
-                                    </thead>
-                                    <tr v-for="document in historicalModal.article.documentsRecord"
-                                        v-if="document.currentDocument == 0">
-                                        <td>{{ document.documentType.documentName }}</td>
-                                        <td>
-                                            <a :href="attachmentsDownloadUrl + document.idStockDocument">
-                                                {{ document.documentName }}
+                                            <a v-if="attachmentsModal.article.stockDocumentsList[$index]"
+                                               :href="attachmentsDownloadUrl + attachmentsModal.article.stockDocumentsList[$index].idStockDocument">
+                                                {{ attachmentsModal.article.stockDocumentsList[$index].documentName }}
                                             </a>
                                         </td>
                                         <td>
-                                            {{ document.uploadingDateFormats.dateNumber }},
-                                            {{ document.uploadingDateFormats.time12 }}
+                                            {{ attachmentsModal.article.stockDocumentsList[$index].uploadingDateFormats.dateNumber }},
+                                            {{ attachmentsModal.article.stockDocumentsList[$index].uploadingDateFormats.time12 }}
+                                        </td>
+                                        <td>
+                                            <input @change="validateFile($event)" type="file" class="form-control"
+                                                   :disabled="isSaving"
+                                                   :name="attachmentsModal.fileInput + docType.idDocumentType">
                                         </td>
                                     </tr>
                                 </table>
-                            </div>
+                                <div v-if="isSaving" class="progress">
+                                    <div class="progress-bar progress-bar-striped active" style="width: 100%"></div>
+                                </div>
+                                <hr />
+                                <div class="text-right">
+                                    <button @click.prevent="closeAttachmentsModal" :disabled="isSaving" class="btn btn-default">Cancelar</button>
+                                    <button @click.prevent="uploadAttachments(attachmentsModal.article)"
+                                            :disabled="isSaving"
+                                            class="btn btn-success">
+                                        Guardar
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                         <div class="modal-footer">
-                            <button @click.prevent="closeHistoricalModal" :disabled="isSaving" class="btn btn-default">
-                                Salir
-                            </button>
+                            <h4 class="text-left">Historial de Documentos</h4>
+                            <table class="table table-striped text-left">
+                                <thead>
+                                    <tr>
+                                        <th>Documento</th>
+                                        <th>Archivo</th>
+                                        <th>Fecha de envío</th>
+                                    </tr>
+                                </thead>
+                                <tr v-for="document in attachmentsModal.article.documentsRecord"
+                                    v-if="document.currentDocument == 0">
+                                    <td>{{ document.documentType.documentName }}</td>
+                                    <td>
+                                        <a :href="attachmentsDownloadUrl + document.idStockDocument">
+                                            {{ document.documentName }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        {{ document.uploadingDateFormats.dateNumber }},
+                                        {{ document.uploadingDateFormats.time12 }}
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -904,23 +644,43 @@
                         <div class="modal-header">
                             <button class="close" @click="closeEditModal()"><span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title">Modificación de Artículo</h4>
+                            <h4 class="modal-title">Modificaciar articulo</h4>
                         </div>
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-4 col-xs-6">
-                                    <label>Artículo </label>
+                                    <label>Artículo: </label>
                                     {{ editModal.article.article.articleName }}
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>No. de Serie </label>
+                                    <label>No. de Serie: </label>
                                     {{ editModal.article.serialNumber }}
+                                </div>
+                                <div class="col-md-4 col-xs-12">
+                                    <label>Asignado a: </label>
+                                    {{ editModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
+                                    {{ editModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
+                                    {{ editModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
+                                    {{ editModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}
                                 </div>
                             </div>
                             <hr />
                             <div class="row line">
+                                <div class="col-md-8 col-xs-12">
+                                    <label>Asignar a:</label>
+                                    <select v-model="editModal.selectedEmployee.idEmployee"
+                                            :disabled="isSaving" class="form-control">
+                                        <option v-for="employee in editModal.employees"
+                                                :value="employee.idEmployee">
+                                                {{ employee.firstName }}
+                                                {{ employee.middleName }}
+                                                {{ employee.parentalLast }}
+                                                {{ employee.motherLast }}
+                                            </option>
+                                    </select>
+                                </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>No. de Serie</label>
+                                    <label>No. de serie</label>
                                     <input v-model="editModal.serialNumber"
                                            :disabled="isSaving" type="text" class="form-control">
                                 </div>
@@ -930,7 +690,7 @@
                                            :disabled="isSaving" type="text" class="form-control">
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>Estado de Artículo</label>
+                                    <label>Estado de artículo</label>
                                     <select v-model="editModal.articleStatus"
                                             :disabled="isSaving" class="form-control">
                                         <option v-for="status in selectOptions.articleStatus"
@@ -938,7 +698,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>Precio de Compra</label>
+                                    <label>Precio de compra</label>
                                     <input v-model="editModal.purchasePrice"
                                            :disabled="isSaving" type="text" class="form-control">
                                 </div>
@@ -955,8 +715,7 @@
                                             <td class="col-xs-2">
                                                 <button @click="removeProperty(editModal.article, property)"
                                                         :disabled="isSaving"
-                                                        class="btn btn-default"
-                                                        data-toggle="tooltip" data-placement="top" title="Eliminar Propiedad">
+                                                        class="btn btn-default">
                                                     <span class="glyphicon glyphicon-remove"></span>
                                                 </button>
                                             </td>
@@ -977,8 +736,7 @@
                                     <div class="col-xs-2">
                                         <button @click="addProperty(editModal.article)"
                                                 :disabled="isSaving"
-                                                class="btn btn-default" style="margin-top: 2.5rem"
-                                                data-toggle="tooltip" data-placement="top" title="Agregar Propiedad">
+                                                class="btn btn-default" style="margin-top: 2.5rem">
                                             <span class="glyphicon glyphicon-plus"></span>
                                         </button>
                                     </div>
@@ -999,24 +757,24 @@
             <%-- Modal de asignaciones --%>
             <div id="assignmentsModal" class="modal fade" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog modal-lg" style="height: 90%;">
-                    <div class="modal-content">
-                        <div class="modal-header">
+                    <div class="modal-content flex-box">
+                        <div class="modal-header flex-row flex-header">
                             <button class="close" @click="closeAssignmentsModal"><span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title">Modificar Asignación</h4>
+                            <h4 class="modal-title">Modificaciar asignacion</h4>
                         </div>
-                        <div class="modal-body">
-                            <div class="row">
+                        <div class="modal-body flex-box">
+                            <div class="row flex-row flex-header">
                                 <div class="col-md-4 col-xs-6">
-                                    <label>Artículo </label>
+                                    <label>Artículo: </label>
                                     {{ assignmentsModal.article.article.articleName }}
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>No. de Serie </label>
+                                    <label>No. de Serie: </label>
                                     {{ assignmentsModal.article.serialNumber }}
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>Folio de Inventario </label>
+                                    <label>Folio de inventario: </label>
                                     {{ assignmentsModal.article.stockFolio }}
                                 </div>
                                 <div class="col-xs-12"><label>Asignar a</label></div>
@@ -1031,7 +789,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-3 col-xs-6">
-                                    <label>Región</label>
+                                    <label>Region</label>
                                     <select v-model="assignmentsModal.selected.region" class="form-control"
                                             @change="regionChanged" :disabled="assignmentsModal.selected.distributor == null">
                                         <option v-for="region in assignmentsModal.selected.distributor.subLevels"
@@ -1051,9 +809,9 @@
                                     </select>
                                 </div>
                                 <div class="col-md-3 col-xs-6">
-                                    <label>Área</label>
+                                    <label>Area</label>
                                     <select v-model="assignmentsModal.selected.area" class="form-control"
-                                            @change="areaChanged" :disabled="assignmentsModal.selected.branch == null">
+                                            @change="" :disabled="assignmentsModal.selected.branch == null">
                                         <option v-for="area in assignmentsModal.selected.branch.subLevels"
                                                 :value="area">
                                             {{ area.name }}
@@ -1061,257 +819,56 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-3 col-xs-6">
-                                    <label>Empleado / Almacén</label>
-                                    <select v-model="assignmentsModal.selected.dwEmployees" class="form-control"
-                                            :disabled="assignmentsModal.selected.area == null">
-                                        <option v-for="dwEmployees in assignmentsModal.selected.area.dwEnterprise.dwEmployeesList"
-                                                :value="dwEmployees">
-                                            {{ dwEmployees.employee.fullName }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                            <hr>
-                            <form id="attachments-form"
-                                  method="post" enctype="multipart/form-data">
+                            <div class="flex-row flex-content">
                                 <table class="table table-striped">
                                     <thead>
-                                    <tr>
-                                        <th>Documento</th>
-                                        <th>Nuevo Documento</th>
-                                    </tr>
-                                    </thead>
-                                    <tr v-for="docType in selectOptions.documentTypes">
-                                        <td>{{ docType.documentName }}</td>
-                                        <td>
-                                            <input @change="validateFile($event)" type="file" class="form-control"
-                                                   :disabled="isSaving"
-                                                   :name="assignmentsModal.fileInput + docType.idDocumentType"
-                                                   accept="application/pdf,
-                                                         image/png,image/jpg,image/jpeg,">
-                                        </td>
-                                    </tr>
-                                </table>
-                                <div v-if="isSaving" class="progress">
-                                    <div class="progress-bar progress-bar-striped active" style="width: 100%"></div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="text-right modal-footer flex-footer">
-                            <button :disabled="isSaving" class="btn btn-default" @click="closeAssignmentsModal">
-                                Cancelar
-                            </button>
-                            <button @click="saveStockAssignment(assignmentsModal.article,assignmentsModal.selected.dwEmployees.employee._id)"
-                                    :disabled="isSaving"
-                                    class="btn btn-success">
-                                Guardar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-                <%--modal de nuevo articulo--%>
-            <div id="newArticleModal" class="modal fade" data-backdrop="static" data-keyboard="false">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button class="close" @click="closeNewArticleModal()"><span aria-hidden="true">&times;</span>
-                            </button>
-                            <h4 class="modal-title">Nuevo de Artículo </h4>
-                            <label>Folio: {{newArticleModal.stockFolio}}</label>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row line">
-                                <div class="col-md-4 col-xs-6">
-                                    <label>No. de Serie</label>
-                                    <input v-model="newArticleModal.serialNumber"
-                                           :disabled="isSaving" type="text" class="form-control">
-                                </div>
-                                <div class="col-md-4 col-xs-6">
-                                    <label>Precio de Compra</label>
-                                    <input v-model="newArticleModal.purchasePrice"
-                                           :disabled="isSaving" type="text" class="form-control">
-                                </div>
-                                <div class="col-md-4 col-xs-6">
-                                    <label>Tipo de producto</label>
-                                    <select v-model="newArticleModal.article" @change="fetchAttributesNewArticle(newArticleModal.article.idArticle)"
-                                            :disabled="isSaving" class="form-control">
-                                        <option v-for="article in newArticleModal.articles"
-                                                :value="article">
-                                            {{ article.articleName }}
-                                        </option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row line">
-                                <div class="text-center line col-xs-12"><strong>Propiedades</strong></div>
-                                <div class="col-xs-12 col-md-8 col-md-push-2">
-                                    <table class="table table-striped line">
-                                        <tr v-for="property in newArticleModal.article.properties">
-                                            <td class="col-xs-5">
-                                                {{ property.attributesArticles.attributes.attributeName }}
-                                            </td>
-                                            <td class="col-xs-5">{{ property.value.value }}</td>
-                                            <td class="col-xs-2">
-                                                <button @click="removeProperty(newArticleModal.article, property)"
-                                                        :disabled="isSaving"
-                                                        class="btn btn-default"
-                                                        data-toggle="tooltip" data-placement="top" title="Eliminar Propiedad">
-                                                    <span class="glyphicon glyphicon-remove"></span>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-12 col-md-8 col-md-push-2">
-                                    <div class="col-xs-5">
-                                        <label>Atributo</label>
-                                        <select id="select-attribute2" class="form-control"></select>
-                                    </div>
-                                    <div class="col-xs-5">
-                                        <label>Valor</label>
-                                        <select id="select-value2" class="form-control"></select>
-                                    </div>
-                                    <div class="col-xs-2">
-                                        <button @click="addPropertyNewArticle(newArticleModal.article)"
-                                                :disabled="isSaving"
-                                                class="btn btn-default" style="margin-top: 2.5rem"
-                                                data-toggle="tooltip" data-placement="top" title="Agregar Propiedad">
-                                            <span class="glyphicon glyphicon-plus"></span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <form id="attachments-form-required"
-                                  method="post" enctype="multipart/form-data">
-                                <table class="table table-striped">
-                                    <thead>
-                                    <tr>
-                                        <th>Documento</th>
-                                        <th>Nuevo Documento</th>
-                                    </tr>
-                                    </thead>
-                                    <tr v-for="docType in selectOptions.documentTypesRequired">
-                                        <td>{{ docType.documentName }}</td>
-                                        <td>
-                                            <input @change="validateFile($event)" type="file" class="form-control"
-                                                   :disabled="isSaving"
-                                                   :name="assignmentsModal.fileInput + docType.idDocumentType"
-                                                   accept="application/pdf,
-                                                         image/png,image/jpg,image/jpeg,">
-                                        </td>
-                                    </tr>
-                                </table>
-                            </form>
-                            <br>
-                            <div class="row">
-                                <div class="col-xs-12"><label>¿Deseas asignar este artículo?</label></div>
-                                <div class="col-md-3 col-xs-6">
-                                    <div class="radio">
-                                        <label>
-                                            <input type="radio" @change="seeAssignView()" name="optionsRadios" id="optionsRadios1" value="option1">
-                                            Si
-                                        </label>
-                                    </div>
-                                    <div class="radio">
-                                        <label>
-                                            <input type="radio" @change="dontSeeAssignView()" name="optionsRadios" id="optionsRadios2" value="option2" checked>
-                                            No
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div  v-if="assign">
-                                <div class="row">
-                                    <div class="col-xs-12"><label>Asignar a</label></div>
-                                    <div class="col-md-3 col-xs-6">
-                                        <label>Distribuidor</label>
-                                        <select v-model="newArticleModal.selected.distributor" class="form-control"
-                                                @change="distributorChanged">
-                                            <option v-for="distributor in selectOptions.hierarchy[0].subLevels"
-                                                    :value="distributor">
-                                                {{ distributor.name }}
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3 col-xs-6">
-                                        <label>Región</label>
-                                        <select v-model="newArticleModal.selected.region" class="form-control"
-                                                @change="regionChanged" :disabled="newArticleModal.selected.distributor == null">
-                                            <option v-for="region in newArticleModal.selected.distributor.subLevels"
-                                                    :value="region">
-                                                {{ region.name }}
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3 col-xs-6">
-                                        <label>Sucursal</label>
-                                        <select v-model="newArticleModal.selected.branch" class="form-control"
-                                                @change="branchChanged" :disabled="newArticleModal.selected.region == null">
-                                            <option v-for="branch in newArticleModal.selected.region.subLevels"
-                                                    :value="branch">
-                                                {{ branch.name }}
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3 col-xs-6">
-                                        <label>Área</label>
-                                        <select v-model="newArticleModal.selected.area" class="form-control"
-                                                @change="areaChanged" :disabled="newArticleModal.selected.branch == null">
-                                            <option v-for="area in newArticleModal.selected.branch.subLevels"
-                                                    :value="area">
-                                                {{ area.name }}
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3 col-xs-6">
-                                        <label>Empleado / Almacén</label>
-                                        <select v-model="newArticleModal.selected.dwEmployees" class="form-control"
-                                                :disabled="newArticleModal.selected.area == null">
-                                            <option v-for="dwEmployees in newArticleModal.selected.area.dwEnterprise.dwEmployeesList"
-                                                    :value="dwEmployees">
-                                                {{ dwEmployees.employee.fullName }}
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <form id="attachments-form-no-required"
-                                      method="post" enctype="multipart/form-data">
-                                    <table class="table table-striped">
-                                        <thead>
                                         <tr>
-                                            <th>Documento</th>
-                                            <th>Nuevo Documento</th>
+                                            <th>Asignado a</th>
+                                            <th>Distribuidor</th>
+                                            <th>Region</th>
+                                            <th>Sucursal</th>
+                                            <th>Area</th>
+                                            <th>Fecha de asignación</th>
                                         </tr>
-                                        </thead>
-                                        <tr v-for="docType in selectOptions.documentTypesNoRequired">
-                                            <td>{{ docType.documentName }}</td>
-                                            <td>
-                                                <input @change="validateFile($event)" type="file" class="form-control"
-                                                       :disabled="isSaving"
-                                                       :name="assignmentsModal.fileInput + docType.idDocumentType"
-                                                       accept="application/pdf,
-                                                         image/png,image/jpg,image/jpeg,">
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </form>
+                                    </thead>
+                                    <tr class="success">
+                                        <td>
+                                            {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
+                                            {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
+                                            {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
+                                            {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}
+                                        </td>
+                                        <td>{{ assignmentsModal.article.dwEnterprises.distributor.distributorName }}</td>
+                                        <td>{{ assignmentsModal.article.dwEnterprises.region.regionName }}</td>
+                                        <td>{{ assignmentsModal.article.dwEnterprises.branch.branchName }}</td>
+                                        <td>{{ assignmentsModal.article.dwEnterprises.area.areaName }}</td>
+                                        <td>
+                                            {{ assignmentsModal.article.stockEmployeeAssignmentsList[0].assignmentDateFormats.dateNumber }}
+                                            <span class="label label-success">Actual</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="text-center">
+                                        <td colspan="6"><label>Historial de asignaciones</label></td>
+                                    </tr>
+                                    <tr v-for="assignment in assignmentsModal.article.assignmentsRecord">
+                                        <td>
+                                            {{ assignment.employee.firstName }}
+                                            {{ assignment.employee.middleName }}
+                                            {{ assignment.employee.parentalLast }}
+                                            {{ assignment.employee.motherLast }}
+                                        </td>
+                                        <td>{{ assignment.dwEnterprises.distributor.distributorName }}</td>
+                                        <td>{{ assignment.dwEnterprises.region.regionName }}</td>
+                                        <td>{{ assignment.dwEnterprises.branch.branchName }}</td>
+                                        <td>{{ assignment.dwEnterprises.area.areaName }}</td>
+                                        <td>{{ assignment.assignmentDateFormats.dateNumber }}</td>
+                                    </tr>
+                                </table>
                             </div>
                         </div>
-                        <div class="text-right modal-footer">
-                            <button :disabled="isSaving" class="btn btn-default"
-                                    @click="closeNewArticleModal">
-                                Cancelar
-                            </button>
-                            <button
-                                    @click="saveNewStockArticle()"
+                        <div class="text-right modal-footer flex-row flex-footer">
+                            <button :disabled="isSaving" class="btn btn-default" @click="closeAssignmentsModal">Cancelar</button>
+                            <button @click="saveStockAssignment(assignmentsModal.article)"
                                     :disabled="isSaving"
                                     class="btn btn-success">
                                 Guardar

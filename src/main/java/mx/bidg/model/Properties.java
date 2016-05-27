@@ -5,6 +5,7 @@
 package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
@@ -19,7 +20,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "PROPERTIES")
-
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Properties implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -32,15 +33,15 @@ public class Properties implements Serializable {
 
     @Column(name = "ID_VALUE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idValue;
+    private int idValue;
 
     @Column(name = "ID_STOCK", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idStock;
+    private int idStock;
 
     @Column(name = "ID_ATTRIBUTES_ARTICLE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idAttributesArticle;
+    private int idAttributesArticle;
 
     @NotNull
     @JoinColumn(name = "ID_VALUE", referencedColumnName = "ID_VALUE")
@@ -50,7 +51,7 @@ public class Properties implements Serializable {
 
     @NotNull
     @JoinColumn(name = "ID_STOCK", referencedColumnName = "ID_STOCK")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonView(JsonViews.Embedded.class)
     private Stocks stocks;
 
@@ -97,11 +98,11 @@ public class Properties implements Serializable {
         this.idAttributesArticle = idAttributesArticle;
     }
 
-    public Integer getIdValue() {
+    public int getIdValue() {
         return idValue;
     }
 
-    public void setIdValue(Integer idValue) {
+    public void setIdValue(int idValue) {
         this.idValue = idValue;
     }
 
