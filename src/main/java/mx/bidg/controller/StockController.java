@@ -374,7 +374,10 @@ public class StockController {
     public ResponseEntity<String> saveAssignment(@PathVariable Integer idStock,@PathVariable Integer idEmployee, @RequestBody String data) throws IOException {
         JsonNode jnode = mapper.readTree(data);
         DwEnterprises dwEnterprises = new DwEnterprises(jnode.get("idDwEnterprise").asInt());
+        String invoiceNumber = jnode.get("invoiceNumber").asText();
+
         Stocks stock = stockService.findSimpleById(idStock);
+        stock.setInvoiceNumber(invoiceNumber);
         StockEmployeeAssignments assignment = assignmentsService.getAssignmentFor(stock);
         StockEmployeeAssignments newAssignment = new StockEmployeeAssignments();
 

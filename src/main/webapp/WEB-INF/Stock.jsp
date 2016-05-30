@@ -93,7 +93,9 @@
                         fileInput: "file-type-",
                         article: null
                     },
-                    attachmentsDownloadUrl: ROOT_URL + "/stock/attachments/download/"
+                    attachmentsDownloadUrl: ROOT_URL + "/stock/attachments/download/",
+                    selectedInvoiceNumber:false,
+                    invoiceNumber:''
                 },
                 methods: {
                     validateNewArticleForm: function () {
@@ -489,10 +491,9 @@
                             event.target.value = null;
                             showAlert("Tipo de archivo no admitido", {type:3});
                         }
-                        console.log(event.target.name);
-//                        if (event.target.files[0].name) {
-//                            event.target.value = null;
-//                        }
+                        if (event.target.name == 'file-type-4' && event.target.files[0] != null) {
+                            this.selectedInvoiceNumber = true;
+                        }
                     },
                     areaFilter: function (item) {
                         if (this.selectedOptions.area == null || this.selectedOptions.area == 0) {
@@ -522,6 +523,8 @@
                         $("#editModal").modal("show");
                     },
                     showAssignmentsModal: function (article) {
+                        var form = document.getElementById('attachments-form');
+                        form.reset();
                         this.assignmentsModal.article = article;
                         $("#assignmentsModal").modal("show");
                     },
@@ -534,6 +537,7 @@
                         $("#historicalModal").modal("hide");
                     },
                     closeAssignmentsModal: function () {
+                        this.selectedInvoiceNumber = false;
                         $("#assignmentsModal").modal("hide");
                     },
                     saveStockArticle: function (article) {
@@ -569,7 +573,6 @@
                         }
                         this.$http.post(ROOT_URL + "/stock", {
 
-
                             idArticleStatus: this.newArticleModal.idArticleStatus,
 
                             serialNumber: this.newArticleModal.serialNumber,
@@ -598,7 +601,8 @@
                         this.$http.post(
                                 ROOT_URL + "/stock/" + article.idStock + "/assignments/" + this.assignmentsModal.selected.dwEmployees.idEmployee,
                                 {
-                                    idDwEnterprise: this.assignmentsModal.selected.area.dwEnterprise.idDwEnterprise
+                                    idDwEnterprise: this.assignmentsModal.selected.area.dwEnterprise.idDwEnterprise,
+                                    invoiceNumber:this.invoiceNumber
                                 }
                         ).success(function () {
                             this.isSaving = false;
@@ -756,6 +760,10 @@
                                             <tr>
                                                 <td>Solicitud</td>
                                                 <td>{{ article.folio }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Número de factura</td>
+                                                <td>{{ article.invoiceNumber }}</td>
                                             </tr>
                                             <tr v-for="property in article.propertiesList">
                                                 <td class="col-xs-6">
@@ -1108,8 +1116,9 @@
                                         </td>
                                     </tr>
                                 </table>
-                                <div v-if="">
-
+                                <div class="col-md-3 col-xs-6" v-if="selectedInvoiceNumber && !assignmentsModal.article.invoiceNumber">
+                                    <label>Número de factura</label>
+                                    <input v-model="invoiceNumber" type="text" class="form-control">
                                 </div>
                                 <div v-if="isSaving" class="progress">
                                     <div class="progress-bar progress-bar-striped active" style="width: 100%"></div>
