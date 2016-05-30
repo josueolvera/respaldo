@@ -404,6 +404,9 @@
             .line {
                 margin-bottom: 2rem;
             }
+            .border-top {
+                border-top: 2px solid #000;
+            }
         </style>
     </jsp:attribute>
 
@@ -466,10 +469,7 @@
                                         <div class="col-md-3 col-xs-6">
                                             <p><strong>Asignado a</strong></p>
                                             <p>
-                                                {{ article.stockEmployeeAssignmentsList[0].employee.firstName }}
-                                                {{ article.stockEmployeeAssignmentsList[0].employee.middleName }}
-                                                {{ article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
-                                                {{ article.stockEmployeeAssignmentsList[0].employee.motherLast }}
+                                                {{ article.stockEmployeeAssignmentsList[0].employee.fullName }}
                                             </p>
                                         </div>
                                     </div>
@@ -558,10 +558,7 @@
                                 </div>
                                 <div class="col-md-4 col-xs-12">
                                     <label>Asignado a: </label>
-                                    {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
-                                    {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
-                                    {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
-                                    {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}
+                                    {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.fullName }}
                                 </div>
                             </div>
                             <hr>
@@ -571,23 +568,11 @@
                                     <thead>
                                         <tr>
                                             <th>Documento</th>
-                                            <th>Documento actual</th>
-                                            <th>Fecha de envío</th>
                                             <th>Nuevo documento</th>
                                         </tr>
                                     </thead>
                                     <tr v-for="docType in selectOptions.documentTypes">
                                         <td>{{ docType.documentName }}</td>
-                                        <td>
-                                            <a v-if="attachmentsModal.article.stockDocumentsList[$index]"
-                                               :href="attachmentsDownloadUrl + attachmentsModal.article.stockDocumentsList[$index].idStockDocument">
-                                                {{ attachmentsModal.article.stockDocumentsList[$index].documentName }}
-                                            </a>
-                                        </td>
-                                        <td>
-                                            {{ attachmentsModal.article.stockDocumentsList[$index].uploadingDateFormats.dateNumber }},
-                                            {{ attachmentsModal.article.stockDocumentsList[$index].uploadingDateFormats.time12 }}
-                                        </td>
                                         <td>
                                             <input @change="validateFile($event)" type="file" class="form-control"
                                                    :disabled="isSaving"
@@ -619,8 +604,21 @@
                                         <th>Fecha de envío</th>
                                     </tr>
                                 </thead>
+                                <tr v-for="currentDocument in attachmentsModal.article.stockDocumentsList">
+                                    <td>{{ currentDocument.documentType.documentName }}</td>
+                                    <td>
+                                        <a :href="attachmentsDownloadUrl + currentDocument.idStockDocument">
+                                            {{ currentDocument.documentName }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        {{ currentDocument.uploadingDateFormats.dateNumber }},
+                                        {{ currentDocument.uploadingDateFormats.time12 }}
+                                        <span style="float: right" class="label label-success">Actual</span>
+                                    </td>
+                                </tr>
                                 <tr v-for="document in attachmentsModal.article.documentsRecord"
-                                    v-if="document.currentDocument == 0">
+                                    v-if="document.currentDocument == 0" :class="{ 'border-top': $index == 0 }">
                                     <td>{{ document.documentType.documentName }}</td>
                                     <td>
                                         <a :href="attachmentsDownloadUrl + document.idStockDocument">
