@@ -489,7 +489,7 @@
                             event.target.value = null;
                             showAlert("Tipo de archivo no admitido", {type:3});
                         }
-                        console.log(event.target);
+                        console.log(event.target.name);
 //                        if (event.target.files[0].name) {
 //                            event.target.value = null;
 //                        }
@@ -602,16 +602,17 @@
                                 }
                         ).success(function () {
                             this.isSaving = false;
-                            showAlert("Asignación exitosa");
                             this.fetchStock(this.selectedOptions.distributor);
                             this.assignmentsModal.selected.distributor = null;
                             this.assignmentsModal.selected.region = null;
                             this.assignmentsModal.selected.branch = null;
                             this.assignmentsModal.selected.area = null;
                             this.assignmentsModal.selected.dwEmployees = null;
+                            showAlert("Asignación exitosa");
                             this.closeAssignmentsModal();
                         }).error(function (data) {
                             this.isSaving = false;
+                            this.assignmentsModal.selected.dwEmployees = null;
                             showAlert(data.error.message, {type:3});
                         })
                     },
