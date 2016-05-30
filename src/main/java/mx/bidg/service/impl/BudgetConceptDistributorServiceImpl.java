@@ -81,6 +81,7 @@ public class BudgetConceptDistributorServiceImpl implements BudgetConceptDistrib
             BigDecimal totalAmount = BigDecimal.ZERO;
             BigDecimal totalPercent = BigDecimal.ZERO;
 
+            budgetConceptDistributorDao.deleteByBudgetMonthConcept(budgetMonthConcept);
             for (JsonNode budgetPart : arrayNode) {
                 BigDecimal percent = budgetPart.get("percent").decimalValue();
                 totalPercent = totalPercent.add(percent);
@@ -96,7 +97,9 @@ public class BudgetConceptDistributorServiceImpl implements BudgetConceptDistrib
 
             if (totalPercent.compareTo(BigDecimal.ONE) != 0) {
                 throw new ValidationException(
-                        "Porcentaje " + totalPercent + " es diferente de " + BigDecimal.ONE, "El porcentaje total debe ser igual a 100%", HttpStatus.BAD_REQUEST
+                        "Porcentaje " + totalPercent + " es diferente de " + BigDecimal.ONE,
+                        "El porcentaje total debe ser igual a 100%",
+                        HttpStatus.BAD_REQUEST
                 );
             }
         }

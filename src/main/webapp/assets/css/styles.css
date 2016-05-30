@@ -10,6 +10,14 @@ body {
     font-size: 1.3rem;
 }
 
+.horizontal-scroll {
+    overflow-x: scroll;
+}
+
+.horizontal-scroll td {
+    min-width: 12rem;
+}
+
 .header-wrapper {
     height: 100%;
     background: url("../img/header_bg_new.png") repeat-x top;

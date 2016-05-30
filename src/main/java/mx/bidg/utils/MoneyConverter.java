@@ -17,8 +17,10 @@ public class MoneyConverter {
            return new BigDecimal(BigInteger.ZERO);
         } else {
            String[] numero = value.split("\\$");
-           DecimalFormat df = new DecimalFormat("#,###");
-           BigDecimal decimal = new BigDecimal(df.parse(numero[1]).longValue());
+           String str=numero[1].replaceAll(",","");
+           //DecimalFormat df = new DecimalFormat("#,###.##");          
+           //BigDecimal decimal = new BigDecimal(df.parse(numero[1]).longValue());
+           BigDecimal decimal = new BigDecimal(str);
            return decimal;
         }
    }
