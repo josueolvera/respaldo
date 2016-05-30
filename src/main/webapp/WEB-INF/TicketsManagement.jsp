@@ -233,8 +233,8 @@
                 </div>
                 <div class="panel-group ticket-list">
                     <div class="ticket panel panel-default"
-                         v-for="ticket in tickets | filterBy solicitante in 'user.dwEmployee.employee.fullName'">
-                        <div class="panel-heading">
+                         v-for="ticket in tickets | filterBy solicitante">
+                        <div class="panel-heading" v-if="tickets">
                             <div class="row table-header">
                                 <div class="col-xs-2"><strong>Folio</strong></div>
                                 <div class="col-xs-3"><strong>Solicitante</strong></div>
