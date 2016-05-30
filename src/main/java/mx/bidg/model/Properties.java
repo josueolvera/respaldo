@@ -32,15 +32,15 @@ public class Properties implements Serializable {
 
     @Column(name = "ID_VALUE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idValue;
+    private int idValue;
 
     @Column(name = "ID_STOCK", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idStock;
+    private int idStock;
 
     @Column(name = "ID_ATTRIBUTES_ARTICLE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idAttributesArticle;
+    private int idAttributesArticle;
 
     @NotNull
     @JoinColumn(name = "ID_VALUE", referencedColumnName = "ID_VALUE")

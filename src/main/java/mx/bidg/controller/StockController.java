@@ -143,7 +143,6 @@ public class StockController {
                 );
             }
 
-            assignment.setCurrentAssignment(0);
             StockEmployeeAssignments newAssignment = new StockEmployeeAssignments();
             newAssignment.setStocks(stock);
             newAssignment.setDwEnterprises(stock.getDwEnterprises());
@@ -152,7 +151,11 @@ public class StockController {
             newAssignment.setCurrentAssignment(1);
             newAssignment.setIdAccessLevel(1);
 
-            assignmentsService.update(assignment);
+            if (assignment != null) {
+                assignment.setCurrentAssignment(0);
+                assignmentsService.update(assignment);
+            }
+
             assignmentsService.saveAssignment(newAssignment);
         }
         stockService.update(stock);
@@ -182,12 +185,12 @@ public class StockController {
     )
     public ResponseEntity<String> saveProperty(@PathVariable int idStock, @RequestBody String data) throws IOException {
         JsonNode node = mapper.readTree(data);
-        CArticles article = new CArticles(node.get("attributesArticles").get("idArticle").asInt());
+        CArticles article =  cArticlesService.findById(node.get("attributesArticles").get("idArticle").asInt());
         CValues value = mapper.treeToValue(node.get("value"), CValues.class);
         CAttributes attribute = mapper.treeToValue(node.get("attributesArticles").get("attributes"), CAttributes.class);
 
         Properties property = new Properties();
-        property.setStocks(new Stocks(idStock));
+        property.setStocks(stockService.findById(idStock));
         property.setValue(value);
 
         propertiesService.save(property, article, attribute);
@@ -221,8 +224,8 @@ public class StockController {
     @RequestMapping(value = "/properties/{idProperty}", method = RequestMethod.DELETE,
             consumes = "application/json", produces = "text/plain;charset=UTF-8"
     )
-    public ResponseEntity<String> deleteProperty(@PathVariable int idProperty) {
-        propertiesService.delete(new Properties(idProperty));
+    public ResponseEntity<String> deleteProperty(@PathVariable Integer idProperty) {
+        propertiesService.delete(propertiesService.findById(idProperty));
         return new ResponseEntity<>("Registro eliminado con exito", HttpStatus.OK);
     }
 
@@ -268,7 +271,7 @@ public class StockController {
     }
 
     @RequestMapping(value = "{idStock}/attachments", method = RequestMethod.POST)
-    public ResponseEntity<String> attachDocuments(@PathVariable int idStock, HttpServletRequest request) throws Exception {
+    public ResponseEntity<String> attachDocuments(@PathVariable Integer idStock, HttpServletRequest request) throws Exception {
         String SAVE_PATH = env.getRequiredProperty("stock.documents_dir");
         String[] fileMediaTypes = env.getRequiredProperty("stock.attachments.media_types").split(",");
         List<StockDocuments> documents = stockDocumentsService.findByIdStock(idStock);
@@ -368,7 +371,7 @@ public class StockController {
     }
 
     @RequestMapping(value = "/{idStock}/assignments/{idEmployee}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> saveAssignment(@PathVariable int idStock,@PathVariable int idEmployee, @RequestBody String data) throws IOException {
+    public ResponseEntity<String> saveAssignment(@PathVariable Integer idStock,@PathVariable Integer idEmployee, @RequestBody String data) throws IOException {
         JsonNode jnode = mapper.readTree(data);
         DwEnterprises dwEnterprises = new DwEnterprises(jnode.get("idDwEnterprise").asInt());
         Stocks stock = stockService.findSimpleById(idStock);
@@ -376,7 +379,7 @@ public class StockController {
         StockEmployeeAssignments newAssignment = new StockEmployeeAssignments();
 
         stock.setDwEnterprises(dwEnterprises);
-        assignment.setCurrentAssignment(0);
+
         newAssignment.setIdEmmployee(idEmployee);
         newAssignment.setStocks(stock);
         newAssignment.setDwEnterprises(stock.getDwEnterprises());
@@ -385,11 +388,16 @@ public class StockController {
         newAssignment.setCurrentAssignment(1);
         newAssignment.setIdAccessLevel(1);
 
-        assignmentsService.update(assignment);
+
+        if (assignment != null) {
+            assignment.setCurrentAssignment(0);
+            assignmentsService.update(assignment);
+        }
+
         assignmentsService.saveAssignment(newAssignment);
         stockService.update(stock);
         return new ResponseEntity<>(
-                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(""),
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(stockService.findById(idStock)),
                 HttpStatus.CREATED
         );
     }

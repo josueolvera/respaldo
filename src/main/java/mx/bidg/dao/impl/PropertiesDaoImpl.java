@@ -15,6 +15,7 @@ import java.util.List;
  * @author Rafael Viveros
  * Created on 5/01/16.
  */
+@SuppressWarnings("unchecked")
 @Repository
 public class PropertiesDaoImpl extends AbstractDao<Integer, Properties> implements PropertiesDao {
     @Override
@@ -24,7 +25,6 @@ public class PropertiesDaoImpl extends AbstractDao<Integer, Properties> implemen
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<Properties> getAllFor(Stocks stock) {
         return (List<Properties>) createEntityCriteria()
                 .add(Restrictions.eq("idStock", stock.getIdStock()))
@@ -33,7 +33,7 @@ public class PropertiesDaoImpl extends AbstractDao<Integer, Properties> implemen
 
     @Override
     public Properties findById(int id) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return getByKey(id);
     }
 
     @Override
