@@ -179,7 +179,7 @@
                     <br>
                     <div class="row">
                         <div class="text-center">
-                            <button type="submit" class="btn btn-success"> Reportar</button>
+                            <button type="submit" class="btn btn-success">Solicitar</button>
                         </div>
                     </div>
                 </form>
