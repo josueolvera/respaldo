@@ -395,9 +395,8 @@ public class StockController {
         }
 
         assignmentsService.saveAssignment(newAssignment);
-        stockService.update(stock);
         return new ResponseEntity<>(
-                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(stockService.findById(idStock)),
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(stockService.update(stock)),
                 HttpStatus.CREATED
         );
     }
