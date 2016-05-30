@@ -19,4 +19,5 @@ public interface PropertiesService {
     List<Properties> getAllFor(Stocks stock);
     Properties save(Properties property, CArticles article, CAttributes attribute);
     boolean delete(Properties property);
+    Properties findById(Integer id);
 }

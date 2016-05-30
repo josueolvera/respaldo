@@ -166,9 +166,9 @@
                     var total= 0;
                       this.distributorChecked.forEach(function(element)
                       {
-                          total += parseFloat(element.percent);
+                          total += (isNaN(parseFloat(element.percent))) ? 0 : parseFloat(element.percent);
                       });
-                      return (isNaN(total))?0:total;
+                      return (isNaN(total)) ? 0 : total;
                   }
                 },
                 methods:
@@ -867,7 +867,7 @@
 
                                                 </div>
                                                 <div class="col-xs-3" style="padding-left: 0px; padding-right: 1px">
-                                                    <button type="button" class="btn btn-default"
+                                                    <button type="button" class="btn btn-default" title="Prorrateo"
                                                       @click="showModalProrrateo(concepto, sucss.idArea)" v-if="concepto.idConcept>0">
                                                         <span class="glyphicon glyphicon-align-left"></span>
                                                     </button>
@@ -951,7 +951,7 @@
                             <div class="modal-body">
                                 <ul id="tabs" class="nav nav-tabs" data-tabs="tabs" role="tablist">
                                     <li class="active" role="presentation">
-                                        <a href="#tab-save" role="tab" data-toggle="tab">Creacion / Modificacion</a>
+                                        <a href="#tab-save" role="tab" data-toggle="tab">Creación / Modificación</a>
                                     </li>
                                     <li role="presentation">
                                         <a href="#tab-view" role="tab" data-toggle="tab">Consultar actual</a>
@@ -1027,13 +1027,13 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="tab-view" class="tab-pane fade">
+                                    <div id="tab-view" class="tab-pane fade horizontal-scroll">
                                         <table class="table">
                                             <tr v-for="(index, monthShare) in budgetConceptShare
                                                 | orderBy '[0].budgetMonthConcept.budgetMonthBranch.idMonth'">
                                                 <td>{{ monthShare[0].budgetMonthConcept.budgetMonthBranch.month.month }}</td>
                                                 <td v-for="distributorShare in monthShare | orderBy 'idDistributor'">
-                                                    <label v-if="index == 0">{{ distributorShare.distributor.acronyms }}</label>
+                                                    <small>{{ distributorShare.distributor.acronyms }}</small>
                                                     <p>{{ distributorShare.percent * 100 }} % : $ {{ distributorShare.amount }}</p>
                                                 </td>
                                             </tr>

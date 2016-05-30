@@ -31,7 +31,7 @@ public class SIADController {
     @RequestMapping(value = "/stock", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ModelAndView stockView() {
         ModelAndView model = new ModelAndView();
-        model.setViewName("stock");
+        model.setViewName("Stock");
         return model;
     }
 

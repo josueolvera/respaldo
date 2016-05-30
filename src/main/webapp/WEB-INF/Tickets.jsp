@@ -42,7 +42,7 @@
                 },
                 methods: {
                     getTicketByFolio:function () {
-                        this.$http.post(ROOT_URL + '/ticket/folio', this.folioToSearch).success(function (data) {
+                        this.$http.get(ROOT_URL + '/ticket/folio?folio=' + this.folioToSearch).success(function (data) {
                             this.ticketFound = data;
                         }).error(function (data) {
 
@@ -145,8 +145,8 @@
                 <form v-on:submit.prevent="saveTicket">
                     <div class="row">
                         <div class="col-xs-4">
-                            <label>Email</label>
-                            <input type="text" class="form-control" v-model="userInSession.mail" disabled>
+                            <label>Solicitante</label>
+                            <input type="text" class="form-control" v-model="userInSession.dwEmployee.employee.fullName" disabled>
                         </div>
                         <div class="col-xs-4">
                             <label>Tipo de solicitud</label>
@@ -179,7 +179,7 @@
                     <br>
                     <div class="row">
                         <div class="text-center">
-                            <button type="submit" class="btn btn-success"> Reportar</button>
+                            <button type="submit" class="btn btn-success">Solicitar</button>
                         </div>
                     </div>
                 </form>
@@ -202,14 +202,14 @@
                         <div class="panel-heading">
                             <div class="row table-header">
                                 <div class="col-xs-2"><strong>Folio</strong></div>
-                                <div class="col-xs-2"><strong>Correo</strong></div>
-                                <div class="col-xs-6"><strong>Descripción</strong></div>
+                                <div class="col-xs-3"><strong>Solicitante</strong></div>
+                                <div class="col-xs-5"><strong>Descripción</strong></div>
                                 <div class="col-xs-2"><strong>Status</strong></div>
                             </div>
                             <div class="row table-row">
                                 <div class="col-xs-2"><p>{{ ticketFound.folio }}</p></div>
-                                <div class="col-xs-2"><p>{{ ticketFound.correo }}</p></div>
-                                <div class="col-xs-6"><p>{{ ticketFound.descripcionProblema }}</p></div>
+                                <div class="col-xs-3"><p>{{ ticketFound.user.dwEmployee.employee.fullName }}</p></div>
+                                <div class="col-xs-5"><p>{{ ticketFound.descripcionProblema }}</p></div>
                                 <div class="col-xs-2"><p>{{ ticketFound.ticketStatus.ticketStatusName }}</p></div>
                             </div>
                         </div>
@@ -227,12 +227,12 @@
                                         <div class="col-xs-2"><p>{{ ticketFound.priority.priorityName }}</p></div>
                                         <div class="col-xs-3">
                                             <p>
-                                                {{ ticketFound.fechaInicioFormats.dateTextLong }} - {{ ticketFound.fechaInicioFormats.time24 }}
+                                                {{ ticketFound.fechaInicioFormats.dateTextLong }} - {{ ticketFound.fechaInicioFormats.time12 }}
                                             </p>
                                         </div>
                                         <div class="col-xs-3">
                                             <p>
-                                                {{ ticketFound.fechaFinalFormats.dateTextLong }} - {{ ticketFound.fechaFinalFormats.time24 }}
+                                                {{ ticketFound.fechaFinalFormats.dateTextLong }} - {{ ticketFound.fechaFinalFormats.time12 }}
                                             </p>
                                         </div>
                                     </div>

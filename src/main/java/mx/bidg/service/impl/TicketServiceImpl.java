@@ -61,7 +61,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public Ticket save(Ticket ticket) {
-        String correo = ticket.getCorreo();
+        String correo = ticket.getUser().getMail();
 
         int begin = correo.indexOf("@");
         int length = correo.length();
@@ -108,21 +108,18 @@ public class TicketServiceImpl implements TicketService {
         Ticket ticket = ticketDao.findById(idTicket);
         ticket.setTicketStatus(ticketStatus);
 
-        if (ticketStatus.getIdTicketStatus() == 4) {
+        if (ticketStatus.getIdTicketStatus().equals(CTicketStatus.CERRADO)) {
             ticket.setFechaFinal(LocalDateTime.now());
         }
 
-
         ticketDao.update(ticket);
 
-        Users user = usersDao.findByEmail(ticket.getCorreo());
         EmailTemplates emailTemplate = emailTemplatesService.findByName(EMAIL_DESIGN_TICKET_TEMPLATE_NAME);
-
         emailTemplate.setMessage("<p>Su ticket con folio: <a href=\"http://sistema.bidg.mx/BIDGroupREV/sima/ticket?folio={{ticket.folio}}\">{{ticket.folio}}</a> ha cambido de status a {{ticket.ticketStatus.ticketStatusName}}.</p>\n" +
                 "<p>Tipo de solicitud: {{ticket.incidence.incidenceName}}.</p><p>Prioridad: {{ticket.priority.priorityName}}.</p><p>Descripción: {{ticket.descripcionProblema}}.</p><p>Puede consultar el status de su ticket haciendo click en el siguiente <a href=\"http://sistema.bidg.mx/BIDGroupREV/sima/ticket?folio={{ticket.folio}}\">enlace</a>.</p>");
         emailTemplate.getEmailRecipientsList().clear();
         emailTemplate.addProperty("ticket", ticket);
-        emailTemplate.addRecipient(new EmailRecipients(user.getMail(), user.getUsername(), EmailRecipients.TO));
+        emailTemplate.addRecipient(new EmailRecipients(ticket.getUser().getMail(), ticket.getUser().getUsername(), EmailRecipients.TO));
 
         emailDeliveryService.deliverEmail(emailTemplate);
 
@@ -132,11 +129,8 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public EmailTemplates sendEmail(Ticket ticket) {
         EmailTemplates emailTemplate = emailTemplatesService.findByName(EMAIL_DESIGN_TICKET_TEMPLATE_NAME);
-        Users user = usersDao.findByEmail(ticket.getCorreo());
-
-
         emailTemplate.addProperty("ticket", ticket);
-        emailTemplate.addRecipient(new EmailRecipients(user.getMail(), user.getUsername(), EmailRecipients.TO));
+        emailTemplate.addRecipient(new EmailRecipients(ticket.getUser().getMail(), ticket.getUser().getUsername(), EmailRecipients.TO));
 
         emailDeliveryService.deliverEmail(emailTemplate);
         return emailTemplate;

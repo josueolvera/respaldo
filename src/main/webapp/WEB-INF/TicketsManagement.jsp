@@ -32,7 +32,7 @@
                     incidence:'',
                     priority:'',
                     ticketStatus:'',
-                    correo:'',
+                    solicitante:'',
                     question:'',
                     currentTicket:{
                         ticketStatus:'',
@@ -43,6 +43,14 @@
                 methods: {
                     getTickets:function () {
                         this.$http.get(ROOT_URL + '/ticket').success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (ticket) {
+                                if (isNaN(ticket.user)) {
+                                    jsonObjectIndex[ticket.user._id] = ticket.user;
+                                } else {
+                                    ticket.user = jsonObjectIndex[ticket.user];
+                                }
+                            });
                             this.tickets = data;
                         }).error(function (data) {
 
@@ -200,8 +208,8 @@
                 <div class="form-group">
                     <div class="row">
                         <div class="col-xs-4">
-                            <label>Correo</label>
-                            <input type="text" v-model="correo" class="form-control"/>
+                            <label>Solicitante</label>
+                            <input type="text" v-model="solicitante" class="form-control"/>
                         </div>
                         <div class="col-xs-4">
                             <label>Prioridad</label>
@@ -225,18 +233,18 @@
                 </div>
                 <div class="panel-group ticket-list">
                     <div class="ticket panel panel-default"
-                         v-for="ticket in tickets | filterBy correo in 'correo'">
-                        <div class="panel-heading">
+                         v-for="ticket in tickets | filterBy solicitante">
+                        <div class="panel-heading" v-if="tickets">
                             <div class="row table-header">
                                 <div class="col-xs-2"><strong>Folio</strong></div>
-                                <div class="col-xs-2"><strong>Correo</strong></div>
-                                <div class="col-xs-6"><strong>Descripción</strong></div>
+                                <div class="col-xs-3"><strong>Solicitante</strong></div>
+                                <div class="col-xs-5"><strong>Descripción</strong></div>
                                 <div class="col-xs-2"><strong>Status</strong></div>
                             </div>
                             <div class="row table-row">
                                 <div class="col-xs-2"><p>{{ ticket.folio }}</p></div>
-                                <div class="col-xs-2"><p>{{ ticket.correo }}</p></div>
-                                <div class="col-xs-6"><p>{{ ticket.descripcionProblema }}</p></div>
+                                <div class="col-xs-3"><p>{{ ticket.user.dwEmployee.employee.fullName }}</p></div>
+                                <div class="col-xs-5"><p>{{ ticket.descripcionProblema }}</p></div>
                                 <div class="col-xs-2" v-if="ticket.ticketStatus.idTicketStatus != 4">
                                     <select v-model="selectedTicketStatus" class="form-control" @change="acceptAction(ticket)">
                                         <option selected hidden value="{{ticket.ticketStatus}}">
@@ -266,12 +274,12 @@
                                         <div class="col-xs-2"><p>{{ ticket.priority.priorityName }}</p></div>
                                         <div class="col-xs-3">
                                             <p>
-                                                {{ ticket.fechaInicioFormats.dateTextLong }} - {{ ticket.fechaInicioFormats.time24 }}
+                                                {{ ticket.fechaInicioFormats.dateTextLong }} - {{ ticket.fechaInicioFormats.time12 }}
                                             </p>
                                         </div>
                                         <div class="col-xs-3">
                                             <p>
-                                                {{ ticket.fechaFinalFormats.dateTextLong }} - {{ ticket.fechaFinalFormats.time24 }}
+                                                {{ ticket.fechaFinalFormats.dateTextLong }} - {{ ticket.fechaFinalFormats.time12 }}
                                             </p>
                                         </div>
                                     </div>

@@ -42,4 +42,9 @@ public class PropertiesServiceImpl implements PropertiesService {
         propertiesDao.delete(property);
         return true;
     }
+
+    @Override
+    public Properties findById(Integer id) {
+        return propertiesDao.findById(id);
+    }
 }
