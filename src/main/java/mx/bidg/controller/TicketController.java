@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.*;
+import mx.bidg.service.CIncidenceService;
+import mx.bidg.service.CPriorityService;
 import mx.bidg.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -27,6 +28,12 @@ public class TicketController {
 
     @Autowired
     private TicketService ticketService;
+
+    @Autowired
+    private CIncidenceService cIncidenceService;
+
+    @Autowired
+    private CPriorityService cPriorityService;
 
     private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
@@ -54,8 +61,8 @@ public class TicketController {
         Ticket ticket = new Ticket();
         ticket.setUser((Users) session.getAttribute("user"));
         ticket.setDescripcionProblema(node.get("descripcionProblema").asText());
-        ticket.setIncidence(new CIncidence(node.get("incidence").get("idIncidence").asInt()));
-        ticket.setPriority(new CPriority(node.get("priority").get("idPriority").asInt()));
+        ticket.setIncidence(cIncidenceService.findById(node.get("incidence").get("idIncidence").asInt()));
+        ticket.setPriority(cPriorityService.findById(node.get("priority").get("idPriority").asInt()));
         ticket.setTicketStatus(CTicketStatus.ABIERTO);
         ticket = ticketService.save(ticket);
         ticketService.sendEmail(ticket);

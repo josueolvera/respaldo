@@ -61,8 +61,8 @@ public class TicketDaoImpl extends AbstractDao<Integer,Ticket> implements Ticket
     @Override
     public List<Ticket> findByTicketStatusPriority(Integer idTicketStatus, Integer idPriority) {
         return createEntityCriteria()
-                .add(Restrictions.eq("priority.idPriority",idPriority))
-                .add(Restrictions.eq("ticketStatus.idTicketStatus",idTicketStatus))
+                .add(Restrictions.eq("idPriority",idPriority))
+                .add(Restrictions.eq("idTicketStatus",idTicketStatus))
                 .list();
     }
 
