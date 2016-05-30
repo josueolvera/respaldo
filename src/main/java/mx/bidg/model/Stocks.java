@@ -61,6 +61,11 @@ public class Stocks implements AccessLevelFilterable, Serializable {
     @JsonView(JsonViews.Root.class)
     private BigDecimal purchasePrice;
 
+    @Size(max = 255)
+    @Column(name = "INVOICE_NUMBER")
+    @JsonView(JsonViews.Root.class)
+    private String invoiceNumber;
+
     @Column(name = "ID_ARTICLE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idArticle;
@@ -182,6 +187,14 @@ public class Stocks implements AccessLevelFilterable, Serializable {
 
     public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
+    }
+
+    public String getInvoiceNumber() {
+        return invoiceNumber;
+    }
+
+    public void setInvoiceNumber(String invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
     }
 
     public Integer getIdAccessLevel() {

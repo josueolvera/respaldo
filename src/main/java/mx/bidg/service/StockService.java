@@ -1,5 +1,6 @@
 package mx.bidg.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import mx.bidg.model.Requests;
 import mx.bidg.model.Stocks;
 
@@ -17,5 +18,6 @@ public interface StockService {
     List<Stocks> findByDistributor(Integer idDistributor);
     Stocks update(Stocks stock);
     Stocks updateEntity(Stocks stock);
+    Stocks update(Integer idStock, JsonNode jsonNode);
     Stocks findSimpleById(int idStock);
 }

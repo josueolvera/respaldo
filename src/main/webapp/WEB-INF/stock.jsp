@@ -46,10 +46,10 @@
                     editModal: {
                         selectAttr: null,
                         selectValue: null,
-                        serialNumber: 0,
-                        stockFolio: 0,
+                        serialNumber: '',
+                        stockFolio: '',
                         articleStatus: null,
-                        purchasePrice: 0,
+                        invoiceNumber: 0,
                         employees: null,
                         selectedEmployee: null,
                         article: null
@@ -327,7 +327,8 @@
                         this.editModal.serialNumber = article.serialNumber;
                         this.editModal.stockFolio = article.stockFolio;
                         this.editModal.articleStatus = article.articleStatus;
-                        this.editModal.purchasePrice = article.purchasePrice;
+                        this.editModal.invoiceNumber = article.invoiceNumber;
+                        this.editModal.selectedEmployee = null;
                         if (article.stockEmployeeAssignmentsList[0]) {
                             this.editModal.selectedEmployee = article.stockEmployeeAssignmentsList[0].employee;
                         }
@@ -356,15 +357,15 @@
                             serialNumber: this.editModal.serialNumber,
                             stockFolio: this.editModal.stockFolio,
                             articleStatus: this.editModal.articleStatus,
-                            purchasePrice: this.editModal.purchasePrice,
+                            invoiceNumber: this.editModal.invoiceNumber,
                             employee: {
-                                idEmployee: this.editModal.selectedEmployee.idEmployee
+                                idEmployee: (this.editModal.selectedEmployee) ? this.editModal.selectedEmployee.idEmployee : null
                             }
                         }).success(function () {
                             article.serialNumber = this.editModal.serialNumber;
                             article.stockFolio = this.editModal.stockFolio;
                             article.articleStatus = this.editModal.articleStatus;
-                            article.purchasePrice = this.editModal.purchasePrice;
+                            article.invoiceNumber = this.editModal.invoiceNumber;
                             this.buildArticle(article);
                             this.isSaving = false;
                             showAlert("Articulo modificado con exito", {type: 1});
@@ -504,6 +505,10 @@
                                             <tr>
                                                 <td>Folio de inventario</td>
                                                 <td>{{ article.stockFolio }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Numero de factura</td>
+                                                <td>{{ article.invoiceNumber }}</td>
                                             </tr>
                                             <tr>
                                                 <td>Solicitud</td>
@@ -680,7 +685,7 @@
                                 <div class="col-md-4 col-xs-6">
                                     <label>No. de serie</label>
                                     <input v-model="editModal.serialNumber"
-                                           :disabled="isSaving" type="text" class="form-control">
+                                           disabled type="text" class="form-control">
                                 </div>
                                 <div class="col-md-4 col-xs-6">
                                     <label>Folio de Inventario</label>
@@ -696,8 +701,8 @@
                                     </select>
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>Precio de compra</label>
-                                    <input v-model="editModal.purchasePrice"
+                                    <label>Numero de factura</label>
+                                    <input v-model="editModal.invoiceNumber"
                                            :disabled="isSaving" type="text" class="form-control">
                                 </div>
                             </div>

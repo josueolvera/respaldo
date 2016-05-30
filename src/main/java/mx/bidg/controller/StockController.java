@@ -52,9 +52,6 @@ public class StockController {
     @Autowired
     private StockEmployeeAssignmentsService assignmentsService;
 
-    @Autowired
-    private DwEmployeesService dwEmployeesService;
-
     private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -77,43 +74,7 @@ public class StockController {
     )
     public ResponseEntity<String> updateStock(@PathVariable int idStock, @RequestBody String data) throws IOException {
         JsonNode jnode = mapper.readTree(data);
-        Employees employee = new Employees(jnode.get("employee").get("idEmployee").asInt());
-
-        Stocks stock = stockService.findSimpleById(idStock);
-        DwEmployees dwEmployee = dwEmployeesService.findBy(
-                employee,
-                new DwEnterprises(stock.getIdDwEnterprises())
-        );
-
-        StockEmployeeAssignments assignment = assignmentsService.getAssignmentFor(stock);
-
-        stock.setSerialNumber(jnode.get("serialNumber").asText());
-        stock.setStockFolio(jnode.get("stockFolio").asText());
-        stock.setArticleStatus(new CArticleStatus(jnode.get("articleStatus").get("idArticleStatus").asInt()));
-        stock.setPurchasePrice(new BigDecimal(jnode.get("purchasePrice").asDouble()));
-
-        if (! assignment.getIdEmmployee().equals(employee.getIdEmployee())) {
-            if (dwEmployee == null) {
-                throw new ValidationException(
-                        "No existe DwEmployees: No se permite resignación de área",
-                        "No se permite resignación de área",
-                        HttpStatus.FORBIDDEN
-                );
-            }
-
-            assignment.setCurrentAssignment(0);
-            StockEmployeeAssignments newAssignment = new StockEmployeeAssignments();
-            newAssignment.setStocks(stock);
-            newAssignment.setDwEnterprises(stock.getDwEnterprises());
-            newAssignment.setEmployee(employee);
-            newAssignment.setAssignmentDate(LocalDateTime.now());
-            newAssignment.setCurrentAssignment(1);
-            newAssignment.setIdAccessLevel(1);
-
-            assignmentsService.update(assignment);
-            assignmentsService.saveAssignment(newAssignment);
-        }
-        stockService.update(stock);
+        stockService.update(idStock, jnode);
         return new ResponseEntity<>("Registro exitoso", HttpStatus.OK);
     }
 
