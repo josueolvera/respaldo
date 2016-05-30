@@ -489,6 +489,10 @@
                             event.target.value = null;
                             showAlert("Tipo de archivo no admitido", {type:3});
                         }
+                        console.log(event.target);
+//                        if (event.target.files[0].name) {
+//                            event.target.value = null;
+//                        }
                     },
                     areaFilter: function (item) {
                         if (this.selectedOptions.area == null || this.selectedOptions.area == 0) {
@@ -659,7 +663,7 @@
                         </option>
                     </select>
                 </div>
-                <div class="col-md-1 col-xs-6">
+                <div style="visibility: hidden" class="col-md-1 col-xs-6">
                     <button class="btn btn-default" @click="showNewArticleModal"
                             data-toggle="tooltip" data-placement="top" title="Añadir artículo">
                         <span class="glyphicon glyphicon-plus"></span>
@@ -809,7 +813,7 @@
                             </div>
                             <div class="flex-row flex-content">
                                 <hr>
-                                <h4 class="text-center"><strong>Asignaciones</strong></h4>
+                                <h4 class="text-center"><strong>Historial de asignaciones</strong></h4>
                                 <table class="table table-striped">
                                     <thead>
                                     <tr>
@@ -819,11 +823,11 @@
                                         <th>Sucursal</th>
                                         <th>Área</th>
                                         <th>Fecha de alta</th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tr class="success" v-if="historicalModal.article.stockEmployeeAssignmentsList[0]">
                                         <td>
-                                            <span class="label label-success">Actual</span>
                                             {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
                                             {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
                                             {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
@@ -836,11 +840,7 @@
                                         <td>
                                             {{ historicalModal.article.stockEmployeeAssignmentsList[0].assignmentDateFormats.dateNumber }}
                                         </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <h4 class="text-left">Historial de asignaciones</h4>
-                                        </td>
+                                        <td><span class="label label-success">Actual</span></td>
                                     </tr>
                                     <tr v-for="assignment in historicalModal.article.assignmentsRecord">
                                         <td>
@@ -854,23 +854,24 @@
                                         <td>{{ assignment.dwEnterprises.branch.branchName }}</td>
                                         <td>{{ assignment.dwEnterprises.area.areaName }}</td>
                                         <td>{{ assignment.assignmentDateFormats.dateNumber }}</td>
+                                        <td></td>
                                     </tr>
                                 </table>
                             </div>
                             <div class="flex-row flex-content">
                                 <hr>
-                                <h4 class="text-center"><strong>Documentos</strong></h4>
+                                <h4 class="text-center"><strong>Historial de documentos</strong></h4>
                                 <table class="table table-striped text-left">
                                     <thead>
                                     <tr>
                                         <th>Documento</th>
                                         <th>Archivo</th>
                                         <th>Fecha de Envío</th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tr v-for="document in historicalModal.article.stockDocumentsList">
                                         <td>
-                                            <span class="label label-success">Actual</span>
                                             {{ document.documentType.documentName }}
                                         </td>
                                         <td>
@@ -882,13 +883,8 @@
                                             {{ document.uploadingDateFormats.dateNumber }},
                                             {{ document.uploadingDateFormats.time12 }}
                                         </td>
+                                        <td><span class="label label-success">Actual</span></td>
                                     </tr>
-                                    <tr>
-                                        <td>
-                                            <h4 class="text-left">Historial de Documentos</h4>
-                                        </td>
-                                    </tr>
-
                                     <tr v-for="document in historicalModal.article.documentsRecord"
                                         v-if="document.currentDocument == 0">
                                         <td>{{ document.documentType.documentName }}</td>
@@ -901,6 +897,7 @@
                                             {{ document.uploadingDateFormats.dateNumber }},
                                             {{ document.uploadingDateFormats.time12 }}
                                         </td>
+                                        <td></td>
                                     </tr>
                                 </table>
                             </div>
@@ -1110,6 +1107,9 @@
                                         </td>
                                     </tr>
                                 </table>
+                                <div v-if="">
+
+                                </div>
                                 <div v-if="isSaving" class="progress">
                                     <div class="progress-bar progress-bar-striped active" style="width: 100%"></div>
                                 </div>
