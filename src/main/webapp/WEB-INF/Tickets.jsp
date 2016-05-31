@@ -95,7 +95,9 @@
 
                                 showAlert("Registro guardado con exito");
                             }).error(function (data) {
-
+                                this.ticket.incidence = '';
+                                this.ticket.priority = '';
+                                this.ticket.descripcionProblema = '';
                             });
                         } else {
                             showAlert("Tipo de insidencia, prioridad, descripción requeridos",{type:3});
