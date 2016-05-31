@@ -62,6 +62,11 @@ public class Stocks implements AccessLevelFilterable, Serializable {
     @JsonView(JsonViews.Root.class)
     private LocalDateTime creationDate;
 
+    @Column(name = "PURCHASE_DATE", updatable = false)
+    @Convert(converter = DateTimeConverter.class)
+    @JsonView(JsonViews.Root.class)
+    private LocalDateTime purchaseDate;
+
     @Column(name = "PURCHASE_PRICE")
     @JsonView(JsonViews.Root.class)
     private BigDecimal purchasePrice;
