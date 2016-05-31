@@ -502,14 +502,6 @@
             });
 
           },
-          autorizeRequest: function()
-          {
-            //Aqui tenemos que poner la funcion para autorizar y despues crear la cuenta por pagar
-          },
-          declineRequest: function()
-          {
-            alert("Se rechaza");
-          },
           obtainUserInSession: function()
           {
             this.$http.get(ROOT_URL + "/user").
@@ -579,6 +571,44 @@
             {
               showAlert("No se ha podido obtener la informacion de la autorizacion");
             });
+          },
+          commitAuthorization: function (auth, authorize) {
+            if (authorize) {
+              this.$http.post(ROOT_URL+"/folios/authorizations/"+ auth.idAuthorization +"/authorize",{
+                details: auth.details
+              }).
+              success(function(data)
+              {
+                this.obtainInformationAutorization();
+                $("#auth-confirmation-modal").modal("hide");
+              }).error(function() {
+                showAlert("Ha habido un error al autorizar la solicitud, intente nuevamente");
+              });
+            } else {
+              this.$http.post(ROOT_URL+"/folios/authorizations/"+ auth.idAuthorization +"/reject", {
+                details: auth.details
+              }).
+              success(function(data)
+              {
+                showAlert(data);
+                this.obtainInformationAutorization();
+                $("#auth-confirmation-modal").modal("hide");
+              }).error(function() {
+                showAlert("Ha habido un error al cancelar la solicitud, intente nuevamente");
+              });
+            }
+          },
+          autorizarSolicitudIndividual: function(info)
+          {
+            this.authModal.authorization = info;
+            this.authModal.authorize = true;
+            $("#auth-confirmation-modal").modal("show");
+          },
+          rechazarSolicitudIndividual: function(info)
+          {
+            this.authModal.authorization = info;
+            this.authModal.authorize = false;
+            $("#auth-confirmation-modal").modal("show");
           },
           validateCurrency: function(cotizacion)
           {
@@ -723,10 +753,9 @@
                 </label>
                 <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
                 @change="obtainRequestInfo" :disabled="isUpdate">
-                  <option></option>
-                  <option v-for="user in Users" value="{{user.idUser}}">
-                    <span v-if="user.dwEmployee.employee.fullNameReverse != '' ">{{user.dwEmployee.employee.fullNameReverse}}</span>
-                    <span v-if="user.dwEmployee.employee.fullNameReverse == ''"><{{user.mail}}></span>
+                  <option value="{{userInSession.idUser}}">
+                    {{ userInSession.dwEmployee.dwEnterprise.branch.branchName }} -
+                    {{ userInSession.dwEmployee.dwEnterprise.area.areaName }}
                   </option>
                 </select>
               </div>

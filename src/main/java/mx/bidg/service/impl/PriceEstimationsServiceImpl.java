@@ -68,7 +68,11 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         estimation.setCreationDate(LocalDateTime.now());
         estimation.setUserEstimation(user);
         estimation.setIdAccessLevel(1);
-        estimation.setEstimationStatus(new CEstimationStatus(CEstimationStatus.PENDIENTE));
+        if (request.getRequestTypeProduct().getIdRequestCategory() == CRequestsCategories.DIRECTA) {
+            estimation.setEstimationStatus(new CEstimationStatus(CEstimationStatus.APROBADA));
+        } else {
+            estimation.setEstimationStatus(new CEstimationStatus(CEstimationStatus.PENDIENTE));
+        }
         //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
         estimation.setOutOfBudget((residualAmount.compareTo(tempAmount) == -1)? 1 : 0);
         estimation = priceEstimationsDao.save(estimation);
