@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class RequestTypesProductServiceImpl implements RequestTypesProductService {
@@ -32,5 +34,10 @@ public class RequestTypesProductServiceImpl implements RequestTypesProductServic
         return dao.findByCombination(new CRequestsCategories(idRequestCategory), new CRequestTypes(idRequestType), 
                 new CProductTypes(idProductType));
     }
-    
+
+    @Override
+    public List<RequestTypesProduct> findByRequestType(CRequestTypes cRequestTypes) {
+        return dao.findByRequestType(cRequestTypes);
+    }
+
 }
