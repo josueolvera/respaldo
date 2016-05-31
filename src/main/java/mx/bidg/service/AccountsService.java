@@ -20,4 +20,5 @@ public interface AccountsService {
     Accounts addAccountForProvider(Providers provider, Accounts account);
     Boolean delete(Accounts account);
     Accounts save(Accounts account);
+    void low(Integer idAccount);
 }
