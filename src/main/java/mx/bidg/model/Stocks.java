@@ -138,6 +138,14 @@ public class Stocks implements AccessLevelFilterable, Serializable {
         this.creationDate = creationDate;
     }
 
+    public LocalDateTime getPurchaseDate() {
+        return purchaseDate;
+    }
+
+    public void setPurchaseDate(LocalDateTime purchaseDate) {
+        this.purchaseDate = purchaseDate;
+    }
+
     public String getFolio() {
         return folio;
     }
