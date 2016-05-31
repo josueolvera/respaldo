@@ -17,6 +17,7 @@ public interface TicketService {
     List<Ticket> findByTicketStatus(Integer idTicketStatus);
     List<Ticket> findByTicketStatusPriority(Integer idTicketStatus, Integer idPriority);
     Ticket changeTicketStatus(Integer idTicket, CTicketStatus ticketStatus);
-    EmailTemplates sendEmail(Ticket ticket);
+    EmailTemplates sendEmailNewTicket(Ticket ticket);
+    EmailTemplates sendEmailStatusTicket(Ticket ticket);
     Ticket findByFolio(String folio);
 }
