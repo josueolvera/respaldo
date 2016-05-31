@@ -55,8 +55,13 @@ public class TicketController {
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(ticket), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE
+    )
     public ResponseEntity<String> save(@RequestBody String data, HttpSession session) throws IOException {
+        System.out.println(data);
         JsonNode node = mapper.readTree(data);
         Ticket ticket = new Ticket();
         ticket.setUser((Users) session.getAttribute("user"));
