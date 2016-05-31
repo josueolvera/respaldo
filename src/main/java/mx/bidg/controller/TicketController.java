@@ -69,7 +69,6 @@ public class TicketController {
         ticket.setPriority(cPriorityService.findById(node.get("priority").get("idPriority").asInt()));
         ticket.setTicketStatus(CTicketStatus.ABIERTO);
         ticket = ticketService.save(ticket);
-        ticketService.sendEmail(ticket);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(ticket), HttpStatus.OK);
     }
 
