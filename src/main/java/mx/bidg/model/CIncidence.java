@@ -43,7 +43,7 @@ public class CIncidence implements Serializable {
 
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 80)
     @Column(name = "INCIDENCE_NAME")
     private String incidenceName;
 
