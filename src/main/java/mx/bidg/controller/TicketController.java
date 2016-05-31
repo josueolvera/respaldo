@@ -61,7 +61,6 @@ public class TicketController {
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE
     )
     public ResponseEntity<String> save(@RequestBody String data, HttpSession session) throws IOException {
-        System.out.println(data);
         JsonNode node = mapper.readTree(data);
         Ticket ticket = new Ticket();
         ticket.setUser((Users) session.getAttribute("user"));

@@ -114,18 +114,11 @@ public class TicketServiceImpl implements TicketService {
 
         ticketDao.update(ticket);
 
-        EmailTemplates emailTemplate = emailTemplatesService.findByName(EMAIL_DESIGN_TICKET_TEMPLATE_NAME);
-        String defaultMessage = emailTemplate.getMessage();
-        emailTemplate.setMessage("<p>Su ticket con folio: <a href=\"http://sistema.bidg.mx/BIDGroupREV/sima/ticket?folio={{ticket.folio}}\">{{ticket.folio}}</a> ha cambido de status a {{ticket.ticketStatus.ticketStatusName}}.</p>\n" +
-                "<p>Tipo de solicitud: {{ticket.incidence.incidenceName}}.</p><p>Prioridad: {{ticket.priority.priorityName}}.</p><p>Descripción: {{ticket.descripcionProblema}}.</p><p>Puede consultar el status de su ticket haciendo click en el siguiente <a href=\"http://sistema.bidg.mx/BIDGroupREV/sima/ticket?folio={{ticket.folio}}\">enlace</a>.</p>");
-        emailTemplate.getEmailRecipientsList().clear();
+        EmailTemplates emailTemplate = emailTemplatesService.findByName("ticket_status_notification");
         emailTemplate.addProperty("ticket", ticket);
         emailTemplate.addRecipient(new EmailRecipients(ticket.getUser().getMail(), ticket.getUser().getUsername(), EmailRecipients.TO));
 
         emailDeliveryService.deliverEmail(emailTemplate);
-
-        emailTemplate.setMessage(defaultMessage);
-
         return ticket;
     }
 
