@@ -26,7 +26,6 @@
                         incidence:'',
                         priority:'',
                         descripcionProblema:'',
-                        correo:'',
                         ticketStatus:{
                             idTicketStatus: 1,
                             ticketStatusName: "Abierto"
@@ -80,13 +79,13 @@
                         if (
                                 this.ticket.incidence != '' &&
                                 this.ticket.priority != '' &&
-                                this.ticket.descripcionProblema != '' &&
-                                this.ticket.correo != ''
+                                this.ticket.descripcionProblema != ''
                         ) {
                             return true;
                         } else return false;
                     },
                     saveTicket:function () {
+                        console.log(this.ticket);
                         if (this.formValidation()) {
                             this.$http.post(ROOT_URL + '/ticket',this.ticket).success(function (data) {
 
@@ -142,7 +141,7 @@
             <h1 class="text-center">Tickets</h1>
             <br>
             <div class="col-xs-offset-1 col-xs-10">
-                <form v-on:submit.prevent="saveTicket">
+                <%--<form v-on:submit.prevent="saveTicket">--%>
                     <div class="row">
                         <div class="col-xs-4">
                             <label>Solicitante</label>
@@ -179,10 +178,10 @@
                     <br>
                     <div class="row">
                         <div class="text-center">
-                            <button type="submit" class="btn btn-success">Solicitar</button>
+                            <button @click="saveTicket" class="btn btn-success">Solicitar</button>
                         </div>
                     </div>
-                </form>
+                <%--</form>--%>
             </div>
             <div class="col-xs-offset-1 col-xs-10">
                 <br>
