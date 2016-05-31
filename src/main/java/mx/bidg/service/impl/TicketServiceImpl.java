@@ -81,7 +81,7 @@ public class TicketServiceImpl implements TicketService {
         ticket.setFolio(folio);
 
         ticketDao.save(ticket);
-        sendEmail(ticket);
+        sendEmailNewTicket(ticket);
 
         return ticket;
     }
@@ -117,17 +117,23 @@ public class TicketServiceImpl implements TicketService {
 
         ticketDao.update(ticket);
 
-        EmailTemplates emailTemplate = emailTemplatesService.findByName("ticket_status_notification");
-        emailTemplate.addProperty("ticket", ticket);
-        emailTemplate.addRecipient(new EmailRecipients(ticket.getUser().getMail(), ticket.getUser().getUsername(), EmailRecipients.TO));
-
-        emailDeliveryService.deliverEmail(emailTemplate);
+        sendEmailStatusTicket(ticket);
         return ticket;
     }
 
     @Override
-    public EmailTemplates sendEmail(Ticket ticket) {
+    public EmailTemplates sendEmailNewTicket(Ticket ticket) {
         EmailTemplates emailTemplate = emailTemplatesService.findByName(EMAIL_DESIGN_TICKET_TEMPLATE_NAME);
+        emailTemplate.addProperty("ticket", ticket);
+        emailTemplate.addRecipient(new EmailRecipients(ticket.getUser().getMail(), ticket.getUser().getUsername(), EmailRecipients.TO));
+
+        emailDeliveryService.deliverEmail(emailTemplate);
+        return emailTemplate;
+    }
+
+    @Override
+    public EmailTemplates sendEmailStatusTicket(Ticket ticket) {
+        EmailTemplates emailTemplate = emailTemplatesService.findByName("ticket_status_notification");
         emailTemplate.addProperty("ticket", ticket);
         emailTemplate.addRecipient(new EmailRecipients(ticket.getUser().getMail(), ticket.getUser().getUsername(), EmailRecipients.TO));
 
