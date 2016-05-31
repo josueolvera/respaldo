@@ -68,6 +68,16 @@ public class Providers implements Serializable {
     @JsonView(JsonViews.Root.class)
     private LocalDateTime supplierLow;
 
+    @Column(name = "CREDIT_DAYS")
+    @NotNull
+    @JsonView(JsonViews.Root.class)
+    private int creditDays;
+
+    @Column(name = "CUTTING_DATE")
+    @NotNull
+    @JsonView(JsonViews.Root.class)
+    private int cuttingDate;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
@@ -89,6 +99,11 @@ public class Providers implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private List<ProviderAddress> providerAddressList;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProvider")
+    @JsonView(JsonViews.Embedded.class)
+    private List<ProvidersProductsTypes> providersProductsTypes;
+
+
     public Providers() {
     }
 
@@ -100,6 +115,22 @@ public class Providers implements Serializable {
         this.idProvider = idProvider;
         this.providerName = providerName;
         this.rfc = rfc;
+    }
+
+    public int getCuttingDate() {
+        return cuttingDate;
+    }
+
+    public void setCuttingDate(int cuttingDate) {
+        this.cuttingDate = cuttingDate;
+    }
+
+    public int getCreditDays() {
+        return creditDays;
+    }
+
+    public void setCreditDays(int creditDays) {
+        this.creditDays = creditDays;
     }
 
     public Integer getIdProvider() {
@@ -190,6 +221,14 @@ public class Providers implements Serializable {
 
     public void setProvidersContactList(List<ProvidersContact> providersContactList) {
         this.providersContactList = providersContactList;
+    }
+
+    public List<ProvidersProductsTypes> getProvidersProductsTypes() {
+        return providersProductsTypes;
+    }
+
+    public void setProvidersProductsTypes(List<ProvidersProductsTypes> providersProductsTypes) {
+        this.providersProductsTypes = providersProductsTypes;
     }
 
     @Override

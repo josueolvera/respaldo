@@ -54,24 +54,10 @@ public class ProvidersController {
         provider.setBusinessName(jnode.get("businessName").asText());
         provider.setRfc(jnode.get("rfc").asText());
         provider.setAccountingAccount(jnode.get("accountingAccount").asText());
+        provider.setCreditDays(jnode.get("creditDays").asInt());
+        provider.setCuttingDate(jnode.get("cuttingDate").asInt());
         provider.setIdAccessLevel(1);
         providersService.update(provider);
-
-        for (JsonNode node : jnode.get("addressProvider")){
-            ProviderAddress providerAddress = providerAddressService.findById(node.get("idProviderAddress").asInt());
-            providerAddress.setStreet(node.get("street").asText());
-            providerAddress.setCp(node.get("cp").asInt());
-            providerAddress.setNumExt(node.get("numExt").asText());
-            providerAddress.setNumInt(node.get("numInt").asText());
-            providerAddress.setSettlement(new CSettlement(node.get("idSettlement").asInt()));
-            providerAddress.setMunicipality(new CMunicipalities(node.get("idMunicipality").asInt()));
-            providerAddress.setState(new CStates(node.get("idState").asInt()));
-            providerAddress.setIdProvider(provider);
-            providerAddress.setIdAccessLevel(1);
-
-            providerAddressService.update(providerAddress);
-
-        }
 
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Root.class).writeValueAsString(provider), HttpStatus.OK
@@ -86,6 +72,8 @@ public class ProvidersController {
         provider.setBusinessName(jnode.get("businessName").asText());
         provider.setRfc(jnode.get("rfc").asText());
         provider.setAccountingAccount(jnode.get("accountingAccount").asText());
+        provider.setCreditDays(jnode.get("creditDays").asInt());
+        provider.setCuttingDate(jnode.get("cuttingDate").asInt());
         provider.setIdAccessLevel(1);
         providersService.save(provider);
 
