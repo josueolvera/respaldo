@@ -523,8 +523,7 @@
                         $("#editModal").modal("show");
                     },
                     showAssignmentsModal: function (article) {
-                        var form = document.getElementById('attachments-form');
-                        form.reset();
+                        document.getElementById("attachments-form").reset();
                         this.assignmentsModal.article = article;
                         $("#assignmentsModal").modal("show");
                     },
@@ -533,7 +532,6 @@
                         $("#editModal").modal("hide");
                     },
                     closeHistoricalModal: function () {
-                        document.getElementById("attachments-form").reset();
                         $("#historicalModal").modal("hide");
                     },
                     closeAssignmentsModal: function () {
