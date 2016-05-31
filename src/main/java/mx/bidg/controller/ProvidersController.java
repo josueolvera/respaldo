@@ -2,6 +2,7 @@ package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.*;
 import mx.bidg.service.*;
@@ -37,12 +38,15 @@ public class ProvidersController {
 
     @Autowired
     private ProviderAddressService providerAddressService;
+
+    @Autowired
+    private  ProvidersProductsTypesService providersProductsTypesService;
     
-    private ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
     
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> getProvidersList() throws Exception {
-        String response = mapper.writerWithView(JsonViews.Root.class).writeValueAsString(providersService.findAll());
+        String response = mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(providersService.findAll());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -94,7 +98,7 @@ public class ProvidersController {
             providersAccountsService.save(providerAccount);
         }
 
-        for (JsonNode node : jnode.get("addressProvider")) {
+        for (JsonNode node : jnode.get("providerAddressList")) {
             ProviderAddress providerAddress = new ProviderAddress();
             providerAddress.setStreet(node.get("street").asText());
             providerAddress.setCp(node.get("cp").asInt());
@@ -120,6 +124,15 @@ public class ProvidersController {
             phone.setProvider(provider);
 
             providersContactService.save(phone);
+        }
+
+        for (JsonNode node : jnode.get("providersProductsTypes")){
+            ProvidersProductsTypes providersProductsTypes = new ProvidersProductsTypes();
+            providersProductsTypes.setcProductType(new CProductTypes(node.get("idProductType").asInt()));
+            providersProductsTypes.setIdAccessLevel(1);
+            providersProductsTypes.setProvider(provider);
+
+            providersProductsTypesService.save(providersProductsTypes);
         }
 
         return new ResponseEntity<>(
