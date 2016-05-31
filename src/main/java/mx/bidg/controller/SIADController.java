@@ -28,7 +28,7 @@ public class SIADController {
     }
 
 
-    @RequestMapping(value = "/stock", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/stock", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public ModelAndView stockView() {
         ModelAndView model = new ModelAndView();
         model.setViewName("Stock");

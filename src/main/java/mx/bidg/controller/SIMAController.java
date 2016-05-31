@@ -14,21 +14,21 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/sima")
 public class SIMAController {
 
-    @RequestMapping(value = "/tickets-management", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/tickets-management", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public ModelAndView ticketsManagement() {
         ModelAndView model = new ModelAndView();
         model.setViewName("TicketsManagement");
         return model;
     }
 
-    @RequestMapping(value = "/tickets",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/tickets",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public ModelAndView tickets() {
         ModelAndView model = new ModelAndView();
         model.setViewName("Tickets");
         return model;
     }
 
-    @RequestMapping(value = "/ticket",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/ticket",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public ModelAndView ticket(@RequestParam(name = "folio") String folio) {
         ModelAndView model = new ModelAndView();
         model.addObject("folio", folio);
