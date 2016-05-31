@@ -80,7 +80,10 @@ public class TicketServiceImpl implements TicketService {
 
         ticket.setFolio(folio);
 
-        return ticketDao.save(ticket);
+        ticketDao.save(ticket);
+        sendEmail(ticket);
+
+        return ticket;
     }
 
     @Override
