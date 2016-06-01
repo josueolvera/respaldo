@@ -21,6 +21,7 @@
                     this.fetchValues();
                     this.fetchArticleStatus();
                     this.fetchHierarchy();
+                    this.fetchBranches();
                 },
                 data: {
                     isSaving: false,
@@ -28,6 +29,7 @@
                     selectOptions: {
                         distributors: [],
                         areas: [],
+                        branches: [],
                         attributes: [],
                         values: [],
                         articleStatus: [],
@@ -37,6 +39,7 @@
                     },
                     selectedOptions: {
                         area: null,
+                        branch: null,
                         distributor: null
                     },
                     attachmentsModal: {
@@ -158,6 +161,11 @@
                     fetchAreas: function () {
                         this.$http.get(ROOT_URL + "/areas").success(function (data) {
                             this.selectOptions.areas = data;
+                        });
+                    },
+                    fetchBranches: function () {
+                        this.$http.get(ROOT_URL + '/branchs').success(function (data) {
+                            this.selectOptions.branches = data;
                         });
                     },
                     fetchHierarchy: function () {
@@ -310,12 +318,18 @@
                             showAlert("Tipo de archivo no admitido", {type:3});
                         }
                     },
-                    areaFilter: function (item) {
-                        if (this.selectedOptions.area == null || this.selectedOptions.area == 0) {
+                    areaBranchFilter: function (item) {
+                        if (this.selectedOptions.area == null || this.selectedOptions.area == 0
+                                && (this.selectedOptions.branch == null || this.selectedOptions.branch == 0)) {
                             return item;
-                        }
-                        if (item[0].dwEnterprises.idArea == this.selectedOptions.area.idArea) {
-                            return item;
+                        } else if (this.selectedOptions.branch.idBranch) {
+                            if (item[0].dwEnterprises.idBranch == this.selectedOptions.branch.idBranch) {
+                                return item;
+                            }
+                        } else {
+                            if (item[0].dwEnterprises.idArea == this.selectedOptions.area.idArea) {
+                                return item;
+                            }
                         }
                     },
                     showAttachmentsModal: function (article) {
@@ -428,8 +442,7 @@
                 <div class="col-md-3 col-xs-6">
                     <label>Area</label>
                     <select v-model="selectedOptions.area" class="form-control"
-                            @change="attachOnScreen"
-                            :disabled="selectOptions.areas.length < 2">
+                            @change="attachOnScreen">
                         <option value="0" selected>Todas</option>
                         <option v-for="area in selectOptions.areas"
                                 :value="area">
@@ -437,17 +450,24 @@
                         </option>
                     </select>
                 </div>
+                <div class="col-md-3 col-xs-6">
+                    <label>Sucursal</label>
+                    <select v-model="selectedOptions.branch" class="form-control"
+                            @change="attachOnScreen">
+                        <option value="0" selected>Todas</option>
+                        <option v-for="branch in selectOptions.branches | orderBy 'branchShort'"
+                                :value="branch">
+                            {{ branch.branchShort }}
+                        </option>
+                    </select>
+                </div>
                 <div style="visibility: hidden" class="col-md-3 col-xs-6">
                     <label>Region</label>
                     <select class="form-control"></select>
                 </div>
-                <div style="visibility: hidden" class="col-md-3 col-xs-6">
-                    <label>Sucursal</label>
-                    <select class="form-control"></select>
-                </div>
             </div>
             <div class="stock-groups col-xs-12">
-                <div v-for="stock in stockGroups | filterBy areaFilter" class="">
+                <div v-for="stock in stockGroups | filterBy areaBranchFilter" class="">
                     <div class="text-center col-xs-12">
                         <h4>{{ stock[0].dwEnterprises.branch.branchShort }} - {{ stock[0].dwEnterprises.area.areaName }}</h4>
                     </div>
