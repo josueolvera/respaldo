@@ -2,6 +2,7 @@ package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.*;
 import mx.bidg.service.AccountsService;
@@ -33,7 +34,7 @@ public class AccountsController {
     @Autowired
     private ProvidersAccountsService providersAccountsService;
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
     @RequestMapping(value = "/provider/{idProvider}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> accountsByProvider(@PathVariable int idProvider) throws Exception {
@@ -70,5 +71,13 @@ public class AccountsController {
     public @ResponseBody ResponseEntity<String> accountsByUser(@PathVariable int idUser) throws Exception {
         String response = mapper.writerWithView(JsonViews.Root.class).writeValueAsString("");
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/low/{idAccount}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> lowAccount(@PathVariable int idAccount) throws Exception {
+
+        accountsService.low(idAccount);
+
+        return new ResponseEntity<>("Cuenta eliminada", HttpStatus.OK);
     }
 }

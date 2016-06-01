@@ -10,10 +10,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 /**
@@ -45,6 +47,11 @@ public class Accounts implements Serializable {
     @Column(name = "ACCOUNT_CLABE")
     @JsonView(JsonViews.Root.class)
     private String accountClabe;
+
+    @Column(name = "DELETE_DAY")
+    @Convert(converter = DateTimeConverter.class)
+    @JsonView(JsonViews.Root.class)
+    private LocalDateTime deleteDay;
     
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
@@ -93,6 +100,14 @@ public class Accounts implements Serializable {
 
     public Accounts(Integer idAccount) {
         this.idAccount = idAccount;
+    }
+
+    public LocalDateTime getDeleteDay() {
+        return deleteDay;
+    }
+
+    public void setDeleteDay(LocalDateTime deleteDay) {
+        this.deleteDay = deleteDay;
     }
 
     public CCurrencies getCurrencies() {

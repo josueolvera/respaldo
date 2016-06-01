@@ -5,6 +5,7 @@
  */
 package mx.bidg.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import mx.bidg.dao.AccountsDao;
@@ -63,5 +64,12 @@ public class AccountsServiceImpl implements AccountsService {
     public Accounts save(Accounts account) {   
         accountsDao.save(account);
         return account;
+    }
+
+    @Override
+    public void low(Integer idAccount) {
+        Accounts accounts = accountsDao.findById(idAccount);
+        accounts.setDeleteDay(LocalDateTime.now());
+        accountsDao.update(accounts);
     }
 }

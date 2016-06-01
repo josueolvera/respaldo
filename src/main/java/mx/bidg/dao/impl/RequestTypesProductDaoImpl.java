@@ -74,5 +74,12 @@ public class RequestTypesProductDaoImpl extends AbstractDao<Integer, RequestType
         map.put("requestType", requestType);
         return (List<RequestTypesProduct>) criteria.add(Restrictions.allEq(map)).list();
     }
-    
+
+    @Override
+    public List<RequestTypesProduct> findByRequestType(CRequestTypes requestTypes) {
+        return (List<RequestTypesProduct>)createEntityCriteria()
+                .add(Restrictions.eq("idRequestCategory",CRequestsCategories.COTIZABLE))
+                .add(Restrictions.eq("requestType",requestTypes)).list();
+    }
+
 }
