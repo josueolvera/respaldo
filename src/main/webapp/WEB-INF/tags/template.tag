@@ -127,9 +127,9 @@
         <script src="/BIDGroup/assets/js/alerts.js"></script>
         <script src="/BIDGroup/assets/js/accounting.js"></script>
         <script type="text/javascript">
-            Vue.http.headers.common['Content-Type'] = 'application/json; charset=UTF-8';
             Vue.http.interceptors.push({
                 request: function (request) {
+                    request.headers['Content-Type'] = "application/json; charset=UTF-8";
                     switch (request.method) {
                         case 'POST':
                         case 'DELETE':
