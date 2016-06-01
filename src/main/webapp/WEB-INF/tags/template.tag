@@ -127,6 +127,7 @@
         <script src="/BIDGroup/assets/js/alerts.js"></script>
         <script src="/BIDGroup/assets/js/accounting.js"></script>
         <script type="text/javascript">
+            var GLOBAL_LOADER = document.getElementById('global-loader');
             Vue.http.interceptors.push({
                 request: function (request) {
                     request.headers['Content-Type'] = "application/json; charset=UTF-8";
@@ -137,18 +138,16 @@
                         case 'post':
                         case 'delete':
                         case 'put':
-                            var loader = document.getElementById('global-loader');
-                            if (loader == null) return request;
-                            loader.classList.remove('hidden');
+                            if (GLOBAL_LOADER == null) return request;
+                            GLOBAL_LOADER.classList.remove('hidden');
                             break;
                     }
                     return request;
                 },
 
                 response: function (response) {
-                    var loader = document.getElementById('global-loader');
-                    if (loader == null) return response;
-                    loader.classList.add('hidden');
+                    if (GLOBAL_LOADER == null) return response;
+                    GLOBAL_LOADER.classList.add('hidden');
                     return response;
                 }
             });
