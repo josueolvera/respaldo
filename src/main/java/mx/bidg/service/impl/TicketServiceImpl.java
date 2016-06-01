@@ -111,7 +111,7 @@ public class TicketServiceImpl implements TicketService {
         Ticket ticket = ticketDao.findById(idTicket);
         ticket.setTicketStatus(ticketStatus);
 
-        if (ticketStatus.getIdTicketStatus().equals(CTicketStatus.CERRADO)) {
+        if (ticketStatus.equals(CTicketStatus.CERRADO)) {
             ticket.setFechaFinal(LocalDateTime.now());
         }
 

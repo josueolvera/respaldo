@@ -17,10 +17,9 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "C_ARTICLE_STATUS")
 public class CArticleStatus implements Serializable {
 
-    public static final int ACTIVO = 1;
-    public static final int PENDIENTE = 2;
-    public static final int INACTIVO = 3;
-    public static final int BAJA = 4;
+    public static final int ALTA = 1;
+    public static final int ASIGNADO = 2;
+    public static final int BAJA = 3;
 
     private static final long serialVersionUID = 1L;
 

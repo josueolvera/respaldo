@@ -35,8 +35,7 @@ public class CTicketStatus implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final CTicketStatus ABIERTO = new CTicketStatus(1);
-    public static final CTicketStatus EN_REVISION = new CTicketStatus(2);
-    public static final CTicketStatus ASIGNADO = new CTicketStatus(3);
+    public static final CTicketStatus EN_PROCESO = new CTicketStatus(2);
     public static final CTicketStatus CERRADO = new CTicketStatus(4);
 
     @Id
