@@ -23,7 +23,7 @@ import javax.validation.constraints.Size;
 @Table(name = "PROVIDER_ADDRESS")
 
 public class ProviderAddress implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -31,10 +31,6 @@ public class ProviderAddress implements Serializable {
     @Column(name = "ID_PROVIDER_ADDRESS")
     @JsonView(JsonViews.Root.class)
     private Integer idProviderAddress;
-
-    @Column(name = "CP")
-    @JsonView(JsonViews.Root.class)
-    private Integer cp;
 
     @Size(max = 50)
     @Column(name = "STREET")
@@ -58,38 +54,19 @@ public class ProviderAddress implements Serializable {
     @Column(name="ID_PROVIDER", insertable=false, updatable=false)
     @JsonView(JsonViews.Root.class)
     private Integer idProvider;
-
-    @Column(name="ID_STATE", insertable=false, updatable=false)
+    
+    @Column(name="ID_ASENTAMIENTO", insertable=false, updatable=false)
     @JsonView(JsonViews.Root.class)
-    private Integer idState;
-
-    @Column(name="ID_SETTLEMENT", insertable=false, updatable=false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idSettlement;
-
-    @Column(name="ID_MUNICIPALITY", insertable=false, updatable=false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idMunicipality;
+    private Integer idAsentamiento;
 
     @JoinColumn(name = "ID_PROVIDER", referencedColumnName = "ID_PROVIDER")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private Providers provider;
-
-    @JoinColumn(name = "ID_STATE", referencedColumnName = "ID_STATE")
+    
+    @JoinColumn(name = "ID_ASENTAMIENTO", referencedColumnName = "ID_ASENTAMIENTO")
     @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private CStates state;
-
-    @JoinColumn(name = "ID_SETTLEMENT", referencedColumnName = "ID_SETTLEMENT")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private CSettlement settlement;
-
-    @JoinColumn(name = "ID_MUNICIPALITY", referencedColumnName = "ID_MUNICIPALITY")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private CMunicipalities municipality;
+    private CAsentamientos asentamiento;
 
     public ProviderAddress() {
     }
@@ -109,26 +86,6 @@ public class ProviderAddress implements Serializable {
 
     public void setIdProviderAddress(Integer idProviderAddress) {
         this.idProviderAddress = idProviderAddress;
-    }
-
-    public void setIdState(Integer idState) {
-        this.idState = idState;
-    }
-
-    public void setIdSettlement(Integer idSettlement) {
-        this.idSettlement = idSettlement;
-    }
-
-    public void setIdMunicipality(Integer idMunicipality) {
-        this.idMunicipality = idMunicipality;
-    }
-
-    public Integer getCp() {
-        return cp;
-    }
-
-    public void setCp(Integer cp) {
-        this.cp = cp;
     }
 
     public String getStreet() {
@@ -159,40 +116,44 @@ public class ProviderAddress implements Serializable {
         return idAccessLevel;
     }
 
-    public void setIdAccessLevel(int idAccessLevel) {
-        this.idAccessLevel = idAccessLevel;
+    public Integer getIdProvider() {
+        return idProvider;
     }
 
-    public Providers getIdProvider() {
+    public void setIdProvider(Integer idProvider) {
+        this.idProvider = idProvider;
+    }
+
+    public Providers getProvider() {
         return provider;
+    }
+
+    public void setProvider(Providers provider) {
+        this.provider = provider;
+    }
+
+    public void setIdAccessLevel(int idAccessLevel) {
+        this.idAccessLevel = idAccessLevel;
     }
 
     public void setIdProvider(Providers provider) {
         this.provider = provider;
     }
-
-    public CStates getState() {
-        return state;
+    
+    public Integer getIdAsentamiento() {
+        return idAsentamiento;
     }
 
-    public CMunicipalities getMunicipality() {
-        return municipality;
+    public void setIdAsentamiento(Integer idAsentamiento) {
+        this.idAsentamiento = idAsentamiento;
     }
 
-    public void setMunicipality(CMunicipalities municipality) {
-        this.municipality = municipality;
+    public CAsentamientos getAsentamiento() {
+        return asentamiento;
     }
 
-    public CSettlement getSettlement() {
-        return settlement;
-    }
-
-    public void setSettlement(CSettlement settlement) {
-        this.settlement = settlement;
-    }
-
-    public void setState(CStates state) {
-        this.state = state;
+    public void setAsentamiento(CAsentamientos asentamiento) {
+        this.asentamiento = asentamiento;
     }
 
 
