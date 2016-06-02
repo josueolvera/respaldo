@@ -5,6 +5,10 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
+
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
@@ -26,6 +30,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author rubens
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_ASENTAMIENTOS")
 
 public class CAsentamientos implements Serializable {
@@ -35,39 +40,47 @@ public class CAsentamientos implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ASENTAMIENTO")
+    @JsonView(JsonViews.Root.class)
     private Integer idAsentamiento;
     
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "NOMBRE_ASENTAMIENTO")
+    @JsonView(JsonViews.Root.class)
     private String nombreAsentamiento;
     
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
     
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_TIPO_ASENTAMIENTO")
+    @JsonView(JsonViews.Root.class)
     private int idTipoAsentamiento;
     
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ESTADO")
+    @JsonView(JsonViews.Root.class)
     private int idEstado;
     
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_MUNICIPIO")
+    @JsonView(JsonViews.Root.class)
     private int idMunicipio;
     
     @Basic(optional = false)
     @NotNull
     @Column(name = "CODIGO_POSTAL")
-    private int codigoPostal;
-    
+    @JsonView(JsonViews.Root.class)
+    private String codigoPostal;
+
+    @JsonView(JsonViews.Embedded.class)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAsentamiento")
     private List<ProviderAddress> providerAddressList;
 
@@ -78,7 +91,7 @@ public class CAsentamientos implements Serializable {
         this.idAsentamiento = idAsentamiento;
     }
 
-    public CAsentamientos(Integer idAsentamiento, String nombreAsentamiento, int idAccessLevel, int idTipoAsentamiento, int idEstado, int idMunicipio, int codigoPostal) {
+    public CAsentamientos(Integer idAsentamiento, String nombreAsentamiento, int idAccessLevel, int idTipoAsentamiento, int idEstado, int idMunicipio, String codigoPostal) {
         this.idAsentamiento = idAsentamiento;
         this.nombreAsentamiento = nombreAsentamiento;
         this.idAccessLevel = idAccessLevel;
@@ -136,11 +149,11 @@ public class CAsentamientos implements Serializable {
         this.idMunicipio = idMunicipio;
     }
 
-    public int getCodigoPostal() {
+    public String getCodigoPostal() {
         return codigoPostal;
     }
 
-    public void setCodigoPostal(int codigoPostal) {
+    public void setCodigoPostal(String codigoPostal) {
         this.codigoPostal = codigoPostal;
     }
 
