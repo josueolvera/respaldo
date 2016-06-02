@@ -1,8 +1,8 @@
 package mx.bidg.service.impl;
 
-import mx.bidg.dao.CStatesDao;
-import mx.bidg.model.CStates;
-import mx.bidg.service.CStatesService;
+import mx.bidg.dao.CEstadosDao;
+import mx.bidg.model.CEstados;
+import mx.bidg.service.CEstadosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,13 +14,13 @@ import java.util.List;
  */
 @Service
 @Transactional
-public class CStatesServiceImpl implements CStatesService {
+public class CEstadosServiceImpl implements CEstadosService {
 
     @Autowired
-     private CStatesDao dao;
+     private CEstadosDao dao;
 
     @Override
-    public List<CStates> findAll() {
+    public List<CEstados> findAll() {
         return dao.findAll();
     }
 

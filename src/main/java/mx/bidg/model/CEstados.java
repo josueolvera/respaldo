@@ -27,93 +27,93 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author jolvera
+ * @author rubens
  */
 @Entity
 @DynamicUpdate
-@Table(name = "C_STATES")
+@Table(name = "C_ESTADOS")
 
-public class CStates implements Serializable {
-
+public class CEstados implements Serializable {
+    
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @Basic(optional = false)
     @NotNull
-    @Column(name = "ID_STATE")
+    @Column(name = "ID_ESTADO")
     @JsonView(JsonViews.Root.class)
-    private Integer idState;
-
+    private Integer idEstado;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
-    @Column(name = "STATE_NAME")
+    @Column(name = "NOMBRE_ESTADO")
     @JsonView(JsonViews.Root.class)
-    private String stateName;
-
+    private String nombreEstado;
+    
     @Size(max = 20)
-    @Column(name = "ABBREVIATION")
+    @Column(name = "ABBREVIACION")
     @JsonView(JsonViews.Root.class)
-    private String abbreviation;
-
+    private String abbreviacion;
+    
     @Size(max = 20)
-    @Column(name = "ABBREVIATION_2")
+    @Column(name = "ABBREVIACION_2")
     @JsonView(JsonViews.Root.class)
-    private String abbreviation2;
-
+    private String abbreviacion2;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idState")
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cEstados")
     @JsonView(JsonViews.Embedded.class)
-    private List<ProviderAddress> providerAddressList;
+    private List<CMunicipios> cMunicipiosList;
 
-    public CStates() {
+    public CEstados() {
     }
 
-    public CStates(Integer idState) {
-        this.idState = idState;
+    public CEstados(Integer idEstado) {
+        this.idEstado = idEstado;
     }
 
-    public CStates(Integer idState, String stateName, int idAccessLevel) {
-        this.idState = idState;
-        this.stateName = stateName;
+    public CEstados(Integer idEstado, String nombreEstado, int idAccessLevel) {
+        this.idEstado = idEstado;
+        this.nombreEstado = nombreEstado;
         this.idAccessLevel = idAccessLevel;
     }
 
-    public Integer getIdState() {
-        return idState;
+    public Integer getIdEstado() {
+        return idEstado;
     }
 
-    public void setIdState(Integer idState) {
-        this.idState = idState;
+    public void setIdEstado(Integer idEstado) {
+        this.idEstado = idEstado;
     }
 
-    public String getStateName() {
-        return stateName;
+    public String getNombreEstado() {
+        return nombreEstado;
     }
 
-    public void setStateName(String stateName) {
-        this.stateName = stateName;
+    public void setNombreEstado(String nombreEstado) {
+        this.nombreEstado = nombreEstado;
     }
 
-    public String getAbbreviation() {
-        return abbreviation;
+    public String getAbbreviacion() {
+        return abbreviacion;
     }
 
-    public void setAbbreviation(String abbreviation) {
-        this.abbreviation = abbreviation;
+    public void setAbbreviacion(String abbreviacion) {
+        this.abbreviacion = abbreviacion;
     }
 
-    public String getAbbreviation2() {
-        return abbreviation2;
+    public String getAbbreviacion2() {
+        return abbreviacion2;
     }
 
-    public void setAbbreviation2(String abbreviation2) {
-        this.abbreviation2 = abbreviation2;
+    public void setAbbreviacion2(String abbreviacion2) {
+        this.abbreviacion2 = abbreviacion2;
     }
 
     public int getIdAccessLevel() {
@@ -125,29 +125,29 @@ public class CStates implements Serializable {
     }
 
     @XmlTransient
-    public List<ProviderAddress> getProviderAddressList() {
-        return providerAddressList;
+    public List<CMunicipios> getCMunicipiosList() {
+        return cMunicipiosList;
     }
 
-    public void setProviderAddressList(List<ProviderAddress> providerAddressList) {
-        this.providerAddressList = providerAddressList;
+    public void setCMunicipiosList(List<CMunicipios> cMunicipiosList) {
+        this.cMunicipiosList = cMunicipiosList;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idState != null ? idState.hashCode() : 0);
+        hash += (idEstado != null ? idEstado.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CStates)) {
+        if (!(object instanceof CEstados)) {
             return false;
         }
-        CStates other = (CStates) object;
-        if ((this.idState == null && other.idState != null) || (this.idState != null && !this.idState.equals(other.idState))) {
+        CEstados other = (CEstados) object;
+        if ((this.idEstado == null && other.idEstado != null) || (this.idEstado != null && !this.idEstado.equals(other.idEstado))) {
             return false;
         }
         return true;
@@ -155,7 +155,7 @@ public class CStates implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.CStates[ idState=" + idState + " ]";
+        return "mx.bidg.model.CEstados[ idEstado=" + idEstado + " ]";
     }
     
 }

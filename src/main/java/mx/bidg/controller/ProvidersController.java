@@ -101,13 +101,10 @@ public class ProvidersController {
         for (JsonNode node : jnode.get("providerAddressList")) {
             ProviderAddress providerAddress = new ProviderAddress();
             providerAddress.setStreet(node.get("street").asText());
-            providerAddress.setCp(node.get("cp").asInt());
             providerAddress.setNumExt(node.get("numExt").asText());
             providerAddress.setNumInt(node.get("numInt").asText());
-            providerAddress.setSettlement(new CSettlement(node.get("idSettlement").asInt()));
-            providerAddress.setMunicipality(new CMunicipalities(node.get("idMunicipality").asInt()));
-            providerAddress.setState(new CStates(node.get("idState").asInt()));
-            providerAddress.setIdProvider(provider);
+            providerAddress.setAsentamiento(new CAsentamientos(node.get("idAsentamiento").asInt()));
+            providerAddress.setProvider(provider);
             providerAddress.setIdAccessLevel(1);
 
             providerAddressService.save(providerAddress);
