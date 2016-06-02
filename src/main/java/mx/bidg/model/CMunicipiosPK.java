@@ -5,6 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
+
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -21,11 +24,13 @@ public class CMunicipiosPK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ESTADO")
+    @JsonView(JsonViews.Root.class)
     private int idEstado;
     
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_MUNICIPIO")
+    @JsonView(JsonViews.Root.class)
     private int idMunicipio;
 
     public CMunicipiosPK() {
