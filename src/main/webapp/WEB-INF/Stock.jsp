@@ -82,6 +82,10 @@
                         },
                         fileInput: "file-type-"
                     },
+                    attachmentsModal: {
+                        article: null,
+                        fileInput: "file-type-"
+                    },
                     assignmentsModal: {
                         selected: {
                             distributor: null,
@@ -344,11 +348,15 @@
                         this.newArticleModal.properties.$remove(property)
                     },
                     addProperties: function (idArticle,properties) {
-                        this.$http.post(ROOT_URL + "/stock/" + idArticle + "/propertiesList", properties).success(function (data) {
+                        this.$http.post
+                        (
+                                ROOT_URL + "/stock/" + idArticle + "/propertiesList",
+                                properties
+                        ).success(function (data) {
                             showAlert("Articulo guardado")
                             this.closeNewArticleModal();
                             this.isSaving = false;
-                        }).error(function () {
+                        }).error(function (data) {
                             this.isSaving = false;
                             showAlert("No se pudo guardar el articulo", {type:3})
                         });
@@ -538,13 +546,13 @@
                             showAlert(data.error.message, {type: 3});
                         });
                     },
-                    saveNewStockArticle: function () {
+                    saveNewStockArticle: function (properties) {
                         this.isSaving = true;
 
                         var form = document.getElementById('newArticleFrom');
                         var formData = new FormData(form);
                         this.$http.post(ROOT_URL + "/stock", formData).success(function (data) {
-                            this.addProperties(data.idStock,this.newArticleModal.properties)
+                            this.addProperties(data.idStock,properties)
                         }).error(function (data) {
                             this.isSaving = false;
                         })
@@ -579,7 +587,30 @@
                     closeNewArticleModal: function () {
                         document.getElementById("attachments-form2").reset();
                         $("#newArticleModal").modal("hide");
-                    }
+                    },
+                    showAttachmentsModal: function (article) {
+                        this.attachmentsModal.article = article;
+                        this.fetchStockDocumentsRecord(article);
+                        $("#attachmentsModal").modal("show");
+                    },
+                    closeAttachmentsModal: function () {
+                        document.getElementById("attachments-form2").reset();
+                        $("#attachmentsModal").modal("hide");
+                    },
+                    uploadAttachments: function (article) {
+                        this.isSaving = true;
+                        var form = document.getElementById("attachments-form2");
+                        this.$http.post(ROOT_URL + "/stock/" + article.idStock + "/attachments", new FormData(form)).success(function () {
+                            showAlert("Registro exitoso");
+                            form.reset();
+                            this.fetchStockDocuments(article);
+                            this.fetchStockDocumentsRecord(article);
+                        }).error(function (data) {
+                            this.isSaving = false;
+                            form.reset();
+                            showAlert(data.error.message, {type:3})
+                        });
+                    },
                 }
             });
         </script>
@@ -656,7 +687,7 @@
                              class="lazy panel panel-default">
                             <div class="panel-heading">
                                 <div class="row">
-                                    <div class="text-center col-xs-10">
+                                    <div class="text-center col-xs-9">
                                         <div class="col-md-3 col-xs-6">
                                             <p><strong>Artículo</strong></p>
                                             <p>{{ article.article.articleName }}</p>
@@ -679,15 +710,18 @@
                                             </p>
                                         </div>
                                     </div>
-                                    <div class="col-xs-2">
+                                    <div class="col-xs-3">
                                         <button @click="showEditArticleModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Editar artículo">
                                             <span class="glyphicon glyphicon-pencil"></span>
                                         </button>
-                                        <button @click="showHistoricalModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Historial de asignaciones archivos">
-                                            <span class="glyphicon glyphicon-book"></span>
+                                        <button @click="showAttachmentsModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Adjuntar archivos">
+                                            <span class="glyphicon glyphicon-paperclip"></span>
                                         </button>
                                         <button @click="showAssignmentsModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Reasignar artículo">
                                             <span class="glyphicon glyphicon-user"></span>
+                                        </button>
+                                        <button @click="showHistoricalModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Historial de asignaciones archivos">
+                                            <span class="glyphicon glyphicon-book"></span>
                                         </button>
                                     </div>
                                 </div>
@@ -1092,6 +1126,67 @@
                 </div>
             </div>
 
+                <%-- Modal para carga de archivos adjuntos --%>
+            <div id="attachmentsModal" class="modal fade" data-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button @click.prevent="closeAttachmentsModal" class="close"><span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title">Documentos adjuntos</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-4 col-xs-6">
+                                    <label>Artículo: </label>
+                                    {{ attachmentsModal.article.article.articleName }}
+                                </div>
+                                <div class="col-md-4 col-xs-6">
+                                    <label>No. de Serie: </label>
+                                    {{ attachmentsModal.article.serialNumber }}
+                                </div>
+                                <div class="col-md-4 col-xs-12">
+                                    <label>Asignado a: </label>
+                                    {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.fullName }}
+                                </div>
+                            </div>
+                            <hr>
+                            <form id="attachments-form2"
+                                  method="post" enctype="multipart/form-data">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Documento</th>
+                                        <th>Nuevo documento</th>
+                                    </tr>
+                                    </thead>
+                                    <tr v-for="docType in selectOptions.documentTypes">
+                                        <td>{{ docType.documentName }}</td>
+                                        <td>
+                                            <input @change="validateFile($event)" type="file" class="form-control"
+                                                   :disabled="isSaving"
+                                                   :name="attachmentsModal.fileInput + docType.idDocumentType">
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div v-if="isSaving" class="progress">
+                                    <div class="progress-bar progress-bar-striped active" style="width: 100%"></div>
+                                </div>
+                                <hr />
+                                <div class="text-right">
+                                    <button @click.prevent="closeAttachmentsModal" :disabled="isSaving" class="btn btn-default">Cancelar</button>
+                                    <button @click.prevent="uploadAttachments(attachmentsModal.article)"
+                                            :disabled="isSaving"
+                                            class="btn btn-success">
+                                        Guardar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
                 <%--modal de nuevo articulo--%>
             <div id="newArticleModal" class="modal fade" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog modal-lg">
@@ -1103,7 +1198,7 @@
                             <label>Folio: {{newArticleModal.stockFolio}}</label>
                         </div>
                         <div class="modal-body">
-                            <form id="newArticleFrom" v-on:submit.prevent="saveNewStockArticle"
+                            <form id="newArticleFrom" v-on:submit.prevent="saveNewStockArticle(newArticleModal.properties)"
                                   method="post" enctype="multipart/form-data">
                                 <div class="row line">
                                     <div class="col-md-4 col-xs-6">
