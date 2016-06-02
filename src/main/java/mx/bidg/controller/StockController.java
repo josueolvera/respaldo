@@ -9,7 +9,9 @@ import mx.bidg.dao.CArticlesDao;
 import mx.bidg.dao.DwEnterprisesDao;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
+import mx.bidg.model.Properties;
 import mx.bidg.service.*;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
@@ -25,9 +27,8 @@ import javax.servlet.http.Part;
 import java.io.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,7 +36,7 @@ import java.util.regex.Pattern;
  * @author Rafael Viveros
  * Created on 9/12/15.
  */
-@Controller
+@RestController
 @RequestMapping("stock")
 @PropertySource(value = {"classpath:application.properties"})
 public class StockController {
@@ -86,29 +87,50 @@ public class StockController {
         );
     }
 
-    @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> save(@RequestBody String data) throws IOException {
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<String> save(HttpServletRequest request) throws Exception {
 
-        JsonNode jnode = mapper.readTree(data);
-        System.out.println(data);
-        Stocks stocks = new Stocks();
-        StockEmployeeAssignments stockEmployeeAssignments = new StockEmployeeAssignments();
+        Stocks stock = new Stocks();
+        StockEmployeeAssignments assignment = new StockEmployeeAssignments();
 
-        BigDecimal purchasePrice = new BigDecimal(jnode.get("purchasePrice").asDouble());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        LocalDateTime purchaseDate =
+                LocalDateTime.parse(request.getParameter("purchaseDate") + " 00:00", formatter);
 
-        stocks.setArticle(cArticlesService.findById(jnode.get("idArticle").asInt()));
-        stocks.setArticleStatus(cArticleStatusService.findById(jnode.get("idArticleStatus").asInt()));
-        stocks.setPurchasePrice(purchasePrice);
-        stocks.setDwEnterprises(dwEnterprisesService.findById(jnode.get("idDwEnterprise").asInt()));
-//        stocks.setFolio(jnode.get("stockFolio").asText());
-        stocks.setSerialNumber(jnode.get("serialNumber").asText());
-        stocks.setIdAccessLevel(1);
+        stock.setInvoiceNumber(request.getParameter("invoiceNumber"));
+        stock.setSerialNumber(request.getParameter("serialNumber"));
+        stock.setPurchaseDate(purchaseDate);
+        stock.setIdAccessLevel(1);
+        stock.setArticle(cArticlesService.findById(Integer.valueOf(request.getParameter("article"))));
+        stock.setArticleStatus(cArticleStatusService.findById(CArticleStatus.ALTA));
 
-        stockEmployeeAssignments.setEmployee(employeesService.findById(jnode.get("idEmployee").asInt()));
+        stock = stockService.save(stock);
 
+
+        if (request.getParameter("dwEnterprise") != null && request.getParameter("employee") != null) {
+            DwEnterprises dwEnterprises =
+                    dwEnterprisesService.findById(Integer.parseInt(request.getParameter("dwEnterprise")));
+
+            Employees employee =
+                    employeesService.findById(Integer.parseInt(request.getParameter("employee")));
+
+            stock.setDwEnterprises(dwEnterprises);
+            stockService.update(stock);
+
+            assignment.setDwEnterprises(stock.getDwEnterprises());
+            assignment.setEmployee(employee);
+            assignment.setStocks(stock);
+            assignment.setAssignmentDate(LocalDateTime.now());
+            assignment.setCurrentAssignment(1);
+            assignment.setIdAccessLevel(1);
+
+            assignmentsService.saveAssignment(assignment);
+        }
+
+        saveAttachDocuments(stock.getIdStock(),request);
 
         return new ResponseEntity<>(
-                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(stockService.save(stocks)),
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(stock),
                 HttpStatus.OK
         );
     }
@@ -198,7 +220,8 @@ public class StockController {
         return new ResponseEntity<>("Registro almacenado con exito", HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/{idStock}/propertiesList", method = RequestMethod.POST,
+    @RequestMapping(
+            value = "/{idStock}/propertiesList", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE
     )
     public ResponseEntity<String> saveProperties(@PathVariable int idStock, @RequestBody String data) throws IOException {
@@ -207,7 +230,7 @@ public class StockController {
         Stocks stocks = stockService.findById(idStock);
 
         for (JsonNode node : jnode) {
-            CArticles article = new CArticles(node.get("attributesArticles").get("idArticle").asInt());
+            CArticles article = cArticlesService.findById(node.get("attributesArticles").get("idArticle").asInt());
             CValues value = mapper.treeToValue(node.get("value"), CValues.class);
             CAttributes attribute = mapper.treeToValue(node.get("attributesArticles").get("attributes"), CAttributes.class);
 
@@ -272,6 +295,94 @@ public class StockController {
 
     @RequestMapping(value = "{idStock}/attachments", method = RequestMethod.POST)
     public ResponseEntity<String> attachDocuments(@PathVariable Integer idStock, HttpServletRequest request) throws Exception {
+        saveAttachDocuments(idStock,request);
+        return new ResponseEntity<>("Registro exitoso", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "{idStock}/attachments/record", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getAttachedDocumentsRecord(@PathVariable int idStock) throws IOException {
+        List<StockDocuments> documents = stockDocumentsService.findRecordBy(new Stocks(idStock));
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(documents),
+                HttpStatus.OK
+        );
+    }
+
+    @RequestMapping(value = "/{idStock}/assignments", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getAssignments(@PathVariable int idStock) throws IOException {
+        StockEmployeeAssignments assignment = assignmentsService.getAssignmentFor(new Stocks(idStock));
+        List<StockEmployeeAssignments> assignments = new ArrayList<>();
+        assignments.add(assignment);
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(assignments),
+                HttpStatus.OK
+        );
+    }
+
+    @RequestMapping(value = "/{idStock}/assignments/record", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getAssignmentsRecord(@PathVariable int idStock) throws IOException {
+        List<StockEmployeeAssignments> assignments = assignmentsService.getAssignmentsRecordFor(new Stocks(idStock));
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(assignments),
+                HttpStatus.OK
+        );
+    }
+
+    @RequestMapping(value = "/{idStock}/assignments/{idEmployee}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> saveAssignment(@PathVariable Integer idStock,@PathVariable Integer idEmployee, @RequestBody String data) throws IOException {
+        JsonNode jnode = mapper.readTree(data);
+        DwEnterprises dwEnterprises = new DwEnterprises(jnode.get("idDwEnterprise").asInt());
+        String invoiceNumber = jnode.get("invoiceNumber").asText();
+
+        Stocks stock = stockService.findSimpleById(idStock);
+        stock.setInvoiceNumber(invoiceNumber);
+        StockEmployeeAssignments assignment = assignmentsService.getAssignmentFor(stock);
+        StockEmployeeAssignments newAssignment = new StockEmployeeAssignments();
+
+        stock.setDwEnterprises(dwEnterprises);
+
+        newAssignment.setStocks(stock);
+        newAssignment.setDwEnterprises(stock.getDwEnterprises());
+        newAssignment.setEmployee(employeesService.findById(idEmployee));
+        newAssignment.setAssignmentDate(LocalDateTime.now());
+        newAssignment.setCurrentAssignment(1);
+        newAssignment.setIdAccessLevel(1);
+
+
+        if (assignment != null) {
+            assignment.setCurrentAssignment(0);
+            assignmentsService.update(assignment);
+        }
+
+        assignmentsService.saveAssignment(newAssignment);
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(stockService.update(stock)),
+                HttpStatus.CREATED
+        );
+    }
+
+    @RequestMapping(value = "/{idStock}/assignments", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> deleteAssignment(@PathVariable int idStock) throws IOException {
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(""),
+                HttpStatus.CREATED
+        );
+    }
+
+    private StockDocuments findDocument(Integer idDocumentType, List<StockDocuments> documents) {
+        if (documents.isEmpty()) {
+            return null;
+        }
+        for (StockDocuments document : documents) {
+            if (document.getIdDocumentType().equals(idDocumentType)) {
+                return document;
+            }
+        }
+
+        return null;
+    }
+
+    private void saveAttachDocuments(Integer idStock, HttpServletRequest request) throws Exception{
         String SAVE_PATH = env.getRequiredProperty("stock.documents_dir");
         String[] fileMediaTypes = env.getRequiredProperty("stock.attachments.media_types").split(",");
         List<StockDocuments> documents = stockDocumentsService.findByIdStock(idStock);
@@ -337,91 +448,5 @@ public class StockController {
                 stockDocumentsService.update(oldDocument);
             }
         }
-
-        return new ResponseEntity<>("Registro exitoso", HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "{idStock}/attachments/record", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> getAttachedDocumentsRecord(@PathVariable int idStock) throws IOException {
-        List<StockDocuments> documents = stockDocumentsService.findRecordBy(new Stocks(idStock));
-        return new ResponseEntity<>(
-                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(documents),
-                HttpStatus.OK
-        );
-    }
-
-    @RequestMapping(value = "/{idStock}/assignments", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> getAssignments(@PathVariable int idStock) throws IOException {
-        StockEmployeeAssignments assignment = assignmentsService.getAssignmentFor(new Stocks(idStock));
-        List<StockEmployeeAssignments> assignments = new ArrayList<>();
-        assignments.add(assignment);
-        return new ResponseEntity<>(
-                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(assignments),
-                HttpStatus.OK
-        );
-    }
-
-    @RequestMapping(value = "/{idStock}/assignments/record", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> getAssignmentsRecord(@PathVariable int idStock) throws IOException {
-        List<StockEmployeeAssignments> assignments = assignmentsService.getAssignmentsRecordFor(new Stocks(idStock));
-        return new ResponseEntity<>(
-                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(assignments),
-                HttpStatus.OK
-        );
-    }
-
-    @RequestMapping(value = "/{idStock}/assignments/{idEmployee}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> saveAssignment(@PathVariable Integer idStock,@PathVariable Integer idEmployee, @RequestBody String data) throws IOException {
-        JsonNode jnode = mapper.readTree(data);
-        DwEnterprises dwEnterprises = new DwEnterprises(jnode.get("idDwEnterprise").asInt());
-        String invoiceNumber = jnode.get("invoiceNumber").asText();
-
-        Stocks stock = stockService.findSimpleById(idStock);
-        stock.setInvoiceNumber(invoiceNumber);
-        StockEmployeeAssignments assignment = assignmentsService.getAssignmentFor(stock);
-        StockEmployeeAssignments newAssignment = new StockEmployeeAssignments();
-
-        stock.setDwEnterprises(dwEnterprises);
-
-        newAssignment.setIdEmmployee(idEmployee);
-        newAssignment.setStocks(stock);
-        newAssignment.setDwEnterprises(stock.getDwEnterprises());
-        newAssignment.setEmployee(employeesService.findById(idEmployee));
-        newAssignment.setAssignmentDate(LocalDateTime.now());
-        newAssignment.setCurrentAssignment(1);
-        newAssignment.setIdAccessLevel(1);
-
-
-        if (assignment != null) {
-            assignment.setCurrentAssignment(0);
-            assignmentsService.update(assignment);
-        }
-
-        assignmentsService.saveAssignment(newAssignment);
-        return new ResponseEntity<>(
-                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(stockService.update(stock)),
-                HttpStatus.CREATED
-        );
-    }
-
-    @RequestMapping(value = "/{idStock}/assignments", method = RequestMethod.DELETE, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> deleteAssignment(@PathVariable int idStock) throws IOException {
-        return new ResponseEntity<>(
-                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(""),
-                HttpStatus.CREATED
-        );
-    }
-
-    private StockDocuments findDocument(Integer idDocumentType, List<StockDocuments> documents) {
-        if (documents.isEmpty()) {
-            return null;
-        }
-        for (StockDocuments document : documents) {
-            if (document.getIdDocumentType().equals(idDocumentType)) {
-                return document;
-            }
-        }
-
-        return null;
     }
 }
