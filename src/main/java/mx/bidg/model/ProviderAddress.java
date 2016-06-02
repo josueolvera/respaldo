@@ -51,11 +51,11 @@ public class ProviderAddress implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
 
-    @Column(name="ID_PROVIDER", insertable=false, updatable=false)
+    @Column(name="ID_PROVIDER", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idProvider;
     
-    @Column(name="ID_ASENTAMIENTO", insertable=false, updatable=false)
+    @Column(name="ID_ASENTAMIENTO", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idAsentamiento;
 
@@ -66,6 +66,7 @@ public class ProviderAddress implements Serializable {
     
     @JoinColumn(name = "ID_ASENTAMIENTO", referencedColumnName = "ID_ASENTAMIENTO")
     @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
     private CAsentamientos asentamiento;
 
     public ProviderAddress() {
@@ -134,10 +135,6 @@ public class ProviderAddress implements Serializable {
 
     public void setIdAccessLevel(int idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
-    }
-
-    public void setIdProvider(Providers provider) {
-        this.provider = provider;
     }
     
     public Integer getIdAsentamiento() {
