@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  * @author Rafael Viveros
  * Created on 9/12/15.
  */
-@Controller
+@RestController
 @RequestMapping("stock")
 @PropertySource(value = {"classpath:application.properties"})
 public class StockController {
@@ -220,7 +220,8 @@ public class StockController {
         return new ResponseEntity<>("Registro almacenado con exito", HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/{idStock}/propertiesList", method = RequestMethod.POST,
+    @RequestMapping(
+            value = "/{idStock}/propertiesList", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE
     )
     public ResponseEntity<String> saveProperties(@PathVariable int idStock, @RequestBody String data) throws IOException {
@@ -229,7 +230,7 @@ public class StockController {
         Stocks stocks = stockService.findById(idStock);
 
         for (JsonNode node : jnode) {
-            CArticles article = new CArticles(node.get("attributesArticles").get("idArticle").asInt());
+            CArticles article = cArticlesService.findById(node.get("attributesArticles").get("idArticle").asInt());
             CValues value = mapper.treeToValue(node.get("value"), CValues.class);
             CAttributes attribute = mapper.treeToValue(node.get("attributesArticles").get("attributes"), CAttributes.class);
 
