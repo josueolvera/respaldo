@@ -76,10 +76,6 @@ public class CAsentamientos implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CMunicipios municipios;
 
-    @JsonView(JsonViews.Embedded.class)
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAsentamiento")
-    private List<ProviderAddress> providerAddressList;
-
     public CAsentamientos() {
     }
 
@@ -159,15 +155,6 @@ public class CAsentamientos implements Serializable {
 
     public void setMunicipios(CMunicipios municipios) {
         this.municipios = municipios;
-    }
-
-    @XmlTransient
-    public List<ProviderAddress> getProviderAddressList() {
-        return providerAddressList;
-    }
-
-    public void setProviderAddressList(List<ProviderAddress> providerAddressList) {
-        this.providerAddressList = providerAddressList;
     }
 
     @Override
