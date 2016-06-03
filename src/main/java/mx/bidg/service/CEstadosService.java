@@ -9,4 +9,8 @@ import java.util.List;
  */
 public interface CEstadosService {
     List<CEstados> findAll();
+    CEstados findById(Integer idEstados);
+    CEstados save(CEstados estados);
+    CEstados update(CEstados estados);
+    Boolean delete(CEstados estados);
 }

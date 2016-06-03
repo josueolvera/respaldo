@@ -24,4 +24,27 @@ public class CEstadosServiceImpl implements CEstadosService {
         return dao.findAll();
     }
 
+    @Override
+    public CEstados findById(Integer idEstados) {
+        return dao.findById(idEstados);
+    }
+
+    @Override
+    public CEstados save(CEstados estados) {
+        dao.save(estados);
+        return estados;
+    }
+
+    @Override
+    public CEstados update(CEstados estados) {
+        dao.update(estados);
+        return estados;
+    }
+
+    @Override
+    public Boolean delete(CEstados estados) {
+        dao.delete(estados);
+        return true;
+    }
+
 }
