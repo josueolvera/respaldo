@@ -54,7 +54,7 @@ public class CMunicipiosDaoImpl extends AbstractDao<Integer,CMunicipios> impleme
     public CMunicipios findMunicipio(CEstados e, int idMunicipios) {
         Criteria criteria = createEntityCriteria();
         return (CMunicipios) criteria
-                .add(Restrictions.eq("cEstados",e))
+                .add(Restrictions.eq("estados",e))
                 .add(Restrictions.eq("idMunicipio",idMunicipios))
                 .uniqueResult();
     }

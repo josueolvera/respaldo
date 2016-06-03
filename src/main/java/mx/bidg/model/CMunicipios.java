@@ -64,7 +64,7 @@ public class CMunicipios implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     @JoinColumn(name = "ID_ESTADO", referencedColumnName = "ID_ESTADO", insertable = false, updatable = false)
     @ManyToOne(optional = false)
-    private CEstados cEstados;
+    private CEstados estados;
 
     public CMunicipios() {
     }
@@ -115,12 +115,12 @@ public class CMunicipios implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public CEstados getCEstados() {
-        return cEstados;
+    public CEstados getEstado() {
+        return estados;
     }
 
-    public void setCEstados(CEstados cEstados) {
-        this.cEstados = cEstados;
+    public void setEstado(CEstados estados) {
+        this.estados = estados;
     }
 
     public int getIdMunicipio() {
