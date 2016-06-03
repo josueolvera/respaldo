@@ -37,7 +37,8 @@
                     priorities:[],
                     userInSession:'',
                     validForm:false,
-                    folioToSearch:''
+                    folioToSearch:'',
+                    rutaimagen: ROOT_URL
                 },
                 methods: {
                     getTicketByFolio:function () {
@@ -140,7 +141,16 @@
     <jsp:body>
         <div id="content">
             <br>
-            <h1 class="text-center">Tickets</h1>
+              <div class="col-xs-offset-1 col-xs-10">
+                <div class="row">
+                  <div class="col-xs-4 col-xs-offset-4">
+                    <h1 class="text-center">Tickets</h1>
+                  </div>
+                  <div class="col-xs-4 text-right">
+                    <button class="btn btn-info" name="button" data-toggle="modal" data-target="#verCatalogo">Ver catalogo</button>
+                  </div>
+                </div>
+              </div>
             <br>
             <div class="col-xs-offset-1 col-xs-10">
                 <%--<form v-on:submit.prevent="saveTicket">--%>
@@ -243,6 +253,29 @@
                     </div>
                 </div>
             </div>
+
+            <div class="modal fade" id="verCatalogo" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content modal-lg">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="">Catalogo de solicitudes de diseño</h4>
+                  </div>
+                  <div class="modal-body">
+                    <div class="row">
+                      <div class="col-xs-12 text-center">
+                        <img :src="rutaimagen + '/assets/img/imagendiseno.png'"/>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
         </div>
 
     </jsp:body>
