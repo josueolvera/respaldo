@@ -2,9 +2,7 @@ package mx.bidg.dao.impl;
 
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CSapFileDao;
-import mx.bidg.dao.CSettlementDao;
 import mx.bidg.model.CSapFile;
-import mx.bidg.model.CSettlement;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 

@@ -129,7 +129,6 @@
         <script type="text/javascript">
             Vue.http.interceptors.push({
                 request: function (request) {
-                    console.log(request);
                     request.headers['Content-Type'] = "application/json; charset=UTF-8"
                     switch (request.method) {
                         case 'POST':

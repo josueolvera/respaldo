@@ -5,6 +5,10 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
+
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -24,6 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author rubens
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_MUNICIPIOS")
 
 public class CMunicipios implements Serializable {
@@ -32,18 +37,31 @@ public class CMunicipios implements Serializable {
     
     @EmbeddedId
     protected CMunicipiosPK cMunicipiosPK;
-    
-    @Basic(optional = false)
+
+    @Column(name = "ID_MUNICIPIO", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private int idMunicipio;
+
+
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "NOMBRE_MUNICIPIOS")
+    @JsonView(JsonViews.Root.class)
     private String nombreMunicipios;
+
+
+
+    @Column(name="ID_ESTADO", insertable=false, updatable=false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idEstado;
     
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
-    
+
+    @JsonView(JsonViews.Embedded.class)
     @JoinColumn(name = "ID_ESTADO", referencedColumnName = "ID_ESTADO", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private CEstados cEstados;
@@ -59,6 +77,14 @@ public class CMunicipios implements Serializable {
         this.cMunicipiosPK = cMunicipiosPK;
         this.nombreMunicipios = nombreMunicipios;
         this.idAccessLevel = idAccessLevel;
+    }
+
+    public Integer getIdEstado() {
+        return idEstado;
+    }
+
+    public void setIdEstado(Integer idEstado) {
+        this.idEstado = idEstado;
     }
 
     public CMunicipios(int idEstado, int idMunicipio) {
@@ -95,6 +121,14 @@ public class CMunicipios implements Serializable {
 
     public void setCEstados(CEstados cEstados) {
         this.cEstados = cEstados;
+    }
+
+    public int getIdMunicipio() {
+        return idMunicipio;
+    }
+
+    public void setIdMunicipio(int idMunicipio) {
+        this.idMunicipio = idMunicipio;
     }
 
     @Override

@@ -103,7 +103,8 @@ public class ProvidersController {
             providerAddress.setStreet(node.get("street").asText());
             providerAddress.setNumExt(node.get("numExt").asText());
             providerAddress.setNumInt(node.get("numInt").asText());
-            providerAddress.setIdProvider(provider);
+            providerAddress.setAsentamiento(new CAsentamientos(node.get("idAsentamiento").asInt()));
+            providerAddress.setProvider(provider);
             providerAddress.setIdAccessLevel(1);
 
             providerAddressService.save(providerAddress);

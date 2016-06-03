@@ -104,26 +104,10 @@ public class Users implements Serializable, AccessLevelFilterable {
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime lowDate;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userRequest")
-    @JsonView(JsonViews.Embedded.class)
-    private List<Requests> requestsList;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userResponsible")
-    @JsonView(JsonViews.Embedded.class)
-    private List<Requests> requestsList1;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonView(JsonViews.Embedded.class)
     private List<UsersRole> usersRoleList;
-    
-    @OneToMany(mappedBy = "userAuthorization")
-    @JsonView(JsonViews.Embedded.class)
-    private List<PriceEstimations> priceEstimationsList;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userEstimation")
-    @JsonView(JsonViews.Embedded.class)
-    private List<PriceEstimations> priceEstimationsList1;
 
     @Column(name = "ID_ACCESS_LEVEL")
     private Integer idAccessLevel;
@@ -252,38 +236,6 @@ public class Users implements Serializable, AccessLevelFilterable {
 
     public void setUsersRoleList(List<UsersRole> usersRoleList) {
         this.usersRoleList = usersRoleList;
-    }
-    
-    public List<Requests> getRequestsList() {
-        return requestsList;
-    }
-
-    public void setRequestsList(List<Requests> requestsList) {
-        this.requestsList = requestsList;
-    }
-
-    public List<Requests> getRequestsList1() {
-        return requestsList1;
-    }
-
-    public void setRequestsList1(List<Requests> requestsList1) {
-        this.requestsList1 = requestsList1;
-    }
-    
-    public List<PriceEstimations> getPriceEstimationsList() {
-        return priceEstimationsList;
-    }
-
-    public void setPriceEstimationsList(List<PriceEstimations> priceEstimationsList) {
-        this.priceEstimationsList = priceEstimationsList;
-    }
-
-    public List<PriceEstimations> getPriceEstimationsList1() {
-        return priceEstimationsList1;
-    }
-
-    public void setPriceEstimationsList1(List<PriceEstimations> priceEstimationsList1) {
-        this.priceEstimationsList1 = priceEstimationsList1;
     }
 
     public Integer getIdAccessLevel() {

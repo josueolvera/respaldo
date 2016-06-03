@@ -5,6 +5,10 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
+
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -24,6 +28,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author rubens
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_TIPOS_ASENTAMIENTOS")
 
 public class CTiposAsentamientos implements Serializable {
@@ -34,15 +39,18 @@ public class CTiposAsentamientos implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_TIPO_ASENTAMIENTO")
+    @JsonView(JsonViews.Root.class)
     private Integer idTipoAsentamiento;
     
     @Size(max = 50)
     @Column(name = "TIPO_ASENTAMIENTO")
+    @JsonView(JsonViews.Root.class)
     private String tipoAsentamiento;
     
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
 
     public CTiposAsentamientos() {

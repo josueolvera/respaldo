@@ -3,8 +3,8 @@ package mx.bidg.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
-import mx.bidg.model.CStates;
-import mx.bidg.service.CStatesService;
+import mx.bidg.model.CEstados;
+import mx.bidg.service.CEstadosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,16 +21,16 @@ import java.util.List;
  */
 @Controller
 @RequestMapping("states")
-public class CStatesController {
+public class CEstadosController {
 
     @Autowired
-    private CStatesService service;
+    private CEstadosService service;
 
     private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findAll() throws IOException {
-        List<CStates> states = service.findAll();
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(states), HttpStatus.OK);
+        List<CEstados> estados = service.findAll();
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(estados), HttpStatus.OK);
     }
 }

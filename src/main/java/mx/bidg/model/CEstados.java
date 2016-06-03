@@ -5,6 +5,10 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
+
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
@@ -26,6 +30,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author rubens
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_ESTADOS")
 
 public class CEstados implements Serializable {
@@ -36,28 +41,34 @@ public class CEstados implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ESTADO")
+    @JsonView(JsonViews.Root.class)
     private Integer idEstado;
     
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "NOMBRE_ESTADO")
+    @JsonView(JsonViews.Root.class)
     private String nombreEstado;
     
     @Size(max = 20)
     @Column(name = "ABBREVIACION")
+    @JsonView(JsonViews.Root.class)
     private String abbreviacion;
     
     @Size(max = 20)
     @Column(name = "ABBREVIACION_2")
+    @JsonView(JsonViews.Root.class)
     private String abbreviacion2;
     
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cEstados")
+    @JsonView(JsonViews.Embedded.class)
     private List<CMunicipios> cMunicipiosList;
 
     public CEstados() {
