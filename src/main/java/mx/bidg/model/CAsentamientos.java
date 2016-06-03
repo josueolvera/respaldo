@@ -11,15 +11,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -79,6 +71,10 @@ public class CAsentamientos implements Serializable {
     @Column(name = "CODIGO_POSTAL")
     @JsonView(JsonViews.Root.class)
     private String codigoPostal;
+
+    @Transient
+    @JsonView(JsonViews.Embedded.class)
+    private CMunicipios municipios;
 
     @JsonView(JsonViews.Embedded.class)
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idAsentamiento")
@@ -155,6 +151,14 @@ public class CAsentamientos implements Serializable {
 
     public void setCodigoPostal(String codigoPostal) {
         this.codigoPostal = codigoPostal;
+    }
+
+    public CMunicipios getMunicipios() {
+        return municipios;
+    }
+
+    public void setMunicipios(CMunicipios municipios) {
+        this.municipios = municipios;
     }
 
     @XmlTransient
