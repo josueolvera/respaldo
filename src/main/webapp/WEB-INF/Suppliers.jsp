@@ -57,9 +57,6 @@
                     this.obtainBanks();
                     this.getProviders();
                     this.obtainCurrencies();
-                    this.obtainSettlements();
-                    this.obtainStates();
-                    this.obtainMunicipalities();
                     this.obtainRequestTypes();
                     this.productTypes();
                 },
@@ -123,9 +120,7 @@
                         numExt: '',
                         numInt: '',
                         street: '',
-                        idSettlement: '',
-                        idState: '',
-                        idMunicipality: '',
+                        idAsentamiento: '',
                     },
                     modalPregunta: {
                         provider: {
@@ -147,6 +142,10 @@
                     },
                     ProductTypes: {},
                     RequestTypes: {},
+                    asentamiento:[],
+                    estadosMunicipios:{
+                    },
+
                 },
                 methods: {
                     providerRfc: function () {
@@ -222,22 +221,16 @@
                     },
 
                     saveAddress: function () {
-                        var direccion = {
-                            cp: '',
+                        direccion = {
                             numExt: '',
                             numInt: '',
                             street: '',
-                            idSettlement: '',
-                            idState: '',
-                            idMunicipality: '',
+                            idAsentamiento: ''
                         };
-                        direccion.cp = this.direccion.cp;
                         direccion.numExt = this.direccion.numExt;
                         direccion.numInt = this.direccion.numInt;
                         direccion.street = this.direccion.street;
-                        direccion.idState = this.direccion.idState;
-                        direccion.idSettlement = this.direccion.idSettlement;
-                        direccion.idMunicipality = this.direccion.idMunicipality;
+                        direccion.idAsentamiento = this.direccion.idAsentamiento;
 
                         this.supplier.providerAddressList.push(direccion);
                     },
@@ -477,9 +470,9 @@
                         this.direccion.street = "";
                         this.direccion.numExt = "";
                         this.direccion.numInt = "";
-                        this.direccion.idState = "";
-                        this.direccion.idSettlement = "";
-                        this.direccion.idMunicipality = "";
+                        this.direccion.idAsentamiento = "";
+                        this.estadosMunicipios.nombreMunicipios = "";
+                        this.estadosMunicipios.estado.nombreEstado = "";
                     },
                     saveProviderProduct: function (provider, product) {
                         this.$http.post(ROOT_URL + "/providers-products-types/provider/" + provider.idProvider, product)
@@ -547,6 +540,8 @@
                         this.post = "";
                         this.requestInformation.idRequestType = '',
                         this.requestInformation.idProductType = '',
+                        this.asentamiento = [];
+                        this.estadosMunicipios={};
 
                         $('#modalAlta').modal('hide');
                         $('#modalModi').modal('hide');
@@ -589,6 +584,22 @@
                                     }
                                 }
                             }
+                    },
+                    obtainAsentamientos: function(){
+                        var postcode = this.direccion.cp;
+                        if(this.direccion.cp >= 4){
+                            this.$http.get(ROOT_URL + "/settlements/post-code?cp=" + postcode).success(function (data) {
+                                this.asentamiento =  data;
+                                if(data.length > 0){
+                                    this.$http.get(ROOT_URL + "/municipalities/" + data[0].idEstado + "/" + data[0].idMunicipio).success(function (element) {
+                                        this.estadosMunicipios = element;
+                                    });
+                                }
+                            });
+                        }else{
+                            this.asentamiento = [];
+                            this.estadosMunicipios={};
+                        }
                     },
                 },
                 filters: {
@@ -886,7 +897,7 @@
                                     <label>
                                         C.P.
                                     </label>
-                                    <input class="form-control" name="name" maxlength="5" v-model="direccion.cp"
+                                    <input class="form-control" name="name" maxlength="5" v-model="direccion.cp" @input="obtainAsentamientos"
                                            onkeypress="return isNumberKey(event)">
                                 </div>
                             </div>
@@ -894,33 +905,24 @@
                             <div class="row" v-show="supplier.rfc.length==12||supplier.rfc.length==13">
                                 <div class="col-xs-3">
                                     <label>
-                                        Colonia
+                                        Estado
                                     </label>
-                                    <select class="form-control" name="" v-model="direccion.idSettlement">
-                                        <option></option>
-                                        <option v-for="set in settlements" value="{{set.idSettlement}}">
-                                            {{set.settlementName}}
-                                        </option>
-                                    </select>
+                                    <input class="form-control" name="name" v-model="estadosMunicipios.estado.nombreEstado" value="" disabled="true">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>
                                         Municipio/Delegación
                                     </label>
-                                    <select class="form-control" name="" v-model="direccion.idMunicipality">
-                                        <option></option>
-                                        <option v-for="mun in municipalities" value="{{mun.idMunicipality}}">
-                                            {{mun.municipalityName}}
-                                        </option>
-                                    </select>
+                                    <input class="form-control" name="name" v-model="estadosMunicipios.nombreMunicipios" value="" disabled="true">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>
-                                        Estado
+                                        Colonia
                                     </label>
-                                    <select class="form-control" name="" v-model="direccion.idState">
+                                    <select class="form-control" name="" v-model="direccion.idAsentamiento">
                                         <option></option>
-                                        <option v-for="state in states" value="{{state.idState}}">{{state.stateName}}
+                                        <option v-for="set in asentamiento" value="{{set.idAsentamiento}}">
+                                            {{set.nombreAsentamiento}}
                                         </option>
                                     </select>
                                 </div>
@@ -1314,39 +1316,29 @@
                                     <label>
                                         C.P.
                                     </label>
-                                    <input class="form-control" name="name" maxlength="5" v-model="direccion.cp"
+                                    <input class="form-control" name="name" maxlength="5" v-model="direccion.cp" @input="obtainAsentamientos"
                                            onkeypress="return isNumberKey(event)">
-                                </div>
-                                <div class="col-xs-3">
-                                    <label>
-                                        Colonia
-                                    </label>
-                                    <select class="form-control" name="" v-model="direccion.idSettlement">
-                                        <option></option>
-                                        <option v-for="set in settlements" value="{{set.idSettlement}}">
-                                            {{set.settlementName}}
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="col-xs-3">
-                                    <label>
-                                        Municipio/Delegación
-                                    </label>
-                                    <select class="form-control" name="" v-model="direccion.idMunicipality">
-                                        <option></option>
-                                        <option v-for="mun in municipalities" value="{{mun.idMunicipality}}">
-                                            {{mun.municipalityName}}
-                                        </option>
-                                    </select>
-                                    <!--  <input class="form-control" name="name" v-model="address.idMunicipality">-->
                                 </div>
                                 <div class="col-xs-3">
                                     <label>
                                         Estado
                                     </label>
-                                    <select class="form-control" name="" v-model="direccion.idState">
+                                    <input class="form-control" name="name" v-model="estadosMunicipios.estado.nombreEstado" value="" disabled="true">
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>
+                                        Municipio/Delegación
+                                    </label>
+                                    <input class="form-control" name="name" v-model="estadosMunicipios.nombreMunicipios" value="" disabled="true">
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>
+                                        Colonia
+                                    </label>
+                                    <select class="form-control" name="" v-model="direccion.idAsentamiento">
                                         <option></option>
-                                        <option v-for="state in states" value="{{state.idState}}">{{state.stateName}}
+                                        <option v-for="set in asentamiento" value="{{set.idAsentamiento}}">
+                                            {{set.nombreAsentamiento}}
                                         </option>
                                     </select>
                                 </div>
@@ -1374,13 +1366,13 @@
                                     C.P.
                                 </th>
                                 <th class="col-xs-2">
-                                    Colonia
+                                    Estado
                                 </th>
                                 <th class="col-xs-2">
                                     Municipio/Delegación
                                 </th>
                                 <th class="col-xs-2">
-                                    Estado
+                                    Colonia
                                 </th>
                                 <th class="col-xs-1">
                                     Opción
@@ -1398,16 +1390,16 @@
                                         {{address.numInt}}
                                     </th>
                                     <th class="col-xs-1">
-                                        {{address.cp}}
+                                        {{address.asentamiento.codigoPostal}}
                                     </th>
                                     <th class="col-xs-1">
-                                        {{address.settlement.settlementName}}
+                                        {{address.asentamiento.municipios.estados.nombreEstado}}
                                     </th>
                                     <th class="col-xs-2">
-                                        {{address.municipality.municipalityName}}
+                                        {{address.asentamiento.municipios.nombreMunicipios}}
                                     </th>
                                     <th class="col-xs-2">
-                                        {{address.state.stateName}}
+                                        {{address.asentamiento.nombreAsentamiento}}
                                     </th>
                                     <td class="col-xs-1">
                                         <button class="btn btn-default" @click="removeAddress(address)"
