@@ -91,15 +91,15 @@ public class Providers implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private List<CProductTypes> productTypesList;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProvider")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "provider")
     @JsonView(JsonViews.Embedded.class)
     private List<ProvidersContact> providersContactList;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProvider")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "provider")
     @JsonView(JsonViews.Embedded.class)
     private List<ProviderAddress> providerAddressList;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idProvider")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "provider")
     @JsonView(JsonViews.Embedded.class)
     private List<ProvidersProductsTypes> providersProductsTypes;
 

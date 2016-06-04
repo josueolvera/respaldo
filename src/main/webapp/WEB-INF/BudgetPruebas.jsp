@@ -168,7 +168,7 @@
                       {
                           total += (isNaN(parseFloat(element.percent))) ? 0 : parseFloat(element.percent);
                       });
-                      return (isNaN(total)) ? 0 : total;
+                      return (isNaN(total)) ? 0 : total.toFixed(2);
                   }
                 },
                 methods:

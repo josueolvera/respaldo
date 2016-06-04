@@ -67,7 +67,7 @@ public class CEstados implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cEstados")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "estados")
     @JsonView(JsonViews.Embedded.class)
     private List<CMunicipios> cMunicipiosList;
 

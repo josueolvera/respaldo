@@ -56,6 +56,7 @@ public class ProvidersContact implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String email;
 
+    @Size(max = 11)
     @Basic(optional = false)
     @NotNull
     @Column(name = "PHONE_NUMBER")

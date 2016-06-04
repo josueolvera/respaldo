@@ -5,6 +5,7 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
@@ -67,7 +68,8 @@ public class ProviderAddress implements Serializable {
     @JoinColumn(name = "ID_ASENTAMIENTO", referencedColumnName = "ID_ASENTAMIENTO")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CAsentamientos asentamiento;
+    @JsonProperty("asentamiento")
+    private CAsentamientos asentamientos;
 
     public ProviderAddress() {
     }
@@ -146,11 +148,11 @@ public class ProviderAddress implements Serializable {
     }
 
     public CAsentamientos getAsentamiento() {
-        return asentamiento;
+        return asentamientos;
     }
 
     public void setAsentamiento(CAsentamientos asentamiento) {
-        this.asentamiento = asentamiento;
+        this.asentamientos = asentamiento;
     }
 
 

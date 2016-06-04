@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.util.List;
@@ -35,8 +36,8 @@ public class CAsentamientosController {
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(asentamientos), HttpStatus.OK);
     }
 
-    @RequestMapping(value="/post-code/{codigoPostal}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findByPostCode(@PathVariable String codigoPostal) throws IOException{
+    @RequestMapping(value="/post-code",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findByPostCode(@RequestParam(name = "cp", required = true) String codigoPostal) throws IOException{
         List<CAsentamientos> asentamientos = service.findByPostCode(codigoPostal);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(asentamientos),HttpStatus.OK);
     }
