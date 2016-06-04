@@ -43,6 +43,33 @@
           el: '#contenidos',
           created: function()
           {
+            this.timePickerReporteInicial = $('#datefechainicial').datetimepicker({
+              locale: 'es',
+              format: 'DD-MM-YYYY',
+              useCurrent: false,
+              minDate: moment().add(1, 'minutes')
+              }).data();
+
+            this.timePickerReporteFinal = $('#datefechafinal').datetimepicker({
+              locale: 'es',
+              format: 'DD-MM-YYYY',
+              useCurrent: false,
+              minDate: moment().add(1, 'minutes')
+              }).data();
+
+              this.timePickercuentaspagadasInicial = $('#datecuentasinicial').datetimepicker({
+                locale: 'es',
+                format: 'DD-MM-YYYY',
+                useCurrent: false,
+                minDate: moment().add(1, 'minutes')
+                }).data();
+
+                this.timePickercuentaspagadasFinal = $('#datecuentasfinal').datetimepicker({
+                  locale: 'es',
+                  format: 'DD-MM-YYYY',
+                  useCurrent: false,
+                  minDate: moment().add(1, 'minutes')
+                  }).data();
 
           },
           ready: function ()
@@ -51,7 +78,10 @@
           },
           data:
           {
-
+            timePickerReporteInicial: '',
+            timePickerReporteFinal: '',
+            timePickercuentaspagadasInicial: '',
+            timePickercuentaspagadasFinal: ''
           },
           methods:
           {
@@ -70,8 +100,150 @@
       <div id="contenidos">
 
        <div class="container-fluid">
+         <div class="row">
+           <div class="col-xs-12 text-left">
+             <h1>Cuentas por pagar</h1>
+           </div>
+           <br>
+             <div class="row">
+               <div class="col-xs-12">
+                 <div class="panel panel-default">
+                   <div class="panel-heading">
+                     <h3 class="panel-title">Flujo de efectivo</h3>
+                   </div>
+                   <div class="panel-body">
+                     <div class="col-xs-12">
+                       <div class="col-xs-3">
+                         <label>
+                           Ingresar
+                         </label>
+                         <br>
+                         <div class="col-xs-9">
+                           <div class="input-group">
+                             <span class="input-group-addon">$</span>
+                             <input type="text" class="form-control">
+                           </div>
+                         </div>
+                         <div class="col-xs-3">
+                           <button class="btn btn-default"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+                         </div>
+                       </div>
+                       <div class="col-xs-2">
+                         <label>
+                           Flujo de efectivo al dia
+                         </label>
+                         <br>
+                           <div class="input-group">
+                             <span class="input-group-addon">$</span>
+                             <input type="text" class="form-control" disabled="true">
+                           </div>
+                       </div>
+                       <div class="col-xs-6">
+                         <label>
+                           Generar reporte
+                         </label>
+                         <br>
+                         <div class="col-xs-6">
+                             <div class="col-xs-2">
+                               <span>De</span>
+                             </div>
+                             <div class="col-xs-10">
+                                 <div class="form-group">
+                                 <div class='input-group date' id='datefechainicial'>
+                                     <input type='text' class="form-control">
+                                     <span class="input-group-addon">
+                                         <span class="glyphicon glyphicon-calendar"></span>
+                                     </span>
+                                 </div>
+                                 </div>
+                             </div>
+                         </div>
 
-         Vista de Cuenta por pagar
+                         <div class="col-xs-6">
+                             <div class="col-xs-2">
+                               <span>a</span>
+                             </div>
+                             <div class="col-xs-10">
+                                 <div class="form-group">
+                                 <div class='input-group date' id='datefechafinal'>
+                                     <input type='text' class="form-control">
+                                     <span class="input-group-addon">
+                                         <span class="glyphicon glyphicon-calendar"></span>
+                                     </span>
+                                 </div>
+                                 </div>
+                             </div>
+                         </div>
+                       </div>
+
+                       <div class="col-xs-1">
+                         <button class="btn btn-default" name="button" style="margin-top: 25px">
+                             <span class="glyphicon glyphicon-list-alt">
+                             </span>
+                         </button>
+                       </div>
+                     </div>
+                   </div>
+               </div>     <!-- Panel Flujo de efectivo -->
+
+               <div class="panel panel-default">
+                 <div class="panel-heading">
+                   <h3 class="panel-title">Cuentas pagadas</h3>
+                 </div>
+                 <div class="panel-body">
+                     <div class="row">
+                       <div class="col-xs-12 text-left">
+                         <label>
+                             Generar reporte
+                         </label>
+                       </div>
+                     </div>
+
+                     <div class="row">
+                       <div class="col-xs-6">
+                           <div class="col-xs-1">
+                             <span>De</span>
+                           </div>
+                           <div class="col-xs-5">
+                               <div class='input-group date' id='datecuentasinicial'>
+                                   <input type='text' class="form-control">
+                                   <span class="input-group-addon">
+                                       <span class="glyphicon glyphicon-calendar"></span>
+                                   </span>
+                               </div>
+                           </div>
+                           <div class="col-xs-1">
+                             <span>a</span>
+                           </div>
+                           <div class="col-xs-5">
+                               <div class='input-group date' id='datecuentasfinal'>
+                                   <input type='text' class="form-control">
+                                   <span class="input-group-addon">
+                                       <span class="glyphicon glyphicon-calendar"></span>
+                                   </span>
+                               </div>
+                           </div>
+                       </div>
+
+                       <div class="col-xs-1">
+                           <button class="btn btn-default" name="button">
+                               <span class="glyphicon glyphicon-list-alt">
+                               </span>
+                           </button>
+                       </div>
+
+                     </div>
+                 </div>
+             </div>  <!-- Panel Cuentas Pagadas -->
+
+
+
+               </div>
+             </div>
+
+         </div>
+
+
        </div>
 
       </div> <!-- #contenidos -->

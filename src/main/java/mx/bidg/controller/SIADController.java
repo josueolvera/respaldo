@@ -118,5 +118,13 @@ public class SIADController {
         model.setViewName("accounts-payables");
         return model;
     }
+    
+    @RequestMapping(value = "/accountspayableinfo", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView accountsPayablesinfoView( ) 
+    {
+        ModelAndView model= new ModelAndView();
+        model.setViewName("accountspayableinfo");
+        return model;
+    }
 
 }
