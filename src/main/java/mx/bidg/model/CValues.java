@@ -34,6 +34,15 @@ public class CValues implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String value;
 
+    @Column(name = "ID_ATTRIBUTE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idAttribute;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_ATTRIBUTE", referencedColumnName = "ID_ATTRIBUTE")
+    @JsonView(JsonViews.Root.class)
+    private CAttributes Attribute;
+
     public CValues() {}
 
     public CValues(Integer idValue) {

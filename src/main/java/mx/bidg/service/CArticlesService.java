@@ -14,4 +14,5 @@ public interface CArticlesService {
     CArticles findByProduct(CProducts product);
     List<CArticles> findAll();
     CArticles findById(Integer id);
+    List<CArticles> findByArticleCategory(Integer idArticleCategory);
 }

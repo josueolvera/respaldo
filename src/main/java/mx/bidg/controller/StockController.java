@@ -57,9 +57,6 @@ public class StockController {
     private StockEmployeeAssignmentsService assignmentsService;
 
     @Autowired
-    private DwEmployeesService dwEmployeesService;
-
-    @Autowired
     private DwEnterprisesService dwEnterprisesService;
 
     @Autowired
@@ -74,13 +71,21 @@ public class StockController {
     private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findAll(@RequestParam(name = "idDistributor", required = false) Integer idDistributor) throws IOException {
+    public ResponseEntity<String> findAll(
+            @RequestParam(name = "idDistributor", required = false) Integer idDistributor,
+            @RequestParam(name = "idRegion", required = false) Integer idRegion,
+            @RequestParam(name = "idBranch", required = false) Integer idBranch,
+            @RequestParam(name = "idArea", required = false) Integer idArea
+            ) throws IOException {
+
         List<Stocks> stock;
-        if (idDistributor != null) {
-            stock = stockService.findByDistributor(idDistributor);
-        } else {
+
+        if (idDistributor == 0 && idArea == 0 && idBranch == 0 && idRegion ==0) {
             stock = stockService.findAll();
+        } else {
+            stock = stockService.filter(idDistributor,idRegion,idBranch,idArea);
         }
+
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(stock),
                 HttpStatus.OK
@@ -141,45 +146,13 @@ public class StockController {
     )
     public ResponseEntity<String> updateStock(@PathVariable int idStock, @RequestBody String data) throws IOException {
         JsonNode jnode = mapper.readTree(data);
-        Employees employee = new Employees(jnode.get("employee").get("idEmployee").asInt());
 
         Stocks stock = stockService.findSimpleById(idStock);
-        DwEmployees dwEmployee = dwEmployeesService.findBy(
-                employee,
-                new DwEnterprises(stock.getIdDwEnterprises())
-        );
-
-        StockEmployeeAssignments assignment = assignmentsService.getAssignmentFor(stock);
 
         stock.setSerialNumber(jnode.get("serialNumber").asText());
         stock.setStockFolio(jnode.get("stockFolio").asText());
         stock.setArticleStatus(new CArticleStatus(jnode.get("articleStatus").get("idArticleStatus").asInt()));
-        stock.setPurchasePrice(new BigDecimal(jnode.get("purchasePrice").asDouble()));
 
-        if (! assignment.getIdEmmployee().equals(employee.getIdEmployee())) {
-            if (dwEmployee == null) {
-                throw new ValidationException(
-                        "No existe DwEmployees: No se permite resignación de área",
-                        "No se permite resignación de área",
-                        HttpStatus.FORBIDDEN
-                );
-            }
-
-            StockEmployeeAssignments newAssignment = new StockEmployeeAssignments();
-            newAssignment.setStocks(stock);
-            newAssignment.setDwEnterprises(stock.getDwEnterprises());
-            newAssignment.setEmployee(employee);
-            newAssignment.setAssignmentDate(LocalDateTime.now());
-            newAssignment.setCurrentAssignment(1);
-            newAssignment.setIdAccessLevel(1);
-
-            if (assignment != null) {
-                assignment.setCurrentAssignment(0);
-                assignmentsService.update(assignment);
-            }
-
-            assignmentsService.saveAssignment(newAssignment);
-        }
         stockService.update(stock);
         return new ResponseEntity<>("Registro exitoso", HttpStatus.OK);
     }
@@ -205,36 +178,31 @@ public class StockController {
     @RequestMapping(value = "/{idStock}/properties", method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE
     )
-    public ResponseEntity<String> saveProperty(@PathVariable int idStock, @RequestBody String data) throws IOException {
-        JsonNode node = mapper.readTree(data);
-        CArticles article =  cArticlesService.findById(node.get("attributesArticles").get("idArticle").asInt());
-        CValues value = mapper.treeToValue(node.get("value"), CValues.class);
-        CAttributes attribute = mapper.treeToValue(node.get("attributesArticles").get("attributes"), CAttributes.class);
+    public ResponseEntity<String> saveProperty(@PathVariable Integer idStock, @RequestBody String data) throws Exception {
 
-        Properties property = new Properties();
-        property.setStocks(stockService.findById(idStock));
-        property.setValue(value);
-
-        propertiesService.save(property, article, attribute);
-
-        return new ResponseEntity<>("Registro almacenado con exito", HttpStatus.CREATED);
-    }
-
-    @RequestMapping(
-            value = "/{idStock}/propertiesList", method = RequestMethod.POST,
-            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE
-    )
-    public ResponseEntity<String> saveProperties(@PathVariable int idStock, @RequestBody String data) throws IOException {
         JsonNode jnode = mapper.readTree(data);
 
-        Stocks stocks = stockService.findById(idStock);
+        Stocks stocks = stockService.findSimpleById(idStock);
 
-        for (JsonNode node : jnode) {
-            CArticles article = cArticlesService.findById(node.get("attributesArticles").get("idArticle").asInt());
-            CValues value = mapper.treeToValue(node.get("value"), CValues.class);
-            CAttributes attribute = mapper.treeToValue(node.get("attributesArticles").get("attributes"), CAttributes.class);
+        if (jnode.isArray()) {
+            for (JsonNode node : jnode) {
+                CArticles article = cArticlesService.findById(node.get("attributesArticles").get("idArticle").asInt());
+                CValues value = mapper.treeToValue(node.get("value"), CValues.class);
+                CAttributes attribute = mapper.treeToValue(node.get("attributesArticles").get("attributes"), CAttributes.class);
 
+                Properties property = new Properties();
+                property.setStocks(stocks);
+                property.setValue(value);
+
+                propertiesService.save(property, article, attribute);
+            }
+        } else {
             Properties property = new Properties();
+
+            CArticles article = cArticlesService.findById(jnode.get("attributesArticles").get("idArticle").asInt());
+            CValues value = mapper.treeToValue(jnode.get("value"), CValues.class);
+            CAttributes attribute = mapper.treeToValue(jnode.get("attributesArticles").get("attributes"), CAttributes.class);
+
             property.setStocks(stocks);
             property.setValue(value);
 

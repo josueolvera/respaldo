@@ -23,6 +23,12 @@ public class CArticlesDaoImpl extends AbstractDao<Integer, CArticles> implements
     }
 
     @Override
+    public List<CArticles> findByArticleCategory(Integer idArticleCategory) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idArticleCategory", idArticleCategory)).list();
+    }
+
+    @Override
     public CArticles save(CArticles entity) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }

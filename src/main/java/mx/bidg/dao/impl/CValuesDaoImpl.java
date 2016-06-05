@@ -3,6 +3,7 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CValuesDao;
 import mx.bidg.model.CValues;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
  * @author Rafael Viveros
  * Created on 30/12/15.
  */
+@SuppressWarnings("unchecked")
 @Repository
 public class CValuesDaoImpl extends AbstractDao<Integer, CValues> implements CValuesDao {
     @Override
@@ -25,7 +27,6 @@ public class CValuesDaoImpl extends AbstractDao<Integer, CValues> implements CVa
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<CValues> findAll() {
         return (List<CValues>) createEntityCriteria().list();
     }
@@ -38,5 +39,12 @@ public class CValuesDaoImpl extends AbstractDao<Integer, CValues> implements CVa
     @Override
     public boolean delete(CValues entity) {
         throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public List<CValues> findValuesByAttribute(int idAttribute) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idAttribute",idAttribute))
+                .list();
     }
 }

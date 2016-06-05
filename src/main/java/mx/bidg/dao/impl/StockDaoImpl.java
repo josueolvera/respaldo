@@ -42,16 +42,51 @@ public class StockDaoImpl extends AbstractDao<Integer, Stocks> implements StockD
 
     @Override
     public List<Stocks> findAll() {
-        return (List<Stocks>) createEntityCriteria().setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
-                .setFetchMode("propertiesList", FetchMode.JOIN).list();
+        return  createEntityCriteria()
+                .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
+                .createCriteria("dwEnterprises")
+                .list();
+    }
+
+    @Override
+    public List<Stocks> findByDistributorRegionBranchArea(Integer idDistributor, Integer idRegion, Integer idBranch, Integer idArea) {
+        return  createEntityCriteria()
+                .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
+                .createCriteria("dwEnterprises")
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idRegion", idRegion))
+                .add(Restrictions.eq("idBranch", idBranch))
+                .add(Restrictions.eq("idArea", idArea))
+                .list();
+    }
+
+    @Override
+    public List<Stocks> findByDistributorRegionBranch(Integer idDistributor, Integer idRegion, Integer idBranch) {
+        return  createEntityCriteria()
+                .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
+                .createCriteria("dwEnterprises")
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idRegion", idRegion))
+                .add(Restrictions.eq("idBranch", idBranch))
+                .list();
+    }
+
+    @Override
+    public List<Stocks> findByDistributorRegion(Integer idDistributor, Integer idRegion) {
+        return  createEntityCriteria()
+                .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
+                .createCriteria("dwEnterprises")
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idRegion", idRegion))
+                .list();
     }
 
     @Override
     public List<Stocks> findByDistributor(Integer idDistributor) {
-        return (List<Stocks>) createEntityCriteria()
+        return  createEntityCriteria()
                 .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
                 .createCriteria("dwEnterprises")
-                    .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idDistributor", idDistributor))
                 .list();
     }
 
@@ -71,10 +106,9 @@ public class StockDaoImpl extends AbstractDao<Integer, Stocks> implements StockD
         globalTracer("UPDATE", stock);
         Query query = getSession().createQuery("" +
                 "UPDATE Stocks SET idArticleStatus = :idStatus, " +
-                "purchasePrice = :price, serialNumber = :serialNumber, stockFolio = :folio WHERE idStock = :id"
+                "serialNumber = :serialNumber, stockFolio = :folio WHERE idStock = :id"
         );
         query.setInteger("idStatus", stock.getIdArticleStatus());
-        query.setBigDecimal("price", stock.getPurchasePrice());
         query.setString("serialNumber", stock.getSerialNumber());
         query.setString("folio", stock.getStockFolio());
         query.setInteger("id", stock.getIdStock());

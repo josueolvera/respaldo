@@ -36,5 +36,10 @@ public class CArticlesServiceImpl implements CArticlesService {
         return articlesDao.findById(id);
     }
 
+    @Override
+    public List<CArticles> findByArticleCategory(Integer idArticleCategory) {
+        return articlesDao.findByArticleCategory(idArticleCategory);
+    }
+
 
 }

@@ -43,7 +43,7 @@ public class StockEmployeeAssignments implements Serializable {
 
     @Column(name = "ID_EMPLOYEE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idEmmployee;
+    private Integer idEmployee;
 
     @Column(name = "ID_DW_ENTERPRISE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -108,12 +108,12 @@ public class StockEmployeeAssignments implements Serializable {
         this.currentAssignment = currentAssignment;
     }
 
-    public Integer getIdEmmployee() {
-        return idEmmployee;
+    public Integer getIdEmployee() {
+        return idEmployee;
     }
 
-    public void setIdEmmployee(Integer idEmmployee) {
-        this.idEmmployee = idEmmployee;
+    public void setIdEmployee(Integer idEmployee) {
+        this.idEmployee = idEmployee;
     }
 
     public Integer getIdDwEnterprise() {

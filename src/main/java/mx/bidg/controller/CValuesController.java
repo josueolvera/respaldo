@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,8 +32,15 @@ public class CValuesController {
     private ObjectMapper mapper = new ObjectMapper();
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> getValues() throws IOException {
-        List<CValues> values = valuesService.findAll();
+    public ResponseEntity<String> getValues(@RequestParam(name = "idAttribute", required = false) Integer idAttribute) throws IOException {
+
+        List<CValues> values;
+
+        if (idAttribute != null) {
+            values = valuesService.findValuesByAttribute(idAttribute);
+        } else {
+            values = valuesService.findAll();
+        }
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Root.class).writeValueAsString(values),
                 HttpStatus.OK
