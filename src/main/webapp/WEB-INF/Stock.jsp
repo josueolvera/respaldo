@@ -244,8 +244,8 @@
                             this.selectOptions.documentTypes = data;
                         });
                     },
-                    fetchAttributesEditModal: function (idArticle) {
-                        this.$http.get(ROOT_URL + "/attributes/" + idArticle).success(function (data) {
+                    fetchAttributesEditModal: function (article) {
+                        this.$http.get(ROOT_URL + "/attributes/" + article.idArticle).success(function (data) {
                             this.editModal.attributes = data;
                         });
                     },
@@ -299,6 +299,7 @@
                         this.isSaving = true;
                         this.$http.delete(ROOT_URL + "/stock/properties/" + property.idProperty).success(function () {
                             this.fetchStockProperties(article);
+                            this.editModal.attributes.push(property.attributesArticles.attributes);
                             this.isSaving = false;
                         }).error(function () {
                             this.isSaving = false;
@@ -322,6 +323,7 @@
                     },
                     addProperty: function (article) {
                         this.isSaving = true;
+                        var self = this;
 
                         var idAttr = this.editModal.attribute.idAttribute;
                         var idVal = this.editModal.value.idValue;
@@ -348,6 +350,11 @@
                             this.fetchStockProperties(article);
                             this.editModal.attribute = '';
                             this.editModal.value = '';
+                            this.editModal.attributes.forEach(function (attribute) {
+                                if (attribute.idAttribute === idAttr) {
+                                    self.editModal.attributes.$remove(attribute);
+                                }
+                            });
                             this.isSaving = false;
                         }).error(function (data) {
                             this.editModal.attribute = '';
@@ -357,6 +364,7 @@
                         });
                     },
                     addPropertyNewArticle: function () {
+                        var self = this;
                         var idAttr = this.newArticleModal.attribute.idAttribute;
                         var idVal = this.newArticleModal.value.idValue;
                         var property = {
@@ -373,13 +381,14 @@
                                 }
                             }
                         };
+                        this.newArticleModal.attributes.forEach(function (attribute) {
+                            if (attribute.idAttribute === idAttr) {
+                                self.newArticleModal.attributes.$remove(attribute);
+                            }
+                        });
+                        this.newArticleModal.properties.push(property);
                         this.newArticleModal.value = '';
                         this.newArticleModal.attribute = '';
-                        console.log(property.attributesArticles.attributes);
-                        this.newArticleModal.attributes.$remove(property.attributesArticles.attributes);
-                        this.newArticleModal.properties.push(property);
-                        console.log(this.newArticleModal.attributes);
-
                     },
                     uploadFilesAssignments: function (article) {
                         if (this.assignmentsModal.selected.dwEmployees == null) {
@@ -471,7 +480,7 @@
                         this.editModal.serialNumber = article.serialNumber;
                         this.editModal.stockFolio = article.stockFolio;
                         this.editModal.articleStatus = article.articleStatus;
-                        this.fetchAttributesEditModal(article.article.idArticle);
+                        this.fetchAttributesEditModal(article.article);
                         this.fetchEmployees(article.idDwEnterprises);
                         $("#editModal").modal("show");
                     },
@@ -624,6 +633,7 @@
     <jsp:body>
         <div id="content">
             <div class="col-xs-12"><h2 class="text-center">Inventario</h2></div>
+            <br>
             <div class="col-xs-12" v-if="selectOptions.hierarchy.length > 0">
                 <div class="col-xs-2">
                     <label>Distribuidor</label>
@@ -968,7 +978,7 @@
                                         <select v-model="editModal.attribute"
                                                 @change="fetchEditModalValues(editModal.attribute.idAttribute)" required
                                                 :disabled="isSaving | editModal.attribute == ''" class="form-control">
-                                            <option v-for="attribute in editModal.attributes"
+                                            <option v-for="attribute in editModal.attributes | orderBy 'attributeName'"
                                                     :value="attribute">
                                                 {{ attribute.attributeName }}
                                             </option>
@@ -978,7 +988,7 @@
                                         <label>Valor</label>
                                         <select v-model="editModal.value" required
                                                 :disabled="isSaving" class="form-control">
-                                            <option v-for="value in editModal.values"
+                                            <option v-for="value in editModal.values | orderBy 'value'"
                                                     :value="value">
                                                 {{ value.value }}
                                             </option>
@@ -1279,7 +1289,7 @@
                                                 <select v-model="newArticleModal.attribute"
                                                         @change="fetchNewArticleModalValues(newArticleModal.attribute.idAttribute)" required
                                                         :disabled="isSaving" class="form-control">
-                                                    <option v-for="attribute in newArticleModal.attributes"
+                                                    <option v-for="attribute in newArticleModal.attributes | orderBy 'attributeName'"
                                                             :value="attribute">
                                                         {{ attribute.attributeName }}
                                                     </option>
@@ -1289,7 +1299,7 @@
                                                 <label>Valor</label>
                                                 <select v-model="newArticleModal.value" required
                                                         :disabled="isSaving | newArticleModal.attribute == ''" class="form-control">
-                                                    <option v-for="value in newArticleModal.values"
+                                                    <option v-for="value in newArticleModal.values | orderBy 'value'"
                                                             :value="value">
                                                         {{ value.value }}
                                                     </option>
