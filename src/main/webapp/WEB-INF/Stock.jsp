@@ -1238,7 +1238,6 @@
                             <button class="close" @click="closeNewArticleModal()"><span aria-hidden="true">&times;</span>
                             </button>
                             <h4 class="modal-title">Nuevo de Artículo </h4>
-                            <label>Folio: {{newArticleModal.stockFolio}}</label>
                         </div>
                         <form id="newArticleFrom" v-on:submit.prevent="saveNewStockArticle(newArticleModal.properties)"
                               method="post" enctype="multipart/form-data">
