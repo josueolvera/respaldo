@@ -5,6 +5,7 @@ import mx.bidg.dao.AttributesArticlesDao;
 import mx.bidg.model.AttributesArticles;
 import mx.bidg.model.CArticles;
 import mx.bidg.model.CAttributes;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;

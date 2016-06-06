@@ -245,8 +245,20 @@
                         });
                     },
                     fetchAttributesEditModal: function (article) {
-                        this.$http.get(ROOT_URL + "/attributes/" + article.idArticle).success(function (data) {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/attributes/" + article.article.idArticle).success(function (data) {
+                            var attributes = [];
                             this.editModal.attributes = data;
+                            this.editModal.attributes.forEach(function (attribute) {
+                                article.propertiesList.forEach(function (property) {
+                                    if (attribute.idAttribute === property.attributesArticles.attributes.idAttribute) {
+                                        attributes.push(attribute)
+                                    }
+                                });
+                            });
+                            attributes.forEach(function (attribute) {
+                                self.editModal.attributes.$remove(attribute);
+                            });
                         });
                     },
                     fetchAttributesNewArticleModal: function (idArticle) {
@@ -480,7 +492,7 @@
                         this.editModal.serialNumber = article.serialNumber;
                         this.editModal.stockFolio = article.stockFolio;
                         this.editModal.articleStatus = article.articleStatus;
-                        this.fetchAttributesEditModal(article.article);
+                        this.fetchAttributesEditModal(article);
                         this.fetchEmployees(article.idDwEnterprises);
                         $("#editModal").modal("show");
                     },
