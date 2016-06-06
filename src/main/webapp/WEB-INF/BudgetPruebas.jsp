@@ -635,7 +635,7 @@
                                 distributorShare.push({
                                     idBudgetMonthConcept: month.idBudgetMonthConcept,
                                     idDistributor: distributor.idDistributor,
-                                    percent: parseFloat(distributor.percent) / 100
+                                    percent: parseFloat((parseFloat(distributor.percent) / 100).toFixed(4))
                                 });
                             });
                             request.push(distributorShare);
@@ -1034,7 +1034,7 @@
                                                 <td>{{ monthShare[0].budgetMonthConcept.budgetMonthBranch.month.month }}</td>
                                                 <td v-for="distributorShare in monthShare | orderBy 'idDistributor'">
                                                     <small>{{ distributorShare.distributor.acronyms }}</small>
-                                                    <p>{{ distributorShare.percent * 100 }} % : $ {{ distributorShare.amount }}</p>
+                                                    <p>{{ (distributorShare.percent * 100).toFixed(2) }} % : $ {{ distributorShare.amount }}</p>
                                                 </td>
                                             </tr>
                                         </table>
