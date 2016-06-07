@@ -14,6 +14,7 @@ import mx.bidg.model.ProvidersAccounts;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -50,7 +51,8 @@ public class ProvidersAccountsDaoImpl extends AbstractDao<Integer, ProvidersAcco
     public List<ProvidersAccounts> findByProvider(Providers p) {
         Criteria criteria = createEntityCriteria()
                 .add(Restrictions.eq("provider", p))
-                .setFetchMode("account", FetchMode.JOIN);
+                .createCriteria("account", JoinType.INNER_JOIN)
+                    .add(Restrictions.isNull("deleteDay"));
         return (List<ProvidersAccounts>) criteria.list();
     }
 
@@ -60,5 +62,12 @@ public class ProvidersAccountsDaoImpl extends AbstractDao<Integer, ProvidersAcco
                 .add(Restrictions.eq("account", a))
                 .setFetchMode("provider", FetchMode.JOIN);
         return (ProvidersAccounts) criteria.uniqueResult();
+    }
+
+    @Override
+    public Long countByProvider(Providers provider) {
+        return (Long) getSession().createQuery("select count(p) from ProvidersAccounts p where p.idProvider = :idProvider and p.deleteDay = null")
+                .setInteger("idProvider", provider.getIdProvider())
+                .uniqueResult();
     }
 }

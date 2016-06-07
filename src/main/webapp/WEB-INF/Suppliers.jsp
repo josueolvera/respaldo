@@ -1594,7 +1594,8 @@
                                         {{address.asentamiento.nombreAsentamiento}}
                                     </td>
                                     <td class="col-xs-1">
-                                        <button class="btn btn-danger" @click="removeAddress(address)"
+                                        <button v-if="provider.providerAddressList.length > 1"
+                                                class="btn btn-danger" @click="removeAddress(address)"
                                                 :disabled="isUpdate" data-toggle="tooltip" data-placement="top"
                                                 title="Quitar Dirección">
                                             <span class="glyphicon glyphicon-trash"></span>
@@ -1681,7 +1682,8 @@
                                         {{phone.email}}
                                     </td>
                                     <td class="col-xs-1">
-                                        <button class="btn btn-danger" @click="removePhone(phone)" :disabled="isUpdate"
+                                        <button v-if="provider.providersContactList.length > 1"
+                                                class="btn btn-danger" @click="removePhone(phone)" :disabled="isUpdate"
                                                 data-toggle="tooltip" data-placement="top" title="Quitar Numero">
                                             <span class="glyphicon glyphicon-trash"></span>
                                         </button>
@@ -1783,7 +1785,8 @@
                                         {{account.idCurrency | changeidCurrency}}
                                     </td>
                                     <td class="col-xs-1">
-                                        <button type="button" class="btn btn-danger" data-toggle="tooltip"
+                                        <button v-if="provider.providersAccountsList.length > 1"
+                                                type="button" class="btn btn-danger" data-toggle="tooltip"
                                                 data-placement="bottom" title="Eliminar"
                                                 @click="questionAccount(account)">
                                             <span class="glyphicon glyphicon-trash"></span>

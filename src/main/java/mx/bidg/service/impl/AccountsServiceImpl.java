@@ -10,12 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 import mx.bidg.dao.AccountsDao;
 import mx.bidg.dao.ProvidersAccountsDao;
+import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.Accounts;
 import mx.bidg.model.Providers;
 import mx.bidg.model.ProvidersAccounts;
 import mx.bidg.model.Users;
 import mx.bidg.service.AccountsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
