@@ -863,6 +863,7 @@
                     </button>
                 </div>
             </div>
+            <br>
             <div v-if="!stockGroups.length > 0 && searching == true" class="col-xs-12"
                  style="height: 6rem; padding: 2rem 0;">
                 <div class="loader">Cargando...</div>
@@ -1111,32 +1112,32 @@
                         <div class="modal-header">
                             <button class="close" @click="closeEditModal"><span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title">Modificación de Artículo</h4>
+                            <h4 class="modal-title"><strong>Modificación de Artículo</strong></h4>
                         </div>
                         <div class="modal-body">
                             <div class="row">
-                                <div class="col-md-4 col-xs-6">
+                                <div class="col-md-4">
                                     <label>Artículo </label>
                                     {{ editModal.article.article.articleName }}
                                 </div>
-                                <div class="col-md-4 col-xs-6">
+                                <div class="col-md-4">
                                     <label>No. de Serie </label>
                                     {{ editModal.article.serialNumber }}
                                 </div>
                             </div>
                             <hr />
                             <div class="row line">
-                                <div class="col-md-4 col-xs-6">
+                                <div class="col-md-4">
                                     <label>No. de Serie</label>
                                     <input v-model="editModal.serialNumber"
                                            :disabled="isSaving" type="text" class="form-control">
                                 </div>
-                                <div class="col-md-4 col-xs-6">
+                                <div class="col-md-4">
                                     <label>Folio de Inventario</label>
                                     <input v-model="editModal.stockFolio"
                                            :disabled="isSaving" type="text" class="form-control">
                                 </div>
-                                <div class="col-md-4 col-xs-6">
+                                <div class="col-md-4">
                                     <label>Estado de Artículo</label>
                                     <select v-model="editModal.articleStatus"
                                             :disabled="isSaving" class="form-control">
@@ -1145,29 +1146,30 @@
                                     </select>
                                 </div>
                             </div>
+                            <br>
+                            <h4>Propiedades</h4>
+                            <hr>
                             <div class="row">
-                                <div class="col-xs-12 col-md-8 col-md-push-2">
-                                    <div class="col-xs-5">
-                                        <label>Atributo</label>
-                                        <select required id="select-attribute-edit" class="form-control"></select>
-                                    </div>
-                                    <div class="col-xs-5">
-                                        <label>Valor</label>
-                                        <select required id="select-value-edit" class="form-control"></select>
-                                    </div>
-                                    <div class="col-xs-2">
-                                        <button @click.prevent="addProperty(editModal.article)"
-                                                :disabled="isSaving"
-                                                class="btn btn-default" style="margin-top: 2.5rem"
-                                                data-toggle="tooltip" data-placement="top" title="Agregar Propiedad">
-                                            <span class="glyphicon glyphicon-plus"></span>
-                                        </button>
-                                    </div>
+                                <div class="col-xs-4">
+                                    <label>Atributo</label>
+                                    <select required id="select-attribute-edit" class="form-control"></select>
+                                </div>
+                                <div class="col-xs-4">
+                                    <label>Valor</label>
+                                    <select required id="select-value-edit" class="form-control"></select>
+                                </div>
+                                <div class="col-xs-1">
+                                    <button @click.prevent="addProperty(editModal.article)"
+                                            :disabled="isSaving"
+                                            class="btn btn-default" style="margin-top: 2.5rem"
+                                            data-toggle="tooltip" data-placement="top" title="Agregar Propiedad">
+                                        <span class="glyphicon glyphicon-plus"></span>
+                                    </button>
                                 </div>
                             </div>
+                            <br>
                             <div class="row line">
-                                <div class="text-center line col-xs-12"><strong>Propiedades</strong></div>
-                                <div class="col-xs-12 col-md-8 col-md-push-2">
+                                <div class="col-xs-12">
                                     <table class="table table-striped line">
                                         <tr v-for="property in editModal.article.propertiesList">
                                             <td class="col-xs-5">
@@ -1386,13 +1388,13 @@
                         <div class="modal-header">
                             <button class="close" @click="closeNewArticleModal()"><span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title">Nuevo de Artículo </h4>
+                            <h4 class="modal-title"><strong>Nuevo de Artículo</strong></h4>
                         </div>
                         <form id="newArticleFrom" v-on:submit.prevent="saveNewStockArticle(newArticleModal.properties)"
                               method="post" enctype="multipart/form-data">
                             <div class="modal-body">
                                 <div class="row">
-                                    <div class="col-md-4 col-xs-6">
+                                    <div class="col-md-4">
                                         <label>Tipo de producto</label>
                                         <select v-model="newArticleModal.articleCategory"
                                                 @change="getArticles(newArticleModal.articleCategory)"
@@ -1403,7 +1405,7 @@
                                             </option>
                                         </select>
                                     </div>
-                                    <div class="col-md-4 col-xs-6">
+                                    <div class="col-md-4">
                                         <label>Producto</label>
                                         <select v-model="newArticleModal.idArticle" name="article"
                                                 @change="fetchAttributesNewArticleModal(newArticleModal.idArticle)" required
@@ -1418,18 +1420,18 @@
                                 <div v-if="newArticleModal.idArticle != ''">
                                     <br>
                                     <div class="row">
-                                        <div class="col-md-4 col-xs-6"
+                                        <div class="col-md-4"
                                              v-if="newArticleModal.articleCategory.requireSerialNumber == 1">
                                             <label>No. de Serie</label>
                                             <input v-model="newArticleModal.serialNumber" name="serialNumber" required
                                                    :disabled="isSaving" type="text" class="form-control">
                                         </div>
-                                        <div class="col-md-4 col-xs-6">
+                                        <div class="col-md-4">
                                             <label>Número de factura</label>
                                             <input v-model="newArticleModal.invoiceNumber" name="invoiceNumber" required
                                                    :disabled="isSaving" type="text" class="form-control">
                                         </div>
-                                        <div class="col-md-4 col-xs-6">
+                                        <div class="col-md-4">
                                             <label>Fecha de compra</label>
                                             <div class="input-group date" id="datetimepickerPurchaseDate"
                                                  @click="setUpTimePickerPurchaseDate">
@@ -1442,30 +1444,29 @@
                                         </div>
                                     </div>
                                     <br>
+                                    <h4>Propiedades</h4>
+                                    <hr>
                                     <div class="row">
-                                        <div class="col-xs-12 col-md-8 col-md-push-2">
-                                            <div class="col-xs-5">
-                                                <label>Atributo</label>
-                                                <select :disabled="isSaving" id="select-attribute-new" class="form-control"></select>
-                                            </div>
-                                            <div class="col-xs-5">
-                                                <label>Valor</label>
-                                                <select :disabled="isSaving" id="select-value-new" class="form-control"></select>
-                                            </div>
-                                            <div class="col-xs-2">
-                                                <button type="button" @click="addPropertyNewArticle"
-                                                        :disabled="isSaving"
-                                                        class="btn btn-default" style="margin-top: 2.5rem"
-                                                        data-toggle="tooltip" data-placement="top" title="Agregar Propiedad">
-                                                    <span class="glyphicon glyphicon-plus"></span>
-                                                </button>
-                                            </div>
+                                        <div class="col-xs-4">
+                                            <label>Atributo</label>
+                                            <select :disabled="isSaving" id="select-attribute-new" class="form-control"></select>
+                                        </div>
+                                        <div class="col-xs-4">
+                                            <label>Valor</label>
+                                            <select :disabled="isSaving" id="select-value-new" class="form-control"></select>
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <button type="button" @click="addPropertyNewArticle"
+                                                    :disabled="isSaving"
+                                                    class="btn btn-default" style="margin-top: 2.5rem"
+                                                    data-toggle="tooltip" data-placement="top" title="Agregar Propiedad">
+                                                <span class="glyphicon glyphicon-plus"></span>
+                                            </button>
                                         </div>
                                     </div>
                                     <br>
                                     <div class="row">
-                                        <div class="text-center line col-xs-12"><strong>Propiedades</strong></div>
-                                        <div class="col-xs-12 col-md-8 col-md-push-2">
+                                        <div class="col-xs-12">
                                             <table class="table table-striped line">
                                                 <tr v-for="property in newArticleModal.properties">
                                                     <td class="col-xs-5">
