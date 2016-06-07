@@ -137,9 +137,6 @@
                             useCurrent: false
                         }).data();
                     },
-                    validateNewArticleForm: function () {
-
-                    },
                     doNotSeeAssignView: function () {
                         this.assign = false;
                     },
