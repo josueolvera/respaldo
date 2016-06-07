@@ -23,7 +23,8 @@
                 data: {
                     assign:false,
                     isSaving: false,
-                    stockGroups: {},
+                    stockGroups: [],
+                    searching:false,
                     selectOptions: {
                         distributors: [],
                         areas: [],
@@ -728,6 +729,9 @@
                             return;
                         }
 
+                        this.stockGroups = [];
+                        this.searching = true;
+
                         this.$http.get(
                                 ROOT_URL + "/stock?idDistributor=" +
                                 this.selectedOptions.distributor.id + "&idRegion=" +
@@ -739,6 +743,7 @@
                                 return item.idDwEnterprises;
                             });
                             this.attachOnScreen();
+                            this.searching = false;
                         });
                     },
                     selectedOptionsDistributorChanged: function () {
@@ -858,7 +863,11 @@
                     </button>
                 </div>
             </div>
-            <div class="stock-groups col-xs-12">
+            <div v-if="!stockGroups.length > 0 && searching == true" class="col-xs-12"
+                 style="height: 6rem; padding: 2rem 0;">
+                <div class="loader">Cargando...</div>
+            </div>
+            <div class="stock-groups col-xs-12"  v-if="stockGroups.length > 0" && searching == false>
                 <div v-for="stock in stockGroups | filterBy stockFilter">
                     <div class="text-center col-xs-12">
                         <h4>
