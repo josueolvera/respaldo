@@ -85,5 +85,21 @@ public class AccountsPayableController {
         );
     }
 
+    @RequestMapping(value = "/reschedule", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findByReschedule() throws  IOException{
+        List <AccountsPayable> accountsPayables = accountsPayableService.findByReschedule();
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class)
+                        .writeValueAsString(accountsPayables),
+                HttpStatus.OK
+        );
+    }
+
+    @RequestMapping(value = "/pay-account/{idAccountPayable}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> payAccount(@PathVariable Integer idAccountPayable) throws IOException{
+        accountsPayableService.payAccount(idAccountPayable);
+        return new ResponseEntity<>("Cuenta pagada", HttpStatus.OK);
+    }
+
 
 }
