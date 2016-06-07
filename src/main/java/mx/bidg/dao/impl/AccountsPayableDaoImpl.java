@@ -10,6 +10,7 @@ import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.AccountsPayableDao;
 import mx.bidg.model.AccountsPayable;
+import mx.bidg.model.CAccountsPayableStatus;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.Order;
@@ -73,5 +74,13 @@ public class AccountsPayableDaoImpl extends AbstractDao<Integer, AccountsPayable
                 .add(Restrictions.between("dueDate", dateTimeStart, dateTimeFinal))
                 .list();
 
+    }
+
+    @Override
+    public List<AccountsPayable> findByReschedule() {
+        Criteria criteria = createEntityCriteria();
+        return (List<AccountsPayable>) criteria
+                .add(Restrictions.eq("accountPayableStatus",CAccountsPayableStatus.REPROGRAMADA))
+                .list();
     }
 }

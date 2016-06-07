@@ -47,6 +47,11 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
     }
 
     @Override
+    public AccountsPayable findById(Integer idAccountPayable) {
+        return accountsPayableDao.findById(idAccountPayable);
+    }
+
+    @Override
     public List<AccountsPayable> updatePeriodic(String folio, String data) throws IOException {
         List<AccountsPayable> accountsPayables = findByFolio(folio);
         for (AccountsPayable accountPayable : accountsPayables) {
@@ -152,6 +157,18 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
     @Override
         public List<AccountsPayable> findAccountsNow() {
         return accountsPayableDao.findAccountsofDay();
+    }
+
+    @Override
+    public List<AccountsPayable> findByReschedule() {
+        return accountsPayableDao.findByReschedule();
+    }
+
+    @Override
+    public void payAccount(Integer idAccountPayable) {
+        AccountsPayable accountsPayable = accountsPayableDao.findById(idAccountPayable);
+        accountsPayable.setAccountPayableStatus(CAccountsPayableStatus.FINALIZADA);
+        accountsPayableDao.update(accountsPayable);
     }
 
 

@@ -8,6 +8,7 @@ package mx.bidg.service;
 import java.io.IOException;
 import java.util.List;
 import mx.bidg.model.AccountsPayable;
+import mx.bidg.model.CAccountsPayableStatus;
 
 /**
  *
@@ -16,10 +17,13 @@ import mx.bidg.model.AccountsPayable;
 public interface AccountsPayableService {
 
     List<AccountsPayable> findByFolio(String folio);
+    AccountsPayable findById(Integer idAccountPayable);
     List<AccountsPayable> update(String folio, String data) throws Exception;
     List<AccountsPayable> findAll();
     List<AccountsPayable> updatePeriodic(String folio, String data) throws IOException;
     boolean delete(AccountsPayable accountPayable);
     AccountsPayable save(AccountsPayable accountPayable);
     List<AccountsPayable> findAccountsNow();
+    List<AccountsPayable> findByReschedule();
+    void payAccount(Integer idAccountPayable);
 }
