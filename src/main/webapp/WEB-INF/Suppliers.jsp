@@ -59,31 +59,38 @@
                     this.obtainCurrencies();
                     this.obtainRequestTypes();
                     this.productTypes();
+                    this.obtainDistributors();
                 },
                 data: {
                     supplier: {
                         providerName: '',
                         businessName: '',
                         rfc: '',
-                        accountingAccount: '',
+                        idAccountingAccount: '',
                         providersAccountsList: [],
                         providersContactList: [],
                         providerAddressList: [],
                         providersProductsTypes: [],
                         creditDays: '',
                         cuttingDate: '',
+                        firstLevel: '',
+                        secondLevel: '',
+                        thirdLevel: '',
                     },
                     provider: {
                         providerName: '',
                         businessName: '',
                         rfc: '',
-                        accountingAccount: '',
+                        idAccountingAccount: '',
                         providersAccountsList: [],
                         providersContactList: [],
                         providerAddressList: [],
                         providersProductsTypes: [],
                         creditDays: '',
                         cuttingDate: '',
+                        firstLevel: '',
+                        secondLevel: '',
+                        thirdLevel: '',
                     },
                     idBanks: '',
                     banks: [],
@@ -143,6 +150,7 @@
                     ProductTypes: {},
                     RequestTypes: {},
                     asentamiento:[],
+                    distributors:[],
                     estadosMunicipios:{
                     },
 
@@ -191,6 +199,24 @@
                         this.idCurrency = '';
 
                     },
+                    validateName: function(){
+                        if(this.supplier.rfc.length == 13) {
+                            if (this.providerNames.length != 0 || this.supplierLastName.length != 0 || this.supplierSecondName.length != 0) {
+                                return true;
+                            } else {
+                                showAlert("Ingresa los campos Requeridos: Nombre, Apellido paterno, Apellido materno", {type: 3});
+                                return false;
+                            }
+                        }
+                        if(this.supplier.rfc.length == 12){
+                                if (this.supplier.providerName.length != 0) {
+                                    return true;
+                                } else {
+                                    showAlert("Ingresa los campos Requeridos: Razón social", {type: 3});
+                                    return false;
+                                }
+                        }
+                    },
                     validationAccount: function () {
                         if (this.supplier.providersAccountsList.length != 0) {
                             if (this.idBanks.length != 0 && this.accountNumbers.length != 0 && this.clabes.length != 0 && this.idCurrency.length != 0) {
@@ -209,6 +235,24 @@
                             }
                         }
                     },
+                    validationProduct: function () {
+                        if (this.supplier.providersProductsTypes.length != 0) {
+                            if (this.requestInformation.idRequestType.length != 0 && this.requestInformation.idProductType.length != 0) {
+                                this.addProviderProduct(this.requestInformation.idRequestType, this.requestInformation.idProductType);
+                                return true;
+                            } else {
+                                return true;
+                            }
+                        } else {
+                            if (this.requestInformation.idRequestType.length != 0 && this.requestInformation.idProductType.length != 0) {
+                                this.addProviderProduct(this.requestInformation.idRequestType, this.requestInformation.idProductType);
+                                return true;
+                            } else {
+                                showAlert("Ingresa los campos Requeridos: Rubro,Producto", {type: 3});
+                                return false;
+                            }
+                        }
+                    },
                     obtainBanks: function () {
                         this.$http.get(ROOT_URL + "/banks")
                                 .success(function (data) {
@@ -219,27 +263,47 @@
                     eliminarCuenta: function (cuenta) {
                         this.supplier.providersAccountsList.$remove(cuenta);
                     },
-
-                    saveAddress: function () {
+                    validationAddress: function () {
+                        if (this.supplier.providerAddressList.length != 0) {
+                            if (this.direccion.numExt.length != 0 && this.direccion.numInt.length != 0 && this.direccion.street != 0) {
+                                this.saveAddress(this.direccion.street, this.direccion.numExt, this.direccion.numInt, this.direccion.idAsentamiento);
+                                return true;
+                            } else {
+                                return true;
+                            }
+                        }else {
+                            if (this.direccion.numExt.length != 0 && this.direccion.numInt.length != 0 && this.direccion.street != 0) {
+                                this.saveAddress(this.direccion.street, this.direccion.numExt, this.direccion.numInt, this.direccion.idAsentamiento);
+                                return true;
+                            } else {
+                                showAlert("Ingresa los campos requeridos: Calle, Núm. Exterior, Núm. Interior, Colonia", {type: 3});
+                                return false;
+                            }
+                        }
+                    },
+                    saveAddress: function (street,numExt,numInt,idAsentamiento) {
                         direccion = {
                             numExt: '',
                             numInt: '',
                             street: '',
                             idAsentamiento: ''
                         };
-                        direccion.numExt = this.direccion.numExt;
-                        direccion.numInt = this.direccion.numInt;
-                        direccion.street = this.direccion.street;
-                        direccion.idAsentamiento = this.direccion.idAsentamiento;
+                            direccion.numExt = numExt;
+                            direccion.numInt = numInt;
+                            direccion.street = street;
+                            direccion.idAsentamiento = idAsentamiento;
 
-                        this.supplier.providerAddressList.push(direccion);
+                            this.supplier.providerAddressList.push(direccion);
                     },
                     validationSave: function () {
                         if (this.supplier.rfc.length != 0) {
+                            var validation5 = this.validationProduct();
+                            var validation4 = this.validateName();
                             var validation2 = this.validationContact();
                             var validation = this.validationAccount();
-                            if (validation == true && validation2 == true) {
-                                this.saveProvider();
+                            var validation3 = this.validationAddress();
+                            if (validation == true && validation5 == true && validation3 == true && validation4 == true && validation2 == true) {
+                                this.obtainAccountinAccount();
                             }
                         } else {
                             showAlert("Ingresa el RFC", {type: 3});
@@ -247,13 +311,11 @@
                     },
 
                     saveProvider: function () {
-                        this.saveAddress();
                         if (this.supplier.rfc.length == 13) {
                             this.providerRfc();
                         }
-
                         this.$http.post(ROOT_URL + "/providers", JSON.stringify(this.supplier)).success(function (data) {
-                            showAlert("Registro de Proveedor Exitoso");
+                            showAlert("Registro de proveedor exitoso");
                             $('#modalAlta').modal('hide');
                             this.getProviders();
 
@@ -307,6 +369,7 @@
                         this.$http.post(ROOT_URL + "/accounts/low/" + account.idAccount)
                                 .success(function (data) {
                                     this.provider.providersAccountsList.$remove(account);
+                                    this.getProviderAccount(this.provider);
                                     showAlert("Cuenta Eliminada");
                                     $('#modalCuenta').modal('hide');
                                 });
@@ -322,7 +385,7 @@
                     addProviderAccount: function (supplier, cuenta) {
                         this.$http.post(ROOT_URL + "/accounts/provider/" + supplier.idProvider, cuenta)
                                 .success(function (data) {
-                                    showAlert("Cuenta Guardada con Exito");
+                                    showAlert("Cuenta guardada con éxito");
                                     this.$http.get(ROOT_URL + "/accounts/provider/" + this.provider.idProvider)
                                             .success(function (data) {
                                                 Vue.set(this.provider, 'providersAccountsList', data);
@@ -340,7 +403,7 @@
                         }
                         this.$http.post(ROOT_URL + "/providers/" + provider.idProvider, provider)
                                 .success(function (data) {
-                                    showAlert("Proveedor Actualizado");
+                                    showAlert("Proveedor actualizado");
                                     $('#modalModi').modal('hide');
                                     this.getProviders();
                                 }).error(function () {
@@ -353,7 +416,7 @@
                                 .success(function (data) {
                                     this.getProviders();
                                     $('#modalPregunta').modal('hide');
-                                    showAlert("Provedor Eliminado");
+                                    showAlert("Provedor eliminado");
                                 });
                     },
                     filterNumber: function (val) {
@@ -369,6 +432,11 @@
                         this.$http.get(ROOT_URL + "/states").success(function (data) {
                             this.states = data;
                         });
+                    },
+                    obtainDistributors: function() {
+                      this.$http.get(ROOT_URL + "/distributors").success(function (data) {
+                          this.distributors = data;
+                      });
                     },
                     obtainSettlements: function () {
                         this.$http.get(ROOT_URL + "/settlements").success(function (data) {
@@ -390,14 +458,24 @@
                             this.ProductTypes = data;
                         });
                     },
-                    addProviderProduct: function () {
+                    addProviderProduct: function (idRequestType,idProductType) {
                         var requestInformation = {
                             idRequestType:'',
                             idProductType:'',
                         }
-                      requestInformation.idRequestType = this.requestInformation.idRequestType;
-                      requestInformation.idProductType = this.requestInformation.idProductType;
-                      this.supplier.providersProductsTypes.push(requestInformation);
+                      requestInformation.idRequestType = idRequestType;
+                      requestInformation.idProductType = idProductType;
+                        if (this.validationProviderProduct().length == 0) {
+                            this.supplier.providersProductsTypes.push(requestInformation);
+                        }
+                    },
+                    validationProviderProduct: function () {
+                        var self = this;
+                        return this.supplier.providersProductsTypes.filter(function (element){
+                            if(self.requestInformation.idProductType == element.idProductType) {
+                                return element;
+                            }
+                      });
                     },
                     savePhone: function (names, phones, emails, posts) {
                         var contact = {
@@ -420,6 +498,20 @@
                         this.post = "";
                         this.name = "";
 
+                    },
+                    validateEmail: function (email) {
+                      var re = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
+                        if(! re.test(email)) {
+                            showAlert("Ingresa un email correcto",{type: 3});
+                            return false;
+                        }else{
+                            return true;
+                        }
+                    },
+                    validateContact: function () {
+                        if(this.validateEmail(this.email)){
+                            this.validationContact();
+                        }
                     },
                     validationContact: function () {
                         if (this.supplier.providersContactList.length != 0) {
@@ -447,23 +539,25 @@
                         this.supplier.providersProductsTypes.$remove(product);
                     },
                     addProviderPhone: function (supplier, phone) {
-                        this.$http.post(ROOT_URL + "/provider-contact/provider/" + supplier.idProvider, phone)
-                                .success(function (data) {
-                                    this.provider.providersContactList.push(data);
-                                    this.phoneNumbers = '';
-                                    showAlert("Contacto Guardado con Éxito");
-                                    this.telephone.phoneNumbers = '';
-                                });
-                        this.telephone.name = "";
-                        this.telephone.email = "";
-                        this.telephone.phoneNumber = "";
-                        this.telephone.post = "";
+                        if(this.validateEmail(phone.email)) {
+                            this.$http.post(ROOT_URL + "/provider-contact/provider/" + supplier.idProvider, phone)
+                                    .success(function (data) {
+                                        this.provider.providersContactList.push(data);
+                                        this.phoneNumbers = '';
+                                        showAlert("Contacto guardado con éxito");
+                                        this.telephone.phoneNumbers = '';
+                                    });
+                            this.telephone.name = "";
+                            this.telephone.email = "";
+                            this.telephone.phoneNumber = "";
+                            this.telephone.post = "";
+                        }
                     },
                     addAddress: function (provider, address) {
                         this.$http.post(ROOT_URL + "/provider-address/provider/" + provider.idProvider, address)
                                 .success(function (data) {
                                     this.provider.providerAddressList.push(data);
-                                    showAlert("Dirección Guardada con Exito");
+                                    showAlert("Dirección guardada con éxito");
                                     this.getProviderAddress(provider);
                                 });
                         this.direccion.cp = "";
@@ -475,12 +569,21 @@
                         this.estadosMunicipios.estado.nombreEstado = "";
                     },
                     saveProviderProduct: function (provider, product) {
-                        this.$http.post(ROOT_URL + "/providers-products-types/provider/" + provider.idProvider, product)
-                                .success(function (data) {
-                                    this.provider.providersProductsTypes.push(data);
-                                    showAlert("Producto guardado con exito");
-                                    this.getProviderProduct(provider);
-                                });
+                        if(this.validationSupplierProduct(product) == 0 ) {
+                            this.$http.post(ROOT_URL + "/providers-products-types/provider/" + provider.idProvider, product)
+                                    .success(function (data) {
+                                        this.provider.providersProductsTypes.push(data);
+                                        showAlert("Producto guardado con exito");
+                                        this.getProviderProduct(provider);
+                                    });
+                        }
+                    },
+                    validationSupplierProduct: function (product) {
+                        return this.provider.providersProductsTypes.filter(function (element){
+                            if(product.idProductType == element.idProductType) {
+                                return element;
+                            }
+                        });
                     },
                     removeProviderProduct: function (product) {
                         this.$http.delete(ROOT_URL + "/providers-products-types/" + product.idProvidersProductsTypes)
@@ -493,8 +596,18 @@
                         this.$http.delete(ROOT_URL + "/provider-address/" + address.idProviderAddress)
                                 .success(function (data) {
                                     this.provider.providerAddressList.$remove(address);
-                                    showAlert("Dirección Eliminada");
+                                    showAlert("Dirección eliminada");
                                 });
+                    },
+                    obtainAccountinAccount: function () {
+                        this.$http.get(ROOT_URL + "/accounting-accounts/" + this.distributor.idDistributor + "/" + this.supplier.firstLevel + "/" + this.supplier.secondLevel + "/" + this.supplier.thirdLevel)
+                                .success(function (data) {
+                                    console.log(data);
+                                this.supplier.idAccountingAccount = data.idAccountingAccount;
+                                    this.saveProvider();
+                        }).error(function () {
+                           showAlert("No existe la cuenta contable");
+                        });
                     },
                     cancelar: function () {
 
@@ -534,6 +647,9 @@
                         this.supplier.accountingAccount = '';
                         this.supplier.addressProvider = [];
                         this.supplier.providersProductsTypes = [];
+                        this.supplier.firstLevel =  '',
+                        this.supplier.secondLevel = '',
+                        this.supplier.thirdLevel = '',
                         this.name = "";
                         this.email = "";
                         this.phoneNumber = "";
@@ -601,6 +717,13 @@
                             this.estadosMunicipios={};
                         }
                     },
+                    numberAndLetter: function(rfc){
+                        var re = /^[a-z0-9]+$/i;
+                        if(! re.test(rfc)) {
+                            showAlert("Ingresa un RFC correcto",{type: 3});
+                            this.supplier.rfc = "";
+                        }
+                    }
                 },
                 filters: {
                     changeidBank: function (value) {
@@ -669,7 +792,7 @@
 
                         <button type="button" class="btn btn-default" name="button"
                                 style="margin-top: 25px" data-toggle="modal" data-target="#modalAlta">
-                            Nuevo Proveedor
+                            Nuevo proveedor
                         </button>
                     </div>
                 </div>
@@ -708,20 +831,20 @@
                         {{provider.rfc}}
                     </div>
                     <div class="col-xs-2">
-                        {{provider.creditDays}}
+                        {{provider.creditDays}} dias
                     </div>
                     <div class="col-xs-2">
-                        {{provider.cuttingDate}}
+                        {{provider.cuttingDate}} del mes
                     </div>
                     <div class="col-xs-1">
                         <button type="button" class="btn btn-default" name="button" data-toggle="tooltip"
-                                data-placement="bottom" title="Modificar Proveedor"
+                                data-placement="bottom" title="Modificar"
                                 @click="modifyProvider(provider)"><span class="glyphicon glyphicon-pencil"></span>
                         </button>
                     </div>
                     <div class="col-xs-1">
-                        <button type="button" class="btn btn-default" name="button" data-toggle="tooltip"
-                                data-placement="bottom" title="Eliminar Proveedor"
+                        <button type="button" class="btn btn-danger" name="button" data-toggle="tooltip"
+                                data-placement="bottom" title="Eliminar"
                                 @click="question(provider)"><span class="glyphicon glyphicon-trash"></span></button>
                     </div>
                 </div>
@@ -745,7 +868,7 @@
                                     <label>
                                         RFC
                                     </label>
-                                    <input maxlength="13" class="form-control" name="name" v-model="supplier.rfc" onkeypress="return isNumberKeyAndLetterKey(event)">
+                                    <input maxlength="13" class="form-control" name="name" v-model="supplier.rfc" @change="numberAndLetter(supplier.rfc)" onkeypress="return isNumberKeyAndLetterKey(event)">
                                 </div>
                             </div>
                             <br>
@@ -756,11 +879,28 @@
                                     </label>
                                     <input class="form-control" name="name" v-model="supplier.providerName">
                                 </div>
+                            </div>
+                            <div class="row" v-show="supplier.rfc.length==12">
                                 <div class="col-xs-4">
-                                    <label>
-                                        Cuenta contable
-                                    </label>
-                                    <input class="form-control" name="name" v-model="supplier.accountingAccount">
+                                    <label>Distribuidor</label>
+                                    <select class="form-control" name="" v-model="distributor.idDistributor">
+                                        <option></option>
+                                        <option v-for="distributor in distributors" value="{{distributor.idDistributor}}">
+                                            {{distributor.distributorName}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-2">
+                                    <label>Cuenta contable</label>
+                                    <input maxlength="4" class="form-control" name="name" v-model="supplier.firstLevel">
+                                </div>
+                                <div class="col-xs-2">
+                                    <label> </label>
+                                    <input maxlength="3" class="form-control" name="name" v-model="supplier.secondLevel">
+                                </div>
+                                <div class="col-xs-2">
+                                    <label> </label>
+                                    <input maxlength="3" class="form-control" name="name" v-model="supplier.thirdLevel">
                                 </div>
                             </div>
                             <div class="row" v-show="supplier.rfc.length==13">
@@ -785,18 +925,35 @@
                                     <input class="form-control" name="name" v-model="providerSecondName"
                                            onkeypress="return isLetterKey(event)">
                                 </div>
-                                <div class="col-xs-3">
-                                    <label>
-                                        Cuenta contable
-                                    </label>
-                                    <input class="form-control" name="name" v-model="supplier.accountingAccount">
+                            </div>
+                            <div class="row" v-show="supplier.rfc.length==13">
+                                <div class="col-xs-4">
+                                    <label>Distribuidor</label>
+                                    <select class="form-control" name="" v-model="distributor.idDistributor">
+                                        <option></option>
+                                        <option v-for="distributor in distributors" value="{{distributor.idDistributor}}">
+                                            {{distributor.distributorName}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-2">
+                                    <label>Cuenta contable</label>
+                                    <input maxlength="4" class="form-control" name="name" v-model="supplier.firstLevel">
+                                </div>
+                                <div class="col-xs-2">
+                                    <label> </label>
+                                    <input maxlength="3" class="form-control" name="name" v-model="supplier.secondLevel">
+                                </div>
+                                <div class="col-xs-2">
+                                    <label> </label>
+                                    <input maxlength="3" class="form-control" name="name" v-model="supplier.thirdLevel">
                                 </div>
                             </div>
                             <br>
                             <div class="row" v-show="supplier.rfc.length==12||supplier.rfc.length==13">
                                 <div class="col-xs-4">
                                     <label>
-                                        Tipo de producto
+                                        Proveedor de
                                     </label>
                                 </div>
                             </div>
@@ -832,7 +989,7 @@
                                 <div class="col-xs-1">
                                     <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip"
                                             data-placement="bottom" title="Agregar" style="margin-top: 25px"
-                                            @click="addProviderProduct()">
+                                            @click="validationProduct()">
                                         <span class="glyphicon glyphicon-plus"></span>
                                     </button>
                                 </div>
@@ -840,7 +997,7 @@
                             <br>
                             <table class="table table-striped" v-show="supplier.providersProductsTypes.length> 0">
                                 <thead>
-                                <th class="col-xs-3">
+                                <th class="col-xs-10">
                                     Producto
                                 </th>
                                 <th class="col-xs-1">
@@ -849,11 +1006,11 @@
                                 </thead>
                                 <tbody>
                                 <tr v-for="product in supplier.providersProductsTypes">
-                                    <td class="col-xs-3">
+                                    <td class="col-xs-10">
                                         {{product.idProductType | changeidProduct}}
                                     </td>
                                     <td class="col-xs-1">
-                                        <button class="btn btn-default" @click="deleteProduct(product)" :disabled="isUpdate"
+                                        <button class="btn btn-danger" @click="deleteProduct(product)" :disabled="isUpdate"
                                                 data-toggle="tooltip" data-placement="top" title="Quitar Producto">
                                             <span class="glyphicon glyphicon-trash"></span>
                                         </button>
@@ -883,19 +1040,19 @@
                                 </div>
                                 <div class="col-xs-3">
                                     <label>
-                                        No. Exterior
+                                        Número Exterior
                                     </label>
                                     <input class="form-control" name="name" maxlength="5" v-model="direccion.numExt">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>
-                                        No. Interior
+                                        Número Interior
                                     </label>
                                     <input class="form-control" name="name" maxlength="5" v-model="direccion.numInt">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>
-                                        C.P.
+                                        Código postal
                                     </label>
                                     <input class="form-control" name="name" maxlength="5" v-model="direccion.cp" @input="obtainAsentamientos"
                                            onkeypress="return isNumberKey(event)">
@@ -966,12 +1123,12 @@
                                     <label>
                                         Correo
                                     </label>
-                                    <input class="form-control" name="name" v-model="email">
+                                    <input class="form-control" name="name" v-model="email" @change="validateEmail(email)">
                                 </div>
                                 <div class="col-xs-1">
                                     <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip"
                                             data-placement="bottom" title="Agregar" style="margin-top: 25px"
-                                            @click="validationContact()">
+                                            @click="validateContact()">
                                         <span class="glyphicon glyphicon-plus"></span>
                                     </button>
                                 </div>
@@ -979,7 +1136,7 @@
                             <br>
                             <table class="table table-striped" v-show="supplier.providersContactList.length> 0">
                                 <thead>
-                                <th class="col-xs-3">
+                                <th class="col-xs-2">
                                     Nombre
                                 </th>
                                 <th class="col-xs-2">
@@ -988,11 +1145,11 @@
                                 <th class="col-xs-3">
                                     Teléfono (10 dígitos)
                                 </th>
-                                <th class="col-xs-3">
+                                <th class="col-xs-4">
                                     Correo
                                 </th>
                                 <th class="col-xs-1">
-                                    Opción
+                                    Eliminar
                                 </th>
                                 </thead>
                                 <tbody>
@@ -1010,7 +1167,7 @@
                                         {{phone.email}}
                                     </td>
                                     <td class="col-xs-1">
-                                        <button class="btn btn-default" @click="deletePhone(phone)" :disabled="isUpdate"
+                                        <button class="btn btn-danger" @click="deletePhone(phone)" :disabled="isUpdate"
                                                 data-toggle="tooltip" data-placement="top" title="Quitar Numero">
                                             <span class="glyphicon glyphicon-trash"></span>
                                         </button>
@@ -1079,39 +1236,39 @@
 
                             <table class="table table-striped" v-show="supplier.providersAccountsList.length> 0">
                                 <thead>
-                                <th>
+                                <th class="col-xs-2">
                                     Banco
                                 </th>
-                                <th>
+                                <th class="col-xs-3">
                                     Número de cuenta
                                 </th>
-                                <th>
+                                <th class="col-xs-4">
                                     CLABE
                                 </th>
-                                <th>
+                                <th class="col-xs-2">
                                     Moneda
                                 </th>
-                                <th>
-                                    Opción
+                                <th class="col-xs-1">
+                                    Eliminar
                                 </th>
                                 </thead>
                                 <tbody>
                                 <tr v-for="supplier in supplier.providersAccountsList">
-                                    <td>
+                                    <td class="col-xs-2">
                                         {{supplier.idBank | changeidBank }}
                                     </td>
-                                    <td>
+                                    <td class="col-xs-3">
                                         {{supplier.accountNumber }}
                                     </td>
-                                    <td>
+                                    <td class="col-xs-4">
                                         {{supplier.accountClabe}}
                                     </td>
-                                    <td>
+                                    <td class="col-xs-2">
                                         {{supplier.idCurrency | changeidCurrency}}
                                     </td>
-                                    <td>
-                                        <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip"
-                                                data-placement="bottom" title="Eliminar" style="margin-top: 15px"
+                                    <td class="col-xs-1">
+                                        <button type="button" class="btn btn-danger" data-toggle="tooltip"
+                                                data-placement="bottom" title="Eliminar"
                                                 @click="eliminarCuenta(supplier)">
                                             <span class="glyphicon glyphicon-trash"></span>
                                         </button>
@@ -1152,7 +1309,7 @@
                         </div>
                         <div class="modal-footer">
 
-                            <button type="button" class="btn btn-default" @click="validationSave">
+                            <button type="button" class="btn btn-success" @click="validationSave">
                                 Guardar
                             </button>
 
@@ -1191,12 +1348,23 @@
                                     <input class="form-control" name="name" v-model="provider.providerName"
                                            disabled="true">
                                 </div>
+                            </div>
+                            <div class="row" v-show="provider.rfc.length==12">
                                 <div class="col-xs-4">
-                                    <label>
-                                        Cuenta contable
-                                    </label>
-                                    <input class="form-control" name="name" v-model="provider.accountingAccount"
-                                           disabled="true">
+                                    <label>Distribuidor</label>
+                                    <input maxlength="4" class="form-control" name="name" v-model="provider.accountingAccounts.distributor.distributorName" disabled="true">
+                                </div>
+                                <div class="col-xs-2">
+                                    <label>Cuenta contable</label>
+                                    <input maxlength="4" class="form-control" name="name" v-model="provider.accountingAccounts.firstLevel" disabled="true">
+                                </div>
+                                <div class="col-xs-2">
+                                    <label> </label>
+                                    <input maxlength="3" class="form-control" name="name" v-model="provider.accountingAccounts.secondLevel" disabled="true">
+                                </div>
+                                <div class="col-xs-2">
+                                    <label> </label>
+                                    <input maxlength="3" class="form-control" name="name" v-model="provider.accountingAccounts.thirdLevel" disabled="true">
                                 </div>
                             </div>
                             <div class="row" v-show="provider.rfc.length==13">
@@ -1221,12 +1389,36 @@
                                     <input class="form-control" name="name" v-model="supplierSecondName"
                                            onkeypress="return isLetterKey(event)" disabled="true">
                                 </div>
-                                <div class="col-xs-3">
+                            </div>
+                            <div class="row" v-show="provider.rfc.length==13">
+                                <div class="col-xs-4">
+                                    <label>Distribuidor</label>
+                                    <input maxlength="4" class="form-control" name="name" v-model="provider.accountingAccounts.distributor.distributorName" disabled="true">
+                                </div>
+                                <div class="col-xs-2">
+                                    <label>Cuenta contable</label>
+                                    <input maxlength="4" class="form-control" name="name" v-model="provider.accountingAccounts.firstLevel" disabled="true">
+                                </div>
+                                <div class="col-xs-2">
+                                    <label> </label>
+                                    <input maxlength="3" class="form-control" name="name" v-model="provider.accountingAccounts.secondLevel" disabled="true">
+                                </div>
+                                <div class="col-xs-2">
+                                    <label> </label>
+                                    <input maxlength="3" class="form-control" name="name" v-model="provider.accountingAccounts.thirdLevel" disabled="true">
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row" v-show="provider.rfc.length==12||provider.rfc.length==13">
+                                <div class="col-xs-4">
                                     <label>
-                                        Cuenta contable
+                                        Proveedor de
                                     </label>
-                                    <input class="form-control" name="name" v-model="provider.accountingAccount"
-                                           disabled="true">
+                                </div>
+                            </div>
+                            <div class="row" v-show="provider.rfc.length==12||provider.rfc.length==13">
+                                <div class="col-xs-12">
+                                    <hr>
                                 </div>
                             </div>
                             <br>
@@ -1264,7 +1456,7 @@
                             <br>
                             <table class="table table-striped" v-show="provider.providersProductsTypes.length> 0">
                                 <thead>
-                                <th class="col-xs-3">
+                                <th class="col-xs-10">
                                     Producto
                                 </th>
                                 <th class="col-xs-1">
@@ -1273,11 +1465,11 @@
                                 </thead>
                                 <tbody>
                                 <tr v-for="product in provider.providersProductsTypes">
-                                    <td class="col-xs-3">
+                                    <td class="col-xs-10">
                                         {{product.idProductType | changeidProduct}}
                                     </td>
                                     <td class="col-xs-1">
-                                        <button class="btn btn-default" @click="removeProviderProduct(product)" :disabled="isUpdate"
+                                        <button class="btn btn-danger" @click="removeProviderProduct(product)" :disabled="isUpdate"
                                                 data-toggle="tooltip" data-placement="top" title="Quitar Producto">
                                             <span class="glyphicon glyphicon-trash"></span>
                                         </button>
@@ -1302,19 +1494,19 @@
                                 </div>
                                 <div class="col-xs-3">
                                     <label>
-                                        No. Exterior
+                                        Número  Exterior
                                     </label>
                                     <input class="form-control" name="name" maxlength="5" v-model="direccion.numExt">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>
-                                        No. Interior
+                                        Número Interior
                                     </label>
                                     <input class="form-control" name="name" maxlength="5" v-model="direccion.numInt">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>
-                                        C.P.
+                                        Código postal
                                     </label>
                                     <input class="form-control" name="name" maxlength="5" v-model="direccion.cp" @input="obtainAsentamientos"
                                            onkeypress="return isNumberKey(event)">
@@ -1357,13 +1549,13 @@
                                     Calle
                                 </th>
                                 <th class="col-xs-1">
-                                    No. Exterior
+                                    Número Exterior
                                 </th>
                                 <th class="col-xs-1">
-                                    No. Interior
+                                    Número Interior
                                 </th>
                                 <th class="col-xs-1">
-                                    C.P.
+                                    Código postal
                                 </th>
                                 <th class="col-xs-2">
                                     Estado
@@ -1375,34 +1567,34 @@
                                     Colonia
                                 </th>
                                 <th class="col-xs-1">
-                                    Opción
+                                    Eliminar
                                 </th>
                                 </thead>
                                 <tbody>
                                 <tr v-for="address in provider.providerAddressList">
-                                    <th class="col-xs-2">
+                                    <td class="col-xs-2">
                                         {{address.street}}
-                                    </th>
-                                    <th class="col-xs-2">
+                                    </td>
+                                    <td class="col-xs-2">
                                         {{address.numExt}}
-                                    </th>
-                                    <th class="col-xs-1">
-                                        {{address.numInt}}
-                                    </th>
-                                    <th class="col-xs-1">
-                                        {{address.asentamiento.codigoPostal}}
-                                    </th>
-                                    <th class="col-xs-1">
-                                        {{address.asentamiento.municipios.estados.nombreEstado}}
-                                    </th>
-                                    <th class="col-xs-2">
-                                        {{address.asentamiento.municipios.nombreMunicipios}}
-                                    </th>
-                                    <th class="col-xs-2">
-                                        {{address.asentamiento.nombreAsentamiento}}
-                                    </th>
+                                    </td>
                                     <td class="col-xs-1">
-                                        <button class="btn btn-default" @click="removeAddress(address)"
+                                        {{address.numInt}}
+                                    </td>
+                                    <td class="col-xs-1">
+                                        {{address.asentamiento.codigoPostal}}
+                                    </td>
+                                    <td class="col-xs-1">
+                                        {{address.asentamiento.municipios.estados.nombreEstado}}
+                                    </td>
+                                    <td class="col-xs-2">
+                                        {{address.asentamiento.municipios.nombreMunicipios}}
+                                    </td>
+                                    <td class="col-xs-2">
+                                        {{address.asentamiento.nombreAsentamiento}}
+                                    </td>
+                                    <td class="col-xs-1">
+                                        <button class="btn btn-danger" @click="removeAddress(address)"
                                                 :disabled="isUpdate" data-toggle="tooltip" data-placement="top"
                                                 title="Quitar Dirección">
                                             <span class="glyphicon glyphicon-trash"></span>
@@ -1445,7 +1637,7 @@
                                     <label>
                                         Correo
                                     </label>
-                                    <input class="form-control" name="name" v-model="telephone.email">
+                                    <input class="form-control" name="name" v-model="telephone.email" @change="validateEmail(telephone.email)">
                                 </div>
                                 <div class="col-xs-1">
                                     <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip"
@@ -1458,7 +1650,7 @@
                             <br>
                             <table class="table table-striped" v-show="provider.providersContactList.length> 0">
                                 <thead>
-                                <th class="col-xs-3">
+                                <th class="col-xs-2">
                                     Nombre
                                 </th>
                                 <th class="col-xs-2">
@@ -1467,16 +1659,16 @@
                                 <th class="col-xs-3">
                                     Teléfono (10 dígitos)
                                 </th>
-                                <th class="col-xs-3">
+                                <th class="col-xs-4">
                                     Correo
                                 </th>
                                 <th class="col-xs-1">
-                                    Opción
+                                    Eliminar
                                 </th>
                                 </thead>
                                 <tbody>
                                 <tr v-for="phone in provider.providersContactList">
-                                    <td class="col-xs-3">
+                                    <td class="col-xs-2">
                                         {{phone.name}}
                                     </td>
                                     <td class="col-xs-2">
@@ -1485,11 +1677,11 @@
                                     <td class="col-xs-3">
                                         {{phone.phoneNumber}}
                                     </td>
-                                    <td class="col-xs-3">
+                                    <td class="col-xs-4">
                                         {{phone.email}}
                                     </td>
                                     <td class="col-xs-1">
-                                        <button class="btn btn-default" @click="removePhone(phone)" :disabled="isUpdate"
+                                        <button class="btn btn-danger" @click="removePhone(phone)" :disabled="isUpdate"
                                                 data-toggle="tooltip" data-placement="top" title="Quitar Numero">
                                             <span class="glyphicon glyphicon-trash"></span>
                                         </button>
@@ -1573,25 +1765,25 @@
                                     Moneda
                                 </th>
                                 <th>
-                                    Eliminar cuenta
+                                    Eliminar
                                 </th>
                                 </thead>
                                 <tbody>
                                 <tr v-for="account in provider.providersAccountsList" v-if="account.deleteDay == null">
-                                    <td>
+                                    <td class="col-xs-2">
                                         {{account.idBank | changeidBank }}
                                     </td>
-                                    <td>
+                                    <td class="col-xs-3">
                                         {{account.accountNumber }}
                                     </td>
-                                    <td>
+                                    <td class="col-xs-4">
                                         {{account.accountClabe}}
                                     </td>
-                                    <td>
+                                    <td class="col-xs-2">
                                         {{account.idCurrency | changeidCurrency}}
                                     </td>
-                                    <td>
-                                        <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip"
+                                    <td class="col-xs-1">
+                                        <button type="button" class="btn btn-danger" data-toggle="tooltip"
                                                 data-placement="bottom" title="Eliminar"
                                                 @click="questionAccount(account)">
                                             <span class="glyphicon glyphicon-trash"></span>
@@ -1634,7 +1826,7 @@
                         </div>
                         <div class="modal-footer">
 
-                            <button type="button" class="btn btn-default" @click="updateProvider(provider)">
+                            <button type="btn btn-success" class="btn btn-default" @click="updateProvider(provider)">
                                 Guardar
                             </button>
 
@@ -1653,7 +1845,7 @@
                             </h4>
                         </div>
                         <div class="modal-body">
-                            <p>El provedor con nombre {{modalPregunta.provider.providerName|separate}} sera
+                            <p>El proveedor {{modalPregunta.provider.providerName|separate}} será
                                 eliminado</p>
                         </div>
                         <div class="modal-footer">
