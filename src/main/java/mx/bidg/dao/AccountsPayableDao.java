@@ -15,4 +15,5 @@ import mx.bidg.model.AccountsPayable;
 public interface AccountsPayableDao extends InterfaceDao<AccountsPayable> {
     List<AccountsPayable> findByFolio(String folio);
     Boolean deleteByFolio(String folio);
+    List<AccountsPayable> findAccountsofDay();
 }

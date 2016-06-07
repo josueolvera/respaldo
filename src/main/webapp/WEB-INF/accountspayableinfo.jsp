@@ -68,6 +68,21 @@
           },
           methods:
           {
+              showReprogramarModal: function()
+              {
+                  $("#reprogramarModal").modal('show');
+                  this.timePickerReprogramar = $('#datereprogramar').datetimepicker({
+                    locale: 'es',
+                    format: 'DD-MM-YYYY',
+                    useCurrent: false,
+                    minDate: moment().add(1, 'minutes')
+                    }).data();
+              },
+              savePayOfBill: function()
+              {
+                  $("#payModal").modal('show');
+
+              }
 
           },
         filters:
@@ -293,12 +308,12 @@
                           <div class="col-xs-4">
 
                               <div class="col-xs-5">
-                                <button class="btn btn-default" name="button">
+                                <button class="btn btn-default" name="button" @click="showReprogramarModal">
                                     Reprogramar
                                 </button>
                               </div>
                               <div class="col-xs-3">
-                                  <button class="btn btn-default" name="button">
+                                  <button class="btn btn-default" name="button" @click="savePayOfBill">
                                       Pagar
                                   </button>
                               </div>
@@ -325,6 +340,131 @@
 
 
        </div>
+
+       <div class="modal fade" id="reprogramarModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+         <div class="modal-dialog">
+           <div class="modal-content">
+             <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+               <h4 class="modal-title" id="">Reprogramar fecha de pago</h4>
+             </div>
+             <div class="modal-body">
+                 <div class="row">
+                     <div class="col-xs-offset-4 col-xs-4">
+                         <div class="form-group">
+                         <div class='input-group date' id='datereprogramar'>
+                             <input type='text' class="form-control">
+                             <span class="input-group-addon">
+                                 <span class="glyphicon glyphicon-calendar"></span>
+                             </span>
+                         </div>
+                         </div>
+                     </div>
+                 </div>
+
+             </div>
+             <div class="modal-footer">
+               <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+               <button type="button" class="btn btn-success">Guardar</button>
+             </div>
+           </div>
+         </div>
+       </div>
+
+       <div class="modal fade" id="payModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+         <div class="modal-dialog">
+           <div class="modal-content">
+             <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+               <h4 class="modal-title" id="">Pagar</h4>
+             </div>
+             <div class="modal-body">
+
+                 <div class="row">
+                   <div class="col-xs-3">
+                     <label>
+                         Concepto
+                     </label>
+                   </div>
+                   <div class="col-xs-3">
+                     <label>
+                         Monto
+                     </label>
+                   </div>
+                   <div class="col-xs-3">
+                     <label>
+                         Nombre/Razon Social
+                     </label>
+                   </div>
+                   <div class="col-xs-3">
+                     <label>
+                         CLABE
+                     </label>
+                   </div>
+                 </div>
+                 <br>
+
+                 <form>
+                    <div class="row">
+                      <div class="col-xs-12 text-left">
+                        <label>
+                            Documentos
+                        </label>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-xs-12">
+                          <div class="col-xs-4">
+                            <label>
+                                Factura PDF
+                            </label>
+                          </div>
+                          <div class="col-xs-8">
+                              <input type="file" class="form-control">
+                          </div>
+                          <br>
+                          <div class="col-xs-4">
+                              <label>
+                                Factura XML
+                              </label>
+                          </div>
+                          <div class="col-xs-8">
+                              <input type="file" class="form-control">
+                          </div>
+                          <br>
+                          <div class="col-xs-4">
+                              <label>
+                                Comprobante de Pago
+                              </label>
+                          </div>
+                          <div class="col-xs-8">
+                              <input type="file" class="form-control">
+                          </div>
+                          <br>
+                          <div class="col-xs-4">
+                              <label>
+                                Otro
+                              </label>
+                          </div>
+                          <div class="col-xs-8">
+                              <input type="file" class="form-control">
+                          </div>
+                      </div>
+                    </div>
+
+                 </form>
+
+             </div>
+             <div class="modal-footer">
+               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+               <button type="button" class="btn btn-primary"></button>
+             </div>
+           </div>
+         </div>
+       </div>
+
+
 
       </div> <!-- #contenidos -->
       <!-- Fecha de Termino- Agregar fecha dia de solicitud-->

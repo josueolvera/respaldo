@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/accounts-payable")
 public class AccountsPayableController {
-    
+
     @Autowired
     private AccountsPayableService accountsPayableService;
 
@@ -41,7 +41,7 @@ public class AccountsPayableController {
 
     @Autowired
     private RequestsService requestsService;
-    
+
     private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
     @RequestMapping(value = "/folio", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -75,4 +75,15 @@ public class AccountsPayableController {
                 HttpStatus.OK
         );
     }
+
+    @RequestMapping(value="/now", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findAllNow() throws IOException{
+        List<AccountsPayable> accountsPayables = accountsPayableService.findAccountsNow();
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(accountsPayables),
+                HttpStatus.OK
+        );
+    }
+
+
 }

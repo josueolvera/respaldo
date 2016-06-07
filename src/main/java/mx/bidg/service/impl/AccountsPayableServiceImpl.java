@@ -149,5 +149,10 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
         return accountsPayableDao.findAll();
     }
 
+    @Override
+        public List<AccountsPayable> findAccountsNow() {
+        return accountsPayableDao.findAccountsofDay();
+    }
+
 
 }
