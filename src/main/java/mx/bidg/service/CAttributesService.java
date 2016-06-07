@@ -11,4 +11,5 @@ import java.util.List;
  */
 public interface CAttributesService {
     List<CAttributes> findByArticle(CArticles article);
+    CAttributes findById(int idAttribute);
 }

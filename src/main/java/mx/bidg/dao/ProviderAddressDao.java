@@ -9,5 +9,6 @@ import java.util.List;
  * Created by jolvera on 7/05/16.
  */
 public interface ProviderAddressDao extends InterfaceDao<ProviderAddress> {
+    Long countAddress(Providers provider);
     List<ProviderAddress> findByProvider (Providers p);
 }

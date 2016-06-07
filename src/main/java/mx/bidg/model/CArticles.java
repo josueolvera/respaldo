@@ -38,10 +38,19 @@ public class CArticles implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idProduct;
 
+    @Column(name = "ID_ARTICLE_CATEGORY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idArticleCategory;
+
     @OneToOne
-    @JoinColumn(name = "ID_PRODUCT")
+    @JoinColumn(name = "ID_PRODUCT", referencedColumnName = "ID_PRODUCT")
     @JsonView(JsonViews.Embedded.class)
     private CProducts product;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_ARTICLE_CATEGORY", referencedColumnName = "ID_ARTICLE_CATEGORY")
+    @JsonView(JsonViews.Root.class)
+    private CArticlesCategories articlesCategories;
 
     public CArticles() {
     }
@@ -85,6 +94,22 @@ public class CArticles implements Serializable {
 
     public void setProduct(CProducts product) {
         this.product = product;
+    }
+
+    public Integer getIdArticleCategory() {
+        return idArticleCategory;
+    }
+
+    public void setIdArticleCategory(Integer idArticleCategory) {
+        this.idArticleCategory = idArticleCategory;
+    }
+
+    public CArticlesCategories getArticlesCategories() {
+        return articlesCategories;
+    }
+
+    public void setArticlesCategories(CArticlesCategories articlesCategories) {
+        this.articlesCategories = articlesCategories;
     }
 
     @Override

@@ -15,13 +15,10 @@
             var vm = new Vue({
                 el: '#content',
                 ready: function () {
-                    this.fetchDistributors();
-                    this.fetchAreas();
-                    this.fetchDocumentTypes();
-                    this.fetchValues();
-                    this.fetchArticleStatus();
                     this.fetchHierarchy();
-                    this.getArticles();
+                    this.fetchDocumentTypes();
+                    this.fetchArticleStatus();
+                    this.getArticlesCategories();
                 },
                 data: {
                     assign:false,
@@ -30,8 +27,6 @@
                     selectOptions: {
                         distributors: [],
                         areas: [],
-                        attributes: [],
-                        values: [],
                         articleStatus:[],
                         employees: [],
                         hierarchy: [],
@@ -39,40 +34,71 @@
                         documentTypesRequired: [],
                         documentTypesNoRequired: []
                     },
+                    stockFilter:'',
                     selectedOptions: {
-                        area: null,
-                        distributor: null
+                        area: {
+                            id:0
+                        },
+                        distributor: {
+                            id:0
+                        },
+                        region: {
+                            id:0
+                        },
+                        branch: {
+                            id:0
+                        }
+                    },
+                    defaultArea: {
+                        id:0,
+                        name:''
+                    },
+                    defaultDistributor: {
+                        id:0,
+                        name:''
+                    },
+                    defaultRegion: {
+                        id:0,
+                        name:''
+                    },
+                    defaultBranch: {
+                        id:0,
+                        name:''
                     },
                     historicalModal: {
                         article: null,
                         fileInput: "file-type-"
                     },
                     editModal: {
-                        selectAttr: null,
-                        selectValue: null,
                         serialNumber: 0,
                         stockFolio: 0,
                         articleStatus: null,
-                        purchasePrice: 0,
                         employees: null,
+                        selectAttr: '',
+                        selectValue:'',
+                        attributes: [],
+                        values: [],
                         selectedEmployee: null,
                         article: null
                     },
                     newArticleModal: {
-                        selectAttr: null,
-                        selectValue: null,
                         serialNumber: null,
                         stockFolio: null,
                         articleStatus: null,
                         idArticleStatus:null,
-                        purchasePrice: null,
                         purchaseDate:null,
+                        attributes: [],
+                        values: [],
                         invoiceNumber:null,
                         employees: null,
                         selectedEmployee: null,
+                        articleCategory:'',
                         idArticle:'',
                         properties : [],
                         articles: [],
+                        selectAttr: '',
+                        selectValue:'',
+                        articlesCategories:[],
                         selected: {
                             distributor: null,
                             region: null,
@@ -120,9 +146,15 @@
                     seeAssignView: function () {
                         this.assign = true;
                     },
-                    getArticles : function () {
-                        this.$http.get(ROOT_URL + "/articles").success(function (data) {
+                    getArticles : function (articleCategory) {
+                        this.$http.get(ROOT_URL + "/articles/article-category/" + articleCategory.idArticlesCategory).success(function (data) {
                             this.newArticleModal.articles = data;
+                            this.newArticleModal.idArticle = '';
+                        });
+                    },
+                    getArticlesCategories : function () {
+                        this.$http.get(ROOT_URL + "/articles-categories").success(function (data) {
+                            this.newArticleModal.articlesCategories = data;
                         });
                     },
                     groupBy: function (array, filter) {
@@ -148,14 +180,6 @@
                                 throttle: 50,
                                 debug: true
                             });
-                        });
-                    },
-                    fetchStock: function (distributor) {
-                        this.$http.get(ROOT_URL + "/stock?idDistributor=" + distributor.idDistributor).success(function (data) {
-                            this.stockGroups = this.groupBy(data, function (item) {
-                                return item.idDwEnterprises;
-                            });
-                            this.attachOnScreen();
                         });
                     },
                     fetchStockProperties: function (article) {
@@ -210,16 +234,6 @@
                             showAlert("Permiso denegado", {type: 3});
                         });
                     },
-                    fetchDistributors: function () {
-                        this.$http.get(ROOT_URL + "/distributors?forStock=true").success(function (data) {
-                            this.selectOptions.distributors = data;
-                        });
-                    },
-                    fetchAreas: function () {
-                        this.$http.get(ROOT_URL + "/areas").success(function (data) {
-                            this.selectOptions.areas = data;
-                        });
-                    },
                     fetchHierarchy: function () {
                         this.$http.get(ROOT_URL + "/dw-enterprises/hierarchy").success(function (data) {
                             this.selectOptions.hierarchy = data;
@@ -230,30 +244,50 @@
                             this.selectOptions.documentTypes = data;
                         });
                     },
-                    fetchAttributes: function (idArticle) {
-                        this.$http.get(ROOT_URL + "/attributes/" + idArticle).success(function (data) {
-                            this.selectOptions.attributes = data;
-                            this.editModal.selectAttr = $('#select-attribute').selectize({
+                    fetchAttributesEditModal: function (article) {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/attributes/" + article.article.idArticle).success(function (data) {
+                            var attributes = [];
+                            this.editModal.attributes = data;
+                            this.editModal.attributes.forEach(function (attribute) {
+                                article.propertiesList.forEach(function (property) {
+                                    if (attribute.idAttribute === property.attributesArticles.attributes.idAttribute) {
+                                        attributes.push(attribute)
+                                    }
+                                });
+                            });
+                            attributes.forEach(function (attribute) {
+                                self.editModal.attributes.$remove(attribute);
+                            });
+
+                            if (this.editModal.selectAttr != '') {
+                                this.editModal.selectAttr[0].selectize.destroy();
+                            }
+
+                            this.editModal.selectAttr = $('#select-attribute-edit').selectize({
                                 maxItems: 1,
                                 valueField: 'idAttribute',
                                 labelField: 'attributeName',
                                 searchField: 'attributeName',
-                                options: data,
+                                options: self.editModal.attributes,
                                 create: false
-                            });
+                            }).on('change',this.fetchEditModalValues);
                         });
                     },
-                    fetchAttributesNewArticle: function () {
-                        this.$http.get(ROOT_URL + "/attributes/" + this.newArticleModal.idArticle).success(function (data) {
-                            this.selectOptions.attributes = data;
-                            this.newArticleModal.selectAttr = $('#select-attribute2').selectize({
+                    fetchAttributesNewArticleModal: function (idArticle) {
+                        this.$http.get(ROOT_URL + "/attributes/" + idArticle).success(function (data) {
+                            this.newArticleModal.attributes = data;
+                            if (this.newArticleModal.selectAttr != '') {
+                                this.newArticleModal.selectAttr[0].selectize.destroy();
+                            }
+                            this.newArticleModal.selectAttr = $('#select-attribute-new').selectize({
                                 maxItems: 1,
                                 valueField: 'idAttribute',
                                 labelField: 'attributeName',
                                 searchField: 'attributeName',
                                 options: data,
                                 create: false
-                            });
+                            }).on('change',this.fetchNewArticleModalValues);
                         });
                     },
                     fetchArticleStatus: function () {
@@ -271,11 +305,14 @@
                             this.selectOptions.employees = data;
                         });
                     },
-                    fetchValues: function () {
-                        this.$http.get(ROOT_URL + "/values").success(function (data) {
-                            var self = this;
-                            this.selectOptions.values = data;
-                            this.newArticleModal.selectValue = $('#select-value2').selectize({
+                    fetchNewArticleModalValues: function () {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/values?idAttribute=" + this.newArticleModal.selectAttr[0].selectize.getValue()).success(function (data) {
+                            this.newArticleModal.values = data;
+                            if (this.newArticleModal.selectValue != '') {
+                                this.newArticleModal.selectValue[0].selectize.destroy();
+                            }
+                            this.newArticleModal.selectValue = $('#select-value-new').selectize({
                                 maxItems: 1,
                                 valueField: 'idValue',
                                 labelField: 'value',
@@ -283,6 +320,7 @@
                                 options: data,
                                 create: function (input, callback) {
                                     self.$http.post(ROOT_URL + "/values", {
+                                        idAttribute: self.newArticleModal.selectAttr[0].selectize.getValue(),
                                         value: input
                                     }).success(function (data){
                                         callback(data);
@@ -298,7 +336,17 @@
                                     }
                                 }
                             });
-                            this.editModal.selectValue = $('#select-value').selectize({
+                        });
+                    },
+                    fetchEditModalValues: function () {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/values?idAttribute=" + this.editModal.selectAttr[0].selectize.getValue()).success(function (data) {
+                            this.editModal.values = data;
+
+                            if (this.editModal.selectValue != '') {
+                                this.editModal.selectValue[0].selectize.destroy();
+                            }
+                            this.editModal.selectValue = $('#select-value-edit').selectize({
                                 maxItems: 1,
                                 valueField: 'idValue',
                                 labelField: 'value',
@@ -306,6 +354,7 @@
                                 options: data,
                                 create: function (input, callback) {
                                     self.$http.post(ROOT_URL + "/values", {
+                                        idAttribute: self.editModal.selectAttr[0].selectize.getValue(),
                                         value: input
                                     }).success(function (data){
                                         callback(data);
@@ -337,7 +386,10 @@
                     removeProperty: function (article, property) {
                         this.isSaving = true;
                         this.$http.delete(ROOT_URL + "/stock/properties/" + property.idProperty).success(function () {
-                            article.propertiesList.$remove(property);
+                            this.fetchStockProperties(article);
+                            this.editModal.attributes.push(property.attributesArticles.attributes);
+                            this.fetchAttributesEditModal(article);
+                            this.fetchEditModalValues();
                             this.isSaving = false;
                         }).error(function () {
                             this.isSaving = false;
@@ -345,15 +397,24 @@
                         });
                     },
                     removePropertyNewArticle: function (property) {
-                        this.newArticleModal.properties.$remove(property)
+                        this.newArticleModal.properties.$remove(property);
+                        this.newArticleModal.attributes.push(property.attributesArticles.attributes);
+                        this.newArticleModal.selectAttr[0].selectize.destroy();
+                        this.newArticleModal.selectAttr = $('#select-attribute-new').selectize({
+                            maxItems: 1,
+                            valueField: 'idAttribute',
+                            labelField: 'attributeName',
+                            searchField: 'attributeName',
+                            options: this.newArticleModal.attributes,
+                            create: false
+                        }).on('change',this.fetchNewArticleModalValues);
+
+                        this.fetchNewArticleModalValues();
                     },
-                    addProperties: function (idArticle,properties) {
-                        this.$http.post
-                        (
-                                ROOT_URL + "/stock/" + idArticle + "/propertiesList",
-                                properties
-                        ).success(function (data) {
+                    addProperties: function (idStock,properties) {
+                        this.$http.post(ROOT_URL + "/stock/" + idStock + "/properties", JSON.stringify(properties)).success(function (data) {
                             showAlert("Articulo guardado")
+                            this.getStocks();
                             this.closeNewArticleModal();
                             this.isSaving = false;
                         }).error(function (data) {
@@ -363,7 +424,7 @@
                     },
                     addProperty: function (article) {
                         this.isSaving = true;
-
+                        var self = this;
                         var idAttr = this.editModal.selectAttr[0].selectize.getValue();
                         var idVal = this.editModal.selectValue[0].selectize.getValue();
                         var property = {
@@ -373,7 +434,7 @@
                             },
                             attributesArticles: {
                                 idArticle: article.idArticle,
-                                idAttribute: idAttr,
+                                idAttribute: this.editModal.selectValue[0].selectize.getOption(idVal).text(),
                                 attributes: {
                                     idAttribute: idAttr,
                                     attributeName: this.editModal.selectAttr[0].selectize.getOption(idAttr).text()
@@ -381,18 +442,31 @@
                             }
                         };
 
-                        this.$http.post(ROOT_URL + "/stock/" + article.idStock + "/properties", property).success(function () {
-                            this.editModal.selectAttr[0].selectize.clear();
-                            this.editModal.selectValue[0].selectize.clear();
-                            showAlert("Propiedad agregada")
+                        this.$http.post
+                        (
+                                ROOT_URL + "/stock/" + article.idStock + "/properties",
+                                property
+                        ).success(function (data) {
                             this.fetchStockProperties(article);
+                            this.editModal.attributes.forEach(function (attribute) {
+                                if (attribute.idAttribute === idAttr) {
+                                    self.editModal.attributes.$remove(attribute);
+                                }
+                            });
+
+                            this.fetchAttributesEditModal(article);
+                            this.fetchEditModalValues();
+
                             this.isSaving = false;
-                        }).error(function () {
+                        }).error(function (data) {
+                            this.editModal.attribute = '';
+                            this.editModal.value = '';
                             this.isSaving = false;
                             showAlert("No se pudo agregar la propiedad, intente nuevamente", {type:3})
                         });
                     },
                     addPropertyNewArticle: function () {
+                        var self = this;
                         var idAttr = this.newArticleModal.selectAttr[0].selectize.getValue();
                         var idVal = this.newArticleModal.selectValue[0].selectize.getValue();
                         var property = {
@@ -409,6 +483,25 @@
                                 }
                             }
                         };
+
+                        this.newArticleModal.attributes.forEach(function (attribute) {
+                            if (attribute.idAttribute === Number(idAttr)) {
+                                self.newArticleModal.attributes.$remove(attribute);
+                            }
+                        });
+
+                        this.newArticleModal.selectAttr[0].selectize.destroy();
+                        this.newArticleModal.selectAttr = $('#select-attribute-new').selectize({
+                            maxItems: 1,
+                            valueField: 'idAttribute',
+                            labelField: 'attributeName',
+                            searchField: 'attributeName',
+                            options: self.newArticleModal.attributes,
+                            create: false
+                        }).on('change',this.fetchNewArticleModalValues);
+
+                        this.fetchNewArticleModalValues();
+
                         this.newArticleModal.properties.push(property);
                     },
                     uploadFilesAssignments: function (article) {
@@ -501,9 +594,7 @@
                         this.editModal.serialNumber = article.serialNumber;
                         this.editModal.stockFolio = article.stockFolio;
                         this.editModal.articleStatus = article.articleStatus;
-                        this.editModal.purchasePrice = article.purchasePrice;
-                        this.editModal.selectedEmployee = article.stockEmployeeAssignmentsList[0].employee;
-                        this.fetchAttributes(article.article.idArticle);
+                        this.fetchAttributesEditModal(article);
                         this.fetchEmployees(article.idDwEnterprises);
                         $("#editModal").modal("show");
                     },
@@ -512,7 +603,6 @@
                         $("#assignmentsModal").modal("show");
                     },
                     closeEditModal: function () {
-                        this.editModal.selectAttr[0].selectize.destroy();
                         $("#editModal").modal("hide");
                     },
                     closeHistoricalModal: function () {
@@ -529,16 +619,11 @@
                             serialNumber: this.editModal.serialNumber,
                             stockFolio: this.editModal.stockFolio,
                             articleStatus: this.editModal.articleStatus,
-                            purchasePrice: this.editModal.purchasePrice,
-                            employee: {
-                                idEmployee: this.editModal.selectedEmployee.idEmployee
-                            }
                         }).success(function () {
                             article.serialNumber = this.editModal.serialNumber;
                             article.stockFolio = this.editModal.stockFolio;
                             article.articleStatus = this.editModal.articleStatus;
-                            article.purchasePrice = this.editModal.purchasePrice;
-                            article.stockEmployeeAssignmentsList[0].employee = this.editModal.selectedEmployee;
+                            this.closeEditModal();
                             this.isSaving = false;
                             showAlert("Articulo modificado con exito", {type: 1});
                         }).error(function (data) {
@@ -548,7 +633,7 @@
                     },
                     saveNewStockArticle: function (properties) {
                         this.isSaving = true;
-
+                        console.log(properties);
                         var form = document.getElementById('newArticleFrom');
                         var formData = new FormData(form);
                         this.$http.post(ROOT_URL + "/stock", formData).success(function (data) {
@@ -567,7 +652,7 @@
                                 }
                         ).success(function () {
                             this.isSaving = false;
-                            this.fetchStock(this.selectedOptions.distributor);
+                            this.getStocks();
                             this.assignmentsModal.selected.distributor = null;
                             this.assignmentsModal.selected.region = null;
                             this.assignmentsModal.selected.branch = null;
@@ -577,6 +662,10 @@
                             this.closeAssignmentsModal();
                         }).error(function (data) {
                             this.isSaving = false;
+                            this.assignmentsModal.selected.distributor = null;
+                            this.assignmentsModal.selected.region = null;
+                            this.assignmentsModal.selected.branch = null;
+                            this.assignmentsModal.selected.area = null;
                             this.assignmentsModal.selected.dwEmployees = null;
                             showAlert(data.error.message, {type:3});
                         })
@@ -585,7 +674,7 @@
                         $("#newArticleModal").modal("show");
                     },
                     closeNewArticleModal: function () {
-                        document.getElementById("attachments-form2").reset();
+                        document.getElementById("newArticleFrom").reset();
                         $("#newArticleModal").modal("hide");
                     },
                     showAttachmentsModal: function (article) {
@@ -603,6 +692,7 @@
                         this.$http.post(ROOT_URL + "/stock/" + article.idStock + "/attachments", new FormData(form)).success(function () {
                             showAlert("Registro exitoso");
                             form.reset();
+                            this.closeAttachmentsModal();
                             this.fetchStockDocuments(article);
                             this.fetchStockDocumentsRecord(article);
                         }).error(function (data) {
@@ -611,6 +701,33 @@
                             showAlert(data.error.message, {type:3})
                         });
                     },
+                    getStocks: function () {
+
+                        this.$http.get(
+                                ROOT_URL + "/stock?idDistributor=" +
+                                this.selectedOptions.distributor.id + "&idRegion=" +
+                                this.selectedOptions.region.id  + "&idBranch=" +
+                                this.selectedOptions.branch.id + "&idArea=" +
+                                this.selectedOptions.area.id
+                        ).success(function (data) {
+                            this.stockGroups = this.groupBy(data, function (item) {
+                                return item.idDwEnterprises;
+                            });
+                            this.attachOnScreen();
+                        });
+                    },
+                    selectedOptionsDistributorChanged: function () {
+                        this.selectedOptions.region = this.defaultRegion;
+                        this.selectedOptions.branch = this.defaultBranch;
+                        this.selectedOptions.area = this.defaultArea;
+                    },
+                    selectedOptionsRegionChanged: function () {
+                        this.selectedOptions.branch = this.defaultBranch;
+                        this.selectedOptions.area = this.defaultArea;
+                    },
+                    selectedOptionsBranchChanged: function () {
+                        this.selectedOptions.area = this.defaultArea;
+                    }
                 }
             });
         </script>
@@ -629,65 +746,85 @@
 
     <jsp:body>
         <div id="content">
-            <div class="col-lg-12"><h2 class="text-center">Inventario</h2></div>
-            <div class="col-lg-12">
-                <div class="col-md-2 col-xs-6">
+            <div class="col-xs-12"><h2 class="text-center">Inventario</h2></div>
+            <br>
+            <div class="col-xs-12" v-if="selectOptions.hierarchy.length > 0">
+                <div class="col-xs-2">
+                    <label>Distribuidor</label>
                     <select v-model="selectedOptions.distributor" class="form-control"
-                            @change="fetchStock(selectedOptions.distributor)"
-                            data-toggle="tooltip" data-placement="top" title="Selecciona un distribuidor">
-                        <option v-for="distributor in selectOptions.distributors"
+                            @change="selectedOptionsDistributorChanged">
+                        <option selected :value="defaultDistributor">{{defaultDistributor.name}}</option>
+                        <option v-for="distributor in selectOptions.hierarchy[0].subLevels"
                                 :value="distributor">
-                            {{ distributor.distributorName }}
+                            {{ distributor.name }}
                         </option>
                     </select>
                 </div>
-                <div class="col-md-2 col-xs-6">
+                <div class="col-xs-2">
+                    <label>Región</label>
+                    <select v-model="selectedOptions.region" class="form-control"
+                            @change="selectedOptionsRegionChanged"
+                            :disabled="selectedOptions.distributor.id == 0">
+                        <option selected :value="defaultRegion">{{defaultRegion.name}}</option>
+                        <option v-for="region in selectedOptions.distributor.subLevels"
+                                :value="region">
+                            {{ region.name }}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-xs-2">
+                    <label>Sucursal</label>
+                    <select v-model="selectedOptions.branch" class="form-control"
+                            @change="selectedOptionsBranchChanged"
+                            :disabled="selectedOptions.region.id == 0">
+                        <option selected :value="defaultBranch">{{defaultBranch.name}}</option>
+                        <option v-for="branch in selectedOptions.region.subLevels"
+                                :value="branch">
+                            {{ branch.name }}
+                        </option>
+                    </select>
+                </div>
+                <div class="col-xs-2">
+                    <label>Área</label>
                     <select v-model="selectedOptions.area" class="form-control"
-                            @change="attachOnScreen"
-                            :disabled="selectOptions.areas.length < 2"
-                            data-toggle="tooltip" data-placement="top" title="Selecciona una área">
-                        <option value="0" selected>Todas las Áreas</option>
-                        <option v-for="area in selectOptions.areas"
+                            :disabled="selectedOptions.branch.id == 0">
+                        <option selected :value="defaultArea">{{defaultArea.name}}</option>
+                        <option v-for="area in selectedOptions.branch.subLevels"
                                 :value="area">
-                            {{ area.areaName }}
+                            {{ area.name }}
                         </option>
                     </select>
                 </div>
-                <div class="col-md-1 col-xs-6">
-                    <button class="btn btn-default" @click="showNewArticleModal"
-                            data-toggle="tooltip" data-placement="top" title="Añadir artículo">
-                        <span class="glyphicon glyphicon-plus"></span>
-                    </button>
-                </div>
-                <div style="visibility: hidden" class="col-md-2 col-xs-6">
-                    <select class="form-control"
-                            data-toggle="tooltip" data-placement="top" title="Selecciona una región">
-                    </select>
-                </div>
-                <div style="visibility: hidden" class="col-md-2 col-xs-6">
-                    <select class="form-control"
-                            data-toggle="tooltip" data-placement="top" title="Selecciona una sucursal">
-
-                    </select>
-                </div>
-                <div style="visibility: hidden" class="col-md-1 col-xs-6">
-                    <button class="btn btn-dafault"
+                <div class="col-xs-1">
+                    <label style="visibility: hidden">search</label>
+                    <button class="btn btn-default" @click="getStocks"
                             data-toggle="tooltip" data-placement="top" title="Buscar artículo">
                         <span class="glyphicon glyphicon-search"></span>
                     </button>
                 </div>
+                <div class="col-xs-2">
+                    <label>Filtrar</label>
+                    <input type="text" class="form-control"
+                           v-model="stockFilter" :disabled="!stockGroups.length > 0">
+                </div>
+                <div class="col-xs-1">
+                    <label style="visibility: hidden">add</label>
+                    <button class="btn btn-default" @click="showNewArticleModal"
+                            data-toggle="tooltip" data-placement="top" title="Agregar artículo">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                </div>
             </div>
             <div class="stock-groups col-xs-12">
-                <div v-for="stock in stockGroups | filterBy areaFilter" class="">
+                <div v-for="stock in stockGroups | filterBy stockFilter">
                     <div class="text-center col-xs-12">
-                        <h4>{{ stock[0].dwEnterprises.branch.branchShort }} - {{ stock[0].dwEnterprises.area.areaName }}</h4>
                     </div>
                     <div class="col-xs-12 panel-group">
                         <div v-for="article in stock" @build="buildArticle(article)"
                              class="lazy panel panel-default">
                             <div class="panel-heading">
                                 <div class="row">
-                                    <div class="text-center col-xs-9">
+                                    <div class="col-xs-9">
                                         <div class="col-md-3 col-xs-6">
                                             <p><strong>Artículo</strong></p>
                                             <p>{{ article.article.articleName }}</p>
@@ -710,7 +847,7 @@
                                             </p>
                                         </div>
                                     </div>
-                                    <div class="col-xs-3">
+                                    <div class="text-right col-xs-3">
                                         <button @click="showEditArticleModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Editar artículo">
                                             <span class="glyphicon glyphicon-pencil"></span>
                                         </button>
@@ -947,10 +1084,25 @@
                                                 :value="status">{{ status.articleStatus }}</option>
                                     </select>
                                 </div>
-                                <div class="col-md-4 col-xs-6">
-                                    <label>Precio de Compra</label>
-                                    <input v-model="editModal.purchasePrice"
-                                           :disabled="isSaving" type="text" class="form-control">
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12 col-md-8 col-md-push-2">
+                                    <div class="col-xs-5">
+                                        <label>Atributo</label>
+                                        <select required id="select-attribute-edit" class="form-control"></select>
+                                    </div>
+                                    <div class="col-xs-5">
+                                        <label>Valor</label>
+                                        <select required id="select-value-edit" class="form-control"></select>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <button @click.prevent="addProperty(editModal.article)"
+                                                :disabled="isSaving"
+                                                class="btn btn-default" style="margin-top: 2.5rem"
+                                                data-toggle="tooltip" data-placement="top" title="Agregar Propiedad">
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row line">
@@ -963,7 +1115,7 @@
                                             </td>
                                             <td class="col-xs-5">{{ property.value.value }}</td>
                                             <td class="col-xs-2">
-                                                <button @click="removeProperty(editModal.article, property)"
+                                                <button @click.prevent="removeProperty(editModal.article, property)"
                                                         :disabled="isSaving"
                                                         class="btn btn-default"
                                                         data-toggle="tooltip" data-placement="top" title="Eliminar Propiedad">
@@ -974,29 +1126,9 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-xs-12 col-md-8 col-md-push-2">
-                                    <div class="col-xs-5">
-                                        <label>Atributo</label>
-                                        <select id="select-attribute" class="form-control"></select>
-                                    </div>
-                                    <div class="col-xs-5">
-                                        <label>Valor</label>
-                                        <select id="select-value" class="form-control"></select>
-                                    </div>
-                                    <div class="col-xs-2">
-                                        <button @click="addProperty(editModal.article)"
-                                                :disabled="isSaving"
-                                                class="btn btn-default" style="margin-top: 2.5rem"
-                                                data-toggle="tooltip" data-placement="top" title="Agregar Propiedad">
-                                            <span class="glyphicon glyphicon-plus"></span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                         <div class="text-right modal-footer">
-                            <button :disabled="isSaving" class="btn btn-default" @click="closeEditModal">Cancelar</button>
+                            <button :disabled="isSaving" class="btn btn-default" @click="closeEditModal">Salir</button>
                             <button @click="saveStockArticle(editModal.article)"
                                     :disabled="isSaving"
                                     class="btn btn-success">
@@ -1113,7 +1245,7 @@
                                 </div>
                                 <div class="text-right modal-footer flex-footer">
                                     <button type="button" :disabled="isSaving" class="btn btn-default" @click="closeAssignmentsModal">
-                                        Cancelar
+                                        Salir
                                     </button>
                                     <button type="submit" :disabled="isSaving"
                                             class="btn btn-success">
@@ -1174,7 +1306,7 @@
                                 </div>
                                 <hr />
                                 <div class="text-right">
-                                    <button @click.prevent="closeAttachmentsModal" :disabled="isSaving" class="btn btn-default">Cancelar</button>
+                                    <button type="button" @click="closeAttachmentsModal" :disabled="isSaving" class="btn btn-default">Salir</button>
                                     <button @click.prevent="uploadAttachments(attachmentsModal.article)"
                                             :disabled="isSaving"
                                             class="btn btn-success">
@@ -1195,38 +1327,27 @@
                             <button class="close" @click="closeNewArticleModal()"><span aria-hidden="true">&times;</span>
                             </button>
                             <h4 class="modal-title">Nuevo de Artículo </h4>
-                            <label>Folio: {{newArticleModal.stockFolio}}</label>
                         </div>
-                        <div class="modal-body">
-                            <form id="newArticleFrom" v-on:submit.prevent="saveNewStockArticle(newArticleModal.properties)"
-                                  method="post" enctype="multipart/form-data">
-                                <div class="row line">
-                                    <div class="col-md-4 col-xs-6">
-                                        <label>No. de Serie</label>
-                                        <input v-model="newArticleModal.serialNumber" name="serialNumber"
-                                               :disabled="isSaving" type="text" class="form-control">
-                                    </div>
-                                    <div class="col-md-4 col-xs-6">
-                                        <label>Número de factura</label>
-                                        <input v-model="newArticleModal.invoiceNumber" name="invoiceNumber"
-                                               :disabled="isSaving" type="text" class="form-control">
-                                    </div>
-                                    <div class="col-md-4 col-xs-6">
-                                        <label>Fecha de compra</label>
-                                        <div class="input-group date" id="datetimepickerPurchaseDate"
-                                             @click="setUpTimePickerPurchaseDate">
-                                            <input type='text' name="purchaseDate" name="purchaseDate"
-                                                   class="form-control" v-model="newArticleModal.purchaseDate" required>
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                        </div>
-                                    </div>
+                        <form id="newArticleFrom" v-on:submit.prevent="saveNewStockArticle(newArticleModal.properties)"
+                              method="post" enctype="multipart/form-data">
+                            <div class="modal-body">
+                                <div class="row">
                                     <div class="col-md-4 col-xs-6">
                                         <label>Tipo de producto</label>
+                                        <select v-model="newArticleModal.articleCategory"
+                                                @change="getArticles(newArticleModal.articleCategory)"
+                                                :disabled="isSaving" class="form-control" required>
+                                            <option v-for="articleCategory in newArticleModal.articlesCategories"
+                                                    :value="articleCategory">
+                                                {{ articleCategory.articlesCategoryName }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 col-xs-6">
+                                        <label>Producto</label>
                                         <select v-model="newArticleModal.idArticle" name="article"
-                                                @change="fetchAttributesNewArticle"
-                                                :disabled="isSaving" class="form-control">
+                                                @change="fetchAttributesNewArticleModal(newArticleModal.idArticle)" required
+                                                :disabled="isSaving || newArticleModal.articleCategory == ''" class="form-control">
                                             <option v-for="article in newArticleModal.articles"
                                                     :value="article.idArticle">
                                                 {{ article.articleName }}
@@ -1234,149 +1355,195 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="row line">
-                                    <div class="text-center line col-xs-12"><strong>Propiedades</strong></div>
-                                    <div class="col-xs-12 col-md-8 col-md-push-2">
-                                        <table class="table table-striped line">
-                                            <tr v-for="property in newArticleModal.properties">
-                                                <td class="col-xs-5">
-                                                    {{ property.attributesArticles.attributes.attributeName }}
-                                                </td>
-                                                <td class="col-xs-5">{{ property.value.value }}</td>
-                                                <td class="col-xs-2">
-                                                    <button @click="removePropertyNewArticle(property)"
-                                                            :disabled="isSaving"
-                                                            class="btn btn-default"
-                                                            data-toggle="tooltip" data-placement="top" title="Eliminar Propiedad">
-                                                        <span class="glyphicon glyphicon-remove"></span>
-                                                    </button>
+                                <div v-if="newArticleModal.idArticle != ''">
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-md-4 col-xs-6"
+                                             v-if="newArticleModal.articleCategory.requireInvoice == 1">
+                                            <label>No. de Serie</label>
+                                            <input v-model="newArticleModal.serialNumber" name="serialNumber" required
+                                                   :disabled="isSaving" type="text" class="form-control">
+                                        </div>
+                                        <div class="col-md-4 col-xs-6">
+                                            <label>Número de factura</label>
+                                            <input v-model="newArticleModal.invoiceNumber" name="invoiceNumber" required
+                                                   :disabled="isSaving" type="text" class="form-control">
+                                        </div>
+                                        <div class="col-md-4 col-xs-6">
+                                            <label>Fecha de compra</label>
+                                            <div class="input-group date" id="datetimepickerPurchaseDate"
+                                                 @click="setUpTimePickerPurchaseDate">
+                                                <input type='text' name="purchaseDate" name="purchaseDate" required
+                                                       class="form-control" v-model="newArticleModal.purchaseDate" required>
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-8 col-md-push-2">
+                                            <div class="col-xs-5">
+                                                <label>Atributo</label>
+                                                <select :disabled="isSaving" id="select-attribute-new" class="form-control"></select>
+                                            </div>
+                                            <div class="col-xs-5">
+                                                <label>Valor</label>
+                                                <select :disabled="isSaving" id="select-value-new" class="form-control"></select>
+                                            </div>
+                                            <div class="col-xs-2">
+                                                <button type="button" @click="addPropertyNewArticle"
+                                                        :disabled="isSaving"
+                                                        class="btn btn-default" style="margin-top: 2.5rem"
+                                                        data-toggle="tooltip" data-placement="top" title="Agregar Propiedad">
+                                                    <span class="glyphicon glyphicon-plus"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row">
+                                        <div class="text-center line col-xs-12"><strong>Propiedades</strong></div>
+                                        <div class="col-xs-12 col-md-8 col-md-push-2">
+                                            <table class="table table-striped line">
+                                                <tr v-for="property in newArticleModal.properties">
+                                                    <td class="col-xs-5">
+                                                        {{ property.attributesArticles.attributes.attributeName }}
+                                                    </td>
+                                                    <td class="col-xs-5">{{ property.value.value }}</td>
+                                                    <td class="col-xs-2">
+                                                        <button @click="removePropertyNewArticle(property)"
+                                                                :disabled="isSaving"
+                                                                class="btn btn-default"
+                                                                data-toggle="tooltip" data-placement="top" title="Eliminar Propiedad">
+                                                            <span class="glyphicon glyphicon-remove"></span>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Documento</th>
+                                            <th>Nuevo Documento</th>
+                                        </tr>
+                                        </thead>
+                                        <tr v-for="docType in selectOptions.documentTypes" v-if="docType.required == 1">
+                                            <td>{{ docType.documentName }}</td>
+                                            <td>
+                                                <input @change="validateFile($event)" type="file" class="form-control"
+                                                       :disabled="isSaving"
+                                                       :name="newArticleModal.fileInput + docType.idDocumentType"
+                                                       accept="application/pdf,
+                                                         image/png,image/jpg,image/jpeg,">
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <br>
+                                    <div class="row">
+                                        <div class="col-xs-12"><label>¿Deseas asignar este artículo?</label></div>
+                                        <div class="col-md-3 col-xs-6">
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" @change="seeAssignView" name="assign" id="optionsRadios1">
+                                                    Si
+                                                </label>
+                                            </div>
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" @change="doNotSeeAssignView" name="assign" id="optionsRadios2" checked>
+                                                    No
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div  v-if="assign">
+                                        <div class="row">
+                                            <div class="col-xs-12"><label>Asignar a</label></div>
+                                            <div class="col-md-3 col-xs-6">
+                                                <label>Distribuidor</label>
+                                                <select v-model="newArticleModal.selected.distributor" class="form-control" required
+                                                        @change="distributorChanged">
+                                                    <option v-for="distributor in selectOptions.hierarchy[0].subLevels"
+                                                            :value="distributor">
+                                                        {{ distributor.name }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-3 col-xs-6">
+                                                <label>Región</label>
+                                                <select v-model="newArticleModal.selected.region" class="form-control" required
+                                                        @change="regionChanged" :disabled="newArticleModal.selected.distributor == null">
+                                                    <option v-for="region in newArticleModal.selected.distributor.subLevels"
+                                                            :value="region">
+                                                        {{ region.name }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-3 col-xs-6">
+                                                <label>Sucursal</label>
+                                                <select v-model="newArticleModal.selected.branch" class="form-control" required
+                                                        @change="branchChanged" :disabled="newArticleModal.selected.region == null">
+                                                    <option v-for="branch in newArticleModal.selected.region.subLevels"
+                                                            :value="branch">
+                                                        {{ branch.name }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-3 col-xs-6">
+                                                <label>Área</label>
+                                                <select v-model="newArticleModal.selected.area" class="form-control" required
+                                                        @change="areaChanged" :disabled="newArticleModal.selected.branch == null">
+                                                    <option v-for="area in newArticleModal.selected.branch.subLevels"
+                                                            :value="area">
+                                                        {{ area.name }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3 col-xs-6">
+                                                <label>Empleado / Almacén</label>
+                                                <select v-model="newArticleModal.selected.dwEmployees" class="form-control" required
+                                                        :disabled="newArticleModal.selected.area == null">
+                                                    <option v-for="dwEmployees in newArticleModal.selected.area.dwEnterprise.dwEmployeesList"
+                                                            :value="dwEmployees">
+                                                        {{ dwEmployees.employee.fullName }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <input type="text" :value="newArticleModal.selected.dwEmployees.idEmployee" name="employee" hidden>
+                                                <input type="text" :value="newArticleModal.selected.area.dwEnterprise.idDwEnterprise" name="dwEnterprise" hidden>
+                                            </div>
+                                        </div>
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th>Documento</th>
+                                                <th>Nuevo Documento</th>
+                                            </tr>
+                                            </thead>
+                                            <tr v-for="docType in selectOptions.documentTypes" v-if="docType.required == 2">
+                                                <td>{{ docType.documentName }}</td>
+                                                <td>
+                                                    <input @change="validateFile($event)" type="file" class="form-control"
+                                                           :disabled="isSaving" required
+                                                           :name="newArticleModal.fileInput + docType.idDocumentType"
+                                                           accept="application/pdf,
+                                                         image/png,image/jpg,image/jpeg,">
                                                 </td>
                                             </tr>
                                         </table>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-xs-12 col-md-8 col-md-push-2">
-                                        <div class="col-xs-5">
-                                            <label>Atributo</label>
-                                            <select id="select-attribute2" class="form-control"></select>
-                                        </div>
-                                        <div class="col-xs-5">
-                                            <label>Valor</label>
-                                            <select id="select-value2" class="form-control"></select>
-                                        </div>
-                                        <div class="col-xs-2">
-                                            <button type="button" @click="addPropertyNewArticle"
-                                                    :disabled="isSaving"
-                                                    class="btn btn-default" style="margin-top: 2.5rem"
-                                                    data-toggle="tooltip" data-placement="top" title="Agregar Propiedad">
-                                                <span class="glyphicon glyphicon-plus"></span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <table class="table table-striped">
-                                    <thead>
-                                    <tr>
-                                        <th>Documento</th>
-                                        <th>Nuevo Documento</th>
-                                    </tr>
-                                    </thead>
-                                    <tr v-for="docType in selectOptions.documentTypes">
-                                        <td>{{ docType.documentName }}</td>
-                                        <td>
-                                            <input @change="validateFile($event)" type="file" class="form-control"
-                                                   :disabled="isSaving" :required="docType.required == 2"
-                                                   :name="newArticleModal.fileInput + docType.idDocumentType"
-                                                   accept="application/pdf,
-                                                         image/png,image/jpg,image/jpeg,">
-                                        </td>
-                                    </tr>
-                                </table>
-                                <br>
-                                <div class="row">
-                                    <div class="col-xs-12"><label>¿Deseas asignar este artículo?</label></div>
-                                    <div class="col-md-3 col-xs-6">
-                                        <div class="radio">
-                                            <label>
-                                                <input type="radio" @change="seeAssignView" name="assign" id="optionsRadios1">
-                                                Si
-                                            </label>
-                                        </div>
-                                        <div class="radio">
-                                            <label>
-                                                <input type="radio" @change="doNotSeeAssignView" name="assign" id="optionsRadios2" checked>
-                                                No
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div  v-if="assign">
-                                    <div class="row">
-                                        <div class="col-xs-12"><label>Asignar a</label></div>
-                                        <div class="col-md-3 col-xs-6">
-                                            <label>Distribuidor</label>
-                                            <select v-model="newArticleModal.selected.distributor" class="form-control"
-                                                    @change="distributorChanged">
-                                                <option v-for="distributor in selectOptions.hierarchy[0].subLevels"
-                                                        :value="distributor">
-                                                    {{ distributor.name }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-3 col-xs-6">
-                                            <label>Región</label>
-                                            <select v-model="newArticleModal.selected.region" class="form-control"
-                                                    @change="regionChanged" :disabled="newArticleModal.selected.distributor == null">
-                                                <option v-for="region in newArticleModal.selected.distributor.subLevels"
-                                                        :value="region">
-                                                    {{ region.name }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-3 col-xs-6">
-                                            <label>Sucursal</label>
-                                            <select v-model="newArticleModal.selected.branch" class="form-control"
-                                                    @change="branchChanged" :disabled="newArticleModal.selected.region == null">
-                                                <option v-for="branch in newArticleModal.selected.region.subLevels"
-                                                        :value="branch">
-                                                    {{ branch.name }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-3 col-xs-6">
-                                            <label>Área</label>
-                                            <select v-model="newArticleModal.selected.area" class="form-control"
-                                                    @change="areaChanged" :disabled="newArticleModal.selected.branch == null">
-                                                <option v-for="area in newArticleModal.selected.branch.subLevels"
-                                                        :value="area">
-                                                    {{ area.name }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-3 col-xs-6">
-                                            <label>Empleado / Almacén</label>
-                                            <select v-model="newArticleModal.selected.dwEmployees" class="form-control"
-                                                    :disabled="newArticleModal.selected.area == null">
-                                                <option v-for="dwEmployees in newArticleModal.selected.area.dwEnterprise.dwEmployeesList"
-                                                        :value="dwEmployees">
-                                                    {{ dwEmployees.employee.fullName }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <input type="text" :value="newArticleModal.selected.dwEmployees.idEmployee" name="employee" hidden>
-                                            <input type="text" :value="newArticleModal.selected.area.dwEnterprise.idDwEnterprise" name="dwEnterprise" hidden>
-                                        </div>
-                                    </div>
-                                </div>
-                                <br>
                                 <div class="text-right modal-footer">
                                     <button type="button" :disabled="isSaving" class="btn btn-default"
                                             @click="closeNewArticleModal">
-                                        Cancelar
+                                        Salir
                                     </button>
                                     <button type="submit"
                                             :disabled="isSaving"
@@ -1384,8 +1551,8 @@
                                         Guardar
                                     </button>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

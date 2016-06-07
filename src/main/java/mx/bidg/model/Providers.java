@@ -58,10 +58,9 @@ public class Providers implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String rfc;
 
-    @Size(max = 20)
-    @Column(name = "ACCOUNTING_ACCOUNT")
+    @Column(name = "ID_ACCOUNTING_ACCOUNT", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private String accountingAccount;
+    private int idAccountingAccount;
 
     @Column(name = "SUPPLIER_LOW")
     @Convert(converter = DateTimeConverter.class)
@@ -102,6 +101,11 @@ public class Providers implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "provider")
     @JsonView(JsonViews.Embedded.class)
     private List<ProvidersProductsTypes> providersProductsTypes;
+
+    @JoinColumn(name = "ID_ACCOUNTING_ACCOUNT", referencedColumnName = "ID_ACCOUNTING_ACCOUNT")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private AccountingAccounts accountingAccounts;
 
 
     public Providers() {
@@ -206,12 +210,12 @@ public class Providers implements Serializable {
         this.providerAddressList = providerAddressList;
     }
 
-   public String getAccountingAccount() {
-        return accountingAccount;
+   public int getIdAccountingAccount() {
+        return idAccountingAccount;
     }
 
-    public void setAccountingAccount(String accountingAccount) {
-        this.accountingAccount = accountingAccount;
+    public void setIdAccountingAccount(int idAccountingAccount) {
+        this.idAccountingAccount = idAccountingAccount;
     }
 
 
@@ -229,6 +233,14 @@ public class Providers implements Serializable {
 
     public void setProvidersProductsTypes(List<ProvidersProductsTypes> providersProductsTypes) {
         this.providersProductsTypes = providersProductsTypes;
+    }
+
+    public AccountingAccounts getAccountingAccounts() {
+        return accountingAccounts;
+    }
+
+    public void setAccountingAccounts(AccountingAccounts accountingAccounts) {
+        this.accountingAccounts = accountingAccounts;
     }
 
     @Override

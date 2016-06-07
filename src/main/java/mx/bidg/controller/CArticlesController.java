@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -31,6 +32,12 @@ public class CArticlesController {
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findAll() throws IOException {
         List<CArticles> cArticlesList = cArticlesService.findAll();
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(cArticlesList), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/article-category/{idArticleCategory}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findByArticleCategory(@PathVariable Integer idArticleCategory) throws IOException {
+        List<CArticles> cArticlesList = cArticlesService.findByArticleCategory(idArticleCategory);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(cArticlesList), HttpStatus.OK);
     }
 }

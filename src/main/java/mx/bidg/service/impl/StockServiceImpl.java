@@ -53,6 +53,28 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
+    public List<Stocks> filter(int idDistributor, int idRegion, int idBranch, int idArea) {
+
+        List<Stocks> stocks;
+
+        if (idDistributor != 0 && idRegion != 0 && idBranch != 0 && idArea != 0) {
+            stocks = stockDao.findByDistributorRegionBranchArea(idDistributor,idRegion,idBranch,idArea);
+        } else {
+            if (idDistributor != 0 && idRegion != 0 && idBranch != 0) {
+                stocks = stockDao.findByDistributorRegionBranch(idDistributor,idRegion,idBranch);
+            } else {
+                if (idDistributor != 0 && idRegion != 0) {
+                    stocks = stockDao.findByDistributorRegion(idDistributor,idRegion);
+                } else {
+                    stocks = stockDao.findByDistributor(idDistributor);
+                }
+            }
+        }
+
+        return stocks;
+    }
+
+    @Override
     public List<Stocks> addStockArticlesFromRequest(Requests request) {
         List<Stocks> stocksList = new ArrayList<>();
 

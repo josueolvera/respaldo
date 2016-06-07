@@ -11,6 +11,8 @@ import mx.bidg.model.CProducts;
 public interface CArticlesDao extends InterfaceDao<CArticles> {
     
     CArticles findByProduct(CProducts product);
-    
+
+    List<CArticles> findByArticleCategory(Integer idArticleCategory);
+
     List<CArticles> findAllWithIdProduct();
 }

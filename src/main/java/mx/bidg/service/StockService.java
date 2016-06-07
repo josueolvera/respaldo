@@ -13,6 +13,7 @@ public interface StockService {
     Stocks save(Stocks article);
     Stocks findById(int id);
     List<Stocks> findAll();
+    List<Stocks> filter(int idDistributor,int  idRegion,int  idBranch,int  idArea);
     List<Stocks> addStockArticlesFromRequest(Requests request);
     List<Stocks> findByDistributor(Integer idDistributor);
     Stocks update(Stocks stock);

@@ -67,10 +67,6 @@ public class Stocks implements AccessLevelFilterable, Serializable {
     @JsonView(JsonViews.Root.class)
     private LocalDateTime purchaseDate;
 
-    @Column(name = "PURCHASE_PRICE")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal purchasePrice;
-
     @Column(name = "ID_ARTICLE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idArticle;
@@ -168,14 +164,6 @@ public class Stocks implements AccessLevelFilterable, Serializable {
 
     public void setInvoiceNumber(String invoiceNumber) {
         this.invoiceNumber = invoiceNumber;
-    }
-
-    public BigDecimal getPurchasePrice() {
-        return purchasePrice;
-    }
-
-    public void setPurchasePrice(BigDecimal purchasePrice) {
-        this.purchasePrice = purchasePrice;
     }
 
     public Integer getIdArticleStatus() {

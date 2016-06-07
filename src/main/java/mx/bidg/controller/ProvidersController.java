@@ -57,7 +57,7 @@ public class ProvidersController {
         provider.setProviderName(jnode.get("providerName").asText());
         provider.setBusinessName(jnode.get("businessName").asText());
         provider.setRfc(jnode.get("rfc").asText());
-        provider.setAccountingAccount(jnode.get("accountingAccount").asText());
+        provider.setAccountingAccounts(new AccountingAccounts(jnode.get("idAccountingAccount").asInt()));
         provider.setCreditDays(jnode.get("creditDays").asInt());
         provider.setCuttingDate(jnode.get("cuttingDate").asInt());
         provider.setIdAccessLevel(1);
@@ -75,7 +75,7 @@ public class ProvidersController {
         provider.setProviderName(jnode.get("providerName").asText());
         provider.setBusinessName(jnode.get("businessName").asText());
         provider.setRfc(jnode.get("rfc").asText());
-        provider.setAccountingAccount(jnode.get("accountingAccount").asText());
+        provider.setAccountingAccounts(new AccountingAccounts(jnode.get("idAccountingAccount").asInt()));
         provider.setCreditDays(jnode.get("creditDays").asInt());
         provider.setCuttingDate(jnode.get("cuttingDate").asInt());
         provider.setIdAccessLevel(1);
