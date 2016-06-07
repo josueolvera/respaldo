@@ -134,8 +134,7 @@
                         this.datetimepickerPurchaseDate = $('#datetimepickerPurchaseDate').datetimepicker({
                             locale: 'es',
                             format: 'DD-MM-YYYY',
-                            useCurrent: false,
-                            minDate: moment().add(1, 'minutes')
+                            useCurrent: false
                         }).data();
                     },
                     validateNewArticleForm: function () {
