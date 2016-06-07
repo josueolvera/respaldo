@@ -54,8 +54,8 @@ public class ProvidersContactDaoImpl extends AbstractDao<Integer,ProvidersContac
 
     @Override
     public Long countContacts(Providers provider) {
-        return (Long) getSession().createQuery("select count(p) from ProvidersContact p where p.idProviderContact = :idProviderContact")
-                .setInteger("idProviderContact", provider.getIdProvider())
+        return (Long) getSession().createQuery("select count(p) from ProvidersContact p where p.idProvider = :idProvider")
+                .setInteger("idProvider", provider.getIdProvider())
                 .uniqueResult();
     }
 }
