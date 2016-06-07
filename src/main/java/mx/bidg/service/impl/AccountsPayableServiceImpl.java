@@ -171,5 +171,20 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
         accountsPayableDao.update(accountsPayable);
     }
 
+    @Override
+    public void changeDate(Integer idAccountPayable, String data) throws IOException {
+        JsonNode json = mapper.readTree(data);
+        LocalDateTime dueDate = (json.get("dueDate") == null || json.findValue("dueDate").asText().equals("")) ? null :
+                LocalDateTime.parse(json.get("dueDate").asText(), DateTimeFormatter.ISO_DATE_TIME);
+        AccountsPayable accountsPayable = accountsPayableDao.findById(idAccountPayable);
+        LocalDateTime currentDate = accountsPayable.getDueDate();
+
+        if (dueDate.toLocalDate().isAfter(currentDate.toLocalDate())){
+            accountsPayable.setDueDate(dueDate);
+            accountsPayable.setAccountPayableStatus(CAccountsPayableStatus.REPROGRAMADA);
+            accountsPayableDao.update(accountsPayable);
+        }
+    }
+
 
 }

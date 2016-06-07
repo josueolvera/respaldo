@@ -101,5 +101,11 @@ public class AccountsPayableController {
         return new ResponseEntity<>("Cuenta pagada", HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/reschedule/{idAccountPayable}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> changeDate(@PathVariable Integer idAccountPayable, @RequestBody String data) throws IOException{
+        accountsPayableService.changeDate(idAccountPayable,data);
+        return new ResponseEntity<>("Cuenta reprogramada", HttpStatus.OK);
+    }
+
 
 }
