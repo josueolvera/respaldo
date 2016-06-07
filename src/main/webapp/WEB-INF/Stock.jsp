@@ -856,6 +856,9 @@
             <div class="stock-groups col-xs-12">
                 <div v-for="stock in stockGroups">
                     <div class="text-center col-xs-12">
+                        <h4>
+                            {{ stock[0].dwEnterprises.distributor.distributorName }} - {{ stock[0].dwEnterprises.region.regionName }} - {{ stock[0].dwEnterprises.branch.branchShort }} - {{ stock[0].dwEnterprises.area.areaName }}
+                        </h4>
                     </div>
                     <div class="col-xs-12 panel-group">
                         <div v-for="article in stock | filterBy stockFilter"
