@@ -1163,9 +1163,9 @@
                                             <td class="col-xs-2">
                                                 <button @click.prevent="removeProperty(editModal.article, property)"
                                                         :disabled="isSaving"
-                                                        class="btn btn-default"
+                                                        class="btn btn-danger"
                                                         data-toggle="tooltip" data-placement="top" title="Eliminar Propiedad">
-                                                    <span class="glyphicon glyphicon-remove"></span>
+                                                    <span class="glyphicon glyphicon-trash"></span>
                                                 </button>
                                             </td>
                                         </tr>
@@ -1461,9 +1461,9 @@
                                                     <td class="col-xs-2">
                                                         <button @click="removePropertyNewArticle(property)"
                                                                 :disabled="isSaving"
-                                                                class="btn btn-default"
+                                                                class="btn btn-danger"
                                                                 data-toggle="tooltip" data-placement="top" title="Eliminar Propiedad">
-                                                            <span class="glyphicon glyphicon-remove"></span>
+                                                            <span class="glyphicon glyphicon-trash"></span>
                                                         </button>
                                                     </td>
                                                 </tr>
