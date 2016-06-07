@@ -65,6 +65,14 @@ public class CValues implements Serializable {
         this.value = value;
     }
 
+    public CAttributes getAttribute() {
+        return Attribute;
+    }
+
+    public void setAttribute(CAttributes attribute) {
+        Attribute = attribute;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;

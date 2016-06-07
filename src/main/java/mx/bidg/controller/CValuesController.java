@@ -3,7 +3,9 @@ package mx.bidg.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.config.JsonViews;
+import mx.bidg.model.CAttributes;
 import mx.bidg.model.CValues;
+import mx.bidg.service.CAttributesService;
 import mx.bidg.service.CValuesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,9 @@ public class CValuesController {
 
     @Autowired
     private CValuesService valuesService;
+
+    @Autowired
+    private CAttributesService attributesService;
 
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -55,6 +60,7 @@ public class CValuesController {
         JsonNode node = mapper.readTree(data);
         CValues value = new CValues();
         value.setValue(node.get("value").asText());
+        value.setAttribute(new CAttributes(node.get("idAttribute").asInt()));
 
         value = valuesService.save(value);
 
