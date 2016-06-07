@@ -780,7 +780,7 @@
             <br>
             <div>
                 <div class="col-xs-8">
-                    <h1>Inventario</h1>
+                    <h2>Inventario</h2>
                 </div>
                 <div class="col-xs-3">
                     <div class="col-xs-9">
