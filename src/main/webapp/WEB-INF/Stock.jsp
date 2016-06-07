@@ -838,11 +838,11 @@
                 </div>
             </div>
             <div class="stock-groups col-xs-12">
-                <div v-for="stock in stockGroups | filterBy stockFilter">
+                <div v-for="stock in stockGroups">
                     <div class="text-center col-xs-12">
                     </div>
                     <div class="col-xs-12 panel-group">
-                        <div v-for="article in stock" @build="buildArticle(article)"
+                        <div v-for="article in stock | filterBy stockFilter" @build="buildArticle(article)"
                              class="lazy panel panel-default">
                             <div class="panel-heading">
                                 <div class="row">
