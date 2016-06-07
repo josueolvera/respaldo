@@ -74,6 +74,8 @@
           },
           ready: function ()
           {
+              this.getAccountsPayableofActualDay();
+              this.getToday();
 
           },
           data:
@@ -81,10 +83,30 @@
             timePickerReporteInicial: '',
             timePickerReporteFinal: '',
             timePickercuentaspagadasInicial: '',
-            timePickercuentaspagadasFinal: ''
+            timePickercuentaspagadasFinal: '',
+            accountsPayablesofDay: {},
+            today: ''
           },
           methods:
           {
+              getAccountsPayableofActualDay: function(){
+
+                  this.$http.get(ROOT_URL+"/accounts-payable/now")
+                          .success(function (data)
+                          {
+                             this.accountsPayablesofDay= data;
+                          });
+              },
+              getToday: function(){
+                  var dias_semana = new Array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sabado");
+                  var meses = new Array ("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre", "Diciembre");
+                  var fecha_actual = new Date();
+                  this.today = dias_semana[fecha_actual.getDay()] + " " +
+                               fecha_actual.getDay() + ", " + meses[fecha_actual.getMonth()] + " " + fecha_actual.getFullYear();
+
+                  //alert("Hoy es " + dias_semana[fecha_actual.getDay()] + " dia " + fecha_actual.getDate() + " de " + meses[fecha_actual.getMonth()] + " de " + fecha_actual.getFullYear());
+
+              }
 
           },
         filters:
@@ -236,15 +258,54 @@
                  </div>
              </div>  <!-- Panel Cuentas Pagadas -->
 
-
-
-               </div>
+             <div class="row">
+                 <div class="col-xs-12">
+                   <h1>Hoy &nbsp<small>{{ today }}</small></h1>
+                 </div>
              </div>
 
+             <div class="panel panel-default" v-for="accountPayable in accountsPayablesofDay">
+               <div class="panel-body">
+                 <div class="row">
+                   <div class="col-xs-3">
+                     <span class="badge">CPP</span>
+                     <label>
+                         Concepto
+                     </label>
+                   </div>
+                   <div class="col-xs-3">
+                       <label>
+                           Fecha de pago - {{accountPayable.dueDateFormats.dateNumber }}
+                       </label>
+                   </div>
+                   <div class="col-xs-3">
+                       <label>
+                           Monto -$ {{ accountPayable.amount}}
+                       </label>
+                   </div>
+                   <div class="col-xs-3">
+
+                       <div class="col-xs-8">
+                           <span class="label label-success">Hoy</span>
+                       </div>
+                       <div class="col-xs-4">
+                          <button class="btn btn-default">
+                              <span class="glyphicon glyphicon-new-window">
+                              </span>
+                          </button>
+                       </div>
+                   </div>
+                 </div>
+               </div>
+             </div>
+               </div>
+             </div>
          </div>
-
-
        </div>
+
+       <pre>
+           {{ $data | json}}
+       </pre>
 
       </div> <!-- #contenidos -->
       <!-- Fecha de Termino- Agregar fecha dia de solicitud-->
