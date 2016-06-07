@@ -721,7 +721,7 @@
                     getStocks: function () {
 
                         if (this.selectedOptions.distributor.id == 0) {
-                            showAlert('Selecciona un distribuidor',{type:3})
+                            showAlert('Selecciona un criterio de busqueda',{type:3})
                             return;
                         }
 
