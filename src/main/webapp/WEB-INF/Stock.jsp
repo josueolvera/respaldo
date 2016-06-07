@@ -398,6 +398,11 @@
                             this.fetchStockAssignments(article);
                         }
                     },
+                    cleanArticle: function (article) {
+                        article.propertiesList = null;
+                        article.stockDocumentsList = null;
+                        article.stockEmployeeAssignmentsList = null;
+                    },
                     removeProperty: function (article, property) {
                         this.isSaving = true;
                         this.$http.delete(ROOT_URL + "/stock/properties/" + property.idProperty).success(function () {
@@ -742,6 +747,17 @@
                     },
                     selectedOptionsBranchChanged: function () {
                         this.selectedOptions.area = this.defaultArea;
+                    },
+                    setIsCollapsed: function (article) {
+                        if (article.isCollapsed === true) {
+                            article.isCollapsed = false;
+                            this.cleanArticle(article);
+
+                        } else {
+                            this.buildArticle(article);
+                            Vue.set(article, "isCollapsed", true);
+
+                        }
                     }
                 }
             });
@@ -842,11 +858,11 @@
                     <div class="text-center col-xs-12">
                     </div>
                     <div class="col-xs-12 panel-group">
-                        <div v-for="article in stock | filterBy stockFilter" @build="buildArticle(article)"
+                        <div v-for="article in stock | filterBy stockFilter"
                              class="lazy panel panel-default">
                             <div class="panel-heading">
                                 <div class="row">
-                                    <div class="col-xs-9">
+                                    <div class="col-xs-8">
                                         <div class="col-md-3 col-xs-6">
                                             <p><strong>Artículo</strong></p>
                                             <p>{{ article.article.articleName }}</p>
@@ -869,30 +885,35 @@
                                             </p>
                                         </div>
                                     </div>
-                                    <div class="text-right col-xs-3">
-                                        <button @click="showEditArticleModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Editar artículo">
-                                            <span class="glyphicon glyphicon-pencil"></span>
-                                        </button>
-                                        <button @click="showAttachmentsModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Adjuntar archivos">
-                                            <span class="glyphicon glyphicon-paperclip"></span>
-                                        </button>
-                                        <button @click="showAssignmentsModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Reasignar artículo">
-                                            <span class="glyphicon glyphicon-user"></span>
-                                        </button>
-                                        <button @click="showHistoricalModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Historial de asignaciones archivos">
-                                            <span class="glyphicon glyphicon-book"></span>
-                                        </button>
+                                    <div class="text-right col-xs-4">
+                                        <div class="col-xs-10">
+                                            <button @click="showEditArticleModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Editar artículo">
+                                                <span class="glyphicon glyphicon-pencil"></span>
+                                            </button>
+                                            <button @click="showAttachmentsModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Adjuntar archivos">
+                                                <span class="glyphicon glyphicon-paperclip"></span>
+                                            </button>
+                                            <button @click="showAssignmentsModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Reasignar artículo">
+                                                <span class="glyphicon glyphicon-user"></span>
+                                            </button>
+                                            <button @click="showHistoricalModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Historial de asignaciones archivos">
+                                                <span class="glyphicon glyphicon-book"></span>
+                                            </button>
+                                        </div>
+                                        <div class="col-xs-2">
+                                            <button @click="setIsCollapsed(article)" data-toggle="collapse" href="#collapse{{article.idStock}}"
+                                                    class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Mostrar detalles">
+                                                    <span :class="{ 'glyphicon-menu-down': ! article.isCollapsed, 'glyphicon-menu-up': article.isCollapsed }"
+                                                          class="glyphicon" ></span>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                                 <%-- Panel Interno --%>
-                            <div class="panel-collapse">
+                            <div id="collapse{{article.idStock}}" class="panel-collapse collapse">
                                 <div class="panel-body">
                                         <%-- Atributos --%>
-                                    <div v-if="article.propertiesList == null" class="col-xs-12"
-                                         style="height: 6rem; padding: 2rem 0;">
-                                        <div class="loader">Cargando...</div>
-                                    </div>
                                     <div v-if="article.propertiesList != null" class="col-md-6 col-xs-12">
                                         <h5 class="text-center">Propiedades</h5>
                                         <table class="table table-striped">
