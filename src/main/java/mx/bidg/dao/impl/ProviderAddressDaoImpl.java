@@ -51,4 +51,11 @@ public class ProviderAddressDaoImpl extends AbstractDao<Integer,ProviderAddress>
         Criteria criteria = createEntityCriteria();
         return (List<ProviderAddress>) criteria.add(Restrictions.eq("provider",p)).list();
     }
+
+    @Override
+    public Long countAddress(Providers provider) {
+        return (Long) getSession().createQuery("select count(p) from ProviderAddress p where p.idProvider = :idProvider")
+                .setInteger("idProvider", provider.getIdProvider())
+                .uniqueResult();
+    }
 }

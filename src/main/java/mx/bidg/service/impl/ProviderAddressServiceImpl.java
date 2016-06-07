@@ -4,9 +4,11 @@ import mx.bidg.dao.CAsentamientosDao;
 import mx.bidg.dao.CEstadosDao;
 import mx.bidg.dao.CMunicipiosDao;
 import mx.bidg.dao.ProviderAddressDao;
+import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
 import mx.bidg.service.ProviderAddressService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -69,6 +71,13 @@ public class ProviderAddressServiceImpl implements ProviderAddressService {
 
     @Override
     public Boolean delete(ProviderAddress providerAddress) {
+        if (dao.countAddress(providerAddress.getProvider()) <= 1) {
+            throw new ValidationException(
+                    "No se permite eliminar la ultima direccion",
+                    "No se permiten eliminar todas las direcciones",
+                    HttpStatus.FORBIDDEN
+            );
+        }
         dao.delete(providerAddress);
         return true;
     }
