@@ -344,6 +344,14 @@
                     getProviders: function () {
                         this.$http.get(ROOT_URL + "/providers")
                                 .success(function (data) {
+                                    var jsonObjectIndex = {};
+                                    data.forEach(function (provider) {
+                                        if (isNaN(provider.accountingAccounts)) {
+                                            jsonObjectIndex[provider.accountingAccounts._id] = provider.accountingAccounts;
+                                        } else {
+                                            provider.accountingAccounts = jsonObjectIndex[provider.accountingAccounts];
+                                        }
+                                    });
                                     this.providers = data;
                                 });
                     },
