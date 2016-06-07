@@ -1,10 +1,12 @@
 package mx.bidg.service.impl;
 
 import mx.bidg.dao.ProvidersContactDao;
+import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.ProvidersContact;
 import mx.bidg.model.Providers;
 import mx.bidg.service.ProvidersContactService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +51,13 @@ public class ProvidersContactServiceImpl implements ProvidersContactService {
 
     @Override
     public Boolean delete(ProvidersContact providersContact) {
+        if (dao.countContacts(providersContact.getProvider()) <= 1) {
+            throw new ValidationException(
+                    "No se permite elimanar el ultimo contacto",
+                    "No se permite elimanar el ultimo contacto",
+                    HttpStatus.FORBIDDEN
+            );
+        }
         dao.delete(providersContact);
         return true;
     }

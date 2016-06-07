@@ -5,6 +5,22 @@
 
 
 <t:template pageTitle="BID Group: Proveedores">
+
+    <jsp:attribute name="styles">
+        <style>
+            .table-header {
+                padding: 1rem;
+                margin-top: 2rem;
+            }
+            .table-body .table-row:nth-child(2n+1) {
+                background: #ddd;
+            }
+            .table-row {
+                padding: 1rem;
+            }
+        </style>
+    </jsp:attribute>
+
     <jsp:attribute name="scripts">
         <script type="text/javascript">
             function isNumberKey(evt) {
@@ -505,25 +521,24 @@
                             showAlert("Ingresa un email correcto",{type: 3});
                             return false;
                         }else{
+                            this.savePhone(this.name, this.phoneNumber, this.email, this.post);
                             return true;
                         }
                     },
                     validateContact: function () {
-                        if(this.validateEmail(this.email)){
-                            this.validationContact();
-                        }
+                        this.validationContact()
                     },
                     validationContact: function () {
                         if (this.supplier.providersContactList.length != 0) {
                             if (this.name.length != 0 && this.phoneNumber.length != 0 && this.email.length != 0) {
-                                this.savePhone(this.name, this.phoneNumber, this.email, this.post);
+                                this.validateEmail(this.email);
                                 return true;
                             } else {
                                 return true;
                             }
                         } else {
                             if (this.name.length != 0 && this.phoneNumber.length != 0 && this.email.length != 0) {
-                                this.savePhone(this.name, this.phoneNumber, this.email, this.post);
+                                this.validateEmail(this.email);
                                 return true;
                             } else {
                                 showAlert("Ingresa los campos Requeridos: Nombre, Teléfono, Email", {type: 3});
@@ -726,6 +741,15 @@
                     }
                 },
                 filters: {
+                    numbersPadding: function (value) {
+                        var result = "";
+                        var padding = 4;
+                        if (typeof value != 'undefined') {
+                            result = "0000" + value;
+                            result = result.substr(result.length - padding);
+                        }
+                        return result;
+                    },
                     changeidBank: function (value) {
                         var name;
                         this.banks.forEach(function (element) {
@@ -777,8 +801,8 @@
             <br>
             <div>
                 <div class="row">
-                    <div class="col-xs-8 text-left">
-                        <h1>Proveedores</h1>
+                    <div class="col-xs-8 text-header">
+                        <h2>Proveedores</h2>
                     </div>
 
                     <div class="col-xs-4 text-right" style="padding: 0px">
@@ -799,7 +823,7 @@
 
 
                 <div>
-                    <div class="row">
+                    <div class="row table-header">
                         <div class="col-xs-3">
                             <b> Nombre/Razón social</b>
                         </div>
@@ -822,8 +846,8 @@
                 </div>
             </div>
             <br>
-            <div class="flex-row flex-content">
-                <div class="row" v-for="provider in providers | filterBy search" v-if="provider.supplierLow == null">
+            <div class="table-body flex-row flex-content">
+                <div class="row table-row" v-for="provider in providers | filterBy search in 'rfc'" v-if="provider.supplierLow == null">
                     <div class="col-xs-3">
                         {{provider.providerName | separateProviderName}}
                     </div>
@@ -865,445 +889,344 @@
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-xs-4">
-                                    <label>
-                                        RFC
-                                    </label>
-                                    <input maxlength="13" class="form-control" name="name" v-model="supplier.rfc" @change="numberAndLetter(supplier.rfc)" onkeypress="return isNumberKeyAndLetterKey(event)">
+                                    <label>RFC</label>
+                                    <input maxlength="13" class="form-control" name="name" v-model="supplier.rfc"
+                                           @change="numberAndLetter(supplier.rfc)" onkeypress="return isNumberKeyAndLetterKey(event)">
                                 </div>
                             </div>
                             <br>
                             <div class="row" v-show="supplier.rfc.length==12">
-                                <div class="col-xs-4">
-                                    <label>
-                                        Razón social
-                                    </label>
+                                <div class="col-xs-6">
+                                    <label>Razón social</label>
                                     <input class="form-control" name="name" v-model="supplier.providerName">
-                                </div>
-                            </div>
-                            <div class="row" v-show="supplier.rfc.length==12">
-                                <div class="col-xs-4">
-                                    <label>Distribuidor</label>
-                                    <select class="form-control" name="" v-model="distributor.idDistributor">
-                                        <option></option>
-                                        <option v-for="distributor in distributors" value="{{distributor.idDistributor}}">
-                                            {{distributor.distributorName}}
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="col-xs-2">
-                                    <label>Cuenta contable</label>
-                                    <input maxlength="4" class="form-control" name="name" v-model="supplier.firstLevel">
-                                </div>
-                                <div class="col-xs-2">
-                                    <label> </label>
-                                    <input maxlength="3" class="form-control" name="name" v-model="supplier.secondLevel">
-                                </div>
-                                <div class="col-xs-2">
-                                    <label> </label>
-                                    <input maxlength="3" class="form-control" name="name" v-model="supplier.thirdLevel">
                                 </div>
                             </div>
                             <div class="row" v-show="supplier.rfc.length==13">
                                 <div class="col-xs-3">
-                                    <label>
-                                        Nombre
-                                    </label>
+                                    <label>Nombre</label>
                                     <input class="form-control" name="name" v-model="providerNames"
                                            onkeypress="return isLetterKey(event)">
                                 </div>
                                 <div class="col-xs-3">
-                                    <label>
-                                        Apellido paterno
-                                    </label>
+                                    <label>Apellido paterno</label>
                                     <input class="form-control" name="name" v-model="providerLastName"
                                            onkeypress="return isLetterKey(event)">
                                 </div>
                                 <div class="col-xs-3">
-                                    <label>
-                                        Apellido materno
-                                    </label>
+                                    <label>Apellido materno</label>
                                     <input class="form-control" name="name" v-model="providerSecondName"
                                            onkeypress="return isLetterKey(event)">
                                 </div>
                             </div>
-                            <div class="row" v-show="supplier.rfc.length==13">
-                                <div class="col-xs-4">
-                                    <label>Distribuidor</label>
-                                    <select class="form-control" name="" v-model="distributor.idDistributor">
-                                        <option></option>
-                                        <option v-for="distributor in distributors" value="{{distributor.idDistributor}}">
-                                            {{distributor.distributorName}}
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="col-xs-2">
-                                    <label>Cuenta contable</label>
-                                    <input maxlength="4" class="form-control" name="name" v-model="supplier.firstLevel">
-                                </div>
-                                <div class="col-xs-2">
-                                    <label> </label>
-                                    <input maxlength="3" class="form-control" name="name" v-model="supplier.secondLevel">
-                                </div>
-                                <div class="col-xs-2">
-                                    <label> </label>
-                                    <input maxlength="3" class="form-control" name="name" v-model="supplier.thirdLevel">
-                                </div>
-                            </div>
                             <br>
-                            <div class="row" v-show="supplier.rfc.length==12||supplier.rfc.length==13">
-                                <div class="col-xs-4">
-                                    <label>
-                                        Proveedor de
-                                    </label>
+                            <div v-show="supplier.rfc.length >= 12">
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <label>Cuenta contable</label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row" v-show="supplier.rfc.length==12||supplier.rfc.length==13">
-                                <div class="col-xs-12">
-                                    <hr>
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <label>Distribuidor</label>
+                                        <select class="form-control" name="" v-model="distributor.idDistributor">
+                                            <option></option>
+                                            <option v-for="distributor in distributors"
+                                                    value="{{distributor.idDistributor}}">
+                                                {{distributor.distributorName}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Primer nivel</label>
+                                        <input maxlength="4" class="form-control text-center" name="name"
+                                               v-model="supplier.firstLevel">
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Segundo nivel</label>
+                                        <input maxlength="3" class="form-control text-center" name="name"
+                                               v-model="supplier.secondLevel">
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Tercer nivel</label>
+                                        <input maxlength="3" class="form-control text-center" name="name"
+                                               v-model="supplier.thirdLevel">
+                                    </div>
                                 </div>
-                            </div>
-                            <br>
-                            <div class="row" v-show="supplier.rfc.length==12||supplier.rfc.length==13">
-                                <div class="col-xs-3">
-                                    <label>
-                                        Rubro
-                                    </label>
-                                    <select class="form-control" name="" v-model="requestInformation.idRequestType" @change="obtainRequestTypeProduct">
-                                        <option></option>
-                                        <option v-for="RequestType in RequestTypes" value="{{RequestType.idRequestType}}">
-                                            {{RequestType.requestType}}
-                                        </option>
-                                    </select>
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <label>Proveedor de</label>
+                                    </div>
                                 </div>
-                                <div class="col-xs-3">
-                                    <label>
-                                        Producto
-                                    </label>
-                                    <select class="form-control" name="" v-model="requestInformation.idProductType">
-                                        <option></option>
-                                        <option v-for="ProductType in ProductTypes" value="{{ProductType.productType.idProductType}}">
-                                            {{ProductType.productType.productType}}
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="col-xs-1">
-                                    <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip"
-                                            data-placement="bottom" title="Agregar" style="margin-top: 25px"
-                                            @click="validationProduct()">
-                                        <span class="glyphicon glyphicon-plus"></span>
-                                    </button>
-                                </div>
-                            </div>
-                            <br>
-                            <table class="table table-striped" v-show="supplier.providersProductsTypes.length> 0">
-                                <thead>
-                                <th class="col-xs-10">
-                                    Producto
-                                </th>
-                                <th class="col-xs-1">
-                                    Eliminar
-                                </th>
-                                </thead>
-                                <tbody>
-                                <tr v-for="product in supplier.providersProductsTypes">
-                                    <td class="col-xs-10">
-                                        {{product.idProductType | changeidProduct}}
-                                    </td>
-                                    <td class="col-xs-1">
-                                        <button class="btn btn-danger" @click="deleteProduct(product)" :disabled="isUpdate"
-                                                data-toggle="tooltip" data-placement="top" title="Quitar Producto">
-                                            <span class="glyphicon glyphicon-trash"></span>
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <label>Rubro</label>
+                                        <select class="form-control" name="" v-model="requestInformation.idRequestType"
+                                                @change="obtainRequestTypeProduct">
+                                            <option></option>
+                                            <option v-for="RequestType in RequestTypes"
+                                                    value="{{RequestType.idRequestType}}">
+                                                {{RequestType.requestType}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Producto</label>
+                                        <select class="form-control" name="" v-model="requestInformation.idProductType">
+                                            <option></option>
+                                            <option v-for="ProductType in ProductTypes"
+                                                    value="{{ProductType.productType.idProductType}}">
+                                                {{ProductType.productType.productType}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip"
+                                                data-placement="bottom" title="Agregar" style="margin-top: 25px"
+                                                @click="validationProduct()">
+                                            <span class="glyphicon glyphicon-plus"></span>
                                         </button>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <br>
-                            <div class="row" v-show="supplier.rfc.length==12||supplier.rfc.length==13">
-                                <div class="col-xs-4">
-                                    <label>
-                                        Dirección
-                                    </label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row" v-show="supplier.rfc.length==12||supplier.rfc.length==13">
-                                <div class="col-xs-12">
-                                    <hr>
+                                <br>
+                                <table class="table table-striped" v-show="supplier.providersProductsTypes.length> 0">
+                                    <thead>
+                                    <th class="col-xs-10">Producto</th>
+                                    <th class="col-xs-1">Eliminar</th>
+                                    </thead>
+                                    <tbody>
+                                    <tr v-for="product in supplier.providersProductsTypes">
+                                        <td class="col-xs-10">{{product.idProductType | changeidProduct}}</td>
+                                        <td class="col-xs-1">
+                                            <button class="btn btn-danger" @click="deleteProduct(product)"
+                                                    :disabled="isUpdate"
+                                                    data-toggle="tooltip" data-placement="top" title="Quitar Producto">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <label>Dirección</label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row" v-show="supplier.rfc.length==12||supplier.rfc.length==13">
-                                <div class="col-xs-3">
-                                    <label>
-                                        Calle
-                                    </label>
-                                    <input class="form-control" name="name" v-model="direccion.street">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <hr>
+                                    </div>
                                 </div>
-                                <div class="col-xs-3">
-                                    <label>
-                                        Número Exterior
-                                    </label>
-                                    <input class="form-control" name="name" maxlength="5" v-model="direccion.numExt">
-                                </div>
-                                <div class="col-xs-3">
-                                    <label>
-                                        Número Interior
-                                    </label>
-                                    <input class="form-control" name="name" maxlength="5" v-model="direccion.numInt">
-                                </div>
-                                <div class="col-xs-3">
-                                    <label>
-                                        Código postal
-                                    </label>
-                                    <input class="form-control" name="name" maxlength="5" v-model="direccion.cp" @input="obtainAsentamientos"
-                                           onkeypress="return isNumberKey(event)">
-                                </div>
-                            </div>
-                            <br>
-                            <div class="row" v-show="supplier.rfc.length==12||supplier.rfc.length==13">
-                                <div class="col-xs-3">
-                                    <label>
-                                        Estado
-                                    </label>
-                                    <input class="form-control" name="name" v-model="estadosMunicipios.estado.nombreEstado" value="" disabled="true">
-                                </div>
-                                <div class="col-xs-3">
-                                    <label>
-                                        Municipio/Delegación
-                                    </label>
-                                    <input class="form-control" name="name" v-model="estadosMunicipios.nombreMunicipios" value="" disabled="true">
-                                </div>
-                                <div class="col-xs-3">
-                                    <label>
-                                        Colonia
-                                    </label>
-                                    <select class="form-control" name="" v-model="direccion.idAsentamiento">
-                                        <option></option>
-                                        <option v-for="set in asentamiento" value="{{set.idAsentamiento}}">
-                                            {{set.nombreAsentamiento}}
-                                        </option>
-                                    </select>
-                                </div>
-                                <!--       <div class="col-xs-2 text-left">
-                                         <button class="btn btn-default" @click="saveAdrress()" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Agregar">
-                                           <span class="glyphicon glyphicon-plus"></span>
-                                         </button>
-                                       </div> -->
-                            </div>
-                            <br>
-                            <label v-show="supplier.rfc.length==12||supplier.rfc.length==13">Información de
-                                Contacto</label>
-                            <div class="row" v-if="supplier.rfc.length==12||supplier.rfc.length==13">
-                                <div class="col-xs-12">
-                                    <hr>
-                                </div>
-                            </div>
-                            <div class="row" v-show="supplier.rfc.length==12||supplier.rfc.length==13">
-                                <div class="col-xs-3">
-                                    <label>
-                                        Nombre
-                                    </label>
-                                    <input class="form-control" name="name" v-model="name"
-                                           onkeypress="return isLetterKey(event)">
-                                </div>
-                                <div class="col-xs-2">
-                                    <label>
-                                        Puesto
-                                    </label>
-                                    <input class="form-control" name="name" v-model="post"
-                                           onkeypress="return isLetterKey(event)">
-                                </div>
-                                <div class="col-xs-3">
-                                    <label>
-                                        Teléfono (10 dígitos)
-                                    </label>
-                                    <input maxlength="10" class="form-control" name="name" v-model="phoneNumber"
-                                           onkeypress="return isNumberKey(event)">
-                                </div>
-                                <div class="col-xs-3">
-                                    <label>
-                                        Correo
-                                    </label>
-                                    <input class="form-control" name="name" v-model="email" @change="validateEmail(email)">
-                                </div>
-                                <div class="col-xs-1">
-                                    <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip"
-                                            data-placement="bottom" title="Agregar" style="margin-top: 25px"
-                                            @click="validateContact()">
-                                        <span class="glyphicon glyphicon-plus"></span>
-                                    </button>
-                                </div>
-                            </div>
-                            <br>
-                            <table class="table table-striped" v-show="supplier.providersContactList.length> 0">
-                                <thead>
-                                <th class="col-xs-2">
-                                    Nombre
-                                </th>
-                                <th class="col-xs-2">
-                                    Puesto
-                                </th>
-                                <th class="col-xs-3">
-                                    Teléfono (10 dígitos)
-                                </th>
-                                <th class="col-xs-4">
-                                    Correo
-                                </th>
-                                <th class="col-xs-1">
-                                    Eliminar
-                                </th>
-                                </thead>
-                                <tbody>
-                                <tr v-for="phone in supplier.providersContactList">
-                                    <td class="col-xs-3">
-                                        {{phone.name}}
-                                    </td>
-                                    <td class="col-xs-2">
-                                        {{phone.post}}
-                                    </td>
-                                    <td class="col-xs-3">
-                                        {{phone.phoneNumber}}
-                                    </td>
-                                    <td class="col-xs-3">
-                                        {{phone.email}}
-                                    </td>
-                                    <td class="col-xs-1">
-                                        <button class="btn btn-danger" @click="deletePhone(phone)" :disabled="isUpdate"
-                                                data-toggle="tooltip" data-placement="top" title="Quitar Numero">
-                                            <span class="glyphicon glyphicon-trash"></span>
-                                        </button>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <br>
-                            <label v-show="supplier.rfc.length==12||supplier.rfc.length==13">Cuentas Bancarias</label>
-                            <div class="row" v-show="supplier.rfc.length==12||supplier.rfc.length==13">
-                                <div class="col-xs-12">
-                                    <hr>
-                                </div>
-                            </div>
-                            <div class="row" v-show="supplier.rfc.length==12||supplier.rfc.length==13">
-                                <div class="col-xs-3">
-                                    <label>
-                                        Banco
-                                    </label>
-                                    <select class="form-control" name="" v-model="idBanks">
-                                        <option></option>
-                                        <option v-for="bank in banks" value="{{bank.idBank}}">{{bank.acronyms}}</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-xs-3">
-                                    <label>
-                                        Número de Cuenta
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-addon">#</span>
-                                        <input id="saccount" class="form-control" maxlength="12" v-model="accountNumbers" @change="validateCuenta(accountNumbers,clabes)"
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <label>Calle</label>
+                                        <input class="form-control" name="name" v-model="direccion.street">
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Número Exterior</label>
+                                        <input class="form-control" name="name" maxlength="5"
+                                               v-model="direccion.numExt">
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Número Interior</label>
+                                        <input class="form-control" name="name" maxlength="5"
+                                               v-model="direccion.numInt">
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Código postal</label>
+                                        <input class="form-control" name="name" maxlength="5" v-model="direccion.cp"
+                                               @input="obtainAsentamientos"
                                                onkeypress="return isNumberKey(event)">
                                     </div>
                                 </div>
-
-                                <div class="col-xs-3">
-                                    <label>
-                                        CLABE
-                                    </label>
-                                    <div class="input-group">
-                                        <span class="input-group-addon">#</span>
-                                        <input type="text" id="sclabe" class="form-control" maxlength="18" v-model="clabes" @change="validateClabe(accountNumbers,clabes)"
-                                               onkeypress="return isNumberKey(event)">
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <label>Estado</label>
+                                        <input class="form-control" name="name"
+                                               v-model="estadosMunicipios.estado.nombreEstado" value="" disabled="true">
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Municipio/Delegación</label>
+                                        <input class="form-control" name="name"
+                                               v-model="estadosMunicipios.nombreMunicipios" value="" disabled="true">
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Colonia</label>
+                                        <select class="form-control" name="" v-model="direccion.idAsentamiento">
+                                            <option></option>
+                                            <option v-for="set in asentamiento" value="{{set.idAsentamiento}}">
+                                                {{set.nombreAsentamiento}}
+                                            </option>
+                                        </select>
                                     </div>
                                 </div>
-                                <div class="col-xs-2">
-                                    <label>
-                                        Moneda
-                                    </label>
-                                    <select class="form-control" name="" v-model="idCurrency">
-                                        <option></option>
-                                        <option v-for="curre in currencies" value="{{curre.idCurrency}}">
-                                            {{curre.currency}}
-                                        </option>
-                                    </select>
+                                <br>
+                                <label>Información de Contacto</label>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <hr>
+                                    </div>
                                 </div>
-                                <div class="col-xs-1">
-                                    <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip"
-                                            data-placement="bottom" title="Agregar" style="margin-top: 25px"
-                                            @click="validationAccount">
-                                        <span class="glyphicon glyphicon-plus"></span>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <table class="table table-striped" v-show="supplier.providersAccountsList.length> 0">
-                                <thead>
-                                <th class="col-xs-2">
-                                    Banco
-                                </th>
-                                <th class="col-xs-3">
-                                    Número de cuenta
-                                </th>
-                                <th class="col-xs-4">
-                                    CLABE
-                                </th>
-                                <th class="col-xs-2">
-                                    Moneda
-                                </th>
-                                <th class="col-xs-1">
-                                    Eliminar
-                                </th>
-                                </thead>
-                                <tbody>
-                                <tr v-for="supplier in supplier.providersAccountsList">
-                                    <td class="col-xs-2">
-                                        {{supplier.idBank | changeidBank }}
-                                    </td>
-                                    <td class="col-xs-3">
-                                        {{supplier.accountNumber }}
-                                    </td>
-                                    <td class="col-xs-4">
-                                        {{supplier.accountClabe}}
-                                    </td>
-                                    <td class="col-xs-2">
-                                        {{supplier.idCurrency | changeidCurrency}}
-                                    </td>
-                                    <td class="col-xs-1">
-                                        <button type="button" class="btn btn-danger" data-toggle="tooltip"
-                                                data-placement="bottom" title="Eliminar"
-                                                @click="eliminarCuenta(supplier)">
-                                            <span class="glyphicon glyphicon-trash"></span>
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <label>Nombre</label>
+                                        <input class="form-control" name="name" v-model="name"
+                                               onkeypress="return isLetterKey(event)">
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Puesto</label>
+                                        <input class="form-control" name="name" v-model="post"
+                                               onkeypress="return isLetterKey(event)">
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Teléfono (10 dígitos)</label>
+                                        <input maxlength="10" class="form-control" name="name" v-model="phoneNumber"
+                                               onkeypress="return isNumberKey(event)">
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Correo</label>
+                                        <input class="form-control" name="name" v-model="email"
+                                               @change="validateEmail(email)">
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip"
+                                                data-placement="bottom" title="Agregar" style="margin-top: 25px"
+                                                @click="validateContact()">
+                                            <span class="glyphicon glyphicon-plus"></span>
                                         </button>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <br>
-                            <div class="row" v-show="supplier.rfc.length==12||supplier.rfc.length==13">
-                                <div class="col-xs-4">
-                                    <label>
-                                        Crédito
-                                    </label>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row" v-show="supplier.rfc.length==12||supplier.rfc.length==13">
-                                <div class="col-xs-12">
-                                    <hr>
+                                <br>
+                                <table class="table table-striped" v-show="supplier.providersContactList.length> 0">
+                                    <thead>
+                                    <th class="col-xs-2">Nombre</th>
+                                    <th class="col-xs-2">Puesto</th>
+                                    <th class="col-xs-3">Teléfono (10 dígitos)</th>
+                                    <th class="col-xs-4">Correo</th>
+                                    <th class="col-xs-1">Eliminar</th>
+                                    </thead>
+                                    <tbody>
+                                    <tr v-for="phone in supplier.providersContactList">
+                                        <td class="col-xs-3">{{phone.name}}</td>
+                                        <td class="col-xs-2">{{phone.post}}</td>
+                                        <td class="col-xs-3">{{phone.phoneNumber}}</td>
+                                        <td class="col-xs-3">{{phone.email}}</td>
+                                        <td class="col-xs-1">
+                                            <button class="btn btn-danger" @click="deletePhone(phone)"
+                                                    :disabled="isUpdate"
+                                                    data-toggle="tooltip" data-placement="top" title="Quitar Contacto">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <br>
+                                <label>Cuentas Bancarias</label>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <hr>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="row" v-show="supplier.rfc.length==12||supplier.rfc.length==13">
-                                <div class="col-xs-3">
-                                    <label>
-                                        Días de crédito
-                                    </label>
-                                    <input class="form-control" name="name" v-model="supplier.creditDays"
-                                           onkeypress="return isNumberKey(event)">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <label>Banco</label>
+                                        <select class="form-control" name="" v-model="idBanks">
+                                            <option></option>
+                                            <option v-for="bank in banks" value="{{bank.idBank}}">{{bank.acronyms}}
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-xs-3">
+                                        <label>Número de Cuenta</label>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">#</span>
+                                            <input id="saccount" class="form-control" maxlength="12"
+                                                   v-model="accountNumbers"
+                                                   @change="validateCuenta(accountNumbers,clabes)"
+                                                   onkeypress="return isNumberKey(event)">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-3">
+                                        <label>CLABE</label>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">#</span>
+                                            <input type="text" id="sclabe" class="form-control" maxlength="18"
+                                                   v-model="clabes" @change="validateClabe(accountNumbers,clabes)"
+                                                   onkeypress="return isNumberKey(event)">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Moneda</label>
+                                        <select class="form-control" name="" v-model="idCurrency">
+                                            <option></option>
+                                            <option v-for="curre in currencies" value="{{curre.idCurrency}}">
+                                                {{curre.currency}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-1">
+                                        <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip"
+                                                data-placement="bottom" title="Agregar" style="margin-top: 25px"
+                                                @click="validationAccount">
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="col-xs-3">
-                                    <label>
-                                        Fecha de corte
-                                    </label>
-                                    <select class="form-control" name="" v-model="supplier.cuttingDate">
-                                        <option></option>
-                                        <option v-for="i in 31" value="{{i+1}}">{{i+1}}</option>
-                                    </select>
+
+                                <table class="table table-striped" v-show="supplier.providersAccountsList.length> 0">
+                                    <thead>
+                                    <th class="col-xs-2">Banco</th>
+                                    <th class="col-xs-3">Número de cuenta</th>
+                                    <th class="col-xs-4">CLABE</th>
+                                    <th class="col-xs-2">Moneda</th>
+                                    <th class="col-xs-1">Eliminar</th>
+                                    </thead>
+                                    <tbody>
+                                    <tr v-for="supplier in supplier.providersAccountsList">
+                                        <td class="col-xs-2">{{supplier.idBank | changeidBank }}</td>
+                                        <td class="col-xs-3">{{supplier.accountNumber }}</td>
+                                        <td class="col-xs-4">{{supplier.accountClabe}}</td>
+                                        <td class="col-xs-2">{{supplier.idCurrency | changeidCurrency}}</td>
+                                        <td class="col-xs-1">
+                                            <button type="button" class="btn btn-danger" data-toggle="tooltip"
+                                                    data-placement="bottom" title="Eliminar"
+                                                    @click="eliminarCuenta(supplier)">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <label>Crédito</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <hr>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <label>Días de crédito</label>
+                                        <input class="form-control" name="name" v-model="supplier.creditDays"
+                                               onkeypress="return isNumberKey(event)">
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Fecha de corte</label>
+                                        <select class="form-control" name="" v-model="supplier.cuttingDate">
+                                            <option></option>
+                                            <option v-for="i in 31" value="{{i+1}}">{{i+1}}</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1325,108 +1248,84 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">
-                                Modificar proveedor
-                            </h4>
+                            <h4 class="modal-title">Modificar proveedor</h4>
                         </div>
                         <div class="modal-body">
-
                             <div class="row">
                                 <div class="col-xs-4">
-                                    <label>
-                                        RFC
-                                    </label>
+                                    <label>RFC</label>
                                     <input maxlength="13" class="form-control" name="name" v-model="provider.rfc"
                                            disabled="true">
                                 </div>
                             </div>
                             <div class="row" v-show="provider.rfc.length==12">
                                 <div class="col-xs-4">
-                                    <label>
-                                        Razón social
-                                    </label>
+                                    <label>Razón social</label>
                                     <input class="form-control" name="name" v-model="provider.providerName"
                                            disabled="true">
                                 </div>
                             </div>
-                            <div class="row" v-show="provider.rfc.length==12">
-                                <div class="col-xs-4">
-                                    <label>Distribuidor</label>
-                                    <input maxlength="4" class="form-control" name="name" v-model="provider.accountingAccounts.distributor.distributorName" disabled="true">
-                                </div>
-                                <div class="col-xs-2">
-                                    <label>Cuenta contable</label>
-                                    <input maxlength="4" class="form-control" name="name" v-model="provider.accountingAccounts.firstLevel" disabled="true">
-                                </div>
-                                <div class="col-xs-2">
-                                    <label> </label>
-                                    <input maxlength="3" class="form-control" name="name" v-model="provider.accountingAccounts.secondLevel" disabled="true">
-                                </div>
-                                <div class="col-xs-2">
-                                    <label> </label>
-                                    <input maxlength="3" class="form-control" name="name" v-model="provider.accountingAccounts.thirdLevel" disabled="true">
-                                </div>
-                            </div>
                             <div class="row" v-show="provider.rfc.length==13">
                                 <div class="col-xs-3">
-                                    <label>
-                                        Nombre
-                                    </label>
+                                    <label>Nombre</label>
                                     <input class="form-control" name="name" v-model="supplierNames"
                                            onkeypress="return isLetterKey(event)" disabled="true">
                                 </div>
                                 <div class="col-xs-3">
-                                    <label>
-                                        Apellido paterno
-                                    </label>
+                                    <label>Apellido paterno</label>
                                     <input class="form-control" name="name" v-model="supplierLastName"
                                            onkeypress="return isLetterKey(event)" disabled="true">
                                 </div>
                                 <div class="col-xs-3">
-                                    <label>
-                                        Apellido materno
-                                    </label>
+                                    <label>Apellido materno</label>
                                     <input class="form-control" name="name" v-model="supplierSecondName"
                                            onkeypress="return isLetterKey(event)" disabled="true">
                                 </div>
                             </div>
-                            <div class="row" v-show="provider.rfc.length==13">
+                            <br>
+                            <div class="row">
                                 <div class="col-xs-4">
-                                    <label>Distribuidor</label>
-                                    <input maxlength="4" class="form-control" name="name" v-model="provider.accountingAccounts.distributor.distributorName" disabled="true">
-                                </div>
-                                <div class="col-xs-2">
                                     <label>Cuenta contable</label>
-                                    <input maxlength="4" class="form-control" name="name" v-model="provider.accountingAccounts.firstLevel" disabled="true">
-                                </div>
-                                <div class="col-xs-2">
-                                    <label> </label>
-                                    <input maxlength="3" class="form-control" name="name" v-model="provider.accountingAccounts.secondLevel" disabled="true">
-                                </div>
-                                <div class="col-xs-2">
-                                    <label> </label>
-                                    <input maxlength="3" class="form-control" name="name" v-model="provider.accountingAccounts.thirdLevel" disabled="true">
                                 </div>
                             </div>
                             <br>
-                            <div class="row" v-show="provider.rfc.length==12||provider.rfc.length==13">
+                            <div class="row">
                                 <div class="col-xs-4">
-                                    <label>
-                                        Proveedor de
-                                    </label>
+                                    <label>Distribuidor</label>
+                                    <input v-model="provider.accountingAccounts.distributor.distributorName" maxlength="4"
+                                           class="form-control" name="name" disabled="true">
+                                </div>
+                                <div class="col-xs-2">
+                                    <label>Primer nivel</label>
+                                    <input v-model="provider.accountingAccounts.firstLevel" maxlength="4"
+                                           class="form-control text-center" name="name" disabled="true">
+                                </div>
+                                <div class="col-xs-2">
+                                    <label>Segundo nivel</label>
+                                    <input v-model="provider.accountingAccounts.secondLevel | numbersPadding"
+                                           maxlength="3" class="form-control text-center" name="name" disabled="true">
+                                </div>
+                                <div class="col-xs-2">
+                                    <label>Tercer nivel</label>
+                                    <input v-model="provider.accountingAccounts.thirdLevel | numbersPadding" maxlength="3"
+                                           class="form-control text-center" name="name" disabled="true">
                                 </div>
                             </div>
-                            <div class="row" v-show="provider.rfc.length==12||provider.rfc.length==13">
+                            <br>
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <label>Proveedor de</label>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-xs-12">
                                     <hr>
                                 </div>
                             </div>
                             <br>
-                            <div class="row" v-show="provider.rfc.length==12||provider.rfc.length==13">
+                            <div class="row">
                                 <div class="col-xs-3">
-                                    <label>
-                                        Rubro
-                                    </label>
+                                    <label>Rubro</label>
                                     <select class="form-control" name="" v-model="requestInformation.idRequestType" @change="obtainRequestTypeProduct">
                                         <option></option>
                                         <option v-for="RequestType in RequestTypes" value="{{RequestType.idRequestType}}">
@@ -1435,9 +1334,7 @@
                                     </select>
                                 </div>
                                 <div class="col-xs-3">
-                                    <label>
-                                        Producto
-                                    </label>
+                                    <label>Producto</label>
                                     <select class="form-control" name="" v-model="requestInformation.idProductType">
                                         <option></option>
                                         <option v-for="ProductType in ProductTypes" value="{{ProductType.productType.idProductType}}">
@@ -1456,77 +1353,57 @@
                             <br>
                             <table class="table table-striped" v-show="provider.providersProductsTypes.length> 0">
                                 <thead>
-                                <th class="col-xs-10">
-                                    Producto
-                                </th>
-                                <th class="col-xs-1">
-                                    Eliminar
-                                </th>
+                                    <th class="col-xs-10">Producto</th>
+                                    <th class="col-xs-1">Eliminar</th>
                                 </thead>
                                 <tbody>
-                                <tr v-for="product in provider.providersProductsTypes">
-                                    <td class="col-xs-10">
-                                        {{product.idProductType | changeidProduct}}
-                                    </td>
-                                    <td class="col-xs-1">
-                                        <button class="btn btn-danger" @click="removeProviderProduct(product)" :disabled="isUpdate"
-                                                data-toggle="tooltip" data-placement="top" title="Quitar Producto">
-                                            <span class="glyphicon glyphicon-trash"></span>
-                                        </button>
-                                    </td>
-                                </tr>
+                                    <tr v-for="product in provider.providersProductsTypes">
+                                        <td class="col-xs-10">
+                                            {{product.idProductType | changeidProduct}}
+                                        </td>
+                                        <td class="col-xs-1">
+                                            <button class="btn btn-danger" @click="removeProviderProduct(product)" :disabled="isUpdate"
+                                                    data-toggle="tooltip" data-placement="top" title="Quitar Producto">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                             <br>
-                            <div class="row" v-show="provider.rfc.length==12||provider.rfc.length==13">
+                            <div class="row">
                                 <div class="col-xs-4">
-                                    <label>
-                                        Dirección
-                                    </label>
+                                    <label>Dirección</label>
                                 </div>
                             </div>
-                            <div class="row" v-show="provider.rfc.length==12||provider.rfc.length==13">
+                            <div class="row">
                                 <div class="col-xs-3">
-                                    <label>
-                                        Calle
-                                    </label>
+                                    <label>Calle</label>
                                     <input class="form-control" name="name" v-model="direccion.street">
                                 </div>
                                 <div class="col-xs-3">
-                                    <label>
-                                        Número  Exterior
-                                    </label>
+                                    <label>Número  Exterior</label>
                                     <input class="form-control" name="name" maxlength="5" v-model="direccion.numExt">
                                 </div>
                                 <div class="col-xs-3">
-                                    <label>
-                                        Número Interior
-                                    </label>
+                                    <label>Número Interior</label>
                                     <input class="form-control" name="name" maxlength="5" v-model="direccion.numInt">
                                 </div>
                                 <div class="col-xs-3">
-                                    <label>
-                                        Código postal
-                                    </label>
+                                    <label>Código postal</label>
                                     <input class="form-control" name="name" maxlength="5" v-model="direccion.cp" @input="obtainAsentamientos"
                                            onkeypress="return isNumberKey(event)">
                                 </div>
                                 <div class="col-xs-3">
-                                    <label>
-                                        Estado
-                                    </label>
+                                    <label>Estado</label>
                                     <input class="form-control" name="name" v-model="estadosMunicipios.estado.nombreEstado" value="" disabled="true">
                                 </div>
                                 <div class="col-xs-3">
-                                    <label>
-                                        Municipio/Delegación
-                                    </label>
+                                    <label>Municipio/Delegación</label>
                                     <input class="form-control" name="name" v-model="estadosMunicipios.nombreMunicipios" value="" disabled="true">
                                 </div>
                                 <div class="col-xs-3">
-                                    <label>
-                                        Colonia
-                                    </label>
+                                    <label>Colonia</label>
                                     <select class="form-control" name="" v-model="direccion.idAsentamiento">
                                         <option></option>
                                         <option v-for="set in asentamiento" value="{{set.idAsentamiento}}">
@@ -1545,56 +1422,27 @@
                             <br>
                             <table class="table table-striped" v-show="provider.providerAddressList.length> 0">
                                 <thead>
-                                <th class="col-xs-2">
-                                    Calle
-                                </th>
-                                <th class="col-xs-1">
-                                    Número Exterior
-                                </th>
-                                <th class="col-xs-1">
-                                    Número Interior
-                                </th>
-                                <th class="col-xs-1">
-                                    Código postal
-                                </th>
-                                <th class="col-xs-2">
-                                    Estado
-                                </th>
-                                <th class="col-xs-2">
-                                    Municipio/Delegación
-                                </th>
-                                <th class="col-xs-2">
-                                    Colonia
-                                </th>
-                                <th class="col-xs-1">
-                                    Eliminar
-                                </th>
+                                    <th class="col-xs-2">Calle</th>
+                                    <th class="col-xs-1">Número Exterior</th>
+                                    <th class="col-xs-1">Número Interior</th>
+                                    <th class="col-xs-1">Código postal</th>
+                                    <th class="col-xs-2">Estado</th>
+                                    <th class="col-xs-2">Municipio/Delegación</th>
+                                    <th class="col-xs-2">Colonia</th>
+                                    <th class="col-xs-1">Eliminar</th>
                                 </thead>
                                 <tbody>
                                 <tr v-for="address in provider.providerAddressList">
-                                    <td class="col-xs-2">
-                                        {{address.street}}
-                                    </td>
-                                    <td class="col-xs-2">
-                                        {{address.numExt}}
-                                    </td>
+                                    <td class="col-xs-2">{{address.street}}</td>
+                                    <td class="col-xs-2">{{address.numExt}}</td>
+                                    <td class="col-xs-1">{{address.numInt}}</td>
+                                    <td class="col-xs-1">{{address.asentamiento.codigoPostal}}</td>
+                                    <td class="col-xs-1">{{address.asentamiento.municipios.estados.nombreEstado}}</td>
+                                    <td class="col-xs-2">{{address.asentamiento.municipios.nombreMunicipios}}</td>
+                                    <td class="col-xs-2">{{address.asentamiento.nombreAsentamiento}}</td>
                                     <td class="col-xs-1">
-                                        {{address.numInt}}
-                                    </td>
-                                    <td class="col-xs-1">
-                                        {{address.asentamiento.codigoPostal}}
-                                    </td>
-                                    <td class="col-xs-1">
-                                        {{address.asentamiento.municipios.estados.nombreEstado}}
-                                    </td>
-                                    <td class="col-xs-2">
-                                        {{address.asentamiento.municipios.nombreMunicipios}}
-                                    </td>
-                                    <td class="col-xs-2">
-                                        {{address.asentamiento.nombreAsentamiento}}
-                                    </td>
-                                    <td class="col-xs-1">
-                                        <button class="btn btn-danger" @click="removeAddress(address)"
+                                        <button v-if="provider.providerAddressList.length > 1"
+                                                class="btn btn-danger" @click="removeAddress(address)"
                                                 :disabled="isUpdate" data-toggle="tooltip" data-placement="top"
                                                 title="Quitar Dirección">
                                             <span class="glyphicon glyphicon-trash"></span>
@@ -1604,39 +1452,30 @@
                                 </tbody>
                             </table>
                             <br>
-                            <label v-show="provider.rfc.length==12||provider.rfc.length==13">Información de
-                                Contacto</label>
-                            <div class="row" v-show="provider.rfc.length==12||provider.rfc.length==13">
+                            <label>Información de Contacto</label>
+                            <div class="row">
                                 <div class="col-xs-12">
                                     <hr>
                                 </div>
                             </div>
-                            <div class="row" v-show="provider.rfc.length==12||provider.rfc.length==13">
+                            <div class="row">
                                 <div class="col-xs-3">
-                                    <label>
-                                        Nombre
-                                    </label>
+                                    <label>Nombre</label>
                                     <input class="form-control" name="name" v-model="telephone.name"
                                            onkeypress="return isLetterKey(event)">
                                 </div>
                                 <div class="col-xs-2">
-                                    <label>
-                                        Puesto
-                                    </label>
+                                    <label>Puesto</label>
                                     <input class="form-control" name="name" v-model="telephone.post"
                                            onkeypress="return isLetterKey(event)">
                                 </div>
                                 <div class="col-xs-3">
-                                    <label>
-                                        Teléfono (10 dígitos)
-                                    </label>
+                                    <label>Teléfono (10 dígitos)</label>
                                     <input maxlength="10" class="form-control" name="name"
                                            v-model="telephone.phoneNumber" onkeypress="return isNumberKey(event)">
                                 </div>
                                 <div class="col-xs-3">
-                                    <label>
-                                        Correo
-                                    </label>
+                                    <label>Correo</label>
                                     <input class="form-control" name="name" v-model="telephone.email" @change="validateEmail(telephone.email)">
                                 </div>
                                 <div class="col-xs-1">
@@ -1650,38 +1489,21 @@
                             <br>
                             <table class="table table-striped" v-show="provider.providersContactList.length> 0">
                                 <thead>
-                                <th class="col-xs-2">
-                                    Nombre
-                                </th>
-                                <th class="col-xs-2">
-                                    Puesto
-                                </th>
-                                <th class="col-xs-3">
-                                    Teléfono (10 dígitos)
-                                </th>
-                                <th class="col-xs-4">
-                                    Correo
-                                </th>
-                                <th class="col-xs-1">
-                                    Eliminar
-                                </th>
+                                    <th class="col-xs-2">Nombre</th>
+                                    <th class="col-xs-2">Puesto</th>
+                                    <th class="col-xs-3">Teléfono (10 dígitos)</th>
+                                    <th class="col-xs-4">Correo</th>
+                                    <th class="col-xs-1">Eliminar</th>
                                 </thead>
                                 <tbody>
                                 <tr v-for="phone in provider.providersContactList">
-                                    <td class="col-xs-2">
-                                        {{phone.name}}
-                                    </td>
-                                    <td class="col-xs-2">
-                                        {{phone.post}}
-                                    </td>
-                                    <td class="col-xs-3">
-                                        {{phone.phoneNumber}}
-                                    </td>
-                                    <td class="col-xs-4">
-                                        {{phone.email}}
-                                    </td>
+                                    <td class="col-xs-2">{{phone.name}}</td>
+                                    <td class="col-xs-2">{{phone.post}}</td>
+                                    <td class="col-xs-3">{{phone.phoneNumber}}</td>
+                                    <td class="col-xs-4">{{phone.email}}</td>
                                     <td class="col-xs-1">
-                                        <button class="btn btn-danger" @click="removePhone(phone)" :disabled="isUpdate"
+                                        <button v-if="provider.providersContactList.length > 1"
+                                                class="btn btn-danger" @click="removePhone(phone)" :disabled="isUpdate"
                                                 data-toggle="tooltip" data-placement="top" title="Quitar Numero">
                                             <span class="glyphicon glyphicon-trash"></span>
                                         </button>
@@ -1690,17 +1512,11 @@
                                 </tbody>
                             </table>
                             <br>
-                            <label v-show="provider.rfc.length==12||provider.rfc.length==13">Cuentas Bancarias</label>
-                            <div class="row" v-show="provider.rfc.length==12||provider.rfc.length==13">
-                                <div class="col-xs-12">
-                                    <hr>
-                                </div>
-                            </div>
-                            <div class="row" v-show="(provider.rfc).length==12||(provider.rfc).length==13">
+                            <label>Cuentas Bancarias</label>
+                            <hr>
+                            <div class="row">
                                 <div class="col-xs-3">
-                                    <label>
-                                        Banco
-                                    </label>
+                                    <label>Banco</label>
                                     <select class="form-control" name="" v-model="cuenta.idBank">
                                         <option></option>
                                         <option v-for="bank in banks" value="{{bank.idBank}}">{{bank.acronyms}}</option>
@@ -1708,31 +1524,27 @@
                                 </div>
 
                                 <div class="col-xs-3">
-                                    <label>
-                                        Número de cuenta
-                                    </label>
+                                    <label>Número de cuenta</label>
                                     <div class="input-group">
                                         <span class="input-group-addon">#</span>
-                                        <input class="form-control" maxlength="12" v-model="cuenta.accountNumber" @change="validateCuenta(cuenta.accountNumber,cuenta.accountClabe)"
+                                        <input class="form-control" maxlength="12" v-model="cuenta.accountNumber"
+                                               @change="validateCuenta(cuenta.accountNumber,cuenta.accountClabe)"
                                                onkeypress="return isNumberKey(event)">
                                     </div>
                                 </div>
 
                                 <div class="col-xs-3">
-                                    <label>
-                                        CLABE
-                                    </label>
+                                    <label>CLABE</label>
                                     <div class="input-group">
                                         <span class="input-group-addon">#</span>
-                                        <input type="text" class="form-control" maxlength="18" @change="validateClabe(cuenta.accountNumber,cuenta.accountClabe)"
+                                        <input type="text" class="form-control" maxlength="18"
+                                               @change="validateClabe(cuenta.accountNumber,cuenta.accountClabe)"
                                                v-model="cuenta.accountClabe" onkeypress="return isNumberKey(event)">
                                     </div>
                                 </div>
 
                                 <div class="col-xs-2">
-                                    <label>
-                                        Moneda
-                                    </label>
+                                    <label>Moneda</label>
                                     <select class="form-control" name="" v-model="cuenta.idCurrency">
                                         <option></option>
                                         <option v-for="curre in currencies" value="{{curre.idCurrency}}">
@@ -1752,38 +1564,21 @@
 
                             <table class="table table-striped" v-show="provider.providersAccountsList.length> 0">
                                 <thead>
-                                <th>
-                                    Banco
-                                </th>
-                                <th>
-                                    Número de cuenta
-                                </th>
-                                <th>
-                                    CLABE
-                                </th>
-                                <th>
-                                    Moneda
-                                </th>
-                                <th>
-                                    Eliminar
-                                </th>
+                                    <th>Banco</th>
+                                    <th>Número de cuenta</th>
+                                    <th>CLABE</th>
+                                    <th>Moneda</th>
+                                    <th>Eliminar</th>
                                 </thead>
                                 <tbody>
                                 <tr v-for="account in provider.providersAccountsList" v-if="account.deleteDay == null">
-                                    <td class="col-xs-2">
-                                        {{account.idBank | changeidBank }}
-                                    </td>
-                                    <td class="col-xs-3">
-                                        {{account.accountNumber }}
-                                    </td>
-                                    <td class="col-xs-4">
-                                        {{account.accountClabe}}
-                                    </td>
-                                    <td class="col-xs-2">
-                                        {{account.idCurrency | changeidCurrency}}
-                                    </td>
+                                    <td class="col-xs-2">{{account.idBank | changeidBank }}</td>
+                                    <td class="col-xs-3">{{account.accountNumber }}</td>
+                                    <td class="col-xs-4">{{account.accountClabe}}</td>
+                                    <td class="col-xs-2">{{account.idCurrency | changeidCurrency}}</td>
                                     <td class="col-xs-1">
-                                        <button type="button" class="btn btn-danger" data-toggle="tooltip"
+                                        <button v-if="provider.providersAccountsList.length > 1"
+                                                type="button" class="btn btn-danger" data-toggle="tooltip"
                                                 data-placement="bottom" title="Eliminar"
                                                 @click="questionAccount(account)">
                                             <span class="glyphicon glyphicon-trash"></span>
@@ -1795,28 +1590,18 @@
                             <br>
                             <div class="row" v-show="provider.rfc.length==12||provider.rfc.length==13">
                                 <div class="col-xs-4">
-                                    <label>
-                                        Crédito
-                                    </label>
+                                    <label>Crédito</label>
                                 </div>
                             </div>
-                            <div class="row" v-show="provider.rfc.length==12||provider.rfc.length==13">
-                                <div class="col-xs-12">
-                                    <hr>
-                                </div>
-                            </div>
+                            <hr>
                             <div class="row" v-show="provider.rfc.length==12||provider.rfc.length==13">
                                 <div class="col-xs-3">
-                                    <label>
-                                        Días de crédito
-                                    </label>
+                                    <label>Días de crédito</label>
                                     <input class="form-control" name="name" v-model="provider.creditDays"
                                            onkeypress="return isNumberKey(event)">
                                 </div>
                                 <div class="col-xs-3">
-                                    <label>
-                                        Fecha de corte
-                                    </label>
+                                    <label>Fecha de corte</label>
                                     <select class="form-control" name="" v-model="provider.cuttingDate">
                                         <option></option>
                                         <option v-for="i in 31" value="{{i+1}}">{{i+1}}</option>
@@ -1826,7 +1611,7 @@
                         </div>
                         <div class="modal-footer">
 
-                            <button type="btn btn-success" class="btn btn-default" @click="updateProvider(provider)">
+                            <button type="button" class="btn btn-success" @click="updateProvider(provider)">
                                 Guardar
                             </button>
 

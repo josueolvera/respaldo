@@ -5,10 +5,12 @@
  */
 package mx.bidg.dao.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.AccountsPayableDao;
 import mx.bidg.model.AccountsPayable;
+import mx.bidg.model.CAccountsPayableStatus;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.Order;
@@ -62,5 +64,23 @@ public class AccountsPayableDaoImpl extends AbstractDao<Integer, AccountsPayable
                 .setString("folio", folio)
                 .executeUpdate();
         return true;
+    }
+
+    @Override
+    public List<AccountsPayable> findAccountsofDay() {
+        LocalDateTime dateTimeStart = LocalDateTime.now().toLocalDate().atStartOfDay();
+        LocalDateTime dateTimeFinal = LocalDateTime.now().toLocalDate().atTime(23, 59, 59);
+        return createEntityCriteria()
+                .add(Restrictions.between("dueDate", dateTimeStart, dateTimeFinal))
+                .list();
+
+    }
+
+    @Override
+    public List<AccountsPayable> findByReschedule() {
+        Criteria criteria = createEntityCriteria();
+        return (List<AccountsPayable>) criteria
+                .add(Restrictions.eq("accountPayableStatus",CAccountsPayableStatus.REPROGRAMADA))
+                .list();
     }
 }

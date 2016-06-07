@@ -7,6 +7,7 @@ package mx.bidg.dao;
 
 import java.util.List;
 import mx.bidg.model.AccountsPayable;
+import mx.bidg.model.CAccountsPayableStatus;
 
 /**
  *
@@ -15,4 +16,6 @@ import mx.bidg.model.AccountsPayable;
 public interface AccountsPayableDao extends InterfaceDao<AccountsPayable> {
     List<AccountsPayable> findByFolio(String folio);
     Boolean deleteByFolio(String folio);
+    List<AccountsPayable> findAccountsofDay();
+    List<AccountsPayable> findByReschedule();
 }

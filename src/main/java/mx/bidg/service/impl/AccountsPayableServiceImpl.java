@@ -47,6 +47,11 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
     }
 
     @Override
+    public AccountsPayable findById(Integer idAccountPayable) {
+        return accountsPayableDao.findById(idAccountPayable);
+    }
+
+    @Override
     public List<AccountsPayable> updatePeriodic(String folio, String data) throws IOException {
         List<AccountsPayable> accountsPayables = findByFolio(folio);
         for (AccountsPayable accountPayable : accountsPayables) {
@@ -147,6 +152,38 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
     @Override
     public List<AccountsPayable> findAll() {
         return accountsPayableDao.findAll();
+    }
+
+    @Override
+        public List<AccountsPayable> findAccountsNow() {
+        return accountsPayableDao.findAccountsofDay();
+    }
+
+    @Override
+    public List<AccountsPayable> findByReschedule() {
+        return accountsPayableDao.findByReschedule();
+    }
+
+    @Override
+    public void payAccount(Integer idAccountPayable) {
+        AccountsPayable accountsPayable = accountsPayableDao.findById(idAccountPayable);
+        accountsPayable.setAccountPayableStatus(CAccountsPayableStatus.FINALIZADA);
+        accountsPayableDao.update(accountsPayable);
+    }
+
+    @Override
+    public void changeDate(Integer idAccountPayable, String data) throws IOException {
+        JsonNode json = mapper.readTree(data);
+        LocalDateTime dueDate = (json.get("dueDate") == null || json.findValue("dueDate").asText().equals("")) ? null :
+                LocalDateTime.parse(json.get("dueDate").asText(), DateTimeFormatter.ISO_DATE_TIME);
+        AccountsPayable accountsPayable = accountsPayableDao.findById(idAccountPayable);
+        LocalDateTime currentDate = accountsPayable.getDueDate();
+
+        if (dueDate.toLocalDate().isAfter(currentDate.toLocalDate())){
+            accountsPayable.setDueDate(dueDate);
+            accountsPayable.setAccountPayableStatus(CAccountsPayableStatus.REPROGRAMADA);
+            accountsPayableDao.update(accountsPayable);
+        }
     }
 
 

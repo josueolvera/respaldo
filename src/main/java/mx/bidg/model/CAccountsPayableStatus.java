@@ -26,6 +26,7 @@ public class CAccountsPayableStatus implements Serializable {
     public static final CAccountsPayableStatus PENDIENTE = new CAccountsPayableStatus(2);
     public static final CAccountsPayableStatus FINALIZADA = new CAccountsPayableStatus(3);
     public static final CAccountsPayableStatus CANCELADA = new CAccountsPayableStatus(4);
+    public static final CAccountsPayableStatus REPROGRAMADA = new CAccountsPayableStatus(5);
 
     private static final long serialVersionUID = 1L;
     
