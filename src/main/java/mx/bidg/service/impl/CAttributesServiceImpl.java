@@ -1,6 +1,7 @@
 package mx.bidg.service.impl;
 
 import mx.bidg.dao.AttributesArticlesDao;
+import mx.bidg.dao.CAttributesDao;
 import mx.bidg.model.AttributesArticles;
 import mx.bidg.model.CArticles;
 import mx.bidg.model.CAttributes;
@@ -23,6 +24,9 @@ public class CAttributesServiceImpl implements CAttributesService {
     @Autowired
     private AttributesArticlesDao attributesArticlesDao;
 
+    @Autowired
+    private CAttributesDao attributesDao;
+
     @Override
     public List<CAttributes> findByArticle(CArticles article) {
         List<AttributesArticles> pivot = attributesArticlesDao.findByArticle(article);
@@ -33,5 +37,10 @@ public class CAttributesServiceImpl implements CAttributesService {
         }
 
         return attributes;
+    }
+
+    @Override
+    public CAttributes findById(int idAttribute) {
+        return attributesDao.findById(idAttribute);
     }
 }

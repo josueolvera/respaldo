@@ -22,9 +22,7 @@ public class CAttributesDaoImpl extends AbstractDao<Integer, CAttributes> implem
 
     @Override
     public CAttributes findById(int id) {
-        return (CAttributes) createEntityCriteria()
-                .add(Restrictions.eq("idAttribute", id))
-                .uniqueResult();
+        return getByKey(id);
     }
 
     @Override

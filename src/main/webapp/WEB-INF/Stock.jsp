@@ -74,10 +74,10 @@
                         stockFolio: 0,
                         articleStatus: null,
                         employees: null,
+                        selectAttr: '',
+                        selectValue:'',
                         attributes: [],
                         values: [],
-                        attribute: '',
-                        value:'',
                         selectedEmployee: null,
                         article: null
                     },
@@ -89,8 +89,6 @@
                         purchaseDate:null,
                         attributes: [],
                         values: [],
-                        attribute: '',
-                        value:'',
                         invoiceNumber:null,
                         employees: null,
                         selectedEmployee: null,
@@ -98,6 +96,8 @@
                         idArticle:'',
                         properties : [],
                         articles: [],
+                        selectAttr: '',
+                        selectValue:'',
                         articlesCategories:[],
                         selected: {
                             distributor: null,
@@ -259,11 +259,35 @@
                             attributes.forEach(function (attribute) {
                                 self.editModal.attributes.$remove(attribute);
                             });
+
+                            if (this.editModal.selectAttr != '') {
+                                this.editModal.selectAttr[0].selectize.destroy();
+                            }
+
+                            this.editModal.selectAttr = $('#select-attribute-edit').selectize({
+                                maxItems: 1,
+                                valueField: 'idAttribute',
+                                labelField: 'attributeName',
+                                searchField: 'attributeName',
+                                options: self.editModal.attributes,
+                                create: false
+                            }).on('change',this.fetchEditModalValues);
                         });
                     },
                     fetchAttributesNewArticleModal: function (idArticle) {
                         this.$http.get(ROOT_URL + "/attributes/" + idArticle).success(function (data) {
                             this.newArticleModal.attributes = data;
+                            if (this.newArticleModal.selectAttr != '') {
+                                this.newArticleModal.selectAttr[0].selectize.destroy();
+                            }
+                            this.newArticleModal.selectAttr = $('#select-attribute-new').selectize({
+                                maxItems: 1,
+                                valueField: 'idAttribute',
+                                labelField: 'attributeName',
+                                searchField: 'attributeName',
+                                options: data,
+                                create: false
+                            }).on('change',this.fetchNewArticleModalValues);
                         });
                     },
                     fetchArticleStatus: function () {
@@ -281,19 +305,71 @@
                             this.selectOptions.employees = data;
                         });
                     },
-                    fetchNewArticleModalValues: function (idAttribute) {
-                        this.newArticleModal.value = '';
-                        this.$http.get(ROOT_URL + "/values?idAttribute=" + idAttribute).success(function (data) {
-                            var self = this;
+                    fetchNewArticleModalValues: function () {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/values?idAttribute=" + this.newArticleModal.selectAttr[0].selectize.getValue()).success(function (data) {
                             this.newArticleModal.values = data;
+                            if (this.newArticleModal.selectValue != '') {
+                                this.newArticleModal.selectValue[0].selectize.destroy();
+                            }
+                            this.newArticleModal.selectValue = $('#select-value-new').selectize({
+                                maxItems: 1,
+                                valueField: 'idValue',
+                                labelField: 'value',
+                                searchField: 'value',
+                                options: data,
+                                create: function (input, callback) {
+                                    self.$http.post(ROOT_URL + "/values", {
+                                        idAttribute: self.newArticleModal.selectAttr[0].selectize.getValue(),
+                                        value: input
+                                    }).success(function (data){
+                                        callback(data);
+                                    }).error(function (){
+                                        callback();
+                                    });
+                                },
+                                render: {
+                                    option_create: function(data, escape) {
+                                        return '<div data-selectable class="create">' +
+                                                'Agregar <strong>' + escape(data.input) + '</strong>' +
+                                                '</div>'
+                                    }
+                                }
+                            });
                         });
                     },
-                    fetchEditModalValues: function (idAttribute) {
-                        this.editModal.value = '';
-                        this.$http.get(ROOT_URL + "/values?idAttribute=" + idAttribute).success(function (data) {
+                    fetchEditModalValues: function () {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/values?idAttribute=" + this.editModal.selectAttr[0].selectize.getValue()).success(function (data) {
                             this.editModal.values = data;
-                        }).error(function (data) {
 
+                            if (this.editModal.selectValue != '') {
+                                this.editModal.selectValue[0].selectize.destroy();
+                            }
+                            this.editModal.selectValue = $('#select-value-edit').selectize({
+                                maxItems: 1,
+                                valueField: 'idValue',
+                                labelField: 'value',
+                                searchField: 'value',
+                                options: data,
+                                create: function (input, callback) {
+                                    self.$http.post(ROOT_URL + "/values", {
+                                        idAttribute: self.editModal.selectAttr[0].selectize.getValue(),
+                                        value: input
+                                    }).success(function (data){
+                                        callback(data);
+                                    }).error(function (){
+                                        callback();
+                                    });
+                                },
+                                render: {
+                                    option_create: function(data, escape) {
+                                        return '<div data-selectable class="create">' +
+                                                'Agregar <strong>' + escape(data.input) + '</strong>' +
+                                                '</div>'
+                                    }
+                                }
+                            });
                         });
                     },
                     buildArticle: function (article) {
@@ -312,6 +388,8 @@
                         this.$http.delete(ROOT_URL + "/stock/properties/" + property.idProperty).success(function () {
                             this.fetchStockProperties(article);
                             this.editModal.attributes.push(property.attributesArticles.attributes);
+                            this.fetchAttributesEditModal(article);
+                            this.fetchEditModalValues();
                             this.isSaving = false;
                         }).error(function () {
                             this.isSaving = false;
@@ -321,6 +399,17 @@
                     removePropertyNewArticle: function (property) {
                         this.newArticleModal.properties.$remove(property);
                         this.newArticleModal.attributes.push(property.attributesArticles.attributes);
+                        this.newArticleModal.selectAttr[0].selectize.destroy();
+                        this.newArticleModal.selectAttr = $('#select-attribute-new').selectize({
+                            maxItems: 1,
+                            valueField: 'idAttribute',
+                            labelField: 'attributeName',
+                            searchField: 'attributeName',
+                            options: this.newArticleModal.attributes,
+                            create: false
+                        }).on('change',this.fetchNewArticleModalValues);
+
+                        this.fetchNewArticleModalValues();
                     },
                     addProperties: function (idStock,properties) {
                         this.$http.post(ROOT_URL + "/stock/" + idStock + "/properties", JSON.stringify(properties)).success(function (data) {
@@ -336,20 +425,19 @@
                     addProperty: function (article) {
                         this.isSaving = true;
                         var self = this;
-
-                        var idAttr = this.editModal.attribute.idAttribute;
-                        var idVal = this.editModal.value.idValue;
+                        var idAttr = this.editModal.selectAttr[0].selectize.getValue();
+                        var idVal = this.editModal.selectValue[0].selectize.getValue();
                         var property = {
                             value: {
                                 idValue: idVal,
-                                value: this.editModal.value.value
+                                value: this.editModal.selectValue[0].selectize.getOption(idVal).text()
                             },
                             attributesArticles: {
                                 idArticle: article.idArticle,
-                                idAttribute: idAttr,
+                                idAttribute: this.editModal.selectValue[0].selectize.getOption(idVal).text(),
                                 attributes: {
                                     idAttribute: idAttr,
-                                    attributeName: this.editModal.attribute.attributeName
+                                    attributeName: this.editModal.selectAttr[0].selectize.getOption(idAttr).text()
                                 }
                             }
                         };
@@ -360,13 +448,15 @@
                                 property
                         ).success(function (data) {
                             this.fetchStockProperties(article);
-                            this.editModal.attribute = '';
-                            this.editModal.value = '';
                             this.editModal.attributes.forEach(function (attribute) {
                                 if (attribute.idAttribute === idAttr) {
                                     self.editModal.attributes.$remove(attribute);
                                 }
                             });
+
+                            this.fetchAttributesEditModal(article);
+                            this.fetchEditModalValues();
+
                             this.isSaving = false;
                         }).error(function (data) {
                             this.editModal.attribute = '';
@@ -377,30 +467,42 @@
                     },
                     addPropertyNewArticle: function () {
                         var self = this;
-                        var idAttr = this.newArticleModal.attribute.idAttribute;
-                        var idVal = this.newArticleModal.value.idValue;
+                        var idAttr = this.newArticleModal.selectAttr[0].selectize.getValue();
+                        var idVal = this.newArticleModal.selectValue[0].selectize.getValue();
                         var property = {
                             value: {
                                 idValue: idVal,
-                                value: this.newArticleModal.value.value
+                                value: this.newArticleModal.selectValue[0].selectize.getOption(idVal).text()
                             },
                             attributesArticles: {
                                 idArticle: this.newArticleModal.idArticle,
                                 idAttribute: idAttr,
                                 attributes: {
                                     idAttribute: idAttr,
-                                    attributeName: this.newArticleModal.attribute.attributeName
+                                    attributeName: this.newArticleModal.selectAttr[0].selectize.getOption(idAttr).text()
                                 }
                             }
                         };
+
                         this.newArticleModal.attributes.forEach(function (attribute) {
-                            if (attribute.idAttribute === idAttr) {
+                            if (attribute.idAttribute === Number(idAttr)) {
                                 self.newArticleModal.attributes.$remove(attribute);
                             }
                         });
+
+                        this.newArticleModal.selectAttr[0].selectize.destroy();
+                        this.newArticleModal.selectAttr = $('#select-attribute-new').selectize({
+                            maxItems: 1,
+                            valueField: 'idAttribute',
+                            labelField: 'attributeName',
+                            searchField: 'attributeName',
+                            options: self.newArticleModal.attributes,
+                            create: false
+                        }).on('change',this.fetchNewArticleModalValues);
+
+                        this.fetchNewArticleModalValues();
+
                         this.newArticleModal.properties.push(property);
-                        this.newArticleModal.value = '';
-                        this.newArticleModal.attribute = '';
                     },
                     uploadFilesAssignments: function (article) {
                         if (this.assignmentsModal.selected.dwEmployees == null) {
@@ -987,24 +1089,11 @@
                                 <div class="col-xs-12 col-md-8 col-md-push-2">
                                     <div class="col-xs-5">
                                         <label>Atributo</label>
-                                        <select v-model="editModal.attribute"
-                                                @change="fetchEditModalValues(editModal.attribute.idAttribute)" required
-                                                :disabled="isSaving | editModal.attribute == ''" class="form-control">
-                                            <option v-for="attribute in editModal.attributes | orderBy 'attributeName'"
-                                                    :value="attribute">
-                                                {{ attribute.attributeName }}
-                                            </option>
-                                        </select>
+                                        <select required id="select-attribute-edit" class="form-control"></select>
                                     </div>
                                     <div class="col-xs-5">
                                         <label>Valor</label>
-                                        <select v-model="editModal.value" required
-                                                :disabled="isSaving" class="form-control">
-                                            <option v-for="value in editModal.values | orderBy 'value'"
-                                                    :value="value">
-                                                {{ value.value }}
-                                            </option>
-                                        </select>
+                                        <select required id="select-value-edit" class="form-control"></select>
                                     </div>
                                     <div class="col-xs-2">
                                         <button @click.prevent="addProperty(editModal.article)"
@@ -1297,24 +1386,11 @@
                                         <div class="col-xs-12 col-md-8 col-md-push-2">
                                             <div class="col-xs-5">
                                                 <label>Atributo</label>
-                                                <select v-model="newArticleModal.attribute"
-                                                        @change="fetchNewArticleModalValues(newArticleModal.attribute.idAttribute)" required
-                                                        :disabled="isSaving" class="form-control">
-                                                    <option v-for="attribute in newArticleModal.attributes | orderBy 'attributeName'"
-                                                            :value="attribute">
-                                                        {{ attribute.attributeName }}
-                                                    </option>
-                                                </select>
+                                                <select :disabled="isSaving" id="select-attribute-new" class="form-control"></select>
                                             </div>
                                             <div class="col-xs-5">
                                                 <label>Valor</label>
-                                                <select v-model="newArticleModal.value" required
-                                                        :disabled="isSaving | newArticleModal.attribute == ''" class="form-control">
-                                                    <option v-for="value in newArticleModal.values | orderBy 'value'"
-                                                            :value="value">
-                                                        {{ value.value }}
-                                                    </option>
-                                                </select>
+                                                <select :disabled="isSaving" id="select-value-new" class="form-control"></select>
                                             </div>
                                             <div class="col-xs-2">
                                                 <button type="button" @click="addPropertyNewArticle"
