@@ -723,6 +723,11 @@
                     },
                     getStocks: function () {
 
+                        if (this.selectedOptions.distributor.id == 0) {
+                            showAlert('Selecciona un distribuidor',{type:3})
+                            return;
+                        }
+
                         this.$http.get(
                                 ROOT_URL + "/stock?idDistributor=" +
                                 this.selectedOptions.distributor.id + "&idRegion=" +
