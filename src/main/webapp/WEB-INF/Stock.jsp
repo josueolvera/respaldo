@@ -890,16 +890,16 @@
                                     </div>
                                     <div class="text-right col-xs-4">
                                         <div class="col-xs-10">
-                                            <button @click="showEditArticleModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Editar artículo">
+                                            <button v-if="article.isCollapsed == true" @click="showEditArticleModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Editar artículo">
                                                 <span class="glyphicon glyphicon-pencil"></span>
                                             </button>
-                                            <button @click="showAttachmentsModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Adjuntar archivos">
+                                            <button v-if="article.isCollapsed == true" @click="showAttachmentsModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Adjuntar archivos">
                                                 <span class="glyphicon glyphicon-paperclip"></span>
                                             </button>
-                                            <button @click="showAssignmentsModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Reasignar artículo">
+                                            <button v-if="article.isCollapsed == true" @click="showAssignmentsModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Reasignar artículo">
                                                 <span class="glyphicon glyphicon-user"></span>
                                             </button>
-                                            <button @click="showHistoricalModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Historial de asignaciones archivos">
+                                            <button v-if="article.isCollapsed == true" @click="showHistoricalModal(article)" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Historial de asignaciones archivos">
                                                 <span class="glyphicon glyphicon-book"></span>
                                             </button>
                                         </div>
