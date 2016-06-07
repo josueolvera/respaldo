@@ -3,6 +3,7 @@ package mx.bidg.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.config.JsonViews;
+import mx.bidg.model.CArticlesCategories;
 import mx.bidg.model.CAttributes;
 import mx.bidg.model.CValues;
 import mx.bidg.service.CAttributesService;
@@ -37,12 +38,15 @@ public class CValuesController {
     private ObjectMapper mapper = new ObjectMapper();
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> getValues(@RequestParam(name = "idAttribute", required = false) Integer idAttribute) throws IOException {
+    public ResponseEntity<String> getValues(
+            @RequestParam(name = "idAttribute", required = false) Integer idAttribute,
+            @RequestParam(name = "idArticlesCategory", required = false) Integer idArticlesCategory
+    ) throws IOException {
 
         List<CValues> values;
 
-        if (idAttribute != null) {
-            values = valuesService.findValuesByAttribute(idAttribute);
+        if (idAttribute != null && idArticlesCategory != null) {
+            values = valuesService.findValuesByAttribute(idAttribute,idArticlesCategory);
         } else {
             values = valuesService.findAll();
         }
@@ -61,6 +65,7 @@ public class CValuesController {
         CValues value = new CValues();
         value.setValue(node.get("value").asText());
         value.setAttribute(new CAttributes(node.get("idAttribute").asInt()));
+        value.setArticlesCategories(new CArticlesCategories(node.get("idArticlesCategory").asInt()));
 
         value = valuesService.save(value);
 

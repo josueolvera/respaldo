@@ -42,9 +42,10 @@ public class CValuesDaoImpl extends AbstractDao<Integer, CValues> implements CVa
     }
 
     @Override
-    public List<CValues> findValuesByAttribute(int idAttribute) {
+    public List<CValues> findValuesByAttribute(int idAttribute, int idArticlesCategory) {
         return createEntityCriteria()
                 .add(Restrictions.eq("idAttribute",idAttribute))
+                .add(Restrictions.eq("idArticlesCategory",idArticlesCategory))
                 .list();
     }
 }

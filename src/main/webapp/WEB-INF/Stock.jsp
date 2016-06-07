@@ -307,10 +307,16 @@
                     },
                     fetchNewArticleModalValues: function () {
                         var self = this;
-                        this.$http.get(ROOT_URL + "/values?idAttribute=" + this.newArticleModal.selectAttr[0].selectize.getValue()).success(function (data) {
+                        this.$http.get(
+                                ROOT_URL +
+                                '/values?idAttribute=' +
+                                self.newArticleModal.selectAttr[0].selectize.getValue() +
+                                '&idArticlesCategory=' +
+                                self.newArticleModal.articleCategory.idArticlesCategory
+                        ).success(function (data) {
                             this.newArticleModal.values = data;
-                            if (this.newArticleModal.selectValue != '') {
-                                this.newArticleModal.selectValue[0].selectize.destroy();
+                            if (self.newArticleModal.selectValue != '') {
+                                self.newArticleModal.selectValue[0].selectize.destroy();
                             }
                             this.newArticleModal.selectValue = $('#select-value-new').selectize({
                                 maxItems: 1,
@@ -321,6 +327,7 @@
                                 create: function (input, callback) {
                                     self.$http.post(ROOT_URL + "/values", {
                                         idAttribute: self.newArticleModal.selectAttr[0].selectize.getValue(),
+                                        idArticlesCategory: self.newArticleModal.articleCategory.idArticlesCategory,
                                         value: input
                                     }).success(function (data){
                                         callback(data);
@@ -340,11 +347,18 @@
                     },
                     fetchEditModalValues: function () {
                         var self = this;
-                        this.$http.get(ROOT_URL + "/values?idAttribute=" + this.editModal.selectAttr[0].selectize.getValue()).success(function (data) {
+                        console.log(this.editModal.article.article.articlesCategories.idArticlesCategory);
+                        this.$http.get(
+                                ROOT_URL +
+                                "/values?idAttribute=" +
+                                self.editModal.selectAttr[0].selectize.getValue() +
+                                '&idArticlesCategory=' +
+                                self.editModal.article.article.articlesCategories.idArticlesCategory
+                        ).success(function (data) {
                             this.editModal.values = data;
 
-                            if (this.editModal.selectValue != '') {
-                                this.editModal.selectValue[0].selectize.destroy();
+                            if (self.editModal.selectValue != '') {
+                                self.editModal.selectValue[0].selectize.destroy();
                             }
                             this.editModal.selectValue = $('#select-value-edit').selectize({
                                 maxItems: 1,
@@ -355,6 +369,7 @@
                                 create: function (input, callback) {
                                     self.$http.post(ROOT_URL + "/values", {
                                         idAttribute: self.editModal.selectAttr[0].selectize.getValue(),
+                                        idArticlesCategory: self.editModal.article.article.articlesCategories.idArticlesCategory,
                                         value: input
                                     }).success(function (data){
                                         callback(data);
@@ -746,9 +761,28 @@
 
     <jsp:body>
         <div id="content">
-            <div class="col-xs-12"><h2 class="text-center">Inventario</h2></div>
             <br>
+            <div>
+                <div class="col-xs-8">
+                    <h1>Inventario</h1>
+                </div>
+                <div class="col-xs-3">
+                    <div class="col-xs-9">
+                        <label>Buscar</label>
+                        <input type="text" class="form-control"
+                               v-model="stockFilter" :disabled="!stockGroups.length > 0">
+                    </div>
+                    <div class="col-xs-3">
+                        <label style="visibility: hidden">add</label>
+                        <button class="btn btn-default" @click="showNewArticleModal"
+                                data-toggle="tooltip" data-placement="top" title="Agregar artículo">
+                            Agregar artículo
+                        </button>
+                    </div>
+                </div>
+            </div>
             <div class="col-xs-12" v-if="selectOptions.hierarchy.length > 0">
+                <hr size="30" style="border-top: 1px solid #ccc;">
                 <div class="col-xs-2">
                     <label>Distribuidor</label>
                     <select v-model="selectedOptions.distributor" class="form-control"
@@ -800,18 +834,6 @@
                     <button class="btn btn-default" @click="getStocks"
                             data-toggle="tooltip" data-placement="top" title="Buscar artículo">
                         <span class="glyphicon glyphicon-search"></span>
-                    </button>
-                </div>
-                <div class="col-xs-2">
-                    <label>Filtrar</label>
-                    <input type="text" class="form-control"
-                           v-model="stockFilter" :disabled="!stockGroups.length > 0">
-                </div>
-                <div class="col-xs-1">
-                    <label style="visibility: hidden">add</label>
-                    <button class="btn btn-default" @click="showNewArticleModal"
-                            data-toggle="tooltip" data-placement="top" title="Agregar artículo">
-                        <span class="glyphicon glyphicon-plus"></span>
                     </button>
                 </div>
             </div>
@@ -1049,7 +1071,7 @@
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button class="close" @click="closeEditModal()"><span aria-hidden="true">&times;</span>
+                            <button class="close" @click="closeEditModal"><span aria-hidden="true">&times;</span>
                             </button>
                             <h4 class="modal-title">Modificación de Artículo</h4>
                         </div>
@@ -1359,7 +1381,7 @@
                                     <br>
                                     <div class="row">
                                         <div class="col-md-4 col-xs-6"
-                                             v-if="newArticleModal.articleCategory.requireInvoice == 1">
+                                             v-if="newArticleModal.articleCategory.requireSerialNumber == 1">
                                             <label>No. de Serie</label>
                                             <input v-model="newArticleModal.serialNumber" name="serialNumber" required
                                                    :disabled="isSaving" type="text" class="form-control">
@@ -1540,6 +1562,7 @@
                                         </table>
                                     </div>
                                 </div>
+                                <br>
                                 <div class="text-right modal-footer">
                                     <button type="button" :disabled="isSaving" class="btn btn-default"
                                             @click="closeNewArticleModal">

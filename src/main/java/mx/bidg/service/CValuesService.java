@@ -11,5 +11,5 @@ import java.util.List;
 public interface CValuesService {
     List<CValues> findAll();
     CValues save(CValues value);
-    List<CValues> findValuesByAttribute(int idAttribute);
+    List<CValues> findValuesByAttribute(int idAttribute, int idArticlesCategory);
 }
