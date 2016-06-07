@@ -505,25 +505,24 @@
                             showAlert("Ingresa un email correcto",{type: 3});
                             return false;
                         }else{
+                            this.savePhone(this.name, this.phoneNumber, this.email, this.post);
                             return true;
                         }
                     },
                     validateContact: function () {
-                        if(this.validateEmail(this.email)){
-                            this.validationContact();
-                        }
+                        this.validationContact()
                     },
                     validationContact: function () {
                         if (this.supplier.providersContactList.length != 0) {
                             if (this.name.length != 0 && this.phoneNumber.length != 0 && this.email.length != 0) {
-                                this.savePhone(this.name, this.phoneNumber, this.email, this.post);
+                                this.validateEmail(this.email);
                                 return true;
                             } else {
                                 return true;
                             }
                         } else {
                             if (this.name.length != 0 && this.phoneNumber.length != 0 && this.email.length != 0) {
-                                this.savePhone(this.name, this.phoneNumber, this.email, this.post);
+                                this.validateEmail(this.email);
                                 return true;
                             } else {
                                 showAlert("Ingresa los campos Requeridos: Nombre, Teléfono, Email", {type: 3});
@@ -823,7 +822,7 @@
             </div>
             <br>
             <div class="flex-row flex-content">
-                <div class="row" v-for="provider in providers | filterBy search" v-if="provider.supplierLow == null">
+                <div class="row" v-for="provider in providers | filterBy search in 'rfc'" v-if="provider.supplierLow == null">
                     <div class="col-xs-3">
                         {{provider.providerName | separateProviderName}}
                     </div>
@@ -880,6 +879,15 @@
                                     <input class="form-control" name="name" v-model="supplier.providerName">
                                 </div>
                             </div>
+                            <br>
+                            <div class="row" v-show="supplier.rfc.length==12">
+                                <div class="col-xs-4">
+                                    <label>
+                                        Cuenta contable
+                                    </label>
+                                </div>
+                            </div>
+                            <br>
                             <div class="row" v-show="supplier.rfc.length==12">
                                 <div class="col-xs-4">
                                     <label>Distribuidor</label>
@@ -891,15 +899,15 @@
                                     </select>
                                 </div>
                                 <div class="col-xs-2">
-                                    <label>Cuenta contable</label>
+                                    <label>Primer nivel</label>
                                     <input maxlength="4" class="form-control" name="name" v-model="supplier.firstLevel">
                                 </div>
                                 <div class="col-xs-2">
-                                    <label> </label>
+                                    <label>Segundo nivel</label>
                                     <input maxlength="3" class="form-control" name="name" v-model="supplier.secondLevel">
                                 </div>
                                 <div class="col-xs-2">
-                                    <label> </label>
+                                    <label>Tercer nivel</label>
                                     <input maxlength="3" class="form-control" name="name" v-model="supplier.thirdLevel">
                                 </div>
                             </div>
@@ -926,6 +934,15 @@
                                            onkeypress="return isLetterKey(event)">
                                 </div>
                             </div>
+                            <br>
+                            <div class="row" v-show="supplier.rfc.length==13">
+                                <div class="col-xs-4">
+                                    <label>
+                                        Cuenta contable
+                                    </label>
+                                </div>
+                            </div>
+                            <br>
                             <div class="row" v-show="supplier.rfc.length==13">
                                 <div class="col-xs-4">
                                     <label>Distribuidor</label>
@@ -937,15 +954,15 @@
                                     </select>
                                 </div>
                                 <div class="col-xs-2">
-                                    <label>Cuenta contable</label>
+                                    <label>Primer nivel</label>
                                     <input maxlength="4" class="form-control" name="name" v-model="supplier.firstLevel">
                                 </div>
                                 <div class="col-xs-2">
-                                    <label> </label>
+                                    <label>Segundo nivel</label>
                                     <input maxlength="3" class="form-control" name="name" v-model="supplier.secondLevel">
                                 </div>
                                 <div class="col-xs-2">
-                                    <label> </label>
+                                    <label>Tercer nivel</label>
                                     <input maxlength="3" class="form-control" name="name" v-model="supplier.thirdLevel">
                                 </div>
                             </div>
@@ -1168,7 +1185,7 @@
                                     </td>
                                     <td class="col-xs-1">
                                         <button class="btn btn-danger" @click="deletePhone(phone)" :disabled="isUpdate"
-                                                data-toggle="tooltip" data-placement="top" title="Quitar Numero">
+                                                data-toggle="tooltip" data-placement="top" title="Quitar Contacto">
                                             <span class="glyphicon glyphicon-trash"></span>
                                         </button>
                                     </td>
@@ -1349,21 +1366,30 @@
                                            disabled="true">
                                 </div>
                             </div>
+                            <br>
+                            <div class="row" v-show="provider.rfc.length==12">
+                                <div class="col-xs-4">
+                                    <label>
+                                        Cuenta contable
+                                    </label>
+                                </div>
+                            </div>
+                            <br>
                             <div class="row" v-show="provider.rfc.length==12">
                                 <div class="col-xs-4">
                                     <label>Distribuidor</label>
                                     <input maxlength="4" class="form-control" name="name" v-model="provider.accountingAccounts.distributor.distributorName" disabled="true">
                                 </div>
                                 <div class="col-xs-2">
-                                    <label>Cuenta contable</label>
+                                    <label>Primer nivel</label>
                                     <input maxlength="4" class="form-control" name="name" v-model="provider.accountingAccounts.firstLevel" disabled="true">
                                 </div>
                                 <div class="col-xs-2">
-                                    <label> </label>
+                                    <label>Segundo nivel</label>
                                     <input maxlength="3" class="form-control" name="name" v-model="provider.accountingAccounts.secondLevel" disabled="true">
                                 </div>
                                 <div class="col-xs-2">
-                                    <label> </label>
+                                    <label>Tercer nivel</label>
                                     <input maxlength="3" class="form-control" name="name" v-model="provider.accountingAccounts.thirdLevel" disabled="true">
                                 </div>
                             </div>
@@ -1390,21 +1416,30 @@
                                            onkeypress="return isLetterKey(event)" disabled="true">
                                 </div>
                             </div>
+                            <br>
+                            <div class="row" v-show="provider.rfc.length==13">
+                                <div class="col-xs-4">
+                                    <label>
+                                        Cuenta contable
+                                    </label>
+                                </div>
+                            </div>
+                            <br>
                             <div class="row" v-show="provider.rfc.length==13">
                                 <div class="col-xs-4">
                                     <label>Distribuidor</label>
                                     <input maxlength="4" class="form-control" name="name" v-model="provider.accountingAccounts.distributor.distributorName" disabled="true">
                                 </div>
                                 <div class="col-xs-2">
-                                    <label>Cuenta contable</label>
+                                    <label>Primer nivel</label>
                                     <input maxlength="4" class="form-control" name="name" v-model="provider.accountingAccounts.firstLevel" disabled="true">
                                 </div>
                                 <div class="col-xs-2">
-                                    <label> </label>
+                                    <label>Segundo nivel</label>
                                     <input maxlength="3" class="form-control" name="name" v-model="provider.accountingAccounts.secondLevel" disabled="true">
                                 </div>
                                 <div class="col-xs-2">
-                                    <label> </label>
+                                    <label>Tercer nivel</label>
                                     <input maxlength="3" class="form-control" name="name" v-model="provider.accountingAccounts.thirdLevel" disabled="true">
                                 </div>
                             </div>
