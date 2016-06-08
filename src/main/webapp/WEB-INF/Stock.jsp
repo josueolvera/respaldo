@@ -771,6 +771,14 @@
                                 this.selectedOptions.branch.id + "&idArea=" +
                                 this.selectedOptions.area.id
                         ).success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (stock) {
+                                if (isNaN(stock.dwEnterprises)) {
+                                    jsonObjectIndex[stock.dwEnterprises._id] = stock.dwEnterprises;
+                                } else {
+                                    stock.dwEnterprises = jsonObjectIndex[stock.dwEnterprises];
+                                }
+                            });
                             this.stockGroups = this.groupBy(data, function (item) {
                                 return item.idDwEnterprises;
                             });
