@@ -803,6 +803,10 @@
                     </div>
                 </div>
             </div>
+            <div v-if="!selectOptions.hierarchy.length > 0" class="col-xs-12"
+                 style="height: 6rem; padding: 2rem 0;">
+                <div class="loader">Cargando...</div>
+            </div>
             <div class="col-xs-12" v-if="selectOptions.hierarchy.length > 0">
                 <hr size="30" style="border-top: 1px solid #ccc;">
                 <div class="col-xs-2">
