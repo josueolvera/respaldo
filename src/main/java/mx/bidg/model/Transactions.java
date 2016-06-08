@@ -84,7 +84,7 @@ public class Transactions implements Serializable {
     private CCurrencies currencies;
     
     @JoinColumn(name = "ID_ACCOUNT_PAYABLE", referencedColumnName = "ID_ACCOUNT_PAYABLE")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     @JsonView(JsonViews.Embedded.class)
     private AccountsPayable accountsPayable;
     
