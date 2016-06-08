@@ -92,6 +92,7 @@
                             idAttribute:'',
                             attributeName:''
                         },
+                        article:'',
                         serialNumber: null,
                         stockFolio: null,
                         articleStatus: null,
@@ -153,6 +154,7 @@
                         this.assign = true;
                     },
                     getArticles : function (articleCategory) {
+                        this.resetFromArticleCategory();
                         this.$http.get(ROOT_URL + "/articles/article-category/" + articleCategory.idArticlesCategory).success(function (data) {
                             this.newArticleModal.articles = data;
                             this.newArticleModal.idArticle = '';
@@ -284,8 +286,15 @@
                         });
                     },
                     fetchAttributesNewArticleModal: function (idArticle) {
-                        document.getElementById("newArticleFrom").reset();
+                        var self = this;
                         this.$http.get(ROOT_URL + "/attributes/" + idArticle).success(function (data) {
+                            this.newArticleModal.articles.forEach(function (article) {
+                                if (article.idArticle == idArticle) {
+                                    self.newArticleModal.article = article;
+                                }
+                            });
+                            this.resetFromArticle();
+                            this.newArticleModal == null;
                             this.newArticleModal.attributes = data;
                             if (this.newArticleModal.selectAttr != '') {
                                 this.newArticleModal.selectAttr[0].selectize.destroy();
@@ -712,7 +721,7 @@
                         $("#newArticleModal").modal("show");
                     },
                     closeNewArticleModal: function () {
-                        document.getElementById("newArticleFrom").reset();
+                        this.resetFromArticleCategory();
                         $("#newArticleModal").modal("hide");
                     },
                     showAttachmentsModal: function (article) {
@@ -785,6 +794,31 @@
                             Vue.set(article, "isCollapsed", true);
 
                         }
+                    },
+                    resetFromArticle:function () {
+                        this.newArticleModal.properties = [];
+                        this.newArticleModal.serialNumber = '';
+                        this.newArticleModal.invoiceNumber = '';
+                        this.newArticleModal.purchaseDate = '';
+                        this.newArticleModal.selected.area = null;
+                        this.newArticleModal.selected.distributor = null;
+                        this.newArticleModal.selected.region = null;
+                        this.newArticleModal.selected.branch = null;
+                        this.newArticleModal.selected.dwEmployees = null;
+                        $("input:file").val('');
+                    },
+                    resetFromArticleCategory:function () {
+                        this.newArticleModal.idArticle = '';
+                        this.newArticleModal.properties = [];
+                        this.newArticleModal.serialNumber = '';
+                        this.newArticleModal.invoiceNumber = '';
+                        this.newArticleModal.purchaseDate = '';
+                        this.newArticleModal.selected.area = null;
+                        this.newArticleModal.selected.distributor = null;
+                        this.newArticleModal.selected.region = null;
+                        this.newArticleModal.selected.branch = null;
+                        this.newArticleModal.selected.dwEmployees = null;
+                        $("input:file").val('');
                     }
                 }
             });
@@ -1023,13 +1057,6 @@
                                         {{ historicalModal.article.serialNumber }}
                                     </span>
                                 </div>
-                                <div class="col-md-4 col-xs-12">
-                                    <label>Asignado a </label>
-                                    {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
-                                    {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
-                                    {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
-                                    {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}
-                                </div>
                             </div>
                             <div class="flex-row flex-content">
                                 <hr>
@@ -1151,22 +1178,20 @@
                                         {{ editModal.article.serialNumber }}
                                     </span>
                                 </div>
+                                <div class="col-md-4">
+                                    <span>
+                                        <label>Folio</label>
+                                        {{ editModal.article.stockFolio }}
+                                    </span>
+                                </div>
                             </div>
                             <hr />
                             <div class="row line">
-                                <div class="col-md-4">
-                                    <span v-if="editModal.article.article.hasSerialNumber">
-                                        <label>No. de Serie</label>
-                                        <input v-model="editModal.serialNumber"
-                                           :disabled="isSaving" type="text" class="form-control">
-                                    </span>
+                                <div class="col-xs-9">
+                                    <br>
+                                    <h4>Propiedades</h4>
                                 </div>
-                                <div class="col-md-4">
-                                    <label>Folio de Inventario</label>
-                                    <input v-model="editModal.stockFolio"
-                                           :disabled="isSaving" type="text" class="form-control">
-                                </div>
-                                <div class="col-md-4">
+                                <div class="col-xs-3">
                                     <label>Estado de Artículo</label>
                                     <select v-model="editModal.articleStatus"
                                             :disabled="isSaving" class="form-control">
@@ -1175,8 +1200,6 @@
                                     </select>
                                 </div>
                             </div>
-                            <br>
-                            <h4>Propiedades</h4>
                             <hr>
                             <div class="row">
                                 <div class="col-xs-4">
@@ -1251,7 +1274,7 @@
                                     </span>
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>Folio de Inventario </label>
+                                    <label>Folio </label>
                                     {{ assignmentsModal.article.stockFolio }}
                                 </div>
                                 <br>
@@ -1323,7 +1346,7 @@
                                         <td>{{ docType.documentName }}</td>
                                         <td>
                                             <input @change="validateFile($event)" type="file" class="form-control"
-                                                   :disabled="isSaving"
+                                                   :disabled="isSaving" required
                                                    :name="assignmentsModal.fileInput + docType.idDocumentType"
                                                    accept="application/pdf,
                                                          image/png,image/jpg,image/jpeg,">
@@ -1445,7 +1468,7 @@
                                     <br>
                                     <div class="row">
                                         <div class="col-md-4"
-                                             v-if="newArticleModal.articleCategory.requireSerialNumber == 1">
+                                             v-if="newArticleModal.article.hasSerialNumber">
                                             <label>No. de Serie</label>
                                             <input v-model="newArticleModal.serialNumber" name="serialNumber" required
                                                    :disabled="isSaving" type="text" class="form-control">
