@@ -60,10 +60,14 @@
           },
           ready: function ()
           {
+              this.getInformationRequest();
 
           },
           data:
           {
+              idRequest: ${idRequest},
+              infoSolicitud: {},
+              infoAccountsPayable: {}
 
           },
           methods:
@@ -82,6 +86,24 @@
               {
                   $("#payModal").modal('show');
 
+              },
+              getInformationRequest: function(){
+                  this.$http.get(ROOT_URL+"/requests/"+ this.idRequest)
+                          .success(function (data)
+                          {
+                             this.infoSolicitud= data;
+                             this.getInformationAccountsPayable();
+                          });
+              },
+              getInformationAccountsPayable: function(){
+                  this.$http.get(ROOT_URL+"/accounts-payable/folio?folio="+this.infoSolicitud.folio).
+                  success(function(data)
+                  {
+                      this.infoAccountsPayable = data;
+                  }).error(function(data)
+                  {
+                    showAlert("Ha fallado el registro de su informacion, intente nuevamente");
+                  });
               }
 
           },
@@ -119,10 +141,6 @@
                                   <label>
                                       Nombre/Razon Social
                                   </label>
-
-                                  <p class="underline">
-                                    Ruben Andrade
-                                  </p>
                                 </div>
                                 <div class="col-xs-3">
                                   <label>
@@ -148,6 +166,7 @@
                                     <label>
                                         Nombre de contacto
                                     </label>
+
                                 </div>
                                 <div class="col-xs-3">
                                     <label>
@@ -209,21 +228,33 @@
                                     <label>
                                         Nombre
                                     </label>
+                                    <p class="underline">
+                                      {{infoSolicitud.userRequest.dwEmployee.employee.fullName}}
+                                    </p>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>
                                         Puesto
                                     </label>
+                                    <p class="underline">
+                                      {{infoSolicitud.userRequest.dwEmployee.role.roleName}}
+                                    </p>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>
                                         Empresa
                                     </label>
+                                    <p class="underline">
+                                      {{infoSolicitud.userRequest.dwEmployee.dwEnterprise.distributor.acronyms}}
+                                    </p>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>
                                         Región
                                     </label>
+                                    <p class="underline">
+                                      {{infoSolicitud.userRequest.dwEmployee.dwEnterprise.region.regionName}}
+                                    </p>
                                 </div>
                             </div>
                           </div>
@@ -234,11 +265,17 @@
                                     <label>
                                         Sucursal
                                     </label>
+                                    <p class="underline">
+                                      {{infoSolicitud.userRequest.dwEmployee.dwEnterprise.branch.branchShort}}
+                                    </p>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>
                                         Área
                                     </label>
+                                    <p class="underline">
+                                      {{infoSolicitud.userRequest.dwEmployee.dwEnterprise.area.areaName}}
+                                    </p>
                                 </div>
                             </div>
                           </div>
@@ -259,6 +296,9 @@
                                   <label>
                                       Concepto
                                   </label>
+                                  <div class="row" v-for="informacion in infoSolicitud.requestProductsList">
+                                         {{informacion.product.product}}
+                                  </div>
                               </div>
                               <div class="col-xs-3">
                                   <label>
@@ -283,7 +323,9 @@
                               <label>
                                   Descripción de la Solicitud
                               </label>
-                             <textarea class="form-control" rows="3" cols="40"></textarea>
+                             <textarea class="form-control" rows="1" cols="40">
+                                 {{ infoSolicitud.description}}
+                             </textarea>
                           </div>
                         </div>
 
@@ -463,6 +505,10 @@
            </div>
          </div>
        </div>
+
+       <pre>
+           {{ $data.infoAccountsPayable | json}}
+       </pre>
 
 
 
