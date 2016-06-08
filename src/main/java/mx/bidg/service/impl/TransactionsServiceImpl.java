@@ -68,7 +68,7 @@ public class TransactionsServiceImpl implements TransactionsService {
             transactions.setAmount(node.get("amount").decimalValue());
             transactions.setBalances(new Balances(node.get("idBalance").asInt()));
             transactions.setCurrencies(new CCurrencies(node.get("idCurrency").asInt()));
-            transactions.setOperationTypes(COperationTypes.EGRESO);
+            transactions.setOperationTypes(COperationTypes.INGRESO);
             transactions.setTransactionsStatus(CTransactionsStatus.PAGADA);
             transactions.setTransactionNumber(node.get("transactionNumber").asText());
             transactions.setCreationDate(LocalDateTime.now());
