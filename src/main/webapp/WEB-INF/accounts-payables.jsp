@@ -88,7 +88,13 @@
             accountsPayablesofDay: {},
             today: '',
             allBalances: {},
-            balance: ''
+            balance: '',
+            transaction: {
+                amount: '',
+                idBalance: '',
+                idCurrency: '',
+                transactionNumber: 1
+            }
           },
           methods:
           {
@@ -137,6 +143,27 @@
                                  self.balance= element;
                              });
                           });
+              },
+              saveTransaction: function(){
+                  if (this.transaction.amount <= 0)
+                  {
+                    showAlert("No puedes ingresar cantidades negativas");
+                    this.transaction.amount= '';
+                  }
+                  else {
+                     this.transaction.idBalance =  this.balance.idBalance;
+                     this.transaction.idCurrency = this.balance.currencies.idCurrency;
+
+                     this.$http.post(ROOT_URL+"/transactions/entry-pay-account", JSON.stringify(this.transaction))
+                             .success(function (data)
+                             {
+                                showAlert("Bien");
+                             }).error(function(data)
+                             {
+                                 showAlert("Mal");
+                             });
+                   }
+
               }
 
           },
@@ -174,11 +201,11 @@
                          <div class="col-xs-9">
                            <div class="input-group">
                              <span class="input-group-addon">$</span>
-                             <input type="text" class="form-control">
+                             <input number class="form-control" v-model="transaction.amount">
                            </div>
                          </div>
                          <div class="col-xs-3">
-                           <button class="btn btn-default"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+                           <button class="btn btn-default" @click="saveTransaction"><span class="glyphicon glyphicon-floppy-disk"></span></button>
                          </div>
                        </div>
                        <div class="col-xs-2">
@@ -333,6 +360,9 @@
              </div>
          </div>
        </div>
+       <%-- <pre>
+           {{$data.transaction | json}}
+       </pre> --%>
       </div> <!-- #contenidos -->
       <!-- Fecha de Termino- Agregar fecha dia de solicitud-->
     </jsp:body>
