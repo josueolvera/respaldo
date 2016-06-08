@@ -26,6 +26,5 @@ public interface AccountsPayableService {
     List<AccountsPayable> findAccountsNow();
     List<AccountsPayable> findByReschedule();
     void payAccount(Integer idAccountPayable,String data) throws IOException;
-    void entryPayAccount(Integer idAccountPayable,String data) throws IOException;
     void changeDate(Integer idAccountPayable,String data) throws IOException;
 }

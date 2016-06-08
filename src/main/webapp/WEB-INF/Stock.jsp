@@ -373,7 +373,6 @@
                         this.editModal.attribute.idAttribute = this.editModal.selectAttr[0].selectize.getValue();
                         this.editModal.attribute.attributeName = this.editModal.selectAttr[0].selectize.getOption(this.editModal.attribute.idAttribute).text();
                         var self = this;
-                        console.log(this.editModal.article.article.articlesCategories.idArticlesCategory);
                         this.$http.get(
                                 ROOT_URL +
                                 "/values?idAttribute=" +
@@ -420,14 +419,10 @@
                         if (article.stockDocumentsList == null) {
                             this.fetchStockDocuments(article);
                         }
-                        if (article.stockEmployeeAssignmentsList == null) {
-                            this.fetchStockAssignments(article);
-                        }
                     },
                     cleanArticle: function (article) {
                         article.propertiesList = null;
                         article.stockDocumentsList = null;
-                        article.stockEmployeeAssignmentsList = null;
                     },
                     removeProperty: function (article, property) {
                         this.isSaving = true;
@@ -462,11 +457,13 @@
                             showAlert("Articulo guardado")
                             this.saved = true;
                             this.getStocks();
+                            this.doNotSeeAssignView();
+                            this.newArticleModal.articleCategory = '';
                             this.closeNewArticleModal();
                             this.isSaving = false;
                         }).error(function (data) {
                             this.isSaving = false;
-                            showAlert("No se pudo guardar el articulo", {type:3})
+                            showAlert("No se pudo guardar el artículo", {type:3})
                         });
                     },
                     addProperty: function (article) {
@@ -516,40 +513,49 @@
                         var self = this;
                         var idAttr = this.newArticleModal.selectAttr[0].selectize.getValue();
                         var idVal = this.newArticleModal.selectValue[0].selectize.getValue();
-                        var property = {
-                            value: {
-                                idValue: idVal,
-                                value: this.newArticleModal.selectValue[0].selectize.getOption(idVal).text()
-                            },
-                            attributesArticles: {
-                                idArticle: this.newArticleModal.idArticle,
-                                idAttribute: idAttr,
-                                attributes: {
+                        if (
+                                idAttr === '' ||
+                                idVal === '' ||
+                                this.newArticleModal.selectValue[0].selectize.getOption(idVal).text() === '' ||
+                                this.newArticleModal.selectAttr[0].selectize.getOption(idAttr).text() === ''
+                        ) {
+                            return;
+                        } else {
+                            var property = {
+                                value: {
+                                    idValue: idVal,
+                                    value: this.newArticleModal.selectValue[0].selectize.getOption(idVal).text()
+                                },
+                                attributesArticles: {
+                                    idArticle: this.newArticleModal.idArticle,
                                     idAttribute: idAttr,
-                                    attributeName: this.newArticleModal.selectAttr[0].selectize.getOption(idAttr).text()
+                                    attributes: {
+                                        idAttribute: idAttr,
+                                        attributeName: this.newArticleModal.selectAttr[0].selectize.getOption(idAttr).text()
+                                    }
                                 }
-                            }
-                        };
+                            };
 
-                        this.newArticleModal.attributes.forEach(function (attribute) {
-                            if (attribute.idAttribute.toString() === idAttr) {
-                                self.newArticleModal.attributes.$remove(attribute);
-                            }
-                        });
+                            this.newArticleModal.attributes.forEach(function (attribute) {
+                                if (attribute.idAttribute.toString() === idAttr) {
+                                    self.newArticleModal.attributes.$remove(attribute);
+                                }
+                            });
 
-                        this.newArticleModal.selectAttr[0].selectize.destroy();
-                        this.newArticleModal.selectAttr = $('#select-attribute-new').selectize({
-                            maxItems: 1,
-                            valueField: 'idAttribute',
-                            labelField: 'attributeName',
-                            searchField: 'attributeName',
-                            options: self.newArticleModal.attributes,
-                            create: false
-                        }).on('change',this.fetchNewArticleModalValues);
+                            this.newArticleModal.selectAttr[0].selectize.destroy();
+                            this.newArticleModal.selectAttr = $('#select-attribute-new').selectize({
+                                maxItems: 1,
+                                valueField: 'idAttribute',
+                                labelField: 'attributeName',
+                                searchField: 'attributeName',
+                                options: self.newArticleModal.attributes,
+                                create: false
+                            }).on('change',this.fetchNewArticleModalValues);
 
-                        this.fetchNewArticleModalValues();
+                            this.fetchNewArticleModalValues();
 
-                        this.newArticleModal.properties.push(property);
+                            this.newArticleModal.properties.push(property);
+                        }
                     },
                     uploadFilesAssignments: function (article) {
                         if (this.assignmentsModal.selected.dwEmployees == null) {
@@ -765,6 +771,14 @@
                                 this.selectedOptions.branch.id + "&idArea=" +
                                 this.selectedOptions.area.id
                         ).success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (stock) {
+                                if (isNaN(stock.dwEnterprises)) {
+                                    jsonObjectIndex[stock.dwEnterprises._id] = stock.dwEnterprises;
+                                } else {
+                                    stock.dwEnterprises = jsonObjectIndex[stock.dwEnterprises];
+                                }
+                            });
                             this.stockGroups = this.groupBy(data, function (item) {
                                 return item.idDwEnterprises;
                             });
@@ -931,7 +945,7 @@
                         </h4>
                     </div>
                     <div class="col-xs-12 panel-group">
-                        <div v-for="article in stock | filterBy stockFilter in 'article.articleName'" @build="fetchStockAssignments(article)"
+                        <div v-for="article in stock | filterBy stockFilter" @build="fetchStockAssignments(article)"
                              class="lazy panel panel-default">
                             <div class="panel-heading">
                                 <div class="row">
@@ -1382,7 +1396,7 @@
                         <div class="modal-header">
                             <button @click.prevent="closeAttachmentsModal" class="close"><span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title">Documentos adjuntos</h4>
+                            <h4 class="modal-title">Actualizar documentos</h4>
                         </div>
                         <div class="modal-body">
                             <div class="row">
