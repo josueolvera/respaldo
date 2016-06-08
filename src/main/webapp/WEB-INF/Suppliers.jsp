@@ -1270,25 +1270,21 @@
                             </div>
                             <br>
                             <div class="row">
-                                <div class="col-xs-4">
+                                <div class="col-xs-3">
                                     <label>Distribuidor</label>
-                                    <input v-model="provider.accountingAccounts.distributor.distributorName" maxlength="4"
-                                           class="form-control" name="name" disabled="true">
+                                    <p>{{ provider.accountingAccounts.distributor.distributorName }}</p>
                                 </div>
-                                <div class="col-xs-2">
-                                    <label>Primer nivel</label>
-                                    <input v-model="provider.accountingAccounts.firstLevel" maxlength="4"
-                                           class="form-control text-center" name="name" disabled="true">
+                                <div class="col-xs-3">
+                                    <label>Cuenta contable</label>
+                                    <p>
+                                        {{ provider.accountingAccounts.firstLevel }} -
+                                        {{ provider.accountingAccounts.secondLevel | numbersPadding }} -
+                                        {{ provider.accountingAccounts.thirdLevel | numbersPadding }}
+                                    </p>
                                 </div>
-                                <div class="col-xs-2">
-                                    <label>Segundo nivel</label>
-                                    <input v-model="provider.accountingAccounts.secondLevel | numbersPadding"
-                                           maxlength="3" class="form-control text-center" name="name" disabled="true">
-                                </div>
-                                <div class="col-xs-2">
-                                    <label>Tercer nivel</label>
-                                    <input v-model="provider.accountingAccounts.thirdLevel | numbersPadding" maxlength="3"
-                                           class="form-control text-center" name="name" disabled="true">
+                                <div class="col-xs-6">
+                                    <label>Descripción</label>
+                                    <p>{{ provider.accountingAccounts.description }}</p>
                                 </div>
                             </div>
                             <br>
