@@ -21,6 +21,7 @@
                     this.getArticlesCategories();
                 },
                 data: {
+                    saved:false,
                     assign:false,
                     isSaving: false,
                     stockGroups: [],
@@ -71,6 +72,10 @@
                         fileInput: "file-type-"
                     },
                     editModal: {
+                        attribute:{
+                            idAttribute:'',
+                            attributeName:''
+                        },
                         serialNumber: 0,
                         stockFolio: 0,
                         articleStatus: null,
@@ -83,6 +88,11 @@
                         article: null
                     },
                     newArticleModal: {
+                        attribute:{
+                            idAttribute:'',
+                            attributeName:''
+                        },
+                        article:'',
                         serialNumber: null,
                         stockFolio: null,
                         articleStatus: null,
@@ -134,12 +144,8 @@
                         this.datetimepickerPurchaseDate = $('#datetimepickerPurchaseDate').datetimepicker({
                             locale: 'es',
                             format: 'DD-MM-YYYY',
-                            useCurrent: false,
-                            minDate: moment().add(1, 'minutes')
+                            useCurrent: false
                         }).data();
-                    },
-                    validateNewArticleForm: function () {
-
                     },
                     doNotSeeAssignView: function () {
                         this.assign = false;
@@ -148,6 +154,7 @@
                         this.assign = true;
                     },
                     getArticles : function (articleCategory) {
+                        this.resetFromArticleCategory();
                         this.$http.get(ROOT_URL + "/articles/article-category/" + articleCategory.idArticlesCategory).success(function (data) {
                             this.newArticleModal.articles = data;
                             this.newArticleModal.idArticle = '';
@@ -273,10 +280,21 @@
                                 options: self.editModal.attributes,
                                 create: false
                             }).on('change',this.fetchEditModalValues);
+
+                            this.editModal.attribute.idAttribute = this.editModal.selectAttr[0].selectize.getValue();
+                            this.editModal.attribute.attributeName = this.editModal.selectAttr[0].selectize.getOption(this.editModal.attribute.idAttribute).text();
                         });
                     },
                     fetchAttributesNewArticleModal: function (idArticle) {
+                        var self = this;
                         this.$http.get(ROOT_URL + "/attributes/" + idArticle).success(function (data) {
+                            this.newArticleModal.articles.forEach(function (article) {
+                                if (article.idArticle == idArticle) {
+                                    self.newArticleModal.article = article;
+                                }
+                            });
+                            this.resetFromArticle();
+                            this.newArticleModal == null;
                             this.newArticleModal.attributes = data;
                             if (this.newArticleModal.selectAttr != '') {
                                 this.newArticleModal.selectAttr[0].selectize.destroy();
@@ -289,6 +307,9 @@
                                 options: data,
                                 create: false
                             }).on('change',this.fetchNewArticleModalValues);
+
+                            this.newArticleModal.attribute.idAttribute = this.newArticleModal.selectAttr[0].selectize.getValue();
+                            this.newArticleModal.attribute.attributeName = this.newArticleModal.selectAttr[0].selectize.getOption(this.newArticleModal.attribute.idAttribute).text();
                         });
                     },
                     fetchArticleStatus: function () {
@@ -308,6 +329,8 @@
                     },
                     fetchNewArticleModalValues: function () {
                         var self = this;
+                        this.newArticleModal.attribute.idAttribute = this.newArticleModal.selectAttr[0].selectize.getValue();
+                        this.newArticleModal.attribute.attributeName = this.newArticleModal.selectAttr[0].selectize.getOption(this.newArticleModal.attribute.idAttribute).text();
                         this.$http.get(
                                 ROOT_URL +
                                 '/values?idAttribute=' +
@@ -347,6 +370,8 @@
                         });
                     },
                     fetchEditModalValues: function () {
+                        this.editModal.attribute.idAttribute = this.editModal.selectAttr[0].selectize.getValue();
+                        this.editModal.attribute.attributeName = this.editModal.selectAttr[0].selectize.getOption(this.editModal.attribute.idAttribute).text();
                         var self = this;
                         console.log(this.editModal.article.article.articlesCategories.idArticlesCategory);
                         this.$http.get(
@@ -435,6 +460,7 @@
                     addProperties: function (idStock,properties) {
                         this.$http.post(ROOT_URL + "/stock/" + idStock + "/properties", JSON.stringify(properties)).success(function (data) {
                             showAlert("Articulo guardado")
+                            this.saved = true;
                             this.getStocks();
                             this.closeNewArticleModal();
                             this.isSaving = false;
@@ -470,7 +496,7 @@
                         ).success(function (data) {
                             this.fetchStockProperties(article);
                             this.editModal.attributes.forEach(function (attribute) {
-                                if (attribute.idAttribute === idAttr) {
+                                if (attribute.idAttribute.toString() === idAttr) {
                                     self.editModal.attributes.$remove(attribute);
                                 }
                             });
@@ -506,7 +532,7 @@
                         };
 
                         this.newArticleModal.attributes.forEach(function (attribute) {
-                            if (attribute.idAttribute === Number(idAttr)) {
+                            if (attribute.idAttribute.toString() === idAttr) {
                                 self.newArticleModal.attributes.$remove(attribute);
                             }
                         });
@@ -654,7 +680,6 @@
                     },
                     saveNewStockArticle: function (properties) {
                         this.isSaving = true;
-                        console.log(properties);
                         var form = document.getElementById('newArticleFrom');
                         var formData = new FormData(form);
                         this.$http.post(ROOT_URL + "/stock", formData).success(function (data) {
@@ -673,6 +698,7 @@
                                 }
                         ).success(function () {
                             this.isSaving = false;
+                            this.saved = true;
                             this.getStocks();
                             this.assignmentsModal.selected.distributor = null;
                             this.assignmentsModal.selected.region = null;
@@ -695,7 +721,7 @@
                         $("#newArticleModal").modal("show");
                     },
                     closeNewArticleModal: function () {
-                        document.getElementById("newArticleFrom").reset();
+                        this.resetFromArticleCategory();
                         $("#newArticleModal").modal("hide");
                     },
                     showAttachmentsModal: function (article) {
@@ -724,11 +750,11 @@
                     },
                     getStocks: function () {
 
-                        if (this.selectedOptions.distributor.id == 0) {
-                            showAlert('Selecciona un distribuidor',{type:3})
+                        if (this.selectedOptions.distributor.id == 0 && this.saved == false) {
+                            showAlert('Selecciona un criterio de busqueda',{type:3})
                             return;
                         }
-
+                        this.saved = false;
                         this.stockGroups = [];
                         this.searching = true;
 
@@ -768,6 +794,31 @@
                             Vue.set(article, "isCollapsed", true);
 
                         }
+                    },
+                    resetFromArticle:function () {
+                        this.newArticleModal.properties = [];
+                        this.newArticleModal.serialNumber = '';
+                        this.newArticleModal.invoiceNumber = '';
+                        this.newArticleModal.purchaseDate = '';
+                        this.newArticleModal.selected.area = null;
+                        this.newArticleModal.selected.distributor = null;
+                        this.newArticleModal.selected.region = null;
+                        this.newArticleModal.selected.branch = null;
+                        this.newArticleModal.selected.dwEmployees = null;
+                        $("input:file").val('');
+                    },
+                    resetFromArticleCategory:function () {
+                        this.newArticleModal.idArticle = '';
+                        this.newArticleModal.properties = [];
+                        this.newArticleModal.serialNumber = '';
+                        this.newArticleModal.invoiceNumber = '';
+                        this.newArticleModal.purchaseDate = '';
+                        this.newArticleModal.selected.area = null;
+                        this.newArticleModal.selected.distributor = null;
+                        this.newArticleModal.selected.region = null;
+                        this.newArticleModal.selected.branch = null;
+                        this.newArticleModal.selected.dwEmployees = null;
+                        $("input:file").val('');
                     }
                 }
             });
@@ -806,6 +857,10 @@
                         </button>
                     </div>
                 </div>
+            </div>
+            <div v-if="!selectOptions.hierarchy.length > 0" class="col-xs-12"
+                 style="height: 6rem; padding: 2rem 0;">
+                <div class="loader">Cargando...</div>
             </div>
             <div class="col-xs-12" v-if="selectOptions.hierarchy.length > 0">
                 <hr size="30" style="border-top: 1px solid #ccc;">
@@ -876,7 +931,7 @@
                         </h4>
                     </div>
                     <div class="col-xs-12 panel-group">
-                        <div v-for="article in stock | filterBy stockFilter in 'article.articleName'"
+                        <div v-for="article in stock | filterBy stockFilter in 'article.articleName'" @build="fetchStockAssignments(article)"
                              class="lazy panel panel-default">
                             <div class="panel-heading">
                                 <div class="row">
@@ -886,8 +941,10 @@
                                             <p>{{ article.article.articleName }}</p>
                                         </div>
                                         <div class="col-md-3 col-xs-6">
-                                            <p><strong>No. de Serie</strong></p>
-                                            <p>{{ article.serialNumber }}</p>
+                                            <span v-if="article.article.hasSerialNumber">
+                                                <p><strong>No. de Serie</strong></p>
+                                                <p>{{ article.serialNumber }}</p>
+                                            </span>
                                         </div>
                                         <div class="col-md-3 col-xs-6">
                                             <p><strong>Fecha de alta</strong></p>
@@ -995,15 +1052,10 @@
                                     {{ historicalModal.article.article.articleName }}
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>No. de Serie </label>
-                                    {{ historicalModal.article.serialNumber }}
-                                </div>
-                                <div class="col-md-4 col-xs-12">
-                                    <label>Asignado a </label>
-                                    {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
-                                    {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
-                                    {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
-                                    {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}
+                                    <span v-if="historicalModal.article.article.hasSerialNumber">
+                                        <label>No. de Serie </label>
+                                        {{ historicalModal.article.serialNumber }}
+                                    </span>
                                 </div>
                             </div>
                             <div class="flex-row flex-content">
@@ -1121,23 +1173,25 @@
                                     {{ editModal.article.article.articleName }}
                                 </div>
                                 <div class="col-md-4">
-                                    <label>No. de Serie </label>
-                                    {{ editModal.article.serialNumber }}
+                                    <span v-if="editModal.article.article.hasSerialNumber">
+                                        <label>No. de Serie </label>
+                                        {{ editModal.article.serialNumber }}
+                                    </span>
+                                </div>
+                                <div class="col-md-4">
+                                    <span>
+                                        <label>Folio</label>
+                                        {{ editModal.article.stockFolio }}
+                                    </span>
                                 </div>
                             </div>
                             <hr />
                             <div class="row line">
-                                <div class="col-md-4">
-                                    <label>No. de Serie</label>
-                                    <input v-model="editModal.serialNumber"
-                                           :disabled="isSaving" type="text" class="form-control">
+                                <div class="col-xs-9">
+                                    <br>
+                                    <h4>Propiedades</h4>
                                 </div>
-                                <div class="col-md-4">
-                                    <label>Folio de Inventario</label>
-                                    <input v-model="editModal.stockFolio"
-                                           :disabled="isSaving" type="text" class="form-control">
-                                </div>
-                                <div class="col-md-4">
+                                <div class="col-xs-3">
                                     <label>Estado de Artículo</label>
                                     <select v-model="editModal.articleStatus"
                                             :disabled="isSaving" class="form-control">
@@ -1146,21 +1200,19 @@
                                     </select>
                                 </div>
                             </div>
-                            <br>
-                            <h4>Propiedades</h4>
                             <hr>
                             <div class="row">
                                 <div class="col-xs-4">
-                                    <label>Atributo</label>
-                                    <select required id="select-attribute-edit" class="form-control"></select>
+                                    <label>Propiedad</label>
+                                    <select required :disabled="isSaving" id="select-attribute-edit" class="form-control"></select>
                                 </div>
                                 <div class="col-xs-4">
-                                    <label>Valor</label>
-                                    <select required id="select-value-edit" class="form-control"></select>
+                                    <label>Seleccionar {{editModal.attribute.attributeName}}</label>
+                                    <select required :disabled="isSaving || editModal.attribute.attributeName == ''" id="select-value-edit" class="form-control"></select>
                                 </div>
                                 <div class="col-xs-1">
                                     <button @click.prevent="addProperty(editModal.article)"
-                                            :disabled="isSaving"
+                                            :disabled="isSaving || editModal.attribute.attributeName == ''"
                                             class="btn btn-default" style="margin-top: 2.5rem"
                                             data-toggle="tooltip" data-placement="top" title="Agregar Propiedad">
                                         <span class="glyphicon glyphicon-plus"></span>
@@ -1216,14 +1268,21 @@
                                     {{ assignmentsModal.article.article.articleName }}
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>No. de Serie </label>
-                                    {{ assignmentsModal.article.serialNumber }}
+                                    <span v-if="assignmentsModal.article.article.hasSerialNumber">
+                                        <label>No. de Serie </label>
+                                        {{ assignmentsModal.article.serialNumber }}
+                                    </span>
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>Folio de Inventario </label>
+                                    <label>Folio </label>
                                     {{ assignmentsModal.article.stockFolio }}
                                 </div>
-                                <div class="col-xs-12"><label>Asignar a</label></div>
+                                <br>
+                                <div class="col-xs-12">
+                                    <hr>
+                                    <h4>Asignar a</h4>
+                                    <hr>
+                                </div>
                                 <div class="col-md-3 col-xs-6">
                                     <label>Distribuidor</label>
                                     <select v-model="assignmentsModal.selected.distributor" class="form-control"
@@ -1277,21 +1336,17 @@
                                     </select>
                                 </div>
                             </div>
+                            <br>
+                            <h4>Documentos</h4>
                             <hr>
                             <form id="attachments-form" method="post" enctype="multipart/form-data"
                                   v-on:submit.prevent="uploadFilesAssignments(assignmentsModal.article)">
                                 <table class="table table-striped">
-                                    <thead>
-                                    <tr>
-                                        <th>Documento</th>
-                                        <th>Nuevo Documento</th>
-                                    </tr>
-                                    </thead>
                                     <tr v-for="docType in selectOptions.documentTypes" v-if="docType.required == 2">
                                         <td>{{ docType.documentName }}</td>
                                         <td>
                                             <input @change="validateFile($event)" type="file" class="form-control"
-                                                   :disabled="isSaving"
+                                                   :disabled="isSaving" required
                                                    :name="assignmentsModal.fileInput + docType.idDocumentType"
                                                    accept="application/pdf,
                                                          image/png,image/jpg,image/jpeg,">
@@ -1336,25 +1391,17 @@
                                     {{ attachmentsModal.article.article.articleName }}
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>No. de Serie: </label>
-                                    {{ attachmentsModal.article.serialNumber }}
-                                </div>
-                                <div class="col-md-4 col-xs-12">
-                                    <label>Asignado a: </label>
-                                    {{ attachmentsModal.article.stockEmployeeAssignmentsList[0].employee.fullName }}
+                                    <span v-if="attachmentsModal.article.article.hasSerialNumber">
+                                        <label>No. de Serie: </label>
+                                        {{ attachmentsModal.article.serialNumber }}
+                                    </span>
                                 </div>
                             </div>
-                            <hr>
+                            <br>
                             <form id="attachments-form2"
                                   method="post" enctype="multipart/form-data">
                                 <table class="table table-striped">
-                                    <thead>
-                                    <tr>
-                                        <th>Documento</th>
-                                        <th>Nuevo documento</th>
-                                    </tr>
-                                    </thead>
-                                    <tr v-for="docType in selectOptions.documentTypes">
+                                    <tr v-for="docType in selectOptions.documentTypes" v-if="docType.required == 1">
                                         <td>{{ docType.documentName }}</td>
                                         <td>
                                             <input @change="validateFile($event)" type="file" class="form-control"
@@ -1421,7 +1468,7 @@
                                     <br>
                                     <div class="row">
                                         <div class="col-md-4"
-                                             v-if="newArticleModal.articleCategory.requireSerialNumber == 1">
+                                             v-if="newArticleModal.article.hasSerialNumber">
                                             <label>No. de Serie</label>
                                             <input v-model="newArticleModal.serialNumber" name="serialNumber" required
                                                    :disabled="isSaving" type="text" class="form-control">
@@ -1448,16 +1495,16 @@
                                     <hr>
                                     <div class="row">
                                         <div class="col-xs-4">
-                                            <label>Atributo</label>
+                                            <label>Propiedad</label>
                                             <select :disabled="isSaving" id="select-attribute-new" class="form-control"></select>
                                         </div>
                                         <div class="col-xs-4">
-                                            <label>Valor</label>
-                                            <select :disabled="isSaving" id="select-value-new" class="form-control"></select>
+                                            <label>Seleccionar {{newArticleModal.attribute.attributeName}}</label>
+                                            <select :disabled="isSaving || newArticleModal.attribute.attributeName == ''" id="select-value-new" class="form-control"></select>
                                         </div>
                                         <div class="col-xs-1">
                                             <button type="button" @click="addPropertyNewArticle"
-                                                    :disabled="isSaving"
+                                                    :disabled="isSaving || newArticleModal.attribute.attributeName == ''"
                                                     class="btn btn-default" style="margin-top: 2.5rem"
                                                     data-toggle="tooltip" data-placement="top" title="Agregar Propiedad">
                                                 <span class="glyphicon glyphicon-plus"></span>
@@ -1485,13 +1532,10 @@
                                             </table>
                                         </div>
                                     </div>
+                                    <br>
+                                    <h4>Documentos</h4>
+                                    <hr>
                                     <table class="table table-striped">
-                                        <thead>
-                                        <tr>
-                                            <th>Documento</th>
-                                            <th>Nuevo Documento</th>
-                                        </tr>
-                                        </thead>
                                         <tr v-for="docType in selectOptions.documentTypes" v-if="docType.required == 1">
                                             <td>{{ docType.documentName }}</td>
                                             <td>
@@ -1521,9 +1565,13 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <br>
                                     <div  v-if="assign">
                                         <div class="row">
-                                            <div class="col-xs-12"><label>Asignar a</label></div>
+                                            <div class="col-xs-12">
+                                                <h4>Asignar a</h4>
+                                                <hr>
+                                            </div>
                                             <div class="col-md-3 col-xs-6">
                                                 <label>Distribuidor</label>
                                                 <select v-model="newArticleModal.selected.distributor" class="form-control" required
@@ -1581,13 +1629,10 @@
                                                 <input type="text" :value="newArticleModal.selected.area.dwEnterprise.idDwEnterprise" name="dwEnterprise" hidden>
                                             </div>
                                         </div>
+                                        <br>
+                                        <h4>Documentos</h4>
+                                        <hr>
                                         <table class="table table-striped">
-                                            <thead>
-                                            <tr>
-                                                <th>Documento</th>
-                                                <th>Nuevo Documento</th>
-                                            </tr>
-                                            </thead>
                                             <tr v-for="docType in selectOptions.documentTypes" v-if="docType.required == 2">
                                                 <td>{{ docType.documentName }}</td>
                                                 <td>
