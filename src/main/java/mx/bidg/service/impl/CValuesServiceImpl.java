@@ -31,7 +31,7 @@ public class CValuesServiceImpl implements CValuesService {
     }
 
     @Override
-    public List<CValues> findValuesByAttribute(int idAttribute) {
-        return valuesDao.findValuesByAttribute(idAttribute);
+    public List<CValues> findValuesByAttribute(int idAttribute, int idArticlesCategory) {
+        return valuesDao.findValuesByAttribute(idAttribute, idArticlesCategory);
     }
 }

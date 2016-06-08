@@ -16,9 +16,8 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import mx.bidg.dao.AccountsPayableDao;
-import mx.bidg.dao.CPeriodsDao;
-import mx.bidg.dao.RequestsDao;
+
+import mx.bidg.dao.*;
 import mx.bidg.model.*;
 import mx.bidg.service.AccountsPayableService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +36,12 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
 
     @Autowired
     private CPeriodsDao periodsDao;
+
+    @Autowired
+    private BudgetMonthBranchDao budgetMonthBranchDao;
+
+    @Autowired
+    private BalancesDao balancesDao;
     
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -165,10 +170,73 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
     }
 
     @Override
-    public void payAccount(Integer idAccountPayable) {
+    public void payAccount(Integer idAccountPayable, String data) throws IOException {
         AccountsPayable accountsPayable = accountsPayableDao.findById(idAccountPayable);
+
+        JsonNode node = mapper.readTree(data);
+
+        Transactions transactions = new Transactions();
+        transactions.setAccountsPayable(accountsPayable);
+        transactions.setAmount(node.get("amount").decimalValue());
+        transactions.setBalances(new Balances(node.get("idBalance").asInt()));
+        transactions.setCurrencies(new CCurrencies(node.get("idCurrency").asInt()));
+        transactions.setOperationTypes(COperationTypes.EGRESO);
+        transactions.setTransactionsStatus(CTransactionsStatus.PAGADA);
+        transactions.setTransactionNumber(node.get("transactionNumber").asText());
+        transactions.setCreationDate(LocalDateTime.now());
+
+        Requests requests = requestsDao.findByFolio(accountsPayable.getFolio());
+
+        BudgetMonthBranch budgetMonthBranch = requests.getBudgetMonthBranch();
+        BigDecimal addAmountTransaction = budgetMonthBranch.getExpendedAmount().add(transactions.getAmount());
+        budgetMonthBranch.setExpendedAmount(addAmountTransaction);
+        budgetMonthBranchDao.update(budgetMonthBranch);
+
+        Balances balances = balancesDao.findById(transactions.getIdBalance());
+        BigDecimal substractAmountTransaction = balances.getCurrentAmount().subtract(transactions.getAmount());
+        balances.setCurrentAmount(substractAmountTransaction);
+        balancesDao.update(balances);
         accountsPayable.setAccountPayableStatus(CAccountsPayableStatus.FINALIZADA);
         accountsPayableDao.update(accountsPayable);
+    }
+
+    @Override
+    public void entryPayAccount(Integer idAccountPayable, String data) throws IOException {
+        AccountsPayable accountsPayable = accountsPayableDao.findById(idAccountPayable);
+
+        JsonNode node = mapper.readTree(data);
+
+        Transactions transactions = new Transactions();
+        transactions.setAccountsPayable(accountsPayable);
+        transactions.setAmount(node.get("amount").decimalValue());
+        transactions.setBalances(new Balances(node.get("idBalance").asInt()));
+        transactions.setCurrencies(new CCurrencies(node.get("idCurrency").asInt()));
+        transactions.setOperationTypes(COperationTypes.EGRESO);
+        transactions.setTransactionsStatus(CTransactionsStatus.PAGADA);
+        transactions.setTransactionNumber(node.get("transactionNumber").asText());
+        transactions.setCreationDate(LocalDateTime.now());
+
+        Balances balances = balancesDao.findById(transactions.getIdBalance());
+        BigDecimal addAmountTransaction = balances.getCurrentAmount().add(transactions.getAmount());
+        balances.setCurrentAmount(addAmountTransaction);
+        balancesDao.update(balances);
+        accountsPayable.setAccountPayableStatus(CAccountsPayableStatus.FINALIZADA);
+        accountsPayableDao.update(accountsPayable);
+    }
+
+    @Override
+    public void changeDate(Integer idAccountPayable, String data) throws IOException {
+        JsonNode json = mapper.readTree(data);
+        LocalDateTime dueDate = (json.get("dueDate") == null || json.findValue("dueDate").asText().equals("")) ? null :
+                LocalDateTime.parse(json.get("dueDate").asText(), DateTimeFormatter.ISO_DATE_TIME);
+        AccountsPayable accountsPayable = accountsPayableDao.findById(idAccountPayable);
+        LocalDateTime currentDate = accountsPayable.getDueDate();
+
+        if (dueDate.toLocalDate().isAfter(currentDate.toLocalDate())){
+            accountsPayable.setDueDate(dueDate);
+            accountsPayable.setAccountPayableStatus(CAccountsPayableStatus.REPROGRAMADA);
+            accountsPayableDao.update(accountsPayable);
+        }
     }
 
 

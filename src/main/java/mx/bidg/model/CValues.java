@@ -43,6 +43,15 @@ public class CValues implements Serializable {
     @JsonView(JsonViews.Root.class)
     private CAttributes Attribute;
 
+    @Column(name = "ID_ARTICLE_CATEGORY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idArticlesCategory;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_ARTICLE_CATEGORY", referencedColumnName = "ID_ARTICLE_CATEGORY")
+    @JsonView(JsonViews.Root.class)
+    private CArticlesCategories articlesCategories;
+
     public CValues() {}
 
     public CValues(Integer idValue) {
@@ -71,6 +80,14 @@ public class CValues implements Serializable {
 
     public void setAttribute(CAttributes attribute) {
         Attribute = attribute;
+    }
+
+    public CArticlesCategories getArticlesCategories() {
+        return articlesCategories;
+    }
+
+    public void setArticlesCategories(CArticlesCategories articlesCategories) {
+        this.articlesCategories = articlesCategories;
     }
 
     @Override

@@ -5,22 +5,14 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 /**
@@ -56,9 +48,9 @@ public class Transactions implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
-    private Date creationDate;
+    private LocalDateTime creationDate;
     
     @Basic(optional = false)
     @NotNull
@@ -118,7 +110,7 @@ public class Transactions implements Serializable {
         this.idTransaction = idTransaction;
     }
 
-    public Transactions(Integer idTransaction, BigDecimal amount, Date creationDate, int idAccessLevel) {
+    public Transactions(Integer idTransaction, BigDecimal amount, LocalDateTime creationDate, int idAccessLevel) {
         this.idTransaction = idTransaction;
         this.amount = amount;
         this.creationDate = creationDate;
@@ -149,11 +141,11 @@ public class Transactions implements Serializable {
         this.transactionNumber = transactionNumber;
     }
 
-    public Date getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 

@@ -95,10 +95,22 @@ public class AccountsPayableController {
         );
     }
 
-    @RequestMapping(value = "/pay-account/{idAccountPayable}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> payAccount(@PathVariable Integer idAccountPayable) throws IOException{
-        accountsPayableService.payAccount(idAccountPayable);
+    @RequestMapping(value = "/pay-account/{idAccountPayable}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> payAccount(@PathVariable Integer idAccountPayable, @RequestBody String data) throws IOException{
+        accountsPayableService.payAccount(idAccountPayable, data);
         return new ResponseEntity<>("Cuenta pagada", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/entry-pay-account/{idAccountPayable}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> entryPayAccount(@PathVariable Integer idAccountPayable, @RequestBody String data) throws IOException{
+        accountsPayableService.entryPayAccount(idAccountPayable,data);
+        return new ResponseEntity<>("Cuenta pagada", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/reschedule/{idAccountPayable}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> changeDate(@PathVariable Integer idAccountPayable, @RequestBody String data) throws IOException{
+        accountsPayableService.changeDate(idAccountPayable,data);
+        return new ResponseEntity<>("Cuenta reprogramada", HttpStatus.OK);
     }
 
 

@@ -22,6 +22,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicUpdate
 @Table(name = "C_TRANSACTIONS_STATUS")
 public class CTransactionsStatus implements Serializable {
+    public static final CTransactionsStatus PAGADA = new CTransactionsStatus(1);
 
     private static final long serialVersionUID = 1L;
     

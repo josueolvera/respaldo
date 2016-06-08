@@ -9,5 +9,5 @@ import java.util.List;
  * Created on 30/12/15.
  */
 public interface CValuesDao extends InterfaceDao<CValues> {
-    List<CValues> findValuesByAttribute(int idAttribute);
+    List<CValues> findValuesByAttribute(int idAttribute, int idArticlesCategory);
 }

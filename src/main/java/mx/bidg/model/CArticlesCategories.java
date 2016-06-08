@@ -50,9 +50,9 @@ public class CArticlesCategories implements Serializable {
 
     @Basic(optional = false)
     @NotNull
-    @Column(name = "REQUIRE_INVOICE")
+    @Column(name = "REQUIRE_SERIAL_NUMBER")
     @JsonView(JsonViews.Root.class)
-    private int requireInvoice;
+    private int requireSerialNumber;
 
 
 
@@ -63,10 +63,10 @@ public class CArticlesCategories implements Serializable {
         this.idArticlesCategory = idAticlesCategory;
     }
 
-    public CArticlesCategories(Integer idAticlesCategory, String articlesCategoryName, int requireInvoice) {
+    public CArticlesCategories(Integer idAticlesCategory, String articlesCategoryName, int requireSerialNumber) {
         this.idArticlesCategory = idAticlesCategory;
         this.articlesCategoryName = articlesCategoryName;
-        this.requireInvoice = requireInvoice;
+        this.requireSerialNumber = requireSerialNumber;
     }
 
     public Integer getIdArticlesCategory() {
@@ -85,12 +85,12 @@ public class CArticlesCategories implements Serializable {
         this.articlesCategoryName = articlesCategoryName;
     }
 
-    public int getRequireInvoice() {
-        return requireInvoice;
+    public int getRequireSerialNumber() {
+        return requireSerialNumber;
     }
 
-    public void setRequireInvoice(int requireInvoice) {
-        this.requireInvoice = requireInvoice;
+    public void setRequireSerialNumber(int requireSerialNumber) {
+        this.requireSerialNumber = requireSerialNumber;
     }
 
     @Override
