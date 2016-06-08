@@ -373,7 +373,6 @@
                         this.editModal.attribute.idAttribute = this.editModal.selectAttr[0].selectize.getValue();
                         this.editModal.attribute.attributeName = this.editModal.selectAttr[0].selectize.getOption(this.editModal.attribute.idAttribute).text();
                         var self = this;
-                        console.log(this.editModal.article.article.articlesCategories.idArticlesCategory);
                         this.$http.get(
                                 ROOT_URL +
                                 "/values?idAttribute=" +
