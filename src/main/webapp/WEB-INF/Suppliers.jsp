@@ -280,14 +280,7 @@
                         this.supplier.providersAccountsList.$remove(cuenta);
                     },
                     validationAddress: function () {
-                        if (this.supplier.providerAddressList.length != 0) {
-                            if (this.direccion.numExt.length != 0 && this.direccion.numInt.length != 0 && this.direccion.street != 0) {
-                                this.saveAddress(this.direccion.street, this.direccion.numExt, this.direccion.numInt, this.direccion.idAsentamiento);
-                                return true;
-                            } else {
-                                return true;
-                            }
-                        }else {
+                        if (this.supplier.providerAddressList.length < 1) {
                             if (this.direccion.numExt.length != 0 && this.direccion.numInt.length != 0 && this.direccion.street != 0) {
                                 this.saveAddress(this.direccion.street, this.direccion.numExt, this.direccion.numInt, this.direccion.idAsentamiento);
                                 return true;
@@ -295,6 +288,8 @@
                                 showAlert("Ingresa los campos requeridos: Calle, Núm. Exterior, Núm. Interior, Colonia", {type: 3});
                                 return false;
                             }
+                        }else{
+                            return true;
                         }
                     },
                     saveAddress: function (street,numExt,numInt,idAsentamiento) {
@@ -680,7 +675,8 @@
                         this.requestInformation.idRequestType = '',
                         this.requestInformation.idProductType = '',
                         this.asentamiento = [];
-                        this.estadosMunicipios={};
+                        this.estadosMunicipios = {};
+                        this.distributors = [],
 
                         $('#modalAlta').modal('hide');
                         $('#modalModi').modal('hide');
