@@ -750,7 +750,7 @@
                 filters: {
                     numbersPadding: function (value) {
                         var result = "";
-                        var padding = 4;
+                        var padding = 3;
                         if (typeof value != 'undefined') {
                             result = "0000" + value;
                             result = result.substr(result.length - padding);
