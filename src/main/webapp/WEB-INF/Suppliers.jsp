@@ -18,6 +18,9 @@
             .table-row {
                 padding: 1rem;
             }
+            .flex-content {
+                overflow-x: hidden;
+            }
         </style>
     </jsp:attribute>
 
@@ -801,7 +804,7 @@
     </jsp:attribute>
 
     <jsp:body>
-        <div id="contenidos" style="height: 700px" class="flex-box flex-row flex-header container-fluid">
+        <div id="contenidos" class="flex-box container-fluid">
             <br>
             <div>
                 <div class="row">
@@ -811,9 +814,7 @@
 
                     <div class="col-xs-4 text-right" style="padding: 0px">
                         <div class="col-xs-7 text-left" style="padding: 0px">
-                            <label>
-                                Buscar por RFC
-                            </label>
+                            <label>Buscar por RFC</label>
                             <input class="form-control" maxlength="13" v-model="search">
                         </div>
 
@@ -828,42 +829,22 @@
 
                 <div>
                     <div class="row table-header">
-                        <div class="col-xs-3">
-                            <b> Nombre/Razón social</b>
-                        </div>
-                        <div class="col-xs-3">
-                            <b> RFC</b>
-                        </div>
-                        <div class="col-xs-2">
-                            <b> Dias de crédito</b>
-                        </div>
-                        <div class="col-xs-2">
-                            <b> Día de corte</b>
-                        </div>
-                        <div class="col-xs-1">
-                            <b> Modificar</b>
-                        </div>
-                        <div class="col-xs-1">
-                            <b>Eliminar</b>
-                        </div>
+                        <div class="col-xs-3"><b>Nombre/Razón social</b></div>
+                        <div class="col-xs-3"><b>RFC</b></div>
+                        <div class="col-xs-2"><b>Dias de crédito</b></div>
+                        <div class="col-xs-2"><b>Día de corte</b></div>
+                        <div class="col-xs-1"><b>Modificar</b></div>
+                        <div class="col-xs-1"><b>Eliminar</b></div>
                     </div>
                 </div>
             </div>
             <br>
             <div class="table-body flex-row flex-content">
                 <div class="row table-row" v-for="provider in providers | filterBy search in 'rfc'" v-if="provider.supplierLow == null">
-                    <div class="col-xs-3">
-                        {{provider.providerName | separateProviderName}}
-                    </div>
-                    <div class="col-xs-3">
-                        {{provider.rfc}}
-                    </div>
-                    <div class="col-xs-2">
-                        {{provider.creditDays}} dias
-                    </div>
-                    <div class="col-xs-2">
-                        {{provider.cuttingDate}} del mes
-                    </div>
+                    <div class="col-xs-3">{{provider.providerName | separateProviderName}}</div>
+                    <div class="col-xs-3">{{provider.rfc}}</div>
+                    <div class="col-xs-2">{{provider.creditDays}} dias</div>
+                    <div class="col-xs-2">{{provider.cuttingDate}} del mes</div>
                     <div class="col-xs-1">
                         <button type="button" class="btn btn-default" name="button" data-toggle="tooltip"
                                 data-placement="bottom" title="Modificar"
@@ -877,18 +858,13 @@
                     </div>
                 </div>
             </div>
-
-
             <!-- container-fluid -->
-
             <div class="modal fade" id="modalAlta" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">
-                                Registro de proveedor
-                            </h4>
+                            <h4 class="modal-title">Registro de proveedor</h4>
                         </div>
                         <div class="modal-body">
                             <div class="row">
