@@ -907,8 +907,10 @@
                                             <p>{{ article.article.articleName }}</p>
                                         </div>
                                         <div class="col-md-3 col-xs-6">
-                                            <p><strong>No. de Serie</strong></p>
-                                            <p>{{ article.serialNumber }}</p>
+                                            <span v-if="article.article.hasSerialNumber">
+                                                <p><strong>No. de Serie</strong></p>
+                                                <p>{{ article.serialNumber }}</p>
+                                            </span>
                                         </div>
                                         <div class="col-md-3 col-xs-6">
                                             <p><strong>Fecha de alta</strong></p>
@@ -1016,8 +1018,10 @@
                                     {{ historicalModal.article.article.articleName }}
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>No. de Serie </label>
-                                    {{ historicalModal.article.serialNumber }}
+                                    <span v-if="historicalModal.article.article.hasSerialNumber">
+                                        <label>No. de Serie </label>
+                                        {{ historicalModal.article.serialNumber }}
+                                    </span>
                                 </div>
                                 <div class="col-md-4 col-xs-12">
                                     <label>Asignado a </label>
@@ -1142,16 +1146,20 @@
                                     {{ editModal.article.article.articleName }}
                                 </div>
                                 <div class="col-md-4">
-                                    <label>No. de Serie </label>
-                                    {{ editModal.article.serialNumber }}
+                                    <span v-if="editModal.article.article.hasSerialNumber">
+                                        <label>No. de Serie </label>
+                                        {{ editModal.article.serialNumber }}
+                                    </span>
                                 </div>
                             </div>
                             <hr />
                             <div class="row line">
                                 <div class="col-md-4">
-                                    <label>No. de Serie</label>
-                                    <input v-model="editModal.serialNumber"
+                                    <span v-if="editModal.article.article.hasSerialNumber">
+                                        <label>No. de Serie</label>
+                                        <input v-model="editModal.serialNumber"
                                            :disabled="isSaving" type="text" class="form-control">
+                                    </span>
                                 </div>
                                 <div class="col-md-4">
                                     <label>Folio de Inventario</label>
@@ -1237,8 +1245,10 @@
                                     {{ assignmentsModal.article.article.articleName }}
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>No. de Serie </label>
-                                    {{ assignmentsModal.article.serialNumber }}
+                                    <span v-if="assignmentsModal.article.article.hasSerialNumber">
+                                        <label>No. de Serie </label>
+                                        {{ assignmentsModal.article.serialNumber }}
+                                    </span>
                                 </div>
                                 <div class="col-md-4 col-xs-6">
                                     <label>Folio de Inventario </label>
@@ -1358,8 +1368,10 @@
                                     {{ attachmentsModal.article.article.articleName }}
                                 </div>
                                 <div class="col-md-4 col-xs-6">
-                                    <label>No. de Serie: </label>
-                                    {{ attachmentsModal.article.serialNumber }}
+                                    <span v-if="attachmentsModal.article.article.hasSerialNumber">
+                                        <label>No. de Serie: </label>
+                                        {{ attachmentsModal.article.serialNumber }}
+                                    </span>
                                 </div>
                             </div>
                             <br>

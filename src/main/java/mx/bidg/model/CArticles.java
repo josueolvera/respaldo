@@ -42,6 +42,10 @@ public class CArticles implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idArticleCategory;
 
+    @Column(name = "HAS_SERIAL_NUMBER")
+    @JsonView(JsonViews.Root.class)
+    private Boolean hasSerialNumber;
+
     @OneToOne
     @JoinColumn(name = "ID_PRODUCT", referencedColumnName = "ID_PRODUCT")
     @JsonView(JsonViews.Embedded.class)
@@ -110,6 +114,14 @@ public class CArticles implements Serializable {
 
     public void setArticlesCategories(CArticlesCategories articlesCategories) {
         this.articlesCategories = articlesCategories;
+    }
+
+    public Boolean hasSerialNumber() {
+        return hasSerialNumber;
+    }
+
+    public void hasSerialNumber(Boolean hasSerialNumber) {
+        this.hasSerialNumber = hasSerialNumber;
     }
 
     @Override
