@@ -2,6 +2,7 @@ package mx.bidg.service;
 
 import mx.bidg.model.Transactions;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -13,4 +14,5 @@ public interface TransactionsService {
     Transactions update(Transactions transaction);
     boolean delete(Transactions transaction);
     List<Transactions> findAll();
+    void entryPayAccount (String data) throws IOException;
 }

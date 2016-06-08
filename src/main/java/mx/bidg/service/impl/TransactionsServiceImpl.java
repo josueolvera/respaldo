@@ -1,12 +1,18 @@
 package mx.bidg.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import mx.bidg.dao.BalancesDao;
 import mx.bidg.dao.TransactionsDao;
-import mx.bidg.model.Transactions;
+import mx.bidg.model.*;
 import mx.bidg.service.TransactionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -18,6 +24,11 @@ public class TransactionsServiceImpl implements TransactionsService {
 
     @Autowired
     TransactionsDao transactionsDao;
+
+    @Autowired
+    BalancesDao balancesDao;
+
+    private ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public Transactions findById(Integer id) {
@@ -45,5 +56,27 @@ public class TransactionsServiceImpl implements TransactionsService {
     @Override
     public List<Transactions> findAll() {
         return transactionsDao.findAll();
+    }
+
+    @Override
+    public void entryPayAccount(String data) throws IOException {
+
+            JsonNode node = mapper.readTree(data);
+
+            Transactions transactions = new Transactions();
+            transactions.setAccountsPayable(null);
+            transactions.setAmount(node.get("amount").decimalValue());
+            transactions.setBalances(new Balances(node.get("idBalance").asInt()));
+            transactions.setCurrencies(new CCurrencies(node.get("idCurrency").asInt()));
+            transactions.setOperationTypes(COperationTypes.EGRESO);
+            transactions.setTransactionsStatus(CTransactionsStatus.PAGADA);
+            transactions.setTransactionNumber(node.get("transactionNumber").asText());
+            transactions.setCreationDate(LocalDateTime.now());
+
+            Balances balances = balancesDao.findById(transactions.getIdBalance());
+            BigDecimal addAmountTransaction = balances.getCurrentAmount().add(transactions.getAmount());
+            balances.setCurrentAmount(addAmountTransaction);
+            balancesDao.update(balances);
+
     }
 }
