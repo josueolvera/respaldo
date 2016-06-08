@@ -73,7 +73,7 @@ public class TransactionsServiceImpl implements TransactionsService {
             transactions.setTransactionNumber(node.get("transactionNumber").asText());
             transactions.setCreationDate(LocalDateTime.now());
 
-            Balances balances = balancesDao.findById(transactions.getIdBalance());
+            Balances balances = transactions.getBalances();
             BigDecimal addAmountTransaction = balances.getCurrentAmount().add(transactions.getAmount());
             balances.setCurrentAmount(addAmountTransaction);
             balancesDao.update(balances);
