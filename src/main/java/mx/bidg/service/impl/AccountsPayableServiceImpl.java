@@ -201,30 +201,6 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
     }
 
     @Override
-    public void entryPayAccount(Integer idAccountPayable, String data) throws IOException {
-        AccountsPayable accountsPayable = accountsPayableDao.findById(idAccountPayable);
-
-        JsonNode node = mapper.readTree(data);
-
-        Transactions transactions = new Transactions();
-        transactions.setAccountsPayable(accountsPayable);
-        transactions.setAmount(node.get("amount").decimalValue());
-        transactions.setBalances(new Balances(node.get("idBalance").asInt()));
-        transactions.setCurrencies(new CCurrencies(node.get("idCurrency").asInt()));
-        transactions.setOperationTypes(COperationTypes.EGRESO);
-        transactions.setTransactionsStatus(CTransactionsStatus.PAGADA);
-        transactions.setTransactionNumber(node.get("transactionNumber").asText());
-        transactions.setCreationDate(LocalDateTime.now());
-
-        Balances balances = balancesDao.findById(transactions.getIdBalance());
-        BigDecimal addAmountTransaction = balances.getCurrentAmount().add(transactions.getAmount());
-        balances.setCurrentAmount(addAmountTransaction);
-        balancesDao.update(balances);
-        accountsPayable.setAccountPayableStatus(CAccountsPayableStatus.FINALIZADA);
-        accountsPayableDao.update(accountsPayable);
-    }
-
-    @Override
     public void changeDate(Integer idAccountPayable, String data) throws IOException {
         JsonNode json = mapper.readTree(data);
         LocalDateTime dueDate = (json.get("dueDate") == null || json.findValue("dueDate").asText().equals("")) ? null :
