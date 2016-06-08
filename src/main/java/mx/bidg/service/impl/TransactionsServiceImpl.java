@@ -66,17 +66,22 @@ public class TransactionsServiceImpl implements TransactionsService {
             Transactions transactions = new Transactions();
             transactions.setAccountsPayable(null);
             transactions.setAmount(node.get("amount").decimalValue());
-            transactions.setBalances(new Balances(node.get("idBalance").asInt()));
+            Balances balances = balancesDao.findById(node.get("idBalance").asInt());
             transactions.setCurrencies(new CCurrencies(node.get("idCurrency").asInt()));
             transactions.setOperationTypes(COperationTypes.INGRESO);
             transactions.setTransactionsStatus(CTransactionsStatus.PAGADA);
             transactions.setTransactionNumber(node.get("transactionNumber").asText());
             transactions.setCreationDate(LocalDateTime.now());
+            transactions.setIdAccessLevel(1);
 
-            Balances balances = transactions.getBalances();
+
             BigDecimal addAmountTransaction = balances.getCurrentAmount().add(transactions.getAmount());
             balances.setCurrentAmount(addAmountTransaction);
+            balances.setModificationDate(LocalDateTime.now());
             balancesDao.update(balances);
+
+            transactions.setBalances(balances);
+            transactionsDao.save(transactions);
 
     }
 }
