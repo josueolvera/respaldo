@@ -373,7 +373,6 @@
                         this.editModal.attribute.idAttribute = this.editModal.selectAttr[0].selectize.getValue();
                         this.editModal.attribute.attributeName = this.editModal.selectAttr[0].selectize.getOption(this.editModal.attribute.idAttribute).text();
                         var self = this;
-                        console.log(this.editModal.article.article.articlesCategories.idArticlesCategory);
                         this.$http.get(
                                 ROOT_URL +
                                 "/values?idAttribute=" +
@@ -420,14 +419,10 @@
                         if (article.stockDocumentsList == null) {
                             this.fetchStockDocuments(article);
                         }
-                        if (article.stockEmployeeAssignmentsList == null) {
-                            this.fetchStockAssignments(article);
-                        }
                     },
                     cleanArticle: function (article) {
                         article.propertiesList = null;
                         article.stockDocumentsList = null;
-                        article.stockEmployeeAssignmentsList = null;
                     },
                     removeProperty: function (article, property) {
                         this.isSaving = true;
@@ -776,6 +771,14 @@
                                 this.selectedOptions.branch.id + "&idArea=" +
                                 this.selectedOptions.area.id
                         ).success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (stock) {
+                                if (isNaN(stock.dwEnterprises)) {
+                                    jsonObjectIndex[stock.dwEnterprises._id] = stock.dwEnterprises;
+                                } else {
+                                    stock.dwEnterprises = jsonObjectIndex[stock.dwEnterprises];
+                                }
+                            });
                             this.stockGroups = this.groupBy(data, function (item) {
                                 return item.idDwEnterprises;
                             });
