@@ -90,11 +90,26 @@
           methods:
           {
               getAccountsPayableofActualDay: function(){
-
+                  var self= this;
                   this.$http.get(ROOT_URL+"/accounts-payable/now")
                           .success(function (data)
                           {
                              this.accountsPayablesofDay= data;
+                             this.accountsPayablesofDay.forEach(function(element)
+                             {
+                                 var folio = element.folio;
+
+                                 self.$http.get(ROOT_URL+"/requests/folio?folio="+folio).
+                                 success(function(data)
+                                 {
+                                     Vue.set(element, "informationRequest", data);
+                                 }).error(function(data)
+                                 {
+                                   showAlert("Ha fallado el registro de su informacion, intente nuevamente");
+                                 });
+
+
+                             });
                           });
               },
               getToday: function(){
@@ -102,10 +117,11 @@
                   var meses = new Array ("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre", "Diciembre");
                   var fecha_actual = new Date();
                   this.today = dias_semana[fecha_actual.getDay()] + " " +
-                               fecha_actual.getDay() + ", " + meses[fecha_actual.getMonth()] + " " + fecha_actual.getFullYear();
-
-                  //alert("Hoy es " + dias_semana[fecha_actual.getDay()] + " dia " + fecha_actual.getDate() + " de " + meses[fecha_actual.getMonth()] + " de " + fecha_actual.getFullYear());
-
+                               fecha_actual.getDate() + ", " + meses[fecha_actual.getMonth()] + " " + fecha_actual.getFullYear();
+              },
+              getInformationRequest: function(idRequest)
+              {
+                  location.href= ROOT_URL+"/siad/accounts-payable-info/"+idRequest ;
               }
 
           },
@@ -270,7 +286,7 @@
                    <div class="col-xs-3">
                      <span class="badge">CPP</span>
                      <label>
-                         Concepto
+                         {{accountPayable.informationRequest.requestTypeProduct.productType.productType}}
                      </label>
                    </div>
                    <div class="col-xs-3">
@@ -289,7 +305,7 @@
                            <span class="label label-success">Hoy</span>
                        </div>
                        <div class="col-xs-4">
-                          <button class="btn btn-default">
+                          <button class="btn btn-default" @click="getInformationRequest(accountPayable.informationRequest.idRequest)">
                               <span class="glyphicon glyphicon-new-window">
                               </span>
                           </button>
@@ -302,11 +318,6 @@
              </div>
          </div>
        </div>
-
-       <pre>
-           {{ $data | json}}
-       </pre>
-
       </div> <!-- #contenidos -->
       <!-- Fecha de Termino- Agregar fecha dia de solicitud-->
     </jsp:body>
