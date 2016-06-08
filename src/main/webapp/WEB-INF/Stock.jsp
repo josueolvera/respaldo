@@ -420,14 +420,10 @@
                         if (article.stockDocumentsList == null) {
                             this.fetchStockDocuments(article);
                         }
-                        if (article.stockEmployeeAssignmentsList == null) {
-                            this.fetchStockAssignments(article);
-                        }
                     },
                     cleanArticle: function (article) {
                         article.propertiesList = null;
                         article.stockDocumentsList = null;
-                        article.stockEmployeeAssignmentsList = null;
                     },
                     removeProperty: function (article, property) {
                         this.isSaving = true;
