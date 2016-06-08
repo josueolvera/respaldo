@@ -884,18 +884,15 @@
                             <div class="row" v-show="supplier.rfc.length==13">
                                 <div class="col-xs-3">
                                     <label>Nombre(s)</label>
-                                    <input class="form-control" name="name" v-model="providerNames"
-                                           onkeypress="return isLetterKey(event)">
+                                    <input class="form-control" name="name" v-model="providerNames">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Apellido paterno</label>
-                                    <input class="form-control" name="name" v-model="providerLastName"
-                                           onkeypress="return isLetterKey(event)">
+                                    <input class="form-control" name="name" v-model="providerLastName">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Apellido materno</label>
-                                    <input class="form-control" name="name" v-model="providerSecondName"
-                                           onkeypress="return isLetterKey(event)">
+                                    <input class="form-control" name="name" v-model="providerSecondName">
                                 </div>
                             </div>
                             <br>
