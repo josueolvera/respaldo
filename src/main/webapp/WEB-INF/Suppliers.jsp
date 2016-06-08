@@ -883,7 +883,7 @@
                             </div>
                             <div class="row" v-show="supplier.rfc.length==13">
                                 <div class="col-xs-3">
-                                    <label>Nombre</label>
+                                    <label>Nombre(s)</label>
                                     <input class="form-control" name="name" v-model="providerNames"
                                            onkeypress="return isLetterKey(event)">
                                 </div>
@@ -1247,7 +1247,7 @@
                             </div>
                             <div class="row" v-show="provider.rfc.length==13">
                                 <div class="col-xs-3">
-                                    <label>Nombre</label>
+                                    <label>Nombre(s)</label>
                                     <input class="form-control" name="name" v-model="supplierNames"
                                            onkeypress="return isLetterKey(event)" disabled="true">
                                 </div>
