@@ -76,6 +76,7 @@
           {
               this.getAccountsPayableofActualDay();
               this.getToday();
+              this.getBalances();
 
           },
           data:
@@ -85,7 +86,9 @@
             timePickercuentaspagadasInicial: '',
             timePickercuentaspagadasFinal: '',
             accountsPayablesofDay: {},
-            today: ''
+            today: '',
+            allBalances: {},
+            balance: ''
           },
           methods:
           {
@@ -113,7 +116,7 @@
                           });
               },
               getToday: function(){
-                  var dias_semana = new Array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sabado");
+                  var dias_semana = new Array("Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sabado");
                   var meses = new Array ("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre", "Diciembre");
                   var fecha_actual = new Date();
                   this.today = dias_semana[fecha_actual.getDay()] + " " +
@@ -122,6 +125,18 @@
               getInformationRequest: function(idRequest)
               {
                   location.href= ROOT_URL+"/siad/accounts-payable-info/"+idRequest ;
+              },
+              getBalances: function(){
+                  var self= this;
+                  this.$http.get(ROOT_URL+"/balances")
+                          .success(function (data)
+                          {
+                             this.allBalances = data;
+                             this.allBalances.forEach(function(element)
+                             {
+                                 self.balance= element;
+                             });
+                          });
               }
 
           },
@@ -173,7 +188,7 @@
                          <br>
                            <div class="input-group">
                              <span class="input-group-addon">$</span>
-                             <input type="text" class="form-control" disabled="true">
+                             <input number class="form-control" disabled="true" v-model="balance.currentAmount">
                            </div>
                        </div>
                        <div class="col-xs-6">
