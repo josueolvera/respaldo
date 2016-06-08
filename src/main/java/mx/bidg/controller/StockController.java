@@ -149,8 +149,11 @@ public class StockController {
 
         Stocks stock = stockService.findSimpleById(idStock);
 
-        stock.setSerialNumber(jnode.get("serialNumber").asText());
-        stock.setStockFolio(jnode.get("stockFolio").asText());
+        if (jnode.get("serialNumber").asText().equals("null")) {
+            stock.setSerialNumber(null);
+        } else {
+            stock.setSerialNumber(jnode.get("serialNumber").asText());
+        }
         stock.setArticleStatus(new CArticleStatus(jnode.get("articleStatus").get("idArticleStatus").asInt()));
 
         stockService.update(stock);
