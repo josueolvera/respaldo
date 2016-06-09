@@ -203,8 +203,8 @@
                 <form class="form-inline text-center" v-on:submit.prevent="getTicketByFolio">
                     <div class="form-group">
                         <label>Folio</label>
-                        <input type="search" v-model="folioToSearch" class="form-control"/>
-                        <button type="submit" class="btn btn-primary">Buscar</button>
+                        <input type="search" @keypress.enter="submit" v-model="folioToSearch" class="form-control"/>
+                        <button type="submit" @click="getTicketByFolio" class="btn btn-primary">Buscar</button>
                     </div>
                 </form>
                 <br>
