@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import mx.bidg.pojos.DateFormatsPojo;
 import org.hibernate.annotations.DynamicUpdate;
 
 
@@ -194,6 +195,13 @@ public class Authorizations implements Serializable {
 
     public void setAuthorizationType(CAuthorizationTypes authorizationType) {
         this.authorizationType = authorizationType;
+    }
+    
+    public DateFormatsPojo getAuthorizationDateFormats(){
+        if (authorizationDate == null) {
+            return null;
+        }
+        return new DateFormatsPojo(authorizationDate);
     }
 
     @Override
