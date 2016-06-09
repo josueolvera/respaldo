@@ -38,6 +38,9 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
     @Autowired
     private AccountsDao accountsDao;
+    
+    @Autowired
+    private ProvidersAccountsDao providersAcountsdao;
 
     ObjectMapper mapper = new ObjectMapper();
 
@@ -196,5 +199,15 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         estimation.setFileName(fileName);
         estimation.setFilePath(filePath);
         return priceEstimationsDao.update(estimation);
+    }
+
+    @Override
+    public PriceEstimations findAuthorized(Requests request) {
+        PriceEstimations estimation = priceEstimationsDao.findAuthorized(request);
+        ProvidersAccounts providersAccounts = providersAcountsdao.findByAccount(estimation.getAccount());
+        ArrayList<ProvidersAccounts> providers = new ArrayList<>();
+        providers.add(providersAccounts);
+        estimation.getAccount().setProvidersAccountsList(providers);
+        return estimation;
     }
 }
