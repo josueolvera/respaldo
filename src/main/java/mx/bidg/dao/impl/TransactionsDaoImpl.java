@@ -2,9 +2,15 @@ package mx.bidg.dao.impl;
 
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.TransactionsDao;
+import mx.bidg.model.AccountsPayable;
+import mx.bidg.model.COperationTypes;
+import mx.bidg.model.CTransactionsStatus;
 import mx.bidg.model.Transactions;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -38,5 +44,29 @@ public class TransactionsDaoImpl extends AbstractDao<Integer,Transactions> imple
     public boolean delete(Transactions entity) {
         remove(entity);
         return true;
+    }
+
+    @Override
+    public Transactions findByAccount(AccountsPayable accountsPayable) {
+        Criteria criteria = createEntityCriteria();
+        return (Transactions) criteria.add(Restrictions.eq("accountsPayable",accountsPayable)).uniqueResult();
+    }
+
+    @Override
+    public List<Transactions> findTransactionByDate(LocalDateTime ofDate, LocalDateTime untilDate) {
+        Criteria criteria = createEntityCriteria();
+        return (List<Transactions>) criteria
+                .add(Restrictions.between("creationDate",ofDate,untilDate))
+                .add(Restrictions.eq("operationTypes", COperationTypes.INGRESO))
+                .list();
+    }
+
+    @Override
+    public List<Transactions> findTransactionByDateAndExit(LocalDateTime ofDate, LocalDateTime untilDate) {
+        Criteria criteria = createEntityCriteria();
+        return (List<Transactions>) criteria
+                .add(Restrictions.between("creationDate",ofDate,untilDate))
+                .add(Restrictions.eq("operationTypes", COperationTypes.EGRESO))
+                .list();
     }
 }
