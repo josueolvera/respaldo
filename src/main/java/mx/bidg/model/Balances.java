@@ -5,24 +5,14 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 /**
@@ -53,9 +43,9 @@ public class Balances implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "INITIAL_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
-    private Date initialDate;
+    private LocalDateTime initialDate;
     
     @Basic(optional = false)
     @NotNull
@@ -66,9 +56,9 @@ public class Balances implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "MODIFICATION_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
-    private Date modificationDate;
+    private LocalDateTime modificationDate;
     
     @Basic(optional = false)
     @NotNull
@@ -114,7 +104,7 @@ public class Balances implements Serializable {
         this.idBalance = idBalance;
     }
 
-    public Balances(Integer idBalance, BigDecimal initialAmount, Date initialDate, BigDecimal currentAmount, Date modificationDate, int idAccessLevel) {
+    public Balances(Integer idBalance, BigDecimal initialAmount, LocalDateTime initialDate, BigDecimal currentAmount, LocalDateTime modificationDate, int idAccessLevel) {
         this.idBalance = idBalance;
         this.initialAmount = initialAmount;
         this.initialDate = initialDate;
@@ -139,11 +129,11 @@ public class Balances implements Serializable {
         this.initialAmount = initialAmount;
     }
 
-    public Date getInitialDate() {
+    public LocalDateTime getInitialDate() {
         return initialDate;
     }
 
-    public void setInitialDate(Date initialDate) {
+    public void setInitialDate(LocalDateTime initialDate) {
         this.initialDate = initialDate;
     }
 
@@ -155,11 +145,11 @@ public class Balances implements Serializable {
         this.currentAmount = currentAmount;
     }
 
-    public Date getModificationDate() {
+    public LocalDateTime getModificationDate() {
         return modificationDate;
     }
 
-    public void setModificationDate(Date modificationDate) {
+    public void setModificationDate(LocalDateTime modificationDate) {
         this.modificationDate = modificationDate;
     }
 

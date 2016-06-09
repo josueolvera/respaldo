@@ -60,6 +60,36 @@ body {
     background-size: 35px;
 }
 
+.glyphicon-siad {
+    background: url("../img/icons/SIAD.png") no-repeat 50% 0;
+    background-size: 28px;
+}
+
+.glyphicon-agenda {
+    background: url("../img/icons/AGENDA.png") no-repeat 50% 0;
+    background-size: 28px;
+}
+
+.glyphicon-saem {
+    background: url("../img/icons/SAEM.png") no-repeat 50% 0;
+    background-size: 28px;
+}
+
+.glyphicon-saus {
+    background: url("../img/icons/SAUS.png") no-repeat 50% 0;
+    background-size: 28px;
+}
+
+.glyphicon-siscom {
+    background: url("../img/icons/SISCOM.png") no-repeat 50% 0;
+    background-size: 28px;
+}
+
+.glyphicon-tickets {
+    background: url("../img/icons/TICKETS.png") no-repeat 50% 0;
+    background-size: 28px;
+}
+
 .main-menu.expanded {
     width: 25rem;
     overflow: hidden;
