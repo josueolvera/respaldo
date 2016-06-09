@@ -238,16 +238,20 @@
                     },
                     validationAccount: function () {
                         if (this.supplier.providersAccountsList.length != 0) {
-                            if (this.idBanks.length != 0 && this.accountNumbers.length != 0 && this.clabes.length != 0 && this.idCurrency.length != 0) {
-                                this.saveAccount(this.idBanks, this.accountNumbers, this.clabes, this.idCurrency);
-                                return true;
+                            if (this.idBanks.length != 0 && this.idCurrency.length != 0) {
+                                if (this.accountNumbers.length != 0 || this.clabes.length != 0) {
+                                    this.saveAccount(this.idBanks, this.accountNumbers, this.clabes, this.idCurrency);
+                                    return true;
+                                }
                             } else {
                                 return true;
                             }
                         } else {
-                            if (this.idBanks.length != 0 && this.accountNumbers.length != 0 && this.clabes.length != 0 && this.idCurrency.length != 0) {
-                                this.saveAccount(this.idBanks, this.accountNumbers, this.clabes, this.idCurrency);
-                                return true;
+                            if (this.idBanks.length != 0 && this.idCurrency.length != 0) {
+                                if (this.accountNumbers.length != 0 || this.clabes.length != 0) {
+                                    this.saveAccount(this.idBanks, this.accountNumbers, this.clabes, this.idCurrency);
+                                    return true;
+                                }
                             } else {
                                 showAlert("Ingresa los campos Requeridos: Banco, Número de Cuenta, CLABE, Moneda", {type: 3});
                                 return false;
@@ -405,19 +409,26 @@
                                 });
                     },
                     addProviderAccount: function (supplier, cuenta) {
-                        this.$http.post(ROOT_URL + "/accounts/provider/" + supplier.idProvider, cuenta)
-                                .success(function (data) {
-                                    showAlert("Cuenta guardada con éxito");
-                                    this.$http.get(ROOT_URL + "/accounts/provider/" + this.provider.idProvider)
-                                            .success(function (data) {
-                                                Vue.set(this.provider, 'providersAccountsList', data);
-                                            });
-                                    cuenta.accountNumber = "";
-                                    cuenta.accountClabe = "";
-                                    cuenta.idBank = "";
-                                    cuenta.idCurrency = "";
-                                });
-
+                        if (cuenta.idBanks != 0 && cuenta.idCurrency != 0) {
+                            if (cuenta.accountNumber.length != 0 || cuenta.accountClabe.length != 0) {
+                                this.$http.post(ROOT_URL + "/accounts/provider/" + supplier.idProvider, cuenta)
+                                        .success(function (data) {
+                                            showAlert("Cuenta guardada con éxito");
+                                            this.$http.get(ROOT_URL + "/accounts/provider/" + this.provider.idProvider)
+                                                    .success(function (data) {
+                                                        Vue.set(this.provider, 'providersAccountsList', data);
+                                                    });
+                                            cuenta.accountNumber = "";
+                                            cuenta.accountClabe = "";
+                                            cuenta.idBank = "";
+                                            cuenta.idCurrency = "";
+                                        });
+                            } else {
+                                showAlert("Debes ingresar al menos uno de los siguientes datos: No. de Cuenta o CLABE", {type: 3});
+                            }
+                        } else {
+                            showAlert("Ingresa los campos Requeridos: Banco y Moneda", {type: 3});
+                        }
                     },
                     updateProvider: function (provider) {
                         if (provider.rfc.length == 13) {
@@ -1125,7 +1136,7 @@
                                             <span class="input-group-addon">#</span>
                                             <input id="saccount" class="form-control" maxlength="12"
                                                    v-model="accountNumbers"
-                                                   @change="validateCuenta(accountNumbers,clabes)"
+                                                   :disabled="clabes.length > 0"
                                                    onkeypress="return isNumberKey(event)">
                                         </div>
                                     </div>
@@ -1135,7 +1146,8 @@
                                         <div class="input-group">
                                             <span class="input-group-addon">#</span>
                                             <input type="text" id="sclabe" class="form-control" maxlength="18"
-                                                   v-model="clabes" @change="validateClabe(accountNumbers,clabes)"
+                                                   :disabled="accountNumbers.length > 0"
+                                                   v-model="clabes"
                                                    onkeypress="return isNumberKey(event)">
                                         </div>
                                     </div>
@@ -1491,7 +1503,7 @@
                                 <div class="col-xs-3">
                                     <label>Banco</label>
                                     <select class="form-control" name="" v-model="cuenta.idBank">
-                                        <option></option>
+                                        <option value="0"></option>
                                         <option v-for="bank in banks" value="{{bank.idBank}}">{{bank.acronyms}}</option>
                                     </select>
                                 </div>
@@ -1501,7 +1513,7 @@
                                     <div class="input-group">
                                         <span class="input-group-addon">#</span>
                                         <input class="form-control" maxlength="12" v-model="cuenta.accountNumber"
-                                               @change="validateCuenta(cuenta.accountNumber,cuenta.accountClabe)"
+                                               :disabled="cuenta.accountClabe.length > 0"
                                                onkeypress="return isNumberKey(event)">
                                     </div>
                                 </div>
@@ -1511,7 +1523,7 @@
                                     <div class="input-group">
                                         <span class="input-group-addon">#</span>
                                         <input type="text" class="form-control" maxlength="18"
-                                               @change="validateClabe(cuenta.accountNumber,cuenta.accountClabe)"
+                                               :disabled="cuenta.accountNumber.length > 0"
                                                v-model="cuenta.accountClabe" onkeypress="return isNumberKey(event)">
                                     </div>
                                 </div>
@@ -1519,7 +1531,7 @@
                                 <div class="col-xs-2">
                                     <label>Moneda</label>
                                     <select class="form-control" name="" v-model="cuenta.idCurrency">
-                                        <option></option>
+                                        <option value="0"></option>
                                         <option v-for="curre in currencies" value="{{curre.idCurrency}}">
                                             {{curre.currency}}
                                         </option>
