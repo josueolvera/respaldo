@@ -153,47 +153,45 @@
             </div>
             <br>
             <div class="col-xs-offset-1 col-xs-10">
-                <%--<form v-on:submit.prevent="saveTicket">--%>
-                    <div class="row">
-                        <div class="col-xs-4">
-                            <label>Solicitante</label>
-                            <input type="text" class="form-control" v-model="userInSession.dwEmployee.employee.fullName" disabled>
-                        </div>
-                        <div class="col-xs-4">
-                            <label>Tipo de solicitud</label>
-                            <select class="form-control" v-model="ticket.incidence">
-                                <option></option>
-                                <option v-for="incidence in incidences" value="{{incidence}}">
-                                    {{incidence.incidenceName}}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-xs-4">
-                            <label>Prioridad</label>
-                            <select class="form-control" v-model="ticket.priority">
-                                <option></option>
-                                <option v-for="priority in priorities" value="{{priority}}">
-                                    {{priority.priorityName}}
-                                </option>
-                            </select>
-                        </div>
+                <div class="row">
+                    <div class="col-xs-4">
+                        <label>Solicitante</label>
+                        <input type="text" class="form-control" v-model="userInSession.dwEmployee.employee.fullName" disabled>
                     </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <label>Descripción</label>
+                    <div class="col-xs-4">
+                        <label>Tipo de solicitud</label>
+                        <select class="form-control" v-model="ticket.incidence">
+                            <option></option>
+                            <option v-for="incidence in incidences" value="{{incidence}}">
+                                {{incidence.incidenceName}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-xs-4">
+                        <label>Prioridad</label>
+                        <select class="form-control" v-model="ticket.priority">
+                            <option></option>
+                            <option v-for="priority in priorities" value="{{priority}}">
+                                {{priority.priorityName}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <label>Descripción</label>
                             <textarea class="form-control" maxlength="2000"
                                       rows="8" v-model="ticket.descripcionProblema">
                             </textarea>
-                        </div>
                     </div>
-                    <br>
-                    <div class="row">
-                        <div class="text-center">
-                            <button @click="saveTicket" class="btn btn-success">Solicitar</button>
-                        </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="text-center">
+                        <button @click="saveTicket" class="btn btn-success">Solicitar</button>
                     </div>
-                <%--</form>--%>
+                </div>
             </div>
             <div class="col-xs-offset-1 col-xs-10">
                 <br>
