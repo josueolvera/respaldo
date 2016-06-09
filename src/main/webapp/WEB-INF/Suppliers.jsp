@@ -237,25 +237,24 @@
                         }
                     },
                     validationAccount: function () {
-                        if (this.supplier.providersAccountsList.length != 0) {
-                            if (this.idBanks.length != 0 && this.idCurrency.length != 0) {
-                                if (this.accountNumbers.length != 0 || this.clabes.length != 0) {
-                                    this.saveAccount(this.idBanks, this.accountNumbers, this.clabes, this.idCurrency);
-                                    return true;
-                                }
-                            } else {
-                                return true;
-                            }
-                        } else {
-                            if (this.idBanks.length != 0 && this.idCurrency.length != 0) {
-                                if (this.accountNumbers.length != 0 || this.clabes.length != 0) {
-                                    this.saveAccount(this.idBanks, this.accountNumbers, this.clabes, this.idCurrency);
-                                    return true;
-                                }
-                            } else {
-                                showAlert("Ingresa los campos Requeridos: Banco, Número de Cuenta, CLABE, Moneda", {type: 3});
+                        if (this.idBanks != 0 && this.idCurrency != 0) {
+                            if (this.accountNumbers.length > 0 && (this.accountNumbers.length > 11 || this.accountNumbers.length < 5)) {
+                                showAlert("Debes ingresar entre 5 y 11 caracteres en el numero de cuenta", {type: 3});
                                 return false;
                             }
+                            if (this.clabes.length > 0 && this.clabes.length < 18) {
+                                showAlert("Debes ingresar 18 caracteres en la CLABE", {type: 3});
+                                return false;
+                            }
+                            if (this.accountNumbers.length < 5 && this.clabes.length < 18) {
+                                showAlert("Debes ingresar un Numero de Cuenta o CLABE", {type: 3});
+                                return false;
+                            }
+                            this.saveAccount(this.idBanks, this.accountNumbers, this.clabes, this.idCurrency);
+                            return true;
+                        } else {
+                            showAlert("Debes ingresar los datos requeridos: Banco, Modenada y Numero de Cuenta o CLABE", {type: 3});
+                            return false;
                         }
                     },
                     validationProduct: function () {
@@ -409,25 +408,35 @@
                                 });
                     },
                     addProviderAccount: function (supplier, cuenta) {
-                        if (cuenta.idBanks != 0 && cuenta.idCurrency != 0) {
-                            if (cuenta.accountNumber.length != 0 || cuenta.accountClabe.length != 0) {
-                                this.$http.post(ROOT_URL + "/accounts/provider/" + supplier.idProvider, cuenta)
-                                        .success(function (data) {
-                                            showAlert("Cuenta guardada con éxito");
-                                            this.$http.get(ROOT_URL + "/accounts/provider/" + this.provider.idProvider)
-                                                    .success(function (data) {
-                                                        Vue.set(this.provider, 'providersAccountsList', data);
-                                                    });
-                                            cuenta.accountNumber = "";
-                                            cuenta.accountClabe = "";
-                                            cuenta.idBank = "";
-                                            cuenta.idCurrency = "";
-                                        });
-                            } else {
-                                showAlert("Debes ingresar al menos uno de los siguientes datos: No. de Cuenta o CLABE", {type: 3});
+                        if (this.idBanks != 0 && this.idCurrency != 0) {
+                            if (this.accountNumbers.length > 0 && (this.accountNumbers.length > 11 || this.accountNumbers.length < 5)) {
+                                showAlert("Debes ingresar entre 5 y 11 caracteres en el numero de cuenta", {type: 3});
+                                return false;
                             }
+                            if (this.clabes.length > 0 && this.clabes.length < 18) {
+                                showAlert("Debes ingresar 18 caracteres en la CLABE", {type: 3});
+                                return false;
+                            }
+                            if (this.accountNumbers.length < 5 && this.clabes.length < 18) {
+                                showAlert("Debes ingresar un Numero de Cuenta o CLABE", {type: 3});
+                                return false;
+                            }
+                            this.$http.post(ROOT_URL + "/accounts/provider/" + supplier.idProvider, cuenta)
+                                    .success(function (data) {
+                                        showAlert("Cuenta guardada con éxito");
+                                        this.$http.get(ROOT_URL + "/accounts/provider/" + this.provider.idProvider)
+                                                .success(function (data) {
+                                                    Vue.set(this.provider, 'providersAccountsList', data);
+                                                });
+                                        cuenta.accountNumber = "";
+                                        cuenta.accountClabe = "";
+                                        cuenta.idBank = "";
+                                        cuenta.idCurrency = "";
+                                    });
+                            return true;
                         } else {
-                            showAlert("Ingresa los campos Requeridos: Banco y Moneda", {type: 3});
+                            showAlert("Debes ingresar los datos requeridos: Banco, Modenada y Numero de Cuenta o CLABE", {type: 3});
+                            return false;
                         }
                     },
                     updateProvider: function (provider) {
@@ -1134,9 +1143,8 @@
                                         <label>Número de Cuenta</label>
                                         <div class="input-group">
                                             <span class="input-group-addon">#</span>
-                                            <input id="saccount" class="form-control" maxlength="12"
+                                            <input id="saccount" class="form-control" maxlength="11"
                                                    v-model="accountNumbers"
-                                                   :disabled="clabes.length > 0"
                                                    onkeypress="return isNumberKey(event)">
                                         </div>
                                     </div>
@@ -1146,7 +1154,6 @@
                                         <div class="input-group">
                                             <span class="input-group-addon">#</span>
                                             <input type="text" id="sclabe" class="form-control" maxlength="18"
-                                                   :disabled="accountNumbers.length > 0"
                                                    v-model="clabes"
                                                    onkeypress="return isNumberKey(event)">
                                         </div>
@@ -1512,8 +1519,7 @@
                                     <label>Número de cuenta</label>
                                     <div class="input-group">
                                         <span class="input-group-addon">#</span>
-                                        <input class="form-control" maxlength="12" v-model="cuenta.accountNumber"
-                                               :disabled="cuenta.accountClabe.length > 0"
+                                        <input class="form-control" maxlength="11" v-model="cuenta.accountNumber"
                                                onkeypress="return isNumberKey(event)">
                                     </div>
                                 </div>
@@ -1523,7 +1529,6 @@
                                     <div class="input-group">
                                         <span class="input-group-addon">#</span>
                                         <input type="text" class="form-control" maxlength="18"
-                                               :disabled="cuenta.accountNumber.length > 0"
                                                v-model="cuenta.accountClabe" onkeypress="return isNumberKey(event)">
                                     </div>
                                 </div>
