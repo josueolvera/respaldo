@@ -130,6 +130,11 @@ public class StockController {
             assignment.setIdAccessLevel(1);
 
             assignmentsService.saveAssignment(assignment);
+        } else {
+
+            stock.setDwEnterprises(DwEnterprises.DEFAULT_DW_ENTERPRISES);
+            stockService.update(stock);
+
         }
 
         saveAttachDocuments(stock.getIdStock(),request);

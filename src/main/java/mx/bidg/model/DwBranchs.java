@@ -5,7 +5,10 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -19,6 +22,7 @@ import javax.validation.constraints.NotNull;
  * @author gerardo8
  */
 @Entity
+@DynamicUpdate
 @Table(name = "DW_BRANCHS")
 public class DwBranchs implements Serializable {
 
@@ -27,24 +31,37 @@ public class DwBranchs implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_BRANCH")
+    @JsonView(JsonViews.Root.class)
     private Integer idBranch;
+
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "INDEX_REPROCESSING")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal indexReprocessing;
+
     @Column(name = "PRODUCTIVITY")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal productivity;
+
     @Column(name = "PTTO_PROM_VTA")
+    @JsonView(JsonViews.Root.class)
     private Integer pttoPromVta;
+
     @Column(name = "PTTO_PROM_REAL")
+    @JsonView(JsonViews.Root.class)
     private Integer pttoPromReal;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "UPLOADED_DATE")
     @Convert(converter = DateTimeConverter.class)
+    @JsonView(JsonViews.Root.class)
     private LocalDateTime uploadedDate;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "STATUS")
+    @JsonView(JsonViews.Root.class)
     private int status;
 
     public DwBranchs() {
