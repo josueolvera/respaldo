@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -77,6 +78,10 @@ public class Transactions implements Serializable {
     @Column(name="ID_OPERATION_TYPE",insertable = false,updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idOperationTypes;
+
+    @Column(name="ID_USER",insertable = false,updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idUser;
     
     @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
     @ManyToOne(optional = false)
@@ -102,6 +107,11 @@ public class Transactions implements Serializable {
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private COperationTypes operationTypes;
+
+    @JoinColumn(name = "ID_USER", referencedColumnName = "ID_USER")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private Users user;
 
     public Transactions() {
     }
@@ -139,6 +149,10 @@ public class Transactions implements Serializable {
 
     public void setTransactionNumber(String transactionNumber) {
         this.transactionNumber = transactionNumber;
+    }
+
+    public DateFormatsPojo getCreationDateFormats() {
+        return (creationDate == null) ? null : new DateFormatsPojo(creationDate);
     }
 
     public LocalDateTime getCreationDate() {
@@ -235,6 +249,22 @@ public class Transactions implements Serializable {
 
     public void setIdOperationTypes(Integer idOperationTypes) {
         this.idOperationTypes = idOperationTypes;
+    }
+
+    public Integer getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(Integer idUser) {
+        this.idUser = idUser;
+    }
+
+    public Users getUser() {
+        return user;
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
     }
 
     @Override
