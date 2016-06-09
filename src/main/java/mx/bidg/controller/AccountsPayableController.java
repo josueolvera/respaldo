@@ -5,9 +5,13 @@
  */
 package mx.bidg.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
@@ -15,6 +19,7 @@ import mx.bidg.config.JsonViews;
 import mx.bidg.events.requests.RequestCompletedEvent;
 import mx.bidg.model.AccountsPayable;
 import mx.bidg.model.Requests;
+import mx.bidg.model.Users;
 import mx.bidg.service.AccountsPayableService;
 import mx.bidg.service.RequestsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +29,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -96,8 +104,9 @@ public class AccountsPayableController {
     }
 
     @RequestMapping(value = "/pay-account/{idAccountPayable}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> payAccount(@PathVariable Integer idAccountPayable, @RequestBody String data) throws IOException{
-        accountsPayableService.payAccount(idAccountPayable, data);
+    public ResponseEntity<String> payAccount(@PathVariable Integer idAccountPayable, @RequestBody String data,HttpSession session) throws IOException{
+        Users user = (Users) session.getAttribute("user");
+        accountsPayableService.payAccount(idAccountPayable, data, user);
         return new ResponseEntity<>("Cuenta pagada", HttpStatus.OK);
     }
 
@@ -106,6 +115,27 @@ public class AccountsPayableController {
         accountsPayableService.changeDate(idAccountPayable,data);
         return new ResponseEntity<>("Cuenta reprogramada", HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/report/accounts-liquidated", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> reportPayAccountByDueDate(@RequestBody String data, HttpServletResponse response) throws IOException {
+        JsonNode node = mapper.readTree(data);
+        LocalDateTime ofDate = (node.get("ofDate") == null || node.findValue("ofDate").asText().equals("")) ? null :
+                LocalDateTime.parse(node.get("ofDate").asText(), DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime untilDate = (node.get("untilDate") == null || node.findValue("untilDate").asText().equals("")) ? null :
+                LocalDateTime.parse(node.get("untilDate").asText(), DateTimeFormatter.ISO_DATE_TIME);
+
+        String initialDate = ofDate.toString();
+        String finalDate = untilDate.toString();
+
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" +"Reporte cuentas por pagar de "+initialDate+" a "+finalDate+".xlsx"+ "\"");
+        OutputStream outputStream = response.getOutputStream();
+        accountsPayableService.accountsPayableReport(ofDate, untilDate, outputStream);
+        outputStream.flush();
+        outputStream.close();
+        return new ResponseEntity<>("Reporte", HttpStatus.OK);
+    }
+
 
 
 }
