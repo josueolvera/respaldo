@@ -36,8 +36,9 @@ import org.hibernate.annotations.DynamicUpdate;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class DwEnterprises implements Serializable {
-    
     private static final long serialVersionUID = 1L;
+
+    public static final DwEnterprises DEFAULT_DW_ENTERPRISES = new DwEnterprises(113);
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -5,6 +5,7 @@
  */
 package mx.bidg.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import mx.bidg.model.AccountsPayable;
 import mx.bidg.model.CAccountsPayableStatus;
@@ -18,4 +19,6 @@ public interface AccountsPayableDao extends InterfaceDao<AccountsPayable> {
     Boolean deleteByFolio(String folio);
     List<AccountsPayable> findAccountsofDay();
     List<AccountsPayable> findByReschedule();
+    List<AccountsPayable> findAccountsPayable(LocalDateTime ofDate ,LocalDateTime untilDate);
+    List<AccountsPayable> findByDueDate(LocalDateTime ofDate ,LocalDateTime untilDate);
 }

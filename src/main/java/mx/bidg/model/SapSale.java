@@ -1,7 +1,9 @@
 package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -15,79 +17,136 @@ import java.util.Date;
 @Entity
 @DynamicUpdate
 @Table(name = "SAP_SALE")
-
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class SapSale implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_SAP_SALE")
+    @JsonView(JsonViews.Root.class)
     private Integer idSapSale;
+
     @Basic(optional = false)
     @Column(name = "ID_SALE")
+    @JsonView(JsonViews.Root.class)
     private String idSale;
+
     @Column(name = "CREATION_DATE")
     @Temporal(TemporalType.DATE)
+    @JsonView(JsonViews.Root.class)
     private Date creationDate;
+
     @Column(name = "INTERLOC_COM")
     private String interlocCom;
+
     @Column(name = "CLIENT_PARENT_LAST")
+    @JsonView(JsonViews.Root.class)
     private String clientParentLast;
+
     @Column(name = "CLIENT_MOTHER_LAST")
+    @JsonView(JsonViews.Root.class)
     private String clientMotherLast;
+
     @Column(name = "CLIENT_NAME")
+    @JsonView(JsonViews.Root.class)
     private String clientName;
+
     @Column(name = "CLIENT_SEC_NAME")
+    @JsonView(JsonViews.Root.class)
     private String clientSecName;
+
     @Column(name = "CLIENT_SINGLE_LAST")
+    @JsonView(JsonViews.Root.class)
     private String clientSingleLast;
+
     @Column(name = "CLIENT_ID")
+    @JsonView(JsonViews.Root.class)
     private String clientId;
+
     @Column(name = "IMSS_NUM")
+    @JsonView(JsonViews.Root.class)
     private String imssNum;
+
     @Column(name = "AGREEMENT_NAME")
+    @JsonView(JsonViews.Root.class)
     private String agreementName;
+
     @Column(name = "PRODUCT")
+    @JsonView(JsonViews.Root.class)
     private String product;
+
     @Column(name = "DEPENDENCY")
+    @JsonView(JsonViews.Root.class)
     private String dependency;
+
     @Column(name = "STATUS_SALE")
+    @JsonView(JsonViews.Root.class)
     private String statusSale;
+
     @Column(name = "LAST_UPDATE")
     @Temporal(TemporalType.DATE)
+    @JsonView(JsonViews.Root.class)
     private Date lastUpdate;
+
     @Column(name = "APPROVAL_DATE")
     @Temporal(TemporalType.DATE)
+    @JsonView(JsonViews.Root.class)
     private Date approvalDate;
+
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "REQUESTED_AMOUNT")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal requestedAmount;
+
     @Column(name = "PAYMENTS")
+    @JsonView(JsonViews.Root.class)
     private String payments;
+
     @Column(name = "DEPOSIT_AMOUNT")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal depositAmount;
+
     @Column(name = "COMISSIONABLE_AMOUNT")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal comissionableAmount;
+
     @Column(name = "PURCHASE_DATE")
     @Temporal(TemporalType.DATE)
+    @JsonView(JsonViews.Root.class)
     private Date purchaseDate;
+
     @Column(name = "COMPANY_NAME")
+    @JsonView(JsonViews.Root.class)
     private String companyName;
+
     @Column(name = "DISTRIBUTOR_NAME")
+    @JsonView(JsonViews.Root.class)
     private String distributorName;
+
     @Column(name = "CLAVE_SAP")
+    @JsonView(JsonViews.Root.class)
     private String claveSap;
+
     @Column(name = "BRANCH_NAME")
+    @JsonView(JsonViews.Root.class)
     private String branchName;
+
     @Column(name = "REGION")
+    @JsonView(JsonViews.Root.class)
     private String region;
+
     @Column(name = "BONIFICATION")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal bonification;
+
     @Column(name = "LIQUIDATION")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal liquidation;
+
     @Column(name = "STATUS")
+    @JsonView(JsonViews.Root.class)
     private int status;
 
     public SapSale() {

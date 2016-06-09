@@ -33,7 +33,7 @@ public class AccountsPayableDaoImpl extends AbstractDao<Integer, AccountsPayable
 
     @Override
     public List<AccountsPayable> findAll() {
-        return createEntityCriteria().list();
+        return (List<AccountsPayable>) createEntityCriteria().list();
     }
 
     @Override
@@ -81,6 +81,26 @@ public class AccountsPayableDaoImpl extends AbstractDao<Integer, AccountsPayable
         Criteria criteria = createEntityCriteria();
         return (List<AccountsPayable>) criteria
                 .add(Restrictions.eq("accountPayableStatus",CAccountsPayableStatus.REPROGRAMADA))
+                .list();
+    }
+
+    @Override
+    public List<AccountsPayable> findAccountsPayable(LocalDateTime ofDate, LocalDateTime untilDate) {
+        Criteria criteria = createEntityCriteria();
+        return (List<AccountsPayable>) criteria
+                .add(Restrictions.between("dueDate",ofDate,untilDate))
+                .add(Restrictions.eq("accountPayableStatus",CAccountsPayableStatus.FINALIZADA))
+                .list();
+    }
+
+    @Override
+    public List<AccountsPayable> findByDueDate(LocalDateTime ofDate, LocalDateTime untilDate) {
+        Criteria criteria = createEntityCriteria();
+        return (List<AccountsPayable>) criteria
+                .add(Restrictions.between("dueDate",ofDate,untilDate))
+                .add(Restrictions.or(
+                        Restrictions.eq("accountPayableStatus",CAccountsPayableStatus.PENDIENTE),
+                        Restrictions.eq("accountPayableStatus",CAccountsPayableStatus.REPROGRAMADA)))
                 .list();
     }
 }

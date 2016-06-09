@@ -60,7 +60,7 @@ public class Ticket implements Serializable {
 
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 500)
+    @Size(min = 1, max = 2000)
     @Column(name = "DESCRIPCION_PROBLEMA")
     @JsonView(JsonViews.Root.class)
     private String descripcionProblema;

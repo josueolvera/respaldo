@@ -5,7 +5,10 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -19,6 +22,7 @@ import javax.validation.constraints.Size;
  * @author gerardo8
  */
 @Entity
+@DynamicUpdate
 @Table(name = "OUTSOURCING")
 public class Outsourcing implements Serializable {
 
@@ -27,207 +31,309 @@ public class Outsourcing implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID")
+    @JsonView(JsonViews.Root.class)
     private Integer id;
+
     @Size(max = 10)
     @Column(name = "ID_W")
+    @JsonView(JsonViews.Root.class)
     private String idW;
+
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
     @Column(name = "SUELDO")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal sueldo;
     @Basic(optional = false)
+
     @NotNull
     @Column(name = "SEPTIMO_DIA")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal septimoDia;
     @Basic(optional = false)
+
     @NotNull
     @Column(name = "HORAS_EXTRAS")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal horasExtras;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "DESTAJOS")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal destajos;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "COMISIONES")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal comisiones;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "INDEMNIZACION_ESPECIAL")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal indemnizacionEspecial;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "PREMIOS_EFICIENCIA")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal premiosEficiencia;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "VACACIONES_A_TIEMPO")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal vacacionesATiempo;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "PRIMA_DE_VACACIONES_A_TIEMPO")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal primaDeVacacionesATiempo;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "VACACIONES_REPORTADAS")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal vacacionesReportadas;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "PRIMA_DE_VACACIONES_REPORTADA")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal primaDeVacacionesReportada;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "AGUINALDO")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal aguinaldo;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "PRIMA_DE_ANTIGUEDAD")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal primaDeAntiguedad;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "OTRAS_PERCEPCIONES")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal otrasPercepciones;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "TOTAL_PERCEPCIONES")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal totalPercepciones;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "RET_INV_Y_VIDA")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal retInvYVida;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "RET_CESANTIA")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal retCesantia;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "RET_ENF_Y_MAT_OBRERO")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal retEnfYMatObrero;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "SEGURO_DE_VIVIENDA_INFONAVIT")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal seguroDeViviendaInfonavit;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "PRESTAMO_INFONAVIT_VSM")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal prestamoInfonavitVsm;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "SUBS_AL_EMPLEO_ACREDITADO")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal subsAlEmpleoAcreditado;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "SUBSIDIO_AL_EMPLEO_SP")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal subsidioAlEmpleoSp;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ISR_ANTES_DE_SUBS_AL_EMPLEO")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal isrAntesDeSubsAlEmpleo;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ISR_ART142")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal isrArt142;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ISR_SP")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal isrSp;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "IMSS")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal imss;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "PRESTAMO_INFONAVIT")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal prestamoInfonavit;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "AJUSTE_AL_NETO")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal ajusteAlNeto;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ISR_FINIQUITO")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal isrFiniquito;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "OTRAS_DEDUCCIONES")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal otrasDeducciones;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "TOTAL_DEDUCCIONES")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal totalDeducciones;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "NETO")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal neto;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "INVALIDEZ_Y_VIDA")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal invalidezYVida;
+
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "CESANTIA_Y_VEJEZ")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal cesantiaYVejez;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ENF_Y_MAT_PATRON")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal enfYMatPatron;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "FONDO_RETIRO_SAR")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal fondoRetiroSar;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "IMPUESTO_ESTATAL")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal impuestoEstatal;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "RIESGO_DE_TRABAJO")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal riesgoDeTrabajo;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "IMSS_EMPRESA")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal imssEmpresa;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "INFONAVIT_EMPRESA")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal infonavitEmpresa;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "GUARDERIA_IMSS")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal guarderiaImss;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "OTRAS_OBLIGACIONES")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal otrasObligaciones;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "TOTAL_OBLIGACIONES")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal totalObligaciones;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "PERCEPCIONES_SUBSIDIO_SP_TOTAL_OBLIGACIONES")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal percepcionesSubsidioSpTotalObligaciones;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "COMISION")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal comision;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "IVA")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal iva;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "TOTAL_IVA")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal totalIva;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
     @Convert(converter = DateTimeConverter.class)
+    @JsonView(JsonViews.Root.class)
     private LocalDateTime creationDate;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "STATUS")
+    @JsonView(JsonViews.Root.class)
     private int status;
 
     public Outsourcing() {

@@ -37,7 +37,8 @@
                     priorities:[],
                     userInSession:'',
                     validForm:false,
-                    folioToSearch:''
+                    folioToSearch:'',
+                    rutaimagen: ROOT_URL
                 },
                 methods: {
                     getTicketByFolio:function () {
@@ -140,50 +141,57 @@
     <jsp:body>
         <div id="content">
             <br>
-            <h1 class="text-center">Tickets</h1>
+            <div class="col-xs-offset-1 col-xs-10">
+                <div class="row">
+                    <div class="col-xs-4 col-xs-offset-4">
+                        <h1 class="text-center">Tickets</h1>
+                    </div>
+                    <div class="col-xs-4 text-right">
+                        <button class="btn btn-info" name="button" data-toggle="modal" data-target="#verCatalogo">Ver catalogo</button>
+                    </div>
+                </div>
+            </div>
             <br>
             <div class="col-xs-offset-1 col-xs-10">
-                <%--<form v-on:submit.prevent="saveTicket">--%>
-                    <div class="row">
-                        <div class="col-xs-4">
-                            <label>Solicitante</label>
-                            <input type="text" class="form-control" v-model="userInSession.dwEmployee.employee.fullName" disabled>
-                        </div>
-                        <div class="col-xs-4">
-                            <label>Tipo de solicitud</label>
-                            <select class="form-control" v-model="ticket.incidence">
-                                <option></option>
-                                <option v-for="incidence in incidences" value="{{incidence}}">
-                                    {{incidence.incidenceName}}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-xs-4">
-                            <label>Prioridad</label>
-                            <select class="form-control" v-model="ticket.priority">
-                                <option></option>
-                                <option v-for="priority in priorities" value="{{priority}}">
-                                    {{priority.priorityName}}
-                                </option>
-                            </select>
-                        </div>
+                <div class="row">
+                    <div class="col-xs-4">
+                        <label>Solicitante</label>
+                        <input type="text" class="form-control" v-model="userInSession.dwEmployee.employee.fullName" disabled>
                     </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <label>Descripción</label>
-                            <textarea class="form-control" maxlength="500"
-                                      rows="3" v-model="ticket.descripcionProblema">
+                    <div class="col-xs-4">
+                        <label>Tipo de solicitud</label>
+                        <select class="form-control" v-model="ticket.incidence">
+                            <option></option>
+                            <option v-for="incidence in incidences" value="{{incidence}}">
+                                {{incidence.incidenceName}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-xs-4">
+                        <label>Prioridad</label>
+                        <select class="form-control" v-model="ticket.priority">
+                            <option></option>
+                            <option v-for="priority in priorities" value="{{priority}}">
+                                {{priority.priorityName}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <label>Descripción</label>
+                            <textarea class="form-control" maxlength="2000"
+                                      rows="8" v-model="ticket.descripcionProblema">
                             </textarea>
-                        </div>
                     </div>
-                    <br>
-                    <div class="row">
-                        <div class="text-center">
-                            <button @click="saveTicket" class="btn btn-success">Solicitar</button>
-                        </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="text-center">
+                        <button @click="saveTicket" class="btn btn-success">Solicitar</button>
                     </div>
-                <%--</form>--%>
+                </div>
             </div>
             <div class="col-xs-offset-1 col-xs-10">
                 <br>
@@ -193,8 +201,8 @@
                 <form class="form-inline text-center" v-on:submit.prevent="getTicketByFolio">
                     <div class="form-group">
                         <label>Folio</label>
-                        <input type="search" v-model="folioToSearch" class="form-control"/>
-                        <button type="submit" class="btn btn-primary">Buscar</button>
+                        <input type="search" @keypress.enter="submit" v-model="folioToSearch" class="form-control"/>
+                        <button type="submit" @click="getTicketByFolio" class="btn btn-primary">Buscar</button>
                     </div>
                 </form>
                 <br>
@@ -243,6 +251,28 @@
                     </div>
                 </div>
             </div>
+
+            <div class="modal fade" id="verCatalogo" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content modal-lg">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="">Catalogo de solicitudes de diseño</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-xs-12 text-center">
+                                    <img :src="rutaimagen + '/assets/img/imagendiseno.png'"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </jsp:body>
