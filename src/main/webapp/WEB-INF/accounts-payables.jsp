@@ -157,10 +157,13 @@
                      this.$http.post(ROOT_URL+"/transactions/entry-pay-account", JSON.stringify(this.transaction))
                              .success(function (data)
                              {
-                                showAlert("Bien");
+                                showAlert("Abono realizado correctamente");
+                                this.transaction.amount= '';
+                                this.getBalances();
                              }).error(function(data)
                              {
-                                 showAlert("Mal");
+                                 showAlert("Ha fallado el abono a la cuenta");
+                                 this.transaction.amount= '';
                              });
                    }
 
