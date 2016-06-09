@@ -7,6 +7,7 @@ package mx.bidg.service;
 
 import java.util.List;
 import mx.bidg.model.PriceEstimations;
+import mx.bidg.model.Requests;
 import mx.bidg.model.Users;
 
 /**
@@ -29,5 +30,7 @@ public interface PriceEstimationsService {
 
     boolean delete(Integer idEstimation);
     boolean reject(Integer idEstimation);
+    
+    PriceEstimations findAuthorized(Requests request);
     
 }

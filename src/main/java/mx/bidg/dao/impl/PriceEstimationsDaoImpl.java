@@ -8,6 +8,7 @@ package mx.bidg.dao.impl;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.PriceEstimationsDao;
+import mx.bidg.model.CEstimationStatus;
 import mx.bidg.model.PriceEstimations;
 import mx.bidg.model.Requests;
 import org.hibernate.Criteria;
@@ -64,6 +65,14 @@ public class PriceEstimationsDaoImpl extends AbstractDao<Integer, PriceEstimatio
                 .setFetchMode("request", FetchMode.JOIN)
                 .setFetchMode("request.requestStatus", FetchMode.JOIN);
         return (PriceEstimations) criteria.uniqueResult();
+    }
+
+    @Override
+    public PriceEstimations findAuthorized(Requests request) {
+        return (PriceEstimations) createEntityCriteria()
+                .add(Restrictions.eq("idRequest", request.getIdRequest()))
+                .add(Restrictions.eq("idEstimationStatus", CEstimationStatus.APROBADA))
+                .uniqueResult();
     }
     
 }

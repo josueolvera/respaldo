@@ -24,6 +24,7 @@ import mx.bidg.events.requests.PriceEstimationCreatedEvent;
 import mx.bidg.exceptions.InvalidFileException;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.PriceEstimations;
+import mx.bidg.model.Requests;
 import mx.bidg.model.Users;
 import mx.bidg.service.PriceEstimationsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -171,6 +173,11 @@ public class PriceEstimationsController {
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(list), HttpStatus.OK);
     }
     
+    @RequestMapping(value = "/request/{idRequest}/authorized", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody ResponseEntity<String> findEstimationAuthorized(@PathVariable int idRequest) throws Exception {
+        PriceEstimations estimation = estimationsService.findAuthorized(new Requests(idRequest));
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(estimation), HttpStatus.OK);
+    }  
     
     @RequestMapping(value = "/authorization/{idEstimation}", method = RequestMethod.POST)
     public @ResponseBody String estimationAuthorization(@PathVariable int idEstimation, HttpSession session) {
