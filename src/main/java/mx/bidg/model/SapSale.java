@@ -17,8 +17,6 @@ import java.util.Date;
 @Entity
 @DynamicUpdate
 @Table(name = "SAP_SALE")
-
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class SapSale implements Serializable {
 
     private static final long serialVersionUID = 1L;
