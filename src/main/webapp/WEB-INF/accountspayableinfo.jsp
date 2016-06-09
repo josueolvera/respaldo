@@ -61,13 +61,19 @@
           ready: function ()
           {
               this.getInformationRequest();
+              this.getBalances();
 
           },
           data:
           {
               idRequest: ${idRequest},
               infoSolicitud: {},
-              infoAccountsPayable: {}
+              infoAccountsPayable: {},
+              infoAutorization: {},
+              infoProvider: {},
+              infoProviderContact: {},
+              allBalances: {},
+              balance: ''
 
           },
           methods:
@@ -82,10 +88,9 @@
                     minDate: moment().add(1, 'minutes')
                     }).data();
               },
-              savePayOfBill: function()
+              showPayOfBill: function()
               {
                   $("#payModal").modal('show');
-
               },
               getInformationRequest: function(){
                   this.$http.get(ROOT_URL+"/requests/"+ this.idRequest)
@@ -100,15 +105,93 @@
                   success(function(data)
                   {
                       this.infoAccountsPayable = data;
+                      this.getAutorizations();
+                  }).error(function(data)
+                  {
+                    showAlert("No se ha podido obtener la información de cuenta por pagar");
+                  });
+              },
+              getAutorizations: function(){
+
+                  this.$http.get(ROOT_URL+"/folios?folio="+this.infoSolicitud.folio).
+                  success(function(data)
+                  {
+                     this.infoAutorization= data;
+                     this.getProviderInformation();
+                  }).error(function(data)
+                  {
+                    showAlert("No se ha podido obtener la información de autorizaciones");
+                  });
+              },
+              getProviderInformation: function(){
+                  this.$http.get(ROOT_URL+"/estimations/request/"+this.idRequest+"/authorized").
+                  success(function(data)
+                  {
+                      this.infoProvider= data;
+                      this.getProviderContactInformation();
+                  }).error(function(data)
+                  {
+                    showAlert("No se ha podido obtener la informacion de la cotizacion autorizada");
+                  });
+              },
+              getProviderContactInformation: function()
+              {
+                  this.$http.get(ROOT_URL+"/provider-contact/provider/"+this.infoProvider.account.providersAccountsList[0].idProvider).
+                  success(function(data)
+                  {
+                      this.infoProviderContact = data;
                   }).error(function(data)
                   {
                     showAlert("Ha fallado el registro de su informacion, intente nuevamente");
                   });
+              },
+              redireccionar: function(){
+                  window.location.href=ROOT_URL+"/siad/accounts-payables"
+              },
+              savePayOfBill: function(){
+                  var transaction= {
+                      amount: 0,
+                      idBalance: 0,
+                      idCurrency: 1,
+                      transactionNumber: 1
+                  }
+
+                  transaction.amount = this.infoAccountsPayable[0].amount;
+                  transaction.idBalance = this.balance.idBalance;
+
+                  this.$http.post(ROOT_URL+"/accounts-payable/pay-account/"+this.infoAccountsPayable[0].idAccountPayable, JSON.stringify(transaction)).
+                  success(function(data)
+                  {
+                      showAlert("Bien");
+                  }).error(function(data)
+                  {
+                      showAlert("Mal");
+                  });
+
+
+              },
+              getBalances: function(){
+                  var self= this;
+                  this.$http.get(ROOT_URL+"/balances")
+                          .success(function (data)
+                          {
+                             this.allBalances = data;
+                             this.allBalances.forEach(function(element)
+                             {
+                                 self.balance= element;
+                             });
+                          });
               }
 
           },
         filters:
           {
+              deleteDot: function(param){
+                  console.log(param);
+                  var regreso;
+                  regreso= param.replace(/:/g, " ");
+                  return regreso;
+              }
 
           }
         });
@@ -122,7 +205,7 @@
        <div class="container-fluid">
          <div class="row">
            <div class="col-xs-12 text-left">
-             <h1>Cuentas por pagar</h1>
+             <h1>Cuenta por pagar</h1>
            </div>
            <br>
              <div class="row">
@@ -141,21 +224,33 @@
                                   <label>
                                       Nombre/Razon Social
                                   </label>
+                                  <p class="underline">
+                                    {{ infoProvider.account.providersAccountsList[0].provider.providerName}}
+                                  </p>
                                 </div>
                                 <div class="col-xs-3">
                                   <label>
                                       RFC
                                   </label>
+                                  <p class="underline">
+                                    {{infoProvider.account.providersAccountsList[0].provider.rfc}}
+                                  </p>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>
                                         Días de crédito
                                     </label>
+                                    <p class="underline">
+                                      {{infoProvider.account.providersAccountsList[0].provider.creditDays}}
+                                    </p>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>
                                         Día de corte
                                     </label>
+                                    <p class="underline">
+                                      {{infoProvider.account.providersAccountsList[0].provider.cuttingDate}}
+                                    </p>
                                 </div>
                             </div>
                           </div>
@@ -186,27 +281,81 @@
                             </div>
                           </div>
 
+                          <div class="row" v-for="providerContact in infoProviderContact">
+                            <div class="col-xs-12">
+                                <div class="col-xs-3">
+                                    {{providerContact.name}}
+                                </div>
+                                <div class="col-xs-3">
+                                    {{providerContact.post}}
+                                </div>
+                                <div class="col-xs-3">
+                                    {{providerContact.phoneNumber}}
+                                </div>
+                                <div class="col-xs-3">
+                                    {{providerContact.email}}
+                                </div>
+                            </div>
+                          </div>
+
+                          <div class="row">
+                            <div class="col-xs-12">
+                                <div class="col-xs-3">
+                                    <p class="underline">
+
+                                    </p>
+                                </div>
+                                <div class="col-xs-3">
+                                    <p class="underline">
+
+                                    </p>
+                                </div>
+                                <div class="col-xs-3">
+                                    <p class="underline">
+
+                                    </p>
+                                </div>
+                                <div class="col-xs-3">
+                                    <p class="underline">
+
+                                    </p>
+                                </div>
+                            </div>
+                          </div>
+
                           <div class="row">
                             <div class="col-xs-12">
                                 <div class="col-xs-3">
                                     <label>
                                         Banco
                                     </label>
+                                    <p class="underline">
+                                      {{infoProvider.account.bank.acronyms}}
+                                    </p>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>
                                         Numero de Cuenta
                                     </label>
+                                    <p class="underline">
+                                      {{infoProvider.account.accountNumber}}
+                                    </p>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>
                                         CLABE
                                     </label>
+                                    <p class="underline">
+                                      {{infoProvider.account.accountClabe}}
+                                    </p>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>
                                         Moneda
                                     </label>
+                                    <p class="underline">
+                                      {{infoProvider.currency.currency}}
+                                    </p>
                                 </div>
                             </div>
                           </div>
@@ -289,14 +438,13 @@
                       <h3 class="panel-title">Información de Solicitud</h3>
                     </div>
                     <div class="panel-body">
-
                         <div class="row">
                           <div class="col-xs-12">
                               <div class="col-xs-3">
                                   <label>
                                       Concepto
                                   </label>
-                                  <div class="row" v-for="informacion in infoSolicitud.requestProductsList">
+                                  <div v-for="informacion in infoSolicitud.requestProductsList">
                                          {{informacion.product.product}}
                                   </div>
                               </div>
@@ -304,68 +452,88 @@
                                   <label>
                                       Monto
                                   </label>
+                                  <p class="underline">
+                                    $ {{infoAccountsPayable[0].amount}}
+                                  </p>
                               </div>
                               <div class="col-xs-3">
                                   <label>
                                       Número de pago
                                   </label>
+                                  <p class="underline">
+                                    {{infoAccountsPayable[0].payNum}}
+                                  </p>
                               </div>
                               <div class="col-xs-3">
                                   <label>
                                       Fecha de pago
                                   </label>
+                                  <p class="underline">
+                                    {{infoAccountsPayable[0].dueDateFormats.dateNumber}}
+                                  </p>
                               </div>
                           </div>
                         </div>
 
                         <div class="row">
-                          <div class="col-xs-12">
-                              <label>
-                                  Descripción de la Solicitud
-                              </label>
-                             <textarea class="form-control" rows="1" cols="40">
-                                 {{ infoSolicitud.description}}
-                             </textarea>
-                          </div>
+                            <div class="col-xs-12">
+                                <div class="col-xs-12">
+                                    <label>
+                                        Descripción de la Solicitud
+                                    </label>
+                                    <p class="underline">
+                                      {{ infoSolicitud.description}}
+                                    </p>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="row">
-                          <div class="col-xs-3">
-                            <label>
-                                Autorizó
-                            </label>
-                          </div>
-                          <div class="col-xs-3">
-                              <label>
-                                  Puesto
-                              </label>
+                            <div class="col-xs-12">
+                                <div class="col-xs-3">
+                                  <label>
+                                      Autorizó
+                                  </label>
+                                  <p class="underline">
+                                    {{infoAutorization.authorizations[0].users.dwEmployee.employee.fullName}}
+                                  </p>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>
+                                        Puesto
+                                    </label>
+                                    <p class="underline">
+                                      {{infoAutorization.authorizations[0].users.dwEmployee.role.roleName}}
+                                    </p>
+                                </div>
+                                <div class="col-xs-2">
+                                    <label>
+                                        Fecha de autorización
+                                    </label>
+                                    <p class="underline">
+                                      {{infoAutorization.authorizations[0].authorizationDateFormats.dateNumber}}
+                                    </p>
+                                </div>
+                                <div class="col-xs-4">
 
-                          </div>
-                          <div class="col-xs-2">
-                              <label>
-                                  Fecha de autorización
-                              </label>
+                                    <div class="col-xs-5">
+                                      <button class="btn btn-info" name="button" @click="showReprogramarModal" style="margin-top:15px">
+                                          Reprogramar
+                                      </button>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <button class="btn btn-success" name="button" @click="showPayOfBill" style="margin-top:15px">
+                                            Pagar
+                                        </button>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <button class="btn btn-default" name="button" @click="redireccionar" style="margin-top:15px">
+                                            Cancelar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
 
-                          </div>
-                          <div class="col-xs-4">
-
-                              <div class="col-xs-5">
-                                <button class="btn btn-default" name="button" @click="showReprogramarModal">
-                                    Reprogramar
-                                </button>
-                              </div>
-                              <div class="col-xs-3">
-                                  <button class="btn btn-default" name="button" @click="savePayOfBill">
-                                      Pagar
-                                  </button>
-                              </div>
-                              <div class="col-xs-4">
-                                  <button class="btn btn-default" name="button">
-                                      Cancelar
-                                  </button>
-                              </div>
-
-                          </div>
                         </div>
 
                     </div>
@@ -414,7 +582,7 @@
        </div>
 
        <div class="modal fade" id="payModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-         <div class="modal-dialog">
+         <div class="modal-dialog modal-lg">
            <div class="modal-content">
              <div class="modal-header">
                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -427,21 +595,33 @@
                      <label>
                          Concepto
                      </label>
+                     <div v-for="informacion in infoSolicitud.requestProductsList">
+                            {{informacion.product.product}}
+                     </div>
                    </div>
                    <div class="col-xs-3">
                      <label>
                          Monto
                      </label>
+                     <p>
+                     $ {{infoAccountsPayable[0].amount}}
+                     </p>
                    </div>
                    <div class="col-xs-3">
                      <label>
                          Nombre/Razon Social
                      </label>
+                     <p>
+                     {{ infoProvider.account.providersAccountsList[0].provider.providerName}}
+                     </p>
                    </div>
                    <div class="col-xs-3">
                      <label>
                          CLABE
                      </label>
+                     <p>
+                      {{infoProvider.account.accountClabe}}
+                     </p>
                    </div>
                  </div>
                  <br>
@@ -499,18 +679,12 @@
 
              </div>
              <div class="modal-footer">
-               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-               <button type="button" class="btn btn-primary"></button>
+               <button type="button" class="btn btn-success" @click="savePayOfBill">Pagar</button>
+               <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
              </div>
            </div>
          </div>
        </div>
-
-       <pre>
-           {{ $data.infoAccountsPayable | json}}
-       </pre>
-
-
 
       </div> <!-- #contenidos -->
       <!-- Fecha de Termino- Agregar fecha dia de solicitud-->
