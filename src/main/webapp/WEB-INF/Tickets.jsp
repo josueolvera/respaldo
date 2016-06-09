@@ -172,8 +172,8 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <label>Descripción</label>
-                            <textarea class="form-control" maxlength="500"
-                                      rows="3" v-model="ticket.descripcionProblema">
+                            <textarea class="form-control" maxlength="2000"
+                                      rows="8" v-model="ticket.descripcionProblema">
                             </textarea>
                         </div>
                     </div>
