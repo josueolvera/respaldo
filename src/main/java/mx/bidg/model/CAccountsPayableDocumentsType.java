@@ -5,6 +5,8 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
@@ -39,10 +41,12 @@ public class CAccountsPayableDocumentsType implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_DOCUMENT_TYPE")
+    @JsonView(JsonViews.Embedded.class)
     private Integer idDocumentType;
 
     @Size(max = 100)
     @Column(name = "DOCUMENT_NAME")
+    @JsonView(JsonViews.Embedded.class)
     private String documentName;
 
     public CAccountsPayableDocumentsType() {
