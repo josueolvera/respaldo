@@ -5,6 +5,8 @@
  */
 package mx.bidg.model;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
@@ -26,25 +28,22 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author gerardo8
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_ACCOUNTS_PAYABLE_DOCUMENTS_TYPE")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "CAccountsPayableDocumentsType.findAll", query = "SELECT c FROM CAccountsPayableDocumentsType c"),
-    @NamedQuery(name = "CAccountsPayableDocumentsType.findByIdDocumentType", query = "SELECT c FROM CAccountsPayableDocumentsType c WHERE c.idDocumentType = :idDocumentType"),
-    @NamedQuery(name = "CAccountsPayableDocumentsType.findByDocumentName", query = "SELECT c FROM CAccountsPayableDocumentsType c WHERE c.documentName = :documentName")})
+
 public class CAccountsPayableDocumentsType implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_DOCUMENT_TYPE")
     private Integer idDocumentType;
+
     @Size(max = 100)
     @Column(name = "DOCUMENT_NAME")
     private String documentName;
-    @OneToMany(mappedBy = "idDocumentType")
-    private List<AccountsPayableDocuments> accountsPayableDocumentsList;
 
     public CAccountsPayableDocumentsType() {
     }
@@ -67,15 +66,6 @@ public class CAccountsPayableDocumentsType implements Serializable {
 
     public void setDocumentName(String documentName) {
         this.documentName = documentName;
-    }
-
-    @XmlTransient
-    public List<AccountsPayableDocuments> getAccountsPayableDocumentsList() {
-        return accountsPayableDocumentsList;
-    }
-
-    public void setAccountsPayableDocumentsList(List<AccountsPayableDocuments> accountsPayableDocumentsList) {
-        this.accountsPayableDocumentsList = accountsPayableDocumentsList;
     }
 
     @Override
