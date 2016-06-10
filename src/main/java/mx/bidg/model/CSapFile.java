@@ -5,6 +5,8 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
 import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -32,21 +34,28 @@ public class CSapFile implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_SAP_FILE")
+    @JsonView(JsonViews.Root.class)
     private Integer idSapFile;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "SAP_FILE_NAME")
+    @JsonView(JsonViews.Root.class)
     private String sapFileName;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "FILE_NAME")
+    @JsonView(JsonViews.Root.class)
     private String fileName;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "LAST_UPLOADED_DATE")
     @Convert(converter = DateTimeConverter.class)
+    @JsonView(JsonViews.Root.class)
     private LocalDateTime lastUploadedDate;
 
     public CSapFile() {
