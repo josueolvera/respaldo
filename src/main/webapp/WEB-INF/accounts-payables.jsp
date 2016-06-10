@@ -84,15 +84,9 @@
               locale: 'es',
               format: 'DD-MM-YYYY',
               useCurrent: false,
-              minDate: moment().add(1, 'minutes')
               }).data();
 
-            this.timePickerReporteFinal = $('#datefechafinal').datetimepicker({
-              locale: 'es',
-              format: 'DD-MM-YYYY',
-              useCurrent: false,
-              minDate: moment().add(1, 'minutes')
-              }).data();
+
 
               this.timePickercuentaspagadasInicial = $('#datecuentasinicial').datetimepicker({
                 locale: 'es',
@@ -235,8 +229,37 @@
                       });
               },
               generateReportCash: function(){
-                  
 
+                  var fechaofDate = this.reporteflujoinicial;
+                  var dateformatedofDate = moment(fechaofDate, "DD-MM-YYYY").format("YYYY-MM-DD");
+                  var dateDueDateofDate = new Date(dateformatedofDate);
+                  var dateisoDueofDate = dateDueDateofDate.toISOString().slice(0, -1);
+
+                  var fechauntilDate = this.reporteflujofinal;
+                  var dateformateduntilDate= moment(fechauntilDate, "DD-MM-YYYY").format("YYYY-MM-DD");
+                  var dateDueDateuntilDate = new Date(dateformateduntilDate);
+                  var dateisoDueuntilDate = dateDueDateuntilDate.toISOString().slice(0, -1);
+
+                  var report= {
+                      ofDate: '',
+                      untilDate: ''
+                  }
+
+                  report.ofDate = dateisoDueofDate;
+                  report.untilDate = dateisoDueuntilDate;
+
+                  location.href= ROOT_URL+"/transactions/report/transactions-by-date?fromDate="+report.ofDate+"&toDate="+report.untilDate;
+
+              },
+              activarPickerReporteFinal: function(fechainicio){
+                  var fecha= moment(fechainicio, 'DD-MM-YYYY').format('YYYY-MM-DD');
+                  var fechafinal = moment(fecha).add(1, "day");
+                  this.timePickerReporteFinal = $('#datefechafinal').datetimepicker({
+                  locale: 'es',
+                  format: 'DD-MM-YYYY',
+                  useCurrent: false,
+                  minDate: fechafinal
+                  }).data();
               }
 
           },
@@ -320,7 +343,7 @@
                                  <div class="form-group">
                                  <div class='input-group date' id='datefechafinal'>
                                      <input type='text' class="form-control" v-model="reporteflujofinal">
-                                     <span class="input-group-addon">
+                                     <span class="input-group-addon" @click="activarPickerReporteFinal(reporteflujoinicial)">
                                          <span class="glyphicon glyphicon-calendar"></span>
                                      </span>
                                  </div>
