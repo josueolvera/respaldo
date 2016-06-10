@@ -5,6 +5,8 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
@@ -28,15 +30,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 @DynamicUpdate
 @Table(name = "C_TRANSACTIONS_DOCUMENTS_TYPES")
 public class CTransactionsDocumentsTypes implements Serializable {
-
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_TRANSACTION_DOCUMENT_TYPE")
+    @JsonView(JsonViews.Root.class)
     private Integer idTransactionDocumentType;
+
     @Size(max = 100)
     @Column(name = "DOCUMENT_NAME")
+    @JsonView(JsonViews.Root.class)
     private String documentName;
 
     public CTransactionsDocumentsTypes() {
