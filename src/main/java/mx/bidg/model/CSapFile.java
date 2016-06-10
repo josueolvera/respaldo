@@ -7,6 +7,7 @@ package mx.bidg.model;
 
 import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -20,7 +21,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  *
  * @author gerardo8
  */
+
 @Entity
+@DynamicUpdate
 @Table(name = "C_SAP_FILE")
 public class CSapFile implements Serializable {
 
