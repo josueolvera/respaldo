@@ -52,6 +52,11 @@ public class AccountsPayableController {
     private RequestsService requestsService;
 
     private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    
+    @RequestMapping(value = "/{idAccountPayable}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody String findById(@PathVariable int idAccountPayable) throws Exception {
+        return mapper.writeValueAsString(accountsPayableService.findById(idAccountPayable));
+    }
 
     @RequestMapping(value = "/folio", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody String findByFolio(@RequestParam(name = "folio", required = true) String folio) throws Exception {
