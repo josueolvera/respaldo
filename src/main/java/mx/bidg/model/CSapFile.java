@@ -115,6 +115,14 @@ public class CSapFile implements Serializable {
         this.layoutFileUrl = layoutFileUrl;
     }
 
+    public String getLayoutFileName() {
+        return layoutFileName;
+    }
+
+    public void setLayoutFileName(String layoutFileName) {
+        this.layoutFileName = layoutFileName;
+    }
+
     public LocalDateTime getLastUploadedDate() {
         return lastUploadedDate;
     }
