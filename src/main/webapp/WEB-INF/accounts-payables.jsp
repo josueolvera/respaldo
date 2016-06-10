@@ -114,6 +114,7 @@
               this.getAccountsPayableofActualDay();
               this.getToday();
               this.getBalances();
+              this.getAccountsPayableReschedules();
 
           },
           data:
@@ -132,7 +133,8 @@
                 idCurrency: '',
                 transactionNumber: 1
             },
-            url: ROOT_URL+"/siad/accounts-payable-info/"
+            url: ROOT_URL+"/siad/accounts-payable-info/",
+            accountsPayablesReschedule: {}
           },
           methods:
           {
@@ -204,6 +206,29 @@
                                  this.transaction.amount= '';
                              });
                    }
+              },
+              getAccountsPayableReschedules: function(){
+                  var self= this;
+                        this.$http.get(ROOT_URL+"/accounts-payable/reschedule")
+                          .success(function (data)
+                          {
+                              this.accountsPayablesReschedule = data;
+                              this.accountsPayablesReschedule.forEach(function(element)
+                              {
+                                  var folio = element.folio;
+
+                                  self.$http.get(ROOT_URL+"/requests/folio?folio="+folio).
+                                  success(function(data)
+                                  {
+                                      Vue.set(element, "informationRequest", data);
+                                  }).error(function(data)
+                                  {
+                                    showAlert("Ha fallado el registro de su informacion, intente nuevamente");
+                                  });
+                              });
+                          }).error(function()
+                          {
+                      });
               }
 
           },
@@ -358,7 +383,7 @@
 
              <div class="row">
                  <div class="col-xs-12">
-                   <h1>Hoy &nbsp<small>{{ today }}</small></h1>
+                   <h4>Hoy &nbsp<small>{{ today }}</small></h4>
                  </div>
              </div>
 
@@ -403,12 +428,60 @@
                  </div> <%--div clearfix --%>
          </div> <%--div notification --%>
 
+         <div class="row">
+             <div class="col-xs-12">
+               <h4>Reprogramadas</h4>
+             </div>
+         </div>
+
+         <%-- Reprogramadas --%>
+         <div class="row notification" v-for="accountPayable in accountsPayablesReschedule" v-if="accountPayable.dueDateFormats.dateTextLong !== today">
+             <div class="card card-inline clearfix">
+                 <div class="card-body clearfix">
+                                   <div class="card-image">
+                                     <span class="badge">CPP</span>
+                                   </div>
+
+                                    <div class="card-title">
+                                        <label>
+                                            {{accountPayable.informationRequest.requestTypeProduct.productType.productType}}
+                                        </label>
+                                    </div>
+
+                                   <div class="card-subtitle">
+                                       <label>
+                                           Fecha de pago - {{accountPayable.dueDateFormats.dateNumber }}
+                                       </label>
+                                   </div>
+
+
+                                   <div class="card-text">
+                                       <label>
+                                           Monto -$ {{ accountPayable.amount}}
+                                       </label>
+                                   </div>
+
+                 </div> <%--div card-body clearfix --%>
+                 <div class="card-actions">
+                     <div class="col-xs-8">
+                         <span class="label label-success">{{accountPayable.dueDateFormats.dateNumber }}</span>
+                     </div>
+                     <div class="col-xs-4">
+                        <a :href="url+accountPayable.informationRequest.idRequest">
+                            <span class="glyphicon glyphicon-new-window">
+                            </span>
+                        </a>
+                     </div>
+                 </div>
+             </div> <%--div clearfix --%>
+     </div> <%--div notification --%>
+
                </div>
              </div>
          </div>
        </div>
        <%-- <pre>
-           {{$data.transaction | json}}
+           {{$data.accountsPayablesReschedule | json}}
        </pre> --%>
       </div> <!-- #contenidos -->
       <!-- Fecha de Termino- Agregar fecha dia de solicitud-->
