@@ -5,6 +5,43 @@
 
 
 <t:template pageTitle="BID Group: Presupuestos">
+    <jsp:attribute name="styles">
+        <style>
+            #content {
+                margin-top: 1.5rem;
+            }
+            .loader {
+                margin-top: 2rem;
+            }
+            .notification.expanded {
+                margin-top: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+            .notifications-list {
+                margin: 2rem 0;
+            }
+            .notifications-list h4 {
+                margin-left: 2rem;
+            }
+            .notifications-group {
+                margin-bottom: 2rem;
+            }
+            .notifications-group :last-child .card {
+                border-bottom: 1px solid #c8c8c8;
+            }
+            .notification-details {
+                padding: 2rem;
+                border: 1px solid #c8c8c8;
+                background: #FFFFFF;
+                box-shadow: 0 -1px 0 #e5e5e5, 0 0 2px rgba(0,0,0,.12), 0 2px 4px rgba(0,0,0,.24);
+            }
+            .card-body {
+                cursor: pointer;
+            }
+        </style>
+    </jsp:attribute>
+
+
     <jsp:attribute name="scripts">
         <script type="text/javascript">
         function validateFloatKeyPress(el, evt) {
@@ -94,7 +131,8 @@
                 idBalance: '',
                 idCurrency: '',
                 transactionNumber: 1
-            }
+            },
+            url: ROOT_URL+"/siad/accounts-payable-info/"
           },
           methods:
           {
@@ -166,7 +204,6 @@
                                  this.transaction.amount= '';
                              });
                    }
-
               }
 
           },
@@ -325,40 +362,47 @@
                  </div>
              </div>
 
-             <div class="panel panel-default" v-for="accountPayable in accountsPayablesofDay">
-               <div class="panel-body">
-                 <div class="row">
-                   <div class="col-xs-3">
-                     <span class="badge">CPP</span>
-                     <label>
-                         {{accountPayable.informationRequest.requestTypeProduct.productType.productType}}
-                     </label>
-                   </div>
-                   <div class="col-xs-3">
-                       <label>
-                           Fecha de pago - {{accountPayable.dueDateFormats.dateNumber }}
-                       </label>
-                   </div>
-                   <div class="col-xs-3">
-                       <label>
-                           Monto -$ {{ accountPayable.amount}}
-                       </label>
-                   </div>
-                   <div class="col-xs-3">
+             <div class="row notification" v-for="accountPayable in accountsPayablesofDay">
+                 <div class="card card-inline clearfix">
+                     <div class="card-body clearfix">
+                                       <div class="card-image">
+                                         <span class="badge">CPP</span>
+                                       </div>
 
-                       <div class="col-xs-8">
-                           <span class="label label-success">Hoy</span>
-                       </div>
-                       <div class="col-xs-4">
-                          <button class="btn btn-default" @click="getInformationRequest(accountPayable.informationRequest.idRequest)">
-                              <span class="glyphicon glyphicon-new-window">
-                              </span>
-                          </button>
-                       </div>
-                   </div>
-                 </div>
-               </div>
-             </div>
+                                        <div class="card-title">
+                                            <label>
+                                                {{accountPayable.informationRequest.requestTypeProduct.productType.productType}}
+                                            </label>
+                                        </div>
+
+                                       <div class="card-subtitle">
+                                           <label>
+                                               Fecha de pago - {{accountPayable.dueDateFormats.dateNumber }}
+                                           </label>
+                                       </div>
+
+
+                                       <div class="card-text">
+                                           <label>
+                                               Monto -$ {{ accountPayable.amount}}
+                                           </label>
+                                       </div>
+
+                     </div> <%--div card-body clearfix --%>
+                     <div class="card-actions">
+                         <div class="col-xs-8">
+                             <span class="label label-success">Hoy</span>
+                         </div>
+                         <div class="col-xs-4">
+                            <a :href="url+accountPayable.informationRequest.idRequest">
+                                <span class="glyphicon glyphicon-new-window">
+                                </span>
+                            </a>
+                         </div>
+                     </div>
+                 </div> <%--div clearfix --%>
+         </div> <%--div notification --%>
+
                </div>
              </div>
          </div>
