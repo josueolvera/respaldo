@@ -28,15 +28,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name = "TRANSACTIONS_DOCUMENTS")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "TransactionsDocuments.findAll", query = "SELECT t FROM TransactionsDocuments t"),
-    @NamedQuery(name = "TransactionsDocuments.findByIdTransactionDocument", query = "SELECT t FROM TransactionsDocuments t WHERE t.idTransactionDocument = :idTransactionDocument"),
-    @NamedQuery(name = "TransactionsDocuments.findByIdTransactionDocumentType", query = "SELECT t FROM TransactionsDocuments t WHERE t.idTransactionDocumentType = :idTransactionDocumentType"),
-    @NamedQuery(name = "TransactionsDocuments.findByDocumentUrl", query = "SELECT t FROM TransactionsDocuments t WHERE t.documentUrl = :documentUrl"),
-    @NamedQuery(name = "TransactionsDocuments.findByDocumentName", query = "SELECT t FROM TransactionsDocuments t WHERE t.documentName = :documentName"),
-    @NamedQuery(name = "TransactionsDocuments.findByUploadingDate", query = "SELECT t FROM TransactionsDocuments t WHERE t.uploadingDate = :uploadingDate"),
-    @NamedQuery(name = "TransactionsDocuments.findByIdAccessLevel", query = "SELECT t FROM TransactionsDocuments t WHERE t.idAccessLevel = :idAccessLevel")})
 public class TransactionsDocuments implements Serializable {
 
     private static final long serialVersionUID = 1L;
