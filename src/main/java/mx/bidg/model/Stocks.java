@@ -253,6 +253,13 @@ public class Stocks implements AccessLevelFilterable, Serializable {
         return new DateFormatsPojo(creationDate);
     }
 
+    public DateFormatsPojo getPurchaseDateFormats() {
+        if (purchaseDate == null) {
+            return null;
+        }
+        return new DateFormatsPojo(purchaseDate);
+    }
+
     public List<StockEmployeeAssignments> getStockEmployeeAssignmentsList() {
         return stockEmployeeAssignmentsList;
     }

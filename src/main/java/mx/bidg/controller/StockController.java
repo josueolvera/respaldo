@@ -112,29 +112,26 @@ public class StockController {
         stock = stockService.save(stock);
 
 
-        if (request.getParameter("dwEnterprise") != null && request.getParameter("employee") != null) {
+        if (request.getParameter("dwEnterprise") != null) {
             DwEnterprises dwEnterprises =
                     dwEnterprisesService.findById(Integer.parseInt(request.getParameter("dwEnterprise")));
-
-            Employees employee =
-                    employeesService.findById(Integer.parseInt(request.getParameter("employee")));
 
             stock.setDwEnterprises(dwEnterprises);
             stockService.update(stock);
 
-            assignment.setDwEnterprises(stock.getDwEnterprises());
-            assignment.setEmployee(employee);
-            assignment.setStocks(stock);
-            assignment.setAssignmentDate(LocalDateTime.now());
-            assignment.setCurrentAssignment(1);
-            assignment.setIdAccessLevel(1);
+            if (! request.getParameter("employee").isEmpty()) {
+                Employees employee =
+                        employeesService.findById(Integer.parseInt(request.getParameter("employee")));
 
-            assignmentsService.saveAssignment(assignment);
-        } else {
+                assignment.setDwEnterprises(stock.getDwEnterprises());
+                assignment.setEmployee(employee);
+                assignment.setStocks(stock);
+                assignment.setAssignmentDate(LocalDateTime.now());
+                assignment.setCurrentAssignment(1);
+                assignment.setIdAccessLevel(1);
 
-            stock.setDwEnterprises(DwEnterprises.DEFAULT_DW_ENTERPRISES);
-            stockService.update(stock);
-
+                assignmentsService.saveAssignment(assignment);
+            }
         }
 
         saveAttachDocuments(stock.getIdStock(),request);
