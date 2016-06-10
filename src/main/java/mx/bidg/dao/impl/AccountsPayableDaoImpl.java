@@ -103,6 +103,7 @@ public class AccountsPayableDaoImpl extends AbstractDao<Integer, AccountsPayable
                 .add(Restrictions.or(
                         Restrictions.eq("accountPayableStatus",CAccountsPayableStatus.PENDIENTE),
                         Restrictions.eq("accountPayableStatus",CAccountsPayableStatus.REPROGRAMADA)))
+                .addOrder(Order.asc("dueDate"))
                 .list();
     }
 }
