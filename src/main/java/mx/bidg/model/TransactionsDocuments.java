@@ -5,19 +5,12 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
+
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -36,8 +29,6 @@ public class TransactionsDocuments implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID_TRANSACTION_DOCUMENT")
     private Integer idTransactionDocument;
-    @Column(name = "ID_TRANSACTION_DOCUMENT_TYPE")
-    private Integer idTransactionDocumentType;
     @Size(max = 2048)
     @Column(name = "DOCUMENT_URL")
     private String documentUrl;
@@ -51,6 +42,16 @@ public class TransactionsDocuments implements Serializable {
     private Date uploadingDate;
     @Column(name = "ID_ACCESS_LEVEL")
     private Integer idAccessLevel;
+    @Column(name = "ID_TRANSACTION_DOCUMENT_TYPE", insertable = false,updatable = false)
+    private Integer idTransactionDocumentType;
+    @Column(name="ID_TRANSACTION", insertable = false,updatable = false)
+    private Integer idTransaction;
+    @JoinColumn(name = "ID_TRANSACTION_DOCUMENT_TYPE", referencedColumnName = "ID_TRANSACTION_DOCUMENT_TYPE")
+    @ManyToOne
+    private CTransactionsDocumentsTypes transactionDocumentType;
+    @JoinColumn(name = "ID_TRANSACTION", referencedColumnName = "ID_TRANSACTION")
+    @ManyToOne
+    private Transactions transaction;
 
     public TransactionsDocuments() {
     }
@@ -110,6 +111,30 @@ public class TransactionsDocuments implements Serializable {
 
     public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
+    }
+
+    public Integer getIdTransaction() {
+        return idTransaction;
+    }
+
+    public void setIdTransaction(Integer idTransaction) {
+        this.idTransaction = idTransaction;
+    }
+
+    public CTransactionsDocumentsTypes getTransactionDocumentType() {
+        return transactionDocumentType;
+    }
+
+    public void setTransactionDocumentType(CTransactionsDocumentsTypes transactionDocumentType) {
+        this.transactionDocumentType = transactionDocumentType;
+    }
+
+    public Transactions getTransaction() {
+        return transaction;
+    }
+
+    public void setTransaction(Transactions transaction) {
+        this.transaction = transaction;
     }
 
     @Override
