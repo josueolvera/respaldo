@@ -33,6 +33,10 @@ public class CStockDocumentsTypes implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int required;
 
+    @Column(name = "UPDATABLE")
+    @JsonView(JsonViews.Root.class)
+    private Boolean updatable;
+
     public CStockDocumentsTypes() {
     }
 
@@ -62,6 +66,14 @@ public class CStockDocumentsTypes implements Serializable {
 
     public void setRequired(int required) {
         this.required = required;
+    }
+
+    public Boolean isUpdatable() {
+        return updatable;
+    }
+
+    public void setUpdatable(Boolean updatable) {
+        this.updatable = updatable;
     }
 
     @Override
