@@ -24,11 +24,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name = "C_TRANSACTIONS_DOCUMENTS_TYPES")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "CTransactionsDocumentsTypes.findAll", query = "SELECT c FROM CTransactionsDocumentsTypes c"),
-    @NamedQuery(name = "CTransactionsDocumentsTypes.findByIdTransactionDocumentType", query = "SELECT c FROM CTransactionsDocumentsTypes c WHERE c.idTransactionDocumentType = :idTransactionDocumentType"),
-    @NamedQuery(name = "CTransactionsDocumentsTypes.findByDocumentName", query = "SELECT c FROM CTransactionsDocumentsTypes c WHERE c.documentName = :documentName")})
 public class CTransactionsDocumentsTypes implements Serializable {
 
     private static final long serialVersionUID = 1L;
