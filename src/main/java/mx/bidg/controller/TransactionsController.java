@@ -66,7 +66,7 @@ public class TransactionsController {
 
     @RequestMapping(value = "/report/transactions-by-date", method = RequestMethod.GET)
     public ResponseEntity<String> reportTransaction(@RequestParam(name= "fromDate", required=true) String fromDate, @RequestParam(name="toDate", required=true) String toDate ,HttpServletResponse response) throws IOException {
-        //JsonNode node = mapper.readTree(data);
+
         LocalDateTime ofDate = (fromDate == null || fromDate.equals("")) ? null :
                 LocalDateTime.parse(fromDate, DateTimeFormatter.ISO_DATE_TIME);
         LocalDateTime untilDate = (toDate == null || toDate.equals("")) ? null :
@@ -84,13 +84,13 @@ public class TransactionsController {
         return new ResponseEntity<>("Reporte", HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/report/accounts-payable", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> reportPayAccount(@RequestBody String data, HttpServletResponse response) throws IOException {
-        JsonNode node = mapper.readTree(data);
-        LocalDateTime ofDate = (node.get("ofDate") == null || node.findValue("ofDate").asText().equals("")) ? null :
-                LocalDateTime.parse(node.get("ofDate").asText(), DateTimeFormatter.ISO_DATE_TIME);
-        LocalDateTime untilDate = (node.get("untilDate") == null || node.findValue("untilDate").asText().equals("")) ? null :
-                LocalDateTime.parse(node.get("untilDate").asText(), DateTimeFormatter.ISO_DATE_TIME);
+    @RequestMapping(value = "/report/accounts-payable", method = RequestMethod.GET)
+    public ResponseEntity<String> reportPayAccount(@RequestParam(name= "fromDate", required=true) String fromDate, @RequestParam(name="toDate", required=true) String toDate , HttpServletResponse response) throws IOException {
+
+        LocalDateTime ofDate = (fromDate == null || fromDate.equals("")) ? null :
+                LocalDateTime.parse(fromDate, DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime untilDate = (toDate == null || toDate.equals("")) ? null :
+                LocalDateTime.parse(toDate, DateTimeFormatter.ISO_DATE_TIME);
 
         String initialDate = ofDate.toString();
         String finalDate = untilDate.toString();
