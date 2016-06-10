@@ -954,8 +954,8 @@
                                             <p><strong>Artículo</strong></p>
                                             <p>{{ article.article.articleName }}</p>
                                         </div>
-                                        <div class="col-md-3 col-xs-6">
-                                            <span v-if="article.article.hasSerialNumber">
+                                        <div class="col-md-3 col-xs-6" v-if="article.article.hasSerialNumber">
+                                            <span>
                                                 <p><strong>No. de Serie</strong></p>
                                                 <p>{{ article.serialNumber }}</p>
                                             </span>
@@ -1017,6 +1017,10 @@
                                             <tr>
                                                 <td>Solicitud</td>
                                                 <td>{{ article.folio }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Fecha de compra</td>
+                                                <td>{{ article.purchaseDateFormats.dateTextLong }}</td>
                                             </tr>
                                             <tr>
                                                 <td>Número de factura</td>
