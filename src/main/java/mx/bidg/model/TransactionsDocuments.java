@@ -24,35 +24,52 @@ import javax.xml.bind.annotation.XmlRootElement;
 @DynamicUpdate
 @Table(name = "TRANSACTIONS_DOCUMENTS")
 public class TransactionsDocuments implements Serializable {
-
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_TRANSACTION_DOCUMENT")
+    @JsonView(JsonViews.Root.class)
     private Integer idTransactionDocument;
+
     @Size(max = 2048)
     @Column(name = "DOCUMENT_URL")
+    @JsonView(JsonViews.Root.class)
     private String documentUrl;
+
     @Size(max = 1024)
     @Column(name = "DOCUMENT_NAME")
+    @JsonView(JsonViews.Root.class)
     private String documentName;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "UPLOADING_DATE")
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonView(JsonViews.Root.class)
     private Date uploadingDate;
+
     @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
+
     @Column(name = "ID_TRANSACTION_DOCUMENT_TYPE", insertable = false,updatable = false)
+    @JsonView(JsonViews.Root.class)
     private Integer idTransactionDocumentType;
+
     @Column(name="ID_TRANSACTION", insertable = false,updatable = false)
+    @JsonView(JsonViews.Root.class)
     private Integer idTransaction;
+
     @JoinColumn(name = "ID_TRANSACTION_DOCUMENT_TYPE", referencedColumnName = "ID_TRANSACTION_DOCUMENT_TYPE")
     @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
     private CTransactionsDocumentsTypes transactionDocumentType;
+
     @JoinColumn(name = "ID_TRANSACTION", referencedColumnName = "ID_TRANSACTION")
     @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
     private Transactions transaction;
 
     public TransactionsDocuments() {
