@@ -1,8 +1,11 @@
 package mx.bidg.service;
 
 import mx.bidg.model.Transactions;
+import mx.bidg.model.Users;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -14,5 +17,7 @@ public interface TransactionsService {
     Transactions update(Transactions transaction);
     boolean delete(Transactions transaction);
     List<Transactions> findAll();
-    void entryPayAccount (String data) throws IOException;
+    void entryPayAccount (String data , Users user) throws IOException;
+    void transacctionsByDayReport(LocalDateTime ofdate, LocalDateTime untilDate , OutputStream stream) throws IOException;
+    void transacctionsByDayReportAndExit(LocalDateTime ofdate, LocalDateTime untilDate , OutputStream stream) throws IOException;
 }

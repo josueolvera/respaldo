@@ -67,6 +67,7 @@
           data:
           {
               idRequest: ${idRequest},
+              idAccountPayablePath: ${idAccountPayable},
               infoSolicitud: {},
               infoAccountsPayable: {},
               infoAutorization: {},
@@ -79,14 +80,17 @@
           },
           methods:
           {
-              showReprogramarModal: function()
+              showReprogramarModal: function(accountsPayable)
               {
+                  var fecha= moment(accountsPayable.dueDateFormats.dateNumber, 'DD-MM-YYYY').format('YYYY-MM-DD');
+                  var fechafinal = moment(fecha).add(1, "day");
+
                   $("#reprogramarModal").modal('show');
                   this.timePickerReprogramar = $('#datereprogramar').datetimepicker({
                     locale: 'es',
                     format: 'DD-MM-YYYY',
                     useCurrent: false,
-                    minDate: moment().add(1, 'minutes')
+                    minDate: fechafinal
                     }).data();
               },
               showPayOfBill: function()
@@ -102,11 +106,13 @@
                           });
               },
               getInformationAccountsPayable: function(){
-                  this.$http.get(ROOT_URL+"/accounts-payable/folio?folio="+this.infoSolicitud.folio).
+                  var self= this;
+                  //alert(this.idAccountPayablePath);
+                  this.$http.get(ROOT_URL+"/accounts-payable/"+this.idAccountPayablePath).
                   success(function(data)
                   {
-                      this.infoAccountsPayable = data;
-                      this.getAutorizations();
+                         this.infoAccountsPayable = data;
+                         this.getAutorizations();
                   }).error(function(data)
                   {
                     showAlert("No se ha podido obtener la información de cuenta por pagar");
@@ -157,10 +163,10 @@
                       transactionNumber: 1
                   }
 
-                  transaction.amount = this.infoAccountsPayable[0].amount;
+                  transaction.amount = this.infoAccountsPayable.amount;
                   transaction.idBalance = this.balance.idBalance;
 
-                  this.$http.post(ROOT_URL+"/accounts-payable/pay-account/"+this.infoAccountsPayable[0].idAccountPayable, JSON.stringify(transaction)).
+                  this.$http.post(ROOT_URL+"/accounts-payable/pay-account/"+this.infoAccountsPayable.idAccountPayable, JSON.stringify(transaction)).
                   success(function(data)
                   {
                       showAlert("Bien"); //Aqui subiremos los archivos
@@ -199,13 +205,14 @@
                       }
                       reschedule.dueDate = dateisoDue;
 
-                      this.$http.post(ROOT_URL+"/accounts-payable/reschedule/"+this.infoAccountsPayable[0].idAccountPayable, JSON.stringify(reschedule)).
+                      this.$http.post(ROOT_URL+"/accounts-payable/reschedule/"+this.infoAccountsPayable.idAccountPayable, JSON.stringify(reschedule)).
                       success(function(data)
                       {
                           showAlert("Cuenta reprogramada correctamente");
+                          this.getInformationRequest();
                       }).error(function(data)
                       {
-                          showAlert("Ha habido un error al guardar la transacción"); //
+                          showAlert("Ha habido un error al reprogramar el pago"); //
                       });
 
 
@@ -482,7 +489,7 @@
                                       Monto
                                   </label>
                                   <p class="underline">
-                                    $ {{infoAccountsPayable[0].amount}}
+                                    $ {{infoAccountsPayable.amount}}
                                   </p>
                               </div>
                               <div class="col-xs-3">
@@ -490,7 +497,7 @@
                                       Número de pago
                                   </label>
                                   <p class="underline">
-                                    {{infoAccountsPayable[0].payNum}}
+                                    {{infoAccountsPayable.payNum}}
                                   </p>
                               </div>
                               <div class="col-xs-3">
@@ -498,7 +505,7 @@
                                       Fecha de pago
                                   </label>
                                   <p class="underline">
-                                    {{infoAccountsPayable[0].dueDateFormats.dateNumber}}
+                                    {{infoAccountsPayable.dueDateFormats.dateNumber}}
                                   </p>
                               </div>
                           </div>
@@ -546,7 +553,7 @@
                                 <div class="col-xs-4">
 
                                     <div class="col-xs-5">
-                                      <button class="btn btn-info" name="button" @click="showReprogramarModal" style="margin-top:15px">
+                                      <button class="btn btn-info" name="button" @click="showReprogramarModal(infoAccountsPayable)" style="margin-top:15px">
                                           Reprogramar
                                       </button>
                                     </div>
@@ -633,7 +640,7 @@
                          Monto
                      </label>
                      <p>
-                     $ {{infoAccountsPayable[0].amount}}
+                     $ {{infoAccountsPayable.amount}}
                      </p>
                    </div>
                    <div class="col-xs-3">
@@ -714,10 +721,6 @@
            </div>
          </div>
        </div>
-
-       <pre>
-           {{ $data.rescheduleDate | json}}
-       </pre>
 
       </div> <!-- #contenidos -->
       <!-- Fecha de Termino- Agregar fecha dia de solicitud-->
