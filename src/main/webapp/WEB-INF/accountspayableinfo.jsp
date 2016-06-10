@@ -162,10 +162,10 @@
                   this.$http.post(ROOT_URL+"/accounts-payable/pay-account/"+this.infoAccountsPayable[0].idAccountPayable, JSON.stringify(transaction)).
                   success(function(data)
                   {
-                      showAlert("Bien");
+                      showAlert("Bien"); //Aqui subiremos los archivos
                   }).error(function(data)
                   {
-                      showAlert("Mal");
+                      showAlert("Ha habido un error al guardar la transacción"); //
                   });
 
 

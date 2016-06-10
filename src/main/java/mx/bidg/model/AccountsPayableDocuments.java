@@ -5,21 +5,18 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
+import mx.bidg.utils.DateTimeConverter;
+import org.hibernate.annotations.DynamicUpdate;
+
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -29,42 +26,59 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author gerardo8
  */
 @Entity
+@DynamicUpdate
 @Table(name = "ACCOUNTS_PAYABLE_DOCUMENTS")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "AccountsPayableDocuments.findAll", query = "SELECT a FROM AccountsPayableDocuments a"),
-    @NamedQuery(name = "AccountsPayableDocuments.findByIdAccountPayableDocument", query = "SELECT a FROM AccountsPayableDocuments a WHERE a.idAccountPayableDocument = :idAccountPayableDocument"),
-    @NamedQuery(name = "AccountsPayableDocuments.findByDocumentUrl", query = "SELECT a FROM AccountsPayableDocuments a WHERE a.documentUrl = :documentUrl"),
-    @NamedQuery(name = "AccountsPayableDocuments.findByDocumentName", query = "SELECT a FROM AccountsPayableDocuments a WHERE a.documentName = :documentName"),
-    @NamedQuery(name = "AccountsPayableDocuments.findByUploadingDate", query = "SELECT a FROM AccountsPayableDocuments a WHERE a.uploadingDate = :uploadingDate"),
-    @NamedQuery(name = "AccountsPayableDocuments.findByIdAccessLevel", query = "SELECT a FROM AccountsPayableDocuments a WHERE a.idAccessLevel = :idAccessLevel")})
+
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class AccountsPayableDocuments implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_ACCOUNT_PAYABLE_DOCUMENT")
+    @JsonView(JsonViews.Root.class)
     private Integer idAccountPayableDocument;
+
     @Size(max = 2048)
     @Column(name = "DOCUMENT_URL")
+    @JsonView(JsonViews.Root.class)
     private String documentUrl;
+
     @Size(max = 1024)
     @Column(name = "DOCUMENT_NAME")
+    @JsonView(JsonViews.Root.class)
     private String documentName;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "UPLOADING_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date uploadingDate;
+    @Convert(converter = DateTimeConverter.class)
+    @JsonView(JsonViews.Root.class)
+    private LocalDateTime uploadingDate;
+
     @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
+
+    @Column(name="ID_DOCUMENT_TYPE",insertable = false,updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idDocumentType;
+
+    @Column(name="ID_ACCOUNT_PAYABLE",insertable = false,updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idAccountPayable;
+
     @JoinColumn(name = "ID_DOCUMENT_TYPE", referencedColumnName = "ID_DOCUMENT_TYPE")
     @ManyToOne
-    private CAccountsPayableDocumentsType idDocumentType;
+    @JsonView(JsonViews.Embedded.class)
+    private CAccountsPayableDocumentsType documentType;
+
     @JoinColumn(name = "ID_ACCOUNT_PAYABLE", referencedColumnName = "ID_ACCOUNT_PAYABLE")
     @ManyToOne
-    private AccountsPayable idAccountPayable;
+    @JsonView(JsonViews.Embedded.class)
+    private AccountsPayable accountPayable;
 
     public AccountsPayableDocuments() {
     }
@@ -73,7 +87,7 @@ public class AccountsPayableDocuments implements Serializable {
         this.idAccountPayableDocument = idAccountPayableDocument;
     }
 
-    public AccountsPayableDocuments(Integer idAccountPayableDocument, Date uploadingDate) {
+    public AccountsPayableDocuments(Integer idAccountPayableDocument, LocalDateTime uploadingDate) {
         this.idAccountPayableDocument = idAccountPayableDocument;
         this.uploadingDate = uploadingDate;
     }
@@ -102,11 +116,11 @@ public class AccountsPayableDocuments implements Serializable {
         this.documentName = documentName;
     }
 
-    public Date getUploadingDate() {
+    public LocalDateTime getUploadingDate() {
         return uploadingDate;
     }
 
-    public void setUploadingDate(Date uploadingDate) {
+    public void setUploadingDate(LocalDateTime uploadingDate) {
         this.uploadingDate = uploadingDate;
     }
 
@@ -118,19 +132,39 @@ public class AccountsPayableDocuments implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public CAccountsPayableDocumentsType getIdDocumentType() {
+    public CAccountsPayableDocumentsType getDocumentType() {
+        return documentType;
+    }
+
+    public void setDocumentType(CAccountsPayableDocumentsType documentType) {
+        this.documentType = documentType;
+    }
+
+    public AccountsPayable getAccountPayable() {
+        return accountPayable;
+    }
+
+    public void setAccountPayable(AccountsPayable accountPayable) {
+        this.accountPayable = accountPayable;
+    }
+
+    public DateFormatsPojo getCreationDateFormats() {
+        return (uploadingDate == null) ? null : new DateFormatsPojo(uploadingDate);
+    }
+
+    public Integer getIdDocumentType() {
         return idDocumentType;
     }
 
-    public void setIdDocumentType(CAccountsPayableDocumentsType idDocumentType) {
+    public void setIdDocumentType(Integer idDocumentType) {
         this.idDocumentType = idDocumentType;
     }
 
-    public AccountsPayable getIdAccountPayable() {
+    public Integer getIdAccountPayable() {
         return idAccountPayable;
     }
 
-    public void setIdAccountPayable(AccountsPayable idAccountPayable) {
+    public void setIdAccountPayable(Integer idAccountPayable) {
         this.idAccountPayable = idAccountPayable;
     }
 
