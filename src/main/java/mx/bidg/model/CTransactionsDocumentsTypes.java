@@ -5,23 +5,19 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -29,35 +25,35 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 @Entity
 @DynamicUpdate
-@Table(name = "C_ACCOUNTS_PAYABLE_DOCUMENTS_TYPE")
-
-public class CAccountsPayableDocumentsType implements Serializable {
-
+@Table(name = "C_TRANSACTIONS_DOCUMENTS_TYPES")
+public class CTransactionsDocumentsTypes implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID_DOCUMENT_TYPE")
-    private Integer idDocumentType;
+    @Column(name = "ID_TRANSACTION_DOCUMENT_TYPE")
+    @JsonView(JsonViews.Root.class)
+    private Integer idTransactionDocumentType;
 
     @Size(max = 100)
     @Column(name = "DOCUMENT_NAME")
+    @JsonView(JsonViews.Root.class)
     private String documentName;
 
-    public CAccountsPayableDocumentsType() {
+    public CTransactionsDocumentsTypes() {
     }
 
-    public CAccountsPayableDocumentsType(Integer idDocumentType) {
-        this.idDocumentType = idDocumentType;
+    public CTransactionsDocumentsTypes(Integer idTransactionDocumentType) {
+        this.idTransactionDocumentType = idTransactionDocumentType;
     }
 
-    public Integer getIdDocumentType() {
-        return idDocumentType;
+    public Integer getIdTransactionDocumentType() {
+        return idTransactionDocumentType;
     }
 
-    public void setIdDocumentType(Integer idDocumentType) {
-        this.idDocumentType = idDocumentType;
+    public void setIdTransactionDocumentType(Integer idTransactionDocumentType) {
+        this.idTransactionDocumentType = idTransactionDocumentType;
     }
 
     public String getDocumentName() {
@@ -71,18 +67,18 @@ public class CAccountsPayableDocumentsType implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idDocumentType != null ? idDocumentType.hashCode() : 0);
+        hash += (idTransactionDocumentType != null ? idTransactionDocumentType.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CAccountsPayableDocumentsType)) {
+        if (!(object instanceof CTransactionsDocumentsTypes)) {
             return false;
         }
-        CAccountsPayableDocumentsType other = (CAccountsPayableDocumentsType) object;
-        if ((this.idDocumentType == null && other.idDocumentType != null) || (this.idDocumentType != null && !this.idDocumentType.equals(other.idDocumentType))) {
+        CTransactionsDocumentsTypes other = (CTransactionsDocumentsTypes) object;
+        if ((this.idTransactionDocumentType == null && other.idTransactionDocumentType != null) || (this.idTransactionDocumentType != null && !this.idTransactionDocumentType.equals(other.idTransactionDocumentType))) {
             return false;
         }
         return true;
@@ -90,7 +86,7 @@ public class CAccountsPayableDocumentsType implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.CAccountsPayableDocumentsType[ idDocumentType=" + idDocumentType + " ]";
+        return "mx.bidg.model.CTransactionsDocumentsTypes[ idTransactionDocumentType=" + idTransactionDocumentType + " ]";
     }
     
 }

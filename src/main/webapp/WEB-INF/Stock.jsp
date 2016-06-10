@@ -1419,7 +1419,7 @@
                             <form id="attachments-form2"
                                   method="post" enctype="multipart/form-data">
                                 <table class="table table-striped">
-                                    <tr v-for="docType in selectOptions.documentTypes" v-if="docType.required == 1">
+                                    <tr v-for="docType in selectOptions.documentTypes" v-if="docType.updatable">
                                         <td>{{ docType.documentName }}</td>
                                         <td>
                                             <input @change="validateFile($event)" type="file" class="form-control"

@@ -9,17 +9,14 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
-import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -27,19 +24,18 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @DynamicUpdate
-@Table(name = "ACCOUNTS_PAYABLE_DOCUMENTS")
+@Table(name = "TRANSACTIONS_DOCUMENTS")
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
-public class AccountsPayableDocuments implements Serializable {
-
+public class TransactionsDocuments implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID_ACCOUNT_PAYABLE_DOCUMENT")
+    @Column(name = "ID_TRANSACTION_DOCUMENT")
     @JsonView(JsonViews.Root.class)
-    private Integer idAccountPayableDocument;
+    private Integer idTransactionDocument;
 
     @Size(max = 2048)
     @Column(name = "DOCUMENT_URL")
@@ -62,42 +58,50 @@ public class AccountsPayableDocuments implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
 
-    @Column(name="ID_DOCUMENT_TYPE",insertable = false,updatable = false)
+    @Column(name = "ID_TRANSACTION_DOCUMENT_TYPE", insertable = false,updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idDocumentType;
+    private Integer idTransactionDocumentType;
 
-    @Column(name="ID_ACCOUNT_PAYABLE",insertable = false,updatable = false)
+    @Column(name="ID_TRANSACTION", insertable = false,updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idAccountPayable;
+    private Integer idTransaction;
 
-    @JoinColumn(name = "ID_DOCUMENT_TYPE", referencedColumnName = "ID_DOCUMENT_TYPE")
+    @JoinColumn(name = "ID_TRANSACTION_DOCUMENT_TYPE", referencedColumnName = "ID_TRANSACTION_DOCUMENT_TYPE")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private CAccountsPayableDocumentsType documentType;
+    private CTransactionsDocumentsTypes transactionDocumentType;
 
-    @JoinColumn(name = "ID_ACCOUNT_PAYABLE", referencedColumnName = "ID_ACCOUNT_PAYABLE")
+    @JoinColumn(name = "ID_TRANSACTION", referencedColumnName = "ID_TRANSACTION")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private AccountsPayable accountPayable;
+    private Transactions transaction;
 
-    public AccountsPayableDocuments() {
+    public TransactionsDocuments() {
     }
 
-    public AccountsPayableDocuments(Integer idAccountPayableDocument) {
-        this.idAccountPayableDocument = idAccountPayableDocument;
+    public TransactionsDocuments(Integer idTransactionDocument) {
+        this.idTransactionDocument = idTransactionDocument;
     }
 
-    public AccountsPayableDocuments(Integer idAccountPayableDocument, LocalDateTime uploadingDate) {
-        this.idAccountPayableDocument = idAccountPayableDocument;
+    public TransactionsDocuments(Integer idTransactionDocument, LocalDateTime uploadingDate) {
+        this.idTransactionDocument = idTransactionDocument;
         this.uploadingDate = uploadingDate;
     }
 
-    public Integer getIdAccountPayableDocument() {
-        return idAccountPayableDocument;
+    public Integer getIdTransactionDocument() {
+        return idTransactionDocument;
     }
 
-    public void setIdAccountPayableDocument(Integer idAccountPayableDocument) {
-        this.idAccountPayableDocument = idAccountPayableDocument;
+    public void setIdTransactionDocument(Integer idTransactionDocument) {
+        this.idTransactionDocument = idTransactionDocument;
+    }
+
+    public Integer getIdTransactionDocumentType() {
+        return idTransactionDocumentType;
+    }
+
+    public void setIdTransactionDocumentType(Integer idTransactionDocumentType) {
+        this.idTransactionDocumentType = idTransactionDocumentType;
     }
 
     public String getDocumentUrl() {
@@ -132,57 +136,45 @@ public class AccountsPayableDocuments implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public CAccountsPayableDocumentsType getDocumentType() {
-        return documentType;
+    public Integer getIdTransaction() {
+        return idTransaction;
     }
 
-    public void setDocumentType(CAccountsPayableDocumentsType documentType) {
-        this.documentType = documentType;
+    public void setIdTransaction(Integer idTransaction) {
+        this.idTransaction = idTransaction;
     }
 
-    public AccountsPayable getAccountPayable() {
-        return accountPayable;
+    public CTransactionsDocumentsTypes getTransactionDocumentType() {
+        return transactionDocumentType;
     }
 
-    public void setAccountPayable(AccountsPayable accountPayable) {
-        this.accountPayable = accountPayable;
+    public void setTransactionDocumentType(CTransactionsDocumentsTypes transactionDocumentType) {
+        this.transactionDocumentType = transactionDocumentType;
     }
 
-    public DateFormatsPojo getCreationDateFormats() {
-        return (uploadingDate == null) ? null : new DateFormatsPojo(uploadingDate);
+    public Transactions getTransaction() {
+        return transaction;
     }
 
-    public Integer getIdDocumentType() {
-        return idDocumentType;
-    }
-
-    public void setIdDocumentType(Integer idDocumentType) {
-        this.idDocumentType = idDocumentType;
-    }
-
-    public Integer getIdAccountPayable() {
-        return idAccountPayable;
-    }
-
-    public void setIdAccountPayable(Integer idAccountPayable) {
-        this.idAccountPayable = idAccountPayable;
+    public void setTransaction(Transactions transaction) {
+        this.transaction = transaction;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idAccountPayableDocument != null ? idAccountPayableDocument.hashCode() : 0);
+        hash += (idTransactionDocument != null ? idTransactionDocument.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof AccountsPayableDocuments)) {
+        if (!(object instanceof TransactionsDocuments)) {
             return false;
         }
-        AccountsPayableDocuments other = (AccountsPayableDocuments) object;
-        if ((this.idAccountPayableDocument == null && other.idAccountPayableDocument != null) || (this.idAccountPayableDocument != null && !this.idAccountPayableDocument.equals(other.idAccountPayableDocument))) {
+        TransactionsDocuments other = (TransactionsDocuments) object;
+        if ((this.idTransactionDocument == null && other.idTransactionDocument != null) || (this.idTransactionDocument != null && !this.idTransactionDocument.equals(other.idTransactionDocument))) {
             return false;
         }
         return true;
@@ -190,7 +182,7 @@ public class AccountsPayableDocuments implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.AccountsPayableDocuments[ idAccountPayableDocument=" + idAccountPayableDocument + " ]";
+        return "mx.bidg.model.TransactionsDocuments[ idTransactionDocument=" + idTransactionDocument + " ]";
     }
     
 }
