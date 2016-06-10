@@ -1630,7 +1630,7 @@
                                         <div class="row">
                                             <div class="col-md-3 col-xs-6">
                                                 <label>Empleado / Almacén</label>
-                                                <select v-model="newArticleModal.selected.dwEmployees" class="form-control" required
+                                                <select v-model="newArticleModal.selected.dwEmployees" class="form-control"
                                                         :disabled="newArticleModal.selected.area == null">
                                                     <option v-for="dwEmployees in newArticleModal.selected.area.dwEnterprise.dwEmployeesList"
                                                             :value="dwEmployees">
@@ -1643,21 +1643,23 @@
                                                 <input type="text" :value="newArticleModal.selected.area.dwEnterprise.idDwEnterprise" name="dwEnterprise" hidden>
                                             </div>
                                         </div>
-                                        <br>
-                                        <h4>Documentos</h4>
-                                        <hr>
-                                        <table class="table table-striped">
-                                            <tr v-for="docType in selectOptions.documentTypes" v-if="docType.required == 2">
-                                                <td>{{ docType.documentName }}</td>
-                                                <td>
-                                                    <input @change="validateFile($event)" type="file" class="form-control"
-                                                           :disabled="isSaving" required
-                                                           :name="newArticleModal.fileInput + docType.idDocumentType"
-                                                           accept="application/pdf,
-                                                         image/png,image/jpg,image/jpeg,">
-                                                </td>
-                                            </tr>
-                                        </table>
+                                        <div v-if="newArticleModal.selected.dwEmployees != null">
+                                            <br>
+                                            <h4>Documentos</h4>
+                                            <hr>
+                                            <table class="table table-striped">
+                                                <tr v-for="docType in selectOptions.documentTypes" v-if="docType.required == 2">
+                                                    <td>{{ docType.documentName }}</td>
+                                                    <td>
+                                                        <input @change="validateFile($event)" type="file" class="form-control"
+                                                               :disabled="isSaving" required
+                                                               :name="newArticleModal.fileInput + docType.idDocumentType"
+                                                               accept="application/pdf,
+                                                             image/png,image/jpg,image/jpeg,">
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                                 <br>
