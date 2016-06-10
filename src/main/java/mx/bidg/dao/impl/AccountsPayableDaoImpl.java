@@ -81,6 +81,7 @@ public class AccountsPayableDaoImpl extends AbstractDao<Integer, AccountsPayable
         Criteria criteria = createEntityCriteria();
         return (List<AccountsPayable>) criteria
                 .add(Restrictions.eq("accountPayableStatus",CAccountsPayableStatus.REPROGRAMADA))
+                .add(Restrictions.ne("dueDate", LocalDateTime.now()))
                 .list();
     }
 
