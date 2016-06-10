@@ -73,7 +73,8 @@
               infoProvider: {},
               infoProviderContact: {},
               allBalances: {},
-              balance: ''
+              balance: '',
+              rescheduleDate: ''
 
           },
           methods:
@@ -181,6 +182,34 @@
                                  self.balance= element;
                              });
                           });
+              },
+              rescheduleAccount: function(){
+                  if (this.rescheduleDate == '')
+                  {
+                    showAlert("Debes seleccionar una fecha para reprogramar el pago");
+                  }
+                  else {
+                      var fechaReprogramada = this.rescheduleDate;
+                      var dateformated= moment(fechaReprogramada, "DD-MM-YYYY").format("YYYY-MM-DD");
+                      var dateDueDate = new Date(dateformated);
+                      var dateisoDue = dateDueDate.toISOString().slice(0, -1);
+
+                      var reschedule = {
+                          dueDate: ''
+                      }
+                      reschedule.dueDate = dateisoDue;
+
+                      this.$http.post(ROOT_URL+"/accounts-payable/reschedule/"+this.infoAccountsPayable[0].idAccountPayable, JSON.stringify(reschedule)).
+                      success(function(data)
+                      {
+                          showAlert("Cuenta reprogramada correctamente");
+                      }).error(function(data)
+                      {
+                          showAlert("Ha habido un error al guardar la transacción"); //
+                      });
+
+
+                  }
               }
 
           },
@@ -563,7 +592,7 @@
                      <div class="col-xs-offset-4 col-xs-4">
                          <div class="form-group">
                          <div class='input-group date' id='datereprogramar'>
-                             <input type='text' class="form-control">
+                             <input type='text' class="form-control" v-model="rescheduleDate">
                              <span class="input-group-addon">
                                  <span class="glyphicon glyphicon-calendar"></span>
                              </span>
@@ -575,7 +604,7 @@
              </div>
              <div class="modal-footer">
                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-               <button type="button" class="btn btn-success">Guardar</button>
+               <button type="button" class="btn btn-success" @click="rescheduleAccount">Guardar</button>
              </div>
            </div>
          </div>
@@ -685,6 +714,10 @@
            </div>
          </div>
        </div>
+
+       <pre>
+           {{ $data.rescheduleDate | json}}
+       </pre>
 
       </div> <!-- #contenidos -->
       <!-- Fecha de Termino- Agregar fecha dia de solicitud-->

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import mx.bidg.model.AccountsPayable;
 import mx.bidg.model.CAccountsPayableStatus;
+import mx.bidg.model.Transactions;
 import mx.bidg.model.Users;
 
 /**
@@ -28,7 +29,7 @@ public interface AccountsPayableService {
     AccountsPayable save(AccountsPayable accountPayable);
     List<AccountsPayable> findAccountsNow();
     List<AccountsPayable> findByReschedule();
-    void payAccount(Integer idAccountPayable, String data, Users user) throws IOException;
+    Transactions payAccount(Integer idAccountPayable, String data, Users user) throws IOException;
     void changeDate(Integer idAccountPayable,String data) throws IOException;
     void accountsPayableReport (LocalDateTime ofdate, LocalDateTime untilDate , OutputStream stream) throws IOException;
 }
