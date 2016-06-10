@@ -5,45 +5,69 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
 import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author gerardo8
  */
+
 @Entity
+@DynamicUpdate
 @Table(name = "C_SAP_FILE")
 public class CSapFile implements Serializable {
-
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_SAP_FILE")
+    @JsonView(JsonViews.Root.class)
     private Integer idSapFile;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "SAP_FILE_NAME")
+    @JsonView(JsonViews.Root.class)
     private String sapFileName;
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "FILE_NAME")
+    @JsonView(JsonViews.Root.class)
     private String fileName;
+
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 2048)
+    @Column(name = "LAYOUT_FILE_URL")
+    @JsonView(JsonViews.Root.class)
+    private String layoutFileUrl;
+
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 1024)
+    @Column(name = "LAYOUT_FILE_NAME")
+    @JsonView(JsonViews.Root.class)
+    private String layoutFileName;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "LAST_UPLOADED_DATE")
     @Convert(converter = DateTimeConverter.class)
+    @JsonView(JsonViews.Root.class)
     private LocalDateTime lastUploadedDate;
 
     public CSapFile() {
@@ -81,6 +105,22 @@ public class CSapFile implements Serializable {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public String getLayoutFileUrl() {
+        return layoutFileUrl;
+    }
+
+    public void setLayoutFileUrl(String layoutFileUrl) {
+        this.layoutFileUrl = layoutFileUrl;
+    }
+
+    public String getLayoutFileName() {
+        return layoutFileName;
+    }
+
+    public void setLayoutFileName(String layoutFileName) {
+        this.layoutFileName = layoutFileName;
     }
 
     public LocalDateTime getLastUploadedDate() {

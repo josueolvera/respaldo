@@ -27,7 +27,8 @@
                         lastUploadedDateFormats: ''
                     },
                     calculateDate:'',
-                    datetimepickerCalculateDate:''
+                    datetimepickerCalculateDate:'',
+                    layoutDownloadUrl: ROOT_URL + "/sap-file/layout/download/",
                 },
                 methods: {
                     setUpTimePickerCalculateDate:function () {
@@ -213,7 +214,7 @@
                             <div class="col-md-3">
                                 <form id="fileForm" enctype="multipart/form-data" v-on:submit.prevent="saveFile">
                                     <div class="form-group">
-                                        <input id="inputFile" type="file" name="file"
+                                        <input id="inputFile" type="file" name="file" required
                                                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
                                                     application/vnd.ms-excel">
                                     </div>
@@ -223,7 +224,7 @@
                                         </label>
                                         <div class="input-group date" id="datetimepickerCalculateDate"
                                              @click="setUpTimePickerCalculateDate()">
-                                            <input type='text' name="calculateDate" class="form-control" v-model="calculateDate">
+                                            <input type='text' name="calculateDate" class="form-control" v-model="calculateDate" required>
                                     <span class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </span>
@@ -273,11 +274,10 @@
                                         {{typeFile.lastUploadedDateFormats.dateTextLong}} - {{typeFile.lastUploadedDateFormats.time12}}
                                     </td>
                                     <td class="text-center">
-                                        <button class="btn btn-default">
-                                            <span class="glyphicon glyphicon-download-alt">
-
-                                            </span>
-                                        </button>
+                                        <a class="btn btn-default" :href="layoutDownloadUrl + typeFile.idSapFile"
+                                           data-toggle="tooltip" data-placement="top" title="Descargar layout de archivo">
+                                            <span class="glyphicon glyphicon-download-alt"></span>
+                                        </a>
                                     </td>
                                 </tr>
                                 </tbody>
