@@ -27,7 +27,8 @@
                         lastUploadedDateFormats: ''
                     },
                     calculateDate:'',
-                    datetimepickerCalculateDate:''
+                    datetimepickerCalculateDate:'',
+                    layoutDownloadUrl: ROOT_URL + "/sap-file/layout/download/",
                 },
                 methods: {
                     setUpTimePickerCalculateDate:function () {
@@ -273,11 +274,11 @@
                                         {{typeFile.lastUploadedDateFormats.dateTextLong}} - {{typeFile.lastUploadedDateFormats.time12}}
                                     </td>
                                     <td class="text-center">
-                                        <button class="btn btn-default">
+                                        <a class="btn btn-default" :href="layoutDownloadUrl + typeFile.idSapFile">
                                             <span class="glyphicon glyphicon-download-alt">
 
                                             </span>
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
                                 </tbody>
