@@ -7,6 +7,7 @@ package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -20,6 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author gerardo8
  */
 @Entity
+@DynamicUpdate
 @Table(name = "TRANSACTIONS_DOCUMENTS")
 public class TransactionsDocuments implements Serializable {
 
