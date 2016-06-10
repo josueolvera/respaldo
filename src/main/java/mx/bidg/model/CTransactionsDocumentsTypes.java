@@ -5,6 +5,8 @@
  */
 package mx.bidg.model;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -23,6 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author gerardo8
  */
 @Entity
+@DynamicUpdate
 @Table(name = "C_TRANSACTIONS_DOCUMENTS_TYPES")
 public class CTransactionsDocumentsTypes implements Serializable {
 
