@@ -134,7 +134,11 @@
                 transactionNumber: 1
             },
             url: ROOT_URL+"/siad/accounts-payable-info/",
-            accountsPayablesReschedule: {}
+            accountsPayablesReschedule: {},
+            reporteflujoinicial: '',
+            reporteflujofinal: '',
+            reportecuentaspagadasinicial: '',
+            reportecuentaspagadasfinal: ''
           },
           methods:
           {
@@ -229,6 +233,10 @@
                           }).error(function()
                           {
                       });
+              },
+              generateReportCash: function(){
+                  
+
               }
 
           },
@@ -295,7 +303,7 @@
                              <div class="col-xs-10">
                                  <div class="form-group">
                                  <div class='input-group date' id='datefechainicial'>
-                                     <input type='text' class="form-control">
+                                     <input type='text' class="form-control" v-model="reporteflujoinicial">
                                      <span class="input-group-addon">
                                          <span class="glyphicon glyphicon-calendar"></span>
                                      </span>
@@ -311,7 +319,7 @@
                              <div class="col-xs-10">
                                  <div class="form-group">
                                  <div class='input-group date' id='datefechafinal'>
-                                     <input type='text' class="form-control">
+                                     <input type='text' class="form-control" v-model="reporteflujofinal">
                                      <span class="input-group-addon">
                                          <span class="glyphicon glyphicon-calendar"></span>
                                      </span>
@@ -322,7 +330,7 @@
                        </div>
 
                        <div class="col-xs-1">
-                         <button class="btn btn-default" name="button" style="margin-top: 25px">
+                         <button class="btn btn-default" name="button" style="margin-top: 25px" @click="generateReportCash">
                              <span class="glyphicon glyphicon-list-alt">
                              </span>
                          </button>
@@ -419,7 +427,7 @@
                              <span class="label label-success">Hoy</span>
                          </div>
                          <div class="col-xs-4">
-                            <a :href="url+accountPayable.informationRequest.idRequest">
+                            <a :href="url+accountPayable.informationRequest.idRequest+'/'+accountPayable.idAccountPayable">
                                 <span class="glyphicon glyphicon-new-window">
                                 </span>
                             </a>
@@ -467,7 +475,7 @@
                          <span class="label label-success">{{accountPayable.dueDateFormats.dateNumber }}</span>
                      </div>
                      <div class="col-xs-4">
-                        <a :href="url+accountPayable.informationRequest.idRequest">
+                        <a :href="url+accountPayable.informationRequest.idRequest+'/'+accountPayable.idAccountPayable">
                             <span class="glyphicon glyphicon-new-window">
                             </span>
                         </a>
@@ -480,9 +488,7 @@
              </div>
          </div>
        </div>
-       <%-- <pre>
-           {{$data.accountsPayablesReschedule | json}}
-       </pre> --%>
+
       </div> <!-- #contenidos -->
       <!-- Fecha de Termino- Agregar fecha dia de solicitud-->
     </jsp:body>
