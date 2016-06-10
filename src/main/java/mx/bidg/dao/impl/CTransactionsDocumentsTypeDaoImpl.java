@@ -2,7 +2,6 @@ package mx.bidg.dao.impl;
 
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CTransactionsDocumentsTypeDao;
-import mx.bidg.model.CAccountsPayableDocumentsType;
 import mx.bidg.model.CTransactionsDocumentsTypes;
 import org.hibernate.criterion.Order;
 import org.springframework.stereotype.Repository;

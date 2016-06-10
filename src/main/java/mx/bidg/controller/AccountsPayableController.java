@@ -19,6 +19,7 @@ import mx.bidg.config.JsonViews;
 import mx.bidg.events.requests.RequestCompletedEvent;
 import mx.bidg.model.AccountsPayable;
 import mx.bidg.model.Requests;
+import mx.bidg.model.Transactions;
 import mx.bidg.model.Users;
 import mx.bidg.service.AccountsPayableService;
 import mx.bidg.service.RequestsService;
@@ -106,8 +107,8 @@ public class AccountsPayableController {
     @RequestMapping(value = "/pay-account/{idAccountPayable}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> payAccount(@PathVariable Integer idAccountPayable, @RequestBody String data,HttpSession session) throws IOException{
         Users user = (Users) session.getAttribute("user");
-        accountsPayableService.payAccount(idAccountPayable, data, user);
-        return new ResponseEntity<>("Cuenta pagada", HttpStatus.OK);
+        Transactions transaction = accountsPayableService.payAccount(idAccountPayable, data, user);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(transaction), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/reschedule/{idAccountPayable}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)

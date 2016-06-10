@@ -179,7 +179,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
     }
 
     @Override
-    public void payAccount(Integer idAccountPayable, String data, Users user) throws IOException {
+    public Transactions payAccount(Integer idAccountPayable, String data, Users user) throws IOException {
         AccountsPayable accountsPayable = accountsPayableDao.findById(idAccountPayable);
 
         JsonNode node = mapper.readTree(data);
@@ -210,6 +210,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
         accountsPayable.setAccountPayableStatus(CAccountsPayableStatus.FINALIZADA);
         accountsPayableDao.update(accountsPayable);
         transactionsDao.save(transactions);
+        return transactions;
     }
 
     @Override
