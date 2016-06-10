@@ -9,9 +9,11 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -50,9 +52,9 @@ public class TransactionsDocuments implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "UPLOADING_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
-    private Date uploadingDate;
+    private LocalDateTime uploadingDate;
 
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
@@ -83,7 +85,7 @@ public class TransactionsDocuments implements Serializable {
         this.idTransactionDocument = idTransactionDocument;
     }
 
-    public TransactionsDocuments(Integer idTransactionDocument, Date uploadingDate) {
+    public TransactionsDocuments(Integer idTransactionDocument, LocalDateTime uploadingDate) {
         this.idTransactionDocument = idTransactionDocument;
         this.uploadingDate = uploadingDate;
     }
@@ -120,11 +122,11 @@ public class TransactionsDocuments implements Serializable {
         this.documentName = documentName;
     }
 
-    public Date getUploadingDate() {
+    public LocalDateTime getUploadingDate() {
         return uploadingDate;
     }
 
-    public void setUploadingDate(Date uploadingDate) {
+    public void setUploadingDate(LocalDateTime uploadingDate) {
         this.uploadingDate = uploadingDate;
     }
 
