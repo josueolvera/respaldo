@@ -5,7 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -23,6 +25,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @DynamicUpdate
 @Table(name = "TRANSACTIONS_DOCUMENTS")
+
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class TransactionsDocuments implements Serializable {
     private static final long serialVersionUID = 1L;
 
