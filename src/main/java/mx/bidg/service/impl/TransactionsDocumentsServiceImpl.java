@@ -48,7 +48,7 @@ public class TransactionsDocumentsServiceImpl implements TransactionsDocumentsSe
     }
 
     @Override
-    public List<TransactionsDocuments> findByIdAccountPayable(Integer idTransactions) {
+    public List<TransactionsDocuments> findByIdTransaction(Integer idTransactions) {
         return transactionsDocumentsDao.findByIdAccountPayable(idTransactions);
     }
 
