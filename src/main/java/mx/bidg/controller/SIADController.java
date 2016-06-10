@@ -119,11 +119,12 @@ public class SIADController {
         return model;
     }
     
-    @RequestMapping(value = "/accounts-payable-info/{idRequest}", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public ModelAndView accountsPayablesinfoView(@PathVariable int idRequest) 
+    @RequestMapping(value = "/accounts-payable-info/{idRequest}/{idAccountPayable}", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView accountsPayablesinfoView(@PathVariable int idRequest, @PathVariable int idAccountPayable) 
     {
         ModelAndView model= new ModelAndView();
         model.addObject("idRequest", idRequest);
+        model.addObject("idAccountPayable", idAccountPayable);
         model.setViewName("accountspayableinfo");
         return model;
     }
