@@ -274,10 +274,9 @@
                                         {{typeFile.lastUploadedDateFormats.dateTextLong}} - {{typeFile.lastUploadedDateFormats.time12}}
                                     </td>
                                     <td class="text-center">
-                                        <a class="btn btn-default" :href="layoutDownloadUrl + typeFile.idSapFile">
-                                            <span class="glyphicon glyphicon-download-alt">
-
-                                            </span>
+                                        <a class="btn btn-default" :href="layoutDownloadUrl + typeFile.idSapFile"
+                                           data-toggle="tooltip" data-placement="top" title="Descargar layout de archivo">
+                                            <span class="glyphicon glyphicon-download-alt"></span>
                                         </a>
                                     </td>
                                 </tr>
