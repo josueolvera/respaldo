@@ -44,7 +44,7 @@ public class OutsourcingServiceImpl implements OutsourcingService {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
-        for (int i=9;i<=sheet.getLastRowNum()-5;i++) {
+        for (int i=9;i<=sheet.getLastRowNum();i++) {
             Row currentRow = sheet.getRow(i);
             Cell idW = currentRow.getCell(0);
             Cell sueldo = currentRow.getCell(2);
@@ -101,6 +101,11 @@ public class OutsourcingServiceImpl implements OutsourcingService {
                 outsourcing.setIdW(idW.getStringCellValue());
             }
             if (sueldo != null) {
+
+                if (sueldo.getCellType() == Cell.CELL_TYPE_STRING) {
+                    break;
+                }
+                
                 BigDecimal bdSueldo = new BigDecimal(sueldo.getNumericCellValue());
                 outsourcing.setSueldo(bdSueldo);
             }
@@ -291,7 +296,7 @@ public class OutsourcingServiceImpl implements OutsourcingService {
 
             outsourcing.setCreationDate(LocalDateTime.parse(calculateDate+" 00:00",formatter));
 
-            if (!outsourcing.getIdW().isEmpty()) {
+            if (outsourcing.getIdW() != null) {
                 outsourcingDao.save(outsourcing);
             }
         }
@@ -306,7 +311,7 @@ public class OutsourcingServiceImpl implements OutsourcingService {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
-        for (int i=9;i<=sheet.getLastRowNum()-5;i++) {
+        for (int i=9;i<=sheet.getLastRowNum();i++) {
             Row currentRow = sheet.getRow(i);
             Cell idW = currentRow.getCell(0);
             Cell sueldo = currentRow.getCell(2);
@@ -365,8 +370,17 @@ public class OutsourcingServiceImpl implements OutsourcingService {
                         LocalDateTime.parse(calculateDate+" 00:00",formatter)
                 );
 
+                if (idW.getCellType() == Cell.CELL_TYPE_STRING) {
+                    break;
+                }
+
                 if (outsourcing != null) {
                     if (sueldo != null) {
+
+                        if (sueldo.getCellType() == Cell.CELL_TYPE_STRING) {
+                            break;
+                        }
+
                         BigDecimal bdSueldo = new BigDecimal(sueldo.getNumericCellValue());
                         outsourcing.setSueldo(bdSueldo);
                     }
@@ -600,17 +614,25 @@ public class OutsourcingServiceImpl implements OutsourcingService {
 
         boolean existsOutsourcing = false;
 
-        for (int i=9;i<=sheet.getLastRowNum()-5;i++) {
+        for (int i=9;i<=sheet.getLastRowNum();i++) {
             Row currentRow = sheet.getRow(i);
             Cell idW = currentRow.getCell(0);
 
-            Outsourcing savedOutsourcing = outsourcingDao.finfByidW(
-                    idW.getStringCellValue(),
-                    LocalDateTime.parse(calculateDate+" 00:00",formatter)
-            );
+            if (idW.getCellType() == Cell.CELL_TYPE_STRING) {
+                break;
+            }
 
-            if (savedOutsourcing != null) {
-                existsOutsourcing = true;
+            Outsourcing savedOutsourcing;
+
+            if (idW != null) {
+                savedOutsourcing = outsourcingDao.finfByidW(
+                        idW.getStringCellValue(),
+                        LocalDateTime.parse(calculateDate+" 00:00",formatter)
+                );
+
+                if (savedOutsourcing != null) {
+                    existsOutsourcing = true;
+                }
             }
         }
 
