@@ -214,7 +214,7 @@
                             <div class="col-md-3">
                                 <form id="fileForm" enctype="multipart/form-data" v-on:submit.prevent="saveFile">
                                     <div class="form-group">
-                                        <input id="inputFile" type="file" name="file"
+                                        <input id="inputFile" type="file" name="file" required
                                                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
                                                     application/vnd.ms-excel">
                                     </div>
@@ -224,7 +224,7 @@
                                         </label>
                                         <div class="input-group date" id="datetimepickerCalculateDate"
                                              @click="setUpTimePickerCalculateDate()">
-                                            <input type='text' name="calculateDate" class="form-control" v-model="calculateDate">
+                                            <input type='text' name="calculateDate" class="form-control" v-model="calculateDate" required>
                                     <span class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </span>
