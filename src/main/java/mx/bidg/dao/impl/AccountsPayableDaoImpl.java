@@ -79,9 +79,10 @@ public class AccountsPayableDaoImpl extends AbstractDao<Integer, AccountsPayable
     @Override
     public List<AccountsPayable> findByReschedule() {
         Criteria criteria = createEntityCriteria();
+        LocalDateTime dateTimeFinal = LocalDateTime.now().toLocalDate().atTime(23, 59, 59);
         return (List<AccountsPayable>) criteria
                 .add(Restrictions.eq("accountPayableStatus",CAccountsPayableStatus.REPROGRAMADA))
-                .add(Restrictions.ne("dueDate", LocalDateTime.now()))
+                .add(Restrictions.gt("dueDate", dateTimeFinal))
                 .list();
     }
 
