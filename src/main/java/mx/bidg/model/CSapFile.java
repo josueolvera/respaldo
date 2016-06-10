@@ -58,6 +58,13 @@ public class CSapFile implements Serializable {
 
     @Basic(optional = false)
     @NotNull
+    @Size(min = 1, max = 1024)
+    @Column(name = "LAYOUT_FILE_NAME")
+    @JsonView(JsonViews.Root.class)
+    private String layoutFileName;
+
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "LAST_UPLOADED_DATE")
     @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
