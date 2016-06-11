@@ -1,5 +1,6 @@
 package mx.bidg.dao;
 
+import mx.bidg.model.CTicketsCategories;
 import mx.bidg.model.Ticket;
 
 import java.util.List;
@@ -12,4 +13,5 @@ public interface TicketDao extends InterfaceDao<Ticket> {
     List<Ticket> findByTicketStatus(Integer idTicketStatus);
     List<Ticket> findByTicketStatusPriority(Integer idTicketStatus, Integer idPriority);
     Ticket findByFolio(String folio);
+    List<Ticket> findAll(CTicketsCategories category);
 }

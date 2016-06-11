@@ -37,9 +37,9 @@ public class TicketController {
 
     private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findAll() throws IOException {
-        List<Ticket> tickets = ticketService.findAll();
+    @RequestMapping(value = "/category/{idTicketCategory}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findAll(@PathVariable int idTicketCategory) throws IOException {
+        List<Ticket> tickets = ticketService.findAll(new CTicketsCategories(idTicketCategory));
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(tickets), HttpStatus.OK);
     }
 
@@ -50,7 +50,7 @@ public class TicketController {
     }
 
     @RequestMapping(value = "/folio", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findById(@RequestParam(name = "folio", required = true) String folio) throws IOException {
+    public ResponseEntity<String> findByFolio(@RequestParam(name = "folio", required = true) String folio) throws IOException {
         Ticket ticket = ticketService.findByFolio(folio);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(ticket), HttpStatus.OK);
     }
@@ -72,37 +72,13 @@ public class TicketController {
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(ticket), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> update(@RequestBody String ticket) throws IOException {
-        System.out.println(ticket);
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(""), HttpStatus.OK);
-    }
-
     @RequestMapping(value = "/change-ticket-status/{idTicket}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> update(@RequestBody CTicketStatus ticketStatus,@PathVariable Integer idTicket) throws IOException {
+    public ResponseEntity<String> update(@RequestBody CTicketStatus ticketStatus, @PathVariable Integer idTicket) throws IOException {
 
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Root.class)
                         .writeValueAsString(ticketService.changeTicketStatus(idTicket,ticketStatus)),
                 HttpStatus.OK
         );
-    }
-
-    @RequestMapping(value = "/priority/{idPriority}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findByPriority(@PathVariable Integer idPriority) throws IOException {
-        List<Ticket> tickets = ticketService.findByPriority(idPriority);
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(tickets), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/ticket-status/{idTicketStatus}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findByTicketStatus(@PathVariable Integer idTicketStatus) throws IOException {
-        List<Ticket> tickets = ticketService.findByTicketStatus(idTicketStatus);
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(tickets), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/{idTicketStatus}/{idPriority}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findByTicketStatusPriority(@PathVariable Integer idTicketStatus, @PathVariable Integer idPriority) throws IOException {
-        List<Ticket> tickets = ticketService.findByTicketStatusPriority(idTicketStatus,idPriority);
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(tickets), HttpStatus.OK);
     }
 }

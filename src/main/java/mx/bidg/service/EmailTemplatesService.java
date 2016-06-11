@@ -8,4 +8,5 @@ import mx.bidg.model.EmailTemplates;
  */
 public interface EmailTemplatesService {
     EmailTemplates findByName(String templateName);
+    EmailTemplates findById(Integer id);
 }

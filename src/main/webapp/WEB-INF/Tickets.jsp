@@ -22,6 +22,7 @@
                     this.getUserInSession();
                 },
                 data: {
+                    ticketCategory: ${ticketCategory.idTicketCategory},
                     ticket:{
                         incidence:'',
                         priority:'',
@@ -49,7 +50,7 @@
                         });
                     },
                     getIncidences:function () {
-                        this.$http.get(ROOT_URL + '/incidence').success(function (data) {
+                        this.$http.get(ROOT_URL + '/incidence/category/' + this.ticketCategory).success(function (data) {
                             this.incidences = data;
                         }).error(function (data) {
 

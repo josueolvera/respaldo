@@ -1,6 +1,7 @@
 package mx.bidg.service;
 
 import mx.bidg.model.CIncidence;
+import mx.bidg.model.CTicketsCategories;
 
 import java.util.List;
 
@@ -10,5 +11,5 @@ import java.util.List;
 public interface CIncidenceService {
 
     CIncidence findById(int id);
-    List<CIncidence> findAll();
+    List<CIncidence> findAll(CTicketsCategories category);
 }

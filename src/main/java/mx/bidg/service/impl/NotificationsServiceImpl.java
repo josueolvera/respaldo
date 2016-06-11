@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpSession;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -177,5 +179,10 @@ public class NotificationsServiceImpl implements NotificationsService {
     @Override
     public Boolean delete(Notifications notifications) {
         return notificationsDao.delete(notifications);
+    }
+
+    @Override
+    public Notifications createForRequestRejected(Requests request) {
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 }

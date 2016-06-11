@@ -2,6 +2,7 @@ package mx.bidg.service.impl;
 
 import mx.bidg.dao.CIncidenceDao;
 import mx.bidg.model.CIncidence;
+import mx.bidg.model.CTicketsCategories;
 import mx.bidg.service.CIncidenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class CIncidenceServiceImpl implements CIncidenceService {
     }
 
     @Override
-    public List<CIncidence> findAll() {
-        return cIncidenceDao.findAll();
+    public List<CIncidence> findAll(CTicketsCategories category) {
+        return cIncidenceDao.findAll(category);
     }
 }

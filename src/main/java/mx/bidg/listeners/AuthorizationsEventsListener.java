@@ -64,6 +64,8 @@ public class AuthorizationsEventsListener {
 
     @EventListener
     public void notifyRequestRejected(RejectedEvent event) {
-        // TODO: Notificar a usuarios involucrados que la solicitud fue rechazada
+        Authorizations auth = event.getResource();
+        Requests request = requestsService.findByFolio(auth.getFolio());
+        notificationsService.createForRequestRejected(request);
     }
 }

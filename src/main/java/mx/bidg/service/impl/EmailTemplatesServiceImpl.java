@@ -32,4 +32,13 @@ public class EmailTemplatesServiceImpl implements EmailTemplatesService {
         emailTemplates.setEmailTemplateFilesList(files);
         return emailTemplates;
     }
+
+    @Override
+    public EmailTemplates findById(Integer id) {
+        EmailTemplates emailTemplates = emailTemplatesDao.findById(id);
+        List<EmailTemplateFiles> files = emailTemplates.getEmailTemplateFilesList();
+        logger.info("Loading email files." + files);
+        emailTemplates.setEmailTemplateFilesList(files);
+        return emailTemplates;
+    }
 }

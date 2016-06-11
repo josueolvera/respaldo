@@ -142,5 +142,4 @@ public class EmailRecipients implements Serializable {
     public String toString() {
         return "mx.bidg.model.EmailRecipients[ idEmailRecipient=" + idEmailRecipient + " ]";
     }
-    
 }

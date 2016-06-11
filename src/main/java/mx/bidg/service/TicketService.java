@@ -10,7 +10,7 @@ import java.util.List;
 public interface TicketService {
 
     Ticket findById(Integer id);
-    List<Ticket> findAll();
+    List<Ticket> findAll(CTicketsCategories category);
     Ticket save(Ticket ticket);
     Ticket update(Ticket ticket);
     List<Ticket> findByPriority(Integer idPriority);
