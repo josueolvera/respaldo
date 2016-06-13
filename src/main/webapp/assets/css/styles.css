@@ -563,7 +563,8 @@ nav ul,nav li {
 
 .card-inline .card-subtitle {
     float: left;
-    max-width: 20%;
+    max-width: 40%;
+    min-width: 30%;
     overflow: hidden;
     white-space: nowrap;
 }
@@ -571,7 +572,7 @@ nav ul,nav li {
 .card-inline .card-text {
     float: left;
     color: #777777;
-    max-width: 40%;
+    max-width: 30%;
     overflow: hidden;
     white-space: nowrap;
 }
