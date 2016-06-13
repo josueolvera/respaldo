@@ -285,7 +285,6 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
                 CDistributors cDistributors = dwEnterprise.getDistributor();
                 CRegions cRegions = dwEnterprise.getRegion();
                 CBranchs cBranchs = dwEnterprise.getBranch();
-                Transactions transactions = transactionsDao.findByAccount(accountsPayable);
 
                 row = hoja.createRow(aux);
                 // Create a cell and put a value in it.
