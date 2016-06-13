@@ -156,6 +156,10 @@
                   window.location.href=ROOT_URL+"/siad/accounts-payables"
               },
               savePayOfBill: function(){
+
+                  var form = document.getElementById("formPayOfBill");
+                  var formData = new FormData(form);
+
                   var transaction= {
                       amount: 0,
                       idBalance: 0,
@@ -169,7 +173,16 @@
                   this.$http.post(ROOT_URL+"/accounts-payable/pay-account/"+this.infoAccountsPayable.idAccountPayable, JSON.stringify(transaction)).
                   success(function(data)
                   {
-                      showAlert("Bien"); //Aqui subiremos los archivos
+                      this.$http.post(ROOT_URL+"/transactions/"+data.idTransaction+"/attachment", formData).
+                      success(function(data)
+                      {
+                          showAlert("Cuenta pagada correctamente");
+                          location.href= ROOT_URL+"/siad/accounts-payables"
+                      }).error(function(data){
+                        showAlert("Se ha realizado correctamente el pago, pero hubo un error al guardar el archivo");
+                        this.isSavingNow= false;
+                      });
+
                   }).error(function(data)
                   {
                       showAlert("Ha habido un error al guardar la transacción"); //
@@ -258,7 +271,7 @@
                             <div class="col-xs-12">
                                 <div class="col-xs-3">
                                   <label>
-                                      Nombre/Razon Social
+                                      Nombre/Razón Social
                                   </label>
                                   <p class="underline">
                                     {{ infoProvider.account.providersAccountsList[0].provider.providerName}}
@@ -497,7 +510,7 @@
                                       Número de pago
                                   </label>
                                   <p class="underline">
-                                    {{infoAccountsPayable.payNum}}
+                                    {{infoAccountsPayable.payNum}} de {{infoAccountsPayable.totalPayments}}
                                   </p>
                               </div>
                               <div class="col-xs-3">
@@ -610,7 +623,7 @@
 
              </div>
              <div class="modal-footer">
-               <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+               <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                <button type="button" class="btn btn-success" @click="rescheduleAccount">Guardar</button>
              </div>
            </div>
@@ -639,15 +652,15 @@
                      <label>
                          Monto
                      </label>
-                     <p>
+                     <p class="underline">
                      $ {{infoAccountsPayable.amount}}
                      </p>
                    </div>
                    <div class="col-xs-3">
                      <label>
-                         Nombre/Razon Social
+                         Nombre/Razón Social
                      </label>
-                     <p>
+                     <p class="underline">
                      {{ infoProvider.account.providersAccountsList[0].provider.providerName}}
                      </p>
                    </div>
@@ -655,14 +668,14 @@
                      <label>
                          CLABE
                      </label>
-                     <p>
+                     <p class="underline">
                       {{infoProvider.account.accountClabe}}
                      </p>
                    </div>
                  </div>
                  <br>
-
-                 <form>
+                     <hr>
+                 <form v-on:submit.prevent="savePayOfBill" id="formPayOfBill" enctype="multipart/form-data">
                     <div class="row">
                       <div class="col-xs-12 text-left">
                         <label>
@@ -679,44 +692,49 @@
                             </label>
                           </div>
                           <div class="col-xs-8">
-                              <input type="file" class="form-control">
+                              <input type="file" class="form-control" name="file-type-1" required="true">
                           </div>
-                          <br>
+                          <br><br>
                           <div class="col-xs-4">
                               <label>
                                 Factura XML
                               </label>
                           </div>
                           <div class="col-xs-8">
-                              <input type="file" class="form-control">
+                              <input type="file" class="form-control" name="file-type-2" required="true">
                           </div>
-                          <br>
+                          <br><br>
                           <div class="col-xs-4">
                               <label>
                                 Comprobante de Pago
                               </label>
                           </div>
                           <div class="col-xs-8">
-                              <input type="file" class="form-control">
+                              <input type="file" class="form-control" name="file-type-3">
                           </div>
-                          <br>
+                          <br><br>
                           <div class="col-xs-4">
                               <label>
                                 Otro
                               </label>
                           </div>
                           <div class="col-xs-8">
-                              <input type="file" class="form-control">
+                              <input type="file" class="form-control" name="file-type-4">
                           </div>
                       </div>
                     </div>
-
+                    <br>
+                    <div class="row">
+                        <div class="col-xs-12 text-right">
+                            <button class="btn btn-success">Pagar</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
                  </form>
 
              </div>
              <div class="modal-footer">
-               <button type="button" class="btn btn-success" @click="savePayOfBill">Pagar</button>
-               <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+
              </div>
            </div>
          </div>
