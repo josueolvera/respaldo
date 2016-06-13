@@ -618,13 +618,14 @@ public class OutsourcingServiceImpl implements OutsourcingService {
             Row currentRow = sheet.getRow(i);
             Cell idW = currentRow.getCell(0);
 
-            if (idW.getCellType() == Cell.CELL_TYPE_STRING) {
-                break;
-            }
-
             Outsourcing savedOutsourcing;
 
             if (idW != null) {
+
+                if (idW.getCellType() == Cell.CELL_TYPE_STRING) {
+                    break;
+                }
+
                 savedOutsourcing = outsourcingDao.finfByidW(
                         idW.getStringCellValue(),
                         LocalDateTime.parse(calculateDate+" 00:00",formatter)
