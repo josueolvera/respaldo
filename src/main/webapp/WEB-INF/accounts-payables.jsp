@@ -36,7 +36,7 @@
                 box-shadow: 0 -1px 0 #e5e5e5, 0 0 2px rgba(0,0,0,.12), 0 2px 4px rgba(0,0,0,.24);
             }
             .card-body {
-                cursor: pointer;
+                cursor: auto;
             }
         </style>
     </jsp:attribute>
@@ -86,13 +86,10 @@
               useCurrent: false,
               }).data();
 
-
-
               this.timePickercuentaspagadasInicial = $('#datecuentasinicial').datetimepicker({
                 locale: 'es',
                 format: 'DD-MM-YYYY',
-                useCurrent: false,
-                minDate: moment().add(1, 'minutes')
+                useCurrent: false
                 }).data();
 
                 this.timePickercuentaspagadasFinal = $('#datecuentasfinal').datetimepicker({
@@ -132,7 +129,8 @@
             reporteflujoinicial: '',
             reporteflujofinal: '',
             reportecuentaspagadasinicial: '',
-            reportecuentaspagadasfinal: ''
+            reportecuentaspagadasfinal: '',
+            reportType: ''
           },
           methods:
           {
@@ -260,6 +258,28 @@
                   useCurrent: false,
                   minDate: fechafinal
                   }).data();
+              },
+              getReports: function(){
+
+                  var fechafromDate = this.reportecuentaspagadasinicial;
+                  var dateformatedfromDate = moment(fechafromDate, "DD-MM-YYYY").format("YYYY-MM-DD");
+                  var dateDueDatefromDate = new Date(dateformatedfromDate);
+                  var dateisoDuefromDate = dateDueDatefromDate.toISOString().slice(0, -1);
+
+                  var fechatoDate = this.reportecuentaspagadasfinal;
+                  var dateformatedtoDate= moment(fechatoDate, "DD-MM-YYYY").format("YYYY-MM-DD");
+                  var dateDueDatetoDate = new Date(dateformatedtoDate);
+                  var dateisoDuetoDate = dateDueDatetoDate.toISOString().slice(0, -1);
+
+
+                  if (this.reportType == 2 ) {
+                      location.href= ROOT_URL+"/accounts-payable/report/accounts-liquidated?fromDate="+dateisoDuefromDate+"&toDate="+dateisoDuetoDate;
+                  }
+                  if (this.reportType == 3 ) {
+                      location.href= ROOT_URL+"/transactions/report/accounts-payable?fromDate="+dateisoDuefromDate+"&toDate="+dateisoDuetoDate;
+                  }
+
+
               }
 
           },
@@ -301,7 +321,10 @@
                            </div>
                          </div>
                          <div class="col-xs-3">
-                           <button class="btn btn-default" @click="saveTransaction"><span class="glyphicon glyphicon-floppy-disk"></span></button>
+                           <button class="btn btn-default" @click="saveTransaction" data-toggle="tooltip" data-placement="bottom" title="Guardar">
+                               <span class="glyphicon glyphicon-floppy-disk">
+                               </span>
+                           </button>
                          </div>
                        </div>
                        <div class="col-xs-2">
@@ -353,7 +376,8 @@
                        </div>
 
                        <div class="col-xs-1">
-                         <button class="btn btn-default" name="button" style="margin-top: 25px" @click="generateReportCash">
+                         <button class="btn btn-default" name="button" style="margin-top: 25px"
+                             @click="generateReportCash" data-toggle="tooltip" data-placement="bottom" title="Generar">
                              <span class="glyphicon glyphicon-list-alt">
                              </span>
                          </button>
@@ -367,22 +391,31 @@
                    <h3 class="panel-title">Cuentas pagadas</h3>
                  </div>
                  <div class="panel-body">
+
                      <div class="row">
                        <div class="col-xs-12 text-left">
-                         <label>
-                             Generar reporte
-                         </label>
+                           <label>
+                               Generar reporte
+                           </label>
                        </div>
                      </div>
 
                      <div class="row">
+                       <div class="col-xs-3 text-left">
+                         <select class="form-control" v-model="reportType">
+                             <option></option>
+                             <option value="2">Cuentas por pagar</option>
+                             <option value="3">Cuentas pagadas</option>
+                         </select>
+                       </div>
+
                        <div class="col-xs-6">
                            <div class="col-xs-1">
                              <span>De</span>
                            </div>
                            <div class="col-xs-5">
                                <div class='input-group date' id='datecuentasinicial'>
-                                   <input type='text' class="form-control">
+                                   <input type='text' class="form-control" v-model="reportecuentaspagadasinicial">
                                    <span class="input-group-addon">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
@@ -393,7 +426,7 @@
                            </div>
                            <div class="col-xs-5">
                                <div class='input-group date' id='datecuentasfinal'>
-                                   <input type='text' class="form-control">
+                                   <input type='text' class="form-control" v-model="reportecuentaspagadasfinal">
                                    <span class="input-group-addon">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
@@ -403,7 +436,8 @@
 
                        <div class="col-xs-1">
                            <button class="btn btn-default" name="button">
-                               <span class="glyphicon glyphicon-list-alt">
+                               <span class="glyphicon glyphicon-list-alt" @click="getReports"
+                                   data-toggle="tooltip" data-placement="bottom" title="Generar">
                                </span>
                            </button>
                        </div>
@@ -450,7 +484,7 @@
                              <span class="label label-success">Hoy</span>
                          </div>
                          <div class="col-xs-4">
-                            <a :href="url+accountPayable.informationRequest.idRequest+'/'+accountPayable.idAccountPayable">
+                            <a :href="url+accountPayable.informationRequest.idRequest+'/'+accountPayable.idAccountPayable" title="Ver cuenta por pagar">
                                 <span class="glyphicon glyphicon-new-window">
                                 </span>
                             </a>
