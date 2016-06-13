@@ -9,11 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by jolvera on 10/06/16.
  */
 @Service
+@Transactional
 public class TransactionsDocumentsServiceImpl implements TransactionsDocumentsService {
 
     @Autowired
