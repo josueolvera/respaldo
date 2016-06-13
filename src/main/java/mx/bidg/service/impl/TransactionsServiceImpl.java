@@ -123,10 +123,12 @@ public class TransactionsServiceImpl implements TransactionsService {
             style.setAlignment(CellStyle.ALIGN_CENTER);
 
             Sheet hoja = wb.createSheet();
+
+        if(transactions.size()>0) {
             //Se crea la fila que contiene la cabecera
             Row row = hoja.createRow(0);
 
-            row.createCell(0).setCellValue("CONCEPTO");
+            row.createCell(0).setCellValue("NOMBRE DEL EMPLEADO");
             row.createCell(1).setCellValue("MONTO");
             row.createCell(2).setCellValue("FECHA DE TRANSACCION");
 
@@ -137,7 +139,7 @@ public class TransactionsServiceImpl implements TransactionsService {
 
             int aux = 1;
 
-            for (Transactions transaction : transactions){
+            for (Transactions transaction : transactions) {
 
                 row = hoja.createRow(aux);
                 // Create a cell and put a value in it.
@@ -145,7 +147,7 @@ public class TransactionsServiceImpl implements TransactionsService {
                 row.createCell(1).setCellValue(transaction.getAmount().toString());
                 row.createCell(2).setCellValue(transaction.getCreationDateFormats().getDateNumber());
 
-                aux ++;
+                aux++;
             }
 
             //Autoajustar al contenido
@@ -168,6 +170,17 @@ public class TransactionsServiceImpl implements TransactionsService {
             CellUtil.createCell(hoja.createRow(1), 5, "TRANSACCIONES", style2);
 
             wb.write(stream);
+        }else{
+            Row row = hoja.createRow(0);
+
+            row.createCell(0).setCellValue("NO HAY REGISTROS PARA ESTAS FECHAS");
+
+            //Implementacion del estilo
+            for (Cell celda : row) {
+                celda.setCellStyle(style);
+            }
+            wb.write(stream);
+        }
         }
 
     @Override
@@ -197,77 +210,89 @@ public class TransactionsServiceImpl implements TransactionsService {
         style.setAlignment(CellStyle.ALIGN_CENTER);
 
         Sheet hoja = wb.createSheet();
-        //Se crea la fila que contiene la cabecera
-        Row row = hoja.createRow(0);
+        if(transactions.size()>0) {
+            //Se crea la fila que contiene la cabecera
+            Row row = hoja.createRow(0);
 
-        row.createCell(0).setCellValue("CONCEPTO");
-        row.createCell(1).setCellValue("MONTO");
-        row.createCell(2).setCellValue("EMPRESA");
-        row.createCell(3).setCellValue("REGION");
-        row.createCell(4).setCellValue("SUCURSAL");
-        row.createCell(5).setCellValue("PROVEEDOR");
-        row.createCell(6).setCellValue("FECHA DE RECEPCIÓN");
-        row.createCell(7).setCellValue("FECHA DE APLICACIÓN");
+            row.createCell(0).setCellValue("CONCEPTO");
+            row.createCell(1).setCellValue("MONTO");
+            row.createCell(2).setCellValue("EMPRESA");
+            row.createCell(3).setCellValue("REGION");
+            row.createCell(4).setCellValue("SUCURSAL");
+            row.createCell(5).setCellValue("PROVEEDOR");
+            row.createCell(6).setCellValue("FECHA DE RECEPCIÓN");
+            row.createCell(7).setCellValue("FECHA DE APLICACIÓN");
 
-        //Implementacion del estilo
-        for (Cell celda : row) {
-            celda.setCellStyle(style);
+            //Implementacion del estilo
+            for (Cell celda : row) {
+                celda.setCellStyle(style);
+            }
+
+            int aux = 1;
+
+            for (Transactions transaction : transactions) {
+                AccountsPayable accountsPayable = transaction.getAccountsPayable();
+                Requests requests = requestsDao.findByFolio(accountsPayable.getFolio());
+                RequestTypesProduct requestTypesProduct = requests.getRequestTypeProduct();
+                CProductTypes productType = requestTypesProduct.getProductType();
+                Providers provider = productType.getProvider();
+                BudgetMonthBranch budgetMonthBranch = requests.getBudgetMonthBranch();
+                DwEnterprises dwEnterprise = budgetMonthBranch.getDwEnterprise();
+                CDistributors cDistributors = dwEnterprise.getDistributor();
+                CRegions cRegions = dwEnterprise.getRegion();
+                CBranchs cBranchs = dwEnterprise.getBranch();
+
+                row = hoja.createRow(aux);
+                // Create a cell and put a value in it.
+                row.createCell(0).setCellValue(productType.getProductType());
+                row.createCell(1).setCellValue(accountsPayable.getAmount().toString());
+                row.createCell(2).setCellValue(cDistributors.getAcronyms());
+                row.createCell(3).setCellValue(cRegions.getRegionName());
+                row.createCell(4).setCellValue(cBranchs.getBranchShort());
+                row.createCell(5).setCellValue(provider.getProviderName().replace(':', ' '));
+                row.createCell(6).setCellValue(accountsPayable.getCreationDateFormats().getDateNumber());
+                row.createCell(7).setCellValue(transaction.getCreationDateFormats().getDateNumber());
+
+
+                aux++;
+            }
+
+            //Autoajustar al contenido
+            hoja.autoSizeColumn(0);
+            hoja.autoSizeColumn(1);
+            hoja.autoSizeColumn(2);
+            hoja.autoSizeColumn(3);
+            hoja.autoSizeColumn(4);
+            hoja.autoSizeColumn(5);
+            hoja.autoSizeColumn(6);
+            hoja.autoSizeColumn(7);
+
+            //Mover filas hacia abajo para colocar la imagen corporativa: Altura 4 filas, Anchura 4 columnas
+            hoja.shiftRows(0, hoja.getLastRowNum(), 4);
+
+            //Definicion del estilo del titulo
+            Font font2 = wb.createFont();
+            font2.setBold(true);
+            font2.setFontHeightInPoints((short) 14);
+            CellStyle style2 = wb.createCellStyle();
+            style2.setFont(font);
+            style2.setAlignment(CellStyle.ALIGN_CENTER);
+
+            //Titulo del reporte
+            CellUtil.createCell(hoja.createRow(1), 5, "CUENTAS PAGADAS", style2);
+
+            wb.write(stream);
+        }else{
+            Row row = hoja.createRow(0);
+
+            row.createCell(0).setCellValue("NO HAY REGISTROS PARA ESTAS FECHAS");
+
+            //Implementacion del estilo
+            for (Cell celda : row) {
+                celda.setCellStyle(style);
+            }
+            wb.write(stream);
         }
-
-        int aux = 1;
-
-        for (Transactions transaction : transactions){
-            AccountsPayable accountsPayable = transaction.getAccountsPayable();
-            Requests requests = requestsDao.findByFolio(accountsPayable.getFolio());
-            RequestTypesProduct requestTypesProduct = requests.getRequestTypeProduct();
-            CProductTypes productType = requestTypesProduct.getProductType();
-            Providers provider = productType.getProvider();
-            BudgetMonthBranch budgetMonthBranch = requests.getBudgetMonthBranch();
-            DwEnterprises dwEnterprise = budgetMonthBranch.getDwEnterprise();
-            CDistributors cDistributors = dwEnterprise.getDistributor();
-            CRegions cRegions = dwEnterprise.getRegion();
-            CBranchs cBranchs = dwEnterprise.getBranch();
-
-            row = hoja.createRow(aux);
-            // Create a cell and put a value in it.
-            row.createCell(0).setCellValue(productType.getProductType());
-            row.createCell(1).setCellValue(accountsPayable.getAmount().toString());
-            row.createCell(2).setCellValue(cDistributors.getAcronyms());
-            row.createCell(3).setCellValue(cRegions.getRegionName());
-            row.createCell(4).setCellValue(cBranchs.getBranchShort());
-            row.createCell(5).setCellValue(provider.getProviderName().replace(':',' '));
-            row.createCell(6).setCellValue(accountsPayable.getCreationDateFormats().getDateNumber());
-            row.createCell(7).setCellValue(transaction.getCreationDateFormats().getDateNumber());
-
-
-            aux ++;
-        }
-
-        //Autoajustar al contenido
-        hoja.autoSizeColumn(0);
-        hoja.autoSizeColumn(1);
-        hoja.autoSizeColumn(2);
-        hoja.autoSizeColumn(3);
-        hoja.autoSizeColumn(4);
-        hoja.autoSizeColumn(5);
-        hoja.autoSizeColumn(6);
-        hoja.autoSizeColumn(7);
-
-        //Mover filas hacia abajo para colocar la imagen corporativa: Altura 4 filas, Anchura 4 columnas
-        hoja.shiftRows(0, hoja.getLastRowNum(), 4);
-
-        //Definicion del estilo del titulo
-        Font font2 = wb.createFont();
-        font2.setBold(true);
-        font2.setFontHeightInPoints((short) 14);
-        CellStyle style2 = wb.createCellStyle();
-        style2.setFont(font);
-        style2.setAlignment(CellStyle.ALIGN_CENTER);
-
-        //Titulo del reporte
-        CellUtil.createCell(hoja.createRow(1), 5, "CUENTAS PAGADAS", style2);
-
-        wb.write(stream);
     }
 
 }

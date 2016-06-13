@@ -7,6 +7,7 @@ import mx.bidg.model.COperationTypes;
 import mx.bidg.model.CTransactionsStatus;
 import mx.bidg.model.Transactions;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -58,6 +59,7 @@ public class TransactionsDaoImpl extends AbstractDao<Integer,Transactions> imple
         return (List<Transactions>) criteria
                 .add(Restrictions.between("creationDate",ofDate,untilDate))
                 .add(Restrictions.eq("operationTypes", COperationTypes.INGRESO))
+                .addOrder(Order.asc("creationDate"))
                 .list();
     }
 
@@ -67,6 +69,7 @@ public class TransactionsDaoImpl extends AbstractDao<Integer,Transactions> imple
         return (List<Transactions>) criteria
                 .add(Restrictions.between("creationDate",ofDate,untilDate))
                 .add(Restrictions.eq("operationTypes", COperationTypes.EGRESO))
+                .addOrder(Order.asc("creationDate"))
                 .list();
     }
 }
