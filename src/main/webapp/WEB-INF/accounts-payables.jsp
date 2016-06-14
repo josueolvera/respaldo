@@ -345,6 +345,9 @@
           },
         filters:
           {
+              separate: function (value) {
+                        return value.replace(/:/g, " ");
+                    }
 
           }
         });
