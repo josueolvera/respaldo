@@ -231,7 +231,9 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
     @Override
     public void accountsPayableReport (LocalDateTime ofDate, LocalDateTime untilDate , OutputStream stream) throws IOException {
 
-        List<AccountsPayable> accountsPayables = accountsPayableDao.findByDueDate(ofDate,untilDate);
+        List<AccountsPayable> accountsPayables = accountsPayableDao.findByDueDate(
+                ofDate.toLocalDate().atStartOfDay(), untilDate.toLocalDate().atTime(23, 59, 59)
+        );
 
         Workbook wb = new HSSFWorkbook();
         //Definicion del estilo de la cabecera
