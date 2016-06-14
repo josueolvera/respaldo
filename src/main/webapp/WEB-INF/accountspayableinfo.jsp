@@ -243,7 +243,13 @@
                   var regreso;
                   regreso= param.replace(/:/g, " ");
                   return regreso;
-              }
+              },
+              separate: function (value) {
+                  if (typeof value != "undefined" ) {
+                      return value.replace(/:/g, " ");
+                  }
+
+                }
 
           }
         });
@@ -277,7 +283,7 @@
                                       Nombre/Razón Social
                                   </label>
                                   <p class="underline">
-                                    {{ infoProvider.account.providersAccountsList[0].provider.providerName}}
+                                    {{ infoProvider.account.providersAccountsList[0].provider.providerName | separate}}
                                   </p>
                                 </div>
                                 <div class="col-xs-3">
@@ -667,7 +673,7 @@
                          Nombre/Razón Social
                      </label>
                      <p class="underline">
-                     {{ infoProvider.account.providersAccountsList[0].provider.providerName}}
+                     {{ infoProvider.account.providersAccountsList[0].provider.providerName | separate}}
                      </p>
                    </div>
                    <div class="col-xs-3">
