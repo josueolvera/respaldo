@@ -30,7 +30,10 @@ public class EmailTemplatesDaoImpl extends AbstractDao<Integer, EmailTemplates> 
 
     @Override
     public EmailTemplates findById(int id) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return (EmailTemplates) createEntityCriteria()
+                .setFetchMode("emailRecipientsList", FetchMode.JOIN)
+                .add(Restrictions.idEq(id))
+                .uniqueResult();
     }
 
     @Override

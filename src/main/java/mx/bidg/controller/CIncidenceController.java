@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.CIncidence;
+import mx.bidg.model.CTicketsCategories;
 import mx.bidg.service.CIncidenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,9 +30,9 @@ public class CIncidenceController {
 
     private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findAll() throws IOException {
-        List<CIncidence> incidences = cIncidenceService.findAll();
+    @RequestMapping(value = "/category/{idTicketCategory}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findAll(@PathVariable int idTicketCategory) throws IOException {
+        List<CIncidence> incidences = cIncidenceService.findAll(new CTicketsCategories(idTicketCategory));
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(incidences), HttpStatus.OK);
     }
 

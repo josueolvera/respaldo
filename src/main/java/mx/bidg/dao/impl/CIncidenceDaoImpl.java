@@ -3,6 +3,8 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CIncidenceDao;
 import mx.bidg.model.CIncidence;
+import mx.bidg.model.CTicketsCategories;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,6 +28,13 @@ public class CIncidenceDaoImpl extends AbstractDao<Integer,CIncidence> implement
     @Override
     public List<CIncidence> findAll() {
         return createEntityCriteria().list();
+    }
+
+    @Override
+    public List<CIncidence> findAll(CTicketsCategories category) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idTicketCategory", category.getIdTicketCategory()))
+                .list();
     }
 
     @Override

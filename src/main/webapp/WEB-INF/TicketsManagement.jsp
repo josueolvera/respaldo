@@ -24,6 +24,7 @@
                     this.getTicketStatus();
                 },
                 data: {
+                    ticketCategory: ${ticketCategory.idTicketCategory},
                     tickets:[],
                     incidences:[],
                     priorities:[],
@@ -42,7 +43,7 @@
                 },
                 methods: {
                     getTickets:function () {
-                        this.$http.get(ROOT_URL + '/ticket').success(function (data) {
+                        this.$http.get(ROOT_URL + '/ticket/category/' + this.ticketCategory).success(function (data) {
                             var jsonObjectIndex = {};
                             data.forEach(function (ticket) {
                                 if (isNaN(ticket.user)) {
@@ -123,7 +124,7 @@
 
                     },
                     getIncidences:function () {
-                        this.$http.get(ROOT_URL + '/incidence').success(function (data) {
+                        this.$http.get(ROOT_URL + '/incidence/category/' + this.ticketCategory).success(function (data) {
                             this.incidences = data;
                         }).error(function (data) {
 

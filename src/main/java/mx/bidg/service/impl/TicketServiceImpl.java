@@ -15,10 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.*;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by gerardo8 on 19/05/16.
@@ -55,8 +52,8 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<Ticket> findAll() {
-        return ticketDao.findAll();
+    public List<Ticket> findAll(CTicketsCategories category) {
+        return ticketDao.findAll(category);
     }
 
     @Override
@@ -133,7 +130,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public EmailTemplates sendEmailStatusTicket(Ticket ticket) {
-        EmailTemplates emailTemplate = emailTemplatesService.findByName("ticket_status_notification");
+        EmailTemplates emailTemplate = emailTemplatesService.findById(ticket.getIncidence().getTicketCategory().getIdEmailTemplate());
         emailTemplate.addProperty("ticket", ticket);
         emailTemplate.addRecipient(new EmailRecipients(ticket.getUser().getMail(), ticket.getUser().getUsername(), EmailRecipients.TO));
 
