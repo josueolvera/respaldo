@@ -191,7 +191,16 @@ public class RequestsServiceImpl implements RequestsService {
             throw new ValidationException("No hay CXP referentes a esta solicitud", "Necesita agregar informacion de pago para esta " +
                     "solicitud", HttpStatus.CONFLICT);
         }
-
+        
+        if (accountslist.size() > 0) {
+            for ( AccountsPayable accountPayable : accountslist) {
+                accountPayable.setAccountPayableStatus(CAccountsPayableStatus.PENDIENTE);
+            }
+        }
+        
+        if (periodicsPayment != null) {
+            periodicsPayment.setPeriodicPaymentStatus(CPeriodicPaymentsStatus.ACTIVO);
+        }
         request.setRequestStatus(CRequestStatus.APROBADA);
         return requestsDao.update(request);
     }

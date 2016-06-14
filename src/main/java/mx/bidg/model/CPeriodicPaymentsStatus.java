@@ -32,8 +32,8 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "C_PERIODIC_PAYMENTS_STATUS")
 public class CPeriodicPaymentsStatus implements Serializable {
 
-    public static final int INACTIVO = 1;
-    public static final int ACTIVO = 2;
+    public static final CPeriodicPaymentsStatus INACTIVO = new CPeriodicPaymentsStatus(1);
+    public static final CPeriodicPaymentsStatus ACTIVO = new CPeriodicPaymentsStatus(2);
 
     private static final long serialVersionUID = 1L;
     
