@@ -130,11 +130,11 @@ public class AccountsPayableController {
         LocalDateTime untilDate = (toDate == null || toDate.equals("")) ? null :
                 LocalDateTime.parse(toDate, DateTimeFormatter.ISO_DATE_TIME);
 
-        String initialDate = ofDate.toString();
-        String finalDate = untilDate.toString();
+        String initialDate = ofDate.toLocalDate().toString();
+        String finalDate = untilDate.toLocalDate().toString();
 
         response.setContentType("application/octet-stream");
-        response.setHeader("Content-Disposition", "attachment; filename=\"" +"Reporte cuentas por pagar de "+initialDate+" a "+finalDate+".xlsx"+ "\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" +"Reporte cuentas por pagar de "+initialDate+" a "+finalDate+".xls"+ "\"");
         OutputStream outputStream = response.getOutputStream();
         accountsPayableService.accountsPayableReport(ofDate, untilDate, outputStream);
         outputStream.flush();
