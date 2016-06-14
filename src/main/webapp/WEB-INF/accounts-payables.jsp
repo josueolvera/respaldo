@@ -104,6 +104,7 @@
                   minDate: fecha_actual
                   }).data();
 
+
           },
           ready: function ()
           {
@@ -119,6 +120,8 @@
             timePickerReporteFinal: '',
             timePickercuentaspagadasInicial: '',
             timePickercuentaspagadasFinal: '',
+            timePickercuentasporpagarInicial: '',
+            timePickercuentasporpagarFinal: '',
             accountsPayablesofDay: {},
             today: '',
             allBalances: {},
@@ -289,14 +292,10 @@
                       location.href= ROOT_URL+"/transactions/report/accounts-payable?fromDate="+dateisoDuefromDate+"&toDate="+dateisoDuetoDate;
                   }
               },
-              activarTimePickersegundo: function(activarTimePickersegundo){
-
-                  this.reportecuentaspagadasfinal= '';
+              activarTimePickersegundo: function(fechaprimertimepicker){
                   var fecha = new Date();
                   var fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth()+1) + "-" + fecha.getDate();
-
-                  var fecha= moment(activarTimePickersegundo, 'DD-MM-YYYY').format('YYYY-MM-DD');
-
+                  var fecha= moment(this.timePickercuentaspagadasInicial.date, 'DD-MM-YYYY').format('YYYY-MM-DD');
                   this.timePickercuentaspagadasFinal = $('#datecuentasfinal').datetimepicker({
                     locale: 'es',
                     format: 'DD-MM-YYYY',
@@ -320,6 +319,27 @@
                   $("#datefechafinal").on("dp.change", function (e) {
                   $('#datefechainicial').data("DateTimePicker").maxDate(e.date);
                   });
+              },
+              activarTimePickerPagar: function(){
+                  var fecha= moment(this.timePickercuentasporpagarInicial.date, 'DD-MM-YYYY').format('YYYY-MM-DD');
+                  this.timePickercuentasporpagarFinal = $('#datecuentasporpagarfinal').datetimepicker({
+                    locale: 'es',
+                    format: 'DD-MM-YYYY',
+                    useCurrent: false,
+                    minDate: fecha
+                    }).data();
+              },
+              destruirTimePickerCuentasPorPagar: function(){
+                  $("#datecuentasporpagarinicial").on("dp.change", function (e) {
+                  $('#datecuentasporpagarfinal').data("DateTimePicker").minDate(e.date);
+                    });
+                  $("#datecuentasporpagarfinal").on("dp.change", function (e) {
+                  $('#datecuentasporpagarinicial').data("DateTimePicker").maxDate(e.date);
+                  });
+              },
+              typeOfTimePickers: function(){
+                  this.reportecuentaspagadasinicial= '';
+                  this.reportecuentaspagadasfinal= '';
               }
 
           },
@@ -448,14 +468,14 @@
 
                      <div class="row">
                        <div class="col-xs-3 text-left">
-                         <select class="form-control" v-model="reportType">
+                         <select class="form-control" v-model="reportType" @change="typeOfTimePickers">
                              <option></option>
                              <option value="2">Cuentas por pagar</option>
                              <option value="3">Cuentas pagadas</option>
                          </select>
                        </div>
 
-                       <div class="col-xs-6">
+                       <div class="col-xs-6" v-show="reportType == 3 ">
                            <div class="col-xs-1" style="padding-left: 0; margin-top: 5px">
                              <span>De</span>
                            </div>
@@ -480,7 +500,32 @@
                            </div>
                        </div>
 
-                       <div class="col-xs-1" style="padding-left: 0">
+                       <div class="col-xs-6" v-show="reportType == 2 ">
+                           <div class="col-xs-1" style="padding-left: 0; margin-top: 5px">
+                             <span>De</span>
+                           </div>
+                           <div class="col-xs-5"  style="padding-left: 0">
+                               <div class='input-group date' id='datecuentasporpagarinicial'>
+                                   <input type='text' class="form-control" v-model="reportecuentaspagadasinicial">
+                                   <span class="input-group-addon"  @click="destruirTimePickerCuentasPorPagar(reportecuentaspagadasinicial)">
+                                       <span class="glyphicon glyphicon-calendar"></span>
+                                   </span>
+                               </div>
+                           </div>
+                           <div class="col-xs-1" style="padding-left: 5; margin-top: 5px">
+                             <span>a</span>
+                           </div>
+                           <div class="col-xs-5" style="padding-left: 0">
+                               <div class='input-group date' id='datecuentasporpagarfinal'>
+                                   <input type='text' class="form-control" v-model="reportecuentaspagadasfinal">
+                                   <span class="input-group-addon" @click="activarTimePickerPagar">
+                                       <span class="glyphicon glyphicon-calendar"></span>
+                                   </span>
+                               </div>
+                           </div>
+                       </div>
+
+                       <div class="col-xs-1" style="padding-left: 0" v-show="reportType != 0">
                            <button class="btn btn-default" name="button" data-toggle="tooltip" data-placement="bottom" title="Generar">
                                <span class="glyphicon glyphicon-list-alt" @click="getReports">
                                </span>
