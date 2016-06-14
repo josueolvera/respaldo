@@ -90,7 +90,8 @@
                     locale: 'es',
                     format: 'DD-MM-YYYY',
                     useCurrent: false,
-                    minDate: fechafinal
+                    minDate: fechafinal,
+                    inline: true
                     }).data();
               },
               showPayOfBill: function()
@@ -203,12 +204,13 @@
                           });
               },
               rescheduleAccount: function(){
-                  if (this.rescheduleDate == '')
+
+                  if (typeof this.timePickerReprogramar.date == "undefined" )
                   {
                     showAlert("Debes seleccionar una fecha para reprogramar el pago");
                   }
                   else {
-                      var fechaReprogramada = this.rescheduleDate;
+                      var fechaReprogramada = this.timePickerReprogramar.date;
                       var dateformated= moment(fechaReprogramada, "DD-MM-YYYY").format("YYYY-MM-DD");
                       var dateDueDate = new Date(dateformated);
                       var dateisoDue = dateDueDate.toISOString().slice(0, -1);
@@ -223,6 +225,7 @@
                       {
                           showAlert("Cuenta reprogramada correctamente");
                           this.getInformationRequest();
+                          location.href= ROOT_URL+"/siad/accounts-payables"
                       }).error(function(data)
                       {
                           showAlert("Ha habido un error al reprogramar el pago"); //
@@ -611,12 +614,15 @@
                  <div class="row">
                      <div class="col-xs-offset-4 col-xs-4">
                          <div class="form-group">
-                         <div class='input-group date' id='datereprogramar'>
+                             <div class="row">
+                                <div id="datereprogramar"></div>
+                             </div>
+                         <%-- <div class='input-group date' id='datereprogramar'>
                              <input type='text' class="form-control" v-model="rescheduleDate">
                              <span class="input-group-addon">
                                  <span class="glyphicon glyphicon-calendar"></span>
                              </span>
-                         </div>
+                         </div> --%>
                          </div>
                      </div>
                  </div>
