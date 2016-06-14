@@ -130,7 +130,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public EmailTemplates sendEmailStatusTicket(Ticket ticket) {
-        EmailTemplates emailTemplate = emailTemplatesService.findById(ticket.getIncidence().getTicketCategory().getIdEmailTemplate());
+        EmailTemplates emailTemplate = emailTemplatesService.findByName("ticket_status_notification");
         emailTemplate.addProperty("ticket", ticket);
         emailTemplate.addRecipient(new EmailRecipients(ticket.getUser().getMail(), ticket.getUser().getUsername(), EmailRecipients.TO));
 
