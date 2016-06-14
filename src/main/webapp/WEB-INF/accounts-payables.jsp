@@ -80,24 +80,22 @@
           el: '#contenidos',
           created: function()
           {
+            var fecha = new Date();
+            var fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth()+1) + "-" + fecha.getDate();
+
             this.timePickerReporteInicial = $('#datefechainicial').datetimepicker({
               locale: 'es',
               format: 'DD-MM-YYYY',
               useCurrent: false,
+              maxDate: fecha_actual
               }).data();
 
               this.timePickercuentaspagadasInicial = $('#datecuentasinicial').datetimepicker({
                 locale: 'es',
                 format: 'DD-MM-YYYY',
-                useCurrent: false
+                useCurrent: false,
+                maxDate: fecha_actual
                 }).data();
-
-                this.timePickercuentaspagadasFinal = $('#datecuentasfinal').datetimepicker({
-                  locale: 'es',
-                  format: 'DD-MM-YYYY',
-                  useCurrent: false,
-                  minDate: moment().add(1, 'minutes')
-                  }).data();
 
           },
           ready: function ()
@@ -250,13 +248,18 @@
 
               },
               activarPickerReporteFinal: function(fechainicio){
+                  this.timePickerReporteFinal = '';
+                  var fecha = new Date();
+                  var fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth()+1) + "-" + fecha.getDate();
+
                   var fecha= moment(fechainicio, 'DD-MM-YYYY').format('YYYY-MM-DD');
-                  var fechafinal = moment(fecha).add(1, "day");
+
                   this.timePickerReporteFinal = $('#datefechafinal').datetimepicker({
                   locale: 'es',
                   format: 'DD-MM-YYYY',
                   useCurrent: false,
-                  minDate: fechafinal
+                  minDate: fecha,
+                  maxDate: fecha_actual
                   }).data();
               },
               getReports: function(){
@@ -278,8 +281,38 @@
                   if (this.reportType == 3 ) {
                       location.href= ROOT_URL+"/transactions/report/accounts-payable?fromDate="+dateisoDuefromDate+"&toDate="+dateisoDuetoDate;
                   }
+              },
+              activarTimePickersegundo: function(activarTimePickersegundo){
 
+                  this.reportecuentaspagadasfinal= '';
+                  var fecha = new Date();
+                  var fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth()+1) + "-" + fecha.getDate();
 
+                  var fecha= moment(activarTimePickersegundo, 'DD-MM-YYYY').format('YYYY-MM-DD');
+
+                  this.timePickercuentaspagadasFinal = $('#datecuentasfinal').datetimepicker({
+                    locale: 'es',
+                    format: 'DD-MM-YYYY',
+                    useCurrent: false,
+                    minDate: fecha,
+                    maxDate: fecha_actual
+                    }).data();
+              },
+              destruirTimePickerSegundo: function(){
+                    $("#datecuentasinicial").on("dp.change", function (e) {
+                    $('#datecuentasfinal').data("DateTimePicker").minDate(e.date);
+                      });
+                    $("#datecuentasfinal").on("dp.change", function (e) {
+                    $('#datecuentasinicial').data("DateTimePicker").maxDate(e.date);
+                    });
+              },
+              destruirTimePickerPrimero: function(){
+                  $("#datefechainicial").on("dp.change", function (e) {
+                  $('#datefechafinal').data("DateTimePicker").minDate(e.date);
+                    });
+                  $("#datefechafinal").on("dp.change", function (e) {
+                  $('#datefechainicial').data("DateTimePicker").maxDate(e.date);
+                  });
               }
 
           },
@@ -308,83 +341,89 @@
                      <h3 class="panel-title">Flujo de efectivo</h3>
                    </div>
                    <div class="panel-body">
-                     <div class="col-xs-12">
-                       <div class="col-xs-3">
-                         <label>
-                           Ingresar
-                         </label>
-                         <br>
-                         <div class="col-xs-9">
-                           <div class="input-group">
-                             <span class="input-group-addon">$</span>
-                             <input number class="form-control" v-model="transaction.amount">
-                           </div>
-                         </div>
+                       <div class="row"> <!--Encabezados del row -->
                          <div class="col-xs-3">
-                           <button class="btn btn-default" @click="saveTransaction" data-toggle="tooltip" data-placement="bottom" title="Guardar">
-                               <span class="glyphicon glyphicon-floppy-disk">
-                               </span>
-                           </button>
+                             <label>
+                               Ingresar
+                             </label>
                          </div>
-                       </div>
-                       <div class="col-xs-2">
-                         <label>
-                           Flujo de efectivo al dia
-                         </label>
-                         <br>
-                           <div class="input-group">
-                             <span class="input-group-addon">$</span>
-                             <input number class="form-control" disabled="true" v-model="balance.currentAmount">
-                           </div>
-                       </div>
-                       <div class="col-xs-6">
-                         <label>
-                           Generar reporte
-                         </label>
-                         <br>
-                         <div class="col-xs-6">
-                             <div class="col-xs-2">
-                               <span>De</span>
-                             </div>
-                             <div class="col-xs-10">
-                                 <div class="form-group">
-                                 <div class='input-group date' id='datefechainicial'>
-                                     <input type='text' class="form-control" v-model="reporteflujoinicial">
-                                     <span class="input-group-addon">
-                                         <span class="glyphicon glyphicon-calendar"></span>
-                                     </span>
-                                 </div>
-                                 </div>
-                             </div>
+                         <div class="col-xs-2">
+                             <label>
+                               Flujo de efectivo al día
+                             </label>
                          </div>
+                         <div class="col-xs-6 text-left">
+                             <label>
+                                 Generar reporte
+                             </label>
+                         </div>
+                     </div>   <!-- Fin de Encabezados del row -->
 
-                         <div class="col-xs-6">
-                             <div class="col-xs-2">
-                               <span>a</span>
-                             </div>
-                             <div class="col-xs-10">
-                                 <div class="form-group">
-                                 <div class='input-group date' id='datefechafinal'>
-                                     <input type='text' class="form-control" v-model="reporteflujofinal">
-                                     <span class="input-group-addon" @click="activarPickerReporteFinal(reporteflujoinicial)">
-                                         <span class="glyphicon glyphicon-calendar"></span>
-                                     </span>
+                            <div class="row">
+                            <div class="col-xs-3" style="padding-left: 0">
+                                 <div class="col-xs-9">
+                                   <div class="input-group">
+                                     <span class="input-group-addon">$</span>
+                                     <input number class="form-control" v-model="transaction.amount">
+                                   </div>
                                  </div>
+                                 <div class="col-xs-3">
+                                   <button class="btn btn-default" @click="saveTransaction" data-toggle="tooltip" data-placement="bottom" title="Guardar">
+                                       <span class="glyphicon glyphicon-floppy-disk">
+                                       </span>
+                                   </button>
                                  </div>
-                             </div>
-                         </div>
-                       </div>
+                               </div>
+                               <div class="col-xs-2">
+                                   <div class="input-group">
+                                     <span class="input-group-addon">$</span>
+                                     <input number class="form-control" disabled="true" v-model="balance.currentAmount">
+                                   </div>
+                               </div>
+                               <div class="col-xs-6">
+                                 <div class="col-xs-6" style="padding-left: 0">
+                                     <div class="col-xs-2" style="padding-left: 0; margin-top: 5px">
+                                       <span>De</span>
+                                     </div>
+                                     <div class="col-xs-10" style="padding-left: 0; padding-right: 0">
+                                         <div class="form-group">
+                                         <div class='input-group date' id='datefechainicial'>
+                                             <input type='text' class="form-control" v-model="reporteflujoinicial">
+                                             <span class="input-group-addon"  @click="destruirTimePickerPrimero(reporteflujoinicial)">
+                                                 <span class="glyphicon glyphicon-calendar"></span>
+                                             </span>
+                                         </div>
+                                         </div>
+                                     </div>
+                                 </div>
 
-                       <div class="col-xs-1">
-                         <button class="btn btn-default" name="button" style="margin-top: 25px"
-                             @click="generateReportCash" data-toggle="tooltip" data-placement="bottom" title="Generar">
-                             <span class="glyphicon glyphicon-list-alt">
-                             </span>
-                         </button>
-                       </div>
-                     </div>
-                   </div>
-               </div>     <!-- Panel Flujo de efectivo -->
+                                 <div class="col-xs-6">
+                                     <div class="col-xs-2" style="padding-left: 0; margin-top: 5px">
+                                       <span>a</span>
+                                     </div>
+                                     <div class="col-xs-10" style="padding-left: 0">
+                                         <div class="form-group">
+                                         <div class='input-group date' id='datefechafinal'>
+                                             <input type='text' class="form-control" v-model="reporteflujofinal">
+                                             <span class="input-group-addon" @click="activarPickerReporteFinal(reporteflujoinicial)">
+                                                 <span class="glyphicon glyphicon-calendar"></span>
+                                             </span>
+                                         </div>
+                                         </div>
+                                     </div>
+                                 </div>
+                               </div>
+
+                               <div class="col-xs-1" style="padding-left:0">
+                                 <button class="btn btn-default" name="button"
+                                     @click="generateReportCash" data-toggle="tooltip" data-placement="bottom" title="Generar">
+                                     <span class="glyphicon glyphicon-list-alt">
+                                     </span>
+                                 </button>
+                               </div>
+                         </div> <!-- Row -->
+               </div>
+              </div>     <!-- Panel Flujo de efectivo -->
 
                <div class="panel panel-default">
                  <div class="panel-heading">
@@ -410,31 +449,31 @@
                        </div>
 
                        <div class="col-xs-6">
-                           <div class="col-xs-1">
+                           <div class="col-xs-1" style="padding-left: 0; margin-top: 5px">
                              <span>De</span>
                            </div>
-                           <div class="col-xs-5">
+                           <div class="col-xs-5"  style="padding-left: 0">
                                <div class='input-group date' id='datecuentasinicial'>
                                    <input type='text' class="form-control" v-model="reportecuentaspagadasinicial">
-                                   <span class="input-group-addon">
+                                   <span class="input-group-addon"  @click="destruirTimePickerSegundo(reportecuentaspagadasinicial)">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
                                </div>
                            </div>
-                           <div class="col-xs-1">
+                           <div class="col-xs-1" style="padding-left: 5; margin-top: 5px">
                              <span>a</span>
                            </div>
-                           <div class="col-xs-5">
+                           <div class="col-xs-5" style="padding-left: 0">
                                <div class='input-group date' id='datecuentasfinal'>
                                    <input type='text' class="form-control" v-model="reportecuentaspagadasfinal">
-                                   <span class="input-group-addon">
+                                   <span class="input-group-addon" @click="activarTimePickersegundo(reportecuentaspagadasinicial)">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
                                </div>
                            </div>
                        </div>
 
-                       <div class="col-xs-1">
+                       <div class="col-xs-1" style="padding-left: 0">
                            <button class="btn btn-default" name="button">
                                <span class="glyphicon glyphicon-list-alt" @click="getReports"
                                    data-toggle="tooltip" data-placement="bottom" title="Generar">
@@ -460,22 +499,22 @@
                                        </div>
 
                                         <div class="card-title">
-                                            <label>
+                                            <p>
                                                 {{accountPayable.informationRequest.requestTypeProduct.productType.productType}}
-                                            </label>
+                                            </p>
                                         </div>
 
                                        <div class="card-subtitle">
-                                           <label>
+                                           <p>
                                                Fecha de pago - {{accountPayable.dueDateFormats.dateNumber }}
-                                           </label>
+                                           </p>
                                        </div>
 
 
                                        <div class="card-text">
-                                           <label>
+                                           <p>
                                                Monto -$ {{ accountPayable.amount}}
-                                           </label>
+                                           </p>
                                        </div>
 
                      </div> <%--div card-body clearfix --%>
@@ -508,22 +547,22 @@
                                    </div>
 
                                     <div class="card-title">
-                                        <label>
+                                        <p>
                                             {{accountPayable.informationRequest.requestTypeProduct.productType.productType}}
-                                        </label>
+                                        </p>
                                     </div>
 
                                    <div class="card-subtitle">
-                                       <label>
+                                       <p>
                                            Fecha de pago - {{accountPayable.dueDateFormats.dateNumber }}
-                                       </label>
+                                       </p>
                                    </div>
 
 
                                    <div class="card-text">
-                                       <label>
+                                       <p>
                                            Monto -$ {{ accountPayable.amount}}
-                                       </label>
+                                       </p>
                                    </div>
 
                  </div> <%--div card-body clearfix --%>
