@@ -98,8 +98,9 @@ public class TransactionsServiceImpl implements TransactionsService {
 
     @Override
     public void transacctionsByDayReport(LocalDateTime ofDate, LocalDateTime untilDate, OutputStream stream) throws IOException {
-
-            List<Transactions> transactions = transactionsDao.findTransactionByDate(ofDate,untilDate);
+            List<Transactions> transactions = transactionsDao.findTransactionByDate(
+                    ofDate.toLocalDate().atStartOfDay(), untilDate.toLocalDate().atTime(23, 59, 59)
+            );
 
             Workbook wb = new HSSFWorkbook();
             //Definicion del estilo de la cabecera
@@ -186,7 +187,9 @@ public class TransactionsServiceImpl implements TransactionsService {
     @Override
     public void transacctionsByDayReportAndExit(LocalDateTime ofDate, LocalDateTime untilDate, OutputStream stream) throws IOException {
 
-        List<Transactions> transactions = transactionsDao.findTransactionByDateAndExit(ofDate,untilDate);
+        List<Transactions> transactions = transactionsDao.findTransactionByDateAndExit(
+                ofDate.toLocalDate().atStartOfDay(), untilDate.toLocalDate().atTime(23, 59, 59)
+        );
 
         Workbook wb = new HSSFWorkbook();
         //Definicion del estilo de la cabecera
