@@ -97,6 +97,13 @@
                 maxDate: fecha_actual
                 }).data();
 
+                this.timePickercuentasporpagarInicial = $('#datecuentasporpagarinicial').datetimepicker({
+                  locale: 'es',
+                  format: 'DD-MM-YYYY',
+                  useCurrent: false,
+                  minDate: fecha_actual
+                  }).data();
+
           },
           ready: function ()
           {
@@ -128,7 +135,7 @@
             reporteflujofinal: '',
             reportecuentaspagadasinicial: '',
             reportecuentaspagadasfinal: '',
-            reportType: ''
+            reportType: 0
           },
           methods:
           {
@@ -474,9 +481,8 @@
                        </div>
 
                        <div class="col-xs-1" style="padding-left: 0">
-                           <button class="btn btn-default" name="button">
-                               <span class="glyphicon glyphicon-list-alt" @click="getReports"
-                                   data-toggle="tooltip" data-placement="bottom" title="Generar">
+                           <button class="btn btn-default" name="button" data-toggle="tooltip" data-placement="bottom" title="Generar">
+                               <span class="glyphicon glyphicon-list-alt" @click="getReports">
                                </span>
                            </button>
                        </div>
@@ -492,6 +498,7 @@
              </div>
 
              <div class="row notification" v-for="accountPayable in accountsPayablesofDay">
+                 <div class="col-xs-12">
                  <div class="card card-inline clearfix">
                      <div class="card-body clearfix">
                                        <div class="card-image">
@@ -519,18 +526,15 @@
 
                      </div> <%--div card-body clearfix --%>
                      <div class="card-actions">
-                         <div class="col-xs-8">
-                             <span class="label label-success">Hoy</span>
-                         </div>
-                         <div class="col-xs-4">
+                         <span class="label label-success">Hoy</span>
                             <a :href="url+accountPayable.informationRequest.idRequest+'/'+accountPayable.idAccountPayable" title="Ver cuenta por pagar">
                                 <span class="glyphicon glyphicon-new-window">
                                 </span>
                             </a>
-                         </div>
                      </div>
                  </div> <%--div clearfix --%>
          </div> <%--div notification --%>
+         </div>
 
          <div class="row">
              <div class="col-xs-12">
@@ -540,6 +544,7 @@
 
          <%-- Reprogramadas --%>
          <div class="row notification" v-for="accountPayable in accountsPayablesReschedule" v-if="accountPayable.dueDateFormats.dateTextLong !== today">
+             <div class="col-xs-12">
              <div class="card card-inline clearfix">
                  <div class="card-body clearfix">
                                    <div class="card-image">
@@ -567,18 +572,15 @@
 
                  </div> <%--div card-body clearfix --%>
                  <div class="card-actions">
-                     <div class="col-xs-8">
                          <span class="label label-success">{{accountPayable.dueDateFormats.dateNumber }}</span>
-                     </div>
-                     <div class="col-xs-4">
-                        <a :href="url+accountPayable.informationRequest.idRequest+'/'+accountPayable.idAccountPayable">
+                        <a :href="url+accountPayable.informationRequest.idRequest+'/'+accountPayable.idAccountPayable" title="Ver cuenta por pagar">
                             <span class="glyphicon glyphicon-new-window">
                             </span>
                         </a>
-                     </div>
                  </div>
              </div> <%--div clearfix --%>
      </div> <%--div notification --%>
+     </div>
 
                </div>
              </div>

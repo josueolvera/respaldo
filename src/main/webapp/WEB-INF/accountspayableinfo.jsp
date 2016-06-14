@@ -487,7 +487,7 @@
 
                   <div class="panel panel-default">  <!-- Panel Informacion del solicitud -->
                     <div class="panel-heading">
-                      <h3 class="panel-title">Información de Solicitud</h3>
+                      <h3 class="panel-title">Información de solicitud</h3>
                     </div>
                     <div class="panel-body">
                         <div class="row">
@@ -531,7 +531,7 @@
                             <div class="col-xs-12">
                                 <div class="col-xs-12">
                                     <label>
-                                        Descripción de la Solicitud
+                                        Descripción de la solicitud
                                     </label>
                                     <p class="underline">
                                       {{ infoSolicitud.description}}
@@ -698,7 +698,7 @@
                             </label>
                           </div>
                           <div class="col-xs-8">
-                              <input type="file" class="form-control" name="file-type-1" required="true">
+                              <input type="file" class="form-control" name="file-type-1" required="true" accept="application/pdf">
                           </div>
                           <br><br>
                           <div class="col-xs-4">
@@ -707,7 +707,7 @@
                               </label>
                           </div>
                           <div class="col-xs-8">
-                              <input type="file" class="form-control" name="file-type-2" required="true">
+                              <input type="file" class="form-control" name="file-type-2" required="true" accept="text/xml">
                           </div>
                           <br><br>
                           <div class="col-xs-4">
