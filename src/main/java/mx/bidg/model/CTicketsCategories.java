@@ -36,7 +36,8 @@ public class CTicketsCategories implements Serializable {
     private int idEmailTemplate;
 
     @NotNull
-    @JoinColumn(name = "ID_EMAIL_TEMPLATE", referencedColumnName = "ID_EMAIL_TEMPLATE")
+    @JoinColumn(name = "ID_EMAIL_TEMPLATE", referencedColumnName = "ID_EMAIL_TEMPLATE",
+            foreignKey = @ForeignKey(name = "C_TICKETS_CATEGORIES_EMAIL_TEMPLATES"))
     @ManyToOne(optional = false)
     private EmailTemplates emailTemplate;
 
