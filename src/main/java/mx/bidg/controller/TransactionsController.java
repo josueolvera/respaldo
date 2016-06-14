@@ -72,11 +72,11 @@ public class TransactionsController {
         LocalDateTime untilDate = (toDate == null || toDate.equals("")) ? null :
                 LocalDateTime.parse(toDate, DateTimeFormatter.ISO_DATE_TIME);
 
-        String initialDate = ofDate.toString();
-        String finalDate = untilDate.toString();
+        String initialDate = ofDate.toLocalDate().toString();
+        String finalDate = untilDate.toLocalDate().toString();
 
         response.setContentType("application/octet-stream");
-        response.setHeader("Content-Disposition", "attachment; filename=\"" +"Reporte de transacciones por ingreso de "+initialDate+" a "+finalDate+".xlsx"+ "\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" +"Reporte de transacciones por ingreso de "+initialDate+" a "+finalDate+".xls"+ "\"");
         OutputStream outputStream = response.getOutputStream();
         transactionsService.transacctionsByDayReport(ofDate, untilDate, outputStream);
         outputStream.flush();
@@ -92,11 +92,11 @@ public class TransactionsController {
         LocalDateTime untilDate = (toDate == null || toDate.equals("")) ? null :
                 LocalDateTime.parse(toDate, DateTimeFormatter.ISO_DATE_TIME);
 
-        String initialDate = ofDate.toString();
-        String finalDate = untilDate.toString();
+        String initialDate = ofDate.toLocalDate().toString();
+        String finalDate = untilDate.toLocalDate().toString();
 
         response.setContentType("application/octet-stream");
-        response.setHeader("Content-Disposition", "attachment; filename=\"" +"Reporte cuentas pagadas de "+initialDate+" a "+finalDate+".xlsx"+ "\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" +"Reporte cuentas pagadas de "+initialDate+" a "+finalDate+".xls"+ "\"");
         OutputStream outputStream = response.getOutputStream();
         transactionsService.transacctionsByDayReportAndExit(ofDate, untilDate, outputStream);
         outputStream.flush();
