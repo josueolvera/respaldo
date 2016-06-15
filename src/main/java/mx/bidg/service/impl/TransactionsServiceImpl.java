@@ -6,6 +6,7 @@ import mx.bidg.dao.BalancesDao;
 import mx.bidg.dao.RequestsDao;
 import mx.bidg.dao.TransactionsDao;
 import mx.bidg.model.*;
+import mx.bidg.service.ProvidersAccountsService;
 import mx.bidg.service.TransactionsService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
@@ -37,6 +38,9 @@ public class TransactionsServiceImpl implements TransactionsService {
 
     @Autowired
     RequestsDao requestsDao;
+
+    @Autowired
+    ProvidersAccountsService providersAccountsService;
 
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -236,14 +240,23 @@ public class TransactionsServiceImpl implements TransactionsService {
             for (Transactions transaction : transactions) {
                 AccountsPayable accountsPayable = transaction.getAccountsPayable();
                 Requests requests = requestsDao.findByFolio(accountsPayable.getFolio());
+                List<PriceEstimations> priceEstimations = requests.getPriceEstimationsList();
+                PriceEstimations priceEstimationsAutorized = new PriceEstimations();
+                for(PriceEstimations priceEstimation : priceEstimations){
+                    if(priceEstimation.getIdEstimationStatus() == CEstimationStatus.APROBADA){
+                        priceEstimationsAutorized = priceEstimation;
+                    }
+                }
                 RequestTypesProduct requestTypesProduct = requests.getRequestTypeProduct();
                 CProductTypes productType = requestTypesProduct.getProductType();
-                Providers provider = productType.getProvider();
                 BudgetMonthBranch budgetMonthBranch = requests.getBudgetMonthBranch();
                 DwEnterprises dwEnterprise = budgetMonthBranch.getDwEnterprise();
                 CDistributors cDistributors = dwEnterprise.getDistributor();
                 CRegions cRegions = dwEnterprise.getRegion();
                 CBranchs cBranchs = dwEnterprise.getBranch();
+                Accounts account = priceEstimationsAutorized.getAccount();
+                ProvidersAccounts providersAccounts = providersAccountsService.findByAccountsProvider(account);
+                Providers provider = providersAccounts.getProvider();
 
                 row = hoja.createRow(aux);
                 // Create a cell and put a value in it.

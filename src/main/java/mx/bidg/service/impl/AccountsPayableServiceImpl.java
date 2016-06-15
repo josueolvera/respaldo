@@ -23,9 +23,11 @@ import java.util.List;
 import mx.bidg.dao.*;
 import mx.bidg.model.*;
 import mx.bidg.service.AccountsPayableService;
+import mx.bidg.service.ProvidersAccountsService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellUtil;
+import org.codehaus.groovy.runtime.powerassert.SourceText;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +53,9 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
 
     @Autowired
     private TransactionsDao transactionsDao;
+
+    @Autowired
+    private ProvidersAccountsService providersAccountsService;
     
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -279,14 +284,24 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
 
             for (AccountsPayable accountsPayable : accountsPayables) {
                 Requests requests = requestsDao.findByFolio(accountsPayable.getFolio());
+                List<PriceEstimations> priceEstimations = requests.getPriceEstimationsList();
+                PriceEstimations priceEstimationsAutorized = new PriceEstimations();
+                for(PriceEstimations priceEstimation : priceEstimations){
+                    if(priceEstimation.getIdEstimationStatus() == CEstimationStatus.APROBADA){
+                        priceEstimationsAutorized = priceEstimation;
+                    }
+                }
                 RequestTypesProduct requestTypesProduct = requests.getRequestTypeProduct();
                 CProductTypes productType = requestTypesProduct.getProductType();
-                Providers provider = productType.getProvider();
                 BudgetMonthBranch budgetMonthBranch = requests.getBudgetMonthBranch();
                 DwEnterprises dwEnterprise = budgetMonthBranch.getDwEnterprise();
                 CDistributors cDistributors = dwEnterprise.getDistributor();
                 CRegions cRegions = dwEnterprise.getRegion();
                 CBranchs cBranchs = dwEnterprise.getBranch();
+                Accounts account = priceEstimationsAutorized.getAccount();
+                ProvidersAccounts providersAccounts = providersAccountsService.findByAccountsProvider(account);
+                Providers provider = providersAccounts.getProvider();
+
 
                 row = hoja.createRow(aux);
                 // Create a cell and put a value in it.
