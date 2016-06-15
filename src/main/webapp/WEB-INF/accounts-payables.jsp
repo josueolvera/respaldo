@@ -156,6 +156,7 @@
                                  success(function(data)
                                  {
                                      Vue.set(element, "informationRequest", data);
+
                                  }).error(function(data)
                                  {
                                    showAlert("Ha fallado el registro de su informacion, intente nuevamente");
@@ -541,7 +542,7 @@
 
              <div class="row">
                  <div class="col-xs-12">
-                   <h4>Hoy &nbsp<small>{{ today }}</small></h4>
+                   <h4>Cuentas por pagar</h4>
                  </div>
              </div>
 
@@ -574,7 +575,7 @@
 
                      </div> <%--div card-body clearfix --%>
                      <div class="card-actions">
-                         <span class="label label-success">Hoy</span>
+                         <span class="label label-success">{{accountPayable.dueDateFormats.dateNumber}}</span>
                             <a :href="url+accountPayable.informationRequest.idRequest+'/'+accountPayable.idAccountPayable" title="Ver cuenta por pagar">
                                 <span class="glyphicon glyphicon-new-window">
                                 </span>
