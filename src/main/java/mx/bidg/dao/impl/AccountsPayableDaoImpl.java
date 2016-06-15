@@ -68,7 +68,7 @@ public class AccountsPayableDaoImpl extends AbstractDao<Integer, AccountsPayable
 
     @Override
     public List<AccountsPayable> findAccountsofDay() {
-        return createEntityCriteria()
+        return (List<AccountsPayable>) createEntityCriteria()
                 .add(Restrictions.eq("accountPayableStatus",CAccountsPayableStatus.PENDIENTE))
                 .list();
 
