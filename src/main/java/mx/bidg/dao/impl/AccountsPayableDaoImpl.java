@@ -70,6 +70,7 @@ public class AccountsPayableDaoImpl extends AbstractDao<Integer, AccountsPayable
     public List<AccountsPayable> findAccountsofDay() {
         return (List<AccountsPayable>) createEntityCriteria()
                 .add(Restrictions.eq("accountPayableStatus",CAccountsPayableStatus.PENDIENTE))
+                .addOrder(Order.asc("dueDate"))
                 .list();
 
     }
@@ -79,6 +80,7 @@ public class AccountsPayableDaoImpl extends AbstractDao<Integer, AccountsPayable
         Criteria criteria = createEntityCriteria();
         return (List<AccountsPayable>) criteria
                 .add(Restrictions.eq("accountPayableStatus",CAccountsPayableStatus.REPROGRAMADA))
+                .addOrder(Order.asc("dueDate"))
                 .list();
     }
 
