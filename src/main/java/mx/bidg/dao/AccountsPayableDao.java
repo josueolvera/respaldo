@@ -21,4 +21,5 @@ public interface AccountsPayableDao extends InterfaceDao<AccountsPayable> {
     List<AccountsPayable> findByReschedule();
     List<AccountsPayable> findAccountsPayable(LocalDateTime ofDate ,LocalDateTime untilDate);
     List<AccountsPayable> findByDueDate(LocalDateTime ofDate ,LocalDateTime untilDate);
+    List<AccountsPayable> findNow();
 }

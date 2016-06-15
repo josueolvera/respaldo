@@ -104,4 +104,16 @@ public class AccountsPayableDaoImpl extends AbstractDao<Integer, AccountsPayable
                 .addOrder(Order.asc("dueDate"))
                 .list();
     }
+
+    @Override
+    public List<AccountsPayable> findNow() {
+        LocalDateTime dateTimeStart = LocalDateTime.now().toLocalDate().atStartOfDay();
+        LocalDateTime dateTimeFinal = LocalDateTime.now().toLocalDate().atTime(23, 59, 59);
+        return createEntityCriteria()
+                .add(Restrictions.between("dueDate", dateTimeStart, dateTimeFinal))
+                .add(Restrictions.or(
+                        Restrictions.eq("accountPayableStatus",CAccountsPayableStatus.PENDIENTE),
+                        Restrictions.eq("accountPayableStatus",CAccountsPayableStatus.REPROGRAMADA)))
+                .list();
+    }
 }
