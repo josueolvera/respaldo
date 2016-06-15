@@ -117,6 +117,9 @@ public class AccountsPayable implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CCurrencies currency;
 
+    @Transient
+    private DateFormatsPojo dueDateFormats;
+
     public AccountsPayable() {
     }
 
@@ -200,7 +203,8 @@ public class AccountsPayable implements Serializable {
     }
 
     public DateFormatsPojo getDueDateFormats() {
-        return (dueDate == null) ? null : new DateFormatsPojo(dueDate);
+        this.dueDateFormats = (dueDate == null) ? null : new DateFormatsPojo(dueDate);
+        return this.dueDateFormats;
     }
 
     public void setDueDate(LocalDateTime dueDate) {
