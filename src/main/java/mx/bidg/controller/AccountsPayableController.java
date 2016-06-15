@@ -142,6 +142,12 @@ public class AccountsPayableController {
         return new ResponseEntity<>("Reporte", HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/email", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+    public ResponseEntity<String> emailDelivery () throws IOException{
+         accountsPayableService.sendEmail();
+        return new ResponseEntity<String>("OK", HttpStatus.OK);
+    }
+
 
 
 }
