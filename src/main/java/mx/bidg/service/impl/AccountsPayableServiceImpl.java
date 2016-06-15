@@ -23,12 +23,15 @@ import java.util.List;
 import mx.bidg.dao.*;
 import mx.bidg.model.*;
 import mx.bidg.service.AccountsPayableService;
+import mx.bidg.service.EmailDeliveryService;
+import mx.bidg.service.EmailTemplatesService;
 import mx.bidg.service.ProvidersAccountsService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellUtil;
 import org.codehaus.groovy.runtime.powerassert.SourceText;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +39,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AccountsPayableServiceImpl implements AccountsPayableService {
     
+    @Value("${notification.email_account_payable_template}")
+    private String EMAIL_TEMPLATE_NAME;
+
     @Autowired
     private AccountsPayableDao accountsPayableDao;
     
@@ -56,6 +62,12 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
 
     @Autowired
     private ProvidersAccountsService providersAccountsService;
+
+    @Autowired
+    private EmailTemplatesService emailTemplatesService;
+
+    @Autowired
+    private EmailDeliveryService emailDeliveryService;
     
     private ObjectMapper mapper = new ObjectMapper();
 
@@ -356,6 +368,19 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
             hoja.autoSizeColumn(0);
             wb.write(stream);
         }
+    }
+
+    @Override
+    public List<AccountsPayable> sendEmail() {
+      ArrayList<AccountsPayable> accountsPayables = (ArrayList<AccountsPayable>) accountsPayableDao.findNow();
+        if(accountsPayables.size()>0){
+
+            EmailTemplates emailTemplate = emailTemplatesService.findByName(EMAIL_TEMPLATE_NAME);
+            emailTemplate.addProperty("accountsPayables", accountsPayables);
+
+            emailDeliveryService.deliverEmail(emailTemplate);
+        }
+        return accountsPayables;
     }
 
 

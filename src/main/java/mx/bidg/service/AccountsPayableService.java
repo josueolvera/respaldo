@@ -32,4 +32,5 @@ public interface AccountsPayableService {
     Transactions payAccount(Integer idAccountPayable, String data, Users user) throws IOException;
     void changeDate(Integer idAccountPayable,String data) throws IOException;
     void accountsPayableReport (LocalDateTime ofdate, LocalDateTime untilDate , OutputStream stream) throws IOException;
+    List<AccountsPayable> sendEmail();
 }
