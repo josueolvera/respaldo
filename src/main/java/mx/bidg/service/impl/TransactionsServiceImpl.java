@@ -184,6 +184,7 @@ public class TransactionsServiceImpl implements TransactionsService {
             for (Cell celda : row) {
                 celda.setCellStyle(style);
             }
+            hoja.autoSizeColumn(0);
             wb.write(stream);
         }
         }
@@ -229,6 +230,7 @@ public class TransactionsServiceImpl implements TransactionsService {
             row.createCell(5).setCellValue("PROVEEDOR");
             row.createCell(6).setCellValue("FECHA DE RECEPCIÓN");
             row.createCell(7).setCellValue("FECHA DE APLICACIÓN");
+            row.createCell(8).setCellValue("SOLICITANTE");
 
             //Implementacion del estilo
             for (Cell celda : row) {
@@ -268,6 +270,7 @@ public class TransactionsServiceImpl implements TransactionsService {
                 row.createCell(5).setCellValue(provider.getProviderName().replace(':', ' '));
                 row.createCell(6).setCellValue(accountsPayable.getCreationDateFormats().getDateNumber());
                 row.createCell(7).setCellValue(transaction.getCreationDateFormats().getDateNumber());
+                row.createCell(8).setCellValue(requests.getUserRequest().getDwEmployee().getEmployee().getFullName());
 
 
                 aux++;
@@ -282,6 +285,7 @@ public class TransactionsServiceImpl implements TransactionsService {
             hoja.autoSizeColumn(5);
             hoja.autoSizeColumn(6);
             hoja.autoSizeColumn(7);
+            hoja.autoSizeColumn(8);
 
             //Mover filas hacia abajo para colocar la imagen corporativa: Altura 4 filas, Anchura 4 columnas
             hoja.shiftRows(0, hoja.getLastRowNum(), 4);
@@ -307,6 +311,7 @@ public class TransactionsServiceImpl implements TransactionsService {
             for (Cell celda : row) {
                 celda.setCellStyle(style);
             }
+            hoja.autoSizeColumn(0);
             wb.write(stream);
         }
     }

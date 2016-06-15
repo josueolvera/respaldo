@@ -274,6 +274,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
             row.createCell(4).setCellValue("SUCURSAL");
             row.createCell(5).setCellValue("PROVEEDOR");
             row.createCell(6).setCellValue("FECHA DE PAGO");
+            row.createCell(7).setCellValue("SOLICITANTE");
 
             //Implementacion del estilo
             for (Cell celda : row) {
@@ -312,6 +313,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
                 row.createCell(4).setCellValue(cBranchs.getBranchShort());
                 row.createCell(5).setCellValue(provider.getProviderName().replace(':', ' '));
                 row.createCell(6).setCellValue(accountsPayable.getDueDateFormats().getDateNumber());
+                row.createCell(7).setCellValue(requests.getUserRequest().getDwEmployee().getEmployee().getFullName());
 
 
                 aux++;
@@ -325,6 +327,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
             hoja.autoSizeColumn(4);
             hoja.autoSizeColumn(5);
             hoja.autoSizeColumn(6);
+            hoja.autoSizeColumn(7);
 
             //Mover filas hacia abajo para colocar la imagen corporativa: Altura 4 filas, Anchura 4 columnas
             hoja.shiftRows(0, hoja.getLastRowNum(), 4);
@@ -350,6 +353,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
             for (Cell celda : row) {
                 celda.setCellStyle(style);
             }
+            hoja.autoSizeColumn(0);
             wb.write(stream);
         }
     }
