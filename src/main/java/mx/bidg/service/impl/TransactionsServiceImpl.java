@@ -135,7 +135,7 @@ public class TransactionsServiceImpl implements TransactionsService {
 
             row.createCell(0).setCellValue("NOMBRE DEL EMPLEADO");
             row.createCell(1).setCellValue("MONTO");
-            row.createCell(2).setCellValue("FECHA DE TRANSACCION");
+            row.createCell(2).setCellValue("FECHA DE TRANSACCIÓN");
 
             //Implementacion del estilo
             for (Cell celda : row) {
@@ -224,7 +224,7 @@ public class TransactionsServiceImpl implements TransactionsService {
             row.createCell(0).setCellValue("CONCEPTO");
             row.createCell(1).setCellValue("MONTO");
             row.createCell(2).setCellValue("EMPRESA");
-            row.createCell(3).setCellValue("REGION");
+            row.createCell(3).setCellValue("REGIÓN");
             row.createCell(4).setCellValue("SUCURSAL");
             row.createCell(5).setCellValue("PROVEEDOR");
             row.createCell(6).setCellValue("FECHA DE RECEPCIÓN");
