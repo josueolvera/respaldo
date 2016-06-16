@@ -8,16 +8,23 @@ package mx.bidg.model;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -32,6 +39,16 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "C_BRANCHS")
 
 public class CBranchs implements Serializable {
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "UPLOADED_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date uploadedDate;
+    @Column(name = "LOW_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lowDate;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBranch")
+    private List<DwEnterprises> dwEnterprisesList;
     
     private static final long serialVersionUID = 1L;
     
@@ -70,17 +87,6 @@ public class CBranchs implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int status;
     
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "UPLOADED_DATE")
-    @JsonView(JsonViews.Root.class)
-    @Convert(converter = DateTimeConverter.class)
-    private LocalDateTime uploadedDate;
-    
-    @Column(name = "LOW_DATE")
-    @JsonView(JsonViews.Root.class)
-    @Convert(converter = DateTimeConverter.class)
-    private LocalDateTime lowDate;
 
     public CBranchs() {
     }
@@ -183,6 +189,31 @@ public class CBranchs implements Serializable {
     @Override
     public String toString() {
         return "mx.bidg.model.CBranchs[ idBranch=" + idBranch + " ]";
+    }
+
+    public Date getUploadedDate() {
+        return uploadedDate;
+    }
+
+    public void setUploadedDate(Date uploadedDate) {
+        this.uploadedDate = uploadedDate;
+    }
+
+    public Date getLowDate() {
+        return lowDate;
+    }
+
+    public void setLowDate(Date lowDate) {
+        this.lowDate = lowDate;
+    }
+
+    @XmlTransient
+    public List<DwEnterprises> getDwEnterprisesList() {
+        return dwEnterprisesList;
+    }
+
+    public void setDwEnterprisesList(List<DwEnterprises> dwEnterprisesList) {
+        this.dwEnterprisesList = dwEnterprisesList;
     }
 
     }
