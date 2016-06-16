@@ -118,7 +118,16 @@ public class AccountsPayable implements Serializable {
     private CCurrencies currency;
 
     @Transient
+    @JsonView(JsonViews.Embedded.class)
     private DateFormatsPojo dueDateFormats;
+
+    @Transient
+    @JsonView(JsonViews.Embedded.class)
+    private Employees employee;
+
+    @Transient
+    @JsonView(JsonViews.Embedded.class)
+    private Requests requests;
 
     public AccountsPayable() {
     }
@@ -273,6 +282,22 @@ public class AccountsPayable implements Serializable {
 
     public void setRate(BigDecimal rate) {
         this.rate = rate;
+    }
+
+    public Employees getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employees employee) {
+        this.employee = employee;
+    }
+
+    public Requests getRequests() {
+        return requests;
+    }
+
+    public void setRequests(Requests requests) {
+        this.requests = requests;
     }
 
     @Override
