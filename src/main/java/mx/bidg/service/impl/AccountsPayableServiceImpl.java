@@ -374,7 +374,11 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
     public List<AccountsPayable> sendEmail() {
       ArrayList<AccountsPayable> accountsPayables = (ArrayList<AccountsPayable>) accountsPayableDao.findNow();
         if(accountsPayables.size()>0){
-
+            for (AccountsPayable accountsPayable : accountsPayables){
+                Requests requests = requestsDao.findByFolio(accountsPayable.getFolio());
+                accountsPayable.setRequests(requests);
+                accountsPayable.setEmployee(requests.getUserRequest().getDwEmployee().getEmployee());
+            }
             EmailTemplates emailTemplate = emailTemplatesService.findByName(EMAIL_TEMPLATE_NAME);
             emailTemplate.addProperty("accountsPayables", accountsPayables);
 
