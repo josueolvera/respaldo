@@ -37,8 +37,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class DwEnterprises implements Serializable {
-    @OneToMany(mappedBy = "idDwEnterprise")
-    private List<DwEnterprisesAgreements> dwEnterprisesAgreementsList;
+
     private static final long serialVersionUID = 1L;
 
     public static final DwEnterprises DEFAULT_DW_ENTERPRISES = new DwEnterprises(113);
@@ -284,13 +283,5 @@ public class DwEnterprises implements Serializable {
         return "mx.bidg.model.DwEnterprises[ idDwEnterprise=" + idDwEnterprise + " ]";
     }
 
-    @XmlTransient
-    public List<DwEnterprisesAgreements> getDwEnterprisesAgreementsList() {
-        return dwEnterprisesAgreementsList;
-    }
-
-    public void setDwEnterprisesAgreementsList(List<DwEnterprisesAgreements> dwEnterprisesAgreementsList) {
-        this.dwEnterprisesAgreementsList = dwEnterprisesAgreementsList;
-    }
     
 }

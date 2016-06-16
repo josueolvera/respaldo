@@ -33,8 +33,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "C_AREAS")
 
 public class CAreas implements Serializable {
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idArea")
-    private List<DwEnterprises> dwEnterprisesList;
         
     private static final long serialVersionUID = 1L;
     
@@ -105,13 +103,4 @@ public class CAreas implements Serializable {
         return "mx.bidg.model.CAreas[ idArea=" + idArea + " ]";
     }
 
-    @XmlTransient
-    public List<DwEnterprises> getDwEnterprisesList() {
-        return dwEnterprisesList;
-    }
-
-    public void setDwEnterprisesList(List<DwEnterprises> dwEnterprisesList) {
-        this.dwEnterprisesList = dwEnterprisesList;
-    }
-    
 }

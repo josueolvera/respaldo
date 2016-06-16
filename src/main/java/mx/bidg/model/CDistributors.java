@@ -34,12 +34,6 @@ import org.hibernate.annotations.Type;
 @Table(name = "C_DISTRIBUTORS")
 
 public class CDistributors implements Serializable {
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "BUDGET_SHARE")
-    private boolean budgetShare;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idDistributor")
-    private List<DwEnterprises> dwEnterprisesList;
     
     private static final long serialVersionUID = 1L;
     
@@ -65,6 +59,10 @@ public class CDistributors implements Serializable {
     @Column(name = "HAS_STOCK")
     @JsonView(JsonViews.Root.class)
     private Integer hasStock;
+
+    @Column(name = "BUDGET_SHARE", columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    private Boolean budgetShare;
 
 
     public CDistributors() {
@@ -111,13 +109,6 @@ public class CDistributors implements Serializable {
         this.hasStock = hasStock;
     }
 
-    public Boolean getBudgetShare() {
-        return budgetShare;
-    }
-
-    public void setBudgetShare(Boolean budgetShare) {
-        this.budgetShare = budgetShare;
-    }
 
     @Override
     public int hashCode() {
@@ -144,21 +135,6 @@ public class CDistributors implements Serializable {
         return "mx.bidg.model.CDistributors[ idDistributor=" + idDistributor + " ]";
     }
 
-    public boolean getBudgetShare() {
-        return budgetShare;
-    }
 
-    public void setBudgetShare(boolean budgetShare) {
-        this.budgetShare = budgetShare;
-    }
-
-    @XmlTransient
-    public List<DwEnterprises> getDwEnterprisesList() {
-        return dwEnterprisesList;
-    }
-
-    public void setDwEnterprisesList(List<DwEnterprises> dwEnterprisesList) {
-        this.dwEnterprisesList = dwEnterprisesList;
-    }
 
 }

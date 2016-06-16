@@ -39,16 +39,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "C_BRANCHS")
 
 public class CBranchs implements Serializable {
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "UPLOADED_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date uploadedDate;
-    @Column(name = "LOW_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lowDate;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBranch")
-    private List<DwEnterprises> dwEnterprisesList;
     
     private static final long serialVersionUID = 1L;
     
@@ -86,7 +76,22 @@ public class CBranchs implements Serializable {
     @Column(name = "STATUS")
     @JsonView(JsonViews.Root.class)
     private int status;
-    
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "UPLOADED_DATE")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime uploadedDate;
+
+    @Column(name = "LOW_DATE")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime lowDate;
+
+    public LocalDateTime getUploadedDate() {
+        return uploadedDate;
+    }
 
     public CBranchs() {
     }
@@ -95,10 +100,9 @@ public class CBranchs implements Serializable {
         this.idBranch = idBranch;
     }
 
-    public CBranchs(Integer idBranch, String branchShort, LocalDateTime uploadedDate, int status) {
+    public CBranchs(Integer idBranch, String branchShort, int status) {
         this.idBranch = idBranch;
         this.branchShort = branchShort;
-        this.uploadedDate = uploadedDate;
         this.status = status;
     }
 
@@ -142,21 +146,6 @@ public class CBranchs implements Serializable {
         this.address = address;
     }
 
-    public LocalDateTime getUploadedDate() {
-        return uploadedDate;
-    }
-
-    public void setUploadedDate(LocalDateTime uploadedDate) {
-        this.uploadedDate = uploadedDate;
-    }
-
-    public LocalDateTime getLowDate() {
-        return lowDate;
-    }
-
-    public void setLowDate(LocalDateTime lowDate) {
-        this.lowDate = lowDate;
-    }
 
     public int getStatus() {
         return status;
@@ -171,6 +160,18 @@ public class CBranchs implements Serializable {
         int hash = 0;
         hash += (idBranch != null ? idBranch.hashCode() : 0);
         return hash;
+    }
+
+    public void setUploadedDate(LocalDateTime uploadedDate) {
+        this.uploadedDate = uploadedDate;
+    }
+
+    public LocalDateTime getLowDate() {
+        return lowDate;
+    }
+
+    public void setLowDate(LocalDateTime lowDate) {
+        this.lowDate = lowDate;
     }
 
     @Override
@@ -191,29 +192,5 @@ public class CBranchs implements Serializable {
         return "mx.bidg.model.CBranchs[ idBranch=" + idBranch + " ]";
     }
 
-    public Date getUploadedDate() {
-        return uploadedDate;
-    }
-
-    public void setUploadedDate(Date uploadedDate) {
-        this.uploadedDate = uploadedDate;
-    }
-
-    public Date getLowDate() {
-        return lowDate;
-    }
-
-    public void setLowDate(Date lowDate) {
-        this.lowDate = lowDate;
-    }
-
-    @XmlTransient
-    public List<DwEnterprises> getDwEnterprisesList() {
-        return dwEnterprisesList;
-    }
-
-    public void setDwEnterprisesList(List<DwEnterprises> dwEnterprisesList) {
-        this.dwEnterprisesList = dwEnterprisesList;
-    }
 
     }
