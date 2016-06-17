@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlTransient;
 import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -36,6 +37,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class DwEnterprises implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     public static final DwEnterprises DEFAULT_DW_ENTERPRISES = new DwEnterprises(113);
@@ -280,5 +282,6 @@ public class DwEnterprises implements Serializable {
     public String toString() {
         return "mx.bidg.model.DwEnterprises[ idDwEnterprise=" + idDwEnterprise + " ]";
     }
+
     
 }
