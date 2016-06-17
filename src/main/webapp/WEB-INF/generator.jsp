@@ -75,13 +75,14 @@
                     columnName: 'RFC'
                   }
               ],
-              fieldSelected: ''
+              fieldSelected: '',
+              fieldArray: []
 
           },
           methods:
           {
               pushField: function(){
-                  
+                  this.fieldArray.push(this.fieldSelected);
               }
 
 
