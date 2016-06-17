@@ -65,25 +65,12 @@
           },
           data:
           {
-              fieldsTableSales: [
-                  {
-                    id: 1,
-                    columnName: 'Clave Sap'
-                  },
-                  {
-                    id: 2,
-                    columnName: 'RFC'
-                  }
-              ],
-              fieldSelected: '',
-              fieldArray: []
+
 
           },
           methods:
           {
-              pushField: function(){
-                  this.fieldArray.push(this.fieldSelected);
-              }
+
 
 
           },
@@ -115,55 +102,6 @@
                               <label>
                                   Selecciona las columnas que deseas utilizar
                               </label>
-                           </div>
-                         </div>
-
-                         <div class="row">
-                           <div class="col-xs-6">
-                             <select class="form-control" v-model="fieldSelected">
-                                 <option v-for= "fields in fieldsTableSales" :value="fields">
-                                     {{fields.columnName}}
-                                 </option>
-                             </select>
-                           </div>
-                           <div class="col-xs-6 text-left">
-                               <button type="button" class="btn btn-default"
-                                   title="Agregar" @click="pushField">
-                                   <span class="glyphicon glyphicon-plus">
-                                   </span>
-                               </button>
-                           </div>
-                         </div>
-
-                         <div class="row">
-                           <div class="col-xs-12">
-                             <table class="table table-responsive">
-                                 <thead>
-                                     <th>
-                                         #
-                                     </th>
-                                     <th>
-                                         Campo
-                                     </th>
-                                     <th>
-                                         Eliminar
-                                     </th>
-                                 </thead>
-                                 <tbody>
-                                     <tr v-for="fields in fieldsSelected">
-                                         <td>
-                                             {{index}}
-                                         </td>
-                                         <td>
-                                             {{fields.columnName}}
-                                         </td>
-                                         <td>
-                                             <span class="glyphicon glyphicon-remove">
-                                             </span>
-                                         </td>
-                                     </tr>
-                                 </tbody>
-                             </table>
                            </div>
                          </div>
 
