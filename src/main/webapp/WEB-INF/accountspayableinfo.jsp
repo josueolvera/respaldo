@@ -89,7 +89,7 @@
                   this.timePickerReprogramar = $('#datereprogramar').datetimepicker({
                     locale: 'es',
                     format: 'DD-MM-YYYY',
-                    useCurrent: false,
+                    defaultDate: fechafinal,
                     minDate: fechafinal,
                     inline: true
                     }).data();
