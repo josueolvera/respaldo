@@ -47,7 +47,8 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
 
     @Override
     public DwEnterprises update(DwEnterprises entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        modify(entity);
+        return entity;
     }
 
     @Override
