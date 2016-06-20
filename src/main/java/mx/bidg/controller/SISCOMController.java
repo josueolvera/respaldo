@@ -13,7 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/siscom")
 public class SISCOMController {
 
-    @RequestMapping(value = "/sap-files-upload", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/sap-files-upload", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public ModelAndView filesUpload() {
         ModelAndView model = new ModelAndView();
         model.setViewName("SapFilesUpload");
