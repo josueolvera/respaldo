@@ -44,7 +44,8 @@ public class CBranchsDaoImpl extends AbstractDao<Integer, CBranchs> implements C
 
     @Override
     public CBranchs update(CBranchs entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        modify(entity);
+        return entity;
     }
 
     @Override
