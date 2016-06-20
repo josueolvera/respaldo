@@ -22,11 +22,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class CBranchsServiceImpl implements CBranchsService {
     
     @Autowired
-    CBranchsDao dao;
+    CBranchsDao cBranchsDao;
 
     @Override
     public List<CBranchs> findAll() {
-        return dao.findAll();
+        return cBranchsDao.findAll();
     }
     
 }
