@@ -53,4 +53,11 @@ public class CDistributorsDaoImpl extends AbstractDao<Integer, CDistributors> im
                 .add(Restrictions.eq("hasStock", 1))
                 .list();
     }
+
+    @Override
+    public List<CDistributors> findAllForAgreement() {
+        return (List<CDistributors>) createEntityCriteria()
+                .add(Restrictions.eq("hasAgreement", 1))
+                .list();
+    }
 }
