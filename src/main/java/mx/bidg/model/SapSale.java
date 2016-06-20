@@ -495,8 +495,44 @@ public class SapSale implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.SapSale[ idSapSale=" + idSapSale + " ]";
+        return "SapSale{" +
+                "idSapSale=" + idSapSale +
+                ", idSale='" + idSale + '\'' +
+                ", creationDate=" + creationDate +
+                ", interlocCom='" + interlocCom + '\'' +
+                ", clientParentLast='" + clientParentLast + '\'' +
+                ", clientMotherLast='" + clientMotherLast + '\'' +
+                ", clientName='" + clientName + '\'' +
+                ", clientSecName='" + clientSecName + '\'' +
+                ", clientSingleLast='" + clientSingleLast + '\'' +
+                ", clientId='" + clientId + '\'' +
+                ", imssNum='" + imssNum + '\'' +
+                ", agreementName='" + agreementName + '\'' +
+                ", product='" + product + '\'' +
+                ", dependency='" + dependency + '\'' +
+                ", statusSale='" + statusSale + '\'' +
+                ", lastUpdate=" + lastUpdate +
+                ", approvalDate=" + approvalDate +
+                ", requestedAmount=" + requestedAmount +
+                ", payments='" + payments + '\'' +
+                ", depositAmount=" + depositAmount +
+                ", comissionableAmount=" + comissionableAmount +
+                ", purchaseDate=" + purchaseDate +
+                ", companyName='" + companyName + '\'' +
+                ", distributorName='" + distributorName + '\'' +
+                ", claveSap='" + claveSap + '\'' +
+                ", branchName='" + branchName + '\'' +
+                ", regionName='" + regionName + '\'' +
+                ", bonification=" + bonification +
+                ", liquidation=" + liquidation +
+                ", status=" + status +
+                ", dwEnterprise=" + dwEnterprise +
+                ", agreement=" + agreement +
+                ", branch=" + branch +
+                ", distributor=" + distributor +
+                ", region=" + region +
+                ", employee=" + employee +
+                '}';
     }
-
 }
 
