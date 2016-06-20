@@ -24,6 +24,9 @@ public class CBranchsServiceImpl implements CBranchsService {
     @Autowired
     CBranchsDao cBranchsDao;
 
+    @Autowired
+    DwEnterprisesDao dwEnterprisesDao;
+
     @Override
     public List<CBranchs> findAll() {
         return cBranchsDao.findAll();
