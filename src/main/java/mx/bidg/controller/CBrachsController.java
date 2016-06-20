@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class CBrachsController {
     
     @Autowired
-    CBranchsService cBranchsService;
+    private CBranchsService cBranchsService;
     
     private ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
     
