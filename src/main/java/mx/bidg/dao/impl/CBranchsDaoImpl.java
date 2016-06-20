@@ -50,7 +50,8 @@ public class CBranchsDaoImpl extends AbstractDao<Integer, CBranchs> implements C
 
     @Override
     public boolean delete(CBranchs entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        remove(entity);
+        return true;
     }
     
 }
