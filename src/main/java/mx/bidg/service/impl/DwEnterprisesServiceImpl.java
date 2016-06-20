@@ -149,4 +149,8 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
         return dao.save(dwEnterprises);
     }
 
+    @Override
+    public DwEnterprises update(DwEnterprises dwEnterprises) {
+        return dao.update(dwEnterprises);
+    }
 }
