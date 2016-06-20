@@ -27,4 +27,11 @@ public class SISCOMController {
         model.setViewName("Agreements");
         return model;
     }
+    
+    @RequestMapping(value = "/generator", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ModelAndView generatorOfrules() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("generator");
+        return model;
+    }
 }
