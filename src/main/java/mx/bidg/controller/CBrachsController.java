@@ -7,6 +7,8 @@ package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
+
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.CBranchs;
 import mx.bidg.service.CBranchsService;
@@ -26,7 +28,7 @@ public class CBrachsController {
     @Autowired
     CBranchsService cBranchsService;
     
-    ObjectMapper map = new ObjectMapper();
+    private ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
     
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody String findAll() throws Exception {
