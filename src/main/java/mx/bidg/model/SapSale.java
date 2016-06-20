@@ -16,7 +16,7 @@ import java.util.Date;
  */
 @Entity
 @DynamicUpdate
-@Table(name = "SAP_SALE")
+@Table(name = "SAP_SALES")
 public class SapSale implements Serializable {
 
     private static final long serialVersionUID = 1L;
