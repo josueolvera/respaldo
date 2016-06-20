@@ -34,4 +34,9 @@ public class CBrachsController {
         return map.writerWithView(JsonViews.Root.class).writeValueAsString(list);
     }
     
+    @RequestMapping(value = "/{idBranch}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    private @ResponseBody String findById(@PathVariable Integer idBranch) throws Exception {
+        CBranchs cBranchs = cBranchsService.findById(idBranch);
+        return map.writerWithView(JsonViews.Root.class).writeValueAsString(cBranchs);
+    }
 }
