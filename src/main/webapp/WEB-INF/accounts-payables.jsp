@@ -458,7 +458,7 @@
 
                <div class="panel panel-default">
                  <div class="panel-heading">
-                   <h3 class="panel-title">Cuentas pagadas</h3>
+                   <h3 class="panel-title">Cuentas</h3>
                  </div>
                  <div class="panel-body">
 

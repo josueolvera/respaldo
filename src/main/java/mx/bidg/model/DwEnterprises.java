@@ -22,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.annotation.XmlTransient;
 import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -36,6 +37,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class DwEnterprises implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     public static final DwEnterprises DEFAULT_DW_ENTERPRISES = new DwEnterprises(113);
@@ -82,6 +84,13 @@ public class DwEnterprises implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer budgetable;
 
+<<<<<<< HEAD
+=======
+    @Column(name = "AGREEMENT_STATUS")
+    @JsonView(JsonViews.Root.class)
+    private Integer agreementStatus;
+    
+>>>>>>> master
     @JoinColumn(name = "ID_GROUP", referencedColumnName = "ID_GROUP")
     @ManyToOne(optional = false)
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
@@ -262,12 +271,21 @@ public class DwEnterprises implements Serializable {
         this.dwEmployeesList = dwEmployeesList;
     }
 
+<<<<<<< HEAD
     public boolean getStatus() {
         return status;
     }
 
     public void setStatus(boolean status) {
         this.status = status;
+=======
+    public Integer getAgreementStatus() {
+        return agreementStatus;
+    }
+
+    public void setAgreementStatus(Integer agreementStatus) {
+        this.agreementStatus = agreementStatus;
+>>>>>>> master
     }
 
     @Override
@@ -294,5 +312,6 @@ public class DwEnterprises implements Serializable {
     public String toString() {
         return "mx.bidg.model.DwEnterprises[ idDwEnterprise=" + idDwEnterprise + " ]";
     }
+
     
 }

@@ -50,7 +50,7 @@ public class DwEnterprisesController {
     @RequestMapping(value = "distributor/{idDistributor}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> getByDistrubutor(@PathVariable int idDistributor) throws Exception {
         List<DwEnterprises> list = dwEnterprisesService.findByDistributor(idDistributor);
-        return new ResponseEntity<>(map.writerWithView(JsonViews.IdsEnterprises.class).writeValueAsString(list), HttpStatus.OK);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(list), HttpStatus.OK);
     }
     
     @RequestMapping(value = "/user/{idUser}", produces = "application/json;charset=UTF-8")
@@ -62,6 +62,15 @@ public class DwEnterprisesController {
     @RequestMapping(value = "/hierarchy", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getHierarchy() throws IOException {
         List<HierarchicalLevel> hierarchy = dwEnterprisesService.findHierarchicalStructure();
+        return new ResponseEntity<>(
+                map.writerWithView(JsonViews.Embedded.class).writeValueAsString(hierarchy),
+                HttpStatus.OK
+        );
+    }
+
+    @RequestMapping(value = "/hierarchy-agreements", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getHierarchyAgreement() throws IOException {
+        List<HierarchicalLevel> hierarchy = dwEnterprisesService.findHierarchicalStrucutureByAgreement();
         return new ResponseEntity<>(
                 map.writerWithView(JsonViews.Embedded.class).writeValueAsString(hierarchy),
                 HttpStatus.OK

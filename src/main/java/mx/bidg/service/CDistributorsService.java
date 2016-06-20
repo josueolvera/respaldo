@@ -16,5 +16,6 @@ public interface CDistributorsService {
     
     List<CDistributors> findAll();
     List<CDistributors> findAllForStock();
+    List<CDistributors> findAllForAgreement();
     
 }
