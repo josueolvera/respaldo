@@ -60,6 +60,10 @@ public class CDistributors implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer hasStock;
 
+    @Column(name = "HAS_AGREEMENT")
+    @JsonView(JsonViews.Root.class)
+    private Integer hasAgreement;
+
     @Column(name = "BUDGET_SHARE", columnDefinition = "TINYINT")
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private Boolean budgetShare;
@@ -109,6 +113,13 @@ public class CDistributors implements Serializable {
         this.hasStock = hasStock;
     }
 
+    public Integer getHasAgreement() {
+        return hasAgreement;
+    }
+
+    public void setHasAgreement(Integer hasAgreement) {
+        this.hasAgreement = hasAgreement;
+    }
 
     @Override
     public int hashCode() {

@@ -5,6 +5,12 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
+
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -25,29 +31,44 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author rafael
  */
 @Entity
+@DynamicUpdate
 @Table(name = "DW_ENTERPRISES_AGREEMENTS")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "DwEnterprisesAgreements.findAll", query = "SELECT d FROM DwEnterprisesAgreements d"),
-    @NamedQuery(name = "DwEnterprisesAgreements.findByIdDwEnterpriseAgreement", query = "SELECT d FROM DwEnterprisesAgreements d WHERE d.idDwEnterpriseAgreement = :idDwEnterpriseAgreement"),
-    @NamedQuery(name = "DwEnterprisesAgreements.findByIdAccessLevel", query = "SELECT d FROM DwEnterprisesAgreements d WHERE d.idAccessLevel = :idAccessLevel")})
+
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class DwEnterprisesAgreements implements Serializable {
+
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_DW_ENTERPRISE_AGREEMENT")
+    @JsonView(JsonViews.Root.class)
     private Integer idDwEnterpriseAgreement;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
+
+    @Column(name = "ID_DW_ENTERPRISE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idDwEnterprise;
+
+    @Column(name = "ID_AGREEMENT", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idAgreement;
+
     @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
     @ManyToOne
-    private DwEnterprises idDwEnterprise;
+    @JsonView(JsonViews.Embedded.class)
+    private DwEnterprises dwEnterprise;
+
     @JoinColumn(name = "ID_AGREEMENT", referencedColumnName = "ID_AGREEMENT")
     @ManyToOne
-    private CAgreements idAgreement;
+    @JsonView(JsonViews.Embedded.class)
+    private CAgreements agreement;
 
     public DwEnterprisesAgreements() {
     }
@@ -77,19 +98,35 @@ public class DwEnterprisesAgreements implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public DwEnterprises getIdDwEnterprise() {
+    public DwEnterprises getDwEnterprise() {
+        return dwEnterprise;
+    }
+
+    public void setDwEnterprise(DwEnterprises dwEnterprise) {
+        this.dwEnterprise = dwEnterprise;
+    }
+
+    public CAgreements getAgreement() {
+        return agreement;
+    }
+
+    public void setAgreement(CAgreements agreement) {
+        this.agreement = agreement;
+    }
+
+    public Integer getIdDwEnterprise() {
         return idDwEnterprise;
     }
 
-    public void setIdDwEnterprise(DwEnterprises idDwEnterprise) {
+    public void setIdDwEnterprise(Integer idDwEnterprise) {
         this.idDwEnterprise = idDwEnterprise;
     }
 
-    public CAgreements getIdAgreement() {
+    public Integer getIdAgreement() {
         return idAgreement;
     }
 
-    public void setIdAgreement(CAgreements idAgreement) {
+    public void setIdAgreement(Integer idAgreement) {
         this.idAgreement = idAgreement;
     }
 
