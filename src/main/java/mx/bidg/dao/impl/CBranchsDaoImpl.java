@@ -10,6 +10,8 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CBranchsDao;
 import mx.bidg.model.CBranchs;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -34,7 +36,10 @@ public class CBranchsDaoImpl extends AbstractDao<Integer, CBranchs> implements C
     @Override
     public List<CBranchs> findAll() {
         Criteria criteria = createEntityCriteria();
-        return (List<CBranchs>) criteria.list();
+        return criteria
+                .setFetchMode("dwEnterprises", FetchMode.JOIN)
+                .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
+                .list();
     }
 
     @Override
