@@ -39,4 +39,9 @@ public class CBrachsController {
         CBranchs cBranchs = cBranchsService.findById(idBranch);
         return map.writerWithView(JsonViews.Root.class).writeValueAsString(cBranchs);
     }
+
+    @RequestMapping(value = "/{idBranch}", method = RequestMethod.DELETE,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    private @ResponseBody String delete(@PathVariable Integer idBranch) throws Exception {
+        return map.writerWithView(JsonViews.Root.class).writeValueAsString(cBranchsService.delete(idBranch));
+    }
 }
