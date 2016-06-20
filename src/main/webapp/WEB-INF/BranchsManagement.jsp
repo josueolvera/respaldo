@@ -218,18 +218,6 @@
                             <table class="table table-condensed table-bordered table-hover table-striped">
                                 <thead>
                                 <tr>
-                                    <th class="text-center">
-                                        <div>
-                                            <button class="btn btn-default btn-sm" @click="changeFormIsActive" v-if="!newBranchForm.isActive"
-                                                    data-toggle="tooltip" data-placement="top" title="Agregar sucursal">
-                                                <span class="glyphicon glyphicon-plus"></span>
-                                            </button>
-                                            <button class="btn btn-default btn-sm" @click="changeFormIsActive" v-if="newBranchForm.isActive"
-                                                    data-toggle="tooltip" data-placement="top" title="Cancelar">
-                                                <span class="glyphicon glyphicon-minus"></span>
-                                            </button>
-                                        </div>
-                                    </th>
                                     <th>
                                         NOMBRE
                                     </th>
@@ -242,18 +230,22 @@
                                     <th>
                                         REGION
                                     </th>
+                                    <th class="text-center">
+                                        <div>
+                                            <button class="btn btn-default btn-sm" @click="changeFormIsActive" v-if="!newBranchForm.isActive"
+                                                    data-toggle="tooltip" data-placement="top" title="Agregar sucursal">
+                                                <span class="glyphicon glyphicon-plus"></span>
+                                            </button>
+                                            <button class="btn btn-default btn-sm" @click="changeFormIsActive" v-if="newBranchForm.isActive"
+                                                    data-toggle="tooltip" data-placement="top" title="Cancelar">
+                                                <span class="glyphicon glyphicon-minus"></span>
+                                            </button>
+                                        </div>
+                                    </th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr v-if="newBranchForm.isActive" class="success">
-                                    <td class="text-center">
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-success btn-sm" @click="saveNewBranch"
-                                                    data-toggle="tooltip" data-placement="top" title="Guardar">
-                                                <span class="glyphicon glyphicon-floppy-disk"></span>
-                                            </button>
-                                        </div>
-                                    </td>
                                     <td>
                                         <div class="form-group">
                                             <label class="sr-only">Nombre</label>
@@ -292,20 +284,16 @@
                                             </select>
                                         </div>
                                     </td>
-                                </tr>
-                                <tr v-for="branch in branchs | filterBy branchFilter | orderBy 'branchName'" v-if="branch.status">
                                     <td class="text-center">
-                                        <div>
-                                            <button class="btn btn-primary btn-sm" @click="onEditBranch(branch)"
-                                                    data-toggle="tooltip" data-placement="top" title="Modificar">
-                                                <span class="glyphicon glyphicon-edit"></span>
-                                            </button>
-                                            <button class="btn btn-danger btn-sm" @click="onDeleteBranch(branch)"
-                                                    data-toggle="modal" data-placement="top" title="Eliminar">
-                                                <span class="glyphicon glyphicon-trash"></span>
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-success btn-sm" @click="saveNewBranch"
+                                                    data-toggle="tooltip" data-placement="top" title="Guardar">
+                                                <span class="glyphicon glyphicon-floppy-disk"></span>
                                             </button>
                                         </div>
                                     </td>
+                                </tr>
+                                <tr v-for="branch in branchs | filterBy branchFilter | orderBy 'branchName'" v-if="branch.status">
                                     <td>
                                         {{branch.branchName}}
                                     </td>
@@ -317,6 +305,18 @@
                                     </td>
                                     <td>
                                         {{branch.dwEnterprises[0].region.regionName}}
+                                    </td>
+                                    <td class="text-center">
+                                        <div>
+                                            <button class="btn btn-default btn-sm" @click="onEditBranch(branch)"
+                                                    data-toggle="tooltip" data-placement="top" title="Modificar">
+                                                <span class="glyphicon glyphicon-edit"></span>
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" @click="onDeleteBranch(branch)"
+                                                    data-toggle="modal" data-placement="top" title="Eliminar">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -339,7 +339,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger" @click="changeBranchStatus">Eliminar</button>
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         </div>
                     </div>
                 </div>
@@ -391,7 +391,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="submit" class="btn btn-success">Guardar cambios</button>
-                                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                             </div>
                         </form>
                     </div>
