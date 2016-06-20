@@ -10,39 +10,48 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CBranchsDao;
 import mx.bidg.model.CBranchs;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author sistemask
  */
+@SuppressWarnings("unchecked")
 @Repository
 public class CBranchsDaoImpl extends AbstractDao<Integer, CBranchs> implements CBranchsDao {
 
     @Override
     public CBranchs save(CBranchs entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        persist(entity);
+        return entity;
     }
 
     @Override
     public CBranchs findById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getByKey(id);
     }
 
     @Override
     public List<CBranchs> findAll() {
         Criteria criteria = createEntityCriteria();
-        return (List<CBranchs>) criteria.list();
+        return criteria
+                .setFetchMode("dwEnterprises", FetchMode.JOIN)
+                .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
+                .list();
     }
 
     @Override
     public CBranchs update(CBranchs entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        modify(entity);
+        return entity;
     }
 
     @Override
     public boolean delete(CBranchs entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        remove(entity);
+        return true;
     }
     
 }

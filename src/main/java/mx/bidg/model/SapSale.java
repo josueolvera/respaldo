@@ -16,7 +16,7 @@ import java.util.Date;
  */
 @Entity
 @DynamicUpdate
-@Table(name = "SAP_SALE")
+@Table(name = "SAP_SALES")
 public class SapSale implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -135,7 +135,7 @@ public class SapSale implements Serializable {
 
     @Column(name = "REGION")
     @JsonView(JsonViews.Root.class)
-    private String region;
+    private String regionName;
 
     @Column(name = "BONIFICATION")
     @JsonView(JsonViews.Root.class)
@@ -148,6 +148,30 @@ public class SapSale implements Serializable {
     @Column(name = "STATUS")
     @JsonView(JsonViews.Root.class)
     private int status;
+
+    @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
+    @ManyToOne(optional = false)
+    private DwEnterprises dwEnterprise;
+
+    @JoinColumn(name = "ID_AGREEMENT", referencedColumnName = "ID_AGREEMENT")
+    @ManyToOne(optional = false)
+    private CAgreements agreement;
+
+    @JoinColumn(name = "ID_BRANCH", referencedColumnName = "ID_BRANCH")
+    @ManyToOne(optional = false)
+    private CBranchs branch;
+
+    @JoinColumn(name = "ID_DISTRIBUTOR", referencedColumnName = "ID_DISTRIBUTOR")
+    @ManyToOne(optional = false)
+    private CDistributors distributor;
+
+    @JoinColumn(name = "ID_REGION", referencedColumnName = "ID_REGION")
+    @ManyToOne(optional = false)
+    private CRegions region;
+
+    @JoinColumn(name = "ID_EMPLOYEE", referencedColumnName = "ID_EMPLOYEE")
+    @ManyToOne(optional = false)
+    private Employees employee;
 
     public SapSale() {
     }
@@ -369,12 +393,12 @@ public class SapSale implements Serializable {
         this.branchName = branchName;
     }
 
-    public String getRegion() {
-        return region;
+    public String getRegionName() {
+        return regionName;
     }
 
-    public void setRegion(String region) {
-        this.region = region;
+    public void setRegionName(String regionName) {
+        this.regionName = regionName;
     }
 
     public BigDecimal getBonification() {
@@ -401,7 +425,53 @@ public class SapSale implements Serializable {
         this.status = status;
     }
 
+    public DwEnterprises getDwEnterprise() {
+        return dwEnterprise;
+    }
 
+    public void setDwEnterprise(DwEnterprises dwEnterprise) {
+        this.dwEnterprise = dwEnterprise;
+    }
+
+    public CAgreements getAgreement() {
+        return agreement;
+    }
+
+    public void setAgreement(CAgreements agreement) {
+        this.agreement = agreement;
+    }
+
+    public CBranchs getBranch() {
+        return branch;
+    }
+
+    public void setBranch(CBranchs branch) {
+        this.branch = branch;
+    }
+
+    public CDistributors getDistributor() {
+        return distributor;
+    }
+
+    public void setDistributor(CDistributors distributor) {
+        this.distributor = distributor;
+    }
+
+    public CRegions getRegion() {
+        return region;
+    }
+
+    public void setRegion(CRegions region) {
+        this.region = region;
+    }
+
+    public Employees getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employees employee) {
+        this.employee = employee;
+    }
 
     @Override
     public int hashCode() {
@@ -425,8 +495,44 @@ public class SapSale implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.SapSale[ idSapSale=" + idSapSale + " ]";
+        return "SapSale{" +
+                "idSapSale=" + idSapSale +
+                ", idSale='" + idSale + '\'' +
+                ", creationDate=" + creationDate +
+                ", interlocCom='" + interlocCom + '\'' +
+                ", clientParentLast='" + clientParentLast + '\'' +
+                ", clientMotherLast='" + clientMotherLast + '\'' +
+                ", clientName='" + clientName + '\'' +
+                ", clientSecName='" + clientSecName + '\'' +
+                ", clientSingleLast='" + clientSingleLast + '\'' +
+                ", clientId='" + clientId + '\'' +
+                ", imssNum='" + imssNum + '\'' +
+                ", agreementName='" + agreementName + '\'' +
+                ", product='" + product + '\'' +
+                ", dependency='" + dependency + '\'' +
+                ", statusSale='" + statusSale + '\'' +
+                ", lastUpdate=" + lastUpdate +
+                ", approvalDate=" + approvalDate +
+                ", requestedAmount=" + requestedAmount +
+                ", payments='" + payments + '\'' +
+                ", depositAmount=" + depositAmount +
+                ", comissionableAmount=" + comissionableAmount +
+                ", purchaseDate=" + purchaseDate +
+                ", companyName='" + companyName + '\'' +
+                ", distributorName='" + distributorName + '\'' +
+                ", claveSap='" + claveSap + '\'' +
+                ", branchName='" + branchName + '\'' +
+                ", regionName='" + regionName + '\'' +
+                ", bonification=" + bonification +
+                ", liquidation=" + liquidation +
+                ", status=" + status +
+                ", dwEnterprise=" + dwEnterprise +
+                ", agreement=" + agreement +
+                ", branch=" + branch +
+                ", distributor=" + distributor +
+                ", region=" + region +
+                ", employee=" + employee +
+                '}';
     }
-
 }
 

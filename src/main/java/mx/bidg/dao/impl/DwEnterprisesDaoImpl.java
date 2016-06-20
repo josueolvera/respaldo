@@ -25,7 +25,8 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
 
     @Override
     public DwEnterprises save(DwEnterprises entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        persist(entity);
+        return entity;
     }
 
     @Override
@@ -46,7 +47,8 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
 
     @Override
     public DwEnterprises update(DwEnterprises entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        modify(entity);
+        return entity;
     }
 
     @Override
@@ -74,6 +76,22 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
     @Override
     public List<DwEnterprises> findAllByStatusAgreement() {
         return (List<DwEnterprises>) createEntityCriteria().add(Restrictions.eq("agreementStatus",1)).list();
+    }
+
+    @Override
+    public DwEnterprises findByDistributorRegionBranch(Integer idDistributor, Integer idRegion, Integer idBranch) {
+        return (DwEnterprises) createEntityCriteria()
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idRegion", idRegion))
+                .add(Restrictions.eq("idBranch", idBranch))
+                .uniqueResult();
+    }
+
+    @Override
+    public DwEnterprises findByBranch(Integer idBranch) {
+        return (DwEnterprises) createEntityCriteria()
+                .add(Restrictions.eq("idBranch", idBranch))
+                .uniqueResult();
     }
 
     @Override

@@ -225,4 +225,24 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
         }
         return hierarchicalGroups;
     }
+
+    @Override
+    public DwEnterprises save(DwEnterprises dwEnterprises) {
+        return dao.save(dwEnterprises);
+    }
+
+    @Override
+    public DwEnterprises update(DwEnterprises dwEnterprises) {
+        return dao.update(dwEnterprises);
+    }
+
+    @Override
+    public DwEnterprises findByDistributorRegionBranch(Integer idDistributor, Integer idRegion, Integer idBranch) {
+        return dao.findByDistributorRegionBranch(idDistributor,idRegion,idBranch);
+    }
+
+    @Override
+    public DwEnterprises findByBranch(Integer idBranch) {
+        return dao.findByBranch(idBranch);
+    }
 }

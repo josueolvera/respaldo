@@ -75,7 +75,7 @@ public class CBranchs implements Serializable {
     @NotNull
     @Column(name = "STATUS")
     @JsonView(JsonViews.Root.class)
-    private int status;
+    private boolean status;
 
     @Basic(optional = false)
     @NotNull
@@ -89,9 +89,9 @@ public class CBranchs implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime lowDate;
 
-    public LocalDateTime getUploadedDate() {
-        return uploadedDate;
-    }
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "branch")
+    @JsonView(JsonViews.Root.class)
+    private List<DwEnterprises> dwEnterprises;
 
     public CBranchs() {
     }
@@ -100,7 +100,7 @@ public class CBranchs implements Serializable {
         this.idBranch = idBranch;
     }
 
-    public CBranchs(Integer idBranch, String branchShort, int status) {
+    public CBranchs(Integer idBranch, String branchShort, boolean status) {
         this.idBranch = idBranch;
         this.branchShort = branchShort;
         this.status = status;
@@ -146,20 +146,16 @@ public class CBranchs implements Serializable {
         this.address = address;
     }
 
-
-    public int getStatus() {
+    public boolean isStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(boolean status) {
         this.status = status;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idBranch != null ? idBranch.hashCode() : 0);
-        return hash;
+    public LocalDateTime getUploadedDate() {
+        return uploadedDate;
     }
 
     public void setUploadedDate(LocalDateTime uploadedDate) {
@@ -172,6 +168,21 @@ public class CBranchs implements Serializable {
 
     public void setLowDate(LocalDateTime lowDate) {
         this.lowDate = lowDate;
+    }
+
+    public List<DwEnterprises> getDwEnterprises() {
+        return dwEnterprises;
+    }
+
+    public void setDwEnterprises(List<DwEnterprises> dwEnterprises) {
+        this.dwEnterprises = dwEnterprises;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (idBranch != null ? idBranch.hashCode() : 0);
+        return hash;
     }
 
     @Override

@@ -14,6 +14,10 @@ import mx.bidg.model.CBranchs;
  */
 public interface CBranchsService {
     
-    public List<CBranchs> findAll();
-    
+    List<CBranchs> findAll();
+    CBranchs findById(int idBranch);
+    boolean delete(int idBranch);
+    CBranchs update(CBranchs data);
+    CBranchs save(CBranchs cBranchs, int idDistributor ,int idRegion);
+    CBranchs changeBranchStatus(int idBranch);
 }
