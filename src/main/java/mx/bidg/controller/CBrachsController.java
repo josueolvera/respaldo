@@ -49,6 +49,12 @@ public class CBrachsController {
         branch = cBranchsService.save(branch, idDistributor, idRegion);
         return map.writerWithView(JsonViews.Root.class).writeValueAsString(branch);
     }
+    @RequestMapping(value = "/change-branch-status", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    private @ResponseBody String changeBranchStatus(@RequestBody Integer idBranch) throws Exception {
+        CBranchs branch = cBranchsService.changeBranchStatus(idBranch);
+        return map.writerWithView(JsonViews.Root.class).writeValueAsString(branch);
+    }
+
     @RequestMapping(value = "/{idBranch}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     private @ResponseBody String findById(@PathVariable Integer idBranch) throws Exception {
         CBranchs cBranchs = cBranchsService.findById(idBranch);
