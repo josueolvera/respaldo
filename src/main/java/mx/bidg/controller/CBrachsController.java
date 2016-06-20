@@ -28,7 +28,7 @@ public class CBrachsController {
     
     ObjectMapper map = new ObjectMapper();
     
-    @RequestMapping(produces = "application/json;charset=UTF-8")
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody String getAreas() throws Exception {
         List<CBranchs> list = cBranchsService.findAll();
         return map.writerWithView(JsonViews.Root.class).writeValueAsString(list);
