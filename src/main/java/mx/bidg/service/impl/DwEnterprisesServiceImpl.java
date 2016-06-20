@@ -143,4 +143,10 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
     public List<DwEnterprises> findByDistributor(Integer idDistributor) {
         return dao.findByDistributor(idDistributor);
     }
+
+    @Override
+    public DwEnterprises save(DwEnterprises dwEnterprises) {
+        return dao.save(dwEnterprises);
+    }
+
 }
