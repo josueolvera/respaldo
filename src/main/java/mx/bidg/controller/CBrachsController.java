@@ -39,7 +39,16 @@ public class CBrachsController {
         List<CBranchs> list = cBranchsService.findAll();
         return map.writerWithView(JsonViews.Root.class).writeValueAsString(list);
     }
-    
+
+    @RequestMapping(value = "/distributor/{idDistributor}/region/{idRegion}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody String save(
+            @RequestBody CBranchs branch,
+            @PathVariable Integer idDistributor,
+            @PathVariable Integer idRegion
+    ) throws Exception {
+        branch = cBranchsService.save(branch, idDistributor, idRegion);
+        return map.writerWithView(JsonViews.Root.class).writeValueAsString(branch);
+    }
     @RequestMapping(value = "/{idBranch}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     private @ResponseBody String findById(@PathVariable Integer idBranch) throws Exception {
         CBranchs cBranchs = cBranchsService.findById(idBranch);
