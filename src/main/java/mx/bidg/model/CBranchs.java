@@ -89,6 +89,10 @@ public class CBranchs implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime lowDate;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "branch")
+    @JsonView(JsonViews.Root.class)
+    private List<DwEnterprises> dwEnterprises;
+
     public CBranchs() {
     }
 
@@ -164,6 +168,14 @@ public class CBranchs implements Serializable {
 
     public void setLowDate(LocalDateTime lowDate) {
         this.lowDate = lowDate;
+    }
+
+    public List<DwEnterprises> getDwEnterprises() {
+        return dwEnterprises;
+    }
+
+    public void setDwEnterprises(List<DwEnterprises> dwEnterprises) {
+        this.dwEnterprises = dwEnterprises;
     }
 
     @Override
