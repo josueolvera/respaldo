@@ -19,4 +19,11 @@ public class SISCOMController {
         model.setViewName("SapFilesUpload");
         return model;
     }
+
+    @RequestMapping(value = "/branchs-management", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView branchsManagement() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("BranchsManagement");
+        return model;
+    }
 }
