@@ -12,6 +12,7 @@ import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.CBranchs;
 import mx.bidg.service.CBranchsService;
+import mx.bidg.service.DwEnterprisesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,9 @@ public class CBrachsController {
     
     @Autowired
     private CBranchsService cBranchsService;
+
+    @Autowired
+    private DwEnterprisesService dwEnterprisesService;
     
     private ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
     
