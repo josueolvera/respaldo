@@ -28,7 +28,7 @@ public class CBranchsDaoImpl extends AbstractDao<Integer, CBranchs> implements C
 
     @Override
     public CBranchs findById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getByKey(id);
     }
 
     @Override
