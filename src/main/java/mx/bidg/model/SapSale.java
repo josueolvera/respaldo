@@ -135,7 +135,7 @@ public class SapSale implements Serializable {
 
     @Column(name = "REGION")
     @JsonView(JsonViews.Root.class)
-    private String region;
+    private String regionName;
 
     @Column(name = "BONIFICATION")
     @JsonView(JsonViews.Root.class)
@@ -369,12 +369,12 @@ public class SapSale implements Serializable {
         this.branchName = branchName;
     }
 
-    public String getRegion() {
-        return region;
+    public String getRegionName() {
+        return regionName;
     }
 
-    public void setRegion(String region) {
-        this.region = region;
+    public void setRegionName(String regionName) {
+        this.regionName = regionName;
     }
 
     public BigDecimal getBonification() {
