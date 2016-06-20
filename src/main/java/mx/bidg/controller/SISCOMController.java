@@ -19,4 +19,12 @@ public class SISCOMController {
         model.setViewName("SapFilesUpload");
         return model;
     }
+
+    @RequestMapping(value = "/agreements-management", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ModelAndView agreementsManagment( )
+    {
+        ModelAndView model= new ModelAndView();
+        model.setViewName("Agreements");
+        return model;
+    }
 }
