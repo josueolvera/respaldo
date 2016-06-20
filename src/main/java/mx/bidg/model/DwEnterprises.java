@@ -39,41 +39,41 @@ public class DwEnterprises implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final DwEnterprises DEFAULT_DW_ENTERPRISES = new DwEnterprises(113);
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_DW_ENTERPRISE")
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class, JsonViews.IdsEnterprises.class})
     private Integer idDwEnterprise;
-    
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_BRAND")
     @JsonView(JsonViews.Root.class)
     private int idBrand;
-    
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_GBRANCH")
     @JsonView(JsonViews.Root.class)
     private int idGbranch;
-    
+
     @Column(name = "ID_GROUP", insertable = false, updatable = false)
     @JsonView({JsonViews.Root.class, JsonViews.IdsEnterprises.class})
     private int idGroup;
-    
+
     @Column(name = "ID_DISTRIBUTOR", insertable = false, updatable = false)
     @JsonView({JsonViews.Root.class, JsonViews.IdsEnterprises.class})
     private int idDistributor;
-    
+
     @Column(name = "ID_REGION", insertable = false, updatable = false)
     @JsonView({JsonViews.Root.class, JsonViews.IdsEnterprises.class})
     private int idRegion;
-    
+
     @Column(name = "ID_BRANCH", insertable = false, updatable = false)
     @JsonView({JsonViews.Root.class, JsonViews.IdsEnterprises.class})
     private int idBranch;
-    
+
     @Column(name = "ID_AREA", insertable = false, updatable = false)
     @JsonView({JsonViews.Root.class, JsonViews.IdsEnterprises.class})
     private int idArea;
@@ -81,39 +81,45 @@ public class DwEnterprises implements Serializable {
     @Column(name = "BUDGETABLE")
     @JsonView(JsonViews.Root.class)
     private Integer budgetable;
-    
+
     @JoinColumn(name = "ID_GROUP", referencedColumnName = "ID_GROUP")
     @ManyToOne(optional = false)
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private CGroups group;
-    
+
     @JoinColumn(name = "ID_DISTRIBUTOR", referencedColumnName = "ID_DISTRIBUTOR")
     @ManyToOne(optional = false)
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private CDistributors distributor;
-    
+
     @JoinColumn(name = "ID_REGION", referencedColumnName = "ID_REGION")
     @ManyToOne(optional = false)
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private CRegions region;
-    
+
     @JoinColumn(name = "ID_BRANCH", referencedColumnName = "ID_BRANCH")
     @ManyToOne(optional = false)
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private CBranchs branch;
-    
+
     @JoinColumn(name = "ID_AREA", referencedColumnName = "ID_AREA")
     @ManyToOne(optional = false)
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private CAreas area;
-    
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "dwEnterprise")
     @JsonView(JsonViews.Embedded.class)
     private List<BudgetMonthBranch> budgetMonthBranchList;
-    
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "dwEnterprise")
     @JsonView(JsonViews.Embedded.class)
     private List<DwEmployees> dwEmployeesList;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "STATUS")
+    @JsonView(JsonViews.Root.class)
+    private boolean status;
 
     public DwEnterprises() {
     }
@@ -127,7 +133,7 @@ public class DwEnterprises implements Serializable {
         this.idBrand = idBrand;
         this.idGbranch = idGbranch;
     }
-    
+
     public Integer getIdDwEnterprise() {
         return idDwEnterprise;
     }
@@ -254,6 +260,14 @@ public class DwEnterprises implements Serializable {
 
     public void setDwEmployeesList(List<DwEmployees> dwEmployeesList) {
         this.dwEmployeesList = dwEmployeesList;
+    }
+
+    public boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 
     @Override
