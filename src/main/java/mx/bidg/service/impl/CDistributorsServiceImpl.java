@@ -33,4 +33,9 @@ public class CDistributorsServiceImpl implements CDistributorsService {
     public List<CDistributors> findAllForStock() {
         return dao.findAllForStock();
     }
+
+    @Override
+    public List<CDistributors> findAllForAgreement() {
+        return dao.findAllForAgreement();
+    }
 }
