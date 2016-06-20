@@ -272,7 +272,7 @@ public class SapSaleServiceImpl implements SapSaleService {
                     }
                     if (payments != null) newSapSale.setPayments(payments.getStringCellValue());
                     if (product != null) newSapSale.setProduct(product.getStringCellValue());
-                    if (region != null) newSapSale.setRegion(region.getStringCellValue());
+                    if (region != null) newSapSale.setRegionName(region.getStringCellValue());
                     if (requestedAmount != null) {
                         BigDecimal bdRequestedAmount = new BigDecimal(requestedAmount.getNumericCellValue());
                         newSapSale.setRequestedAmount(bdRequestedAmount);
