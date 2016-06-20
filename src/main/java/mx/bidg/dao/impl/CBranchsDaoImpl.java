@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
  *
  * @author sistemask
  */
+@SuppressWarnings("unchecked")
 @Repository
 public class CBranchsDaoImpl extends AbstractDao<Integer, CBranchs> implements CBranchsDao {
 
