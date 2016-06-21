@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -59,5 +60,12 @@ public class CAgreementsServiceImpl implements CAgreementsService {
         }
 
         return flag;
+    }
+
+    @Override
+    public void lowDate (Integer idAgreement) {
+        CAgreements agreement = cAgreementsDao.findById(idAgreement);
+        agreement.setLowDate(LocalDateTime.now());
+        cAgreementsDao.update(agreement);
     }
 }

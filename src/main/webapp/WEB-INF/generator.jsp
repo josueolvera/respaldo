@@ -56,7 +56,17 @@
           el: '#contenidos',
           created: function()
           {
+              var fecha = new Date();
+              var fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth()+1) + "-" + fecha.getDate();
               this.getFieldsTableSales();
+              this.getDistributors();
+
+              this.timePickerReporteInicial = $('#datefechainicial').datetimepicker({
+                locale: 'es',
+                format: 'DD-MM-YYYY',
+                useCurrent: false,
+                maxDate: fecha_actual
+                }).data();
           },
           ready: function ()
           {
@@ -66,9 +76,12 @@
           data:
           {
               fieldsTableSale: {},
-              fieldsTableChecked: []
-
-
+              fieldsTableChecked: [],
+              distributorsSelect: {},
+              timePickerReporteInicial: '',
+              reporteFechaInicial: '',
+              reportefechaFinal: '',
+              timePickerReporteFinal: ''
           },
           methods:
           {
@@ -96,6 +109,35 @@
                   else{
                       showAlert("Debes seleccionar al menos un campo para el calculo");
                   }
+              },
+              getDistributors: function(){
+                  this.$http.get(ROOT_URL+"/distributors/agreement")
+                          .success(function (data)
+                          {
+                              this.distributorsSelect = data;
+                          });
+              },
+              destruirTimePickerPrimero: function(){
+                  $("#datefechainicial").on("dp.change", function (e) {
+                  $('#datefechafinal').data("DateTimePicker").minDate(e.date);
+                    });
+                  $("#datefechafinal").on("dp.change", function (e) {
+                  $('#datefechainicial').data("DateTimePicker").maxDate(e.date);
+                  });
+
+              },
+              activarTimePickerReporteFechaFinal: function(){
+
+                  var fecha = new Date();
+                  var fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth()+1) + "-" + fecha.getDate();
+                  var fecha= moment(this.timePickerReporteInicial.date, 'DD-MM-YYYY').format('YYYY-MM-DD');
+                  this.timePickerReporteFinal = $('#datefechafinal').datetimepicker({
+                    locale: 'es',
+                    format: 'DD-MM-YYYY',
+                    useCurrent: false,
+                    minDate: fecha,
+                    maxDate: fecha_actual
+                    }).data();
               }
 
 
@@ -129,16 +171,38 @@
                               <label>
                                   Distribuidor
                               </label>
+                              <select class="form-control" name="">
+                                  <option></option>
+                                  <option v-for="distributor in distributorsSelect" value="{{distributor}}">
+                                  {{distributor.acronyms}}
+                                  </option>
+                              </select>
                            </div>
                            <div class="col-xs-3">
                                <label>
                                    Fecha inicial
                                </label>
+                               <div class="form-group">
+                               <div class='input-group date' id='datefechainicial'>
+                                   <input type='text' class="form-control" v-model="reporteFechaInicial">
+                                   <span class="input-group-addon" @click="destruirTimePickerPrimero">
+                                       <span class="glyphicon glyphicon-calendar"></span>
+                                   </span>
+                               </div>
+                               </div>
                            </div>
                            <div class="col-xs-3">
                                <label>
                                    Fecha final
                                </label>
+                               <div class="form-group">
+                               <div class='input-group date' id='datefechafinal'>
+                                   <input type='text' class="form-control" v-model="reportefechaFinal">
+                                   <span class="input-group-addon" @click="activarTimePickerReporteFechaFinal">
+                                       <span class="glyphicon glyphicon-calendar"></span>
+                                   </span>
+                               </div>
+                               </div>
                            </div>
                          </div>
                      </div>
