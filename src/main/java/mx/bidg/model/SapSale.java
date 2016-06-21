@@ -133,6 +133,30 @@ public class SapSale implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int status;
 
+    @Column(name = "ID_DW_ENTERPRISE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idDwEnterprise;
+
+    @Column(name = "ID_AGREEMENT", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idAgreement;
+
+    @Column(name = "ID_BRANCH", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idBranch;
+
+    @Column(name = "ID_REGION", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRegion;
+
+    @Column(name = "ID_DISTRIBUTOR", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idDistributor;
+
+    @Column(name = "ID_EMPLOYEE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idEmployee;
+
     @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
     @ManyToOne()
     private DwEnterprises dwEnterprise;
@@ -424,6 +448,54 @@ public class SapSale implements Serializable {
 
     public void setEmployee(Employees employee) {
         this.employee = employee;
+    }
+
+    public Integer getIdDwEnterprise() {
+        return idDwEnterprise;
+    }
+
+    public void setIdDwEnterprise(Integer idDwEnterprise) {
+        this.idDwEnterprise = idDwEnterprise;
+    }
+
+    public Integer getIdAgreement() {
+        return idAgreement;
+    }
+
+    public void setIdAgreement(Integer idAgreement) {
+        this.idAgreement = idAgreement;
+    }
+
+    public Integer getIdRegion() {
+        return idRegion;
+    }
+
+    public void setIdRegion(Integer idRegion) {
+        this.idRegion = idRegion;
+    }
+
+    public Integer getIdBranch() {
+        return idBranch;
+    }
+
+    public void setIdBranch(Integer idBranch) {
+        this.idBranch = idBranch;
+    }
+
+    public Integer getIdDistributor() {
+        return idDistributor;
+    }
+
+    public void setIdDistributor(Integer idDistributor) {
+        this.idDistributor = idDistributor;
+    }
+
+    public Integer getIdEmployee() {
+        return idEmployee;
+    }
+
+    public void setIdEmployee(Integer idEmployee) {
+        this.idEmployee = idEmployee;
     }
 
     @Override
