@@ -91,6 +91,7 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
     public DwEnterprises findByBranch(Integer idBranch) {
         return (DwEnterprises) createEntityCriteria()
                 .add(Restrictions.eq("idBranch", idBranch))
+                .add(Restrictions.eq("status",true))
                 .uniqueResult();
     }
 
