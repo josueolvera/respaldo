@@ -69,10 +69,6 @@ public class SapSale implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String imssNum;
 
-    @Column(name = "AGREEMENT_NAME")
-    @JsonView(JsonViews.Root.class)
-    private String agreementName;
-
     @Column(name = "PRODUCT")
     @JsonView(JsonViews.Root.class)
     private String product;
@@ -121,21 +117,9 @@ public class SapSale implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String companyName;
 
-    @Column(name = "DISTRIBUTOR_NAME")
-    @JsonView(JsonViews.Root.class)
-    private String distributorName;
-
     @Column(name = "CLAVE_SAP")
     @JsonView(JsonViews.Root.class)
     private String claveSap;
-
-    @Column(name = "BRANCH_NAME")
-    @JsonView(JsonViews.Root.class)
-    private String branchName;
-
-    @Column(name = "REGION")
-    @JsonView(JsonViews.Root.class)
-    private String regionName;
 
     @Column(name = "BONIFICATION")
     @JsonView(JsonViews.Root.class)
@@ -273,13 +257,6 @@ public class SapSale implements Serializable {
         this.imssNum = imssNum;
     }
 
-    public String getAgreementName() {
-        return agreementName;
-    }
-
-    public void setAgreementName(String agreementName) {
-        this.agreementName = agreementName;
-    }
 
     public String getProduct() {
         return product;
@@ -369,36 +346,12 @@ public class SapSale implements Serializable {
         this.companyName = companyName;
     }
 
-    public String getDistributorName() {
-        return distributorName;
-    }
-
-    public void setDistributorName(String distributorName) {
-        this.distributorName = distributorName;
-    }
-
     public String getClaveSap() {
         return claveSap;
     }
 
     public void setClaveSap(String claveSap) {
         this.claveSap = claveSap;
-    }
-
-    public String getBranchName() {
-        return branchName;
-    }
-
-    public void setBranchName(String branchName) {
-        this.branchName = branchName;
-    }
-
-    public String getRegionName() {
-        return regionName;
-    }
-
-    public void setRegionName(String regionName) {
-        this.regionName = regionName;
     }
 
     public BigDecimal getBonification() {
@@ -507,7 +460,6 @@ public class SapSale implements Serializable {
                 ", clientSingleLast='" + clientSingleLast + '\'' +
                 ", clientId='" + clientId + '\'' +
                 ", imssNum='" + imssNum + '\'' +
-                ", agreementName='" + agreementName + '\'' +
                 ", product='" + product + '\'' +
                 ", dependency='" + dependency + '\'' +
                 ", statusSale='" + statusSale + '\'' +
@@ -519,10 +471,6 @@ public class SapSale implements Serializable {
                 ", comissionableAmount=" + comissionableAmount +
                 ", purchaseDate=" + purchaseDate +
                 ", companyName='" + companyName + '\'' +
-                ", distributorName='" + distributorName + '\'' +
-                ", claveSap='" + claveSap + '\'' +
-                ", branchName='" + branchName + '\'' +
-                ", regionName='" + regionName + '\'' +
                 ", bonification=" + bonification +
                 ", liquidation=" + liquidation +
                 ", status=" + status +
