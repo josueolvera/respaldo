@@ -134,27 +134,27 @@ public class SapSale implements Serializable {
     private int status;
 
     @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
-    @ManyToOne(optional = false)
+    @ManyToOne()
     private DwEnterprises dwEnterprise;
 
     @JoinColumn(name = "ID_AGREEMENT", referencedColumnName = "ID_AGREEMENT")
-    @ManyToOne(optional = false)
+    @ManyToOne()
     private CAgreements agreement;
 
     @JoinColumn(name = "ID_BRANCH", referencedColumnName = "ID_BRANCH")
-    @ManyToOne(optional = false)
+    @ManyToOne()
     private CBranchs branch;
 
     @JoinColumn(name = "ID_DISTRIBUTOR", referencedColumnName = "ID_DISTRIBUTOR")
-    @ManyToOne(optional = false)
+    @ManyToOne()
     private CDistributors distributor;
 
     @JoinColumn(name = "ID_REGION", referencedColumnName = "ID_REGION")
-    @ManyToOne(optional = false)
+    @ManyToOne()
     private CRegions region;
 
     @JoinColumn(name = "ID_EMPLOYEE", referencedColumnName = "ID_EMPLOYEE")
-    @ManyToOne(optional = false)
+    @ManyToOne()
     private Employees employee;
 
     public SapSale() {
