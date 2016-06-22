@@ -11,4 +11,5 @@ import java.util.List;
  */
 public interface EmployeesDao extends InterfaceDao<Employees> {
     List<Employees> findSimpleBy(DwEnterprises dwEnterprises);
+    Employees findByClaveSap(String claveSap);
 }

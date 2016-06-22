@@ -80,4 +80,12 @@ public class CAgreementsController {
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEnterprisesAgreements),HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/low-date/{idAgreement}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> lowDate(@PathVariable Integer idAgreement)throws IOException{
+
+        cAgreementsService.lowDate(idAgreement);
+
+        return new ResponseEntity<>("Convenio Eliminado",HttpStatus.OK);
+    }
 }

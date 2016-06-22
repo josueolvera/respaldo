@@ -12,5 +12,5 @@ import mx.bidg.model.CBranchs;
  * @author sistemask
  */
 public interface CBranchsDao extends InterfaceDao<CBranchs> {
-    
+    CBranchs findByName(String branchName);
 }

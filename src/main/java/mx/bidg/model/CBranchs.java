@@ -89,6 +89,11 @@ public class CBranchs implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime lowDate;
 
+    @Size(min = 1, max = 50)
+    @Column(name = "BRANCH_NAME_CLEAN")
+    @JsonView(JsonViews.Root.class)
+    private String branchNameClean;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "branch")
     @JsonView(JsonViews.Root.class)
     private List<DwEnterprises> dwEnterprises;
@@ -168,6 +173,14 @@ public class CBranchs implements Serializable {
 
     public void setLowDate(LocalDateTime lowDate) {
         this.lowDate = lowDate;
+    }
+
+    public String getBranchNameClean() {
+        return branchNameClean;
+    }
+
+    public void setBranchNameClean(String branchNameClean) {
+        this.branchNameClean = branchNameClean;
     }
 
     public List<DwEnterprises> getDwEnterprises() {

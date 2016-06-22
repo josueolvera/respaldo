@@ -123,6 +123,11 @@
                         name:''
                     },
                     agreements:[],
+                    modalEliminar: {
+                        agreement: {
+                            agreementName: "",
+                        },
+                    },
                 },
                 methods: {
                     obtainAgreementsDistributor: function () {
@@ -185,7 +190,18 @@
                       this.dwEnterpriseAgreements.idDistributor = "";
                       $('#modalAlta').modal('hide');
                     },
-
+                    question: function (agreement) {
+                        this.modalEliminar.agreement = agreement;
+                        $('#modalEliminar').modal('show');
+                    },
+                    deleteAgreement: function () {
+                        this.$http.post(ROOT_URL + "/agreements/low-date/" + this.modalEliminar.agreement.idAgreement)
+                                .success(function (data) {
+                                    this.obtainAgreements();
+                                    $('#modalEliminar').modal('hide');
+                                    showAlert("Convenio eliminado");
+                                });
+                    },
                 },
                 filters: {
 
@@ -222,14 +238,20 @@
 
                 <div>
                     <div class="row table-header">
-                        <div class="col-xs-5"><b>Convenio</b></div>
+                        <div class="col-xs-11"><b>Convenio</b></div>
+                        <div class="col-xs-1"><b>Eliminar</b></div>
                     </div>
                 </div>
             </div>
             <br>
             <div class="table-body flex-row flex-content">
                 <div class="row table-row" v-for="agreement in agreements | filterBy search in 'agreementName'" v-if="agreement.lowDate == null">
-                    <div class="col-xs-5">{{agreement.agreementName}}</div>
+                    <div class="col-xs-11">{{agreement.agreementName}}</div>
+                    <div class="col-xs-1">
+                        <button type="button" class="btn btn-danger" name="button" data-toggle="tooltip"
+                                data-placement="bottom" title="Eliminar"
+                                @click="question(agreement)"><span class="glyphicon glyphicon-trash"></span></button>
+                    </div>
                 </div>
             </div>
             <!-- container-fluid -->
@@ -255,6 +277,29 @@
                             </button>
 
                             <button type="button" class="btn btn-default" @click="cancelar">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                <div class="modal-dialog ">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">
+                                Eliminar Convenio
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>El convenio {{modalEliminar.agreement.agreementName}} será
+                                eliminado</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="btnFlag" type="button" class="btn btn-default" @click="deleteAgreement">
+                                Aceptar
+                            </button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         </div>
                     </div>
                 </div>

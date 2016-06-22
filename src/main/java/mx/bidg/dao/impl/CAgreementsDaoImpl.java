@@ -47,6 +47,6 @@ public class CAgreementsDaoImpl extends AbstractDao <Integer,CAgreements> implem
     @Override
     public CAgreements findByName(String name) {
         Criteria criteria = createEntityCriteria();
-        return (CAgreements) criteria.add(Restrictions.ilike("agreementNameClean", name, MatchMode.ANYWHERE)).uniqueResult();
+        return (CAgreements) criteria.add(Restrictions.eq("agreementNameClean", name)).uniqueResult();
     }
 }

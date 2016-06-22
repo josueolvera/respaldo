@@ -14,4 +14,5 @@ public interface CAgreementsService {
     List<CAgreements> findAll ();
     boolean delete (CAgreements cAgreements);
     boolean diferentAgreement(String agreementName);
+    void lowDate (Integer idAgreement);
 }
