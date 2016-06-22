@@ -45,6 +45,15 @@ public class CSqlDictionary implements Serializable {
     @Column(name = "STATUS")
     @JsonView(JsonViews.Root.class)
     private int status;
+    
+    @Column(name = "PARAMETERS_NUM")
+    @JsonView(JsonViews.Root.class)
+    private Integer parametersNum;
+    
+    @JoinColumn(name = "ID_SQL_FUNCTIONS_CATEGORIES", referencedColumnName = "ID_CATEGORY")
+    @ManyToOne()
+    @JsonView(JsonViews.Embedded.class)
+    private CSqlFunctionsCategories sqlFunctionsCategories;
 
     public CSqlDictionary() {
     }
@@ -92,6 +101,22 @@ public class CSqlDictionary implements Serializable {
         this.status = status;
     }
 
+    public Integer getParametersNum() {
+        return parametersNum;
+    }
+
+    public void setParametersNum(Integer parametersNum) {
+        this.parametersNum = parametersNum;
+    }
+
+    public CSqlFunctionsCategories getSqlFunctionsCategories() {
+        return sqlFunctionsCategories;
+    }
+
+    public void setSqlFunctionsCategories(CSqlFunctionsCategories sqlFunctionsCategories) {
+        this.sqlFunctionsCategories = sqlFunctionsCategories;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;
