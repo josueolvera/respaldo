@@ -273,7 +273,8 @@
                             <div class="col-xs-3">
                               <select class="form-control" name="">
                                   <option></option>
-                                  <option v-for="operation in operationsSql" value="{{operation}}">
+                                  <option v-for="operation in operationsSql" value="{{operation}}"
+                                      v-if="operation.idSqlFunctionsCategories == 2">
                                       {{operation.userText}}
                                   </option>
                               </select>
