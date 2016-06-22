@@ -60,6 +60,7 @@
               var fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth()+1) + "-" + fecha.getDate();
               this.getFieldsTableSales();
               this.getDistributors();
+              this.getOperacionsSql();
 
               this.timePickerReporteInicial = $('#datefechainicial').datetimepicker({
                 locale: 'es',
@@ -81,7 +82,9 @@
               timePickerReporteInicial: '',
               reporteFechaInicial: '',
               reportefechaFinal: '',
-              timePickerReporteFinal: ''
+              timePickerReporteFinal: '',
+              rules: [],
+              operationsSql: {}
           },
           methods:
           {
@@ -138,6 +141,13 @@
                     minDate: fecha,
                     maxDate: fecha_actual
                     }).data();
+              },
+              getOperacionsSql: function(){
+                  this.$http.get(ROOT_URL+"/sql-operations")
+                          .success(function (data)
+                          {
+                              this.operationsSql = data;
+                          });
               }
 
 
@@ -245,7 +255,35 @@
                          <h3 class="panel-title">Operaciones</h3>
                        </div>
                        <div class="panel-body">
-
+                           <div class="row">
+                             <div class="col-xs-12">
+                               <label>
+                                   Seleccione el campo, el tipo de operacion que desea realizar y nombre a su funcion.
+                               </label>
+                             </div>
+                           </div>
+                           <div class="row">
+                            <div class="col-xs-3">
+                              <select class="form-control" name="">
+                                  <option></option>
+                                  <option v-for="field in fieldsTableChecked" value="{{field}}">
+                                      {{field.fieldUser}}
+                              </select>
+                            </div>
+                            <div class="col-xs-3">
+                              <select class="form-control" name="">
+                                  <option></option>
+                                  <option v-for="operation in operationsSql" value="{{operation}}">
+                                      {{operation.userText}}
+                                  </option>
+                              </select>
+                            </div>
+                            <div class="col-xs-3">
+                              <button class="btn btn-default" name="button">
+                                  Agregar regla
+                              </button>
+                            </div>
+                           </div>
                        </div>
                      </div>
                    </div>

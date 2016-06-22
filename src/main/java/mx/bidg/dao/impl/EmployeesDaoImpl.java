@@ -26,6 +26,13 @@ public class EmployeesDaoImpl extends AbstractDao<Integer, Employees> implements
     }
 
     @Override
+    public Employees findByClaveSap(String claveSap) {
+        return (Employees) createEntityCriteria()
+                .add(Restrictions.eq("claveSap",claveSap))
+                .uniqueResult();
+    }
+
+    @Override
     public Employees save(Employees entity) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }

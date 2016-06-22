@@ -69,10 +69,6 @@ public class SapSale implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String imssNum;
 
-    @Column(name = "AGREEMENT_NAME")
-    @JsonView(JsonViews.Root.class)
-    private String agreementName;
-
     @Column(name = "PRODUCT")
     @JsonView(JsonViews.Root.class)
     private String product;
@@ -121,21 +117,9 @@ public class SapSale implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String companyName;
 
-    @Column(name = "DISTRIBUTOR_NAME")
-    @JsonView(JsonViews.Root.class)
-    private String distributorName;
-
     @Column(name = "CLAVE_SAP")
     @JsonView(JsonViews.Root.class)
     private String claveSap;
-
-    @Column(name = "BRANCH_NAME")
-    @JsonView(JsonViews.Root.class)
-    private String branchName;
-
-    @Column(name = "REGION")
-    @JsonView(JsonViews.Root.class)
-    private String regionName;
 
     @Column(name = "BONIFICATION")
     @JsonView(JsonViews.Root.class)
@@ -149,28 +133,52 @@ public class SapSale implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int status;
 
+    @Column(name = "ID_DW_ENTERPRISE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idDwEnterprise;
+
+    @Column(name = "ID_AGREEMENT", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idAgreement;
+
+    @Column(name = "ID_BRANCH", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idBranch;
+
+    @Column(name = "ID_REGION", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRegion;
+
+    @Column(name = "ID_DISTRIBUTOR", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idDistributor;
+
+    @Column(name = "ID_EMPLOYEE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idEmployee;
+
     @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
-    @ManyToOne(optional = false)
+    @ManyToOne()
     private DwEnterprises dwEnterprise;
 
     @JoinColumn(name = "ID_AGREEMENT", referencedColumnName = "ID_AGREEMENT")
-    @ManyToOne(optional = false)
+    @ManyToOne()
     private CAgreements agreement;
 
     @JoinColumn(name = "ID_BRANCH", referencedColumnName = "ID_BRANCH")
-    @ManyToOne(optional = false)
+    @ManyToOne()
     private CBranchs branch;
 
     @JoinColumn(name = "ID_DISTRIBUTOR", referencedColumnName = "ID_DISTRIBUTOR")
-    @ManyToOne(optional = false)
+    @ManyToOne()
     private CDistributors distributor;
 
     @JoinColumn(name = "ID_REGION", referencedColumnName = "ID_REGION")
-    @ManyToOne(optional = false)
+    @ManyToOne()
     private CRegions region;
 
     @JoinColumn(name = "ID_EMPLOYEE", referencedColumnName = "ID_EMPLOYEE")
-    @ManyToOne(optional = false)
+    @ManyToOne()
     private Employees employee;
 
     public SapSale() {
@@ -273,13 +281,6 @@ public class SapSale implements Serializable {
         this.imssNum = imssNum;
     }
 
-    public String getAgreementName() {
-        return agreementName;
-    }
-
-    public void setAgreementName(String agreementName) {
-        this.agreementName = agreementName;
-    }
 
     public String getProduct() {
         return product;
@@ -369,36 +370,12 @@ public class SapSale implements Serializable {
         this.companyName = companyName;
     }
 
-    public String getDistributorName() {
-        return distributorName;
-    }
-
-    public void setDistributorName(String distributorName) {
-        this.distributorName = distributorName;
-    }
-
     public String getClaveSap() {
         return claveSap;
     }
 
     public void setClaveSap(String claveSap) {
         this.claveSap = claveSap;
-    }
-
-    public String getBranchName() {
-        return branchName;
-    }
-
-    public void setBranchName(String branchName) {
-        this.branchName = branchName;
-    }
-
-    public String getRegionName() {
-        return regionName;
-    }
-
-    public void setRegionName(String regionName) {
-        this.regionName = regionName;
     }
 
     public BigDecimal getBonification() {
@@ -473,6 +450,54 @@ public class SapSale implements Serializable {
         this.employee = employee;
     }
 
+    public Integer getIdDwEnterprise() {
+        return idDwEnterprise;
+    }
+
+    public void setIdDwEnterprise(Integer idDwEnterprise) {
+        this.idDwEnterprise = idDwEnterprise;
+    }
+
+    public Integer getIdAgreement() {
+        return idAgreement;
+    }
+
+    public void setIdAgreement(Integer idAgreement) {
+        this.idAgreement = idAgreement;
+    }
+
+    public Integer getIdRegion() {
+        return idRegion;
+    }
+
+    public void setIdRegion(Integer idRegion) {
+        this.idRegion = idRegion;
+    }
+
+    public Integer getIdBranch() {
+        return idBranch;
+    }
+
+    public void setIdBranch(Integer idBranch) {
+        this.idBranch = idBranch;
+    }
+
+    public Integer getIdDistributor() {
+        return idDistributor;
+    }
+
+    public void setIdDistributor(Integer idDistributor) {
+        this.idDistributor = idDistributor;
+    }
+
+    public Integer getIdEmployee() {
+        return idEmployee;
+    }
+
+    public void setIdEmployee(Integer idEmployee) {
+        this.idEmployee = idEmployee;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -507,7 +532,6 @@ public class SapSale implements Serializable {
                 ", clientSingleLast='" + clientSingleLast + '\'' +
                 ", clientId='" + clientId + '\'' +
                 ", imssNum='" + imssNum + '\'' +
-                ", agreementName='" + agreementName + '\'' +
                 ", product='" + product + '\'' +
                 ", dependency='" + dependency + '\'' +
                 ", statusSale='" + statusSale + '\'' +
@@ -519,10 +543,6 @@ public class SapSale implements Serializable {
                 ", comissionableAmount=" + comissionableAmount +
                 ", purchaseDate=" + purchaseDate +
                 ", companyName='" + companyName + '\'' +
-                ", distributorName='" + distributorName + '\'' +
-                ", claveSap='" + claveSap + '\'' +
-                ", branchName='" + branchName + '\'' +
-                ", regionName='" + regionName + '\'' +
                 ", bonification=" + bonification +
                 ", liquidation=" + liquidation +
                 ", status=" + status +

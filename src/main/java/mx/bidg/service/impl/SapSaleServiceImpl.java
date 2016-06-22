@@ -1,10 +1,11 @@
 package mx.bidg.service.impl;
 
 
-import mx.bidg.dao.SapSaleDao;
+import mx.bidg.dao.*;
 import mx.bidg.exceptions.ValidationException;
-import mx.bidg.model.SapSale;
+import mx.bidg.model.*;
 import mx.bidg.service.SapSaleService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -26,6 +29,21 @@ public class SapSaleServiceImpl implements SapSaleService {
 
     @Autowired
     private SapSaleDao sapSaleDao;
+
+    @Autowired
+    private CAgreementsDao cAgreementsDao;
+
+    @Autowired
+    private CBranchsDao cBranchsDao;
+
+    @Autowired
+    private DwEnterprisesDao dwEnterprisesDao;
+
+    @Autowired
+    private DwEnterprisesAgreementsDao dwEnterprisesAgreementsDao;
+
+    @Autowired
+    private EmployeesDao employeesDao;
 
     @Override
     public List<SapSale> findAll() {
@@ -70,58 +88,139 @@ public class SapSaleServiceImpl implements SapSaleService {
             Cell distributorName = currentRow.getCell(22);
             Cell claveSap = currentRow.getCell(23);
             Cell branchName = currentRow.getCell(24);
-            Cell region = currentRow.getCell(25);
+            Cell regionName = currentRow.getCell(25);
             Cell bonification = currentRow.getCell(26);
             Cell liquidation = currentRow.getCell(27);
 
             SapSale sapSale = new SapSale();
 
-
-            if (agreementName != null) sapSale.setAgreementName(agreementName.getStringCellValue());
-            if (approvalDate != null) sapSale.setApprovalDate(approvalDate.getDateCellValue());
+            if (approvalDate != null) {
+                sapSale.setApprovalDate(approvalDate.getDateCellValue());
+            }
             if (bonification != null) {
                 BigDecimal bdBonification = new BigDecimal(bonification.getNumericCellValue());
                 sapSale.setBonification(bdBonification);
             }
-            if (branchName != null) sapSale.setBranchName(branchName.getStringCellValue());
-            if (claveSap != null) sapSale.setClaveSap(claveSap.getStringCellValue());
-            if (clientId != null) sapSale.setClientId(clientId.getStringCellValue());
-            if (clientMotherLast != null) sapSale.setClientMotherLast(clientMotherLast.getStringCellValue());
-            if (clientName != null) sapSale.setClientName(clientName.getStringCellValue());
-            if (clientSecName != null) sapSale.setClientSecName(clientSecName.getStringCellValue());
-            if (clientSingleLast != null) sapSale.setClientSingleLast(clientSingleLast.getStringCellValue());
-            if (clientParentLast != null) sapSale.setClientParentLast(clientParentLast.getStringCellValue());
+            if (branchName != null) {
+                String clearBranchName = StringUtils.stripAccents(branchName.getStringCellValue());
+                String branchNameClean= clearBranchName.replaceAll("\\W", "").toUpperCase();
+                CBranchs branch = cBranchsDao.findByName(branchNameClean);
+
+                if (branch != null) {
+
+                    DwEnterprises dwEnterprises = dwEnterprisesDao.findByBranch(branch.getIdBranch());
+
+                    if (dwEnterprises != null) {
+                        sapSale.setDistributor(dwEnterprises.getDistributor());
+                        sapSale.setRegion(dwEnterprises.getRegion());
+                        sapSale.setDwEnterprise(dwEnterprises);
+                        sapSale.setBranch(branch);
+
+                        if (agreementName != null) {
+                            String clearAgreementName = StringUtils.stripAccents(agreementName.getStringCellValue());
+                            String agreementNameClean= clearAgreementName.replaceAll("\\W", "").toUpperCase();
+                            CAgreements agreement = cAgreementsDao.findByName(agreementNameClean);
+
+                            if (agreement != null) {
+
+                                sapSale.setAgreement(agreement);
+
+                            } else {
+                                CAgreements newAgreement = new CAgreements();
+                                newAgreement.setAgreementName(agreementName.getStringCellValue());
+                                newAgreement.setAgreementNameClean(agreementNameClean);
+                                newAgreement.setIdAccessLevel(1);
+                                newAgreement.setUploadedDate(LocalDateTime.now());
+                                newAgreement.setStatus(1);
+
+                                newAgreement = cAgreementsDao.save(newAgreement);
+
+                                DwEnterprisesAgreements dwEnterprisesAgreements =
+                                        new DwEnterprisesAgreements();
+
+                                dwEnterprisesAgreements.setAgreement(newAgreement);
+                                dwEnterprisesAgreements.setDwEnterprise(dwEnterprises);
+
+                                dwEnterprisesAgreementsDao.save(dwEnterprisesAgreements);
+
+                                sapSale.setAgreement(newAgreement);
+                            }
+                        }
+                    }
+                }
+            }
+            if (claveSap != null) {
+                Employees employee = employeesDao.findByClaveSap(claveSap.getStringCellValue());
+                sapSale.setEmployee(employee);
+                sapSale.setClaveSap(claveSap.getStringCellValue());
+            }
+            if (clientId != null) {
+                sapSale.setClientId(clientId.getStringCellValue());
+            }
+            if (clientMotherLast != null) {
+                sapSale.setClientMotherLast(clientMotherLast.getStringCellValue());
+            }
+            if (clientName != null) {
+                sapSale.setClientName(clientName.getStringCellValue());
+            }
+            if (clientSecName != null) {
+                sapSale.setClientSecName(clientSecName.getStringCellValue());
+            }
+            if (clientSingleLast != null) {
+                sapSale.setClientSingleLast(clientSingleLast.getStringCellValue());
+            }
+            if (clientParentLast != null) {
+                sapSale.setClientParentLast(clientParentLast.getStringCellValue());
+            }
             if (comissionableAmount != null) {
                 BigDecimal bdComissionableAmount = new BigDecimal(comissionableAmount.getNumericCellValue());
                 sapSale.setComissionableAmount(bdComissionableAmount);
             }
-            if (companyName != null) sapSale.setCompanyName(companyName.getStringCellValue());
-            if (creationDate != null) sapSale.setCreationDate(creationDate.getDateCellValue());
-            if (dependency != null) sapSale.setDependency(dependency.getStringCellValue());
+            if (companyName != null) {
+                sapSale.setCompanyName(companyName.getStringCellValue());
+            }
+            if (creationDate != null) {
+                sapSale.setCreationDate(creationDate.getDateCellValue());
+            }
+            if (dependency != null) {
+                sapSale.setDependency(dependency.getStringCellValue());
+            }
             if (depositAmount != null) {
                 BigDecimal bdDepositAmount = new BigDecimal(depositAmount.getNumericCellValue());
                 sapSale.setDepositAmount(bdDepositAmount);
             }
-            if (distributorName != null) sapSale.setDistributorName(distributorName.getStringCellValue());
-            if (idSale != null) sapSale.setIdSale(idSale.getStringCellValue());
-            if (imssNum != null) sapSale.setImssNum(imssNum.getStringCellValue());
-            if (interlocCom != null) sapSale.setInterlocCom(interlocCom.getStringCellValue());
+            if (idSale != null) {
+                sapSale.setIdSale(idSale.getStringCellValue());
+            }
+            if (imssNum != null) {
+                sapSale.setImssNum(imssNum.getStringCellValue());
+            }
+            if (interlocCom != null) {
+                sapSale.setInterlocCom(interlocCom.getStringCellValue());
+            }
             if (liquidation != null) {
                 BigDecimal bdLiquidation = new BigDecimal(liquidation.getNumericCellValue());
                 sapSale.setLiquidation(bdLiquidation);
             }
-            if (payments != null) sapSale.setPayments(payments.getStringCellValue());
-            if (product != null) sapSale.setProduct(product.getStringCellValue());
-            if (region != null) sapSale.setRegionName(region.getStringCellValue());
+            if (payments != null) {
+                sapSale.setPayments(payments.getStringCellValue());
+            }
+            if (product != null) {
+                sapSale.setProduct(product.getStringCellValue());
+            }
             if (requestedAmount != null) {
                 BigDecimal bdRequestedAmount = new BigDecimal(requestedAmount.getNumericCellValue());
                 sapSale.setRequestedAmount(bdRequestedAmount);
             }
-            if (statusSale != null) sapSale.setStatusSale(statusSale.getStringCellValue());
-            if (purchaseDate != null) sapSale.setPurchaseDate(purchaseDate.getDateCellValue());
-            if (lastUpdate != null) sapSale.setLastUpdate(lastUpdate.getDateCellValue());
-
-
+            if (statusSale != null) {
+                sapSale.setStatusSale(statusSale.getStringCellValue());
+            }
+            if (purchaseDate != null) {
+                sapSale.setPurchaseDate(purchaseDate.getDateCellValue());
+            }
+            if (lastUpdate != null) {
+                sapSale.setLastUpdate(lastUpdate.getDateCellValue());
+            }
 
             List<SapSale> sapSales = sapSaleDao.findAllByIdSale(sapSale.getIdSale());
 
@@ -187,48 +286,131 @@ public class SapSaleServiceImpl implements SapSaleService {
 
                     sapSale.setIdSale(idSale.getStringCellValue());
 
-                    if (agreementName != null) sapSale.setAgreementName(agreementName.getStringCellValue());
-                    if (approvalDate != null) sapSale.setApprovalDate(approvalDate.getDateCellValue());
+                    if (approvalDate != null) {
+                        sapSale.setApprovalDate(approvalDate.getDateCellValue());
+                    }
+
+                    if (claveSap != null) {
+                        Employees employee = employeesDao.findByClaveSap(claveSap.getStringCellValue());
+                        sapSale.setEmployee(employee);
+                        sapSale.setClaveSap(claveSap.getStringCellValue());
+                    }
                     if (bonification != null) {
                         BigDecimal bdBonification = new BigDecimal(bonification.getNumericCellValue());
                         sapSale.setBonification(bdBonification);
                     }
-                    if (branchName != null) sapSale.setBranchName(branchName.getStringCellValue());
-                    if (claveSap != null) sapSale.setClaveSap(claveSap.getStringCellValue());
-                    if (clientId != null) sapSale.setClientId(clientId.getStringCellValue());
-                    if (clientMotherLast != null) sapSale.setClientMotherLast(clientMotherLast.getStringCellValue());
-                    if (clientName != null) sapSale.setClientName(clientName.getStringCellValue());
-                    if (clientSecName != null) sapSale.setClientSecName(clientSecName.getStringCellValue());
-                    if (clientSingleLast != null) sapSale.setClientSingleLast(clientSingleLast.getStringCellValue());
-                    if (clientParentLast != null) sapSale.setClientParentLast(clientParentLast.getStringCellValue());
+                    if (branchName != null) {
+                        String clearBranchName = StringUtils.stripAccents(branchName.getStringCellValue());
+                        String branchNameClean= clearBranchName.replaceAll("\\W", "").toUpperCase();
+                        CBranchs branch = cBranchsDao.findByName(branchNameClean);
+
+                        if (branch != null) {
+
+                            DwEnterprises dwEnterprises = dwEnterprisesDao.findByBranch(branch.getIdBranch());
+
+                            if (dwEnterprises != null) {
+                                sapSale.setDistributor(dwEnterprises.getDistributor());
+                                sapSale.setRegion(dwEnterprises.getRegion());
+                                sapSale.setDwEnterprise(dwEnterprises);
+                                sapSale.setBranch(branch);
+
+                                if (agreementName != null) {
+                                    String clearAgreementName = StringUtils.stripAccents(agreementName.getStringCellValue());
+                                    String agreementNameClean= clearAgreementName.replaceAll("\\W", "").toUpperCase();
+                                    CAgreements agreement = cAgreementsDao.findByName(agreementNameClean);
+
+                                    if (agreement != null) {
+
+                                        sapSale.setAgreement(agreement);
+
+                                    } else {
+                                        CAgreements newAgreement = new CAgreements();
+                                        newAgreement.setAgreementName(agreementName.getStringCellValue());
+                                        newAgreement.setAgreementNameClean(agreementNameClean);
+                                        newAgreement.setIdAccessLevel(1);
+                                        newAgreement.setUploadedDate(LocalDateTime.now());
+                                        newAgreement.setStatus(1);
+
+                                        newAgreement = cAgreementsDao.save(newAgreement);
+
+                                        DwEnterprisesAgreements dwEnterprisesAgreements =
+                                                new DwEnterprisesAgreements();
+
+                                        dwEnterprisesAgreements.setAgreement(newAgreement);
+                                        dwEnterprisesAgreements.setDwEnterprise(dwEnterprises);
+
+                                        dwEnterprisesAgreementsDao.save(dwEnterprisesAgreements);
+
+                                        sapSale.setAgreement(newAgreement);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (clientId != null) {
+                        sapSale.setClientId(clientId.getStringCellValue());
+                    }
+                    if (clientMotherLast != null) {
+                        sapSale.setClientMotherLast(clientMotherLast.getStringCellValue());
+                    }
+                    if (clientName != null) {
+                        sapSale.setClientName(clientName.getStringCellValue());
+                    }
+                    if (clientSecName != null) {
+                        sapSale.setClientSecName(clientSecName.getStringCellValue());
+                    }
+                    if (clientSingleLast != null) {
+                        sapSale.setClientSingleLast(clientSingleLast.getStringCellValue());
+                    }
+                    if (clientParentLast != null) {
+                        sapSale.setClientParentLast(clientParentLast.getStringCellValue());
+                    }
                     if (comissionableAmount != null) {
                         BigDecimal bdComissionableAmount = new BigDecimal(comissionableAmount.getNumericCellValue());
                         sapSale.setComissionableAmount(bdComissionableAmount);
                     }
-                    if (companyName != null) sapSale.setCompanyName(companyName.getStringCellValue());
-                    if (creationDate != null) sapSale.setCreationDate(creationDate.getDateCellValue());
-                    if (dependency != null) sapSale.setDependency(dependency.getStringCellValue());
+                    if (companyName != null) {
+                        sapSale.setCompanyName(companyName.getStringCellValue());
+                    }
+                    if (creationDate != null) {
+                        sapSale.setCreationDate(creationDate.getDateCellValue());
+                    }
+                    if (dependency != null) {
+                        sapSale.setDependency(dependency.getStringCellValue());
+                    }
                     if (depositAmount != null) {
                         BigDecimal bdDepositAmount = new BigDecimal(depositAmount.getNumericCellValue());
                         sapSale.setDepositAmount(bdDepositAmount);
                     }
-                    if (distributorName != null) sapSale.setDistributorName(distributorName.getStringCellValue());
-                    if (imssNum != null) sapSale.setImssNum(imssNum.getStringCellValue());
-                    if (interlocCom != null) sapSale.setInterlocCom(interlocCom.getStringCellValue());
+                    if (imssNum != null) {
+                        sapSale.setImssNum(imssNum.getStringCellValue());
+                    }
+                    if (interlocCom != null) {
+                        sapSale.setInterlocCom(interlocCom.getStringCellValue());
+                    }
                     if (liquidation != null) {
                         BigDecimal bdLiquidation = new BigDecimal(liquidation.getNumericCellValue());
                         sapSale.setLiquidation(bdLiquidation);
                     }
-                    if (payments != null) sapSale.setPayments(payments.getStringCellValue());
-                    if (product != null) sapSale.setProduct(product.getStringCellValue());
-                    if (region != null) sapSale.setRegionName(region.getStringCellValue());
+                    if (payments != null) {
+                        sapSale.setPayments(payments.getStringCellValue());
+                    }
+                    if (product != null) {
+                        sapSale.setProduct(product.getStringCellValue());
+                    }
                     if (requestedAmount != null) {
                         BigDecimal bdRequestedAmount = new BigDecimal(requestedAmount.getNumericCellValue());
                         sapSale.setRequestedAmount(bdRequestedAmount);
                     }
-                    if (statusSale != null) sapSale.setStatusSale(statusSale.getStringCellValue());
-                    if (purchaseDate != null) sapSale.setPurchaseDate(purchaseDate.getDateCellValue());
-                    if (lastUpdate != null) sapSale.setLastUpdate(lastUpdate.getDateCellValue());
+                    if (statusSale != null) {
+                        sapSale.setStatusSale(statusSale.getStringCellValue());
+                    }
+                    if (purchaseDate != null) {
+                        sapSale.setPurchaseDate(purchaseDate.getDateCellValue());
+                    }
+                    if (lastUpdate != null) {
+                        sapSale.setLastUpdate(lastUpdate.getDateCellValue());
+                    }
 
                     sapSaleDao.update(sapSale);
 
@@ -238,56 +420,134 @@ public class SapSaleServiceImpl implements SapSaleService {
 
                     newSapSale.setIdSale(idSale.getStringCellValue());
 
-                    if (agreementName != null) newSapSale.setAgreementName(agreementName.getStringCellValue());
-                    if (approvalDate != null) newSapSale.setApprovalDate(approvalDate.getDateCellValue());
+                    if (approvalDate != null) {
+                        newSapSale.setApprovalDate(approvalDate.getDateCellValue());
+                    }
+                    if (claveSap != null) {
+                        Employees employee = employeesDao.findByClaveSap(claveSap.getStringCellValue());
+                        newSapSale.setEmployee(employee);
+                        newSapSale.setClaveSap(claveSap.getStringCellValue());
+                    }
                     if (bonification != null) {
                         BigDecimal bdBonification = new BigDecimal(bonification.getNumericCellValue());
                         newSapSale.setBonification(bdBonification);
                     }
-                    if (branchName != null) newSapSale.setBranchName(branchName.getStringCellValue());
-                    if (claveSap != null) newSapSale.setClaveSap(claveSap.getStringCellValue());
-                    if (clientId != null) newSapSale.setClientId(clientId.getStringCellValue());
-                    if (clientMotherLast != null) newSapSale.setClientMotherLast(clientMotherLast.getStringCellValue());
-                    if (clientName != null) newSapSale.setClientName(clientName.getStringCellValue());
-                    if (clientSecName != null) newSapSale.setClientSecName(clientSecName.getStringCellValue());
-                    if (clientSingleLast != null) newSapSale.setClientSingleLast(clientSingleLast.getStringCellValue());
-                    if (clientParentLast != null) newSapSale.setClientParentLast(clientParentLast.getStringCellValue());
+                    if (branchName != null) {
+                        String clearBranchName = StringUtils.stripAccents(branchName.getStringCellValue());
+                        String branchNameClean= clearBranchName.replaceAll("\\W", "").toUpperCase();
+                        CBranchs branch = cBranchsDao.findByName(branchNameClean);
+
+                        if (branch != null) {
+
+                            DwEnterprises dwEnterprises = dwEnterprisesDao.findByBranch(branch.getIdBranch());
+
+                            if (dwEnterprises != null) {
+                                sapSale.setDistributor(dwEnterprises.getDistributor());
+                                sapSale.setRegion(dwEnterprises.getRegion());
+                                sapSale.setDwEnterprise(dwEnterprises);
+                                sapSale.setBranch(branch);
+
+                                if (agreementName != null) {
+                                    String clearAgreementName = StringUtils.stripAccents(agreementName.getStringCellValue());
+                                    String agreementNameClean= clearAgreementName.replaceAll("\\W", "").toUpperCase();
+                                    CAgreements agreement = cAgreementsDao.findByName(agreementNameClean);
+
+                                    if (agreement != null) {
+
+                                        sapSale.setAgreement(agreement);
+
+                                    } else {
+                                        CAgreements newAgreement = new CAgreements();
+                                        newAgreement.setAgreementName(agreementName.getStringCellValue());
+                                        newAgreement.setAgreementNameClean(agreementNameClean);
+                                        newAgreement.setIdAccessLevel(1);
+                                        newAgreement.setUploadedDate(LocalDateTime.now());
+                                        newAgreement.setStatus(1);
+
+                                        newAgreement = cAgreementsDao.save(newAgreement);
+
+                                        DwEnterprisesAgreements dwEnterprisesAgreements =
+                                                new DwEnterprisesAgreements();
+
+                                        dwEnterprisesAgreements.setAgreement(newAgreement);
+                                        dwEnterprisesAgreements.setDwEnterprise(dwEnterprises);
+
+                                        dwEnterprisesAgreementsDao.save(dwEnterprisesAgreements);
+
+                                        sapSale.setAgreement(newAgreement);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (clientId != null) {
+                        newSapSale.setClientId(clientId.getStringCellValue());
+                    }
+                    if (clientMotherLast != null) {
+                        newSapSale.setClientMotherLast(clientMotherLast.getStringCellValue());
+                    }
+                    if (clientName != null) {
+                        newSapSale.setClientName(clientName.getStringCellValue());
+                    }
+                    if (clientSecName != null) {
+                        newSapSale.setClientSecName(clientSecName.getStringCellValue());
+                    }
+                    if (clientSingleLast != null) {
+                        newSapSale.setClientSingleLast(clientSingleLast.getStringCellValue());
+                    }
+                    if (clientParentLast != null) {
+                        newSapSale.setClientParentLast(clientParentLast.getStringCellValue());
+                    }
                     if (comissionableAmount != null) {
                         BigDecimal bdComissionableAmount = new BigDecimal(comissionableAmount.getNumericCellValue());
                         newSapSale.setComissionableAmount(bdComissionableAmount);
                     }
-                    if (companyName != null) newSapSale.setCompanyName(companyName.getStringCellValue());
-                    if (creationDate != null) newSapSale.setCreationDate(creationDate.getDateCellValue());
-                    if (dependency != null) newSapSale.setDependency(dependency.getStringCellValue());
+                    if (companyName != null) {
+                        newSapSale.setCompanyName(companyName.getStringCellValue());
+                    }
+                    if (creationDate != null) {
+                        newSapSale.setCreationDate(creationDate.getDateCellValue());
+                    }
+                    if (dependency != null) {
+                        newSapSale.setDependency(dependency.getStringCellValue());
+                    }
                     if (depositAmount != null) {
                         BigDecimal bdDepositAmount = new BigDecimal(depositAmount.getNumericCellValue());
                         newSapSale.setDepositAmount(bdDepositAmount);
                     }
-                    if (distributorName != null) newSapSale.setDistributorName(distributorName.getStringCellValue());
-                    if (imssNum != null) newSapSale.setImssNum(imssNum.getStringCellValue());
-                    if (interlocCom != null) newSapSale.setInterlocCom(interlocCom.getStringCellValue());
+                    if (imssNum != null) {
+                        newSapSale.setImssNum(imssNum.getStringCellValue());
+                    }
+                    if (interlocCom != null) {
+                        newSapSale.setInterlocCom(interlocCom.getStringCellValue());
+                    }
                     if (liquidation != null) {
                         BigDecimal bdLiquidation = new BigDecimal(liquidation.getNumericCellValue());
                         newSapSale.setLiquidation(bdLiquidation);
                     }
-                    if (payments != null) newSapSale.setPayments(payments.getStringCellValue());
-                    if (product != null) newSapSale.setProduct(product.getStringCellValue());
-                    if (region != null) newSapSale.setRegionName(region.getStringCellValue());
+                    if (payments != null) {
+                        newSapSale.setPayments(payments.getStringCellValue());
+                    }
+                    if (product != null) {
+                        newSapSale.setProduct(product.getStringCellValue());
+                    }
                     if (requestedAmount != null) {
                         BigDecimal bdRequestedAmount = new BigDecimal(requestedAmount.getNumericCellValue());
                         newSapSale.setRequestedAmount(bdRequestedAmount);
                     }
-                    if (statusSale != null) newSapSale.setStatusSale(statusSale.getStringCellValue());
-                    if (purchaseDate != null) newSapSale.setPurchaseDate(purchaseDate.getDateCellValue());
-                    if (lastUpdate != null) newSapSale.setLastUpdate(lastUpdate.getDateCellValue());
+                    if (statusSale != null) {
+                        newSapSale.setStatusSale(statusSale.getStringCellValue());
+                    }
+                    if (purchaseDate != null) {
+                        newSapSale.setPurchaseDate(purchaseDate.getDateCellValue());
+                    }
+                    if (lastUpdate != null) {
+                        newSapSale.setLastUpdate(lastUpdate.getDateCellValue());
+                    }
 
                     sapSaleDao.save(newSapSale);
 
                 }
-
-
-
-
             }
         }
         return sapSaleDao.findAll();
@@ -338,10 +598,9 @@ public class SapSaleServiceImpl implements SapSaleService {
 
             List<SapSale> sapSales = sapSaleDao.findAllByIdSale(sapSale.getIdSale());
 
-            for (SapSale sapSaleFromDB: sapSales) {
-                if (sapSaleFromDB != null) {
-                    existsSale = true;
-                }
+            if (sapSales.size() > 0) {
+                existsSale = true;
+                break;
             }
         }
         return existsSale;

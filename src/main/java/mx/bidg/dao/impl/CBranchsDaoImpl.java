@@ -12,6 +12,8 @@ import mx.bidg.model.CBranchs;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.CriteriaSpecification;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -53,5 +55,10 @@ public class CBranchsDaoImpl extends AbstractDao<Integer, CBranchs> implements C
         remove(entity);
         return true;
     }
-    
+
+    @Override
+    public CBranchs findByName(String branchName) {
+        Criteria criteria = createEntityCriteria();
+        return (CBranchs) criteria.add(Restrictions.eq("branchNameClean", branchName)).uniqueResult();
+    }
 }

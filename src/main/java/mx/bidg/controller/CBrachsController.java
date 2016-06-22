@@ -14,6 +14,7 @@ import mx.bidg.config.JsonViews;
 import mx.bidg.model.*;
 import mx.bidg.service.CBranchsService;
 import mx.bidg.service.DwEnterprisesService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
