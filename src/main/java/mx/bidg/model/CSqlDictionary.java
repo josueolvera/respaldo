@@ -50,6 +50,10 @@ public class CSqlDictionary implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer parametersNum;
     
+    @Column(name = "ID_SQL_FUNCTIONS_CATEGORIES", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idSqlFunctionsCategories;
+    
     @JoinColumn(name = "ID_SQL_FUNCTIONS_CATEGORIES", referencedColumnName = "ID_CATEGORY")
     @ManyToOne()
     @JsonView(JsonViews.Embedded.class)
@@ -117,6 +121,14 @@ public class CSqlDictionary implements Serializable {
         this.sqlFunctionsCategories = sqlFunctionsCategories;
     }
     
+    public Integer getIdSqlFunctionsCategories() {
+        return idSqlFunctionsCategories;
+    }
+
+    public void setIdSqlFunctionsCategories(Integer idSqlFunctionsCategories) {
+        this.idSqlFunctionsCategories = idSqlFunctionsCategories;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -141,5 +153,5 @@ public class CSqlDictionary implements Serializable {
     public String toString() {
         return "mx.bidg.model.CSqlDictionary[ idDictionary=" + idDictionary + " ]";
     }
-    
+
 }
