@@ -164,6 +164,9 @@
 
                   this.fieldsTableChecked.push(operation);
 
+              },
+              removeOperation: function(operation){
+                  this.fieldsTableChecked.$remove(operation);
               }
 
 
@@ -305,6 +308,34 @@
                               </button>
                             </div>
                            </div>
+
+                           <div class="row">
+                             <div class="col-xs-4">
+                                 <table class="table table-striped">
+                                     <thead>
+                                         <th>
+                                             Nombre de la Operación
+                                         </th>
+                                         <th>
+                                             Eliminar Operación
+                                         </th>
+                                     </thead>
+                                     <tbody>
+                                         <tr v-for="field in fieldsTableChecked" v-if="field.viewInTable == 1">
+                                             <td>
+                                                 {{field.fieldUser}}
+                                             </td>
+                                             <td>
+                                                 <button class="btn btn-danger" @click="removeOperation(field)">
+                                                     <span class="glyphicon glyphicon-trash">
+                                                     </span>
+                                                 </button>
+                                             </td>
+                                         </tr>
+                                     </tbody>
+                                 </table>
+                             </div>
+                           </div>
                        </div>
                      </div>
                    </div>
@@ -344,10 +375,6 @@
                    </div>
                </div>
            </div>
-
-           <pre>
-               {{ $data | json}}
-           </pre>
 
       </div> <!-- #contenidos -->
       <!-- Fecha de Termino- Agregar fecha dia de solicitud-->
