@@ -84,7 +84,10 @@
               reportefechaFinal: '',
               timePickerReporteFinal: '',
               rules: [],
-              operationsSql: {}
+              operationsSql: {},
+              operationData: '',
+              fieldData: '',
+              alias: ''
           },
           methods:
           {
@@ -148,6 +151,22 @@
                           {
                               this.operationsSql = data;
                           });
+              },
+              addOperation: function(){
+                  var operation= {
+                      fieldName: '',
+                      fieldUser: '',
+                      viewInTable: 1
+                  }
+
+                  operation.fieldName = this.operationData.sqlText + "("+ this.fieldData.fieldName + ")";
+                  operation.fieldUser= this.alias;
+
+                  this.fieldsTableChecked.push(operation);
+
+              },
+              removeOperation: function(operation){
+                  this.fieldsTableChecked.$remove(operation);
               }
 
 
@@ -258,31 +277,64 @@
                            <div class="row">
                              <div class="col-xs-12">
                                <label>
-                                   Seleccione el campo, el tipo de operacion que desea realizar y nombre a su funcion.
+                                   Seleccione el tipo de operacion que desea realizar, el campo que necesita y nombre a su funcion.
                                </label>
                              </div>
                            </div>
                            <div class="row">
                             <div class="col-xs-3">
-                              <select class="form-control" name="">
-                                  <option></option>
-                                  <option v-for="field in fieldsTableChecked" value="{{field}}">
-                                      {{field.fieldUser}}
-                              </select>
+                                <select class="form-control" v-model="operationData">
+                                    <option></option>
+                                    <option v-for="operation in operationsSql" value="{{operation}}"
+                                        v-if="operation.idSqlFunctionsCategories == 2">
+                                        {{operation.userText}}
+                                    </option>
+                                </select>
                             </div>
                             <div class="col-xs-3">
-                              <select class="form-control" name="">
-                                  <option></option>
-                                  <option v-for="operation in operationsSql" value="{{operation}}">
-                                      {{operation.userText}}
-                                  </option>
-                              </select>
+                                <select class="form-control" v-model="fieldData">
+                                    <option></option>
+                                    <option v-for="field in fieldsTableChecked" value="{{field}}">
+                                        {{field.fieldUser}}
+                                </select>
                             </div>
                             <div class="col-xs-3">
-                              <button class="btn btn-default" name="button">
-                                  Agregar regla
+                                <input class="form-control" v-model="alias">
+                            </div>
+
+                            <div class="col-xs-3">
+                              <button class="btn btn-default" name="button" @click="addOperation">
+                                  Agregar Operacion
                               </button>
                             </div>
+                           </div>
+
+                           <div class="row">
+                             <div class="col-xs-4">
+                                 <table class="table table-striped">
+                                     <thead>
+                                         <th>
+                                             Nombre de la Operación
+                                         </th>
+                                         <th>
+                                             Eliminar Operación
+                                         </th>
+                                     </thead>
+                                     <tbody>
+                                         <tr v-for="field in fieldsTableChecked" v-if="field.viewInTable == 1">
+                                             <td>
+                                                 {{field.fieldUser}}
+                                             </td>
+                                             <td>
+                                                 <button class="btn btn-danger" @click="removeOperation(field)">
+                                                     <span class="glyphicon glyphicon-trash">
+                                                     </span>
+                                                 </button>
+                                             </td>
+                                         </tr>
+                                     </tbody>
+                                 </table>
+                             </div>
                            </div>
                        </div>
                      </div>

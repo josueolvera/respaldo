@@ -557,20 +557,13 @@
                             this.newArticleModal.properties.push(property);
                         }
                     },
-                    uploadFilesAssignments: function (article) {
-                        if (this.assignmentsModal.selected.dwEmployees == null) {
-                            showAlert("Distribudor, region, sucursal y area son requeridos", {type:3});
-                            return;
-                        }
+                    uploadFilesAssignments: function (article,formData) {
                         this.isSaving = true;
-                        var form = document.getElementById('attachments-form');
-                        var formData = new FormData(form);
                         this.$http.post(
                                 ROOT_URL + "/stock/" + article.idStock + "/attachments",
                                 formData
                         ).success(function (data)
                         {
-                            this.saveStockAssignment(article);
                             form.reset();
                         }).error(function (data) {
                             this.isSaving = false;
@@ -696,8 +689,17 @@
                     },
                     saveStockAssignment: function (article) {
                         this.isSaving = true;
+
+                        var idEmployee;
+
+                        if (this.assignmentsModal.selected.dwEmployees != null) {
+                            idEmployee = this.assignmentsModal.selected.dwEmployees.idEmployee;
+                        } else {
+                            idEmployee = 0;
+                        }
+
                         this.$http.post(
-                                ROOT_URL + "/stock/" + article.idStock + "/assignments/" + this.assignmentsModal.selected.dwEmployees.idEmployee,
+                                ROOT_URL + "/stock/" + article.idStock + "/assignments/" + idEmployee,
                                 {
                                     idDwEnterprise: this.assignmentsModal.selected.area.dwEnterprise.idDwEnterprise,
                                     invoiceNumber:this.invoiceNumber
@@ -712,7 +714,6 @@
                             this.assignmentsModal.selected.area = null;
                             this.assignmentsModal.selected.dwEmployees = null;
                             showAlert("Asignación exitosa");
-                            this.closeAssignmentsModal();
                         }).error(function (data) {
                             this.isSaving = false;
                             this.assignmentsModal.selected.distributor = null;
@@ -722,6 +723,19 @@
                             this.assignmentsModal.selected.dwEmployees = null;
                             showAlert(data.error.message, {type:3});
                         })
+                    },
+                    onSaveAssignmentsModal : function (article) {
+                        if (this.assignmentsModal.selected.area == null) {
+                            showAlert("Distribudor, region, sucursal y area son requeridos", {type:3});
+                            return;
+                        }
+
+                        var form = document.getElementById('attachments-form');
+                        var formData = new FormData(form);
+
+                        this.saveStockAssignment(article);
+                        this.uploadFilesAssignments(article,formData);
+                        this.closeAssignmentsModal();
                     },
                     showNewArticleModal: function () {
                         $("#newArticleModal").modal("show");
@@ -1347,6 +1361,9 @@
                                     <label>Empleado / Almacén</label>
                                     <select v-model="assignmentsModal.selected.dwEmployees" class="form-control"
                                             :disabled="assignmentsModal.selected.area == null">
+                                        <option :value=null v-if="assignmentsModal.selected.area.dwEnterprise.dwEmployeesList.length > 0">
+                                            SIN ASIGNACIÓN
+                                        </option>
                                         <option v-for="dwEmployees in assignmentsModal.selected.area.dwEnterprise.dwEmployeesList"
                                                 :value="dwEmployees">
                                             {{ dwEmployees.employee.fullName }}
@@ -1354,27 +1371,30 @@
                                     </select>
                                 </div>
                             </div>
-                            <br>
-                            <h4>Documentos</h4>
-                            <hr>
                             <form id="attachments-form" method="post" enctype="multipart/form-data"
-                                  v-on:submit.prevent="uploadFilesAssignments(assignmentsModal.article)">
-                                <table class="table table-striped">
-                                    <tr v-for="docType in selectOptions.documentTypes" v-if="docType.required == 2">
-                                        <td>{{ docType.documentName }}</td>
-                                        <td>
-                                            <input @change="validateFile($event)" type="file" class="form-control"
-                                                   :disabled="isSaving" required
-                                                   :name="assignmentsModal.fileInput + docType.idDocumentType"
-                                                   accept="application/pdf,
+                                  v-on:submit.prevent="onSaveAssignmentsModal(assignmentsModal.article)">
+                                <div v-if="assignmentsModal.selected.dwEmployees != null">
+                                    <br>
+                                    <h4>Documentos</h4>
+                                    <hr>
+                                    <table class="table table-striped">
+                                        <tr v-for="docType in selectOptions.documentTypes" v-if="docType.required == 2">
+                                            <td>{{ docType.documentName }}</td>
+                                            <td>
+                                                <input @change="validateFile($event)" type="file" class="form-control"
+                                                       :disabled="isSaving" required
+                                                       :name="assignmentsModal.fileInput + docType.idDocumentType"
+                                                       accept="application/pdf,
                                                          image/png,image/jpg,image/jpeg,">
-                                        </td>
-                                    </tr>
-                                </table>
-                                <div class="col-md-3 col-xs-6" v-if="selectedInvoiceNumber && !assignmentsModal.article.invoiceNumber">
-                                    <label>Número de factura</label>
-                                    <input v-model="invoiceNumber" type="text" class="form-control">
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    <div class="col-md-3 col-xs-6" v-if="selectedInvoiceNumber && !assignmentsModal.article.invoiceNumber">
+                                        <label>Número de factura</label>
+                                        <input v-model="invoiceNumber" type="text" class="form-control">
+                                    </div>
                                 </div>
+                                <br>
                                 <div v-if="isSaving" class="progress">
                                     <div class="progress-bar progress-bar-striped active" style="width: 100%"></div>
                                 </div>
