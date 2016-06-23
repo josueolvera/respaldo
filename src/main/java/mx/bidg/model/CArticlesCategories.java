@@ -10,15 +10,7 @@ import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -29,7 +21,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @DynamicUpdate
-@Table(name = "C_ARTICLES_CATEGORIES")
+@Table(name = "C_ARTICLES_CATEGORIES", uniqueConstraints = {
+        @UniqueConstraint(
+                name = "UNIQUE_FOLIO_CATEGORY", columnNames = "FOLIO_CATEGORY"
+        )
+})
 public class CArticlesCategories implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -54,7 +50,12 @@ public class CArticlesCategories implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int requireSerialNumber;
 
-
+    @NotNull
+    @Basic(optional = false)
+    @Size(min = 1, max = 3)
+    @Column(name = "FOLIO_CATEGORY")
+    @JsonView(JsonViews.Root.class)
+    private String folioCategory;
 
     public CArticlesCategories() {
     }
@@ -91,6 +92,14 @@ public class CArticlesCategories implements Serializable {
 
     public void setRequireSerialNumber(int requireSerialNumber) {
         this.requireSerialNumber = requireSerialNumber;
+    }
+
+    public String getFolioCategory() {
+        return folioCategory;
+    }
+
+    public void setFolioCategory(String folioCategory) {
+        this.folioCategory = folioCategory;
     }
 
     @Override

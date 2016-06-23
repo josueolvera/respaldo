@@ -111,13 +111,11 @@ public class StockController {
 
         stock = stockService.save(stock);
 
-
         if (request.getParameter("dwEnterprise") != null) {
             DwEnterprises dwEnterprises =
                     dwEnterprisesService.findById(Integer.parseInt(request.getParameter("dwEnterprise")));
 
             stock.setDwEnterprises(dwEnterprises);
-            stockService.update(stock);
 
             if (! request.getParameter("employee").isEmpty()) {
                 Employees employee =
@@ -134,6 +132,8 @@ public class StockController {
             }
         }
 
+        stock.setStockFolio(stock.getArticle().getArticlesCategories().getFolioCategory() + '-' + stock.getIdStock());
+        stockService.update(stock);
         saveAttachDocuments(stock.getIdStock(),request);
 
         return new ResponseEntity<>(
