@@ -314,9 +314,12 @@ public class StockController {
 
         stock.setDwEnterprises(dwEnterprises);
 
+        if (idEmployee != 0) {
+            newAssignment.setEmployee(employeesService.findById(idEmployee));
+        }
+
         newAssignment.setStocks(stock);
         newAssignment.setDwEnterprises(stock.getDwEnterprises());
-        newAssignment.setEmployee(employeesService.findById(idEmployee));
         newAssignment.setAssignmentDate(LocalDateTime.now());
         newAssignment.setCurrentAssignment(1);
         newAssignment.setIdAccessLevel(1);
