@@ -16,7 +16,7 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
     @Override
     public EmployeesHistory save(EmployeesHistory entity) {
         persist(entity);
-        return null;
+        return entity;
     }
 
     @Override
