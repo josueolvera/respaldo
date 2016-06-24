@@ -84,10 +84,6 @@ public class DwEnterprises implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer budgetable;
 
-    @Column(name = "AGREEMENT_STATUS")
-    @JsonView(JsonViews.Root.class)
-    private Integer agreementStatus;
-
     @JoinColumn(name = "ID_GROUP", referencedColumnName = "ID_GROUP")
     @ManyToOne(optional = false)
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
@@ -274,14 +270,6 @@ public class DwEnterprises implements Serializable {
 
     public void setStatus(boolean status) {
         this.status = status;
-    }
-
-    public Integer getAgreementStatus() {
-        return agreementStatus;
-    }
-
-    public void setAgreementStatus(Integer agreementStatus) {
-        this.agreementStatus = agreementStatus;
     }
 
     @Override

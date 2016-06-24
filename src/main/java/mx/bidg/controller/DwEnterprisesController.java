@@ -68,15 +68,6 @@ public class DwEnterprisesController {
         );
     }
 
-    @RequestMapping(value = "/hierarchy-agreements", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> getHierarchyAgreement() throws IOException {
-        List<HierarchicalLevel> hierarchy = dwEnterprisesService.findHierarchicalStrucutureByAgreement();
-        return new ResponseEntity<>(
-                map.writerWithView(JsonViews.Embedded.class).writeValueAsString(hierarchy),
-                HttpStatus.OK
-        );
-    }
-
     @RequestMapping(value = "/distributor-region-branch/{idDistributor}/{idRegion}/{idBranch}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getDRB(@PathVariable Integer idDistributor,@PathVariable Integer idRegion, @PathVariable Integer idBranch)throws IOException{
         DwEnterprises dwEnterprise = dwEnterprisesService.findByDistributorRegionBranch(idDistributor,idRegion,idBranch);

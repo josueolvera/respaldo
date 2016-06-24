@@ -78,7 +78,6 @@
                     this.obtainCurrencies();
                     this.obtainRequestTypes();
                     this.productTypes();
-                    this.obtainDistributors();
                 },
                 data: {
                     supplier: {
@@ -169,7 +168,6 @@
                     ProductTypes: {},
                     RequestTypes: {},
                     asentamiento:[],
-                    distributors:[],
                     estadosMunicipios:{
                     },
 
@@ -253,6 +251,9 @@
                             this.saveAccount(this.idBanks, this.accountNumbers, this.clabes, this.idCurrency);
                             return true;
                         } else {
+                            if (this.supplier.providersAccountsList.length > 0) {
+                                return true;
+                            }
                             showAlert("Debes ingresar los datos requeridos: Banco, Modenada y Numero de Cuenta o CLABE", {type: 3});
                             return false;
                         }
@@ -475,11 +476,6 @@
                             this.states = data;
                         });
                     },
-                    obtainDistributors: function() {
-                      this.$http.get(ROOT_URL + "/distributors").success(function (data) {
-                          this.distributors = data;
-                      });
-                    },
                     obtainSettlements: function () {
                         this.$http.get(ROOT_URL + "/settlements").success(function (data) {
                             this.settlements = data;
@@ -641,7 +637,7 @@
                                 });
                     },
                     obtainAccountinAccount: function () {
-                        this.$http.get(ROOT_URL + "/accounting-accounts/" + this.distributor.idDistributor + "/" + this.supplier.firstLevel + "/" + this.supplier.secondLevel + "/" + this.supplier.thirdLevel)
+                        this.$http.get(ROOT_URL + "/accounting-accounts/" + this.supplier.firstLevel + "/" + this.supplier.secondLevel + "/" + this.supplier.thirdLevel)
                                 .success(function (data) {
                                     console.log(data);
                                 this.supplier.idAccountingAccount = data.idAccountingAccount;
@@ -699,8 +695,6 @@
                         this.requestInformation.idProductType = '',
                         this.asentamiento = [];
                         this.estadosMunicipios = {};
-                        this.distributors = [],
-
                         $('#modalAlta').modal('hide');
                         $('#modalModi').modal('hide');
                     },
@@ -924,16 +918,6 @@
                                 </div>
                                 <br>
                                 <div class="row">
-                                    <div class="col-xs-4">
-                                        <label>Distribuidor</label>
-                                        <select class="form-control" name="" v-model="distributor.idDistributor">
-                                            <option></option>
-                                            <option v-for="distributor in distributors"
-                                                    value="{{distributor.idDistributor}}">
-                                                {{distributor.distributorName}}
-                                            </option>
-                                        </select>
-                                    </div>
                                     <div class="col-xs-2">
                                         <label>Primer nivel</label>
                                         <input maxlength="4" class="form-control text-center" name="name"
@@ -1255,7 +1239,7 @@
                                 </div>
                             </div>
                             <div class="row" v-show="provider.rfc.length==12">
-                                <div class="col-xs-4">
+                                <div class="col-xs-9">
                                     <label>Razón social</label>
                                     <input class="form-control" name="name" v-model="provider.providerName"
                                            disabled="true">
@@ -1286,10 +1270,6 @@
                             </div>
                             <br>
                             <div class="row">
-                                <div class="col-xs-3">
-                                    <label>Distribuidor</label>
-                                    <p>{{ provider.accountingAccounts.distributor.distributorName }}</p>
-                                </div>
                                 <div class="col-xs-3">
                                     <label>Cuenta contable</label>
                                     <p>
