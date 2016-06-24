@@ -45,10 +45,6 @@ public class AccountingAccounts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int thirdLevel;
 
-    @Column(name = "ID_DISTRIBUTOR", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private int idDistributor;
-
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCOUNTING_TYPE")
@@ -79,11 +75,6 @@ public class AccountingAccounts implements Serializable {
     @Column(name = "DESCRIPTION")
     @JsonView(JsonViews.Root.class)
     private String description;
-
-    @JoinColumn(name = "ID_DISTRIBUTOR", referencedColumnName = "ID_DISTRIBUTOR")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private CDistributors distributor;
 
     public AccountingAccounts() {
     }
@@ -174,22 +165,6 @@ public class AccountingAccounts implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public int getIdDistributor() {
-        return idDistributor;
-    }
-
-    public void setIdDistributor(int idDistributor) {
-        this.idDistributor = idDistributor;
-    }
-
-    public CDistributors getDistributor() {
-        return distributor;
-    }
-
-    public void setDistributor(CDistributors distributor) {
-        this.distributor = distributor;
     }
 
     @Override
