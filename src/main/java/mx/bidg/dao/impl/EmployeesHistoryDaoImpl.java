@@ -38,6 +38,6 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
     @Override
     public boolean delete(EmployeesHistory entity) {
         remove(entity);
-        return false;
+        return true;
     }
 }
