@@ -12,16 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -185,6 +176,33 @@ public class Employees implements Serializable {
     @Column(name = "MOTHER_NAME")
     @JsonView(JsonViews.Root.class)
     private String motherName;
+
+    @Column(name = "ID_EDUCATION", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idEducation;
+
+    @Column(name = "ID_STATUS_MARITAL", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idStatusMarital;
+
+    @Size(max = 10)
+    @Column(name = "HOME_PHONE")
+    @JsonView(JsonViews.Root.class)
+    private String homePhone;
+
+    @Size(max = 3)
+    @Column(name = "SIZE")
+    @JsonView(JsonViews.Root.class)
+    private String size;
+
+    @Size(max = 2)
+    @Column(name = "SIZE_NUMBER")
+    @JsonView(JsonViews.Root.class)
+    private Integer sizeNumber;
+
+    @Column(name = "GENDER")
+    @JsonView(JsonViews.Root.class)
+    private Integer gender;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
     @JsonView(JsonViews.Embedded.class)
@@ -193,6 +211,17 @@ public class Employees implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
     @JsonView(JsonViews.Embedded.class)
     private List<EmployeesAccounts> employeesAccountsList;
+
+    @JoinColumn(name = "ID_EDUCATION", referencedColumnName = "ID_EDUCATION")
+    @ManyToOne(optional = true)
+    @JsonView(JsonViews.Embedded.class)
+    private CEducation education;
+
+    @JoinColumn(name = "ID_STATUS_MARITAL", referencedColumnName = "ID_STATUS_MARITAL")
+    @ManyToOne(optional = true)
+    @JsonView(JsonViews.Embedded.class)
+    private CStatusMarital statusMarital;
+
 
     public Employees() {
     }
@@ -469,6 +498,70 @@ public class Employees implements Serializable {
             return null;
         }
         return new DateFormatsPojo(birthday);
+    }
+
+    public Integer getIdEducation() {
+        return idEducation;
+    }
+
+    public void setIdEducation(Integer idEducation) {
+        this.idEducation = idEducation;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public String getHomePhone() {
+        return homePhone;
+    }
+
+    public void setHomePhone(String homePhone) {
+        this.homePhone = homePhone;
+    }
+
+    public Integer getSizeNumber() {
+        return sizeNumber;
+    }
+
+    public void setSizeNumber(Integer sizeNumber) {
+        this.sizeNumber = sizeNumber;
+    }
+
+    public Integer getGender() {
+        return gender;
+    }
+
+    public void setGender(Integer gender) {
+        this.gender = gender;
+    }
+
+    public CEducation getEducation() {
+        return education;
+    }
+
+    public void setEducation(CEducation education) {
+        this.education = education;
+    }
+
+    public Integer getIdStatusMarital() {
+        return idStatusMarital;
+    }
+
+    public void setIdStatusMarital(Integer idStatusMarital) {
+        this.idStatusMarital = idStatusMarital;
+    }
+
+    public CStatusMarital getStatusMarital() {
+        return statusMarital;
+    }
+
+    public void setStatusMarital(CStatusMarital statusMarital) {
+        this.statusMarital = statusMarital;
     }
 
     public String getFullName() {
