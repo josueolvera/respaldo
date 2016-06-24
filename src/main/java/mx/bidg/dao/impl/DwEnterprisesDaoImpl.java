@@ -74,11 +74,6 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
     }
 
     @Override
-    public List<DwEnterprises> findAllByStatusAgreement() {
-        return (List<DwEnterprises>) createEntityCriteria().add(Restrictions.eq("agreementStatus",1)).list();
-    }
-
-    @Override
     public DwEnterprises findByDistributorRegionBranch(Integer idDistributor, Integer idRegion, Integer idBranch) {
         return (DwEnterprises) createEntityCriteria()
                 .add(Restrictions.eq("idDistributor", idDistributor))
