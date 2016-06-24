@@ -34,7 +34,8 @@ public class EmployeesDaoImpl extends AbstractDao<Integer, Employees> implements
 
     @Override
     public Employees save(Employees entity) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        persist(entity);
+        return entity;
     }
 
     @Override
@@ -53,11 +54,13 @@ public class EmployeesDaoImpl extends AbstractDao<Integer, Employees> implements
 
     @Override
     public Employees update(Employees entity) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        modify(entity);
+        return entity;
     }
 
     @Override
     public boolean delete(Employees entity) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        remove(entity);
+        return true;
     }
 }
