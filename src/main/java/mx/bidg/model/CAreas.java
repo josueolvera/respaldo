@@ -7,16 +7,10 @@ package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import java.util.Set;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
@@ -49,6 +43,14 @@ public class CAreas implements Serializable {
     @Column(name = "AREA_NAME")
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private String areaName;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "AREA_ROL", joinColumns = {
+            @JoinColumn(name = "ID_AREA", nullable = false) },
+            inverseJoinColumns = { @JoinColumn(name = "ID_ROLE",
+                    nullable = false) })
+    @JsonView(JsonViews.Embedded.class)
+    private Set<CRoles> roles;
     
     public CAreas() {
     }
@@ -76,6 +78,14 @@ public class CAreas implements Serializable {
 
     public void setAreaName(String areaName) {
         this.areaName = areaName;
+    }
+
+    public Set<CRoles> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<CRoles> roles) {
+        this.roles = roles;
     }
 
     @Override
