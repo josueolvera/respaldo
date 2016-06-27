@@ -3,20 +3,20 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CRolesDao;
 import mx.bidg.model.CRoles;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 /**
- * Created by jolvera on 24/06/16.
+ * Created by gerardo8 on 24/06/16.
  */
+@SuppressWarnings("unchecked")
 @Repository
-public class CRolesDaoImpl extends AbstractDao <Integer, CRoles> implements CRolesDao {
-
+public class CRolesDaoImpl extends AbstractDao<Integer,CRoles> implements CRolesDao {
     @Override
     public CRoles save(CRoles entity) {
-        persist(entity);
-        return entity;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -26,18 +26,23 @@ public class CRolesDaoImpl extends AbstractDao <Integer, CRoles> implements CRol
 
     @Override
     public List<CRoles> findAll() {
-        return (List<CRoles>) createEntityCriteria().list();
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public CRoles update(CRoles entity) {
-        modify(entity);
-        return entity;
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
     public boolean delete(CRoles entity) {
-        remove(entity);
-        return true;
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public CRoles findByIdRole(Integer idRole) {
+        return (CRoles) createEntityCriteria()
+                .add(Restrictions.eq("idRole",idRole))
+                .uniqueResult();
     }
 }
