@@ -8,6 +8,7 @@ package mx.bidg.model;
 import com.fasterxml.jackson.annotation.JsonView;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
+import mx.bidg.utils.StringFormatter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
@@ -177,10 +178,10 @@ public class EmployeesHistory implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer movementType;
     
-    @Column(name = "HIGH_DATE")
+    @Column(name = "JOIN_DATE")
     @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
-    private LocalDateTime highDate;
+    private LocalDateTime joinDate;
     
     @Size(max = 30)
     @Column(name = "EDUCATION")
@@ -612,12 +613,12 @@ public class EmployeesHistory implements Serializable {
         this.movementType = movementType;
     }
 
-    public LocalDateTime getHighDate() {
-        return highDate;
+    public LocalDateTime getJoinDate() {
+        return joinDate;
     }
 
-    public void setHighDate(LocalDateTime highDate) {
-        this.highDate = highDate;
+    public void setJoinDate(LocalDateTime joinDate) {
+        this.joinDate = joinDate;
     }
 
     public String getEducation() {
@@ -714,6 +715,14 @@ public class EmployeesHistory implements Serializable {
 
     public void setDelegationMunicipality(String delegationMunicipality) {
         this.delegationMunicipality = delegationMunicipality;
+    }
+
+    public int gethStatus() {
+        return hStatus;
+    }
+
+    public void sethStatus(int hStatus) {
+        this.hStatus = hStatus;
     }
 
     public String getPostcode() {
@@ -906,6 +915,10 @@ public class EmployeesHistory implements Serializable {
 
     public void setHStatus(int hStatus) {
         this.hStatus = hStatus;
+    }
+
+    public String getFullName() {
+        return StringFormatter.concatWithoutNull(firstName, middleName, parentalLast, motherLast);
     }
 
     @Override

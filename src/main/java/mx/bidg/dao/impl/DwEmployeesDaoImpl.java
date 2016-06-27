@@ -5,6 +5,8 @@ import mx.bidg.dao.DwEmployeesDao;
 import mx.bidg.model.DwEmployees;
 import mx.bidg.model.DwEnterprises;
 import mx.bidg.model.Employees;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -45,8 +47,28 @@ public class DwEmployeesDaoImpl extends AbstractDao<Integer, DwEmployees> implem
     }
 
     @Override
+    public List<DwEmployees> findByEmployeeAndDwEnterpriseAndRole(List<DwEnterprises> dwEnterprises, Integer idRole) {
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjunction = Restrictions.disjunction();
+
+        if (dwEnterprises != null) {
+            for (DwEnterprises dwEnterprise : dwEnterprises) {
+                disjunction.add(Restrictions.eq("idDwEnterprise",dwEnterprise.getIdDwEnterprise()));
+            }
+            criteria.add(disjunction);
+        }
+
+        if (idRole != null) {
+            criteria.add(Restrictions.eq("idRole",idRole));
+        }
+
+        return criteria.list();
+    }
+
+
+    @Override
     public List<DwEmployees> findAll() {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return createEntityCriteria().list();
     }
 
     @Override

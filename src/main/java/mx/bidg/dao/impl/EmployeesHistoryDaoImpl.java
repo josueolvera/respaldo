@@ -3,6 +3,8 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.EmployeesHistoryDao;
 import mx.bidg.model.EmployeesHistory;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,5 +41,39 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
     public boolean delete(EmployeesHistory entity) {
         remove(entity);
         return true;
+    }
+
+    @Override
+    public List<EmployeesHistory> findByDistributorAndRegionAndBranchAndAreaAndRole(Integer idDistributor, Integer idRegion, Integer idBranch, Integer idArea, Integer idRole) {
+        Criteria criteria = createEntityCriteria();
+
+        boolean hasRestrictions = false;
+
+        if (idDistributor != null) {
+            criteria.add(Restrictions.eq("idDistributor",idDistributor));
+            hasRestrictions = true;
+        }
+        if (idRegion != null) {
+            criteria.add(Restrictions.eq("idRegion",idRegion));
+            hasRestrictions = true;
+        }
+        if (idBranch != null) {
+            criteria.add(Restrictions.eq("idBranch",idBranch));
+            hasRestrictions = true;
+        }
+        if (idArea != null) {
+            criteria.add(Restrictions.eq("idArea",idArea));
+            hasRestrictions = true;
+        }
+        if (idRole != null) {
+            criteria.add(Restrictions.eq("idRole",idRole));
+            hasRestrictions = true;
+        }
+
+        if (!hasRestrictions) {
+            return null;
+        }
+
+        return criteria.list();
     }
 }

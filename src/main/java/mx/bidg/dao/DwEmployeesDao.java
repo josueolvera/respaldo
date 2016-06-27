@@ -13,4 +13,9 @@ import java.util.List;
 public interface DwEmployeesDao extends InterfaceDao<DwEmployees> {
     DwEmployees findBy(Employees employee, DwEnterprises dwEnterprises);
     List<DwEmployees> findByDwEnterprisesId(DwEnterprises dwEnterprises);
+    List<DwEmployees> findByEmployeeAndDwEnterpriseAndRole
+            (
+                    List<DwEnterprises> dwEnterprises,
+                    Integer idRole
+            );
 }
