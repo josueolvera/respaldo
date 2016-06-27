@@ -717,6 +717,14 @@ public class EmployeesHistory implements Serializable {
         this.delegationMunicipality = delegationMunicipality;
     }
 
+    public int gethStatus() {
+        return hStatus;
+    }
+
+    public void sethStatus(int hStatus) {
+        this.hStatus = hStatus;
+    }
+
     public String getPostcode() {
         return postcode;
     }
