@@ -73,7 +73,22 @@
             var vm = new Vue({
                 el: '#contenidos',
                 created: function () {
+                    var fecha = new Date();
+                    var fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth()+1) + "-" + fecha.getDate();
+                    var fechaMinima = moment(fecha_actual).subtract('years',18);
 
+                    this.timePickerBirthday = $('#dateBirthDay').datetimepicker({
+                        locale: 'es',
+                        format: 'DD-MM-YYYY',
+                        defaultDate: fechaMinima,
+                        useCurrent: false,
+                        maxDate: fechaMinima
+                    }).data();
+
+                    this.timePickerIngreso = $('#dateJoin').datetimepicker({
+                        locale: 'es',
+                        format: 'DD-MM-YYYY',
+                    }).data;
                 },
                 ready: function () {
                     this.obtainStates();
@@ -105,6 +120,7 @@
                         interiorNumber: '',
                         colonia: '',
                         city: '',
+                        state: '',
                         postCode: '',
                         cellPhone: '',
                         fatherName: '',
@@ -114,8 +130,18 @@
                         size: '',
                         sizeNumber: '',
                         gender: '',
-                        dwEmployeeList: [],
+                        dwEmployees: {
+                            area: {
+                                id: 0,
+                            },
+                            role: {
+                                id: 0,
+                            }
+                        },
                         employeeAccountList: [],
+                        birthPlace: '',
+                        idStatusMarital: '',
+                        birthday: '',
                     },
                     estados: [],
                     education: [],
@@ -171,7 +197,9 @@
                     defaultRole: {
                         id: 0,
                         name: ''
-                    }
+                    },
+                    timePickerIngreso: '',
+                    timePickerBirthday: '',
                 },
                 methods: {
                     obtainStates: function () {
@@ -238,8 +266,18 @@
                     },
                     selectedOptionsAreaChanged: function () {
                         this.selectedOptions.role = this.defaultRole;
-                        this.$http.get(ROOT_URL + "/areas/area-role/" + this.selectedOptions.area).success(function (data) {
+                        this.$http.get(ROOT_URL + "/areas/area-role/" + this.selectedOptions.area.id).success(function (data) {
                             this.selectOptions.areas = data;
+                        });
+                    },
+                    saveEmployee: function () {
+                      this.employee.employeeAccountList.push(this.cuenta);
+                        this.employee.dwEmployees.area = this.selectedOptions.area;
+                        this.employee.dwEmployees.role = this.selectedOptions.role;
+                        this.$http.post(ROOT_URL + "/employees/save", JSON.stringify(this.employee)).success(function (data) {
+                            showAlert("Registro de empleado exitoso");
+                        }).error(function () {
+                            showAlert("Ha habido un error con la solicitud, intente nuevamente", {type: 3});
                         });
                     },
                 },
@@ -298,9 +336,9 @@
                             </div>
                             <div class="col-xs-3">
                                 <label>Fecha de Nacimiento</label>
-                                <div class='input-group date' id='datecuentasporpagarfinal'>
+                                <div class='input-group date' id='dateBirthDay'>
                                     <input type='text' class="form-control" v-model="employee.birthday">
-                                   <span class="input-group-addon" @click="activarTimePickerPagar">
+                                   <span class="input-group-addon">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
                                 </div>
@@ -429,9 +467,9 @@
                             </div>
                             <div class="col-xs-3">
                                 <label>Fecha de ingreso</label>
-                                <div class='input-group date' id='datecuentasporpagarfinal'>
+                                <div class='input-group date' id='dateJoin'>
                                     <input type='text' class="form-control" v-model="employee.joinDate">
-                                   <span class="input-group-addon" @click="activarTimePickerPagar">
+                                   <span class="input-group-addon">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
                                 </div>
@@ -489,7 +527,7 @@
                                         :disabled="selectedOptions.branch.id == 0">
                                     <option selected :value="defaultArea">{{defaultArea.name}}</option>
                                     <option v-for="area in selectedOptions.branch.subLevels"
-                                            :value="area.id">
+                                            :value="area">
                                         {{ area.name }}
                                     </option>
                                 </select>
@@ -597,6 +635,13 @@
                             <div class="col-xs-3">
                                 <label>Credito infonavit</label>
                                 <input class="form-control" name="name" v-model="employee.infonavitNumber">
+                            </div>
+                            <div class="col-xs-2">
+                                <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip"
+                                        data-placement="bottom" title="Agregar"
+                                        @click="saveEmployee()">
+                                    <span class="glyphicon glyphicon-plus"></span>
+                                </button>
                             </div>
                         </div>
                     </div>
