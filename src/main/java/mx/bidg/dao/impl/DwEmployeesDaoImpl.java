@@ -68,7 +68,7 @@ public class DwEmployeesDaoImpl extends AbstractDao<Integer, DwEmployees> implem
 
     @Override
     public List<DwEmployees> findAll() {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        return createEntityCriteria().list();
     }
 
     @Override
