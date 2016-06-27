@@ -917,6 +917,10 @@ public class EmployeesHistory implements Serializable {
         this.hStatus = hStatus;
     }
 
+    public String getFullName() {
+        return StringFormatter.concatWithoutNull(firstName, middleName, parentalLast, motherLast);
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
