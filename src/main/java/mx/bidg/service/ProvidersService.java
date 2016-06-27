@@ -6,6 +6,8 @@
 package mx.bidg.service;
 
 import java.util.List;
+
+import mx.bidg.model.CProductTypes;
 import mx.bidg.model.Providers;
 
 /**
@@ -19,4 +21,5 @@ public interface ProvidersService {
     Providers update(Providers providers);
     Boolean delete(Providers providers);
     void low(Integer idProviders);
+    List<Providers> findByProductType(CProductTypes cProductTypes);
 }
