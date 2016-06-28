@@ -15,6 +15,7 @@ public interface DwEmployeesDao extends InterfaceDao<DwEmployees> {
     List<DwEmployees> findByDwEnterprisesId(DwEnterprises dwEnterprises);
     List<DwEmployees> findByEmployeeAndDwEnterpriseAndRole
             (
+                    List<Employees> employees,
                     List<DwEnterprises> dwEnterprises,
                     Integer idRole
             );

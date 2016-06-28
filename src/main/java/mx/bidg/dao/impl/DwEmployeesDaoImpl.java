@@ -47,9 +47,16 @@ public class DwEmployeesDaoImpl extends AbstractDao<Integer, DwEmployees> implem
     }
 
     @Override
-    public List<DwEmployees> findByEmployeeAndDwEnterpriseAndRole(List<DwEnterprises> dwEnterprises, Integer idRole) {
+    public List<DwEmployees> findByEmployeeAndDwEnterpriseAndRole(List<Employees> employees,List<DwEnterprises> dwEnterprises, Integer idRole) {
         Criteria criteria = createEntityCriteria();
         Disjunction disjunction = Restrictions.disjunction();
+
+        if (employees != null) {
+            for (Employees employee : employees) {
+                disjunction.add(Restrictions.eq("idEmployee",employee.getIdEmployee()));
+            }
+            criteria.add(disjunction);
+        }
 
         if (dwEnterprises != null) {
             for (DwEnterprises dwEnterprise : dwEnterprises) {
