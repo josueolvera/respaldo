@@ -18,7 +18,9 @@ public interface DwEmployeesService {
             Integer idRegion,
             Integer idBranch,
             Integer idArea,
-            Integer idRole
+            Integer idRole,
+            String startDate,
+            String endDate
     );
     List<DwEmployees> findAll();
 }

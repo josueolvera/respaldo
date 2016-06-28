@@ -46,7 +46,10 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     }
 
     @Override
-    public List<DwEmployees> findByDistributorAndRegionAndBranchAndAreaAndRole(Integer idDistributor, Integer idRegion, Integer idBranch, Integer idArea, Integer idRole) {
+    public List<DwEmployees> findByDistributorAndRegionAndBranchAndAreaAndRole(Integer idDistributor, Integer idRegion, Integer idBranch, Integer idArea, Integer idRole,String startDate, String endDate) {
+
+        List<Employees> employees = employeesDao.findBetweenJoinDate(startDate,endDate);
+
         List<DwEnterprises> dwEnterprises =
                 dwEnterprisesDao.findByDistributorAndRegionAndBranchAndArea
                         (
@@ -55,7 +58,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
                                 idBranch,
                                 idArea
                         );
-        return dwEmployeesDao.findByEmployeeAndDwEnterpriseAndRole(dwEnterprises,idRole);
+        return dwEmployeesDao.findByEmployeeAndDwEnterpriseAndRole(employees,dwEnterprises,idRole);
     }
 
     @Override
