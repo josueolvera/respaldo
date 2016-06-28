@@ -15,6 +15,8 @@ public interface EmployeesHistoryService {
             Integer idRegion,
             Integer idBranch,
             Integer idArea,
-            Integer idRole
+            Integer idRole,
+            String startDate,
+            String endDate
     );
 }

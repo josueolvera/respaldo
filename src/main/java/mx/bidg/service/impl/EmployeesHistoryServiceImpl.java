@@ -30,7 +30,7 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
     }
 
     @Override
-    public List<EmployeesHistory> findByDistributorAndRegionAndBranchAndAreaAndRole(Integer idDistributor, Integer idRegion, Integer idBranch, Integer idArea, Integer idRole) {
-        return employeesHistoryDao.findByDistributorAndRegionAndBranchAndAreaAndRole(idDistributor,idRegion,idBranch,idArea,idRole);
+    public List<EmployeesHistory> findByDistributorAndRegionAndBranchAndAreaAndRole(Integer idDistributor, Integer idRegion, Integer idBranch, Integer idArea, Integer idRole, String startDate, String endDate) {
+        return employeesHistoryDao.findByDistributorAndRegionAndBranchAndAreaAndRole(idDistributor,idRegion,idBranch,idArea,idRole,startDate,endDate);
     }
 }
