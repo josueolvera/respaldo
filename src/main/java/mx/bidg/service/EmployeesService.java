@@ -13,4 +13,5 @@ public interface EmployeesService {
     List<Employees> findSimpleBy(DwEnterprises dwEnterprises);
     List<Employees> findAll();
     Employees findById(Integer id);
+    Employees save(Employees employee);
 }
