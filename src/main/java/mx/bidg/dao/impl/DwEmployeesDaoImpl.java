@@ -21,7 +21,8 @@ import java.util.List;
 public class DwEmployeesDaoImpl extends AbstractDao<Integer, DwEmployees> implements DwEmployeesDao {
     @Override
     public DwEmployees save(DwEmployees entity) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        persist(entity);
+        return entity;
     }
 
     @Override
