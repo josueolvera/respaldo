@@ -19,5 +19,6 @@ public interface EmployeesAccountsService {
     public List<EmployeesAccounts> findByEmployee(Employees e);
     
     public List<EmployeesAccounts> findByIdUser(int idUser);
-    
+
+    EmployeesAccounts save (EmployeesAccounts employeesAccounts);
 }
