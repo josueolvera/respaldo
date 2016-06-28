@@ -7,6 +7,8 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -44,10 +46,17 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
     }
 
     @Override
-    public List<EmployeesHistory> findByDistributorAndRegionAndBranchAndAreaAndRole(Integer idDistributor, Integer idRegion, Integer idBranch, Integer idArea, Integer idRole) {
+    public List<EmployeesHistory> findByDistributorAndRegionAndBranchAndAreaAndRole(Integer idDistributor, Integer idRegion, Integer idBranch, Integer idArea, Integer idRole, String startDate, String endDate) {
         Criteria criteria = createEntityCriteria();
-
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         boolean hasRestrictions = false;
+
+        if (startDate != null && endDate != null) {
+            LocalDateTime startLocalDateTime = LocalDateTime.parse(startDate + " 00:00:00",formatter);
+            LocalDateTime endLocalDateTime = LocalDateTime.parse(endDate + " 00:00:00",formatter);
+            criteria.add(Restrictions.between("joinDate",startLocalDateTime,endLocalDateTime));
+            hasRestrictions = true;
+        }
 
         if (idDistributor != null) {
             criteria.add(Restrictions.eq("idDistributor",idDistributor));
