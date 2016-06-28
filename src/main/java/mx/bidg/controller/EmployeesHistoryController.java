@@ -37,7 +37,9 @@ public class EmployeesHistoryController {
                     @RequestParam(name = "idRegion", required = false) Integer idRegion,
                     @RequestParam(name = "idBranch", required = false) Integer idBranch,
                     @RequestParam(name = "idArea", required = false) Integer idArea,
-                    @RequestParam(name = "idRole", required = false) Integer idRole
+                    @RequestParam(name = "idRole", required = false) Integer idRole,
+                    @RequestParam(name = "startDate", required = false) String startDate,
+                    @RequestParam(name = "endDate", required = false) String endDate
             ) throws IOException {
 
         List<EmployeesHistory> employeesHistories;
@@ -46,11 +48,22 @@ public class EmployeesHistoryController {
                 idRegion == null &&
                 idBranch == null &&
                 idArea == null &&
-                idRole == null
+                idRole == null &&
+                startDate == null &&
+                endDate == null
                 ) {
             employeesHistories = employeesHistoryService.findAll();
         } else {
-            employeesHistories = employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRole(idDistributor,idRegion,idBranch,idArea,idRole);
+            employeesHistories =
+                    employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRole(
+                            idDistributor,
+                            idRegion,
+                            idBranch,
+                            idArea,
+                            idRole,
+                            startDate,
+                            endDate
+                    );
 
         }
 
