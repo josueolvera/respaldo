@@ -11,6 +11,8 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -53,6 +55,26 @@ public class EmployeesDaoImpl extends AbstractDao<Integer, Employees> implements
 
         if (employeeRfc != null) {
             criteria.add(Restrictions.eq("rfc",employeeRfc));
+            hasRestrictions = true;
+        }
+
+        if (!hasRestrictions) {
+            return null;
+        }
+
+        return criteria.list();
+    }
+
+    @Override
+    public List<Employees> findBetweenJoinDate(String startDate, String endDate) {
+        Criteria criteria = createEntityCriteria();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        boolean hasRestrictions = false;
+
+        if (endDate != null && startDate != null) {
+            LocalDateTime endLocalDateTime = LocalDateTime.parse(endDate + " 00:00:00",formatter);
+            LocalDateTime startLocalDateTime = LocalDateTime.parse(startDate + " 00:00:00",formatter);
+            criteria.add(Restrictions.between("joinDate",startLocalDateTime,endLocalDateTime));
             hasRestrictions = true;
         }
 
