@@ -21,4 +21,5 @@ public interface DwEmployeesService {
             Integer idRole
     );
     List<DwEmployees> findAll();
+    DwEmployees save(DwEmployees dwEmployees);
 }
