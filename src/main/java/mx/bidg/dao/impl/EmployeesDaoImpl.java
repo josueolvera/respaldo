@@ -23,7 +23,7 @@ public class EmployeesDaoImpl extends AbstractDao<Integer, Employees> implements
     @Override
     public List<Employees> findSimpleBy(DwEnterprises dwEnterprises) {
         return (List<Employees>) createEntityCriteria()
-                .createCriteria("dwEmployeesList", JoinType.INNER_JOIN)
+                .createCriteria("dwEmployees", JoinType.INNER_JOIN)
                     .add(Restrictions.eq("idDwEnterprise", dwEnterprises.getIdDwEnterprise()))
                 .list();
     }
