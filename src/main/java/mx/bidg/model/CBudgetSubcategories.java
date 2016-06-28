@@ -55,7 +55,7 @@ public class CBudgetSubcategories implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
 
-    @Column(name = "ID_ACCOUNTING_ACCOUNT")
+    @Column(name = "ID_ACCOUNTING_ACCOUNT", updatable = false, insertable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idAccountingAccount;
 
