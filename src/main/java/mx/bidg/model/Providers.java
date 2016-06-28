@@ -88,10 +88,6 @@ public class Providers implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "provider")
     @JsonView(JsonViews.Embedded.class)
-    private List<CProductTypes> productTypesList;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "provider")
-    @JsonView(JsonViews.Embedded.class)
     private List<ProvidersContact> providersContactList;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "provider")
@@ -184,15 +180,6 @@ public class Providers implements Serializable {
     public void setIdAccessLevel(int idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
     }
-
-    public List<CProductTypes> getProductTypesList() {
-        return productTypesList;
-    }
-
-    public void setProductTypesList(List<CProductTypes> productTypesList) {
-        this.productTypesList = productTypesList;
-    }
-
 
     public LocalDateTime getSupplierLow() {
         return supplierLow;

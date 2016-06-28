@@ -65,4 +65,10 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     public List<DwEmployees> findAll() {
         return dwEmployeesDao.findAll();
     }
+
+    @Override
+    public DwEmployees save(DwEmployees dwEmployees) {
+        dwEmployeesDao.save(dwEmployees);
+        return dwEmployees;
+    }
 }

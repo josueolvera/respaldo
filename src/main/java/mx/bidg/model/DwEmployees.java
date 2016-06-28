@@ -5,13 +5,18 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 import mx.bidg.utils.TimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -37,8 +42,8 @@ public class DwEmployees implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE", updatable = false)
-    @Convert(converter = TimeConverter.class)
-    private LocalTime creationDate;
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime creationDate;
     
     @Column(name = "ID_EMPLOYEE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -51,12 +56,12 @@ public class DwEmployees implements Serializable {
     @Column(name = "ID_ROLE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idRole;
-    
+
     @JoinColumn(name = "ID_EMPLOYEE", referencedColumnName = "ID_EMPLOYEE")
-    @ManyToOne(optional = false)
+    @OneToOne
     @JsonView(JsonViews.Embedded.class)
     private Employees employee;
-    
+
     @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
@@ -86,11 +91,11 @@ public class DwEmployees implements Serializable {
         this.idDwEmployee = idDwEmployee;
     }
 
-    public LocalTime getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(LocalTime creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 

@@ -112,8 +112,6 @@ public class Employees implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime joinDate;
     
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "STATUS")
     @JsonView(JsonViews.Root.class)
     private int status;
@@ -195,7 +193,6 @@ public class Employees implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String size;
 
-    @Size(max = 2)
     @Column(name = "SIZE_NUMBER")
     @JsonView(JsonViews.Root.class)
     private Integer sizeNumber;
@@ -203,10 +200,10 @@ public class Employees implements Serializable {
     @Column(name = "GENDER")
     @JsonView(JsonViews.Root.class)
     private Integer gender;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
+
+    @OneToOne(mappedBy = "employee")
     @JsonView(JsonViews.Embedded.class)
-    private List<DwEmployees> dwEmployeesList;
+    private DwEmployees dwEmployees;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
     @JsonView(JsonViews.Embedded.class)
@@ -470,12 +467,12 @@ public class Employees implements Serializable {
         this.motherName = motherName;
     }
 
-    public List<DwEmployees> getDwEmployeesList() {
-        return dwEmployeesList;
+    public DwEmployees getDwEmployees() {
+        return dwEmployees;
     }
 
-    public void setDwEmployeesList(List<DwEmployees> dwEmployeesList) {
-        this.dwEmployeesList = dwEmployeesList;
+    public void setDwEmployees(DwEmployees dwEmployees) {
+        this.dwEmployees = dwEmployees;
     }
 
     public List<EmployeesAccounts> getEmployeesAccountsList() {

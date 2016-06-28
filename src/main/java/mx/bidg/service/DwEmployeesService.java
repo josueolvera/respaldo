@@ -23,4 +23,5 @@ public interface DwEmployeesService {
             String endDate
     );
     List<DwEmployees> findAll();
+    DwEmployees save(DwEmployees dwEmployees);
 }
