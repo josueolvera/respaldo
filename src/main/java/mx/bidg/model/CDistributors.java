@@ -121,6 +121,13 @@ public class CDistributors implements Serializable {
         this.hasAgreement = hasAgreement;
     }
 
+    public boolean getBudgetShare() {
+        return budgetShare;
+    }
+    public void setBudgetShare(boolean budgetShare) {
+        this.budgetShare = budgetShare;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
