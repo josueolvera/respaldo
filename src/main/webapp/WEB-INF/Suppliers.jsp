@@ -254,7 +254,7 @@
                             if (this.supplier.providersAccountsList.length > 0) {
                                 return true;
                             }
-                            showAlert("Debes ingresar los datos requeridos: Banco, Modenada y Numero de Cuenta o CLABE", {type: 3});
+                            showAlert("Debes ingresar los datos requeridos: Banco, Moneda y Numero de Cuenta o CLABE", {type: 3});
                             return false;
                         }
                     },
@@ -409,16 +409,16 @@
                                 });
                     },
                     addProviderAccount: function (supplier, cuenta) {
-                        if (this.idBanks != 0 && this.idCurrency != 0) {
-                            if (this.accountNumbers.length > 0 && (this.accountNumbers.length > 11 || this.accountNumbers.length < 5)) {
+                        if (this.cuenta.idBank != 0 && this.cuenta.idCurrency != 0) {
+                            if (this.cuenta.accountNumber.length > 0 && (this.cuenta.accountNumber.length > 11 || this.cuenta.accountNumber.length < 5)) {
                                 showAlert("Debes ingresar entre 5 y 11 caracteres en el numero de cuenta", {type: 3});
                                 return false;
                             }
-                            if (this.clabes.length > 0 && this.clabes.length < 18) {
+                            if (this.cuenta.accountClabe.length > 0 && this.cuenta.accountClabe.length < 18) {
                                 showAlert("Debes ingresar 18 caracteres en la CLABE", {type: 3});
                                 return false;
                             }
-                            if (this.accountNumbers.length < 5 && this.clabes.length < 18) {
+                            if (this.cuenta.accountNumber.length < 5 && this.cuenta.accountClabe.length < 18) {
                                 showAlert("Debes ingresar un Numero de Cuenta o CLABE", {type: 3});
                                 return false;
                             }
@@ -436,7 +436,7 @@
                                     });
                             return true;
                         } else {
-                            showAlert("Debes ingresar los datos requeridos: Banco, Modenada y Numero de Cuenta o CLABE", {type: 3});
+                            showAlert("Debes ingresar los datos requeridos: Banco, Moneda y Numero de Cuenta o CLABE", {type: 3});
                             return false;
                         }
                     },
