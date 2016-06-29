@@ -930,7 +930,7 @@
                                     </div>
                                     <div class="col-xs-2">
                                         <label>Tercer nivel</label>
-                                        <input maxlength="3" class="form-control text-center" name="name"
+                                        <input maxlength="4" class="form-control text-center" name="name"
                                                v-model="supplier.thirdLevel">
                                     </div>
                                 </div>
