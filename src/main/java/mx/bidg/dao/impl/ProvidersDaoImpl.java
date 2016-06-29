@@ -8,9 +8,11 @@ package mx.bidg.dao.impl;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.ProvidersDao;
+import mx.bidg.model.CProductTypes;
 import mx.bidg.model.Providers;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -47,4 +49,11 @@ public class ProvidersDaoImpl extends AbstractDao<Integer, Providers> implements
         return true;
     }
 
+    @Override
+    public List<Providers> findByProductType(CProductTypes cProductTypes) {
+        return createEntityCriteria()
+                .createCriteria("providersProductsTypes", JoinType.INNER_JOIN)
+                    .add(Restrictions.eq("idProductType", cProductTypes.getIdProductType()))
+                .list();
+    }
 }

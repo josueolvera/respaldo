@@ -74,17 +74,43 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
     }
 
     @Override
-    public List<DwEnterprises> findAllByStatusAgreement() {
-        return (List<DwEnterprises>) createEntityCriteria().add(Restrictions.eq("agreementStatus",1)).list();
-    }
-
-    @Override
     public DwEnterprises findByDistributorRegionBranch(Integer idDistributor, Integer idRegion, Integer idBranch) {
         return (DwEnterprises) createEntityCriteria()
                 .add(Restrictions.eq("idDistributor", idDistributor))
                 .add(Restrictions.eq("idRegion", idRegion))
                 .add(Restrictions.eq("idBranch", idBranch))
                 .uniqueResult();
+    }
+
+    @Override
+    public List<DwEnterprises> findByDistributorAndRegionAndBranchAndArea(Integer idDistributor, Integer idRegion, Integer idBranch,Integer idArea) {
+
+        Criteria criteria = createEntityCriteria();
+
+        boolean hasRestrictions = false;
+
+        if (idDistributor != null) {
+            criteria.add(Restrictions.eq("idDistributor",idDistributor));
+            hasRestrictions = true;
+        }
+        if (idRegion != null) {
+            criteria.add(Restrictions.eq("idRegion",idRegion));
+            hasRestrictions = true;
+        }
+        if (idBranch != null) {
+            criteria.add(Restrictions.eq("idBranch",idBranch));
+            hasRestrictions = true;
+        }
+        if (idArea != null) {
+            criteria.add(Restrictions.eq("idArea",idArea));
+            hasRestrictions = true;
+        }
+
+        if (!hasRestrictions) {
+            return null;
+        }
+
+        return criteria.list();
     }
 
     @Override

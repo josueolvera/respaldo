@@ -61,7 +61,6 @@
 
             this.obtainUserInSession();
             this.obtainAllUsers();
-            this.obtainSuppliers();
             this.obtainCurrencies();
             this.obtainAllPeriods();
             this.obtainRequestInformation.idRequestCategory= this.RequestCategory;
@@ -237,6 +236,7 @@
                       {
                          this.Productos= data;
                       });
+              this.obtainSuppliers(this.obtainRequestInformation.idProductType);
             },
             obtainRequestInfo: function()
             {
@@ -438,9 +438,9 @@
               }
               return accountPayable;
             },
-            obtainSuppliers: function()
+            obtainSuppliers: function(idProductType)
             {
-              this.$http.get(ROOT_URL + "/providers").success(function (data)
+              this.$http.get(ROOT_URL + "/providers/product-type/" + idProductType).success(function (data)
                {
                   this.suppliers= data;
                });
@@ -609,7 +609,7 @@
               producTypein[0].productType = data.requestTypeProduct.productType.productType;
               this.ProductTypes= producTypein;
               this.obtainRequestInformation.idProductType = data.requestTypeProduct.idProductType;
-
+              this.obtainSuppliers(data.requestTypeProduct.idProductType);
               data.requestProductsList.forEach(function(element)
               {
               var producto= self.createProduct();

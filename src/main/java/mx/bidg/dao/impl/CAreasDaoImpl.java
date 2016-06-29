@@ -10,6 +10,8 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CAreasDao;
 import mx.bidg.model.CAreas;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -44,5 +46,12 @@ public class CAreasDaoImpl extends AbstractDao<Integer, CAreas> implements CArea
     public boolean delete(CAreas entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
+    @Override
+    public CAreas findAreaWithRoles(Integer idArea) {
+        Criteria criteria = createEntityCriteria();
+        return (CAreas) criteria.add(Restrictions.idEq(idArea))
+                .setFetchMode("roles", FetchMode.JOIN)
+                .uniqueResult();
+    }
 }

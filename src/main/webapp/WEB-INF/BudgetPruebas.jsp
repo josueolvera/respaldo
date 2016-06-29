@@ -849,9 +849,6 @@
                                             </div>
                                             <div class="col-xs-1" style="padding-left: 0px; padding-right: 0px">
                                                 <div class="col-xs-4" style="padding-left: 0px; padding-right: 0px">
-                                                    <label>
-                                                        Total
-                                                    </label>
                                                 </div>
                                                 <div class="col-xs-4" style="padding-left: 0px; padding-right: 0px">
 
@@ -884,7 +881,6 @@
                                             <div class="col-xs-1" style="padding-left: 0px; padding-right: 0px">
                                                 <div class="col-xs-4" style="padding-left: 0px; padding-right: 0px">
                                                     <label style="font-size: 9px; margin-top: 6px">
-                                                        {{concepto.total}}
                                                     </label>
                                                 </div>
                                                 <div class="col-xs-4" style="padding-left: 0px; padding-right: 0px">
@@ -905,24 +901,15 @@
 
                                         <div class="row" style="margin-left: 0px" v-if="conte.conceptos.length > 0">
                                             <div class="col-xs-2 text-right">
-                                                <label>
-                                                    Total:
-                                                </label>
                                             </div>
 
                                             <div class="col-xs-9">
                                                 <div class="col-xs-1 text-center" v-for="totalmes in conte.totalMonth"
                                                      style="padding-left: 0px; padding-right: 1px">
-                                                    <label>
-                                                        {{totalmes.montoConcept}}
-                                                    </label>
                                                 </div>
                                             </div>
 
                                             <div class="col-xs-1 text-left" style="padding-left: 0px; padding-right: 1px">
-                                                <label>
-                                                    {{conte.granTotal}}
-                                                </label>
                                             </div>
                                         </div>
 

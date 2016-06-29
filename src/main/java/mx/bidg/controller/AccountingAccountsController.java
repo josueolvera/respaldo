@@ -39,12 +39,12 @@ public class AccountingAccountsController {
         );
     }
 
-    @RequestMapping(value = "/{idDistributor}/{firstLevel}/{secondLevel}/{thirdLevel}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/{firstLevel}/{secondLevel}/{thirdLevel}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findByThreeLevels(
-            @PathVariable int idDistributor, @PathVariable int firstLevel, @PathVariable int secondLevel, @PathVariable int thirdLevel
+            @PathVariable int firstLevel, @PathVariable int secondLevel, @PathVariable int thirdLevel
     ) throws IOException {
         AccountingAccounts accountingAccounts = accountingAccountsService.findByThreeLevels(
-                new CDistributors(idDistributor), firstLevel, secondLevel, thirdLevel
+                firstLevel, secondLevel, thirdLevel
         );
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Root.class).writeValueAsString(accountingAccounts),

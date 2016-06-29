@@ -22,8 +22,8 @@ public class AccountingAccountsServiceImpl implements AccountingAccountsService 
     private AccountingAccountsDao accountingAccountsDao;
 
     @Override
-    public AccountingAccounts findByThreeLevels(CDistributors distributor, Integer firstLevel, Integer secondLevel, Integer thirdLevel) {
-        return accountingAccountsDao.findByThreeLevels(distributor, firstLevel, secondLevel, thirdLevel);
+    public AccountingAccounts findByThreeLevels(Integer firstLevel, Integer secondLevel, Integer thirdLevel) {
+        return accountingAccountsDao.findByThreeLevels(firstLevel, secondLevel, thirdLevel);
     }
 
     @Override

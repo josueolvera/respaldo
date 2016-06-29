@@ -50,18 +50,9 @@ public class CProductTypes implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
     
-    @Column(name = "ID_PROVIDER", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idProvider;
-    
     @Column(name = "ID_BUDGET_SUBCATEGORY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetSubcategory;
-    
-    @JoinColumn(name = "ID_PROVIDER", referencedColumnName = "ID_PROVIDER")
-    @ManyToOne(optional = true)
-    @JsonView(JsonViews.Embedded.class)
-    private Providers provider;
     
     @JoinColumn(name = "ID_BUDGET_SUBCATEGORY", referencedColumnName = "ID_BUDGET_SUBCATEGORY")
     @ManyToOne(optional = false)
@@ -99,28 +90,12 @@ public class CProductTypes implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public Integer getIdProvider() {
-        return idProvider;
-    }
-
-    public void setIdProvider(Integer idProvider) {
-        this.idProvider = idProvider;
-    }
-
     public Integer getIdBudgetSubcategory() {
         return idBudgetSubcategory;
     }
 
     public void setIdBudgetSubcategory(Integer idBudgetSubcategory) {
         this.idBudgetSubcategory = idBudgetSubcategory;
-    }
-
-    public Providers getProvider() {
-        return provider;
-    }
-
-    public void setProvider(Providers provider) {
-        this.provider = provider;
     }
 
     public CBudgetSubcategories getBudgetSubcategory() {

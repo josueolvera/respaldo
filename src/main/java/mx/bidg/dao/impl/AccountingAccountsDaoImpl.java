@@ -16,9 +16,8 @@ import java.util.List;
 @Repository
 public class AccountingAccountsDaoImpl extends AbstractDao<Integer, AccountingAccounts> implements AccountingAccountsDao {
     @Override
-    public AccountingAccounts findByThreeLevels(CDistributors distributor, Integer firstLevel, Integer secondLevel, Integer thirdLevel) {
+    public AccountingAccounts findByThreeLevels(Integer firstLevel, Integer secondLevel, Integer thirdLevel) {
         return (AccountingAccounts) createEntityCriteria()
-                .add(Restrictions.eq("idDistributor", distributor.getIdDistributor()))
                 .add(Restrictions.eq("firstLevel", firstLevel))
                 .add(Restrictions.eq("secondLevel", secondLevel))
                 .add(Restrictions.eq("thirdLevel", thirdLevel))

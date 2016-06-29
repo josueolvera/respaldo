@@ -34,4 +34,9 @@ public class CAreasServiceImpl implements CAreasService {
         return dao.findById(idArea);
     }
 
+    @Override
+    public CAreas findAreaWhitRole(Integer idArea) {
+        return dao.findAreaWithRoles(idArea);
+    }
+
 }

@@ -7,13 +7,7 @@ package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
@@ -50,6 +44,15 @@ public class CBudgetCategories implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
 
+    @Column(name = "ID_ACCOUNTING_ACCOUNT", updatable = false, insertable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idAccountingAccount;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_ACCOUNTING_ACCOUNT", referencedColumnName = "ID_ACCOUNTING_ACCOUNT")
+    @JsonView(JsonViews.Embedded.class)
+    private AccountingAccounts accountingAccount;
+
     public CBudgetCategories() {
     }
 
@@ -84,6 +87,22 @@ public class CBudgetCategories implements Serializable {
 
     public void setIdAccessLevel(int idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
+    }
+
+    public Integer getIdAccountingAccount() {
+        return idAccountingAccount;
+    }
+
+    public void setIdAccountingAccount(Integer idAccountingAccount) {
+        this.idAccountingAccount = idAccountingAccount;
+    }
+
+    public AccountingAccounts getAccountingAccount() {
+        return accountingAccount;
+    }
+
+    public void setAccountingAccount(AccountingAccounts accountingAccount) {
+        this.accountingAccount = accountingAccount;
     }
 
     @Override

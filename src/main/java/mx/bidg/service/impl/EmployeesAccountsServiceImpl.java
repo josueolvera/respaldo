@@ -36,5 +36,11 @@ public class EmployeesAccountsServiceImpl implements EmployeesAccountsService {
         Users user = usersDao.findByIdFetchDwEmployee(idUser);
         return employeesAccountsDao.findByEmployee(user.getDwEmployee().getEmployee());
     }
-    
+
+    @Override
+    public EmployeesAccounts save(EmployeesAccounts employeesAccounts) {
+        employeesAccountsDao.save(employeesAccounts);
+        return employeesAccounts;
+    }
+
 }

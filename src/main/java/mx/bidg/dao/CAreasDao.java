@@ -12,5 +12,7 @@ import mx.bidg.model.CAreas;
  * @author sistemask
  */
 public interface CAreasDao extends InterfaceDao<CAreas> {
+
+    CAreas findAreaWithRoles (Integer idArea);
     
 }
