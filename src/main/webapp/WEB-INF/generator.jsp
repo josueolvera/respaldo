@@ -87,7 +87,19 @@
               operationsSql: {},
               operationData: '',
               fieldData: '',
-              alias: ''
+              alias: '',
+              fieldMultipleData: '',
+              otherValue: '',
+              isMultiple: false,
+              rule: '',
+              fieldDataRule: '',
+              conditions: '',
+              fieldDataRule2: '',
+              otherValueRule: '',
+              aliasRule: '',
+              trueFunctionValue: '',
+              falseFunctionValue: ''
+
           },
           methods:
           {
@@ -153,20 +165,58 @@
                           });
               },
               addOperation: function(){
+
                   var operation= {
                       fieldName: '',
                       fieldUser: '',
                       viewInTable: 1
                   }
 
-                  operation.fieldName = this.operationData.sqlText + "("+ this.fieldData.fieldName + ")";
-                  operation.fieldUser= this.alias;
+                  if (this.operationData.parametersNum == 1)
+                  {
+                      operation.fieldName = this.operationData.sqlText.replace('#', this.fieldData.fieldName);
+                      operation.fieldUser= this.alias;
 
-                  this.fieldsTableChecked.push(operation);
+                      this.fieldsTableChecked.push(operation);
+                  }
+                  else {
 
+                      if (this.fieldMultipleData == -1)
+                      {
+                         operation.fieldName = this.operationData.sqlText.replace('#', this.fieldData.fieldName).replace('#', this.otherValue);
+                         operation.fieldUser= this.alias;
+                         this.fieldsTableChecked.push(operation);
+                      }
+                      else {
+                         operation.fieldName = this.operationData.sqlText.replace('#', this.fieldData.fieldName).replace('#', this.fieldMultipleData.fieldName);
+                         operation.fieldUser= this.alias;
+                         this.fieldsTableChecked.push(operation);
+                      }
+
+
+                  }
               },
               removeOperation: function(operation){
                   this.fieldsTableChecked.$remove(operation);
+              },
+              generateRule: function(){
+
+                  var conditionSQL = this.rule.sqlText
+                  .replace("#",(this.fieldDataRule.fieldName + " " + this.conditions.sqlText+ " "+this.fieldDataRule2.fieldName))
+                  .replace("#",(this.trueFunctionValue.fieldName))
+                  .replace("#",this.falseFunctionValue.fieldName);
+                  console.log(conditionSQL);
+
+
+                  /*console.log(this.rule);
+                  console.log(this.falseFunctionValue);
+                  console.log(this.trueFunctionValue);
+                  console.log(this.otherValueRule);
+
+                  console.log(this.conditions);
+                  console.log(this.fieldDataRule);
+                  console.log(this.aliasRule);
+                  */
               }
 
 
@@ -282,7 +332,10 @@
                              </div>
                            </div>
                            <div class="row">
-                            <div class="col-xs-3">
+                            <div class="col-xs-2">
+                                <label>
+                                    Tipo de Operación
+                                </label>
                                 <select class="form-control" v-model="operationData">
                                     <option></option>
                                     <option v-for="operation in operationsSql" value="{{operation}}"
@@ -291,19 +344,48 @@
                                     </option>
                                 </select>
                             </div>
-                            <div class="col-xs-3">
+                            <div class="col-xs-2">
+                                <label>
+                                    Campos Seleccionados
+                                </label>
                                 <select class="form-control" v-model="fieldData">
                                     <option></option>
                                     <option v-for="field in fieldsTableChecked" value="{{field}}">
                                         {{field.fieldUser}}
                                 </select>
                             </div>
-                            <div class="col-xs-3">
+
+                            <%-- Aparece solo cuando la bandera de el tipo de operacion tiene multiples datos --%>
+                            <div class="col-xs-2" v-show="operationData.parametersNum > 1">
+                                <label>
+                                    Campos Seleccionados
+                                </label>
+                                <select class="form-control" v-model="fieldMultipleData">
+                                    <option></option>
+                                    <option v-for="field in fieldsTableChecked" value="{{field}}">
+                                        {{field.fieldUser}}
+                                    </option>
+                                    <option value="-1">OTRO</option>
+                                </select>
+                            </div>
+
+                            <%-- Aparece solo cuando la bandera de el tipo de operacion tiene multiples datos --%>
+                            <div class="col-xs-2" v-show="fieldMultipleData < 0" >
+                                <label>
+                                    Ingrese el dato:
+                                </label>
+                                <input class="form-control" v-model="otherValue">
+                            </div>
+
+                            <div class="col-xs-2">
+                                <label>
+                                    Nombre de la función
+                                </label>
                                 <input class="form-control" v-model="alias">
                             </div>
 
-                            <div class="col-xs-3">
-                              <button class="btn btn-default" name="button" @click="addOperation">
+                            <div class="col-xs-2">
+                              <button class="btn btn-default" name="button" @click="addOperation" style="margin-top: 24px">
                                   Agregar Operacion
                               </button>
                             </div>
@@ -349,6 +431,114 @@
                      </div>
                      <div class="panel-body">
 
+                        <div class="row">
+
+                            <%-- Reglas aplicables --%>
+                            <div class="col-xs-1">
+                                <label>
+                                    Regla
+                                </label>
+                                <select class="form-control" v-model="rule">
+                                    <option></option>
+                                    <option v-for="operation in operationsSql" value="{{operation}}"
+                                        v-if="operation.idSqlFunctionsCategories == 3">
+                                        {{operation.userText}}
+                                    </option>
+                                </select>
+                            </div>
+                            <%-- Campos y funciones seleccionadas --%>
+                            <div class="col-xs-2">
+                                <label>
+                                    Campo 1
+                                </label>
+                                <select class="form-control" v-model="fieldDataRule">
+                                    <option></option>
+                                    <option v-for="field in fieldsTableChecked" value="{{field}}">
+                                        {{field.fieldUser}}
+                                </select>
+                            </div>
+                            <%-- Condiciones --%>
+                            <div class="col-xs-2">
+                                <label>
+                                    Operador
+                                </label>
+                                <select class="form-control" v-model="conditions">
+                                    <option></option>
+                                    <option v-for="operation in operationsSql" value="{{operation}}"
+                                        v-if="operation.idSqlFunctionsCategories == 4">
+                                        {{operation.userText}}
+                                    </option>
+                                </select>
+                            </div>
+                            <%-- Campos y funciones seleccionadas COPIA  --%>
+                            <div class="col-xs-2">
+                                <label>
+                                    Campo 2
+                                </label>
+                                <select class="form-control" v-model="fieldDataRule2">
+                                    <option></option>
+                                    <option v-for="field in fieldsTableChecked" value="{{field}}">
+                                        {{field.fieldUser}}
+                                    </option>
+                                    <option value="-1">
+                                        OTRO
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-xs-2" v-show="fieldDataRule2 < 0" >
+                                <label>
+                                    Valor
+                                </label>
+                                <input class="form-control" v-model="otherValueRule">
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+
+                            <%-- Cambiar el v-model --%>
+                            <div class="col-xs-2">
+                                <label>
+                                    Verdadero
+                                </label>
+                                <select class="form-control" v-model="trueFunctionValue">
+                                    <option></option>
+                                    <option v-for="field in fieldsTableChecked" value="{{field}}">
+                                        {{field.fieldUser}}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <%-- Cambiar el v-model --%>
+                            <div class="col-xs-2">
+                                <label>
+                                    Falso
+                                </label>
+                                <select class="form-control" v-model="falseFunctionValue">
+                                    <option></option>
+                                    <option v-for="field in fieldsTableChecked" value="{{field}}">
+                                        {{field.fieldUser}}
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-xs-3">
+                                <label>
+                                    Nombre de la función
+                                </label>
+                                <input class="form-control" v-model="aliasRule">
+                            </div>
+
+                            <div class="col-xs-2">
+                                <button class="btn btn-default" style="margin-top: 24px" @click="generateRule">
+                                    Agregar Regla
+                                </button>
+                            </div>
+
+
+
+                        </div>
+
                      </div>
                    </div>
                  </div>
@@ -375,6 +565,11 @@
                    </div>
                </div>
            </div>
+
+               <pre>
+                   {{ $data.fieldsTableChecked  | json}}
+               </pre>
+
 
       </div> <!-- #contenidos -->
       <!-- Fecha de Termino- Agregar fecha dia de solicitud-->
