@@ -49,19 +49,15 @@ public class CEmployeeDocumentsTypes implements Serializable {
 
     @Basic(optional = false)
     @NotNull
-    @Column(name = "REQUIRED")
+    @Column(name = "FIELD")
     @JsonView(JsonViews.Root.class)
-    private int required;
+    private int field;
 
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "UPDATABLE")
+    @Size(max = 10)
+    @Column(name = "ID_DISTRIBUTORS")
     @JsonView(JsonViews.Root.class)
-    private boolean updatable;
+    private String idDistributors;
 
-    @OneToMany(mappedBy = "idDocumentType")
-    @JsonView(JsonViews.Embedded.class)
-    private List<EmployeeDocuments> employeeDocumentsList;
 
     public CEmployeeDocumentsTypes() {
     }
@@ -70,11 +66,10 @@ public class CEmployeeDocumentsTypes implements Serializable {
         this.idDocumentType = idDocumentType;
     }
 
-    public CEmployeeDocumentsTypes(Integer idDocumentType, String documentName, int required, boolean updatable) {
+    public CEmployeeDocumentsTypes(Integer idDocumentType, String documentName, int field) {
         this.idDocumentType = idDocumentType;
         this.documentName = documentName;
-        this.required = required;
-        this.updatable = updatable;
+        this.field = field;
     }
 
     public Integer getIdDocumentType() {
@@ -93,28 +88,20 @@ public class CEmployeeDocumentsTypes implements Serializable {
         this.documentName = documentName;
     }
 
-    public int getRequired() {
-        return required;
+    public int getField() {
+        return field;
     }
 
-    public void setRequired(int required) {
-        this.required = required;
+    public void setField(int field) {
+        this.field = field;
     }
 
-    public boolean getUpdatable() {
-        return updatable;
+    public String getIdDistributors() {
+        return idDistributors;
     }
 
-    public void setUpdatable(boolean updatable) {
-        this.updatable = updatable;
-    }
-
-    public List<EmployeeDocuments> getEmployeeDocumentsList() {
-        return employeeDocumentsList;
-    }
-
-    public void setEmployeeDocumentsList(List<EmployeeDocuments> employeeDocumentsList) {
-        this.employeeDocumentsList = employeeDocumentsList;
+    public void setIdDistributors(String idDistributors) {
+        this.idDistributors = idDistributors;
     }
 
     @Override
