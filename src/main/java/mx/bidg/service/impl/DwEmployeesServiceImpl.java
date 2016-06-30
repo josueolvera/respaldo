@@ -4,7 +4,6 @@ import mx.bidg.dao.*;
 import mx.bidg.model.*;
 import mx.bidg.service.DwEmployeesService;
 import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -142,11 +140,10 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
             CRegions region = dwEnterprise.getRegion();
             CBranchs branch = dwEnterprise.getBranch();
             Employees employee = dwEmployee.getEmployee();
-            EmployeesAccounts employeesAccount =
-                    employeesAccountsDao.findByIdEmployee(employee.getIdEmployee());
+            List<EmployeesAccounts> employeeAccountList = employee.getEmployeesAccountsList();
 
-            if (employeesAccount != null) {
-                Accounts account = employeesAccount.getAccount();
+            if (!employeeAccountList.isEmpty()) {
+                Accounts account = employeeAccountList.get(0).getAccount();
                 if (account != null) {
                     row.createCell(6).setCellValue(account.getAccountNumber());
                     row.createCell(7).setCellValue(account.getAccountClabe());
