@@ -764,9 +764,9 @@
                 filters: {
                     numbersPadding: function (value) {
                         var result = "";
-                        var padding = 3;
+                        var padding = 4;
                         if (typeof value != 'undefined') {
-                            result = "0000" + value;
+                            result = "00000" + value;
                             result = result.substr(result.length - padding);
                         }
                         return result;
