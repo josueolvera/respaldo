@@ -10,12 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -55,7 +57,7 @@ public class DwEmployeesController {
             dwEmployees = dwEmployeesService.findAll();
         } else {
             dwEmployees =
-                    dwEmployeesService.findByDistributorAndRegionAndBranchAndAreaAndRole(
+                    dwEmployeesService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(
                             idDistributor,
                             idRegion,
                             idBranch,
@@ -73,9 +75,63 @@ public class DwEmployeesController {
         );
     }
 
+    @RequestMapping(value = "/create-report", method = RequestMethod.GET)
+    public ResponseEntity<String> createReport
+            (
+                    @RequestParam(name = "idDistributor", required = false) Integer idDistributor,
+                    @RequestParam(name = "idRegion", required = false) Integer idRegion,
+                    @RequestParam(name = "idBranch", required = false) Integer idBranch,
+                    @RequestParam(name = "idArea", required = false) Integer idArea,
+                    @RequestParam(name = "idRole", required = false) Integer idRole,
+                    @RequestParam(name = "startDate", required = false) String startDate,
+                    @RequestParam(name = "endDate", required = false) String endDate,
+                    @RequestParam(name = "reportFileName") String reportFileName,
+                    HttpServletResponse response
+            ) throws IOException {
+
+        List<DwEmployees> dwEmployees;
+
+        if (idDistributor == null &&
+                idRegion == null &&
+                idBranch == null &&
+                idArea == null &&
+                idRole == null &&
+                startDate == null &&
+                endDate == null
+                ) {
+            dwEmployees = dwEmployeesService.findAll();
+        } else {
+            dwEmployees =
+                    dwEmployeesService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(
+                            idDistributor,
+                            idRegion,
+                            idBranch,
+                            idArea,
+                            idRole,
+                            startDate,
+                            endDate
+                    );
+
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDateTime dateTime = LocalDateTime.now();
+
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + reportFileName + "_" + dateTime.format(formatter) + ".xlsx"+ "\"");
+        OutputStream outputStream = response.getOutputStream();
+        dwEmployeesService.createReport(dwEmployees, outputStream);
+        outputStream.flush();
+        outputStream.close();
+
+        return new ResponseEntity<>(
+                map.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEmployees),
+                HttpStatus.OK
+        );
+    }
 
     @RequestMapping(value = "/{idDwEmployee}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> getDwEmployees(@PathVariable Integer idDwEmployee) throws IOException {
+    public ResponseEntity<String> getDwEmployeeById(@PathVariable Integer idDwEmployee) throws IOException {
 
         DwEmployees dwEmployee = dwEmployeesService.findById(idDwEmployee);
 
@@ -84,4 +140,13 @@ public class DwEmployeesController {
                 HttpStatus.OK
         );
     }
+
+    @RequestMapping(value = "/change-employee-status", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+        public ResponseEntity<String> changeEmployeeStatus(@RequestBody Integer idDwEmployee) throws IOException {
+
+        dwEmployeesService.changeEmployeeStatus(idDwEmployee);
+
+            return new ResponseEntity<>("OK", HttpStatus.OK);
+        }
+
 }
