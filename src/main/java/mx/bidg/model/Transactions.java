@@ -113,6 +113,86 @@ public class Transactions implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private Users user;
 
+
+    @JsonView(JsonViews.Root.class)
+    @Column(name = "ID_EMPLOYEE", updatable = false, insertable = false)
+    private Employees idEmployeeRequest;
+
+
+    @JsonView(JsonViews.Root.class)
+    @Column(name = "ID_ROLE", updatable = false, insertable = false)
+    private CRoles idEmployeeRole;
+
+
+    @JsonView(JsonViews.Root.class)
+    @Column(name = "ID_GROUP", updatable = false, insertable = false)
+    private CGroups idGroupRequest;
+
+
+    @JsonView(JsonViews.Root.class)
+    @Column(name = "ID_DISTRIBUTOR", updatable = false, insertable = false)
+    private CDistributors idDistributorRequest;
+
+
+    @JsonView(JsonViews.Root.class)
+    @Column(name = "ID_REGION", updatable = false, insertable = false)
+    private CRegions idRegionRequest;
+
+
+    @JsonView(JsonViews.Root.class)
+    @Column(name = "ID_BRANCH", updatable = false, insertable = false)
+    private CBranchs idBranchRequest;
+
+
+    @Column(name = "ID_AREA", updatable = false, insertable = false)
+    @JsonView(JsonViews.Root.class)
+    private CAreas idAreaRequest;
+
+
+    @JsonView(JsonViews.Root.class)
+    @Column(name = "ID_ACCOUNTING_ACCOUNT", updatable = false, insertable = false)
+    private AccountingAccounts idAccountingAccount;
+
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    @JoinColumn(name = "ID_EMPLOYEE",  referencedColumnName = "ID_EMPLOYEE")
+    private Employees employeeRequest;
+
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    @JoinColumn(name = "ID_ROLE", referencedColumnName = "ID_ROLE")
+    private CRoles employeeRole;
+
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    @JoinColumn(name = "ID_GROUP", referencedColumnName = "ID_GROUP")
+    private CGroups groupRequest;
+
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    @JoinColumn(name = "ID_DISTRIBUTOR", referencedColumnName = "ID_DISTRIBUTOR")
+    private CDistributors distributorRequest;
+
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    @JoinColumn(name = "ID_REGION", referencedColumnName = "ID_REGION")
+    private CRegions regionRequest;
+
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    @JoinColumn(name = "ID_BRANCH", referencedColumnName = "ID_BRANCH")
+    private CBranchs branchRequest;
+
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    @JoinColumn(name = "ID_AREA", referencedColumnName = "ID_AREA")
+    private CAreas areaRequest;
+
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    @JoinColumn(name = "ID_ACCOUNTING_ACCOUNT", referencedColumnName = "ID_ACCOUNTING_ACCOUNT")
+    private AccountingAccounts accountingAccount;
+
     public Transactions() {
     }
 
@@ -265,6 +345,134 @@ public class Transactions implements Serializable {
 
     public void setUser(Users user) {
         this.user = user;
+    }
+
+    public Employees getIdEmployeeRequest() {
+        return idEmployeeRequest;
+    }
+
+    public void setIdEmployeeRequest(Employees idEmployeeRequest) {
+        this.idEmployeeRequest = idEmployeeRequest;
+    }
+
+    public CRoles getIdEmployeeRole() {
+        return idEmployeeRole;
+    }
+
+    public void setIdEmployeeRole(CRoles idEmployeeRole) {
+        this.idEmployeeRole = idEmployeeRole;
+    }
+
+    public CGroups getIdGroupRequest() {
+        return idGroupRequest;
+    }
+
+    public void setIdGroupRequest(CGroups idGroupRequest) {
+        this.idGroupRequest = idGroupRequest;
+    }
+
+    public CDistributors getIdDistributorRequest() {
+        return idDistributorRequest;
+    }
+
+    public void setIdDistributorRequest(CDistributors idDistributorRequest) {
+        this.idDistributorRequest = idDistributorRequest;
+    }
+
+    public CRegions getIdRegionRequest() {
+        return idRegionRequest;
+    }
+
+    public void setIdRegionRequest(CRegions idRegionRequest) {
+        this.idRegionRequest = idRegionRequest;
+    }
+
+    public CBranchs getIdBranchRequest() {
+        return idBranchRequest;
+    }
+
+    public void setIdBranchRequest(CBranchs idBranchRequest) {
+        this.idBranchRequest = idBranchRequest;
+    }
+
+    public CAreas getIdAreaRequest() {
+        return idAreaRequest;
+    }
+
+    public void setIdAreaRequest(CAreas idAreaRequest) {
+        this.idAreaRequest = idAreaRequest;
+    }
+
+    public AccountingAccounts getIdAccountingAccount() {
+        return idAccountingAccount;
+    }
+
+    public void setIdAccountingAccount(AccountingAccounts idAccountingAccount) {
+        this.idAccountingAccount = idAccountingAccount;
+    }
+
+    public Employees getEmployeeRequest() {
+        return employeeRequest;
+    }
+
+    public void setEmployeeRequest(Employees employeeRequest) {
+        this.employeeRequest = employeeRequest;
+    }
+
+    public CRoles getEmployeeRole() {
+        return employeeRole;
+    }
+
+    public void setEmployeeRole(CRoles employeeRole) {
+        this.employeeRole = employeeRole;
+    }
+
+    public CGroups getGroupRequest() {
+        return groupRequest;
+    }
+
+    public void setGroupRequest(CGroups groupRequest) {
+        this.groupRequest = groupRequest;
+    }
+
+    public CDistributors getDistributorRequest() {
+        return distributorRequest;
+    }
+
+    public void setDistributorRequest(CDistributors distributorRequest) {
+        this.distributorRequest = distributorRequest;
+    }
+
+    public CRegions getRegionRequest() {
+        return regionRequest;
+    }
+
+    public void setRegionRequest(CRegions regionRequest) {
+        this.regionRequest = regionRequest;
+    }
+
+    public CBranchs getBranchRequest() {
+        return branchRequest;
+    }
+
+    public void setBranchRequest(CBranchs branchRequest) {
+        this.branchRequest = branchRequest;
+    }
+
+    public CAreas getAreaRequest() {
+        return areaRequest;
+    }
+
+    public void setAreaRequest(CAreas areaRequest) {
+        this.areaRequest = areaRequest;
+    }
+
+    public AccountingAccounts getAccountingAccount() {
+        return accountingAccount;
+    }
+
+    public void setAccountingAccount(AccountingAccounts accountingAccount) {
+        this.accountingAccount = accountingAccount;
     }
 
     @Override
