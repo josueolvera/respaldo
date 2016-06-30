@@ -205,7 +205,7 @@ public class Employees implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private DwEmployees dwEmployees;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "employee")
     @JsonView(JsonViews.Embedded.class)
     private List<EmployeesAccounts> employeesAccountsList;
 
