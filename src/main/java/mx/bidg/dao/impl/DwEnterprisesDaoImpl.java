@@ -5,6 +5,7 @@
  */
 package mx.bidg.dao.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
@@ -87,27 +88,17 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
 
         Criteria criteria = createEntityCriteria();
 
-        boolean hasRestrictions = false;
-
         if (idDistributor != null) {
             criteria.add(Restrictions.eq("idDistributor",idDistributor));
-            hasRestrictions = true;
         }
         if (idRegion != null) {
             criteria.add(Restrictions.eq("idRegion",idRegion));
-            hasRestrictions = true;
         }
         if (idBranch != null) {
             criteria.add(Restrictions.eq("idBranch",idBranch));
-            hasRestrictions = true;
         }
         if (idArea != null) {
             criteria.add(Restrictions.eq("idArea",idArea));
-            hasRestrictions = true;
-        }
-
-        if (!hasRestrictions) {
-            return null;
         }
 
         return criteria.list();

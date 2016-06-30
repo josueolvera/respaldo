@@ -16,9 +16,9 @@ import mx.bidg.model.Users;
  */
 public interface EmployeesAccountsService {
     
-    public List<EmployeesAccounts> findByEmployee(Employees e);
+    List<EmployeesAccounts> findByEmployee(Employees e);
     
-    public List<EmployeesAccounts> findByIdUser(int idUser);
+    List<EmployeesAccounts> findByIdUser(int idUser);
 
     EmployeesAccounts save (EmployeesAccounts employeesAccounts);
 }
