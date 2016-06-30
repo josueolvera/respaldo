@@ -201,7 +201,7 @@ public class Employees implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer gender;
 
-    @OneToOne(mappedBy = "employee")
+    @OneToOne(mappedBy = "employee",fetch = FetchType.LAZY)
     @JsonView(JsonViews.Embedded.class)
     private DwEmployees dwEmployees;
     
