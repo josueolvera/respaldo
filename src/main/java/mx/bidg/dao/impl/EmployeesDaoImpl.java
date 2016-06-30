@@ -77,6 +77,8 @@ public class EmployeesDaoImpl extends AbstractDao<Integer, Employees> implements
             criteria.add(Restrictions.between("joinDate",startLocalDateTime,endLocalDateTime));
         }
 
+        criteria.add(Restrictions.eq("status",1));
+
         return criteria.list();
     }
 
