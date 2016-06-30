@@ -7,6 +7,7 @@ package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
 import mx.bidg.utils.StringFormatter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -45,14 +46,25 @@ public class EmployeesHistory implements Serializable {
     
     @Basic(optional = false)
     @NotNull
-    @Column(name = "ID_COMPANY")
+    @Column(name = "ID_DISTRIBUTOR")
     @JsonView(JsonViews.Root.class)
-    private int idCompany;
+    private int idDistributor;
     
     @Size(max = 25)
-    @Column(name = "DISTRIBUTOR")
+    @Column(name = "DISTRIBUTOR_NAME")
     @JsonView(JsonViews.Root.class)
-    private String distributor;
+    private String distributorName;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "ID_AREA")
+    @JsonView(JsonViews.Root.class)
+    private int idArea;
+
+    @Size(max = 25)
+    @Column(name = "AREA_NAME")
+    @JsonView(JsonViews.Root.class)
+    private String areaName;
     
     @Basic(optional = false)
     @NotNull
@@ -61,9 +73,9 @@ public class EmployeesHistory implements Serializable {
     private int idRegion;
     
     @Size(max = 30)
-    @Column(name = "REGION")
+    @Column(name = "REGION_NAME")
     @JsonView(JsonViews.Root.class)
-    private String region;
+    private String regionName;
     
     @Basic(optional = false)
     @NotNull
@@ -365,7 +377,7 @@ public class EmployeesHistory implements Serializable {
     @NotNull
     @Column(name = "H_STATUS")
     @JsonView(JsonViews.Root.class)
-    private int hStatus;
+    private boolean hStatus;
 
     public EmployeesHistory() {
     }
@@ -374,10 +386,10 @@ public class EmployeesHistory implements Serializable {
         this.idEh = idEh;
     }
 
-    public EmployeesHistory(Integer idEh, int idEmployee, int idCompany, int idRegion, int idBranch, int idGroup, int idRole, String rfc, String username, LocalDateTime creationDate, String actionType, int hStatus) {
+    public EmployeesHistory(Integer idEh, int idEmployee, int idDistributor, int idRegion, int idBranch, int idGroup, int idRole, String rfc, String username, LocalDateTime creationDate, String actionType, boolean hStatus) {
         this.idEh = idEh;
         this.idEmployee = idEmployee;
-        this.idCompany = idCompany;
+        this.idDistributor = idDistributor;
         this.idRegion = idRegion;
         this.idBranch = idBranch;
         this.idGroup = idGroup;
@@ -405,20 +417,36 @@ public class EmployeesHistory implements Serializable {
         this.idEmployee = idEmployee;
     }
 
-    public int getIdCompany() {
-        return idCompany;
+    public int getIdDistributor() {
+        return idDistributor;
     }
 
-    public void setIdCompany(int idCompany) {
-        this.idCompany = idCompany;
+    public void setIdDistributor(int idDistributor) {
+        this.idDistributor = idDistributor;
     }
 
-    public String getDistributor() {
-        return distributor;
+    public String getDistributorName() {
+        return distributorName;
     }
 
-    public void setDistributor(String distributor) {
-        this.distributor = distributor;
+    public void setDistributorName(String distributorName) {
+        this.distributorName = distributorName;
+    }
+
+    public String getAreaName() {
+        return areaName;
+    }
+
+    public void setAreaName(String areaName) {
+        this.areaName = areaName;
+    }
+
+    public int getIdArea() {
+        return idArea;
+    }
+
+    public void setIdArea(int idArea) {
+        this.idArea = idArea;
     }
 
     public int getIdRegion() {
@@ -429,12 +457,12 @@ public class EmployeesHistory implements Serializable {
         this.idRegion = idRegion;
     }
 
-    public String getRegion() {
-        return region;
+    public String getRegionName() {
+        return regionName;
     }
 
-    public void setRegion(String region) {
-        this.region = region;
+    public void setRegionName(String regionName) {
+        this.regionName = regionName;
     }
 
     public int getIdBranch() {
@@ -717,14 +745,6 @@ public class EmployeesHistory implements Serializable {
         this.delegationMunicipality = delegationMunicipality;
     }
 
-    public int gethStatus() {
-        return hStatus;
-    }
-
-    public void sethStatus(int hStatus) {
-        this.hStatus = hStatus;
-    }
-
     public String getPostcode() {
         return postcode;
     }
@@ -909,16 +929,23 @@ public class EmployeesHistory implements Serializable {
         this.actionType = actionType;
     }
 
-    public int getHStatus() {
+    public boolean getHStatus() {
         return hStatus;
     }
 
-    public void setHStatus(int hStatus) {
+    public void setHStatus(boolean hStatus) {
         this.hStatus = hStatus;
     }
 
     public String getFullName() {
         return StringFormatter.concatWithoutNull(firstName, middleName, parentalLast, motherLast);
+    }
+
+    public DateFormatsPojo getJoinDateFormats() {
+        if (joinDate == null) {
+            return null;
+        }
+        return new DateFormatsPojo(joinDate);
     }
 
     @Override
