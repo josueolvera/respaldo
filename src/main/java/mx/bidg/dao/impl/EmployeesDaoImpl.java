@@ -43,24 +43,16 @@ public class EmployeesDaoImpl extends AbstractDao<Integer, Employees> implements
         Criteria criteria = createEntityCriteria();
         Disjunction disjunction = Restrictions.disjunction();
 
-        boolean hasRestrictions = false;
-
         if (employeeName != null) {
             disjunction.add(Restrictions.ilike("firstName",employeeName, MatchMode.ANYWHERE));
             disjunction.add(Restrictions.ilike("middleName",employeeName, MatchMode.ANYWHERE));
             disjunction.add(Restrictions.ilike("parentalLast",employeeName, MatchMode.ANYWHERE));
             disjunction.add(Restrictions.ilike("motherLast",employeeName, MatchMode.ANYWHERE));
             criteria.add(disjunction);
-            hasRestrictions = true;
         }
 
         if (employeeRfc != null) {
             criteria.add(Restrictions.eq("rfc",employeeRfc));
-            hasRestrictions = true;
-        }
-
-        if (!hasRestrictions) {
-            return null;
         }
 
         return criteria.list();
