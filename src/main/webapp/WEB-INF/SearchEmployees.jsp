@@ -220,7 +220,6 @@
                         }
                     },
                     getDwEmployees: function () {
-                        this.searching = true;
                         this.$http.get(
                                 ROOT_URL + this.employeesUrl
                         ).success(function (data) {
@@ -244,6 +243,7 @@
                     getEmployees : function () {
                         this.dwEmployees = [];
                         this.employeesHistories = [];
+                        this.searching = true;
                         if (this.status.value === 1) {
                             if (this.setEmployeesUrl(this.status.value)) {
                                 this.getDwEmployees();
@@ -255,7 +255,6 @@
                         }
                     },
                     getEmployeesHistory : function () {
-                        this.searching = true;
                         this.$http.get(
                                 ROOT_URL + this.employeesUrl
                         ).success(function (data) {
@@ -313,9 +312,10 @@
                         $("#deleteModal").modal("show");
                     },
                     changeEmployeeStatus: function () {
-                        this.$http.post(ROOT_URL + '/change-employee-status',this.currentDwEmployee.idDwEmployee)
+                        this.$http.post(ROOT_URL + '/dw-employees/change-employee-status',this.currentDwEmployee.idDwEmployee)
                                 .success(function (data) {
-
+                                    this.getEmployees();
+                                    $("#deleteModal").modal("hide");
                                 })
                                 .error(function (date) {
 
@@ -562,7 +562,7 @@
 
             <!-- Modal Baja -->
             <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
-                <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -572,7 +572,13 @@
                             <br>
                             <div class="form-inline">
                                 <div class="form-group">
-
+                                    <label>Nombre: </label> &nbsp;&nbsp;
+                                    <input type="text" class="form-control" v-model="currentDwEmployee.employee.fullName" disabled>
+                                </div>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <div class="form-group">
+                                    <label>RFC: </label>&nbsp;&nbsp;
+                                    <input type="text" class="form-control" v-model="currentDwEmployee.employee.rfc" disabled>
                                 </div>
                             </div>
                             <br>
