@@ -200,10 +200,6 @@ public class Employees implements Serializable {
     @Column(name = "GENDER")
     @JsonView(JsonViews.Root.class)
     private Integer gender;
-
-    @OneToOne(mappedBy = "employee",fetch = FetchType.LAZY)
-    @JsonView(JsonViews.Embedded.class)
-    private DwEmployees dwEmployees;
     
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "employee")
     @JsonView(JsonViews.Embedded.class)
@@ -469,14 +465,6 @@ public class Employees implements Serializable {
 
     public void setMotherName(String motherName) {
         this.motherName = motherName;
-    }
-
-    public DwEmployees getDwEmployees() {
-        return dwEmployees;
-    }
-
-    public void setDwEmployees(DwEmployees dwEmployees) {
-        this.dwEmployees = dwEmployees;
     }
 
     public List<EmployeesAccounts> getEmployeesAccountsList() {

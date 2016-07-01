@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -116,42 +115,42 @@ public class Transactions implements Serializable {
 
     @JsonView(JsonViews.Root.class)
     @Column(name = "ID_EMPLOYEE", updatable = false, insertable = false)
-    private Employees idEmployeeRequest;
+    private Integer idEmployeeRequest;
 
 
     @JsonView(JsonViews.Root.class)
     @Column(name = "ID_ROLE", updatable = false, insertable = false)
-    private CRoles idEmployeeRole;
+    private Integer idEmployeeRole;
 
 
     @JsonView(JsonViews.Root.class)
     @Column(name = "ID_GROUP", updatable = false, insertable = false)
-    private CGroups idGroupRequest;
+    private Integer idGroupRequest;
 
 
     @JsonView(JsonViews.Root.class)
     @Column(name = "ID_DISTRIBUTOR", updatable = false, insertable = false)
-    private CDistributors idDistributorRequest;
+    private Integer idDistributorRequest;
 
 
     @JsonView(JsonViews.Root.class)
     @Column(name = "ID_REGION", updatable = false, insertable = false)
-    private CRegions idRegionRequest;
+    private Integer idRegionRequest;
 
 
     @JsonView(JsonViews.Root.class)
     @Column(name = "ID_BRANCH", updatable = false, insertable = false)
-    private CBranchs idBranchRequest;
+    private Integer idBranchRequest;
 
 
     @Column(name = "ID_AREA", updatable = false, insertable = false)
     @JsonView(JsonViews.Root.class)
-    private CAreas idAreaRequest;
+    private Integer idAreaRequest;
 
 
     @JsonView(JsonViews.Root.class)
     @Column(name = "ID_ACCOUNTING_ACCOUNT", updatable = false, insertable = false)
-    private AccountingAccounts idAccountingAccount;
+    private Integer idAccountingAccount;
 
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
@@ -347,67 +346,67 @@ public class Transactions implements Serializable {
         this.user = user;
     }
 
-    public Employees getIdEmployeeRequest() {
+    public Integer getIdEmployeeRequest() {
         return idEmployeeRequest;
     }
 
-    public void setIdEmployeeRequest(Employees idEmployeeRequest) {
+    public void setIdEmployeeRequest(Integer idEmployeeRequest) {
         this.idEmployeeRequest = idEmployeeRequest;
     }
 
-    public CRoles getIdEmployeeRole() {
+    public Integer getIdEmployeeRole() {
         return idEmployeeRole;
     }
 
-    public void setIdEmployeeRole(CRoles idEmployeeRole) {
+    public void setIdEmployeeRole(Integer idEmployeeRole) {
         this.idEmployeeRole = idEmployeeRole;
     }
 
-    public CGroups getIdGroupRequest() {
+    public Integer getIdGroupRequest() {
         return idGroupRequest;
     }
 
-    public void setIdGroupRequest(CGroups idGroupRequest) {
+    public void setIdGroupRequest(Integer idGroupRequest) {
         this.idGroupRequest = idGroupRequest;
     }
 
-    public CDistributors getIdDistributorRequest() {
+    public Integer getIdDistributorRequest() {
         return idDistributorRequest;
     }
 
-    public void setIdDistributorRequest(CDistributors idDistributorRequest) {
+    public void setIdDistributorRequest(Integer idDistributorRequest) {
         this.idDistributorRequest = idDistributorRequest;
     }
 
-    public CRegions getIdRegionRequest() {
+    public Integer getIdRegionRequest() {
         return idRegionRequest;
     }
 
-    public void setIdRegionRequest(CRegions idRegionRequest) {
+    public void setIdRegionRequest(Integer idRegionRequest) {
         this.idRegionRequest = idRegionRequest;
     }
 
-    public CBranchs getIdBranchRequest() {
+    public Integer getIdBranchRequest() {
         return idBranchRequest;
     }
 
-    public void setIdBranchRequest(CBranchs idBranchRequest) {
+    public void setIdBranchRequest(Integer idBranchRequest) {
         this.idBranchRequest = idBranchRequest;
     }
 
-    public CAreas getIdAreaRequest() {
+    public Integer getIdAreaRequest() {
         return idAreaRequest;
     }
 
-    public void setIdAreaRequest(CAreas idAreaRequest) {
+    public void setIdAreaRequest(Integer idAreaRequest) {
         this.idAreaRequest = idAreaRequest;
     }
 
-    public AccountingAccounts getIdAccountingAccount() {
+    public Integer getIdAccountingAccount() {
         return idAccountingAccount;
     }
 
-    public void setIdAccountingAccount(AccountingAccounts idAccountingAccount) {
+    public void setIdAccountingAccount(Integer idAccountingAccount) {
         this.idAccountingAccount = idAccountingAccount;
     }
 
