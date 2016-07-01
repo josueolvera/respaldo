@@ -98,7 +98,19 @@
               otherValueRule: '',
               aliasRule: '',
               trueFunctionValue: '',
-              falseFunctionValue: ''
+              falseFunctionValue: '',
+              where: '',
+              fieldsConditionsin: {},
+              fieldsConditionsChecked: [],
+              fieldsReport: [],
+              distributorSelect: '',
+              fieldsIn: [],
+              query: {
+                  queryName: '',
+                  sqlQuery: '',
+                  header: '',
+                  queryParameters: []
+              }
 
           },
           methods:
@@ -111,18 +123,66 @@
                           });
               },
               queryGenerator: function(){
-                  if (this.fieldsTableChecked.length > 0) {
+                  var fechaInicial = moment(this.timePickerReporteInicial.date, 'DD-MM-YYYY').format('YYYY-MM-DD');
+                  var fechaFinal = moment(this.timePickerReporteFinal.date, 'DD-MM-YYYY').format('YYYY-MM-DD');
+                  var self= this;
+                  var contadorComas= 0;
+                  var headers= "";
+
+                  if (this.fieldsReport.length > 0) {
                     var cadena= "SELECT "
 
-                    this.fieldsTableChecked.forEach(function(elemento){
-                        cadena += elemento.fieldName + ",";
+                    this.fieldsReport.forEach(function(elemento){
+                        cadena += elemento.fieldName + " AS " + elemento.fieldUser.replace(/\s/g,"_");
+                        headers += elemento.fieldUser.replace(/\s/g,"_");
+                        contadorComas += 1;
+                        if (contadorComas != self.fieldsReport.length ) {
+                            cadena += " ,";
+                            headers += ",";
+                        }
                     });
+                    cadena += " FROM SAP_SALES WHERE "+this.distributorSelect.nameSql +" = " +this.distributorSelect.idDistributor;
+                    cadena += " AND PURCHASE_DATE >= " + "'"+fechaInicial+"'";
+                    cadena += " AND PURCHASE_DATE <= " + "'"+fechaFinal+"'";
+                    cadena += " AND "+ this.where.sqlText + " IN (";
 
-                    cadena = cadena.slice(0, -1);
+                    //fieldsIn
+                    var contadorComas2= 0;
+                      this.fieldsIn.forEach(function(elemento){
+                          cadena += elemento.hashCode;
+                          contadorComas2 += 1;
+                          if (contadorComas2 != self.fieldsIn.length ) {
+                              cadena += " ,"
+                          }
+                      });
 
-                    cadena += " FROM SAP_SALES";
+                    cadena += ") GROUP BY 1";
 
-                    console.log(cadena);
+                    this.query.queryName= "Example";
+                    this.query.sqlQuery= cadena;
+                    this.query.headers = headers;
+                    var parameter1= this.createQueryParameters();
+                    parameter1.parameterName = "ID_DISTRIBUTOR";
+                    parameter1.parameterValue = this.distributorSelect.idDistributor;
+                    var parameter2 = this.createQueryParameters();
+                    parameter2.parameterName = "FECHA_INICIAL";
+                    parameter2.parameterValue = "'"+fechaInicial+"'";
+                    var parameter3= this.createQueryParameters();
+                    parameter3.parameterName = "FECHA_FINAL";
+                    parameter3.parameterValue = "'"+fechaFinal+"'";
+                    this.query.queryParameters.push(parameter1);
+                    this.query.queryParameters.push(parameter2);
+                    this.query.queryParameters.push(parameter3);
+
+                    this.$http.post(ROOT_URL+"/sql-queries", JSON.stringify(this.query))
+                            .success(function (data)
+                            {
+                               window.location= ROOT_URL+"/sql-queries/"+data.idQuery+"/build?file_name=reporte";
+                            }).error(function(data)
+                            {
+                              showAlert("Error al crear las condiciones para la busqueda");
+                            });
+
                   }
                   else{
                       showAlert("Debes seleccionar al menos un campo para el calculo");
@@ -205,22 +265,23 @@
                   .replace("#",(this.fieldDataRule.fieldName + " " + this.conditions.sqlText+ " "+this.fieldDataRule2.fieldName))
                   .replace("#",(this.trueFunctionValue.fieldName))
                   .replace("#",this.falseFunctionValue.fieldName);
-                  console.log(conditionSQL);
-
-
-                  /*console.log(this.rule);
-                  console.log(this.falseFunctionValue);
-                  console.log(this.trueFunctionValue);
-                  console.log(this.otherValueRule);
-
-                  console.log(this.conditions);
-                  console.log(this.fieldDataRule);
-                  console.log(this.aliasRule);
-                  */
+              },
+              fillConditions: function(){
+                  this.fieldsConditionsin= {};
+                  this.fieldsConditionsChecked= [];
+                  this.$http.get(ROOT_URL+"/"+this.where.cTasks.taskName)
+                          .success(function (data)
+                          {
+                              this.fieldsConditionsin = data;
+                          });
+              },
+              createQueryParameters: function(){
+                  var parameter= {
+                      parameterName: '',
+                      parameterValue: ''
+                  }
+                  return parameter;
               }
-
-
-
           },
         filters:
           {
@@ -250,7 +311,7 @@
                               <label>
                                   Distribuidor
                               </label>
-                              <select class="form-control" name="">
+                              <select class="form-control" v-model="distributorSelect">
                                   <option></option>
                                   <option v-for="distributor in distributorsSelect" value="{{distributor}}">
                                   {{distributor.acronyms}}
@@ -423,7 +484,7 @@
                    </div>
                </div>
 
-               <div class="row">
+               <%-- <div class="row">
                  <div class="col-xs-12">
                    <div class="panel panel-default">
                      <div class="panel-heading">
@@ -431,10 +492,10 @@
                      </div>
                      <div class="panel-body">
 
-                        <div class="row">
+                        <div class="row"> --%>
 
                             <%-- Reglas aplicables --%>
-                            <div class="col-xs-1">
+                            <%-- <div class="col-xs-1">
                                 <label>
                                     Regla
                                 </label>
@@ -445,9 +506,9 @@
                                         {{operation.userText}}
                                     </option>
                                 </select>
-                            </div>
+                            </div> --%>
                             <%-- Campos y funciones seleccionadas --%>
-                            <div class="col-xs-2">
+                            <%-- <div class="col-xs-2">
                                 <label>
                                     Campo 1
                                 </label>
@@ -456,9 +517,9 @@
                                     <option v-for="field in fieldsTableChecked" value="{{field}}">
                                         {{field.fieldUser}}
                                 </select>
-                            </div>
+                            </div> --%>
                             <%-- Condiciones --%>
-                            <div class="col-xs-2">
+                            <%-- <div class="col-xs-2">
                                 <label>
                                     Operador
                                 </label>
@@ -469,9 +530,9 @@
                                         {{operation.userText}}
                                     </option>
                                 </select>
-                            </div>
+                            </div> --%>
                             <%-- Campos y funciones seleccionadas COPIA  --%>
-                            <div class="col-xs-2">
+                            <%-- <div class="col-xs-2">
                                 <label>
                                     Campo 2
                                 </label>
@@ -484,9 +545,9 @@
                                         OTRO
                                     </option>
                                 </select>
-                            </div>
+                            </div> --%>
 
-                            <div class="col-xs-2" v-show="fieldDataRule2 < 0" >
+                            <%-- <div class="col-xs-2" v-show="fieldDataRule2 < 0" >
                                 <label>
                                     Valor
                                 </label>
@@ -494,10 +555,10 @@
                             </div>
                         </div>
                         <br>
-                        <div class="row">
+                        <div class="row"> --%>
 
                             <%-- Cambiar el v-model --%>
-                            <div class="col-xs-2">
+                            <%-- <div class="col-xs-2">
                                 <label>
                                     Verdadero
                                 </label>
@@ -507,10 +568,10 @@
                                         {{field.fieldUser}}
                                     </option>
                                 </select>
-                            </div>
+                            </div> --%>
 
                             <%-- Cambiar el v-model --%>
-                            <div class="col-xs-2">
+                            <%-- <div class="col-xs-2">
                                 <label>
                                     Falso
                                 </label>
@@ -542,7 +603,7 @@
                      </div>
                    </div>
                  </div>
-               </div>
+               </div> --%>
 
                <div class="row">
                  <div class="col-xs-12">
@@ -551,7 +612,51 @@
                        <h3 class="panel-title">Condiciones</h3>
                      </div>
                      <div class="panel-body">
+                         <div class="row">
+                           <div class="col-xs-3">
+                             <label>
+                                 Filtrar por
+                             </label>
+                             <select class="form-control" v-model="where" @change="fillConditions">
+                                 <option></option>
+                                 <option v-for="operation in operationsSql" value="{{operation}}"
+                                     v-if="operation.idSqlFunctionsCategories == 5">
+                                     {{operation.userText}}
+                                 </option>
+                             </select>
+                           </div>
+                         </div>
+                         <div class="row">
+                             <div class="col-xs-4" v-for="field in fieldsConditionsin">
+                                         <input type="checkbox" value="{{field}}" v-model="fieldsIn" >
+                                         <span>{{field.nameSQL}} {{field.hashCode}}</span>
+                             </div>
+                         </div>
+                     </div>
+                   </div>
+                 </div>
+               </div>
 
+               <div class="row">
+                 <div class="col-xs-12">
+                   <div class="panel panel-default">
+                     <div class="panel-heading">
+                       <h3 class="panel-title">Campos para reporte</h3>
+                     </div>
+                     <div class="panel-body">
+                         <div class="row">
+                           <div class="col-xs-12">
+                             <label>
+                                 Seleccione los campos que desea para su reporte
+                             </label>
+                           </div>
+                         </div>
+                         <div class="row">
+                             <div class="col-xs-4" v-for="field in fieldsTableChecked">
+                                         <input type="checkbox" value="{{field}}" v-model="fieldsReport" >
+                                         <span>{{field.fieldUser}}</span>
+                             </div>
+                         </div>
                      </div>
                    </div>
                  </div>
@@ -565,12 +670,6 @@
                    </div>
                </div>
            </div>
-
-               <pre>
-                   {{ $data.fieldsTableChecked  | json}}
-               </pre>
-
-
       </div> <!-- #contenidos -->
       <!-- Fecha de Termino- Agregar fecha dia de solicitud-->
     </jsp:body>
