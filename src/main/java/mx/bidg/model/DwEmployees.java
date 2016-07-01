@@ -29,6 +29,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicUpdate
 @Table(name = "DW_EMPLOYEES")
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class DwEmployees implements Serializable {
     
     private static final long serialVersionUID = 1L;
@@ -72,7 +73,7 @@ public class DwEmployees implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CRoles role;
     
-    @OneToOne(mappedBy = "dwEmployee")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "dwEmployee")
     @JsonView(JsonViews.Embedded.class)
     private Users user;
 

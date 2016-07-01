@@ -8,7 +8,7 @@ import java.util.List;
  * Created by gerardo8 on 24/06/16.
  */
 public interface EmployeesHistoryDao  extends InterfaceDao<EmployeesHistory>  {
-    List<EmployeesHistory> findByDistributorAndRegionAndBranchAndAreaAndRole(
+    List<EmployeesHistory> findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(
             Integer idDistributor,
             Integer idRegion,
             Integer idBranch,
@@ -17,4 +17,5 @@ public interface EmployeesHistoryDao  extends InterfaceDao<EmployeesHistory>  {
             String startDate,
             String endDate
     );
+    List<EmployeesHistory> findByIdEmployee(Integer idEmployee);
 }

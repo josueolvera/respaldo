@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,24 +43,16 @@ public class EmployeesDaoImpl extends AbstractDao<Integer, Employees> implements
         Criteria criteria = createEntityCriteria();
         Disjunction disjunction = Restrictions.disjunction();
 
-        boolean hasRestrictions = false;
-
         if (employeeName != null) {
             disjunction.add(Restrictions.ilike("firstName",employeeName, MatchMode.ANYWHERE));
             disjunction.add(Restrictions.ilike("middleName",employeeName, MatchMode.ANYWHERE));
             disjunction.add(Restrictions.ilike("parentalLast",employeeName, MatchMode.ANYWHERE));
             disjunction.add(Restrictions.ilike("motherLast",employeeName, MatchMode.ANYWHERE));
             criteria.add(disjunction);
-            hasRestrictions = true;
         }
 
         if (employeeRfc != null) {
             criteria.add(Restrictions.eq("rfc",employeeRfc));
-            hasRestrictions = true;
-        }
-
-        if (!hasRestrictions) {
-            return null;
         }
 
         return criteria.list();
@@ -69,18 +62,14 @@ public class EmployeesDaoImpl extends AbstractDao<Integer, Employees> implements
     public List<Employees> findBetweenJoinDate(String startDate, String endDate) {
         Criteria criteria = createEntityCriteria();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        boolean hasRestrictions = false;
 
         if (endDate != null && startDate != null) {
-            LocalDateTime endLocalDateTime = LocalDateTime.parse(endDate + " 00:00:00",formatter);
+            LocalDateTime endLocalDateTime = LocalDateTime.parse(endDate + " 23:59:59",formatter);
             LocalDateTime startLocalDateTime = LocalDateTime.parse(startDate + " 00:00:00",formatter);
             criteria.add(Restrictions.between("joinDate",startLocalDateTime,endLocalDateTime));
-            hasRestrictions = true;
         }
 
-        if (!hasRestrictions) {
-            return null;
-        }
+        criteria.add(Restrictions.eq("status",1));
 
         return criteria.list();
     }

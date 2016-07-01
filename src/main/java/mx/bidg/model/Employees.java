@@ -200,12 +200,8 @@ public class Employees implements Serializable {
     @Column(name = "GENDER")
     @JsonView(JsonViews.Root.class)
     private Integer gender;
-
-    @OneToOne(mappedBy = "employee")
-    @JsonView(JsonViews.Embedded.class)
-    private DwEmployees dwEmployees;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "employee")
     @JsonView(JsonViews.Embedded.class)
     private List<EmployeesAccounts> employeesAccountsList;
 
@@ -218,6 +214,10 @@ public class Employees implements Serializable {
     @ManyToOne(optional = true)
     @JsonView(JsonViews.Embedded.class)
     private CStatusMarital statusMarital;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
+    @JsonView(JsonViews.Embedded.class)
+    private List<EmployeeDocuments> employeeDocumentsList;
 
 
     public Employees() {
@@ -467,14 +467,6 @@ public class Employees implements Serializable {
         this.motherName = motherName;
     }
 
-    public DwEmployees getDwEmployees() {
-        return dwEmployees;
-    }
-
-    public void setDwEmployees(DwEmployees dwEmployees) {
-        this.dwEmployees = dwEmployees;
-    }
-
     public List<EmployeesAccounts> getEmployeesAccountsList() {
         return employeesAccountsList;
     }
@@ -559,6 +551,14 @@ public class Employees implements Serializable {
 
     public void setStatusMarital(CStatusMarital statusMarital) {
         this.statusMarital = statusMarital;
+    }
+
+    public List<EmployeeDocuments> getEmployeeDocumentsList() {
+        return employeeDocumentsList;
+    }
+
+    public void setEmployeeDocumentsList(List<EmployeeDocuments> employeeDocumentsList) {
+        this.employeeDocumentsList = employeeDocumentsList;
     }
 
     public String getFullName() {

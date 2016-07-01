@@ -61,9 +61,27 @@ public class EmployeeDocuments implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
 
+    @Column(name = "FIELD")
+    @JsonView(JsonViews.Root.class)
+    private String field;
+
+    @Column(name = "ID_DOCUMENT_TYPE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idDocumentType;
+
+    @Column(name = "ID_EMPLOYEE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idEmployee;
+
     @JoinColumn(name = "ID_DOCUMENT_TYPE", referencedColumnName = "ID_DOCUMENT_TYPE")
     @ManyToOne
-    private CEmployeeDocumentsTypes idDocumentType;
+    @JsonView(JsonViews.Embedded.class)
+    private CEmployeeDocumentsTypes cDocumentType;
+
+    @JoinColumn(name = "ID_EMPLOYEE", referencedColumnName = "ID_EMPLOYEE")
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JsonView(JsonViews.Embedded.class)
+    private Employees employee;
 
     public EmployeeDocuments() {
     }
@@ -125,12 +143,44 @@ public class EmployeeDocuments implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public CEmployeeDocumentsTypes getIdDocumentType() {
+    public Integer getIdDocumentType() {
         return idDocumentType;
     }
 
-    public void setIdDocumentType(CEmployeeDocumentsTypes idDocumentType) {
+    public void setIdDocumentType(Integer idDocumentType) {
         this.idDocumentType = idDocumentType;
+    }
+
+    public Integer getIdEmployee() {
+        return idEmployee;
+    }
+
+    public void setIdEmployee(Integer idEmployee) {
+        this.idEmployee = idEmployee;
+    }
+
+    public CEmployeeDocumentsTypes getcDocumentType() {
+        return cDocumentType;
+    }
+
+    public void setcDocumentType(CEmployeeDocumentsTypes cDocumentType) {
+        this.cDocumentType = cDocumentType;
+    }
+
+    public Employees getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employees employee) {
+        this.employee = employee;
+    }
+
+    public String getField() {
+        return field;
+    }
+
+    public void setField(String field) {
+        this.field = field;
     }
 
     @Override

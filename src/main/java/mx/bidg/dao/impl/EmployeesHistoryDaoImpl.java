@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +31,9 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
 
     @Override
     public List<EmployeesHistory> findAll() {
-        return createEntityCriteria().list();
+        return createEntityCriteria()
+                .add(Restrictions.eq("hStatus",1))
+                .list();
     }
 
     @Override
@@ -46,43 +49,42 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
     }
 
     @Override
-    public List<EmployeesHistory> findByDistributorAndRegionAndBranchAndAreaAndRole(Integer idDistributor, Integer idRegion, Integer idBranch, Integer idArea, Integer idRole, String startDate, String endDate) {
+    public List<EmployeesHistory> findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(Integer idDistributor, Integer idRegion, Integer idBranch, Integer idArea, Integer idRole, String startDate, String endDate) {
         Criteria criteria = createEntityCriteria();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         boolean hasRestrictions = false;
 
         if (startDate != null && endDate != null) {
             LocalDateTime startLocalDateTime = LocalDateTime.parse(startDate + " 00:00:00",formatter);
-            LocalDateTime endLocalDateTime = LocalDateTime.parse(endDate + " 00:00:00",formatter);
+            LocalDateTime endLocalDateTime = LocalDateTime.parse(endDate + " 23:59:59",formatter);
             criteria.add(Restrictions.between("joinDate",startLocalDateTime,endLocalDateTime));
-            hasRestrictions = true;
         }
 
         if (idDistributor != null) {
             criteria.add(Restrictions.eq("idDistributor",idDistributor));
-            hasRestrictions = true;
         }
         if (idRegion != null) {
             criteria.add(Restrictions.eq("idRegion",idRegion));
-            hasRestrictions = true;
         }
         if (idBranch != null) {
             criteria.add(Restrictions.eq("idBranch",idBranch));
-            hasRestrictions = true;
         }
         if (idArea != null) {
             criteria.add(Restrictions.eq("idArea",idArea));
-            hasRestrictions = true;
         }
         if (idRole != null) {
             criteria.add(Restrictions.eq("idRole",idRole));
-            hasRestrictions = true;
         }
 
-        if (!hasRestrictions) {
-            return null;
-        }
+        criteria.add(Restrictions.eq("hStatus",true));
 
         return criteria.list();
+    }
+
+    @Override
+    public List<EmployeesHistory> findByIdEmployee(Integer idEmployee) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idEmployee",idEmployee))
+                .list();
     }
 }

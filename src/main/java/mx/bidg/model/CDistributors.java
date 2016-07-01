@@ -58,7 +58,7 @@ public class CDistributors implements Serializable {
 
     @Column(name = "BUDGET_SHARE", columnDefinition = "TINYINT")
     @Type(type = "org.hibernate.type.NumericBooleanType")
-    private Boolean budgetShare;
+    private boolean budgetShare;
 
 
     public CDistributors() {

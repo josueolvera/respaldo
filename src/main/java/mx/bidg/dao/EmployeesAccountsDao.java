@@ -15,6 +15,6 @@ import mx.bidg.model.EmployeesAccounts;
  */
 public interface EmployeesAccountsDao extends InterfaceDao<EmployeesAccounts> {
     
-    public List<EmployeesAccounts> findByEmployee(Employees e);
-    
+    List<EmployeesAccounts> findByEmployee(Employees e);
+    EmployeesAccounts findByIdEmployee(Integer idEmployee);
 }

@@ -4,6 +4,8 @@ import mx.bidg.model.DwEmployees;
 import mx.bidg.model.DwEnterprises;
 import mx.bidg.model.Employees;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -13,7 +15,7 @@ import java.util.List;
 public interface DwEmployeesService {
     DwEmployees findById(Integer id);
     DwEmployees findBy(Employees employees, DwEnterprises dwEnterprises);
-    List<DwEmployees> findByDistributorAndRegionAndBranchAndAreaAndRole(
+    List<DwEmployees> findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(
             Integer idDistributor,
             Integer idRegion,
             Integer idBranch,
@@ -24,4 +26,6 @@ public interface DwEmployeesService {
     );
     List<DwEmployees> findAll();
     DwEmployees save(DwEmployees dwEmployees);
+    void createReport(List<DwEmployees> dwEmployees, OutputStream outputStream) throws IOException;
+    void changeEmployeeStatus(Integer idDwEmployee);
 }

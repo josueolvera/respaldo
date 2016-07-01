@@ -64,7 +64,6 @@ public class RequestEventsListener {
         List<Users> users = new ArrayList<>();
         Requests request = event.getResource();
         users.add(request.getUserRequest());
-        users.add(request.getUserResponsible());
         notificationsService.createNotification(users, request);
         AuthorizationTreeRules rule = authorizationTreeRulesService.findByRuleName(ESTIMATION_CREATION_RULE_NAME);
         Integer idUser = evalRule(rule, request);
