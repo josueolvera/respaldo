@@ -141,7 +141,7 @@ public class DwEmployeesController {
         );
     }
 
-    @RequestMapping(value = "/change-employee-status", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/change-employee-status", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
         public ResponseEntity<String> changeEmployeeStatus(@RequestBody Integer idDwEmployee) throws IOException {
 
         dwEmployeesService.changeEmployeeStatus(idDwEmployee);
