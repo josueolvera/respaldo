@@ -25,4 +25,9 @@ public class CEmployeeDocumentsTypesServiceImpl implements CEmployeeDocumentsTyp
         return cEmployeeDocumentsTypesDao.findAll();
     }
 
+    @Override
+    public List<CEmployeeDocumentsTypes> findByInput() {
+        return cEmployeeDocumentsTypesDao.findByInputField();
+    }
+
 }
