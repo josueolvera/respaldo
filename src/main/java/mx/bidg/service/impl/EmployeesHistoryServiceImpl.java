@@ -1,7 +1,8 @@
 package mx.bidg.service.impl;
 
+import mx.bidg.dao.DwEmployeesDao;
 import mx.bidg.dao.EmployeesHistoryDao;
-import mx.bidg.model.EmployeesHistory;
+import mx.bidg.model.*;
 import mx.bidg.service.EmployeesHistoryService;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -11,9 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by gerardo8 on 24/06/16.
@@ -109,7 +112,7 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
             row.createCell(2).setCellValue(employeeHistory.getFullName());
             row.createCell(3).setCellValue(employeeHistory.getClaveSap());
             row.createCell(4).setCellValue(employeeHistory.getRoleName());
-            row.createCell(5).setCellValue(employeeHistory.getAcronyms());
+            row.createCell(5).setCellValue(employeeHistory.getBankAcronyms());
             row.createCell(6).setCellValue(employeeHistory.getAccountNumber());
             row.createCell(7).setCellValue(employeeHistory.getAccountClabe());
             row.createCell(8).setCellValue(employeeHistory.getBranchShort());
@@ -131,5 +134,159 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
         hoja.autoSizeColumn(2);
 
         wb.write(outputStream);
+    }
+
+    @Override
+    public EmployeesHistory save(DwEmployees dwEmployee) {
+
+        if (dwEmployee != null) {
+            EmployeesHistory employeesHistory = new EmployeesHistory();
+            CActionTypes actionType = new CActionTypes(3);
+
+            Employees employee = dwEmployee.getEmployee();
+
+            if (employee != null) {
+                List<EmployeesHistory> employeesHistories =
+                        employeesHistoryDao.findByIdEmployee(employee.getIdEmployee());
+
+                for (EmployeesHistory currentEmployeeHistory : employeesHistories) {
+                    currentEmployeeHistory.setHStatus(0);
+                    employeesHistoryDao.update(currentEmployeeHistory);
+                }
+
+
+                List<EmployeesAccounts> employeeAccountList = employee.getEmployeesAccountsList();
+
+                if (!employeeAccountList.isEmpty()) {
+                    Accounts account = employeeAccountList.get(0).getAccount();
+
+                    if (account != null) {
+                        employeesHistory.setAccountClabe(account.getAccountClabe());
+                        employeesHistory.setAccountNumber(account.getAccountNumber());
+
+                        CAccountsTypes accountType = account.getAccountType();
+                        if (accountType != null) {
+                            employeesHistory.setAccountType(accountType.getIdAccountType());
+                        }
+                        CBanks bank = account.getBank();
+                        if (bank != null) {
+                            employeesHistory.setBankAcronyms(bank.getAcronyms());
+                        }
+                    }
+                }
+
+                CEducation education = employee.getEducation();
+
+                if (education != null) {
+                    employeesHistory.setEducation(education.getEducationName());
+                    employeesHistory.setIdEducation(education.getIdEducation());
+                }
+
+                CStatusMarital statusMarital = employee.getStatusMarital();
+
+                if (statusMarital != null) {
+                    employeesHistory.setIdStatusMarital(statusMarital.getIdStatusMarital());
+                    employeesHistory.setStatusMarital(statusMarital.getMaritalName());
+                }
+
+                employeesHistory.setBirthdate(employee.getBirthday());
+                employeesHistory.setBirthplace(employee.getBirthPlace());
+                employeesHistory.setCellPhone(employee.getCellPhone());
+                employeesHistory.setClaveSap(employee.getClaveSap());
+                employeesHistory.setColonia(employee.getColonia());
+                employeesHistory.setContractType(employee.getContractType());
+                employeesHistory.setCurp(employee.getCurp());
+                employeesHistory.setDelegationMunicipality(employee.getCity());
+                employeesHistory.setEmployeeNumber(employee.getEmployeeNumber());
+                employeesHistory.setEmployeeType(employee.getEmployeeType());
+                employeesHistory.setExteriorNumber(employee.getExteriorNumber());
+                employeesHistory.setFatherName(employee.getFatherName());
+                employeesHistory.setFirstName(employee.getFirstName());
+                employeesHistory.setGender(employee.getGender());
+                employeesHistory.setHomePhone(employee.getHomePhone());
+                employeesHistory.setIdEmployee(employee.getIdEmployee());
+                employeesHistory.setInteriorNumber(employee.getInteriorNumber());
+                employeesHistory.setJoinDate(employee.getJoinDate());
+                employeesHistory.setMail(employee.getMail());
+                employeesHistory.setMiddleName(employee.getMiddleName());
+                employeesHistory.setMotherLast(employee.getMotherLast());
+                employeesHistory.setMotherName(employee.getMotherName());
+                employeesHistory.setParentalLast(employee.getParentalLast());
+                employeesHistory.setPostcode(employee.getPostcode());
+                employeesHistory.setRfc(employee.getRfc());
+                employeesHistory.setSalary(employee.getSalary());
+                employeesHistory.setSize(employee.getSize());
+                employeesHistory.setSizeNumber(employee.getSizeNumber());
+                employeesHistory.setState(employee.getState());
+                employeesHistory.setStreet(employee.getStreet());
+            }
+
+            DwEnterprises dwEnterprise = dwEmployee.getDwEnterprise();
+
+            if (dwEnterprise != null) {
+
+                CGroups group = dwEnterprise.getGroup();
+
+                if (group != null) {
+                    employeesHistory.setGroupName(group.getGroupName());
+                    employeesHistory.setIdGroup(group.getIdGroup());
+                    employeesHistory.setGroupAcronyms(group.getAcronyms());
+                }
+
+                CDistributors distributor = dwEnterprise.getDistributor();
+
+                if (distributor != null) {
+                    employeesHistory.setDistributorName(distributor.getDistributorName());
+                    employeesHistory.setIdDistributor(distributor.getIdDistributor());
+                }
+
+                CRegions region = dwEnterprise.getRegion();
+
+                if (region != null) {
+                    employeesHistory.setIdRegion(region.getIdRegion());
+                    employeesHistory.setRegionName(region.getRegionName());
+                }
+
+                CBranchs branch = dwEnterprise.getBranch();
+
+                if (branch != null) {
+                    employeesHistory.setBranchShort(branch.getBranchShort());
+                    employeesHistory.setBranchName(branch.getBranchName());
+                    employeesHistory.setIdBranch(branch.getIdBranch());
+                }
+
+                CAreas area = dwEnterprise.getArea();
+
+                if (area != null) {
+                    employeesHistory.setAreaName(area.getAreaName());
+                    employeesHistory.setIdArea(area.getIdArea());
+                }
+
+            }
+
+            CRoles role = dwEmployee.getRole();
+
+            if (role != null) {
+                employeesHistory.setIdRole(role.getIdRole());
+                employeesHistory.setRoleName(role.getRoleName());
+            }
+
+            Users user = dwEmployee.getUser();
+
+            if (user != null) {
+                employeesHistory.setUsername(user.getUsername());
+            }
+
+
+            employeesHistory.setIdActionType(actionType.getIdActionType());
+            employeesHistory.setActionType(actionType.getActionType());
+
+            employeesHistory.setHStatus(1);
+            employeesHistory.setCreationDate(LocalDateTime.now());
+
+            employeesHistory = employeesHistoryDao.save(employeesHistory);
+            return employeesHistory;
+        }
+        return new EmployeesHistory();
     }
 }
