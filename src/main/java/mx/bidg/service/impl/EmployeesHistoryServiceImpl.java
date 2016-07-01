@@ -165,7 +165,7 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
 
                 List<EmployeesAccounts> employeeAccountList = employee.getEmployeesAccountsList();
 
-                if (!employeeAccountList.isEmpty()) {
+                if (employeeAccountList != null) {
                     Accounts account = employeeAccountList.get(0).getAccount();
 
                     if (account != null) {
