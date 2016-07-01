@@ -41,4 +41,9 @@ public class CEmployeeDocumentsTypesDaoImpl extends AbstractDao<Integer,CEmploye
         remove(entity);
         return true;
     }
+
+    @Override
+    public List<CEmployeeDocumentsTypes> findByInputField() {
+        return (List<CEmployeeDocumentsTypes>) createEntityCriteria().add(Restrictions.eq("field",1)).list();
+    }
 }

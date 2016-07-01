@@ -5,6 +5,7 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
@@ -146,8 +147,13 @@ public class CAgreements implements Serializable {
     public void setAgreementNameClean(String agreementNameClean) {
         this.agreementNameClean = agreementNameClean;
     }
+    
+    public String getNameSQL(){
+        return agreementName;
+    }
 
     @Override
+    @JsonProperty("hashCode")
     public int hashCode() {
         int hash = 0;
         hash += (idAgreement != null ? idAgreement.hashCode() : 0);
