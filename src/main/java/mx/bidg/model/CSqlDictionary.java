@@ -1,5 +1,6 @@
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import mx.bidg.config.JsonViews;
 
@@ -58,6 +59,17 @@ public class CSqlDictionary implements Serializable {
     @ManyToOne()
     @JsonView(JsonViews.Embedded.class)
     private CSqlFunctionsCategories sqlFunctionsCategories;
+    
+    @Column(name = "ID_TASK", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idTask;
+    
+    @JoinColumn(name= "ID_TASK", referencedColumnName = "ID_TASK")
+    @ManyToOne()
+    @JsonView(JsonViews.Embedded.class)
+    private CTasks cTasks;
+    
+    
 
     public CSqlDictionary() {
     }
@@ -96,7 +108,7 @@ public class CSqlDictionary implements Serializable {
     public void setSqlText(String sqlText) {
         this.sqlText = sqlText;
     }
-
+    
     public int getStatus() {
         return status;
     }
@@ -129,7 +141,16 @@ public class CSqlDictionary implements Serializable {
         this.idSqlFunctionsCategories = idSqlFunctionsCategories;
     }
     
+    public CTasks getcTasks() {
+        return cTasks;
+    }
+
+    public void setcTasks(CTasks cTasks) {
+        this.cTasks = cTasks;
+    }
+    
     @Override
+    @JsonProperty("hashCode")
     public int hashCode() {
         int hash = 0;
         hash += (idDictionary != null ? idDictionary.hashCode() : 0);
@@ -152,6 +173,14 @@ public class CSqlDictionary implements Serializable {
     @Override
     public String toString() {
         return "mx.bidg.model.CSqlDictionary[ idDictionary=" + idDictionary + " ]";
+    }
+
+    public Integer getIdTask() {
+        return idTask;
+    }
+
+    public void setIdTask(Integer idTask) {
+        this.idTask = idTask;
     }
 
 }
