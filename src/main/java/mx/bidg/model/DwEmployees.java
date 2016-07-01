@@ -29,6 +29,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicUpdate
 @Table(name = "DW_EMPLOYEES")
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class DwEmployees implements Serializable {
     
     private static final long serialVersionUID = 1L;

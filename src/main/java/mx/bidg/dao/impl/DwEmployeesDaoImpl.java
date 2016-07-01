@@ -10,6 +10,7 @@ import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,24 +51,31 @@ public class DwEmployeesDaoImpl extends AbstractDao<Integer, DwEmployees> implem
     @Override
     public List<DwEmployees> findByEmployeeAndDwEnterpriseAndRole(List<Employees> employees,List<DwEnterprises> dwEnterprises, Integer idRole) {
         Criteria criteria = createEntityCriteria();
-        Disjunction disjunction = Restrictions.disjunction();
+        Disjunction employeesDisjunction = Restrictions.disjunction();
+        Disjunction dwEnterprisesDisjunction = Restrictions.disjunction();
 
-        if (employees != null) {
+        if (!employees.isEmpty()) {
             for (Employees employee : employees) {
-                disjunction.add(Restrictions.eq("idEmployee",employee.getIdEmployee()));
+                System.out.println("Id employee: " + employee.getIdEmployee());
+                employeesDisjunction.add(Restrictions.eq("idEmployee", employee.getIdEmployee()));
             }
-            criteria.add(disjunction);
+            criteria.add(employeesDisjunction);
         }
 
-        if (dwEnterprises != null) {
+        if (!dwEnterprises.isEmpty()) {
             for (DwEnterprises dwEnterprise : dwEnterprises) {
-                disjunction.add(Restrictions.eq("idDwEnterprise",dwEnterprise.getIdDwEnterprise()));
+                System.out.println("Id dwEnterprise: " + dwEnterprise.getIdDwEnterprise());
+                dwEnterprisesDisjunction.add(Restrictions.eq("idDwEnterprise", dwEnterprise.getIdDwEnterprise()));
             }
-            criteria.add(disjunction);
+            criteria.add(dwEnterprisesDisjunction);
         }
 
         if (idRole != null) {
             criteria.add(Restrictions.eq("idRole",idRole));
+        }
+
+        if (dwEnterprises.isEmpty() || employees.isEmpty()) {
+            return new ArrayList<>();
         }
 
         return criteria.list();

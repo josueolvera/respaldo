@@ -951,7 +951,7 @@
                  style="height: 6rem; padding: 2rem 0;">
                 <div class="loader">Cargando...</div>
             </div>
-            <div class="stock-groups col-xs-12"  v-if="stockGroups.length > 0" && searching == false>
+            <div class="stock-groups col-xs-12"  v-if="stockGroups.length > 0">
                 <div v-for="stock in stockGroups | filterBy stockFilter">
                     <div class="text-center col-xs-12">
                         <h4>

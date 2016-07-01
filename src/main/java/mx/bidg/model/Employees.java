@@ -215,6 +215,10 @@ public class Employees implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CStatusMarital statusMarital;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
+    @JsonView(JsonViews.Embedded.class)
+    private List<EmployeeDocuments> employeeDocumentsList;
+
 
     public Employees() {
     }
@@ -547,6 +551,14 @@ public class Employees implements Serializable {
 
     public void setStatusMarital(CStatusMarital statusMarital) {
         this.statusMarital = statusMarital;
+    }
+
+    public List<EmployeeDocuments> getEmployeeDocumentsList() {
+        return employeeDocumentsList;
+    }
+
+    public void setEmployeeDocumentsList(List<EmployeeDocuments> employeeDocumentsList) {
+        this.employeeDocumentsList = employeeDocumentsList;
     }
 
     public String getFullName() {

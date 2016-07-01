@@ -18,6 +18,7 @@ public class DateFormatsPojo {
     private String iso;
 
     private String dateNumber;
+    private String simpleDate;
     private String dateTextShort;
     private String dateTextLong;
 
@@ -52,6 +53,7 @@ public class DateFormatsPojo {
 
     public void build(LocalDate localDate) {
         this.dateNumber = localDate.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+        this.simpleDate = this.dateNumber.replace("-","/");
         this.dateTextShort = localDate.format(DateTimeFormatter.ofPattern("EE dd, MMM yyyy").withLocale(locale));
         this.dateTextLong = localDate.format(DateTimeFormatter.ofPattern("EEEE dd, MMMM yyyy").withLocale(locale));
     }
@@ -73,6 +75,10 @@ public class DateFormatsPojo {
 
     public String getDateNumber() {
         return dateNumber;
+    }
+
+    public String getSimpleDate() {
+        return simpleDate;
     }
 
     public String getDateTextShort() {

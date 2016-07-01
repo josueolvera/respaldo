@@ -1,7 +1,10 @@
 package mx.bidg.service;
 
+import mx.bidg.model.DwEmployees;
 import mx.bidg.model.EmployeesHistory;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -10,7 +13,7 @@ import java.util.List;
 public interface EmployeesHistoryService {
     EmployeesHistory findById(Integer id);
     List<EmployeesHistory> findAll();
-    List<EmployeesHistory> findByDistributorAndRegionAndBranchAndAreaAndRole(
+    List<EmployeesHistory> findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(
             Integer idDistributor,
             Integer idRegion,
             Integer idBranch,
@@ -19,4 +22,5 @@ public interface EmployeesHistoryService {
             String startDate,
             String endDate
     );
+    void createReport(List<EmployeesHistory> employeesHistories, OutputStream outputStream) throws IOException;
 }
