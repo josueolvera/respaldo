@@ -3,6 +3,7 @@ package mx.bidg.service.impl;
 import mx.bidg.dao.*;
 import mx.bidg.model.*;
 import mx.bidg.service.DwEmployeesService;
+import mx.bidg.service.EmployeesHistoryService;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +31,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     private DwEnterprisesDao dwEnterprisesDao;
 
     @Autowired
-    private CRolesDao cRolesDao;
+    private EmployeesHistoryService employeesHistoryService;
 
     @Autowired
     private EmployeesDao employeesDao;
@@ -187,14 +188,13 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     @Override
     public void changeEmployeeStatus(Integer idDwEmployee) {
         DwEmployees dwEmployee = dwEmployeesDao.findById(idDwEmployee);
-        Employees employee = dwEmployee.getEmployee();
-        CEducation education = employee.getEducation();
-        CStatusMarital statusMarital = employee.getStatusMarital();
-        EmployeesHistory employeesHistory = new EmployeesHistory();
 
+        Employees employee = dwEmployee.getEmployee();
         employee.setStatus(0);
         employeesDao.update(employee);
 
-//        dwEmployeesDao.delete(dwEmployee);
+        employeesHistoryService.save(dwEmployee);
+
+        dwEmployeesDao.delete(dwEmployee);
     }
 }
