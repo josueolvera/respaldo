@@ -137,23 +137,31 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
     }
 
     @Override
-    public EmployeesHistory save(DwEmployees dwEmployee) {
+    public EmployeesHistory save(DwEmployees dwEmployee, CActionTypes actionType) {
 
         if (dwEmployee != null) {
             EmployeesHistory employeesHistory = new EmployeesHistory();
-            CActionTypes actionType = new CActionTypes(3);
-
             Employees employee = dwEmployee.getEmployee();
 
             if (employee != null) {
-                List<EmployeesHistory> employeesHistories =
-                        employeesHistoryDao.findByIdEmployee(employee.getIdEmployee());
 
-                for (EmployeesHistory currentEmployeeHistory : employeesHistories) {
-                    currentEmployeeHistory.setHStatus(0);
-                    employeesHistoryDao.update(currentEmployeeHistory);
+                if (actionType.equals(CActionTypes.BAJA)) {
+
+                    List<EmployeesHistory> employeesHistories =
+                            employeesHistoryDao.findByIdEmployee(employee.getIdEmployee());
+
+                    for (EmployeesHistory currentEmployeeHistory : employeesHistories) {
+                        currentEmployeeHistory.setHStatus(0);
+                        employeesHistoryDao.update(currentEmployeeHistory);
+                    }
+
+                    employeesHistory.setHStatus(1);
+
                 }
 
+                if (actionType.equals(CActionTypes.ALTA)) {
+                    employeesHistory.setHStatus(1);
+                }
 
                 List<EmployeesAccounts> employeeAccountList = employee.getEmployeesAccountsList();
 
@@ -277,11 +285,9 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
                 employeesHistory.setUsername(user.getUsername());
             }
 
-
             employeesHistory.setIdActionType(actionType.getIdActionType());
             employeesHistory.setActionType(actionType.getActionType());
 
-            employeesHistory.setHStatus(1);
             employeesHistory.setCreationDate(LocalDateTime.now());
 
             employeesHistory = employeesHistoryDao.save(employeesHistory);

@@ -1,5 +1,6 @@
 package mx.bidg.service;
 
+import mx.bidg.model.CActionTypes;
 import mx.bidg.model.DwEmployees;
 import mx.bidg.model.EmployeesHistory;
 
@@ -23,5 +24,5 @@ public interface EmployeesHistoryService {
             String endDate
     );
     void createReport(List<EmployeesHistory> employeesHistories, OutputStream outputStream) throws IOException;
-    EmployeesHistory save(DwEmployees dwEmployee);
+    EmployeesHistory save(DwEmployees dwEmployee, CActionTypes actionType);
 }
