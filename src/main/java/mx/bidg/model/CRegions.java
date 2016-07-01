@@ -5,6 +5,7 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.util.List;
@@ -77,8 +78,13 @@ public class CRegions implements Serializable {
     public void setRegionName(String regionName) {
         this.regionName = regionName;
     }
+    
+    public String getNameSQL(){
+        return regionName;
+    }
 
     @Override
+    @JsonProperty("hashCode")
     public int hashCode() {
         int hash = 0;
         hash += (idRegion != null ? idRegion.hashCode() : 0);

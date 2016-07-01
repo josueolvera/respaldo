@@ -5,6 +5,7 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -190,8 +191,13 @@ public class CBranchs implements Serializable {
     public void setDwEnterprises(List<DwEnterprises> dwEnterprises) {
         this.dwEnterprises = dwEnterprises;
     }
+    
+    public String getNameSQL(){
+        return branchShort;
+    }
 
     @Override
+    @JsonProperty("hashCode")
     public int hashCode() {
         int hash = 0;
         hash += (idBranch != null ? idBranch.hashCode() : 0);
