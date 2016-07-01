@@ -61,6 +61,10 @@ public class EmployeeDocuments implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
 
+    @Column(name = "FIELD")
+    @JsonView(JsonViews.Root.class)
+    private String field;
+
     @Column(name = "ID_DOCUMENT_TYPE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idDocumentType;
@@ -169,6 +173,14 @@ public class EmployeeDocuments implements Serializable {
 
     public void setEmployee(Employees employee) {
         this.employee = employee;
+    }
+
+    public String getField() {
+        return field;
+    }
+
+    public void setField(String field) {
+        this.field = field;
     }
 
     @Override
