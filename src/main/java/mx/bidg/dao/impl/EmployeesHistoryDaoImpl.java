@@ -32,7 +32,7 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
     @Override
     public List<EmployeesHistory> findAll() {
         return createEntityCriteria()
-                .add(Restrictions.eq("hStatus",true))
+                .add(Restrictions.eq("hStatus",1))
                 .list();
     }
 
