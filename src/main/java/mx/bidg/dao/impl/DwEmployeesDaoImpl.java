@@ -94,6 +94,7 @@ public class DwEmployeesDaoImpl extends AbstractDao<Integer, DwEmployees> implem
 
     @Override
     public boolean delete(DwEmployees entity) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        remove(entity);
+        return true;
     }
 }
