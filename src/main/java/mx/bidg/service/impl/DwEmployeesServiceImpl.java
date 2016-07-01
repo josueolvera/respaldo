@@ -193,7 +193,8 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
         employee.setStatus(0);
         employeesDao.update(employee);
 
-        employeesHistoryService.save(dwEmployee);
+        CActionTypes actionType = CActionTypes.BAJA;
+        employeesHistoryService.save(dwEmployee,actionType);
 
         dwEmployeesDao.delete(dwEmployee);
     }
