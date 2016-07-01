@@ -51,6 +51,8 @@ public class SqlQueriesController {
         query.setQueryName(node.get("queryName").asText());
         query.setSqlQuery(node.get("sqlQuery").asText());
         query.setHeaders(node.get("headers").asText());
+        query.setSaved(Boolean.TRUE);
+        sqlQueriesService.save(query);
 
         Set<SqlQueryParameters> queryParameters = new HashSet<>();
         for (JsonNode queryNode : node.get("queryParameters")) {
@@ -58,12 +60,16 @@ public class SqlQueriesController {
             param.setDataTypes(CDataTypes.VARCHAR);
             param.setParameterName(queryNode.get("parameterName").asText());
             param.setParameterValue(queryNode.get("parameterValue").asText());
+            param.setSqlQuery(query);
             queryParameters.add(param);
         }
         query.setQueryParameters(queryParameters);
 
-        sqlQueriesService.save(query);
-        return new ResponseEntity<>(HttpStatus.OK);
+        
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(query),
+                HttpStatus.OK
+        );
     }
 
     @RequestMapping(value = "/{idSqlQuery}/build", method = RequestMethod.GET)
