@@ -166,19 +166,22 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
                 List<EmployeesAccounts> employeeAccountList = employee.getEmployeesAccountsList();
 
                 if (employeeAccountList != null) {
-                    Accounts account = employeeAccountList.get(0).getAccount();
 
-                    if (account != null) {
-                        employeesHistory.setAccountClabe(account.getAccountClabe());
-                        employeesHistory.setAccountNumber(account.getAccountNumber());
+                    if (employeeAccountList.size() > 0) {
+                        Accounts account = employeeAccountList.get(0).getAccount();
 
-                        CAccountsTypes accountType = account.getAccountType();
-                        if (accountType != null) {
-                            employeesHistory.setAccountType(accountType.getIdAccountType());
-                        }
-                        CBanks bank = account.getBank();
-                        if (bank != null) {
-                            employeesHistory.setBankAcronyms(bank.getAcronyms());
+                        if (account != null) {
+                            employeesHistory.setAccountClabe(account.getAccountClabe());
+                            employeesHistory.setAccountNumber(account.getAccountNumber());
+
+                            CAccountsTypes accountType = account.getAccountType();
+                            if (accountType != null) {
+                                employeesHistory.setAccountType(accountType.getIdAccountType());
+                            }
+                            CBanks bank = account.getBank();
+                            if (bank != null) {
+                                employeesHistory.setBankAcronyms(bank.getAcronyms());
+                            }
                         }
                     }
                 }
