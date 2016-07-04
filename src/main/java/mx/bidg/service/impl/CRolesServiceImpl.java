@@ -24,4 +24,9 @@ public class CRolesServiceImpl implements CRolesService {
     public List<CRoles> findAll() {
         return cRolesDao.findAll();
     }
+
+    @Override
+    public CRoles findById(Integer idRol) {
+        return cRolesDao.findById(idRol);
+    }
 }
