@@ -23,4 +23,9 @@ public class CEducationServiceImpl implements CEducationService {
     public List<CEducation> findAll() {
         return cEducationDao.findAll();
     }
+
+    @Override
+    public CEducation findById(Integer idEducation) {
+        return cEducationDao.findById(idEducation);
+    }
 }
