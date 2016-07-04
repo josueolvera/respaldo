@@ -9,4 +9,5 @@ import java.util.List;
  */
 public interface CStatusMaritalService {
     List<CStatusMarital> findAll();
+    CStatusMarital findById(Integer idStatusMarital);
 }

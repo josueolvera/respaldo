@@ -23,4 +23,9 @@ public class CStatusMaritalServiceImpl implements CStatusMaritalService {
     public List<CStatusMarital> findAll() {
         return cStatusMaritalDao.findAll();
     }
+
+    @Override
+    public CStatusMarital findById(Integer idStatusMarital) {
+        return cStatusMaritalDao.findById(idStatusMarital);
+    }
 }

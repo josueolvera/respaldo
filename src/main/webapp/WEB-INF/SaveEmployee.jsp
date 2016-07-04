@@ -74,8 +74,8 @@
                 el: '#contenidos',
                 created: function () {
                     var fecha = new Date();
-                    var fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth()+1) + "-" + fecha.getDate();
-                    var fechaMinima = moment(fecha_actual).subtract('years',18);
+                    var fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth() + 1) + "-" + fecha.getDate();
+                    var fechaMinima = moment(fecha_actual).subtract('years', 18);
 
                     this.timePickerBirthday = $('#dateBirthDay').datetimepicker({
                         locale: 'es',
@@ -88,7 +88,7 @@
                     this.timePickerIngreso = $('#dateJoin').datetimepicker({
                         locale: 'es',
                         format: 'DD-MM-YYYY',
-                    }).data;
+                    }).data();
                 },
                 ready: function () {
                     this.obtainStates();
@@ -97,6 +97,7 @@
                     this.obtainBanks();
                     this.obtainCurrencies();
                     this.fetchHierarchy();
+                    this.fetchDocumentTypes();
                 },
                 data: {
                     employee: {
@@ -121,7 +122,7 @@
                         colonia: '',
                         city: '',
                         state: '',
-                        postCode: '',
+                        postcode: '',
                         cellPhone: '',
                         fatherName: '',
                         motherName: '',
@@ -160,6 +161,7 @@
                         distributors: [],
                         areas: [],
                         hierarchy: [],
+                        documentTypes: [],
                     },
                     selectedOptions: {
                         area: {
@@ -200,6 +202,16 @@
                     },
                     timePickerIngreso: '',
                     timePickerBirthday: '',
+                    joinDate: '',
+                    birthday: '',
+                    estadosMunicipios: {},
+                    input: '',
+                    fields: {
+                        IMSS: '',
+                        SISTARH: '',
+                        Infonavit: '',
+                    },
+                    working: {},
                 },
                 methods: {
                     obtainStates: function () {
@@ -271,14 +283,60 @@
                         });
                     },
                     saveEmployee: function () {
-                      this.employee.employeeAccountList.push(this.cuenta);
+                        this.employee.employeeAccountList.push(this.cuenta);
+                        this.employee.city = this.estadosMunicipios.nombreMunicipios;
+                        this.employee.state = this.estadosMunicipios.estado.nombreEstado;
                         this.employee.dwEmployees.area = this.selectedOptions.area;
                         this.employee.dwEmployees.role = this.selectedOptions.role;
+                        this.employee.joinDate = this.timePickerIngreso.DateTimePicker.date().toISOString().slice(0, -1);
+                        this.employee.birthday = this.timePickerBirthday.DateTimePicker.date().toISOString().slice(0, -1);
+                        var form = document.getElementById('attachments-form');
+                        var formData = new FormData(form);
+
                         this.$http.post(ROOT_URL + "/employees/save", JSON.stringify(this.employee)).success(function (data) {
+                            this.working = data;
                             showAlert("Registro de empleado exitoso");
+                            console.log(this.working);
+                            this.uploadFilesEmployee(this.working, formData);
                         }).error(function () {
+                            this.employee.employeeAccountList = [];
                             showAlert("Ha habido un error con la solicitud, intente nuevamente", {type: 3});
                         });
+                    },
+                    fetchDocumentTypes: function () {
+                        this.$http.get(ROOT_URL + "/employee-document-types").success(function (data) {
+                            this.selectOptions.documentTypes = data;
+                        });
+                    },
+                    validateFile: function (event) {
+                        if (! event.target.files[0].name.match(/(\.jpg|\.jpeg|\.pdf|\.png)$/i)) {
+                            event.target.value = null;
+                            showAlert("Tipo de archivo no admitido", {type:3});
+                        }
+                    },
+                    showDocumentsByDistributors: function (distributors) {
+                        var array;
+                        var self = this;
+                        array = distributors.split(":");
+                        var arrayFilltered = array.filter(function (item) {
+                            return item == self.selectedOptions.distributor.id;
+                        });
+                        return arrayFilltered.length > 0;
+                    },
+                    uploadFilesEmployee: function (employee,formData) {
+                        this.isSaving = true;
+                        this.$http.post(
+                                ROOT_URL + "/employees/" + employee.idEmployee + "/attachments",
+                                formData
+                        ).success(function (data)
+                        {
+                            form.reset();
+                        }).error(function (data) {
+                            this.isSaving = false;
+                            form.reset();
+                            showAlert(data.error.message, {type:3})
+                        });
+
                     },
                 },
                 filters: {}
@@ -312,7 +370,7 @@
                                 <input class="form-control" name="name" v-model="employee.middleName">
                             </div>
                             <div class="col-xs-3">
-                                <label>Aoellido paterno</label>
+                                <label>Apellido paterno</label>
                                 <input class="form-control" name="name" v-model="employee.parentalLast">
                             </div>
                             <div class="col-xs-3">
@@ -337,7 +395,7 @@
                             <div class="col-xs-3">
                                 <label>Fecha de Nacimiento</label>
                                 <div class='input-group date' id='dateBirthDay'>
-                                    <input type='text' class="form-control" v-model="employee.birthday">
+                                    <input type='text' class="form-control" v-model="birthday">
                                    <span class="input-group-addon">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
@@ -468,7 +526,7 @@
                             <div class="col-xs-3">
                                 <label>Fecha de ingreso</label>
                                 <div class='input-group date' id='dateJoin'>
-                                    <input type='text' class="form-control" v-model="employee.joinDate">
+                                    <input type='text' class="form-control" v-model="joinDate">
                                    <span class="input-group-addon">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
@@ -583,7 +641,7 @@
                         <div class="row">
                             <div class="col-xs-3">
                                 <label>Banco</label>
-                                <select class="form-control" name="" v-model="cuenta.idBanks">
+                                <select class="form-control" name="" v-model="cuenta.idBank">
                                     <option></option>
                                     <option v-for="bank in banks" value="{{bank.idBank}}">{{bank.acronyms}}
                                     </option>
@@ -624,26 +682,34 @@
             </div>
             <br>
             <div class="panel panel-default">
-                <div class="panel-heading">Datos laborales</div>
+                <div class="panel-heading">Documentación</div>
                 <div class="panel-body">
                     <div class="col-xs-12">
+                        <form id="attachments-form" method="post" enctype="multipart/form-data"
+                              v-on:submit.prevent="saveEmployee">
                         <div class="row">
-                            <div class="col-xs-3">
-                                <label>IMSS</label>
-                                <input class="form-control" name="name" v-model="employee.imss">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Credito infonavit</label>
-                                <input class="form-control" name="name" v-model="employee.infonavitNumber">
-                            </div>
-                            <div class="col-xs-2">
-                                <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip"
-                                        data-placement="bottom" title="Agregar"
-                                        @click="saveEmployee()">
-                                    <span class="glyphicon glyphicon-plus"></span>
-                                </button>
-                            </div>
+                            <table class="table table-striped">
+                                <tr v-for="docType in selectOptions.documentTypes" v-if="showDocumentsByDistributors(docType.idDistributors)">
+
+                                    <td>{{ docType.documentName }}</td>
+                                    <td v-if="docType.field == 1 ">
+                                        <input v-model="fields[docType.documentName]" name="{{docType.documentName}}" required
+                                               type="text" class="form-control"></td>
+                                    <td>
+                                        <input v-if="docType.field == 0 || fields[docType.documentName].length > 0" @change="validateFile($event)" type="file" class="form-control"
+                                               :disabled="isSaving"
+                                               :name="'file-type-' + docType.idDocumentType"
+                                               accept="application/pdf,
+                                                         image/png,image/jpg,image/jpeg,">
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
+                            <button type="submit" :disabled="isSaving"
+                                    class="btn btn-success">
+                                Guardar
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

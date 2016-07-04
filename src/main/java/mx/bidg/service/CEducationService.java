@@ -9,4 +9,5 @@ import java.util.List;
  */
 public interface CEducationService {
     List<CEducation> findAll();
+    CEducation findById (Integer idEducation);
 }

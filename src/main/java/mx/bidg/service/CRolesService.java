@@ -10,4 +10,5 @@ import java.util.List;
 public interface CRolesService {
 
     List<CRoles> findAll();
+    CRoles findById(Integer idRol);
 }
