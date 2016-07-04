@@ -9,4 +9,5 @@ import java.util.List;
  */
 public interface CBanksService {
     List<CBanks> findAll();
+    CBanks findById(Integer idBank);
 }

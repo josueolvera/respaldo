@@ -23,4 +23,9 @@ public class CBanksServiceImp implements CBanksService {
     public List<CBanks> findAll() {
         return banksDao.findAll();
     }
+
+    @Override
+    public CBanks findById(Integer idBank) {
+        return banksDao.findById(idBank);
+    }
 }
