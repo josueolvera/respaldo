@@ -221,7 +221,7 @@
                   this.$http.get(ROOT_URL+"/sql-operations")
                           .success(function (data)
                           {
-                              this.operationsSql = data;
+                                  this.operationsSql = data;
                           });
               },
               addOperation: function(){

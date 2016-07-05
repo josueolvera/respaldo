@@ -1076,7 +1076,7 @@
               this.$http.post(ROOT_URL+"/estimations/authorization/"+ cotizacion.idEstimation).
               success(function(data)
               {
-                showAlert("Se ha autorizado la cotizacion correctamente");
+                showAlert("Cotizacion propuesta correctamente");
                 showAlert("Es necesario agregar la información de pago");
                 this.$http.get(ROOT_URL+"/estimations/request/"+this.idRequest).
                 success(function(data)
@@ -1247,7 +1247,10 @@
               var retorno;
               var retorno= accounting.formatNumber(monto,2,",");
               return retorno;
-          }
+          },
+          separate: function (value) {
+                    return value.replace(/:/g, " ");
+                }
 
         }
         });
@@ -1456,7 +1459,7 @@
                         @change="obtainAccounts(cotizacion)" required="true" :disabled="cotizacion.idEstimationStatus > 1">
                         <option></option>
                         <option v-for="supplier in suppliers" value="{{supplier.idProvider}}">
-                          {{supplier.providerName}}
+                          {{supplier.providerName | separate}}
                         </option>
                       </select>
                     </div>
