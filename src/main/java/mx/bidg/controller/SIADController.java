@@ -129,4 +129,18 @@ public class SIADController {
         return model;
     }
 
+    @RequestMapping(value = "/travel-expenses", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView travelExpenses() {
+        ModelAndView model= new ModelAndView();
+        model.setViewName("TravelExpenses");
+        return model;
+    }
+
+    @RequestMapping(value = "/travel-expenses-management", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView travelExpensesManagement() {
+        ModelAndView model= new ModelAndView();
+        model.setViewName("TravelExpensesManagement");
+        return model;
+    }
+
 }
