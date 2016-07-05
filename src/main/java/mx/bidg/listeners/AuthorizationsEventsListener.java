@@ -62,10 +62,10 @@ public class AuthorizationsEventsListener {
         }
     }
 
-    @EventListener
+    /*@EventListener
     public void notifyRequestRejected(RejectedEvent event) {
         Authorizations auth = event.getResource();
         Requests request = requestsService.findByFolio(auth.getFolio());
         notificationsService.createForRequestRejected(request);
-    }
+    }*/
 }
