@@ -65,7 +65,7 @@ public class AuthorizationsServiceImpl implements AuthorizationsService {
 
     @Override
     public Authorizations reject(Authorizations auth) {
-        if (auth.getIdAuthorizationStatus().equals(CAuthorizationStatus.PENDIENTE.getIdAuthorizationStatus())) {
+        if (! auth.getIdAuthorizationStatus().equals(CAuthorizationStatus.PENDIENTE.getIdAuthorizationStatus())) {
             throw new ValidationException(
                     "La autorizacion ya no esta pendiente",
                     "Cambio de estatus no permitido",
