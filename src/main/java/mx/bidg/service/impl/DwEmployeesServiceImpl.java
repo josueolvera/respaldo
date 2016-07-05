@@ -3,6 +3,8 @@ package mx.bidg.service.impl;
 import mx.bidg.dao.*;
 import mx.bidg.model.*;
 import mx.bidg.service.DwEmployeesService;
+import mx.bidg.service.EmailDeliveryService;
+import mx.bidg.service.EmailTemplatesService;
 import mx.bidg.service.EmployeesHistoryService;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -38,6 +40,12 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
 
     @Autowired
     private EmployeesAccountsDao employeesAccountsDao;
+
+    @Autowired
+    private EmailTemplatesService emailTemplatesService;
+
+    @Autowired
+    private EmailDeliveryService emailDeliveryService;
 
     @Override
     public DwEmployees findById(Integer id) {
@@ -197,5 +205,10 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
         employeesHistoryService.save(dwEmployee,actionType);
 
         dwEmployeesDao.delete(dwEmployee);
+
+        EmailTemplates emailTemplate = emailTemplatesService.findByName("employee_low_notification");
+        emailTemplate.addProperty("dwEmployee", dwEmployee);
+
+        emailDeliveryService.deliverEmail(emailTemplate);
     }
 }

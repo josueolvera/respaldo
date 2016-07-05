@@ -10,7 +10,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users" />
 
-<t:template pageTitle="BID Group: Carga de archivos">
+<t:template pageTitle="BID Group: Actualizar empleado">
     <jsp:attribute name="scripts">
         <script type="text/javascript">
             var vm= new Vue({

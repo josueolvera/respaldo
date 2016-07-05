@@ -10,16 +10,14 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users" />
 
-<t:template pageTitle="BID Group: Carga de archivos">
+<t:template pageTitle="BID Group: Busqueda de empleados">
     <jsp:attribute name="scripts">
         <script type="text/javascript">
             var vm= new Vue({
                 el: '#content',
                 ready: function () {
+                    this.activateDateTimePickerStart();
                     this.fetchHierarchy();
-                },
-                created: function () {
-                    this.activateDateTimePickers();
                 },
                 data: {
                     updateEmployeeUrl: ROOT_URL + '/saem/update-employee?idDwEmployee=',
@@ -91,29 +89,26 @@
                     onExportButton: function () {
                         $("#exportModal").modal("show");
                     },
-                    activateDateTimePickers: function () {
+                    activateDateTimePickerStart: function () {
 
-                        var currentDate = new Date();
+                        var date = new Date();
+                        var currentDate = date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
 
                         this.dateTimePickerStart = $('#startDate').datetimepicker({
                             locale: 'es',
                             format: 'DD-MM-YYYY',
                             useCurrent: false,
                             maxDate: currentDate
-                        }).data;
-
-                        this.dateTimePickerEnd = $('#endDate').datetimepicker({
-                            locale: 'es',
-                            format: 'DD-MM-YYYY',
-                            useCurrent: false,
-                            maxDate: currentDate
-                        }).data;
+                        }).data();
+                        
                     },
                     activateDateTimePickerEnd: function(startDate){
 
                         var minDate= moment(startDate, 'DD-MM-YYYY')
                                 .format('YYYY-MM-DD');
-                        var currentDate = new Date();
+
+                        var date = new Date();
+                        var currentDate = date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate();
 
                         this.dateTimePickerEnd = $('#endDate').datetimepicker({
                             locale: 'es',
@@ -124,6 +119,7 @@
                         }).data();
                     },
                     destroyDateTimePickerStart: function(){
+                        this.activateDateTimePickerStart();
                         $("#startDate").on("dp.change", function (e) {
                             $('#endDate').data("DateTimePicker").minDate(e.date);
                         });
@@ -433,17 +429,30 @@
                             <label>RFC</label>
                             <input v-model="searchSelectedOptions.rfc" type="text" class="form-control" placeholder="RFC">
                         </div>
-                        <div class="col-md-4" id="picker">
-                            <label for="datepicker">Intervalo de Fechas</label>
-                            <div class="input-daterange input-group" id="datepicker">
-                                <span class="input-group-addon">De</span>
-                                <input type="text" class="form-control" @change="startDateChanged"
-                                       v-model="searchSelectedOptions.startDate" name="start"
-                                       id="startDate" @click="destroyDateTimePickerStart">
-                                <span class="input-group-addon">a</span>
-                                <input type="text" class="form-control" @change="endDateChanged"
-                                       v-model="searchSelectedOptions.endDate" name="end"
-                                       id="endDate" @click="activateDateTimePickerEnd(searchSelectedOptions.endDate)">
+                        <div class="col-md-2">
+                            <label>
+                                Fecha inicial
+                            </label>
+                            <div class="form-group">
+                                <div class="input-group date" id="startDate">
+                                    <input type="text" class="form-control" v-model="searchSelectedOptions.startDate">
+                                   <span class="input-group-addon" @click="destroyDateTimePickerStart">
+                                       <span class="glyphicon glyphicon-calendar"></span>
+                                   </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <label>
+                                Fecha final
+                            </label>
+                            <div class="form-group">
+                                <div class="input-group date" id="endDate">
+                                    <input type="text" class="form-control" v-model="searchSelectedOptions.endDate">
+                                   <span class="input-group-addon" @click="activateDateTimePickerEnd(searchSelectedOptions.startDate)">
+                                       <span class="glyphicon glyphicon-calendar"></span>
+                                   </span>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-2">
