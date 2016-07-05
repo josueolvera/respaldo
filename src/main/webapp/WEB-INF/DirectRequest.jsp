@@ -140,7 +140,11 @@
             infoAutorization: '',
             userRequest: '',
             flagrate: false,
-            desaparecer: true
+            desaparecer: true,
+            authModal: {
+              authorize: false,
+              authorization: null
+            }
 
         },
         methods:
@@ -522,7 +526,45 @@
             var dateinformatguion= date.split("-");
             return dateinformatguion[2]+"/"+dateinformatguion[1]+"/"+dateinformatguion[0];
           },
+          commitAuthorization: function (auth, authorize) {
+            if (authorize) {
+              this.$http.post(ROOT_URL+"/folios/authorizations/"+ auth.idAuthorization +"/authorize",{
+                details: auth.details
+              }).
+              success(function(data)
+              {
+                this.obtainInformationAutorization();
+                $("#auth-confirmation-modal").modal("hide");
+              }).error(function() {
+                showAlert("Ha habido un error al autorizar la solicitud, intente nuevamente");
+              });
+            } else {
+              this.$http.post(ROOT_URL+"/folios/authorizations/"+ auth.idAuthorization +"/reject", {
+                details: auth.details
+              }).
+              success(function(data)
+              {
+                showAlert(data);
+                this.obtainInformationAutorization();
+                $("#auth-confirmation-modal").modal("hide");
+              }).error(function() {
+                showAlert("Ha habido un error al cancelar la solicitud, intente nuevamente");
+              });
+            }
+          },
           autorizarSolicitudIndividual: function(info)
+          {
+            this.authModal.authorization = info;
+            this.authModal.authorize = true;
+            $("#auth-confirmation-modal").modal("show");
+          },
+          rechazarSolicitudIndividual: function(info)
+          {
+            this.authModal.authorization = info;
+            this.authModal.authorize = false;
+            $("#auth-confirmation-modal").modal("show");
+        },
+          /*autorizarSolicitudIndividual: function(info)
           {
             var detalle= {
               details: ''
@@ -539,10 +581,16 @@
               },2500);
             }).error(function() {
               showAlert("Ha habido un error al autorizar la solicitud, intente nuevamente");
-            });
+          });
+              this.authModal.authorization = info;
+              this.authModal.authorize = true;
+              $("#auth-confirmation-modal").modal("show");
           },
           rechazarSolicitudIndividual: function(info)
           {
+              this.authModal.authorization = info;
+              this.authModal.authorize = false;
+              $("#auth-confirmation-modal").modal("show");
             var detalle= {
               details: ''
             }
@@ -558,8 +606,8 @@
               },2500);
             }).error(function() {
               showAlert("Ha habido un error al cancelar la solicitud, intente nuevamente");
-            });
-          },
+          });
+          */
           obtainInformationAutorization: function()
           {
             this.infoAutorization= '';
@@ -816,7 +864,7 @@
                           <h4 class="panel-title">Informacion del Pago</h4>
                         </div>
                         <div class="col-xs-8">
-                          <h4 class="panel-title" v-if="estimation.idCurrency > 0">Monto MXN: {{cotizacion.amount * cotizacion.rate | filterMoney}} <br><span v-if="cotizacion.idCurrency != 1"> Monto en {{cotizacion.idCurrency | filterCurrency}}: {{cotizacion.amount | filterMoney}}</span></h4>
+                          <h4 class="panel-title" v-if="estimation.idCurrency > 0">Monto MXN: {{estimation.amount * estimation.rate | filterMoney}} <br><span v-if="estimation.idCurrency != 1"> Monto en {{estimation.idCurrency | filterCurrency}}: {{estimation.amount | filterMoney}}</span></h4>
                         </div>
                       </div>
                       <div class="col-xs-2" >
@@ -962,6 +1010,24 @@
 
                 </div>
               </div>
+          </div>
+
+          <div id="auth-confirmation-modal" class="modal fade">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title">Confirma que desea realizar esta acción</h4>
+                </div>
+                <div class="modal-body">
+                  <p></p>
+                </div>
+                <div class="modal-footer">
+                  <button @click="commitAuthorization(authModal.authorization, authModal.authorize)" class="btn btn-default">Aceptar</button>
+                  <button class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                </div>
+              </div>
+            </div>
           </div>
           </div> <!-- container-fluid -->
 
