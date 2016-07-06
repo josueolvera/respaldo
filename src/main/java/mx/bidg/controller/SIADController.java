@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -129,18 +130,57 @@ public class SIADController {
         return model;
     }
 
-    @RequestMapping(value = "/travel-expenses", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public ModelAndView travelExpenses() {
-        ModelAndView model= new ModelAndView();
+    @RequestMapping(value = "/travel-expenses",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView travelExpensesRequestType() {
+        ModelAndView model = new ModelAndView();
+        model.addObject("idRequest", 0);
+        model.addObject("cat", CRequestsCategories.VIATICOS);
         model.setViewName("TravelExpenses");
         return model;
     }
 
-    @RequestMapping(value = "/travel-expenses-management", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public ModelAndView travelExpensesManagement() {
-        ModelAndView model= new ModelAndView();
-        model.setViewName("TravelExpensesManagement");
+    @RequestMapping(value = "/travel-expenses",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView travelExpensesRequestTypeSearch(@RequestParam(name = "idRequest") int idRequest) {
+        ModelAndView model = new ModelAndView();
+        model.addObject("idRequest", idRequest);
+        model.addObject("cat", CRequestsCategories.VIATICOS);
+        model.setViewName("TravelExpenses");
         return model;
     }
 
+    @RequestMapping(value = "/plane-tickets",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView planeTicketsRequestType() {
+        ModelAndView model = new ModelAndView();
+        model.addObject("idRequest", 0);
+        model.addObject("cat", CRequestsCategories.BOLETOS_AVION);
+        model.setViewName("PlaneTickets");
+        return model;
+    }
+
+    @RequestMapping(value = "/plane-tickets",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView planeTicketsRequestTypeSearch(@RequestParam(name = "idRequest") int idRequest) {
+        ModelAndView model = new ModelAndView();
+        model.addObject("idRequest", idRequest);
+        model.addObject("cat", CRequestsCategories.BOLETOS_AVION);
+        model.setViewName("PlaneTickets");
+        return model;
+    }
+
+    @RequestMapping(value = "/refunds",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView refundsRequestType() {
+        ModelAndView model = new ModelAndView();
+        model.addObject("idRequest", 0);
+        model.addObject("cat", CRequestsCategories.REMBOLSOS);
+        model.setViewName("Refunds");
+        return model;
+    }
+
+    @RequestMapping(value = "/refunds",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView refundsRequestTypeSearch(@RequestParam(name = "idRequest") int idRequest) {
+        ModelAndView model = new ModelAndView();
+        model.addObject("idRequest", idRequest);
+        model.addObject("cat", CRequestsCategories.REMBOLSOS);
+        model.setViewName("Refunds");
+        return model;
+    }
 }
