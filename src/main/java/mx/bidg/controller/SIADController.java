@@ -131,54 +131,27 @@ public class SIADController {
     }
 
     @RequestMapping(value = "/travel-expenses",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public ModelAndView travelExpensesRequestType() {
+    public ModelAndView travelExpensesRequestType(@RequestParam(name = "idTravelExpence", required = false) Integer idTravelExpence) {
         ModelAndView model = new ModelAndView();
-        model.addObject("idRequest", 0);
-        model.addObject("cat", CRequestsCategories.VIATICOS);
-        model.setViewName("TravelExpenses");
-        return model;
-    }
-
-    @RequestMapping(value = "/travel-expenses",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public ModelAndView travelExpensesRequestTypeSearch(@RequestParam(name = "idRequest") int idRequest) {
-        ModelAndView model = new ModelAndView();
-        model.addObject("idRequest", idRequest);
+        model.addObject("idTravelExpence", idTravelExpence);
         model.addObject("cat", CRequestsCategories.VIATICOS);
         model.setViewName("TravelExpenses");
         return model;
     }
 
     @RequestMapping(value = "/plane-tickets",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public ModelAndView planeTicketsRequestType() {
+    public ModelAndView planeTicketsRequestType(@RequestParam(name = "idPlaneTicket", required = false) Integer idPlaneTicket) {
         ModelAndView model = new ModelAndView();
-        model.addObject("idRequest", 0);
-        model.addObject("cat", CRequestsCategories.BOLETOS_AVION);
-        model.setViewName("PlaneTickets");
-        return model;
-    }
-
-    @RequestMapping(value = "/plane-tickets",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public ModelAndView planeTicketsRequestTypeSearch(@RequestParam(name = "idRequest") int idRequest) {
-        ModelAndView model = new ModelAndView();
-        model.addObject("idRequest", idRequest);
+        model.addObject("idPlaneTicket", idPlaneTicket);
         model.addObject("cat", CRequestsCategories.BOLETOS_AVION);
         model.setViewName("PlaneTickets");
         return model;
     }
 
     @RequestMapping(value = "/refunds",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public ModelAndView refundsRequestType() {
+    public ModelAndView refundsRequestType(@RequestParam(name = "idRefund", required = false) Integer idRefund) {
         ModelAndView model = new ModelAndView();
-        model.addObject("idRequest", 0);
-        model.addObject("cat", CRequestsCategories.REMBOLSOS);
-        model.setViewName("Refunds");
-        return model;
-    }
-
-    @RequestMapping(value = "/refunds",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public ModelAndView refundsRequestTypeSearch(@RequestParam(name = "idRequest") int idRequest) {
-        ModelAndView model = new ModelAndView();
-        model.addObject("idRequest", idRequest);
+        model.addObject("idRefund", idRefund);
         model.addObject("cat", CRequestsCategories.REMBOLSOS);
         model.setViewName("Refunds");
         return model;
