@@ -26,7 +26,8 @@ public class AccountingAccountsDaoImpl extends AbstractDao<Integer, AccountingAc
 
     @Override
     public AccountingAccounts save(AccountingAccounts entity) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        persist(entity);
+        return entity;
     }
 
     @Override
@@ -44,7 +45,8 @@ public class AccountingAccountsDaoImpl extends AbstractDao<Integer, AccountingAc
 
     @Override
     public AccountingAccounts update(AccountingAccounts entity) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        modify(entity);
+        return entity;
     }
 
     @Override
