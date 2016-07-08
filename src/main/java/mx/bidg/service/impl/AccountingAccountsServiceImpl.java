@@ -30,4 +30,21 @@ public class AccountingAccountsServiceImpl implements AccountingAccountsService 
     public List<AccountingAccounts> findAll() {
         return accountingAccountsDao.findAll();
     }
+
+    @Override
+    public AccountingAccounts save(AccountingAccounts accountingAccounts) {
+        accountingAccountsDao.save(accountingAccounts);
+        return accountingAccounts;
+    }
+
+    @Override
+    public AccountingAccounts update(AccountingAccounts accountingAccounts) {
+        accountingAccountsDao.update(accountingAccounts);
+        return accountingAccounts;
+    }
+
+    @Override
+    public AccountingAccounts findById(Integer idAccountingAccount) {
+        return accountingAccountsDao.findById(idAccountingAccount);
+    }
 }
