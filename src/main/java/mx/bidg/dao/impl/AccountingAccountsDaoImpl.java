@@ -4,6 +4,7 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.AccountingAccountsDao;
 import mx.bidg.model.AccountingAccounts;
 import mx.bidg.model.CDistributors;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -39,7 +40,7 @@ public class AccountingAccountsDaoImpl extends AbstractDao<Integer, AccountingAc
 
     @Override
     public List<AccountingAccounts> findAll() {
-        return createEntityCriteria()
+        return createEntityCriteria().addOrder(Order.asc("firstLevel")).addOrder(Order.asc("secondLevel")).addOrder(Order.asc("thirdLevel"))
                 .list();
     }
 
