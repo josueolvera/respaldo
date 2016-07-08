@@ -156,4 +156,11 @@ public class SIADController {
         model.setViewName("Refunds");
         return model;
     }
+
+    @RequestMapping(value = "/accounting-accounts",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView accountingAccounts() {
+        ModelAndView model= new ModelAndView();
+        model.setViewName("accountingAccount");
+        return model;
+    }
 }
