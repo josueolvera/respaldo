@@ -1,7 +1,9 @@
 package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import mx.bidg.config.JsonViews;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -49,6 +51,9 @@ public class SqlQueries implements Serializable {
     @Column(name = "SAVED")
     @Basic(optional = false)
     private Boolean saved;
+
+    @Column(name = "CALCULATE")
+    private Integer calculate;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sqlQuery")
     private Set<SqlQueryParameters> queryParameters;
@@ -112,6 +117,14 @@ public class SqlQueries implements Serializable {
 
     public void setSaved(Boolean saved) {
         this.saved = saved;
+    }
+
+    public Integer getCalculate() {
+        return calculate;
+    }
+
+    public void setCalculate(Integer calculate) {
+        this.calculate = calculate;
     }
 
     @Override
