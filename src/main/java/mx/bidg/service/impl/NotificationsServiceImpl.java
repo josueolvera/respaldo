@@ -51,8 +51,9 @@ public class NotificationsServiceImpl implements NotificationsService {
     @Override
     public List<Notifications> createNotification(List<Users> users, Requests request) {
         request = requestsDao.findById(request.getIdRequest());
-        EmailTemplates emailTemplate = emailTemplatesService.findByName(EMAIL_TEMPLATE_NAME);
+        EmailTemplates emailTemplate = emailTemplatesService.findByName("notification");
         emailTemplate.addProperty("subject", "Su solicitud ha sido recibida");
+        emailTemplate.addProperty("request", request);
         List<Notifications> notifications = new ArrayList<>();
         Set<String> userNames = new HashSet<>(users.size());
 
@@ -103,7 +104,7 @@ public class NotificationsServiceImpl implements NotificationsService {
 
     @Override
     public Notifications createNotification(Users user, Requests request) {
-        EmailTemplates emailTemplate = emailTemplatesService.findByName(EMAIL_TEMPLATE_NAME);
+        EmailTemplates emailTemplate = emailTemplatesService.findByName("request_autorization_notification");
         request = requestsDao.findById(request.getIdRequest());
         emailTemplate.addRecipient(new EmailRecipients(user.getMail(), user.getUsername(), EmailRecipients.TO));
         emailTemplate.addProperty("user", user);
