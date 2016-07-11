@@ -69,6 +69,12 @@ public class Budgets implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
     
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "ISENTRY")
+    @JsonView(JsonViews.Root.class)
+    private int isentry;
+        
     @JoinColumn(name = "ID_GROUP", referencedColumnName = "ID_GROUP")
     @ManyToOne
     @JsonView({JsonViews.Embedded.class})
@@ -217,6 +223,8 @@ public class Budgets implements Serializable {
     public void setBudgetSubcategory(CBudgetSubcategories budgetSubcategory) {
         this.budgetSubcategory = budgetSubcategory;
     }
+    
+    
 
     @Override
     public int hashCode() {
@@ -241,6 +249,14 @@ public class Budgets implements Serializable {
     @Override
     public String toString() {
         return "mx.bidg.model.Budgets[ idBudget=" + idBudget + " ]";
+    }
+
+    public int getIsentry() {
+        return isentry;
+    }
+
+    public void setIsentry(int isentry) {
+        this.isentry = isentry;
     }
     
 }
