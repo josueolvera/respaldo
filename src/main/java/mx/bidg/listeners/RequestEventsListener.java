@@ -90,6 +90,7 @@ public class RequestEventsListener {
     @SuppressWarnings("unchecked")
     public void buildRequestAuthorizationsTree(RequestCompletedEvent event) {
         Requests request = event.getResource();
+        requestsService.sendEmailForNewRequest(request);
         request.setPriceEstimationsList(priceEstimationsService.findByIdRequest(request.getIdRequest()));
         AuthorizationTreeRules rule = authorizationTreeRulesService.findByRuleName(AUTHORIZATIONS_RULE_NAME);
         Binding binding = new Binding();
@@ -106,8 +107,7 @@ public class RequestEventsListener {
             authorizationsService.deleteByFolio(request.getFolio());
             Map.Entry<Integer, Integer> firstEntry = users.firstEntry();
             Users user = usersService.findById(firstEntry.getValue());
-            notificationsService.createNotification(user, request);
-
+            requestsService.sendEmailForNewRequestAuthorization(request, user);
             for (Map.Entry<Integer, Integer> entry : users.entrySet()) {
                 Authorizations auth = new Authorizations();
                 auth.setFolio(request.getFolio());
