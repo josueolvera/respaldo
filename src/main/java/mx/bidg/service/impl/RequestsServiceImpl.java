@@ -3,7 +3,6 @@ package mx.bidg.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +10,8 @@ import java.util.List;
 import mx.bidg.dao.*;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
+import mx.bidg.service.EmailDeliveryService;
+import mx.bidg.service.EmailTemplatesService;
 import mx.bidg.service.FoliosService;
 import mx.bidg.service.RequestsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,12 @@ public class RequestsServiceImpl implements RequestsService {
 
     @Autowired
     AccountsPayableDao accountsPayableDao;
+    
+    @Autowired
+    private EmailDeliveryService emailDeliveryService;
+
+    @Autowired
+    private EmailTemplatesService emailTemplatesService;
     
     ObjectMapper map = new ObjectMapper();
     
@@ -215,5 +222,29 @@ public class RequestsServiceImpl implements RequestsService {
     @Override
     public Requests findByFolio(String folio) {
         return requestsDao.findByFolio(folio);
+    }
+
+    @Override
+    public EmailTemplates sendEmailForNewRequest(Requests request) {
+        EmailTemplates emailTemplate = emailTemplatesService.findByName("new_request_notification");
+        String typeRequest = request.getRequestTypeProduct().getRequestCategory().getCategory();
+        String typeRequestMinus = typeRequest.toLowerCase();
+        emailTemplate.addProperty("request", request);
+        emailTemplate.addProperty("typeRequest", typeRequestMinus);
+        emailTemplate.addRecipient(new EmailRecipients(request.getUserRequest().getMail(), request.getUserRequest().getUsername(), EmailRecipients.TO));
+        emailDeliveryService.deliverEmail(emailTemplate);
+        return emailTemplate;
+    }
+
+    @Override
+    public EmailTemplates sendEmailForNewRequestAuthorization(Requests request, Users user) {
+        EmailTemplates emailTemplate = emailTemplatesService.findByName("request_autorization_notification");
+        String typeRequest = request.getRequestTypeProduct().getRequestCategory().getCategory();
+        String typeRequestMinus = typeRequest.toLowerCase();
+        emailTemplate.addProperty("request", request);
+        emailTemplate.addProperty("typeRequest", typeRequestMinus);
+        emailTemplate.addRecipient(new EmailRecipients(user.getMail(), user.getUsername(), EmailRecipients.TO));
+        emailDeliveryService.deliverEmail(emailTemplate);
+        return emailTemplate;
     }
 }
