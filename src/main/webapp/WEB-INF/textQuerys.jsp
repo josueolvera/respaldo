@@ -62,6 +62,7 @@
                     sqlQuery:{
                     },
                     idQuery: '',
+                    name: ''
                 },
                 methods: {
                     sqlQueriesAvailables: function () {
@@ -70,13 +71,26 @@
                         });
                     },
                     buildReport: function () {
-                        this.$http.get(ROOT_URL + "/sql-queries/" + this.idQuery).success(function (data) {
-                            this.sqlQuery = data;
-                            window.location= ROOT_URL+"/sql-queries/"+data.idQuery+"/build?file_name=reporte";
-                        }).error(function () {
-                            showAlert("Error al generar el archivo", {type: 3})
-                        })
-
+                        if(this.name.length > 0) {
+                            this.$http.get(ROOT_URL + "/sql-queries/" + this.idQuery).success(function (data) {
+                                this.sqlQuery = data;
+                                window.location = ROOT_URL + "/sql-queries/" + data.idQuery + "/build?file_name=" + this.name;
+                                $('#modalNombre').modal('hide');
+                                this.name = '';
+                            }).error(function () {
+                                showAlert("Error al generar el archivo", {type: 3})
+                            });
+                        }
+                        else {
+                            showAlert("Ingresa un nombre al reporte", {type: 3})
+                        }
+                    },
+                    nameReport: function () {
+                        if(this.idQuery.length == 0){
+                            showAlert("Selecciona un reporte", {type: 3})
+                        }else {
+                            $('#modalNombre').modal('show');
+                        }
                     }
                 },
                 filters: {
@@ -102,7 +116,7 @@
             <div class="row">
                 <div class="col-xs-4"></div>
                     <div class="col-xs-3">
-                        <label>Calcular</label>
+                        <label>Reporte</label>
                         <select class="form-control" name="" v-model="idQuery">
                             <option></option>
                             <option v-for="query in sqlQueries"
@@ -113,7 +127,7 @@
                     </div>
                     <div class="col-xs-2">
                         <button type="button" class="btn btn-success" data-placement="bottom" style="margin-top: 25px"
-                                @click="buildReport">
+                                @click="nameReport">
                             Generar
                         </button>
                     </div>
@@ -121,8 +135,33 @@
 
             </div>
         <!-- container-fluid -->
-
         </div>
+            <div class="modal fade" id="modalNombre" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                <div class="modal-dialog ">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">
+                                Nombre del archivo
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-xs-6">
+                            <input class="form-control" name="name" v-model="name"
+                                   onkeypress="return isLetterKey(event)">
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" @click="buildReport">
+                                Aceptar
+                            </button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- #contenidos -->
 
