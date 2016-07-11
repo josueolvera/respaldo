@@ -12,4 +12,6 @@ import java.util.Map;
 public interface SqlQueriesDao extends InterfaceDao<SqlQueries> {
     SqlQueries findByName(String queryName);
     List<Map<String, Object>> executeQuery(SqlQueries query);
+    List<SqlQueries> findAllQueriesByCalculate();
+    SqlQueries findQuery (Integer idQuery);
 }

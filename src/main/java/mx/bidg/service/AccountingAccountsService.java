@@ -12,4 +12,7 @@ import java.util.List;
 public interface AccountingAccountsService {
     AccountingAccounts findByThreeLevels(Integer firstLevel, Integer secondLevel, Integer thirdLevel);
     List<AccountingAccounts> findAll();
+    AccountingAccounts save(AccountingAccounts accountingAccounts);
+    AccountingAccounts update(AccountingAccounts accountingAccounts);
+    AccountingAccounts findById(Integer idAccountingAccount);
 }

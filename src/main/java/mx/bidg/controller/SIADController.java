@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
@@ -129,4 +130,37 @@ public class SIADController {
         return model;
     }
 
+    @RequestMapping(value = "/travel-expenses",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView travelExpensesRequestType(@RequestParam(name = "idTravelExpence", required = false) Integer idTravelExpence) {
+        ModelAndView model = new ModelAndView();
+        model.addObject("idTravelExpence", idTravelExpence);
+        model.addObject("cat", CRequestsCategories.VIATICOS);
+        model.setViewName("TravelExpenses");
+        return model;
+    }
+
+    @RequestMapping(value = "/plane-tickets",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView planeTicketsRequestType(@RequestParam(name = "idPlaneTicket", required = false) Integer idPlaneTicket) {
+        ModelAndView model = new ModelAndView();
+        model.addObject("idPlaneTicket", idPlaneTicket);
+        model.addObject("cat", CRequestsCategories.BOLETOS_AVION);
+        model.setViewName("PlaneTickets");
+        return model;
+    }
+
+    @RequestMapping(value = "/refunds",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView refundsRequestType(@RequestParam(name = "idRefund", required = false) Integer idRefund) {
+        ModelAndView model = new ModelAndView();
+        model.addObject("idRefund", idRefund);
+        model.addObject("cat", CRequestsCategories.REMBOLSOS);
+        model.setViewName("Refunds");
+        return model;
+    }
+
+    @RequestMapping(value = "/accounting-accounts",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView accountingAccounts() {
+        ModelAndView model= new ModelAndView();
+        model.setViewName("accountingAccount");
+        return model;
+    }
 }

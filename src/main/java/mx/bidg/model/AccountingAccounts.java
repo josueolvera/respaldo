@@ -45,21 +45,15 @@ public class AccountingAccounts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int thirdLevel;
 
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ID_ACCOUNTING_TYPE")
+    @Column(name = "ID_ACCOUNTING_TYPE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private int idAccountingType;
 
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ID_ACCOUNTING_NATURE")
+    @Column(name = "ID_ACCOUNTING_NATURE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private int idAccountingNature;
 
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ID_ACCOUNTING_CATEGORY")
+    @Column(name = "ID_ACCOUNTING_CATEGORY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private int idAccountingCategory;
 
@@ -75,6 +69,21 @@ public class AccountingAccounts implements Serializable {
     @Column(name = "DESCRIPTION")
     @JsonView(JsonViews.Root.class)
     private String description;
+
+    @JoinColumn(name = "ID_ACCOUNTING_CATEGORY", referencedColumnName = "ID_ACCOUNTING_CATEGORY")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CAccountingAccountCategory cAccountingAccountCategory;
+
+    @JoinColumn(name = "ID_ACCOUNTING_NATURE", referencedColumnName = "ID_ACCOUNTING_NATURE")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CAccountingAccountNature cAccountingAccountNature;
+
+    @JoinColumn(name = "ID_ACCOUNTING_TYPE", referencedColumnName = "ID_ACCOUNTING_TYPE")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CAccountingAccountType cAccountingAccountType;
 
     public AccountingAccounts() {
     }
@@ -165,6 +174,30 @@ public class AccountingAccounts implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public CAccountingAccountCategory getcAccountingAccountCategory() {
+        return cAccountingAccountCategory;
+    }
+
+    public void setcAccountingAccountCategory(CAccountingAccountCategory cAccountingAccountCategory) {
+        this.cAccountingAccountCategory = cAccountingAccountCategory;
+    }
+
+    public CAccountingAccountNature getcAccountingAccountNature() {
+        return cAccountingAccountNature;
+    }
+
+    public void setcAccountingAccountNature(CAccountingAccountNature cAccountingAccountNature) {
+        this.cAccountingAccountNature = cAccountingAccountNature;
+    }
+
+    public CAccountingAccountType getcAccountingAccountType() {
+        return cAccountingAccountType;
+    }
+
+    public void setcAccountingAccountType(CAccountingAccountType cAccountingAccountType) {
+        this.cAccountingAccountType = cAccountingAccountType;
     }
 
     @Override

@@ -35,6 +35,9 @@ public class CRequestsCategories implements Serializable {
     public static final int COTIZABLE = 1;
     public static final int DIRECTA = 2;
     public static final int PERIODICA = 3;
+    public static final int VIATICOS = 4;
+    public static final int BOLETOS_AVION = 5;
+    public static final int REMBOLSOS = 6;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

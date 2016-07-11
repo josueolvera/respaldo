@@ -81,4 +81,14 @@ public class SqlQueriesDaoImpl extends AbstractDao<Integer, SqlQueries> implemen
         sqlQuery.setResultTransformer(Criteria.ALIAS_TO_ENTITY_MAP);
         return sqlQuery.list();
     }
+
+    @Override
+    public List<SqlQueries> findAllQueriesByCalculate() {
+        return (List<SqlQueries>) createEntityCriteria().add(Restrictions.eq("calculate",1)).list();
+    }
+
+    @Override
+    public SqlQueries findQuery(Integer idQuery) {
+        return (SqlQueries) getByKey(idQuery);
+    }
 }

@@ -87,4 +87,16 @@ public class SqlQueriesController {
         outputStream.flush();
         outputStream.close();
     }
+
+    @RequestMapping(value = "/querys", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> querys() throws IOException{
+        List<SqlQueries> querys = sqlQueriesService.findByAllWithFlag();
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(querys), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{idQuery}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> query(@PathVariable Integer idQuery) throws IOException{
+        SqlQueries query = sqlQueriesService.findQuery(idQuery);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(query), HttpStatus.OK);
+    }
 }

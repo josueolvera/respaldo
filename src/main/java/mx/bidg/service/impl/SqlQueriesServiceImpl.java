@@ -60,4 +60,14 @@ public class SqlQueriesServiceImpl implements SqlQueriesService {
         csvMapWriter.flush();
         csvMapWriter.close();
     }
+
+    @Override
+    public List<SqlQueries> findByAllWithFlag() {
+        return sqlQueriesDao.findAllQueriesByCalculate();
+    }
+
+    @Override
+    public SqlQueries findQuery(Integer idQuery) {
+        return sqlQueriesDao.findQuery(idQuery);
+    }
 }

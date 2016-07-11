@@ -1,19 +1,17 @@
 package mx.bidg.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
-import mx.bidg.model.AccountingAccounts;
-import mx.bidg.model.CDistributors;
+import mx.bidg.model.*;
 import mx.bidg.service.AccountingAccountsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -47,9 +45,44 @@ public class AccountingAccountsController {
                 firstLevel, secondLevel, thirdLevel
         );
         return new ResponseEntity<>(
-                mapper.writerWithView(JsonViews.Root.class).writeValueAsString(accountingAccounts),
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(accountingAccounts),
                 HttpStatus.OK
         );
     }
 
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> save(@RequestBody String data) throws IOException{
+
+        JsonNode node = mapper.readTree(data);
+
+        AccountingAccounts accountingAccounts = new AccountingAccounts();
+        accountingAccounts.setAvailable(false);
+        accountingAccounts.setDescription(node.get("description").asText());
+        accountingAccounts.setFirstLevel(node.get("firstLevel").asInt());
+        accountingAccounts.setSecondLevel(node.get("secondLevel").asInt());
+        accountingAccounts.setThirdLevel(node.get("thirdLevel").asInt());
+        accountingAccounts.setcAccountingAccountCategory(new CAccountingAccountCategory(node.get("idAccountingCategory").asInt()));
+        accountingAccounts.setcAccountingAccountNature(new CAccountingAccountNature(node.get("idAccountingNature").asInt()));
+        accountingAccounts.setcAccountingAccountType(new CAccountingAccountType(node.get("idAccountingType").asInt()));
+
+        accountingAccountsService.save(accountingAccounts);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(accountingAccounts), HttpStatus.OK);
+    }
+
+    @RequestMapping( value = "/{idAccountingAccount}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> update(@PathVariable Integer idAccountingAccount, @RequestBody String data) throws IOException{
+
+        JsonNode node = mapper.readTree(data);
+
+        AccountingAccounts accountingAccounts = accountingAccountsService.findById(idAccountingAccount);
+        accountingAccounts.setDescription(node.get("description").asText());
+        accountingAccounts.setcAccountingAccountCategory(new CAccountingAccountCategory(node.get("idAccountingCategory").asInt()));
+        accountingAccounts.setcAccountingAccountType(new CAccountingAccountType(node.get("idAccountingType").asInt()));
+        accountingAccounts.setcAccountingAccountNature(new CAccountingAccountNature(node.get("idAccountingNature").asInt()));
+
+        accountingAccountsService.update(accountingAccounts);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(accountingAccounts), HttpStatus.OK);
+    }
 }

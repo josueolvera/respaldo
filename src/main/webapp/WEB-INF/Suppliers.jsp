@@ -921,17 +921,17 @@
                                     <div class="col-xs-2">
                                         <label>Primer nivel</label>
                                         <input maxlength="4" class="form-control text-center" name="name"
-                                               v-model="supplier.firstLevel">
+                                               v-model="supplier.firstLevel" onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="col-xs-2">
                                         <label>Segundo nivel</label>
                                         <input maxlength="3" class="form-control text-center" name="name"
-                                               v-model="supplier.secondLevel">
+                                               v-model="supplier.secondLevel" onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="col-xs-2">
                                         <label>Tercer nivel</label>
                                         <input maxlength="4" class="form-control text-center" name="name"
-                                               v-model="supplier.thirdLevel">
+                                               v-model="supplier.thirdLevel" onkeypress="return isNumberKey(event)">
                                     </div>
                                 </div>
                                 <br>

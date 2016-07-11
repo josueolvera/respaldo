@@ -16,4 +16,6 @@ public interface SqlQueriesService {
     SqlQueries findByName(String queryName);
     List<SqlQueries> findAll();
     void buildCSVfrom(SqlQueries query, OutputStream stream) throws IOException;
+    List<SqlQueries> findByAllWithFlag();
+    SqlQueries findQuery(Integer idQuery);
 }

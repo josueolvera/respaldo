@@ -41,4 +41,11 @@ public class SISCOMController {
         model.setViewName("generator");
         return model;
     }
+
+    @RequestMapping(value = "/sql-querys", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ModelAndView textQuerys() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("textQuerys");
+        return model;
+    }
 }
