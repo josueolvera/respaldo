@@ -158,7 +158,9 @@
                     idAreaforModal: 0,
                     monthsOfConcept: {},
                     budgetConceptShare: null,
-                    idConcepto: 0
+                    idConcepto: 0,
+                    totalIngresos: 0,
+                    utilidad: 0
                 },
                 computed: {
                   totalPorcentaje: function()
@@ -343,6 +345,7 @@
                         concepto.dwEnterprise = idDwEnterprise;
                         concepto.idBudget= budget.idBudget;
                         concepto.year= this.year;
+                        console.log(budget);
                         //  this.arrayConcepts.push(concepto);
                         if (! budget.conceptos)
                         {
@@ -359,10 +362,13 @@
                         $.each(this.datosPresupuesto, function(index, el)
                         {
                             var BudgetTem = el;
+                            //var isentry = el.isentry;
                             $.each(self.contenido, function(indexs, ele)
-                            {
+                            {   var isentry = ele.isentry;
+
                                 if (BudgetTem.idBudget == ele.idBudget)
                                 {
+                                    Vue.set(BudgetTem,"isentry", isentry);
                                     self.contenido.$remove(ele);
                                     self.contenido.push(BudgetTem);
                                 }
@@ -480,17 +486,28 @@
                     obtainGranTotal: function()
                     {
                         this.totalArea= 0;
+                        this.totalIngresos = 0;
+                        this.utilidad = 0;
                         var self= this;
                         vm.contenido.forEach(function(budgetagrupado){
                             budgetagrupado.forEach(function(budget){
                                 if ( typeof budget.granTotal != "undefined")
                                 {
-                                    var granTotal= accounting.unformat(budget.granTotal);
-                                    self.totalArea += granTotal;
+                                    if (budget.isentry == 0) {
+                                        var granTotal= accounting.unformat(budget.granTotal);
+                                        self.totalArea += granTotal;
+                                    }
+                                    else {
+                                        var granTotal= accounting.unformat(budget.granTotal);
+                                        self.totalIngresos += granTotal;
+                                    }
                                 }
                             });
                         });
+                        this.utilidad = this.totalIngresos - this.totalArea;
                         this.totalArea = accounting.formatMoney(this.totalArea);
+                        this.totalIngresos = accounting.formatMoney(this.totalIngresos);
+                        this.utilidad = accounting.formatMoney(this.utilidad);
                         this.cargando= false;
                     },
                     obtainConceptsYear: function()
@@ -788,21 +805,37 @@
                         <div class="row" v-for="sucss in sucursales" style="margin-left: 0px; margin-right: 0px" v-if="showInfo">
                             <!--  <div class="col-xs-12"> -->
                             <div class="row" style="margin-left: 0px; margin-right: 0px">
-                                <div class="col-xs-6 text-left" style="padding-left: 0">
+                                <div class="col-xs-4 text-left" style="padding-left: 0">
                                     <h2 style="font-weight: bold">{{sucss.idDistributor | DistributorFilter}}<small>&nbsp;{{sucss.idBranch | SucursalFilter}}</small></h2>
                                 </div>
-                                <div class="col-xs-6 text-right">
+                                <div class="col-xs-8 text-right">
                                     <h3>{{sucss.idArea | areaName}}</h3>
-
-                                    <div class="col-xs-6 col-xs-offset-6">
-                                        <div class="input-group">
-                                                <%-- <span class="input-group-addon">$</span> --%>
-                                            <input type="text" class="form-control" disabled="true" v-model="totalArea">
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
 
+                            <div class="row" style="margin-left: 0px; margin-right: 0px">
+                                <div class="col-xs-2">
+                                    <label>
+                                        Ingresos
+                                    </label>
+                                    <input type="text" class="form-control" disabled="true" v-model="totalIngresos">
+                                </div>
+                                <div class="col-xs-2">
+                                    <label>
+                                        Egresos
+                                    </label>
+                                    <div class="input-group">
+                                            <%-- <span class="input-group-addon">$</span> --%>
+                                        <input type="text" class="form-control" disabled="true" v-model="totalArea">
+                                    </div>
+                                </div>
+                                <div class="col-xs-2">
+                                    <label>
+                                        Utilidad
+                                    </label>
+                                    <input type="text" class="form-control" disabled="true" v-model="utilidad">
+                                </div>
+                            </div>
                             <hr>
                             <div class="row" v-for="cont in contenido" style="margin-left: 0px; margin-right: 0px" id="1-{{sucss.idArea}}-{{cont[0].idBudgetCategory}}">
                                 <!--  <div class="col-xs-12" style="padding-left: -10px"> -->
