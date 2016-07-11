@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
+import mx.bidg.model.EmailTemplates;
+import mx.bidg.service.EmailTemplatesService;
 
 /**
  * @author Rafael Viveros
@@ -44,6 +46,9 @@ public class RequestsController {
     @Autowired
     private ApplicationEventPublisher eventPublisher;
     
+    @Autowired
+    private EmailTemplatesService emailTemplatesService; 
+    
     ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
     
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"})
@@ -55,8 +60,9 @@ public class RequestsController {
         String response;
         
         if(request != null) {
-            eventPublisher.publishEvent(new RequestCreatedEvent(request));
+            //eventPublisher.publishEvent(new RequestCreatedEvent(request));
             response = mapper.writeValueAsString(request);
+            
         } else {
             response = "Error al guardar la Solicitud";
         }
