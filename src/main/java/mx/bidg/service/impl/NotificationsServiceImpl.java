@@ -66,7 +66,7 @@ public class NotificationsServiceImpl implements NotificationsService {
             }
         }
 
-        emailDeliveryService.deliverEmail(emailTemplate);
+        //emailDeliveryService.deliverEmail(emailTemplate); Se comenta porque se ocupa el segundo metodo creado para enviar emails
         return notifications;
     }
 
@@ -109,7 +109,7 @@ public class NotificationsServiceImpl implements NotificationsService {
         emailTemplate.addRecipient(new EmailRecipients(user.getMail(), user.getUsername(), EmailRecipients.TO));
         emailTemplate.addProperty("user", user);
         emailTemplate.addProperty("subject", "Solicitud: Se requiere su autorización");
-        emailDeliveryService.deliverEmail(emailTemplate);
+        //emailDeliveryService.deliverEmail(emailTemplate);
         Notifications notification = build(request, user);
         notification.setSubtitle("Se requiere su autorización");
         return notificationsDao.save(notification);

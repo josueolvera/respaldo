@@ -60,7 +60,7 @@ public class RequestsController {
         String response;
         
         if(request != null) {
-            //eventPublisher.publishEvent(new RequestCreatedEvent(request));
+            eventPublisher.publishEvent(new RequestCreatedEvent(request));
             response = mapper.writeValueAsString(request);
             
         } else {

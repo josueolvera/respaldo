@@ -108,6 +108,7 @@ public class RequestEventsListener {
             Map.Entry<Integer, Integer> firstEntry = users.firstEntry();
             Users user = usersService.findById(firstEntry.getValue());
             requestsService.sendEmailForNewRequestAuthorization(request, user);
+            notificationsService.createNotification(user, request);
             for (Map.Entry<Integer, Integer> entry : users.entrySet()) {
                 Authorizations auth = new Authorizations();
                 auth.setFolio(request.getFolio());
