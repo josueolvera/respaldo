@@ -347,13 +347,11 @@
                     validateRfc: function (rfc) {
                         if(rfc.length < 13){
                             showAlert("El rfc debe contener 13 caracteres",{type: 3});
-                            this.employee.rfc = '';
                         }
                     },
                     validateCurp: function (curp) {
                         if(curp.length < 18){
                             showAlert("El curp debe contener 18 caracteres",{type: 3});
-                            this.employee.curp = '';
                         }
                     },
                 },
