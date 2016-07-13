@@ -158,7 +158,7 @@ public class EmployeesController {
             account.setAccountNumber(node.get("accountNumber").asText());
             account.setAccountClabe(node.get("accountClabe").asText());
             account.setBank(cBanksService.findById(node.get("idBank").asInt()));
-            account.setCurrencies(currenciesService.geById(node.get("idCurrency").asInt()));
+            account.setCurrencies(currenciesService.geById(1));
             account.setAccountType(CAccountsTypes.DEFINITIVA);
             account.setIdAccessLevel(1);
 

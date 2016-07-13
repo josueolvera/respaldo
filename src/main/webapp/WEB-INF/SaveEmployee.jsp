@@ -296,7 +296,6 @@
                         this.$http.post(ROOT_URL + "/employees/save", JSON.stringify(this.employee)).success(function (data) {
                             this.working = data;
                             showAlert("Registro de empleado exitoso");
-                            console.log(this.working);
                             this.uploadFilesEmployee(this.working, formData);
                         }).error(function () {
                             this.employee.employeeAccountList = [];
@@ -338,6 +337,25 @@
                         });
 
                     },
+                    validateEmail: function (email) {
+                        var re = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
+                        if(! re.test(email)) {
+                            showAlert("Ingresa un email correcto",{type: 3});
+                            this.employee.mail = '';
+                        }
+                    },
+                    validateRfc: function (rfc) {
+                        if(rfc.length < 13){
+                            showAlert("El rfc debe contener 13 caracteres",{type: 3});
+                            this.employee.rfc = '';
+                        }
+                    },
+                    validateCurp: function (curp) {
+                        if(curp.length < 18){
+                            showAlert("El curp debe contener 18 caracteres",{type: 3});
+                            this.employee.curp = '';
+                        }
+                    },
                 },
                 filters: {}
             });
@@ -363,19 +381,19 @@
                         <div class="row">
                             <div class="col-xs-3">
                                 <label>Nombre</label>
-                                <input class="form-control" name="name" v-model="employee.firstName">
+                                <input class="form-control" name="name" v-model="employee.firstName" onkeypress="return isLetterKey(event)">
                             </div>
                             <div class="col-xs-3">
                                 <label>Segundo nombre</label>
-                                <input class="form-control" name="name" v-model="employee.middleName">
+                                <input class="form-control" name="name" v-model="employee.middleName" onkeypress="return isLetterKey(event)">
                             </div>
                             <div class="col-xs-3">
                                 <label>Apellido paterno</label>
-                                <input class="form-control" name="name" v-model="employee.parentalLast">
+                                <input class="form-control" name="name" v-model="employee.parentalLast" onkeypress="return isLetterKey(event)">
                             </div>
                             <div class="col-xs-3">
                                 <label>Apellido materno</label>
-                                <input class="form-control" name="name" v-model="employee.motherLast">
+                                <input class="form-control" name="name" v-model="employee.motherLast" onkeypress="return isLetterKey(event)">
                             </div>
                         </div>
                         <br>
@@ -413,7 +431,7 @@
                             </div>
                             <div class="col-xs-3">
                                 <label>CURP</label>
-                                <input class="form-control" name="name" v-model="employee.curp">
+                                <input class="form-control" name="name" v-model="employee.curp" maxlength="18" @change="validateCurp(employee.curp)">
                             </div>
                         </div>
                         <br>
@@ -465,11 +483,11 @@
                         <div class="row">
                             <div class="col-xs-3">
                                 <label>Nombre del padre</label>
-                                <input class="form-control" name="name" v-model="employee.fatherName">
+                                <input class="form-control" name="name" v-model="employee.fatherName" onkeypress="return isLetterKey(event)">
                             </div>
                             <div class="col-xs-3">
                                 <label>Nombre de la madre</label>
-                                <input class="form-control" name="name" v-model="employee.motherName">
+                                <input class="form-control" name="name" v-model="employee.motherName" onkeypress="return isLetterKey(event)">
                             </div>
                             <div class="col-xs-3">
                                 <label>Estado civil</label>
@@ -494,26 +512,26 @@
                         <div class="row">
                             <div class="col-xs-3">
                                 <label>Talla</label>
-                                <input class="form-control" name="name" v-model="employee.size">
+                                <input class="form-control" name="name" v-model="employee.size" maxlength="3" onkeypress="return isLetterKey(event)">
                             </div>
                             <div class="col-xs-3">
                                 <label>Número de talla</label>
-                                <input class="form-control" name="name" v-model="employee.sizeNumber">
+                                <input class="form-control" name="name" v-model="employee.sizeNumber" maxlength="2" onkeypress="return isNumberKey(event)">
                             </div>
                             <div class="col-xs-3">
                                 <label>Télefono de casa</label>
-                                <input class="form-control" name="name" v-model="employee.homePhone">
+                                <input class="form-control" name="name" v-model="employee.homePhone" maxlength="10" onkeypress="return isNumberKey(event)">
                             </div>
                             <div class="col-xs-3">
                                 <label>Móvil</label>
-                                <input class="form-control" name="name" v-model="employee.cellPhone">
+                                <input class="form-control" name="name" v-model="employee.cellPhone" maxlength="10" onkeypress="return isNumberKey(event)">
                             </div>
                         </div>
                         <br>
                         <div class="row">
                             <div class="col-xs-3">
                                 <label>Email</label>
-                                <input class="form-control" name="name" v-model="employee.mail">
+                                <input class="form-control" name="name" v-model="employee.mail" @change="validateEmail(employee.mail)">
                             </div>
                             <div class="col-xs-3">
                                 <label>Clave SAP</label>
@@ -521,7 +539,7 @@
                             </div>
                             <div class="col-xs-3">
                                 <label>RFC</label>
-                                <input class="form-control" name="name" v-model="employee.rfc">
+                                <input class="form-control" name="name" v-model="employee.rfc" maxlength="13" @change="validateRfc(employee.rfc)">
                             </div>
                             <div class="col-xs-3">
                                 <label>Fecha de ingreso</label>
@@ -668,13 +686,10 @@
                                 </div>
                             </div>
                             <div class="col-xs-3">
-                                <label>Moneda</label>
-                                <select class="form-control" name="" v-model="cuenta.idCurrency">
-                                    <option></option>
-                                    <option v-for="curre in currencies" value="{{curre.idCurrency}}">
-                                        {{curre.currency}}
-                                    </option>
-                                </select>
+                                <label>Salario</label>
+                                <input type="text" class="form-control" maxlength="18"
+                                       v-model="employee.salary"
+                                       onkeypress="return isNumberKey(event)">
                             </div>
                         </div>
                     </div>
