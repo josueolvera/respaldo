@@ -25,36 +25,36 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @DynamicUpdate
-@Table(name = "C_CITIES")
-public class CCities implements Serializable {
+@Table(name = "C_TRAVEL_CITIES")
+public class CTravelCities implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID_CITY")
+    @Column(name = "ID_TRAVEL_CITY")
     @JsonView(JsonViews.Root.class)
-    private Integer idCity;
+    private Integer idTravelCity;
 
     @Size(max = 80)
     @Column(name = "CITY_NAME")
     @JsonView(JsonViews.Root.class)
     private String cityName;
 
-    public CCities() {
+    public CTravelCities() {
     }
 
-    public CCities(Integer idCity) {
-        this.idCity = idCity;
+    public CTravelCities(Integer idTravelCity) {
+        this.idTravelCity = idTravelCity;
     }
 
     public Integer getIdCity() {
-        return idCity;
+        return idTravelCity;
     }
 
-    public void setIdCity(Integer idCity) {
-        this.idCity = idCity;
+    public void setIdCity(Integer idTravelCity) {
+        this.idTravelCity = idTravelCity;
     }
 
     public String getCityName() {
@@ -68,18 +68,18 @@ public class CCities implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idCity != null ? idCity.hashCode() : 0);
+        hash += (idTravelCity != null ? idTravelCity.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CCities)) {
+        if (!(object instanceof CTravelCities)) {
             return false;
         }
-        CCities other = (CCities) object;
-        if ((this.idCity == null && other.idCity != null) || (this.idCity != null && !this.idCity.equals(other.idCity))) {
+        CTravelCities other = (CTravelCities) object;
+        if ((this.idTravelCity == null && other.idTravelCity != null) || (this.idTravelCity != null && !this.idTravelCity.equals(other.idTravelCity))) {
             return false;
         }
         return true;
@@ -87,7 +87,7 @@ public class CCities implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.CCities[ idCity=" + idCity + " ]";
+        return "mx.bidg.model.CTravelCities[ idTravelCity=" + idTravelCity + " ]";
     }
     
 }

@@ -66,15 +66,15 @@ public class Flights implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private PlaneTickets planeTicket;
 
-    @JoinColumn(name = "ID_CITY_ORIGIN", referencedColumnName = "ID_CITY")
+    @JoinColumn(name = "ID_CITY_ORIGIN", referencedColumnName = "ID_TRAVEL_CITY")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private CCities cityOrigin;
+    private CTravelCities cityOrigin;
 
-    @JoinColumn(name = "ID_CITY_DESTINATION", referencedColumnName = "ID_CITY")
+    @JoinColumn(name = "ID_CITY_DESTINATION", referencedColumnName = "ID_TRAVEL_CITY")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private CCities cityDestination;
+    private CTravelCities cityDestination;
 
     public Flights() {
     }
@@ -136,19 +136,19 @@ public class Flights implements Serializable {
         this.planeTicket = planeTicket;
     }
 
-    public CCities getCityOrigin() {
+    public CTravelCities getCityOrigin() {
         return cityOrigin;
     }
 
-    public void setCityOrigin(CCities cityOrigin) {
+    public void setCityOrigin(CTravelCities cityOrigin) {
         this.cityOrigin = cityOrigin;
     }
 
-    public CCities getCityDestination() {
+    public CTravelCities getCityDestination() {
         return cityDestination;
     }
 
-    public void setCityDestination(CCities cityDestination) {
+    public void setCityDestination(CTravelCities cityDestination) {
         this.cityDestination = cityDestination;
     }
 
