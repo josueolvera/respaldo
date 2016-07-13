@@ -164,7 +164,12 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
             }
 
             CRoles role = dwEmployee.getRole();
-            Date joinDate = Date.from(employee.getJoinDate().atZone(ZoneId.systemDefault()).toInstant());
+
+            if (employee.getJoinDate() != null) {
+                Date joinDate = Date.from(employee.getJoinDate().atZone(ZoneId.systemDefault()).toInstant());
+                row.getCell(13).setCellValue(joinDate);
+            }
+
 
             // Create a cell and put a value in it.
             row.createCell(0).setCellValue(distributor.getDistributorName());
@@ -179,7 +184,6 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
             row.createCell(12).setCellValue(employee.getMail());
             row.createCell(13);
             row.getCell(13).setCellStyle(cellDateStyle);
-            row.getCell(13).setCellValue(joinDate);
             row.createCell(14).setCellValue(employee.getSalary().floatValue());
 
             aux++;

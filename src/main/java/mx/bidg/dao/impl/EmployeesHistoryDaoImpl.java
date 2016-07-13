@@ -52,7 +52,6 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
     public List<EmployeesHistory> findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(Integer idDistributor, Integer idRegion, Integer idBranch, Integer idArea, Integer idRole, String startDate, String endDate) {
         Criteria criteria = createEntityCriteria();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-        boolean hasRestrictions = false;
 
         if (startDate != null && endDate != null) {
             LocalDateTime startLocalDateTime = LocalDateTime.parse(startDate + " 00:00:00",formatter);
@@ -76,7 +75,7 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
             criteria.add(Restrictions.eq("idRole",idRole));
         }
 
-        criteria.add(Restrictions.eq("hStatus",true));
+        criteria.add(Restrictions.eq("hStatus",1));
 
         return criteria.list();
     }

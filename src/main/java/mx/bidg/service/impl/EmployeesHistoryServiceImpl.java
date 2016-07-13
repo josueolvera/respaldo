@@ -103,8 +103,10 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
 
             row = hoja.createRow(aux);
 
-            Date joinDate = Date.from(employeeHistory.getJoinDate().atZone(ZoneId.systemDefault()).toInstant());
-
+            if (employeeHistory.getJoinDate() != null) {
+                Date joinDate = Date.from(employeeHistory.getJoinDate().atZone(ZoneId.systemDefault()).toInstant());
+                row.getCell(13).setCellValue(joinDate);
+            }
 
             // Create a cell and put a value in it.
             row.createCell(0).setCellValue(employeeHistory.getDistributorName());
@@ -121,7 +123,6 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
             row.createCell(11).setCellValue(employeeHistory.getStreet());
             row.createCell(12).setCellValue(employeeHistory.getMail());
             row.createCell(13);
-            row.getCell(13).setCellValue(joinDate);
             row.getCell(13).setCellStyle(cellDateStyle);
             row.createCell(14).setCellValue(employeeHistory.getSalary().floatValue());
 
