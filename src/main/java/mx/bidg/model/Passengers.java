@@ -7,23 +7,13 @@ package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -48,9 +38,9 @@ public class Passengers implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "BIRTHDATE")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
-    private Date birthdate;
+    private LocalDateTime birthdate;
 
     @Basic(optional = false)
     @NotNull
@@ -113,7 +103,7 @@ public class Passengers implements Serializable {
         this.idPassenger = idPassenger;
     }
 
-    public Passengers(Integer idPassenger, Date birthdate, String company, String frequentPartner, String fullName, String job) {
+    public Passengers(Integer idPassenger, LocalDateTime birthdate, String company, String frequentPartner, String fullName, String job) {
         this.idPassenger = idPassenger;
         this.birthdate = birthdate;
         this.company = company;
@@ -130,11 +120,11 @@ public class Passengers implements Serializable {
         this.idPassenger = idPassenger;
     }
 
-    public Date getBirthdate() {
+    public LocalDateTime getBirthdate() {
         return birthdate;
     }
 
-    public void setBirthdate(Date birthdate) {
+    public void setBirthdate(LocalDateTime birthdate) {
         this.birthdate = birthdate;
     }
 

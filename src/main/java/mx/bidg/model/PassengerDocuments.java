@@ -7,21 +7,12 @@ package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
-import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import java.time.LocalDateTime;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 /**
@@ -52,9 +43,9 @@ public class PassengerDocuments implements Serializable {
     private String documentUrl;
 
     @Column(name = "UPLOADING_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
-    private Date uploadingDate;
+    private LocalDateTime uploadingDate;
 
     @Column(name = "ID_PASSENGER", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -105,11 +96,11 @@ public class PassengerDocuments implements Serializable {
         this.documentUrl = documentUrl;
     }
 
-    public Date getUploadingDate() {
+    public LocalDateTime getUploadingDate() {
         return uploadingDate;
     }
 
-    public void setUploadingDate(Date uploadingDate) {
+    public void setUploadingDate(LocalDateTime uploadingDate) {
         this.uploadingDate = uploadingDate;
     }
 

@@ -7,21 +7,12 @@ package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
-import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import java.time.LocalDateTime;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -45,9 +36,9 @@ public class Flights implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "DEPARTURE_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
-    private Date departureDate;
+    private LocalDateTime departureDate;
 
     @Column(name = "ID_PLANE_TICKET", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -83,7 +74,7 @@ public class Flights implements Serializable {
         this.idFlight = idFlight;
     }
 
-    public Flights(Integer idFlight, Date departureDate) {
+    public Flights(Integer idFlight, LocalDateTime departureDate) {
         this.idFlight = idFlight;
         this.departureDate = departureDate;
     }
@@ -96,11 +87,11 @@ public class Flights implements Serializable {
         this.idFlight = idFlight;
     }
 
-    public Date getDepartureDate() {
+    public LocalDateTime getDepartureDate() {
         return departureDate;
     }
 
-    public void setDepartureDate(Date departureDate) {
+    public void setDepartureDate(LocalDateTime departureDate) {
         this.departureDate = departureDate;
     }
 

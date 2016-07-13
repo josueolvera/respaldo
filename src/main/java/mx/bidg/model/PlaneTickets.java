@@ -7,23 +7,13 @@ package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -46,9 +36,9 @@ public class PlaneTickets implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
-    private Date creationDate;
+    private LocalDateTime creationDate;
 
     @Column(name = "ID_PLANE_TICKET_TYPE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -74,7 +64,7 @@ public class PlaneTickets implements Serializable {
         this.idPlaneTicket = idPlaneTicket;
     }
 
-    public PlaneTickets(Integer idPlaneTicket, Date creationDate) {
+    public PlaneTickets(Integer idPlaneTicket, LocalDateTime creationDate) {
         this.idPlaneTicket = idPlaneTicket;
         this.creationDate = creationDate;
     }
@@ -87,11 +77,11 @@ public class PlaneTickets implements Serializable {
         this.idPlaneTicket = idPlaneTicket;
     }
 
-    public Date getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
