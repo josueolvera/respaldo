@@ -1,0 +1,173 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package mx.bidg.model;
+
+import com.fasterxml.jackson.annotation.JsonView;
+import mx.bidg.config.JsonViews;
+import org.hibernate.annotations.DynamicUpdate;
+
+import java.io.Serializable;
+import java.util.Date;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.validation.constraints.Size;
+
+/**
+ *
+ * @author gerardo8
+ */
+@Entity
+@DynamicUpdate
+@Table(name = "PASSENGER_DOCUMENTS")
+public class PassengerDocuments implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "ID_STOCK_DOCUMENT")
+    @JsonView(JsonViews.Root.class)
+    private Integer idStockDocument;
+
+    @Size(max = 1024)
+    @Column(name = "DOCUMENT_NAME")
+    @JsonView(JsonViews.Root.class)
+    private String documentName;
+
+    @Size(max = 2048)
+    @Column(name = "DOCUMENT_URL")
+    @JsonView(JsonViews.Root.class)
+    private String documentUrl;
+
+    @Column(name = "UPLOADING_DATE")
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonView(JsonViews.Root.class)
+    private Date uploadingDate;
+
+    @Column(name = "ID_PASSENGER", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idPassenger;
+
+    @Column(name = "ID_PASSENGER_DOCUMENT_TYPE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idPassengerDocumentType;
+
+    @JoinColumn(name = "ID_PASSENGER", referencedColumnName = "ID_PASSENGER")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private Passengers passenger;
+
+    @JoinColumn(name = "ID_PASSENGER_DOCUMENT_TYPE", referencedColumnName = "ID_PASSENGER_DOCUMENT_TYPE")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CPassengerDocumentsTypes passengerDocumentType;
+
+    public PassengerDocuments() {
+    }
+
+    public PassengerDocuments(Integer idStockDocument) {
+        this.idStockDocument = idStockDocument;
+    }
+
+    public Integer getIdStockDocument() {
+        return idStockDocument;
+    }
+
+    public void setIdStockDocument(Integer idStockDocument) {
+        this.idStockDocument = idStockDocument;
+    }
+
+    public String getDocumentName() {
+        return documentName;
+    }
+
+    public void setDocumentName(String documentName) {
+        this.documentName = documentName;
+    }
+
+    public String getDocumentUrl() {
+        return documentUrl;
+    }
+
+    public void setDocumentUrl(String documentUrl) {
+        this.documentUrl = documentUrl;
+    }
+
+    public Date getUploadingDate() {
+        return uploadingDate;
+    }
+
+    public void setUploadingDate(Date uploadingDate) {
+        this.uploadingDate = uploadingDate;
+    }
+
+    public Integer getIdPassenger() {
+        return idPassenger;
+    }
+
+    public void setIdPassenger(Integer idPassenger) {
+        this.idPassenger = idPassenger;
+    }
+
+    public Integer getIdPassengerDocumentType() {
+        return idPassengerDocumentType;
+    }
+
+    public void setIdPassengerDocumentType(Integer idPassengerDocumentType) {
+        this.idPassengerDocumentType = idPassengerDocumentType;
+    }
+
+    public Passengers getPassenger() {
+        return passenger;
+    }
+
+    public void setPassenger(Passengers passenger) {
+        this.passenger = passenger;
+    }
+
+    public CPassengerDocumentsTypes getPassengerDocumentType() {
+        return passengerDocumentType;
+    }
+
+    public void setPassengerDocumentType(CPassengerDocumentsTypes passengerDocumentType) {
+        this.passengerDocumentType = passengerDocumentType;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (idStockDocument != null ? idStockDocument.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof PassengerDocuments)) {
+            return false;
+        }
+        PassengerDocuments other = (PassengerDocuments) object;
+        if ((this.idStockDocument == null && other.idStockDocument != null) || (this.idStockDocument != null && !this.idStockDocument.equals(other.idStockDocument))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "mx.bidg.model.PassengerDocuments[ idStockDocument=" + idStockDocument + " ]";
+    }
+    
+}

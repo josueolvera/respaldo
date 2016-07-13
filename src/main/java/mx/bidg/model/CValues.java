@@ -41,7 +41,7 @@ public class CValues implements Serializable {
     @ManyToOne
     @JoinColumn(name = "ID_ATTRIBUTE", referencedColumnName = "ID_ATTRIBUTE")
     @JsonView(JsonViews.Root.class)
-    private CAttributes Attribute;
+    private CAttributes attribute;
 
     @Column(name = "ID_ARTICLE_CATEGORY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -75,11 +75,11 @@ public class CValues implements Serializable {
     }
 
     public CAttributes getAttribute() {
-        return Attribute;
+        return attribute;
     }
 
     public void setAttribute(CAttributes attribute) {
-        Attribute = attribute;
+        this.attribute = attribute;
     }
 
     public CArticlesCategories getArticlesCategories() {

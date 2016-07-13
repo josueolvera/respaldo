@@ -8,6 +8,14 @@
     <class>mx.bidg.model.CStates</class>
     <class>mx.bidg.model.ProviderAddress</class>
     <class>mx.bidg.model.CMunicipalities</class>
+    <class>mx.bidg.model.PassengerDocuments</class>
+    <class>mx.bidg.model.Flights</class>
+    <class>mx.bidg.model.CPlaneSeatsTypes</class>
+    <class>mx.bidg.model.Passengers</class>
+    <class>mx.bidg.model.CPassengerDocumentsTypes</class>
+    <class>mx.bidg.model.CCities</class>
+    <class>mx.bidg.model.PlaneTickets</class>
+    <class>mx.bidg.model.CPlaneTicketsTypes</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties/>
   </persistence-unit>
