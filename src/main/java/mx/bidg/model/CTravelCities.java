@@ -10,13 +10,7 @@ import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 /**
@@ -42,6 +36,15 @@ public class CTravelCities implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String cityName;
 
+    @Column(name = "ID_ESTADO", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idEstado;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_ESTADO", referencedColumnName = "ID_ESTADO")
+    @JsonView(JsonViews.Root.class)
+    private CEstados estado;
+
     public CTravelCities() {
     }
 
@@ -49,11 +52,11 @@ public class CTravelCities implements Serializable {
         this.idTravelCity = idTravelCity;
     }
 
-    public Integer getIdCity() {
+    public Integer getIdTravelCity() {
         return idTravelCity;
     }
 
-    public void setIdCity(Integer idTravelCity) {
+    public void setIdTravelCity(Integer idTravelCity) {
         this.idTravelCity = idTravelCity;
     }
 
@@ -63,6 +66,22 @@ public class CTravelCities implements Serializable {
 
     public void setCityName(String cityName) {
         this.cityName = cityName;
+    }
+
+    public Integer getIdEstado() {
+        return idEstado;
+    }
+
+    public void setIdEstado(Integer idEstado) {
+        this.idEstado = idEstado;
+    }
+
+    public CEstados getEstado() {
+        return estado;
+    }
+
+    public void setEstado(CEstados estado) {
+        this.estado = estado;
     }
 
     @Override
