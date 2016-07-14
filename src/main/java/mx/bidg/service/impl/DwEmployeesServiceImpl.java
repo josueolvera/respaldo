@@ -167,7 +167,9 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
 
             if (employee.getJoinDate() != null) {
                 Date joinDate = Date.from(employee.getJoinDate().atZone(ZoneId.systemDefault()).toInstant());
+                row.createCell(13);
                 row.getCell(13).setCellValue(joinDate);
+                row.getCell(13).setCellStyle(cellDateStyle);
             }
 
 
@@ -182,8 +184,6 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
             row.createCell(10).setCellValue(employee.getCurp());
             row.createCell(11).setCellValue(employee.getStreet());
             row.createCell(12).setCellValue(employee.getMail());
-            row.createCell(13);
-            row.getCell(13).setCellStyle(cellDateStyle);
             row.createCell(14).setCellValue(employee.getSalary().floatValue());
 
             aux++;

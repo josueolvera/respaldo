@@ -105,6 +105,8 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
 
             if (employeeHistory.getJoinDate() != null) {
                 Date joinDate = Date.from(employeeHistory.getJoinDate().atZone(ZoneId.systemDefault()).toInstant());
+                row.createCell(13);
+                row.getCell(13).setCellStyle(cellDateStyle);
                 row.getCell(13).setCellValue(joinDate);
             }
 
@@ -122,8 +124,6 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
             row.createCell(10).setCellValue(employeeHistory.getCurp());
             row.createCell(11).setCellValue(employeeHistory.getStreet());
             row.createCell(12).setCellValue(employeeHistory.getMail());
-            row.createCell(13);
-            row.getCell(13).setCellStyle(cellDateStyle);
             row.createCell(14).setCellValue(employeeHistory.getSalary().floatValue());
 
             aux++;
