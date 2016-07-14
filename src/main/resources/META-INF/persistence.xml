@@ -16,6 +16,12 @@
     <class>mx.bidg.model.CCities</class>
     <class>mx.bidg.model.PlaneTickets</class>
     <class>mx.bidg.model.CPlaneTicketsTypes</class>
+    <class>mx.bidg.model.CTravelTypes</class>
+    <class>mx.bidg.model.RequestConcept</class>
+    <class>mx.bidg.model.TravelExpenses</class>
+    <class>mx.bidg.model.RoleConcept</class>
+    <class>mx.bidg.model.RoleTravelType</class>
+    <class>mx.bidg.model.CTravelExpensesConcepts</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties/>
   </persistence-unit>
