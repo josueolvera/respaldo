@@ -436,7 +436,7 @@
                                     <br>
                                     <label class="radio-inline" v-for="roleTravelType in roleTravelTypeList">
                                         <input v-model="selected.travelType" type="radio" @change="getConcepts"
-                                               :value="roleTravelType.travelType">{{roleTravelType.travelType.travelTypeName}}
+                                               :value="roleTravelType.travelType">{{roleTravelType.travelType.typeName}}
                                     </label>
                                 </div>
                                 <div class="col-md-3">
