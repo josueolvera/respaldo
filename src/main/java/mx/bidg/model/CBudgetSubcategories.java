@@ -29,6 +29,8 @@ public class CBudgetSubcategories implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final CBudgetSubcategories NACIONALES = new CBudgetSubcategories(214);
+    public static final CBudgetSubcategories INTERNACIONALES = new CBudgetSubcategories(215);
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
