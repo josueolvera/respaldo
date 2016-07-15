@@ -33,6 +33,8 @@ public class CRequestTypes implements Serializable {
     
     private static final long serialVersionUID = 1L;
 
+    public static final CRequestTypes GASTOS_DE_VIAJE = new CRequestTypes(68);
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
