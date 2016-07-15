@@ -143,7 +143,7 @@ public class SIADController {
     public ModelAndView planeTicketsRequestType(@RequestParam(name = "idPlaneTicket", required = false) Integer idPlaneTicket) {
         ModelAndView model = new ModelAndView();
         model.addObject("idPlaneTicket", idPlaneTicket);
-        model.addObject("cat", CRequestsCategories.BOLETOS_AVION);
+        model.addObject("cat", CRequestsCategories.BOLETOS_DE_AVION);
         model.setViewName("PlaneTickets");
         return model;
     }
@@ -152,7 +152,7 @@ public class SIADController {
     public ModelAndView refundsRequestType(@RequestParam(name = "idRefund", required = false) Integer idRefund) {
         ModelAndView model = new ModelAndView();
         model.addObject("idRefund", idRefund);
-        model.addObject("cat", CRequestsCategories.REMBOLSOS);
+        model.addObject("cat", CRequestsCategories.REEMBOLSOS);
         model.setViewName("Refunds");
         return model;
     }
