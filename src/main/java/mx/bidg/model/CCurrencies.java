@@ -31,6 +31,8 @@ public class CCurrencies implements Serializable {
     public static final CCurrencies MXN = new CCurrencies(1);
     public static final CCurrencies USD = new CCurrencies(2);
     public static final CCurrencies EUR = new CCurrencies(3);
+    public static final CCurrencies CAD = new CCurrencies(4);
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
