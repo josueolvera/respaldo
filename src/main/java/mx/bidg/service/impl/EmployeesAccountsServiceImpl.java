@@ -43,4 +43,9 @@ public class EmployeesAccountsServiceImpl implements EmployeesAccountsService {
         return employeesAccounts;
     }
 
+    @Override
+    public EmployeesAccounts findByIdEmployee(Integer idEmployee) {
+        return employeesAccountsDao.findByIdEmployee(idEmployee);
+    }
+
 }
