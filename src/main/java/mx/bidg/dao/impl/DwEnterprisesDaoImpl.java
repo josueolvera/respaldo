@@ -113,6 +113,13 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
     }
 
     @Override
+    public List<DwEnterprises> findByBranches(Integer idBranch) {
+        return (List<DwEnterprises>) createEntityCriteria()
+                .add(Restrictions.eq("idBranch", idBranch))
+                .list();
+    }
+
+    @Override
     public DwEnterprises findByCombination(CGroups group, CDistributors distributor, CRegions region, CBranchs branch, CAreas area) {
         Criteria criteria = createEntityCriteria();
         HashMap<String, Object> map = new HashMap<>();

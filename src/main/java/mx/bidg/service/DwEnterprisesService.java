@@ -27,4 +27,5 @@ public interface DwEnterprisesService {
     DwEnterprises update(DwEnterprises dwEnterprises);
     DwEnterprises findByDistributorRegionBranch (Integer idDistributor, Integer idRegion, Integer idBranch);
     DwEnterprises findByBranch(Integer idBranch);
+    List<DwEnterprises> findByBranches(Integer idBranch);
 }
