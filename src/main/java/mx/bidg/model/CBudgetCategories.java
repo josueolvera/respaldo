@@ -25,7 +25,9 @@ import org.hibernate.annotations.DynamicUpdate;
 public class CBudgetCategories implements Serializable {
     
     private static final long serialVersionUID = 1L;
-    
+
+    public static final CBudgetCategories GASTOS_DE_VIAJE = new CBudgetCategories(68);
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
