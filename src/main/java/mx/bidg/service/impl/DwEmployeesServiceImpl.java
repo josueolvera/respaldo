@@ -215,4 +215,9 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
 
         emailDeliveryService.deliverEmail(emailTemplate);
     }
+
+    @Override
+    public DwEmployees findByIdDw(Integer idDwEnterprise) {
+        return dwEmployeesDao.findByEmployee(idDwEnterprise);
+    }
 }

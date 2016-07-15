@@ -97,4 +97,9 @@ public class DwEmployeesDaoImpl extends AbstractDao<Integer, DwEmployees> implem
         remove(entity);
         return true;
     }
+
+    @Override
+    public DwEmployees findByEmployee(Integer idEmployee) {
+        return getByKey(idEmployee);
+    }
 }

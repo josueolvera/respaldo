@@ -28,4 +28,5 @@ public interface DwEmployeesService {
     DwEmployees save(DwEmployees dwEmployees);
     void createReport(List<DwEmployees> dwEmployees, OutputStream outputStream) throws IOException;
     void changeEmployeeStatus(Integer idDwEmployee);
+    DwEmployees findByIdDw(Integer idDwEnterprise);
 }
