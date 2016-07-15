@@ -27,7 +27,8 @@ import org.hibernate.annotations.DynamicUpdate;
 public class CBudgetSubcategories implements Serializable {
     
     private static final long serialVersionUID = 1L;
-    
+
+    public static final CBudgetSubcategories NACIONALES = new CBudgetSubcategories(214);
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
