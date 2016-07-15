@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.List;
+
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.Employees;
 import mx.bidg.model.EmployeesAccounts;
@@ -34,7 +36,7 @@ public class EmployeesAccountsController {
     @Autowired
     EmployeesAccountsService employeesAccountsService;
     
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
     
     @RequestMapping(value = "/user/{idUser}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> getByIdUser(@PathVariable int idUser) throws Exception {
