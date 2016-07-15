@@ -118,4 +118,14 @@ public class CCurrencies implements Serializable {
         }
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "CCurrencies{" +
+                "idCurrency=" + idCurrency +
+                ", currency='" + currency + '\'' +
+                ", acronym='" + acronym + '\'' +
+                ", rate=" + rate +
+                '}';
+    }
 }
