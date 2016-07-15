@@ -29,6 +29,7 @@ public class CCurrencies implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final CCurrencies MXN = new CCurrencies(1);
+    public static final CCurrencies USD = new CCurrencies(2);
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
