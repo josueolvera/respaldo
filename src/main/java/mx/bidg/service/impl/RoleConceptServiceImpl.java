@@ -42,6 +42,11 @@ public class RoleConceptServiceImpl implements RoleConceptService {
     }
 
     @Override
+    public List<RoleConcept> findByIdRoleAndIdTravelType(Integer idRole, Integer idTravelType) {
+        return roleConceptDao.findByIdRoleAndIdTravelType(idRole, idTravelType);
+    }
+
+    @Override
     public Boolean delete(RoleConcept roleConcept) {
         roleConceptDao.delete(roleConcept);
         return true;

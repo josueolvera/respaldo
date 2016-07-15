@@ -42,6 +42,11 @@ public class RoleTravelTypeServiceImpl implements RoleTravelTypeService {
     }
 
     @Override
+    public List<RoleTravelType> findByIdRole(Integer idRole) {
+        return roleTravelTypeDao.findByIdRole(idRole);
+    }
+
+    @Override
     public Boolean delete(RoleTravelType roleTravelType) {
         roleTravelTypeDao.delete(roleTravelType);
         return true;

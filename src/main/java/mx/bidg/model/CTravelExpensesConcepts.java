@@ -40,7 +40,7 @@ public class CTravelExpensesConcepts implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID_TRAVEL_EXPENCE_CONCEPT")
+    @Column(name = "ID_TRAVEL_EXPENSE_CONCEPT")
     @JsonView(JsonViews.Root.class)
     private Integer idTravelExpenceConcept;
 

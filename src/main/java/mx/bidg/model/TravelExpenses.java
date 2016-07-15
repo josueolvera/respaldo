@@ -15,11 +15,11 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 /**
  *
@@ -83,6 +83,15 @@ public class TravelExpenses implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CTravelTypes travelType;
 
+    @Column(name = "ID_REQUEST", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRequest;
+
+    @JoinColumn(name = "ID_REQUEST", referencedColumnName = "ID_REQUEST")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private Requests request;
+
     @Transient
     @JsonView(JsonViews.Embedded.class)
     private DateFormatsPojo creationDateFormats;
@@ -143,6 +152,17 @@ public class TravelExpenses implements Serializable {
         this.estimatedKm = estimatedKm;
     }
 
+    public boolean getIsOutOfDateRequest() {
+
+        if (startDate != null) {
+            long daysBetween = DAYS.between(LocalDateTime.now().toLocalDate(), startDate.toLocalDate());
+
+            return daysBetween < 3;
+        } else {
+            return false;
+        }
+    }
+
     public LocalDateTime getStartDate() {
         return startDate;
     }
@@ -173,6 +193,22 @@ public class TravelExpenses implements Serializable {
 
     public void setTravelType(CTravelTypes travelType) {
         this.travelType = travelType;
+    }
+
+    public Integer getIdRequest() {
+        return idRequest;
+    }
+
+    public void setIdRequest(Integer idRequest) {
+        this.idRequest = idRequest;
+    }
+
+    public Requests getRequest() {
+        return request;
+    }
+
+    public void setRequest(Requests request) {
+        this.request = request;
     }
 
     public DateFormatsPojo getCreationDateFormats() {

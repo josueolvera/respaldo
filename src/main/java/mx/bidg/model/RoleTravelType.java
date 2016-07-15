@@ -27,7 +27,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @DynamicUpdate
 @Table(name = "ROLE_TRAVEL_TYPE")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class RoleTravelType implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -54,6 +53,15 @@ public class RoleTravelType implements Serializable {
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private CTravelTypes travelType;
+
+    @Column(name = "ID_ROLE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRole;
+
+    @JoinColumn(name = "ID_ROLE", referencedColumnName = "ID_ROLE")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CRoles role;
 
     @Transient
     @JsonView(JsonViews.Embedded.class)
@@ -101,6 +109,22 @@ public class RoleTravelType implements Serializable {
 
     public void setTravelType(CTravelTypes travelType) {
         this.travelType = travelType;
+    }
+
+    public Integer getIdRole() {
+        return idRole;
+    }
+
+    public void setIdRole(Integer idRole) {
+        this.idRole = idRole;
+    }
+
+    public CRoles getRole() {
+        return role;
+    }
+
+    public void setRole(CRoles role) {
+        this.role = role;
     }
 
     public DateFormatsPojo getCreationDateFormats() {

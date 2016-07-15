@@ -3,6 +3,7 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.RoleTravelTypeDao;
 import mx.bidg.model.RoleTravelType;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,5 +40,12 @@ public class RoleTravelTypeDaoImpl extends AbstractDao<Integer, RoleTravelType> 
     public boolean delete(RoleTravelType entity) {
         remove(entity);
         return true;
+    }
+
+    @Override
+    public List<RoleTravelType> findByIdRole(Integer idRole) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idRole",idRole))
+                .list();
     }
 }

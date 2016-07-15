@@ -58,7 +58,7 @@ public class RoleConcept implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idTravelType;
 
-    @Column(name = "ID_TRAVEL_EXPENCE_CONCEPT", insertable = false, updatable = false)
+    @Column(name = "ID_TRAVEL_EXPENSE_CONCEPT", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idTravelExpenceConcept;
 
@@ -67,10 +67,28 @@ public class RoleConcept implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CTravelTypes travelType;
 
-    @JoinColumn(name = "ID_TRAVEL_EXPENCE_CONCEPT", referencedColumnName = "ID_TRAVEL_EXPENCE_CONCEPT")
+    @JoinColumn(name = "ID_TRAVEL_EXPENSE_CONCEPT", referencedColumnName = "ID_TRAVEL_EXPENSE_CONCEPT")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private CTravelExpensesConcepts travelExpenceConcept;
+
+    @Column(name = "ID_ROLE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRole;
+
+    @JoinColumn(name = "ID_ROLE", referencedColumnName = "ID_ROLE")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CRoles role;
+
+    @Column(name = "ID_CURRENCY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idCurrency;
+
+    @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CCurrencies currency;
 
     @Transient
     @JsonView(JsonViews.Embedded.class)
@@ -143,6 +161,38 @@ public class RoleConcept implements Serializable {
 
     public void setTravelExpenceConcept(CTravelExpensesConcepts travelExpenceConcept) {
         this.travelExpenceConcept = travelExpenceConcept;
+    }
+
+    public Integer getIdRole() {
+        return idRole;
+    }
+
+    public void setIdRole(Integer idRole) {
+        this.idRole = idRole;
+    }
+
+    public CRoles getRole() {
+        return role;
+    }
+
+    public void setRole(CRoles role) {
+        this.role = role;
+    }
+
+    public Integer getIdCurrency() {
+        return idCurrency;
+    }
+
+    public void setIdCurrency(Integer idCurrency) {
+        this.idCurrency = idCurrency;
+    }
+
+    public CCurrencies getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(CCurrencies currency) {
+        this.currency = currency;
     }
 
     public DateFormatsPojo getCreationDateFormats() {

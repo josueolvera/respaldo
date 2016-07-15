@@ -37,6 +37,9 @@ public class CTravelTypes implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final CTravelTypes NACIONALES = new CTravelTypes(1);
+    public static final CTravelTypes INTERNACIONALES = new CTravelTypes(2);
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)

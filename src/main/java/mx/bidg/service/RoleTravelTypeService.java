@@ -12,5 +12,6 @@ public interface RoleTravelTypeService {
     RoleTravelType update (RoleTravelType roleTravelType);
     RoleTravelType findById(Integer idRoleTravelType);
     List<RoleTravelType> findAll();
+    List<RoleTravelType> findByIdRole(Integer idRole);
     Boolean delete(RoleTravelType roleTravelType);
 }

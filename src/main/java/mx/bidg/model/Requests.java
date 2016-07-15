@@ -28,6 +28,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
 import mx.bidg.pojos.DateFormatsPojo;
+import mx.bidg.service.impl.TravelExpensesServiceImpl;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -56,9 +57,7 @@ public class Requests implements Serializable {
     @Column(name = "FOLIO")
     @JsonView(JsonViews.Root.class)
     private String folio;
-    
-    @Basic(optional = false)
-    @NotNull
+
     @Lob
     @Size(min = 1, max = 65535)
     @Column(name = "DESCRIPTION")
@@ -78,8 +77,6 @@ public class Requests implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
 
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "APPLYING_DATE", updatable = false)
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)

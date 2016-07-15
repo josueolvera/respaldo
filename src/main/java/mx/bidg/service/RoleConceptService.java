@@ -12,5 +12,6 @@ public interface RoleConceptService {
     RoleConcept update (RoleConcept roleConcept);
     RoleConcept findById (Integer idRoleConcept);
     List<RoleConcept> findAll();
+    List<RoleConcept> findByIdRoleAndIdTravelType(Integer idRole, Integer idTravelType);
     Boolean delete (RoleConcept roleConcept);
 }

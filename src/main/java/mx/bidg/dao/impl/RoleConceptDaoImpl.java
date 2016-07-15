@@ -3,7 +3,9 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.RoleConceptDao;
 import mx.bidg.model.RequestConcept;
+import mx.bidg.model.ResourcesTasks;
 import mx.bidg.model.RoleConcept;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,5 +41,13 @@ public class RoleConceptDaoImpl extends AbstractDao<Integer, RoleConcept> implem
     public boolean delete(RoleConcept entity) {
         remove(entity);
         return true;
+    }
+
+    @Override
+    public List<RoleConcept> findByIdRoleAndIdTravelType(Integer idRole, Integer idTravelType) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idRole",idRole))
+                .add(Restrictions.eq("idTravelType",idTravelType))
+                .list();
     }
 }

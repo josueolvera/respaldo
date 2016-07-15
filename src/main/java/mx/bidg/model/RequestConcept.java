@@ -54,14 +54,32 @@ public class RequestConcept implements Serializable {
     @JsonView(JsonViews.Root.class)
     private LocalDateTime creationDate;
 
-    @Column(name = "ID_TRAVEL_EXPENCE_CONCEPT", insertable = false, updatable = false)
+    @Column(name = "ID_TRAVEL_EXPENSE_CONCEPT", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idTravelExpenceConcept;
+    private Integer idTravelExpenseConcept;
 
-    @JoinColumn(name = "ID_TRAVEL_EXPENCE_CONCEPT", referencedColumnName = "ID_TRAVEL_EXPENCE_CONCEPT")
+    @JoinColumn(name = "ID_TRAVEL_EXPENSE_CONCEPT", referencedColumnName = "ID_TRAVEL_EXPENSE_CONCEPT")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private CTravelExpensesConcepts travelExpensesConcepts;
+    private CTravelExpensesConcepts travelExpenseConcept;
+
+    @Column(name = "ID_REQUEST", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRequest;
+
+    @JoinColumn(name = "ID_REQUEST", referencedColumnName = "ID_REQUEST")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private Requests request;
+
+    @Column(name = "ID_CURRENCY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idCurrency;
+
+    @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CCurrencies currency;
 
     @Transient
     @JsonView(JsonViews.Embedded.class)
@@ -104,20 +122,52 @@ public class RequestConcept implements Serializable {
         this.creationDate = creationDate;
     }
 
-    public Integer getIdTravelExpenceConcept() {
-        return idTravelExpenceConcept;
+    public Integer getIdTravelExpenseConcept() {
+        return idTravelExpenseConcept;
     }
 
-    public void setIdTravelExpenceConcept(Integer idTravelExpenceConcept) {
-        this.idTravelExpenceConcept = idTravelExpenceConcept;
+    public void setIdTravelExpenseConcept(Integer idTravelExpenseConcept) {
+        this.idTravelExpenseConcept = idTravelExpenseConcept;
     }
 
-    public CTravelExpensesConcepts getTravelExpensesConcepts() {
-        return travelExpensesConcepts;
+    public CTravelExpensesConcepts getTravelExpenseConcept() {
+        return travelExpenseConcept;
     }
 
-    public void setTravelExpensesConcepts(CTravelExpensesConcepts travelExpensesConcepts) {
-        this.travelExpensesConcepts = travelExpensesConcepts;
+    public void setTravelExpenseConcept(CTravelExpensesConcepts travelExpenseConcept) {
+        this.travelExpenseConcept = travelExpenseConcept;
+    }
+
+    public Integer getIdCurrency() {
+        return idCurrency;
+    }
+
+    public void setIdCurrency(Integer idCurrency) {
+        this.idCurrency = idCurrency;
+    }
+
+    public CCurrencies getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(CCurrencies currency) {
+        this.currency = currency;
+    }
+
+    public Integer getIdRequest() {
+        return idRequest;
+    }
+
+    public void setIdRequest(Integer idRequest) {
+        this.idRequest = idRequest;
+    }
+
+    public Requests getRequest() {
+        return request;
+    }
+
+    public void setRequest(Requests request) {
+        this.request = request;
     }
 
     public DateFormatsPojo getCreationDateFormats() {
