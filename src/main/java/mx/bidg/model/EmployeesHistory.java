@@ -5,7 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateConverter;
@@ -17,7 +19,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -27,6 +31,7 @@ import javax.validation.constraints.Size;
 @Entity
 @DynamicUpdate
 @Table(name = "EMPLOYEES_HISTORY")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class EmployeesHistory implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -36,74 +41,12 @@ public class EmployeesHistory implements Serializable {
     @Column(name = "ID_EH")
     @JsonView(JsonViews.Root.class)
     private Integer idEh;
-    
+
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "ID_EMPLOYEE")
     @JsonView(JsonViews.Root.class)
-    private Integer idEmployee;
-
-    @Column(name = "ID_DISTRIBUTOR")
-    @JsonView(JsonViews.Root.class)
-    private Integer idDistributor;
-
-    @Size(max = 25)
-    @Column(name = "DISTRIBUTOR_NAME")
-    @JsonView(JsonViews.Root.class)
-    private String distributorName;
-
-    @Column(name = "ID_AREA")
-    @JsonView(JsonViews.Root.class)
-    private Integer idArea;
-
-    @Size(max = 25)
-    @Column(name = "AREA_NAME")
-    @JsonView(JsonViews.Root.class)
-    private String areaName;
-
-    @Column(name = "ID_REGION")
-    @JsonView(JsonViews.Root.class)
-    private Integer idRegion;
-
-    @Size(max = 30)
-    @Column(name = "REGION_NAME")
-    @JsonView(JsonViews.Root.class)
-    private String regionName;
-
-    @Column(name = "ID_BRANCH")
-    @JsonView(JsonViews.Root.class)
-    private Integer idBranch;
-
-    @Size(max = 30)
-    @Column(name = "BRANCH_SHORT")
-    @JsonView(JsonViews.Root.class)
-    private String branchShort;
-
-    @Size(max = 50)
-    @Column(name = "BRANCH_NAME")
-    @JsonView(JsonViews.Root.class)
-    private String branchName;
-
-    @Column(name = "ID_GROUP")
-    @JsonView(JsonViews.Root.class)
-    private Integer idGroup;
-
-    @Size(max = 50)
-    @Column(name = "GROUP_NAME")
-    @JsonView(JsonViews.Root.class)
-    private String groupName;
-
-    @Size(max = 45)
-    @Column(name = "GROUP_ACRONYMS")
-    @JsonView(JsonViews.Root.class)
-    private String groupAcronyms;
-
-    @Column(name = "ID_ROLE")
-    @JsonView(JsonViews.Root.class)
-    private Integer idRole;
-
-    @Size(max = 50)
-    @Column(name = "ROLE_NAME")
-    @JsonView(JsonViews.Root.class)
-    private String roleName;
+    private int idEmployee;
 
     @Size(max = 10)
     @Column(name = "EMPLOYEE_NUMBER")
@@ -145,6 +88,16 @@ public class EmployeesHistory implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String curp;
 
+    @Size(max = 18)
+    @Column(name = "IMSS")
+    @JsonView(JsonViews.Root.class)
+    private String imss;
+
+    @Size(max = 15)
+    @Column(name = "INFONAVIT_NUMBER")
+    @JsonView(JsonViews.Root.class)
+    private String infonavitNumber;
+
     @Size(max = 50)
     @Column(name = "MAIL")
     @JsonView(JsonViews.Root.class)
@@ -162,19 +115,20 @@ public class EmployeesHistory implements Serializable {
     @JsonView(JsonViews.Root.class)
     private BigDecimal salary;
 
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "JOIN_DATE")
-    @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateConverter.class)
     private LocalDateTime joinDate;
+
+    @Column(name = "STATUS")
+    @JsonView(JsonViews.Root.class)
+    private Integer status;
 
     @Column(name = "ID_EDUCATION")
     @JsonView(JsonViews.Root.class)
     private Integer idEducation;
-
-    @Size(max = 30)
-    @Column(name = "EDUCATION")
-    @JsonView(JsonViews.Root.class)
-    private String education;
 
     @Column(name = "GENDER")
     @JsonView(JsonViews.Root.class)
@@ -184,20 +138,15 @@ public class EmployeesHistory implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idStatusMarital;
 
-    @Size(max = 15)
-    @Column(name = "STATUS_MARITAL")
-    @JsonView(JsonViews.Root.class)
-    private String statusMarital;
-
     @Size(max = 50)
     @Column(name = "BIRTHPLACE")
     @JsonView(JsonViews.Root.class)
     private String birthplace;
 
-    @Column(name = "BIRTHDATE")
-    @Convert(converter = DateConverter.class)
+    @Column(name = "BIRTHDAY")
     @JsonView(JsonViews.Root.class)
-    private LocalDate birthdate;
+    @Convert(converter = DateConverter.class)
+    private LocalDate birthday;
 
     @Size(max = 50)
     @Column(name = "STATE")
@@ -225,9 +174,9 @@ public class EmployeesHistory implements Serializable {
     private String colonia;
 
     @Size(max = 50)
-    @Column(name = "DELEGATION_MUNICIPALITY")
+    @Column(name = "CITY")
     @JsonView(JsonViews.Root.class)
-    private String delegationMunicipality;
+    private String city;
 
     @Size(max = 5)
     @Column(name = "POSTCODE")
@@ -263,47 +212,14 @@ public class EmployeesHistory implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String motherName;
 
-    @Size(max = 45)
-    @Column(name = "ACCOUNT_NUMBER")
-    @JsonView(JsonViews.Root.class)
-    private String accountNumber;
-
-    @Size(max = 45)
-    @Column(name = "ACCOUNT_CLABE")
-    @JsonView(JsonViews.Root.class)
-    private String accountClabe;
-
-    @Column(name = "ACCOUNT_TYPE")
-    @JsonView(JsonViews.Root.class)
-    private Integer accountType;
-
-    @Size(max = 45)
-    @Column(name = "BANK_ACRONYMS")
-    @JsonView(JsonViews.Root.class)
-    private String bankAcronyms;
-
-    @Size(min = 1, max = 50)
-    @Column(name = "USERNAME")
-    @JsonView(JsonViews.Root.class)
-    private String username;
-
-    @Column(name = "CREATION_DATE")
-    @Convert(converter = DateTimeConverter.class)
-    @JsonView(JsonViews.Root.class)
-    private LocalDateTime creationDate;
-
     @Column(name = "ID_ACTION_TYPE")
     @JsonView(JsonViews.Root.class)
     private Integer idActionType;
 
-    @Size(min = 1, max = 50)
-    @Column(name = "ACTION_TYPE")
+    @Column(name = "CREATION_DATE")
     @JsonView(JsonViews.Root.class)
-    private String actionType;
-
-    @Column(name = "H_STATUS")
-    @JsonView(JsonViews.Root.class)
-    private Integer hStatus;
+    @Convert(converter = DateConverter.class)
+    private LocalDateTime creationDate;
 
     public EmployeesHistory() {
     }
@@ -312,19 +228,12 @@ public class EmployeesHistory implements Serializable {
         this.idEh = idEh;
     }
 
-    public EmployeesHistory(Integer idEh, Integer idEmployee, Integer idDistributor, Integer idRegion, Integer idBranch, Integer idGroup, Integer idRole, String rfc, String username, LocalDateTime creationDate, String actionType, Integer hStatus) {
+    public EmployeesHistory(Integer idEh, Integer idEmployee, String rfc, LocalDateTime creationDate, Integer status) {
         this.idEh = idEh;
         this.idEmployee = idEmployee;
-        this.idDistributor = idDistributor;
-        this.idRegion = idRegion;
-        this.idBranch = idBranch;
-        this.idGroup = idGroup;
-        this.idRole = idRole;
         this.rfc = rfc;
-        this.username = username;
         this.creationDate = creationDate;
-        this.actionType = actionType;
-        this.hStatus = hStatus;
+        this.status = status;
     }
 
     public Integer getIdEh() {
@@ -335,126 +244,20 @@ public class EmployeesHistory implements Serializable {
         this.idEh = idEh;
     }
 
-    public Integer getIdEmployee() {
+    public String getClaveSap() {
+        return claveSap;
+    }
+
+    public void setClaveSap(String claveSap) {
+        this.claveSap = claveSap;
+    }
+
+    public int getIdEmployee() {
         return idEmployee;
     }
 
-    public void setIdEmployee(Integer idEmployee) {
+    public void setIdEmployee(int idEmployee) {
         this.idEmployee = idEmployee;
-    }
-
-    public Integer getIdDistributor() {
-        return idDistributor;
-    }
-
-    public void setIdDistributor(Integer idDistributor) {
-        this.idDistributor = idDistributor;
-    }
-
-    public String getDistributorName() {
-        return distributorName;
-    }
-
-    public void setDistributorName(String distributorName) {
-        this.distributorName = distributorName;
-    }
-
-    public String getAreaName() {
-        return areaName;
-    }
-
-    public void setAreaName(String areaName) {
-        this.areaName = areaName;
-    }
-
-    public Integer getIdArea() {
-        return idArea;
-    }
-
-    public Integer getIdEducation() {
-        return idEducation;
-    }
-
-    public void setIdEducation(Integer idEducation) {
-        this.idEducation = idEducation;
-    }
-
-    public Integer getIdStatusMarital() {
-        return idStatusMarital;
-    }
-
-    public void setIdStatusMarital(Integer idStatusMarital) {
-        this.idStatusMarital = idStatusMarital;
-    }
-
-    public void setIdArea(Integer idArea) {
-        this.idArea = idArea;
-    }
-
-    public Integer getIdRegion() {
-        return idRegion;
-    }
-
-    public void setIdRegion(Integer idRegion) {
-        this.idRegion = idRegion;
-    }
-
-    public String getRegionName() {
-        return regionName;
-    }
-
-    public void setRegionName(String regionName) {
-        this.regionName = regionName;
-    }
-
-    public Integer getIdBranch() {
-        return idBranch;
-    }
-
-    public void setIdBranch(Integer idBranch) {
-        this.idBranch = idBranch;
-    }
-
-    public String getBranchShort() {
-        return branchShort;
-    }
-
-    public void setBranchShort(String branchShort) {
-        this.branchShort = branchShort;
-    }
-
-
-
-    public Integer getIdGroup() {
-        return idGroup;
-    }
-
-    public void setIdGroup(Integer idGroup) {
-        this.idGroup = idGroup;
-    }
-
-    public String getGroupName() {
-        return groupName;
-    }
-
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
-    }
-
-    public Integer getIdRole() {
-        return idRole;
-    }
-
-    public void setIdRole(Integer idRole) {
-        this.idRole = idRole;
-    }
-
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName;
     }
 
     public String getEmployeeNumber() {
@@ -505,20 +308,28 @@ public class EmployeesHistory implements Serializable {
         this.rfc = rfc;
     }
 
-    public String getClaveSap() {
-        return claveSap;
-    }
-
-    public void setClaveSap(String claveSap) {
-        this.claveSap = claveSap;
-    }
-
     public String getCurp() {
         return curp;
     }
 
     public void setCurp(String curp) {
         this.curp = curp;
+    }
+
+    public String getImss() {
+        return imss;
+    }
+
+    public void setImss(String imss) {
+        this.imss = imss;
+    }
+
+    public String getInfonavitNumber() {
+        return infonavitNumber;
+    }
+
+    public void setInfonavitNumber(String infonavitNumber) {
+        this.infonavitNumber = infonavitNumber;
     }
 
     public String getMail() {
@@ -561,12 +372,20 @@ public class EmployeesHistory implements Serializable {
         this.joinDate = joinDate;
     }
 
-    public String getEducation() {
-        return education;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setEducation(String education) {
-        this.education = education;
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Integer getIdEducation() {
+        return idEducation;
+    }
+
+    public void setIdEducation(Integer idEducation) {
+        this.idEducation = idEducation;
     }
 
     public Integer getGender() {
@@ -577,12 +396,20 @@ public class EmployeesHistory implements Serializable {
         this.gender = gender;
     }
 
-    public String getStatusMarital() {
-        return statusMarital;
+    public Integer getIdStatusMarital() {
+        return idStatusMarital;
     }
 
-    public void setStatusMarital(String statusMarital) {
-        this.statusMarital = statusMarital;
+    public void setIdStatusMarital(Integer idStatusMarital) {
+        this.idStatusMarital = idStatusMarital;
+    }
+
+    public LocalDate getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(LocalDate birthday) {
+        this.birthday = birthday;
     }
 
     public String getBirthplace() {
@@ -591,14 +418,6 @@ public class EmployeesHistory implements Serializable {
 
     public void setBirthplace(String birthplace) {
         this.birthplace = birthplace;
-    }
-
-    public LocalDate getBirthdate() {
-        return birthdate;
-    }
-
-    public void setBirthdate(LocalDate birthdate) {
-        this.birthdate = birthdate;
     }
 
     public String getState() {
@@ -641,12 +460,12 @@ public class EmployeesHistory implements Serializable {
         this.colonia = colonia;
     }
 
-    public String getDelegationMunicipality() {
-        return delegationMunicipality;
+    public String getCity() {
+        return city;
     }
 
-    public void setDelegationMunicipality(String delegationMunicipality) {
-        this.delegationMunicipality = delegationMunicipality;
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public String getPostcode() {
@@ -705,60 +524,12 @@ public class EmployeesHistory implements Serializable {
         this.motherName = motherName;
     }
 
-    public String getAccountNumber() {
-        return accountNumber;
+    public Integer getIdActionType() {
+        return idActionType;
     }
 
-    public void setAccountNumber(String accountNumber) {
-        this.accountNumber = accountNumber;
-    }
-
-    public String getAccountClabe() {
-        return accountClabe;
-    }
-
-    public void setAccountClabe(String accountClabe) {
-        this.accountClabe = accountClabe;
-    }
-
-    public Integer getAccountType() {
-        return accountType;
-    }
-
-    public void setAccountType(Integer accountType) {
-        this.accountType = accountType;
-    }
-
-    public String getBranchName() {
-        return branchName;
-    }
-
-    public void setBranchName(String branchName) {
-        this.branchName = branchName;
-    }
-
-    public String getGroupAcronyms() {
-        return groupAcronyms;
-    }
-
-    public void setGroupAcronyms(String groupAcronyms) {
-        this.groupAcronyms = groupAcronyms;
-    }
-
-    public String getBankAcronyms() {
-        return bankAcronyms;
-    }
-
-    public void setBankAcronyms(String bankAcronyms) {
-        this.bankAcronyms = bankAcronyms;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+    public void setIdActionType(Integer idActionType) {
+        this.idActionType = idActionType;
     }
 
     public LocalDateTime getCreationDate() {
@@ -769,28 +540,18 @@ public class EmployeesHistory implements Serializable {
         this.creationDate = creationDate;
     }
 
-    public Integer getIdActionType() {
-        return idActionType;
+    public DateFormatsPojo getBirthDayFormats() {
+        if (birthday == null) {
+            return null;
+        }
+        return new DateFormatsPojo(birthday);
     }
 
-    public void setIdActionType(Integer idActionType) {
-        this.idActionType = idActionType;
-    }
-
-    public String getActionType() {
-        return actionType;
-    }
-
-    public void setActionType(String actionType) {
-        this.actionType = actionType;
-    }
-
-    public Integer getHStatus() {
-        return hStatus;
-    }
-
-    public void setHStatus(Integer hStatus) {
-        this.hStatus = hStatus;
+    public DateFormatsPojo getCreationDateFormats() {
+        if (creationDate == null) {
+            return null;
+        }
+        return new DateFormatsPojo(creationDate);
     }
 
     public String getFullName() {
