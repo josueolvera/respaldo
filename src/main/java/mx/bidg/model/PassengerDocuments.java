@@ -28,9 +28,9 @@ public class PassengerDocuments implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID_STOCK_DOCUMENT")
+    @Column(name = "ID_PASSENGER_DOCUMENT")
     @JsonView(JsonViews.Root.class)
-    private Integer idStockDocument;
+    private Integer idPassengerDocument;
 
     @Size(max = 1024)
     @Column(name = "DOCUMENT_NAME")
@@ -46,6 +46,10 @@ public class PassengerDocuments implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
     private LocalDateTime uploadingDate;
+
+    @Column(name = "CURRENT_DOCUMENT")
+    @JsonView(JsonViews.Root.class)
+    private Integer currentDocument;
 
     @Column(name = "ID_PASSENGER", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -68,16 +72,16 @@ public class PassengerDocuments implements Serializable {
     public PassengerDocuments() {
     }
 
-    public PassengerDocuments(Integer idStockDocument) {
-        this.idStockDocument = idStockDocument;
+    public PassengerDocuments(Integer idPassengerDocument) {
+        this.idPassengerDocument = idPassengerDocument;
     }
 
-    public Integer getIdStockDocument() {
-        return idStockDocument;
+    public Integer getIdPassengerDocument() {
+        return idPassengerDocument;
     }
 
-    public void setIdStockDocument(Integer idStockDocument) {
-        this.idStockDocument = idStockDocument;
+    public void setIdPassengerDocument(Integer idPassengerDocument) {
+        this.idPassengerDocument = idPassengerDocument;
     }
 
     public String getDocumentName() {
@@ -102,6 +106,14 @@ public class PassengerDocuments implements Serializable {
 
     public void setUploadingDate(LocalDateTime uploadingDate) {
         this.uploadingDate = uploadingDate;
+    }
+
+    public Integer getCurrentDocument() {
+        return currentDocument;
+    }
+
+    public void setCurrentDocument(Integer currentDocument) {
+        this.currentDocument = currentDocument;
     }
 
     public Integer getIdPassenger() {
@@ -139,7 +151,7 @@ public class PassengerDocuments implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idStockDocument != null ? idStockDocument.hashCode() : 0);
+        hash += (idPassengerDocument != null ? idPassengerDocument.hashCode() : 0);
         return hash;
     }
 
@@ -150,7 +162,7 @@ public class PassengerDocuments implements Serializable {
             return false;
         }
         PassengerDocuments other = (PassengerDocuments) object;
-        if ((this.idStockDocument == null && other.idStockDocument != null) || (this.idStockDocument != null && !this.idStockDocument.equals(other.idStockDocument))) {
+        if ((this.idPassengerDocument == null && other.idPassengerDocument != null) || (this.idPassengerDocument != null && !this.idPassengerDocument.equals(other.idPassengerDocument))) {
             return false;
         }
         return true;
@@ -158,7 +170,7 @@ public class PassengerDocuments implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.PassengerDocuments[ idStockDocument=" + idStockDocument + " ]";
+        return "mx.bidg.model.PassengerDocuments[ idPassengerDocument=" + idPassengerDocument + " ]";
     }
     
 }
