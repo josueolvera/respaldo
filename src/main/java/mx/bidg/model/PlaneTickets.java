@@ -16,6 +16,8 @@ import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 /**
  *
  * @author gerardo8
@@ -65,6 +67,10 @@ public class PlaneTickets implements Serializable {
     @OneToMany(mappedBy = "planeTicket")
     @JsonView(JsonViews.Embedded.class)
     private List<Passengers> passengers;
+
+    @Transient
+    @JsonView(JsonViews.Root.class)
+    private LocalDateTime startDate;
 
     public PlaneTickets() {
     }
@@ -120,6 +126,25 @@ public class PlaneTickets implements Serializable {
 
     public Requests getRequest() {
         return request;
+    }
+
+    public boolean getIsOutOfDateRequest() {
+
+        if (startDate != null) {
+            long daysBetween = DAYS.between(LocalDateTime.now().toLocalDate(), startDate.toLocalDate());
+
+            return daysBetween < 5;
+        } else {
+            return false;
+        }
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
     }
 
     public void setRequest(Requests request) {
