@@ -665,6 +665,10 @@
                         }, function (response) {
                             console.log(response);
                         });
+                    },
+                    copyBudgetOtherYear: function()
+                    {
+                        alert("Hola");
                     }
                 },
                 filters: {
@@ -793,6 +797,11 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-xs-2">
+                              <button class="btn btn-default" name="button" style="margin-top: 25px" @click="copyBudgetOtherYear">
+                                  Copiar Presupuesto
+                              </button>
                             </div>
                         </div>
 
