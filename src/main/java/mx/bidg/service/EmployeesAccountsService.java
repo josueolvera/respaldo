@@ -21,4 +21,6 @@ public interface EmployeesAccountsService {
     List<EmployeesAccounts> findByIdUser(int idUser);
 
     EmployeesAccounts save (EmployeesAccounts employeesAccounts);
+
+    EmployeesAccounts findByIdEmployee(Integer idEmployee);
 }

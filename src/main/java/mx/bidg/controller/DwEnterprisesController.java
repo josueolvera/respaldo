@@ -73,4 +73,10 @@ public class DwEnterprisesController {
         DwEnterprises dwEnterprise = dwEnterprisesService.findByDistributorRegionBranch(idDistributor,idRegion,idBranch);
         return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEnterprise),HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/branch/{idBranch}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getBranch(@PathVariable Integer idBranch) throws IOException {
+        List<DwEnterprises> dwEnterprises = dwEnterprisesService.findByBranches(idBranch);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEnterprises), HttpStatus.OK);
+    }
 }

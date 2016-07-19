@@ -133,7 +133,7 @@ public class DwEmployeesController {
     @RequestMapping(value = "/{idDwEmployee}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getDwEmployeeById(@PathVariable Integer idDwEmployee) throws IOException {
 
-        DwEmployees dwEmployee = dwEmployeesService.findById(idDwEmployee);
+        DwEmployees dwEmployee = dwEmployeesService.findByIdDw(idDwEmployee);
 
         return new ResponseEntity<>(
                 map.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEmployee),

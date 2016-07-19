@@ -6,12 +6,18 @@
 package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
 import java.util.List;
+
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
+import mx.bidg.model.Employees;
 import mx.bidg.model.EmployeesAccounts;
 import mx.bidg.service.EmployeesAccountsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,13 +36,19 @@ public class EmployeesAccountsController {
     @Autowired
     EmployeesAccountsService employeesAccountsService;
     
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
     
     @RequestMapping(value = "/user/{idUser}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> getByIdUser(@PathVariable int idUser) throws Exception {
         List<EmployeesAccounts> list = employeesAccountsService.findByIdUser(idUser);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.EmbeddedAccounts.class)
                 .writeValueAsString(list), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/employee/{idEmployee}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getAccountsEmployee (@PathVariable Integer idEmployee) throws IOException {
+        List<EmployeesAccounts> employeesAccount = employeesAccountsService.findByEmployee(new Employees(idEmployee));
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesAccount), HttpStatus.OK);
     }
     
 }

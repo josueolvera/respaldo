@@ -83,15 +83,15 @@ public class Accounts implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CAccountsTypes accountType;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "account")
     @JsonView(JsonViews.Embedded.class)
     private List<EmployeesAccounts> employeesAccountsList;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")
     @JsonView(JsonViews.Embedded.class)
     private List<ProvidersAccounts> providersAccountsList;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "account")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")
     @JsonView(JsonViews.Embedded.class)
     private List<PriceEstimations> priceEstimationsList;
 

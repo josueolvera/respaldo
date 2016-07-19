@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.List;
+
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.CDistributors;
 import mx.bidg.service.CDistributorsService;
@@ -33,7 +35,7 @@ public class CDistributorsController {
     @Autowired
     private CDistributorsService cDistributorsService;
     
-    ObjectMapper map = new ObjectMapper();
+    ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
     
     @RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public @ResponseBody String getCDistributors(@RequestParam(name = "forStock", required = false) boolean forStock) throws Exception {
@@ -52,5 +54,11 @@ public class CDistributorsController {
     public ResponseEntity<String> getDistributorsByAgreement() throws IOException{
         List<CDistributors> cDistributors = cDistributorsService.findAllForAgreement();
         return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(cDistributors), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/stock", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getDistributorByStock() throws IOException{
+        List<CDistributors> cDistributorses = cDistributorsService.findAllForStock();
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(cDistributorses), HttpStatus.OK);
     }
 }
