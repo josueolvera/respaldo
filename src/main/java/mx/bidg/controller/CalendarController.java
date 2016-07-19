@@ -13,7 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
  */
 
 @Controller
-@RequestMapping("/calendar")
+@RequestMapping("/agenda")
 public class CalendarController {
     
     @RequestMapping(value = "/rooms",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
