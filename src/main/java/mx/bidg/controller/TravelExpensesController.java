@@ -36,7 +36,7 @@ public class TravelExpensesController {
     private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findByIdRole(@RequestBody String data, HttpSession httpSession) throws Exception {
+    public ResponseEntity<String> save(@RequestBody String data, HttpSession httpSession) throws Exception {
 
         Users user = (Users) httpSession.getAttribute("user");
         TravelExpenses travelExpense = travelExpensesService.save(data, user);
