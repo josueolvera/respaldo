@@ -2,6 +2,7 @@ package mx.bidg.service;
 
 import mx.bidg.model.Flights;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ public interface FlightsService {
 
     List<Flights> findAll();
     Flights findById(Integer id);
-    Flights save(Flights flight);
+    Flights save(String data, Integer idPlaneTicket) throws IOException;
     Flights update(Flights flight);
     Boolean delete(Flights flight);
 }
