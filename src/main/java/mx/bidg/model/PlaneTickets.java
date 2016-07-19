@@ -94,6 +94,14 @@ public class PlaneTickets implements Serializable {
         this.creationDate = creationDate;
     }
 
+    public Integer getIdPlaneTicketType() {
+        return idPlaneTicketType;
+    }
+
+    public void setIdPlaneTicketType(Integer idPlaneTicketType) {
+        this.idPlaneTicketType = idPlaneTicketType;
+    }
+
     public CPlaneTicketsTypes getPlaneTicketType() {
         return planeTicketType;
     }
