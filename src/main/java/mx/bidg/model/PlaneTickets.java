@@ -49,6 +49,15 @@ public class PlaneTickets implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CPlaneTicketsTypes planeTicketType;
 
+    @Column(name = "ID_REQUEST", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRequest;
+
+    @JoinColumn(name = "ID_REQUEST", referencedColumnName = "ID_REQUEST")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private Requests request;
+
     @OneToMany(mappedBy = "planeTicket")
     @JsonView(JsonViews.Embedded.class)
     private List<Flights> flights;
@@ -91,6 +100,22 @@ public class PlaneTickets implements Serializable {
 
     public void setPlaneTicketType(CPlaneTicketsTypes planeTicketType) {
         this.planeTicketType = planeTicketType;
+    }
+
+    public Integer getIdRequest() {
+        return idRequest;
+    }
+
+    public void setIdRequest(Integer idRequest) {
+        this.idRequest = idRequest;
+    }
+
+    public Requests getRequest() {
+        return request;
+    }
+
+    public void setRequest(Requests request) {
+        this.request = request;
     }
 
     public List<Flights> getFlights() {
