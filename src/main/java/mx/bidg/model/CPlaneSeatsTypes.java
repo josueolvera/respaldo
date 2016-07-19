@@ -32,6 +32,8 @@ public class CPlaneSeatsTypes implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final CPlaneTicketsTypes VENTANA = new CPlaneTicketsTypes(1);
+    public static final CPlaneTicketsTypes PASILLO = new CPlaneTicketsTypes(2);
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
