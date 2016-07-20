@@ -6,6 +6,8 @@
 package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import java.util.List;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.service.BudgetMonthBranchService;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,6 +33,7 @@ public class BudgetMonthBranchController {
     @Autowired
     BudgetMonthBranchService budgetMonthBranchService;
     
+   // ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
     ObjectMapper map = new ObjectMapper();
     
     @RequestMapping(value = "/request", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -48,6 +52,13 @@ public class BudgetMonthBranchController {
     @RequestMapping(value = "/authorize", method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"})
     public @ResponseBody String authorize(@RequestBody String data) throws Exception {
         return budgetMonthBranchService.authorizeBudget(data);
+    }
+    
+    @RequestMapping(value = "/find/{idDwEnterprise}/{idYear}", method = RequestMethod.GET, headers = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody String findDwAndYear(@PathVariable int idDwEnterprise, @PathVariable int idYear) throws Exception {
+        /*List<BudgetMonthBranch> budgetMonthBranchs = budgetMonthBranchService.findByDWEnterpriseAndYear(idDwEnterprise, idYear);
+        return map.writeValueAsString(budgetMonthBranchs);*/
+        return "Hola";
     }
     
 }

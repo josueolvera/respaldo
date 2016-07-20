@@ -25,4 +25,6 @@ public interface BudgetMonthBranchService {
     
     public String authorizeBudget(String data) throws Exception;
     
+    public List<BudgetMonthBranch> findByDWEnterpriseAndYear(Integer dwEnterprise, Integer year) throws Exception;
+    
 }

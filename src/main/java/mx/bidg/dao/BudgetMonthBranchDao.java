@@ -20,5 +20,6 @@ public interface BudgetMonthBranchDao extends InterfaceDao<BudgetMonthBranch> {
     public BudgetMonthBranch findByCombination(Budgets budget, CMonths month, DwEnterprises dwEnterprise, Integer year);
     public List<BudgetMonthBranch> findByBudget(Budgets budget);
     public boolean authorizeBudget(int idGroup, int idArea, int year);
+    public List<BudgetMonthBranch> findByDWEnterpriseAndYear(int dwEnterprise, int year);
     
 }

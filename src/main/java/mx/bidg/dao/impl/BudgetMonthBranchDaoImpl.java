@@ -84,5 +84,13 @@ public class BudgetMonthBranchDaoImpl extends AbstractDao<Integer, BudgetMonthBr
                 .executeUpdate();
         return updatedEntities > 0;
     }
+
+    @Override
+    public List<BudgetMonthBranch> findByDWEnterpriseAndYear(int dwEnterprise, int year) {
+        Criteria criteria = createEntityCriteria().
+                add(Restrictions.eq("idDwEnterprise", dwEnterprise)).
+                add(Restrictions.eq("year", year));
+        return (List<BudgetMonthBranch>) criteria.list();
+    }
     
 }

@@ -182,4 +182,9 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
         return "Presupuesto autorizado";
     }
 
+    @Override
+    public List<BudgetMonthBranch> findByDWEnterpriseAndYear(Integer dwEnterprise, Integer year) throws Exception {
+        return budgetMonthBranchDao.findByDWEnterpriseAndYear(dwEnterprise, year);
+    }
+
 }
