@@ -36,6 +36,10 @@
                         endDate:''
                     },
                     selectedArea:{},
+                    allStatus:{
+                      name: 'TODOS',
+                        value: 0
+                    },
                     activeStatus:{
                         name:'ACTIVO',
                         value:1
@@ -130,11 +134,14 @@
                     setEmployeesUrl : function (status) {
 
                         if (status === 1) {
+                            this.employeesUrl = '/dw-employees?status=1';
+                            this.createReportUrl = ROOT_URL + '/dw-employees/create-report?status=1';
+                        } else if (status === 2) {
+                            this.employeesUrl = '/dw-employees?status=0';
+                            this.createReportUrl = ROOT_URL + '/dw-employees/create-report?status=0';
+                        } else if (status === 0) {
                             this.employeesUrl = '/dw-employees';
                             this.createReportUrl = ROOT_URL + '/dw-employees/create-report';
-                        } else if (status === 2) {
-                            this.employeesUrl = '/employees-history';
-                            this.createReportUrl = ROOT_URL + '/employees-history/create-report';
                         }
 
                         if (this.searchSelectedOptions.distributor.id != 0) {
@@ -233,7 +240,7 @@
                             }
                             this.searching = false;
                         }).error(function (data) {
-
+                            showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
                         });
                     },
                     getEmployees : function () {
@@ -247,6 +254,10 @@
                         } else if (this.status.value === 2) {
                             if (this.setEmployeesUrl(this.status.value)) {
                                 this.getEmployeesHistory();
+                            }
+                        } else if (this.status.value === 0) {
+                            if (this.setEmployeesUrl(this.status.value)) {
+                                this.getDwEmployees();
                             }
                         }
                     },
@@ -357,6 +368,7 @@
                         <div class="col-md-2">
                             <label>Status</label>
                             <select v-model="status" class="form-control" @change="statusChanged">
+                                <option selected :value="allStatus">{{allStatus.name}}</option>
                                 <option selected :value="activeStatus">{{activeStatus.name}}</option>
                                 <option :value="inactiveStatus">{{inactiveStatus.name}}</option>
                             </select>
@@ -523,13 +535,13 @@
                         <br>
                         <div class="table-body flex-row flex-content">
                             <div class="row table-row" v-for="employeesHistory in employeesHistories |
-                            filterBy searchSelectedOptions.name in 'fullName'|
-                            filterBy searchSelectedOptions.rfc in 'rfc'">
-                                <div class="col-md-2">{{employeesHistory.fullName}}</div>
-                                <div class="col-md-2">{{employeesHistory.rfc}}</div>
-                                <div class="col-md-2">{{employeesHistory.roleName}}</div>
-                                <div class="col-md-2">{{employeesHistory.branchShort}}</div>
-                                <div class="col-md-2">{{employeesHistory.joinDateFormats.simpleDate}}</div>
+                            filterBy searchSelectedOptions.name in 'employee.fullName'|
+                            filterBy searchSelectedOptions.rfc in 'employee.rfc'">
+                                <div class="col-md-2">{{employeesHistory.employee.fullName}}</div>
+                                <div class="col-md-2">{{employeesHistory.employee.rfc}}</div>
+                                <div class="col-md-2">{{employeesHistory.role.roleName}}</div>
+                                <div class="col-md-2">{{employeesHistory.dwEnterprise.branch.branchShort}}</div>
+                                <div class="col-md-2">{{employeesHistory.employee.joinDateFormats.simpleDate}}</div>
                                 <div class="col-md-2 text-center">
                                     <button class="btn btn-default btn-sm"
                                             data-toggle="tooltip" data-placement="top" title="Reactivar">
