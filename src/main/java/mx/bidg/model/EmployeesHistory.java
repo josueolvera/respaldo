@@ -119,7 +119,7 @@ public class EmployeesHistory implements Serializable {
     @NotNull
     @Column(name = "JOIN_DATE")
     @JsonView(JsonViews.Root.class)
-    @Convert(converter = DateConverter.class)
+    @Convert(converter = DateTimeConverter.class)
     private LocalDateTime joinDate;
 
     @Column(name = "STATUS")
@@ -218,7 +218,7 @@ public class EmployeesHistory implements Serializable {
 
     @Column(name = "CREATION_DATE")
     @JsonView(JsonViews.Root.class)
-    @Convert(converter = DateConverter.class)
+    @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
 
     public EmployeesHistory() {
