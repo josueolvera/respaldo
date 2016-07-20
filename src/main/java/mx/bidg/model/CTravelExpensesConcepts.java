@@ -42,7 +42,7 @@ public class CTravelExpensesConcepts implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID_TRAVEL_EXPENSE_CONCEPT")
     @JsonView(JsonViews.Root.class)
-    private Integer idTravelExpenceConcept;
+    private Integer idTravelExpenseConcept;
 
     @Basic(optional = false)
     @NotNull
@@ -54,21 +54,21 @@ public class CTravelExpensesConcepts implements Serializable {
     public CTravelExpensesConcepts() {
     }
 
-    public CTravelExpensesConcepts(Integer idTravelExpenceConcept) {
-        this.idTravelExpenceConcept = idTravelExpenceConcept;
+    public CTravelExpensesConcepts(Integer idTravelExpenseConcept) {
+        this.idTravelExpenseConcept = idTravelExpenseConcept;
     }
 
-    public CTravelExpensesConcepts(Integer idTravelExpenceConcept, String conceptName) {
-        this.idTravelExpenceConcept = idTravelExpenceConcept;
+    public CTravelExpensesConcepts(Integer idTravelExpenseConcept, String conceptName) {
+        this.idTravelExpenseConcept = idTravelExpenseConcept;
         this.conceptName = conceptName;
     }
 
-    public Integer getIdTravelExpenceConcept() {
-        return idTravelExpenceConcept;
+    public Integer getIdTravelExpenseConcept() {
+        return idTravelExpenseConcept;
     }
 
-    public void setIdTravelExpenceConcept(Integer idTravelExpenceConcept) {
-        this.idTravelExpenceConcept = idTravelExpenceConcept;
+    public void setIdTravelExpenseConcept(Integer idTravelExpenseConcept) {
+        this.idTravelExpenseConcept = idTravelExpenseConcept;
     }
 
     public String getConceptName() {
@@ -82,7 +82,7 @@ public class CTravelExpensesConcepts implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idTravelExpenceConcept != null ? idTravelExpenceConcept.hashCode() : 0);
+        hash += (idTravelExpenseConcept != null ? idTravelExpenseConcept.hashCode() : 0);
         return hash;
     }
 
@@ -93,7 +93,7 @@ public class CTravelExpensesConcepts implements Serializable {
             return false;
         }
         CTravelExpensesConcepts other = (CTravelExpensesConcepts) object;
-        if ((this.idTravelExpenceConcept == null && other.idTravelExpenceConcept != null) || (this.idTravelExpenceConcept != null && !this.idTravelExpenceConcept.equals(other.idTravelExpenceConcept))) {
+        if ((this.idTravelExpenseConcept == null && other.idTravelExpenseConcept != null) || (this.idTravelExpenseConcept != null && !this.idTravelExpenseConcept.equals(other.idTravelExpenseConcept))) {
             return false;
         }
         return true;
@@ -101,7 +101,7 @@ public class CTravelExpensesConcepts implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.CTravelExpensesConcepts[ idTravelExpenceConcept=" + idTravelExpenceConcept + " ]";
+        return "mx.bidg.model.CTravelExpensesConcepts[ idTravelExpenseConcept=" + idTravelExpenseConcept + " ]";
     }
     
 }
