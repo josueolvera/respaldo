@@ -44,100 +44,6 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
     }
 
     @Override
-    public void createReport(List<EmployeesHistory> employeesHistories, OutputStream outputStream) throws IOException {
-
-        Workbook wb = new XSSFWorkbook();
-        //Definicion del estilo de la cabecera
-        Font font = wb.createFont();
-        font.setBold(true);
-        font.setFontHeightInPoints((short) 10);
-        font.setFontName("Arial");
-        font.setColor(IndexedColors.WHITE.getIndex());
-        CellStyle style = wb.createCellStyle();
-        style.setFont(font);
-        style.setFillForegroundColor(IndexedColors.DARK_BLUE.getIndex());
-        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
-        style.setBorderBottom(CellStyle.BORDER_THIN);
-        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
-        style.setBorderRight(CellStyle.BORDER_THIN);
-        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
-        style.setBorderLeft(CellStyle.BORDER_THIN);
-        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
-        style.setBorderTop(CellStyle.BORDER_THIN);
-        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
-        style.setAlignment(CellStyle.ALIGN_CENTER);
-
-        CellStyle cellDateStyle = wb.createCellStyle();
-        CreationHelper createHelper = wb.getCreationHelper();
-        cellDateStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
-
-        Sheet hoja = wb.createSheet();
-
-        //Se crea la fila que contiene la cabecera
-        Row row = hoja.createRow(0);
-
-        row.createCell(0).setCellValue("EMPRESA");
-        row.createCell(1).setCellValue("REGION");
-        row.createCell(2).setCellValue("NOMBRE DEL EMPLEADO");
-        row.createCell(3).setCellValue("CLAVE SAP");
-        row.createCell(4).setCellValue("PUESTO");
-        row.createCell(5).setCellValue("BANCO");
-        row.createCell(6).setCellValue("N. CUENTA");
-        row.createCell(7).setCellValue("CLABE");
-        row.createCell(8).setCellValue("SUCURSAL");
-        row.createCell(9).setCellValue("RFC");
-        row.createCell(10).setCellValue("CURP");
-        row.createCell(11).setCellValue("DOMICILIO");
-        row.createCell(12).setCellValue("MAIL");
-        row.createCell(13).setCellValue("FECHA DE INGRESO");
-        row.createCell(14).setCellValue("SUELDO QUINCENAL");
-
-        //Implementacion del estilo
-        for (Cell celda : row) {
-            celda.setCellStyle(style);
-        }
-
-        int aux = 1;
-
-        for (EmployeesHistory employeeHistory : employeesHistories) {
-
-            row = hoja.createRow(aux);
-
-            if (employeeHistory.getJoinDate() != null) {
-                Date joinDate = Date.from(employeeHistory.getJoinDate().atZone(ZoneId.systemDefault()).toInstant());
-                row.createCell(13);
-                row.getCell(13).setCellStyle(cellDateStyle);
-                row.getCell(13).setCellValue(joinDate);
-            }
-
-            // Create a cell and put a value in it.
-            row.createCell(0).setCellValue(employeeHistory.getDistributorName());
-            row.createCell(1).setCellValue(employeeHistory.getRegionName());
-            row.createCell(2).setCellValue(employeeHistory.getFullName());
-            row.createCell(3).setCellValue(employeeHistory.getClaveSap());
-            row.createCell(4).setCellValue(employeeHistory.getRoleName());
-            row.createCell(5).setCellValue(employeeHistory.getBankAcronyms());
-            row.createCell(6).setCellValue(employeeHistory.getAccountNumber());
-            row.createCell(7).setCellValue(employeeHistory.getAccountClabe());
-            row.createCell(8).setCellValue(employeeHistory.getBranchShort());
-            row.createCell(9).setCellValue(employeeHistory.getRfc());
-            row.createCell(10).setCellValue(employeeHistory.getCurp());
-            row.createCell(11).setCellValue(employeeHistory.getStreet());
-            row.createCell(12).setCellValue(employeeHistory.getMail());
-            row.createCell(14).setCellValue(employeeHistory.getSalary().floatValue());
-
-            aux++;
-        }
-
-        //Autoajustar al contenido
-        hoja.autoSizeColumn(0);
-        hoja.autoSizeColumn(1);
-        hoja.autoSizeColumn(2);
-
-        wb.write(outputStream);
-    }
-
-    @Override
     public EmployeesHistory save(DwEmployees dwEmployee, CActionTypes actionType) {
 
         if (dwEmployee != null) {
@@ -146,51 +52,21 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
 
             if (employee != null) {
 
-                if (actionType.equals(CActionTypes.BAJA)) {
-
+                if (!actionType.equals(CActionTypes.ALTA)) {
                     List<EmployeesHistory> employeesHistories =
                             employeesHistoryDao.findByIdEmployee(employee.getIdEmployee());
 
                     for (EmployeesHistory currentEmployeeHistory : employeesHistories) {
-                        currentEmployeeHistory.setHStatus(0);
+                        currentEmployeeHistory.setStatus(0);
                         employeesHistoryDao.update(currentEmployeeHistory);
                     }
-
-                    employeesHistory.setHStatus(1);
-
                 }
 
-                if (actionType.equals(CActionTypes.ALTA)) {
-                    employeesHistory.setHStatus(1);
-                }
-
-                List<EmployeesAccounts> employeeAccountList = employee.getEmployeesAccountsList();
-
-                if (employeeAccountList != null) {
-
-                    if (employeeAccountList.size() > 0) {
-                        Accounts account = employeeAccountList.get(0).getAccount();
-
-                        if (account != null) {
-                            employeesHistory.setAccountClabe(account.getAccountClabe());
-                            employeesHistory.setAccountNumber(account.getAccountNumber());
-
-                            CAccountsTypes accountType = account.getAccountType();
-                            if (accountType != null) {
-                                employeesHistory.setAccountType(accountType.getIdAccountType());
-                            }
-                            CBanks bank = account.getBank();
-                            if (bank != null) {
-                                employeesHistory.setBankAcronyms(bank.getAcronyms());
-                            }
-                        }
-                    }
-                }
+                employeesHistory.setStatus(1);
 
                 CEducation education = employee.getEducation();
 
                 if (education != null) {
-                    employeesHistory.setEducation(education.getEducationName());
                     employeesHistory.setIdEducation(education.getIdEducation());
                 }
 
@@ -198,25 +74,39 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
 
                 if (statusMarital != null) {
                     employeesHistory.setIdStatusMarital(statusMarital.getIdStatusMarital());
-                    employeesHistory.setStatusMarital(statusMarital.getMaritalName());
                 }
 
-                employeesHistory.setBirthdate(employee.getBirthday());
+                CEmployeeType cEmployeeType = employee.getEmployeeTypes();
+
+                if (cEmployeeType != null){
+                    employeesHistory.setEmployeeType(cEmployeeType.getEmployeeType());
+                }
+
+                CContractType cContractType = employee.getContractTypes();
+
+                if(cContractType != null){
+                    employeesHistory.setContractType(cContractType.getContractType());
+                }
+
+                CGenders cGender = employee.getGenders();
+
+                if (cGender != null){
+                    employeesHistory.setGender(cGender.getGender());
+                }
+
+                employeesHistory.setIdEmployee(employee.getIdEmployee());
+                employeesHistory.setBirthday(employee.getBirthday());
                 employeesHistory.setBirthplace(employee.getBirthPlace());
                 employeesHistory.setCellPhone(employee.getCellPhone());
                 employeesHistory.setClaveSap(employee.getClaveSap());
                 employeesHistory.setColonia(employee.getColonia());
-                employeesHistory.setContractType(employee.getContractType());
                 employeesHistory.setCurp(employee.getCurp());
-                employeesHistory.setDelegationMunicipality(employee.getCity());
+                employeesHistory.setCity(employee.getCity());
                 employeesHistory.setEmployeeNumber(employee.getEmployeeNumber());
-                employeesHistory.setEmployeeType(employee.getEmployeeType());
                 employeesHistory.setExteriorNumber(employee.getExteriorNumber());
                 employeesHistory.setFatherName(employee.getFatherName());
                 employeesHistory.setFirstName(employee.getFirstName());
-                employeesHistory.setGender(employee.getGender());
                 employeesHistory.setHomePhone(employee.getHomePhone());
-                employeesHistory.setIdEmployee(employee.getIdEmployee());
                 employeesHistory.setInteriorNumber(employee.getInteriorNumber());
                 employeesHistory.setJoinDate(employee.getJoinDate());
                 employeesHistory.setMail(employee.getMail());
@@ -231,66 +121,11 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
                 employeesHistory.setSizeNumber(employee.getSizeNumber());
                 employeesHistory.setState(employee.getState());
                 employeesHistory.setStreet(employee.getStreet());
-            }
-
-            DwEnterprises dwEnterprise = dwEmployee.getDwEnterprise();
-
-            if (dwEnterprise != null) {
-
-                CGroups group = dwEnterprise.getGroup();
-
-                if (group != null) {
-                    employeesHistory.setGroupName(group.getGroupName());
-                    employeesHistory.setIdGroup(group.getIdGroup());
-                    employeesHistory.setGroupAcronyms(group.getAcronyms());
-                }
-
-                CDistributors distributor = dwEnterprise.getDistributor();
-
-                if (distributor != null) {
-                    employeesHistory.setDistributorName(distributor.getDistributorName());
-                    employeesHistory.setIdDistributor(distributor.getIdDistributor());
-                }
-
-                CRegions region = dwEnterprise.getRegion();
-
-                if (region != null) {
-                    employeesHistory.setIdRegion(region.getIdRegion());
-                    employeesHistory.setRegionName(region.getRegionName());
-                }
-
-                CBranchs branch = dwEnterprise.getBranch();
-
-                if (branch != null) {
-                    employeesHistory.setBranchShort(branch.getBranchShort());
-                    employeesHistory.setBranchName(branch.getBranchName());
-                    employeesHistory.setIdBranch(branch.getIdBranch());
-                }
-
-                CAreas area = dwEnterprise.getArea();
-
-                if (area != null) {
-                    employeesHistory.setAreaName(area.getAreaName());
-                    employeesHistory.setIdArea(area.getIdArea());
-                }
-
-            }
-
-            CRoles role = dwEmployee.getRole();
-
-            if (role != null) {
-                employeesHistory.setIdRole(role.getIdRole());
-                employeesHistory.setRoleName(role.getRoleName());
-            }
-
-            Users user = dwEmployee.getUser();
-
-            if (user != null) {
-                employeesHistory.setUsername(user.getUsername());
+                employeesHistory.setImss(employee.getImss());
+                employeesHistory.setInfonavitNumber(employee.getInfonavitNumber());
             }
 
             employeesHistory.setIdActionType(actionType.getIdActionType());
-            employeesHistory.setActionType(actionType.getActionType());
 
             employeesHistory.setCreationDate(LocalDateTime.now());
 
