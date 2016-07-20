@@ -23,6 +23,5 @@ public interface EmployeesHistoryService {
             String startDate,
             String endDate
     );
-    void createReport(List<EmployeesHistory> employeesHistories, OutputStream outputStream) throws IOException;
     EmployeesHistory save(DwEmployees dwEmployee, CActionTypes actionType);
 }

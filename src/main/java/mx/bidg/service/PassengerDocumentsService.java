@@ -2,6 +2,7 @@ package mx.bidg.service;
 
 import mx.bidg.model.PassengerDocuments;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
 public interface PassengerDocumentsService {
     List<PassengerDocuments> findAll();
     PassengerDocuments findById(Integer id);
-    PassengerDocuments save(PassengerDocuments passengerDocument);
+    PassengerDocuments save(String data, Integer idPassenger) throws IOException;
     PassengerDocuments update(PassengerDocuments passengerDocument);
     Boolean delete(PassengerDocuments passengerDocument);
 }

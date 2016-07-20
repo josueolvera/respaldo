@@ -53,81 +53,85 @@ public class Employees implements Serializable {
     @NotNull
     @Size(min = 1, max = 50)
     @Column(name = "FIRST_NAME")
+    @JsonView(JsonViews.Root.class)
     private String firstName;
     
     @Size(max = 50)
     @Column(name = "MIDDLE_NAME")
+    @JsonView(JsonViews.Root.class)
     private String middleName;
     
     @Size(max = 40)
     @Column(name = "PARENTAL_LAST")
+    @JsonView(JsonViews.Root.class)
     private String parentalLast;
     
     @Size(max = 40)
     @Column(name = "MOTHER_LAST")
+    @JsonView(JsonViews.Root.class)
     private String motherLast;
     
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 13)
     @Column(name = "RFC")
+    @JsonView(JsonViews.Root.class)
     private String rfc;
     
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 15)
     @Column(name = "CLAVE_SAP")
+    @JsonView(JsonViews.Root.class)
     private String claveSap;
     
     @Size(max = 18)
     @Column(name = "CURP")
+    @JsonView(JsonViews.Root.class)
     private String curp;
     
     @Size(max = 18)
     @Column(name = "IMSS")
+    @JsonView(JsonViews.Root.class)
     private String imss;
     
     @Size(max = 15)
     @Column(name = "INFONAVIT_NUMBER")
+    @JsonView(JsonViews.Root.class)
     private String infonavitNumber;
     
     @Size(max = 50)
     @Column(name = "MAIL")
+    @JsonView(JsonViews.Root.class)
     private String mail;
     
-    @Column(name = "EMPLOYEE_TYPE")
+    @Column(name = "EMPLOYEE_TYPE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
     private Integer employeeType;
     
-    @Column(name = "CONTRACT_TYPE")
+    @Column(name = "CONTRACT_TYPE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
     private Integer contractType;
     
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "SALARY")
+    @JsonView(JsonViews.Root.class)
     private BigDecimal salary;
     
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "JOIN_DATE")
-    @JsonView(JsonViews.Root.class)
-    @Convert(converter = DateTimeConverter.class)
-    private LocalDateTime joinDate;
     
     @Column(name = "STATUS")
     @JsonView(JsonViews.Root.class)
     private int status;
 
     @Size(max = 50)
-    @Column(name = "BIRTH_PLACE")
+    @Column(name = "BIRTHPLACE")
     @JsonView(JsonViews.Root.class)
-    private String birthPlace;
+    private String birthplace;
     
-    @Column(name = "BIRTHDAY")
-    @JsonView(JsonViews.Root.class)
-    @Convert(converter = DateConverter.class)
-    private LocalDate birthday;
     
     @Size(max = 50)
     @Column(name = "STATE")
+    @JsonView(JsonViews.Root.class)
     private String state;
     
     @Size(max = 80)
@@ -197,10 +201,23 @@ public class Employees implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer sizeNumber;
 
-    @Column(name = "GENDER")
+    @Column(name = "GENDER", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer gender;
-    
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "JOIN_DATE")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime joinDate;
+
+    @Column(name = "BIRTHDAY")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateConverter.class)
+    private LocalDate birthday;
+
+
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "employee")
     @JsonView(JsonViews.Embedded.class)
     private List<EmployeesAccounts> employeesAccountsList;
@@ -218,6 +235,21 @@ public class Employees implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "employee")
     @JsonView(JsonViews.Embedded.class)
     private List<EmployeeDocuments> employeeDocumentsList;
+
+    @JoinColumn(name = "CONTRACT_TYPE", referencedColumnName = "CONTRACT_TYPE")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CContractType contractTypes;
+
+    @JoinColumn(name = "EMPLOYEE_TYPE", referencedColumnName = "EMPLOYEE_TYPE")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CEmployeeType employeeTypes;
+
+    @JoinColumn(name = "GENDER", referencedColumnName = "GENDER")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CGenders genders;
 
 
     public Employees() {
@@ -331,36 +363,12 @@ public class Employees implements Serializable {
         this.mail = mail;
     }
 
-    public Integer getEmployeeType() {
-        return employeeType;
-    }
-
-    public void setEmployeeType(Integer employeeType) {
-        this.employeeType = employeeType;
-    }
-
-    public Integer getContractType() {
-        return contractType;
-    }
-
-    public void setContractType(Integer contractType) {
-        this.contractType = contractType;
-    }
-
     public BigDecimal getSalary() {
         return salary;
     }
 
     public void setSalary(BigDecimal salary) {
         this.salary = salary;
-    }
-
-    public LocalDateTime getJoinDate() {
-        return joinDate;
-    }
-
-    public void setJoinDate(LocalDateTime highDate) {
-        this.joinDate = highDate;
     }
 
     public int getStatus() {
@@ -372,20 +380,13 @@ public class Employees implements Serializable {
     }
 
     public String getBirthPlace() {
-        return birthPlace;
+        return birthplace;
     }
 
     public void setBirthPlace(String birthplace) {
-        this.birthPlace = birthplace;
+        this.birthplace = birthplace;
     }
 
-    public LocalDate getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(LocalDate birthdate) {
-        this.birthday = birthdate;
-    }
 
     public String getState() {
         return state;
@@ -521,14 +522,6 @@ public class Employees implements Serializable {
         this.sizeNumber = sizeNumber;
     }
 
-    public Integer getGender() {
-        return gender;
-    }
-
-    public void setGender(Integer gender) {
-        this.gender = gender;
-    }
-
     public CEducation getEducation() {
         return education;
     }
@@ -559,6 +552,78 @@ public class Employees implements Serializable {
 
     public void setEmployeeDocumentsList(List<EmployeeDocuments> employeeDocumentsList) {
         this.employeeDocumentsList = employeeDocumentsList;
+    }
+
+    public LocalDateTime getJoinDate() {
+        return joinDate;
+    }
+
+    public void setJoinDate(LocalDateTime joinDate) {
+        this.joinDate = joinDate;
+    }
+
+    public LocalDate getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(LocalDate birthday) {
+        this.birthday = birthday;
+    }
+
+    public Integer getEmployeeType() {
+        return employeeType;
+    }
+
+    public void setEmployeeType(Integer employeeType) {
+        this.employeeType = employeeType;
+    }
+
+    public Integer getContractType() {
+        return contractType;
+    }
+
+    public void setContractType(Integer contractType) {
+        this.contractType = contractType;
+    }
+
+    public String getBirthplace() {
+        return birthplace;
+    }
+
+    public void setBirthplace(String birthplace) {
+        this.birthplace = birthplace;
+    }
+
+    public Integer getGender() {
+        return gender;
+    }
+
+    public void setGender(Integer gender) {
+        this.gender = gender;
+    }
+
+    public CContractType getContractTypes() {
+        return contractTypes;
+    }
+
+    public void setContractTypes(CContractType contractTypes) {
+        this.contractTypes = contractTypes;
+    }
+
+    public CEmployeeType getEmployeeTypes() {
+        return employeeTypes;
+    }
+
+    public void setEmployeeTypes(CEmployeeType employeeTypes) {
+        this.employeeTypes = employeeTypes;
+    }
+
+    public CGenders getGenders() {
+        return genders;
+    }
+
+    public void setGenders(CGenders genders) {
+        this.genders = genders;
     }
 
     public String getFullName() {

@@ -80,8 +80,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
 
     @Override
     public DwEmployees save(DwEmployees dwEmployees) {
-        dwEmployeesDao.save(dwEmployees);
-        return dwEmployees;
+        return dwEmployeesDao.save(dwEmployees);
     }
 
     @Override
@@ -139,6 +138,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
         }
 
         int aux = 1;
+        String direccion = "";
 
         for (DwEmployees dwEmployee : dwEmployees) {
 
@@ -176,15 +176,44 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
             // Create a cell and put a value in it.
             row.createCell(0).setCellValue(distributor.getDistributorName());
             row.createCell(1).setCellValue(region.getRegionName());
-            row.createCell(2).setCellValue(employee.getFullName());
+            row.createCell(2).setCellValue(employee.getFullName().replace("_", " "));
             row.createCell(3).setCellValue(employee.getClaveSap());
             row.createCell(4).setCellValue(role.getRoleName());
             row.createCell(8).setCellValue(branch.getBranchName());
             row.createCell(9).setCellValue(employee.getRfc());
             row.createCell(10).setCellValue(employee.getCurp());
-            row.createCell(11).setCellValue(employee.getStreet());
+
+            if (employee.getStreet() != null){
+                direccion = direccion + employee.getStreet().replace("_", " ");
+            }
+
+            if (employee.getExteriorNumber() != null){
+                direccion = direccion + " No. Ext. "+ employee.getExteriorNumber().replace("_", " ");
+            }
+
+            if (employee.getInteriorNumber() != null){
+                direccion = direccion + " No. Int. " + employee.getInteriorNumber().replace("_", " ");
+            }
+
+            if(employee.getColonia() != null){
+                direccion = direccion + " Col. " + employee.getColonia().replace("_", " ");
+            }
+
+            if(employee.getCity() != null){
+                direccion = direccion + " Ciudad " + employee.getCity().replace("_", " ");
+            }
+
+            if(employee.getState() != null){
+                direccion = direccion + " Edo. de " + employee.getState().replace("_", " ");
+            }
+
+            if(employee.getPostcode() != null){
+                direccion = direccion + " C.P. " + employee.getPostcode().replace("_", " ");
+            }
+            row.createCell(11).setCellValue(direccion);
+            direccion = "";
             row.createCell(12).setCellValue(employee.getMail());
-            row.createCell(14).setCellValue(employee.getSalary().floatValue());
+            row.createCell(14).setCellValue((employee.getSalary().floatValue())/2);
 
             aux++;
         }

@@ -78,61 +78,6 @@ public class EmployeesHistoryController {
         );
     }
 
-    @RequestMapping(value = "/create-report", method = RequestMethod.GET)
-    public ResponseEntity<String> createReport
-            (
-                    @RequestParam(name = "idDistributor", required = false) Integer idDistributor,
-                    @RequestParam(name = "idRegion", required = false) Integer idRegion,
-                    @RequestParam(name = "idBranch", required = false) Integer idBranch,
-                    @RequestParam(name = "idArea", required = false) Integer idArea,
-                    @RequestParam(name = "idRole", required = false) Integer idRole,
-                    @RequestParam(name = "startDate", required = false) String startDate,
-                    @RequestParam(name = "endDate", required = false) String endDate,
-                    @RequestParam(name = "reportFileName") String reportFileName,
-                    HttpServletResponse response
-            ) throws IOException {
-
-        List<EmployeesHistory> employeesHistories;
-
-        if (idDistributor == null &&
-                idRegion == null &&
-                idBranch == null &&
-                idArea == null &&
-                idRole == null &&
-                startDate == null &&
-                endDate == null
-                ) {
-            employeesHistories = employeesHistoryService.findAll();
-        } else {
-            employeesHistories =
-                    employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(
-                            idDistributor,
-                            idRegion,
-                            idBranch,
-                            idArea,
-                            idRole,
-                            startDate,
-                            endDate
-                    );
-
-        }
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        LocalDateTime dateTime = LocalDateTime.now();
-
-        response.setContentType("application/octet-stream");
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + reportFileName + "_" + dateTime.format(formatter) + ".xlsx"+ "\"");
-        OutputStream outputStream = response.getOutputStream();
-        employeesHistoryService.createReport(employeesHistories, outputStream);
-        outputStream.flush();
-        outputStream.close();
-
-        return new ResponseEntity<>(
-                map.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesHistories),
-                HttpStatus.OK
-        );
-    }
-
     @RequestMapping(value = "/{idEmployeeHistory}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getEmployeeHistoryById(@PathVariable Integer idEmployeeHistory) throws IOException {
 

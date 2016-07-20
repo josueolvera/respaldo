@@ -249,6 +249,22 @@
                             $('#startDate').data('DateTimePicker').maxDate(e.date);
                         });
                     },
+                    clearRequestValues : function () {
+                        this.requestBody.request.purpose = '';
+                        this.requestBody.travelExpense.startDate = '';
+                        this.requestBody.travelExpense.endDate = '';
+                        this.requestBody.travelExpense.destination = '';
+                        this.requestBody.travelExpense.estimatedKm = '';
+                        this.requestBody.travelExpense.travelType = null;
+                        this.requestBody.requestConceptList = [];
+                        this.requestBody.currency = [];
+                        this.casetas = '';
+                        this.authorizedAmount.hospedaje = 0;
+                        this.authorizedAmount.alimentos = 0;
+                        this.authorizedAmount.transporte = 0;
+                        this.dateDifference = 0;
+                        this.selected.travelType = null;
+                    },
                     saveRequest: function () {
 
                         this.setRequestBody();
@@ -259,42 +275,12 @@
 
                         this.$http.post(ROOT_URL + '/travel-expenses',this.requestBody)
                                 .success(function (data) {
-
-
-
-                                    this.requestBody.request.purpose = '';
-                                    this.requestBody.travelExpense.startDate = '';
-                                    this.requestBody.travelExpense.endDate = '';
-                                    this.requestBody.travelExpense.destination = '';
-                                    this.requestBody.travelExpense.estimatedKm = '';
-                                    this.requestBody.travelExpense.travelType = null;
-                                    this.requestBody.requestConceptList = [];
-                                    this.requestBody.currency = [];
-                                    this.casetas = '';
-                                    this.authorizedAmount.hospedaje = 0;
-                                    this.authorizedAmount.alimentos = 0;
-                                    this.authorizedAmount.transporte = 0;
-                                    this.dateDifference = 0;
-                                    this.selected.travelType = null;
+                                    this.clearRequestValues()
                                     showAlert("Se ha guardado la solicitud");
                                 })
                                 .error(function (data) {
                                     this.errorData = data;
-
-                                    this.requestBody.request.purpose = '';
-                                    this.requestBody.travelExpense.startDate = '';
-                                    this.requestBody.travelExpense.endDate = '';
-                                    this.requestBody.travelExpense.destination = '';
-                                    this.requestBody.travelExpense.estimatedKm = '';
-                                    this.requestBody.travelExpense.travelType = null;
-                                    this.requestBody.requestConceptList = [];
-                                    this.requestBody.currency = [];
-                                    this.casetas = '';
-                                    this.authorizedAmount.hospedaje = 0;
-                                    this.authorizedAmount.alimentos = 0;
-                                    this.authorizedAmount.transporte = 0;
-                                    this.dateDifference = 0;
-                                    this.selected.travelType = null;
+                                    this.clearRequestValues()
                                     showAlert(this.errorData.error.message,{type:3});
                                 });
                     },

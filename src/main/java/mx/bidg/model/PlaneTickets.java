@@ -16,6 +16,8 @@ import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
+import static java.time.temporal.ChronoUnit.DAYS;
+
 /**
  *
  * @author gerardo8
@@ -49,6 +51,15 @@ public class PlaneTickets implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CPlaneTicketsTypes planeTicketType;
 
+    @Column(name = "ID_REQUEST", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRequest;
+
+    @JoinColumn(name = "ID_REQUEST", referencedColumnName = "ID_REQUEST")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private Requests request;
+
     @OneToMany(mappedBy = "planeTicket")
     @JsonView(JsonViews.Embedded.class)
     private List<Flights> flights;
@@ -56,6 +67,10 @@ public class PlaneTickets implements Serializable {
     @OneToMany(mappedBy = "planeTicket")
     @JsonView(JsonViews.Embedded.class)
     private List<Passengers> passengers;
+
+    @Transient
+    @JsonView(JsonViews.Root.class)
+    private LocalDateTime startDate;
 
     public PlaneTickets() {
     }
@@ -85,12 +100,55 @@ public class PlaneTickets implements Serializable {
         this.creationDate = creationDate;
     }
 
+    public Integer getIdPlaneTicketType() {
+        return idPlaneTicketType;
+    }
+
+    public void setIdPlaneTicketType(Integer idPlaneTicketType) {
+        this.idPlaneTicketType = idPlaneTicketType;
+    }
+
     public CPlaneTicketsTypes getPlaneTicketType() {
         return planeTicketType;
     }
 
     public void setPlaneTicketType(CPlaneTicketsTypes planeTicketType) {
         this.planeTicketType = planeTicketType;
+    }
+
+    public Integer getIdRequest() {
+        return idRequest;
+    }
+
+    public void setIdRequest(Integer idRequest) {
+        this.idRequest = idRequest;
+    }
+
+    public Requests getRequest() {
+        return request;
+    }
+
+    public boolean getIsOutOfDateRequest() {
+
+        if (startDate != null) {
+            long daysBetween = DAYS.between(LocalDateTime.now().toLocalDate(), startDate.toLocalDate());
+
+            return daysBetween < 5;
+        } else {
+            return false;
+        }
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setRequest(Requests request) {
+        this.request = request;
     }
 
     public List<Flights> getFlights() {
