@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 import java.io.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -77,6 +78,15 @@ public class EmployeesController {
     @Autowired
     private CRolesService cRolesService;
 
+    @Autowired
+    private CContractTypeService cContractTypeService;
+
+    @Autowired
+    private CEmployeeTypeService cEmployeeTypeService;
+
+    @Autowired
+    private CGendersService cGendersService;
+
     private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -117,8 +127,8 @@ public class EmployeesController {
         employee.setStreet(jnode.get("street").asText());
         employee.setBirthday(birthday.toLocalDate());
         employee.setCellPhone(jnode.get("cellPhone").asText());
-        employee.setContractType(jnode.get("contractType").asInt());
-        employee.setBirthPlace(jnode.get("birthPlace").asText());
+        employee.setContractTypes(new CContractType(jnode.get("contractType").asInt()));
+        employee.setBirthplace(jnode.get("birthPlace").asText());
         employee.setColonia(jnode.get("colonia").asText());
         employee.setCity(jnode.get("city").asText());
         employee.setClaveSap(jnode.get("claveSap").asText());
@@ -131,24 +141,24 @@ public class EmployeesController {
         employee.setParentalLast(jnode.get("parentalLast").asText());
         employee.setMotherLast(jnode.get("motherLast").asText());
         employee.setPostcode(jnode.get("postcode").asText());
-        employee.setEducation(cEducationService.findById(jnode.get("idEducation").asInt()));
-        employee.setEmployeeType(jnode.get("employeeType").asInt());
+        employee.setEducation(new CEducation(jnode.get("idEducation").asInt()));
+        employee.setEmployeeTypes(new CEmployeeType(jnode.get("employeeType").asInt()));
         employee.setSize(jnode.get("size").asText());
         employee.setSizeNumber(jnode.get("sizeNumber").asInt());
         employee.setState(jnode.get("state").asText());
         employee.setExteriorNumber(jnode.get("exteriorNumber").asText());
         employee.setInteriorNumber(jnode.get("interiorNumber").asText());
-        employee.setGender(jnode.get("gender").asInt());
+        employee.setGenders(new CGenders(jnode.get("gender").asInt()));
         employee.setHomePhone(jnode.get("homePhone").asText());
         employee.setImss(jnode.get("imss").asText());
         employee.setInfonavitNumber(jnode.get("infonavitNumber").asText());
-        employee.setStatusMarital(cStatusMaritalService.findById(jnode.get("idStatusMarital").asInt()));
-        employee.setSalary(jnode.get("salary").decimalValue());
+        employee.setStatusMarital(new CStatusMarital(jnode.get("idStatusMarital").asInt()));
+        employee.setSalary(new BigDecimal(jnode.get("salary").asInt()));
         employee.setStatus(1);
         employee.setMail(jnode.get("mail").asText());
         employee.setJoinDate(joinDate);
 
-        employeesService.save(employee);
+        employee = employeesService.save(employee);
 
         for (JsonNode node : jnode.get("employeeAccountList")){
             EmployeesAccounts employeesAccounts = new EmployeesAccounts();
@@ -176,7 +186,7 @@ public class EmployeesController {
         dwEmployees.setDwEnterprise(dwEnterprisesService.findById(jnode.get("dwEmployees").get("area").get("dwEnterprise").get("idDwEnterprise").asInt()));
         dwEmployees.setRole(cRolesService.findById(jnode.get("dwEmployees").get("role").asInt()));
         dwEmployees.setCreationDate(LocalDateTime.now());
-        dwEmployeesService.save(dwEmployees);
+        dwEmployees = dwEmployeesService.save(dwEmployees);
 
         CActionTypes cActionType = CActionTypes.ALTA;
         employeesHistoryService.save(dwEmployees,cActionType);
