@@ -1,6 +1,7 @@
 package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.service.SapSaleService;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -23,7 +24,7 @@ public class SapSaleController {
     @Autowired
     private SapSaleService sapSaleService;
 
-    ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody String findSapSales() throws Exception {
