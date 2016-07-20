@@ -75,7 +75,7 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
             criteria.add(Restrictions.eq("idRole",idRole));
         }
 
-        criteria.add(Restrictions.eq("hStatus",1));
+        criteria.add(Restrictions.eq("status",1));
 
         return criteria.list();
     }

@@ -22,6 +22,9 @@
     <class>mx.bidg.model.RoleConcept</class>
     <class>mx.bidg.model.RoleTravelType</class>
     <class>mx.bidg.model.CTravelExpensesConcepts</class>
+    <class>mx.bidg.model.CContractType</class>
+    <class>mx.bidg.model.CEmployeeType</class>
+    <class>mx.bidg.model.CGenders</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties/>
   </persistence-unit>
