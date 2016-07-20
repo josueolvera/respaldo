@@ -16,6 +16,7 @@ public interface DwEmployeesService {
     DwEmployees findById(Integer id);
     DwEmployees findBy(Employees employees, DwEnterprises dwEnterprises);
     List<DwEmployees> findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(
+            Integer status,
             Integer idDistributor,
             Integer idRegion,
             Integer idBranch,

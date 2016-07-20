@@ -59,7 +59,7 @@ public class EmployeesDaoImpl extends AbstractDao<Integer, Employees> implements
     }
 
     @Override
-    public List<Employees> findBetweenJoinDate(String startDate, String endDate) {
+    public List<Employees> findBetweenJoinDateAndStatus(String startDate, String endDate, Integer status) {
         Criteria criteria = createEntityCriteria();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
@@ -69,7 +69,9 @@ public class EmployeesDaoImpl extends AbstractDao<Integer, Employees> implements
             criteria.add(Restrictions.between("joinDate",startLocalDateTime,endLocalDateTime));
         }
 
-        criteria.add(Restrictions.eq("status",1));
+        if (status != null) {
+            criteria.add(Restrictions.eq("status",status));
+        }
 
         return criteria.list();
     }
