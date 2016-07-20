@@ -98,6 +98,9 @@
                     this.obtainCurrencies();
                     this.fetchHierarchy();
                     this.fetchDocumentTypes();
+                    this.obtainGenders();
+                    this.obtainEmployeeTypes();
+                    this.obtainContractTypes();
                 },
                 data: {
                     employee: {
@@ -157,6 +160,9 @@
                     },
                     banks: [],
                     currencies: [],
+                    contractTypes: [],
+                    employeeTypes: [],
+                    genders: [],
                     selectOptions: {
                         distributors: [],
                         areas: [],
@@ -214,6 +220,21 @@
                     working: {},
                 },
                 methods: {
+                    obtainGenders: function () {
+                        this.$http.get(ROOT_URL + "/gender").success(function (data) {
+                            this.genders = data;
+                        });
+                    },
+                    obtainEmployeeTypes: function () {
+                        this.$http.get(ROOT_URL + "/employee-type").success(function (data) {
+                            this.employeeTypes = data;
+                        });
+                    },
+                    obtainContractTypes: function () {
+                        this.$http.get(ROOT_URL + "/contract-type").success(function (data) {
+                            this.contractTypes = data;
+                        });
+                    },
                     obtainStates: function () {
                         this.$http.get(ROOT_URL + "/states").success(function (data) {
                             this.estados = data;
@@ -292,6 +313,9 @@
                         this.employee.birthday = this.timePickerBirthday.DateTimePicker.date().toISOString().slice(0, -1);
                         var form = document.getElementById('attachments-form');
                         var formData = new FormData(form);
+                        console.log(this.employee.employeeType);
+                        console.log(this.employee.contractType);
+                        console.log(this.employee.salary);
 
                         this.$http.post(ROOT_URL + "/employees/save", JSON.stringify(this.employee)).success(function (data) {
                             this.working = data;
@@ -400,11 +424,8 @@
                                 <label>Genero</label>
                                 <select class="form-control" name="" v-model="employee.gender">
                                     <option></option>
-                                    <option value="0">
-                                        Mujer
-                                    </option>
-                                    <option value="1">
-                                        Hombre
+                                    <option v-for="gender in genders" :value="gender.gender">
+                                        {{gender.genderName}}
                                     </option>
                                 </select>
                             </div>
@@ -624,11 +645,8 @@
                                 <label>Tipo de empleado</label>
                                 <select class="form-control" name="" v-model="employee.employeeType">
                                     <option></option>
-                                    <option value="1">
-                                        Base
-                                    </option>
-                                    <option value="2">
-                                        Satelite
+                                    <option v-for="type in employeeTypes" :value="type.employeeType">
+                                        {{type.employeeTypeName}}
                                     </option>
                                 </select>
                             </div>
@@ -636,11 +654,8 @@
                                 <label>Tipo de contrato</label>
                                 <select class="form-control" name="" v-model="employee.contractType">
                                     <option></option>
-                                    <option value="1">
-                                        Determinado
-                                    </option>
-                                    <option value="2">
-                                        Indeterminado
+                                    <option v-for="contract in contractTypes" :value="contract.contractType">
+                                        {{contract.contractTypeName}}
                                     </option>
                                 </select>
                             </div>
@@ -694,7 +709,7 @@
                 </div>
             </div>
             <br>
-            <div class="panel panel-default">
+            <div class="panel panel-default" v-if="employee.salary.length > 0">
                 <div class="panel-heading">Documentación</div>
                 <div class="panel-body">
                     <div class="col-xs-12">
@@ -718,15 +733,20 @@
                                 </tr>
                             </table>
                         </div>
+                            <div class="row">
+                                <div class="col-xs-11">
+                                </div>
+                                <div class="col-xs-1">
                             <button type="submit" :disabled="isSaving"
                                     class="btn btn-success">
                                 Guardar
                             </button>
+                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
             </div>
-
         </div>
         <!-- #contenidos -->
 
