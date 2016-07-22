@@ -40,4 +40,9 @@ public class EmployeesServiceImpl implements EmployeesService {
     public Employees save(Employees employee) {
         return employeesDao.save(employee);
     }
+
+    @Override
+    public Employees update(Employees employee) {
+        return employeesDao.update(employee);
+    }
 }
