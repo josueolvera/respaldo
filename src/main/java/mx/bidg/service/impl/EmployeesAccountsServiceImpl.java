@@ -6,8 +6,11 @@
 package mx.bidg.service.impl;
 
 import java.util.List;
+
+import mx.bidg.dao.AccountsDao;
 import mx.bidg.dao.EmployeesAccountsDao;
 import mx.bidg.dao.UsersDao;
+import mx.bidg.model.Accounts;
 import mx.bidg.model.Employees;
 import mx.bidg.model.EmployeesAccounts;
 import mx.bidg.model.Users;
@@ -25,6 +28,9 @@ public class EmployeesAccountsServiceImpl implements EmployeesAccountsService {
     
     @Autowired
     UsersDao usersDao;
+
+    @Autowired
+    AccountsDao accountsDao;
 
     @Override
     public List<EmployeesAccounts> findByEmployee(Employees e) {
@@ -46,6 +52,12 @@ public class EmployeesAccountsServiceImpl implements EmployeesAccountsService {
     @Override
     public EmployeesAccounts findByIdEmployee(Integer idEmployee) {
         return employeesAccountsDao.findByIdEmployee(idEmployee);
+    }
+
+    @Override
+    public EmployeesAccounts findEmployeeAccountActive(Integer idEmployee) {
+        List<Accounts> accounts = accountsDao.accountsActives();
+        return employeesAccountsDao.findActiveEmployeeAccounts(idEmployee, accounts);
     }
 
 }
