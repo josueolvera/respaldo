@@ -2,10 +2,7 @@ package mx.bidg.service.impl;
 
 import mx.bidg.dao.*;
 import mx.bidg.model.*;
-import mx.bidg.service.DwEmployeesService;
-import mx.bidg.service.EmailDeliveryService;
-import mx.bidg.service.EmailTemplatesService;
-import mx.bidg.service.EmployeesHistoryService;
+import mx.bidg.service.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +43,9 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
 
     @Autowired
     private EmailDeliveryService emailDeliveryService;
+
+    @Autowired
+    private EmployeesAccountsService employeesAccountsService;
 
     @Override
     public DwEmployees findById(Integer id) {
@@ -234,8 +234,10 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
         employee.setStatus(0);
         employeesDao.update(employee);
 
+        EmployeesAccounts employeesAccounts = employeesAccountsService.findEmployeeAccountActive(employee.getIdEmployee());
+
         CActionTypes actionType = CActionTypes.BAJA;
-        employeesHistoryService.save(dwEmployee,actionType);
+        employeesHistoryService.save(dwEmployee, actionType, employeesAccounts.getAccount());
 
         dwEmployeesDao.delete(dwEmployee);
 
@@ -248,5 +250,16 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     @Override
     public DwEmployees findByIdDw(Integer idDwEnterprise) {
         return dwEmployeesDao.findByEmployee(idDwEnterprise);
+    }
+
+    @Override
+    public DwEmployees update(DwEmployees dwEmployee) {
+        return dwEmployeesDao.update(dwEmployee);
+    }
+
+    @Override
+    public boolean delete(DwEmployees dwEmployees) {
+        dwEmployeesDao.delete(dwEmployees);
+        return true;
     }
 }
