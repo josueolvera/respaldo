@@ -87,7 +87,8 @@ public class DwEmployeesDaoImpl extends AbstractDao<Integer, DwEmployees> implem
 
     @Override
     public DwEmployees update(DwEmployees entity) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        modify(entity);
+        return entity;
     }
 
     @Override
