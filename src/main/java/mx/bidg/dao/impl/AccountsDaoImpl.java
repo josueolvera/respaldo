@@ -9,6 +9,7 @@ import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.AccountsDao;
 import mx.bidg.model.Accounts;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -41,5 +42,9 @@ public class AccountsDaoImpl extends AbstractDao<Integer, Accounts> implements A
         remove(entity);
         return true;
     }
-    
+
+    @Override
+    public List<Accounts> accountsActives() {
+        return (List<Accounts>) createEntityCriteria().add(Restrictions.isNull("deleteDay")).list();
+    }
 }

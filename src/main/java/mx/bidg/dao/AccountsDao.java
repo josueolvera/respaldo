@@ -7,11 +7,15 @@ package mx.bidg.dao;
 
 import mx.bidg.model.Accounts;
 
+import java.util.List;
+
 /**
  *
  * @author sistemask
  */
 public interface AccountsDao extends InterfaceDao<Accounts> {
+
+    List<Accounts> accountsActives();
 
     
 }
