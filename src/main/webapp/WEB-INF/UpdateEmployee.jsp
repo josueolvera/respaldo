@@ -55,13 +55,30 @@
         <script type="text/javascript">
             var vm= new Vue({
                 el: '#content',
+                created: function () {
+                    var fecha = new Date();
+                    var fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth() + 1) + "-" + fecha.getDate();
+                    var fechaMinima = moment(fecha_actual).subtract('years', 18);
+
+                    this.timePickerBirthday = $('#dateBirthDay').datetimepicker({
+                        locale: 'es',
+                        format: 'DD-MM-YYYY',
+                        defaultDate: fechaMinima,
+                        useCurrent: false,
+                        maxDate: fechaMinima
+                    }).data();
+
+                    this.timePickerIngreso = $('#dateJoin').datetimepicker({
+                        locale: 'es',
+                        format: 'DD-MM-YYYY',
+                    }).data();
+                },
                 ready: function () {
                     this.getDwEmployee();
                     this.obtainStates();
                     this.obtainEducation();
                     this.obtainStatusMarital();
                     this.obtainBanks();
-
                 },
                 data: {
                     dwEmployee:{},
@@ -72,12 +89,15 @@
                     statusMarital: [],
                     estados: [],
                     banks: [],
-                    account: [],
+                    account: {},
+                    contractTypes: [],
+                    employeeTypes: [],
+                    genders: [],
                     selectOptions: {
                         distributors: [],
                         areas: [],
                         hierarchy: [],
-                        documentTypes: [],
+                        documentTypes: []
                     },
                     selectedOptions: {
                         area: {
@@ -116,21 +136,133 @@
                         id: 0,
                         name: ''
                     },
+                    employee: {
+                        idDwEnterprise: '',
+                        idRole: '',
+                        idEmployee: '',
+                        idDwEmployee: '',
+                        firstName: '',
+                        middleName: '',
+                        parentalLast: '',
+                        motherLast: '',
+                        rfc: '',
+                        claveSap: '',
+                        curp: '',
+                        imss: '',
+                        infonavitNumber: '',
+                        mail: '',
+                        employeeType: '',
+                        contractType: '',
+                        salary: '',
+                        joinDate: '',
+                        status: '',
+                        street: '',
+                        exteriorNumber: '',
+                        interiorNumber: '',
+                        colonia: '',
+                        city: '',
+                        state: '',
+                        postcode: '',
+                        cellPhone: '',
+                        fatherName: '',
+                        motherName: '',
+                        idEducation: '',
+                        homePhone: '',
+                        size: '',
+                        sizeNumber: '',
+                        gender: '',
+                        dwEmployees: {
+                            area: {
+                                id: 0,
+                                dwEnterprise:{}
+                            },
+                            role: {
+                                id: 0
+                            }
+                        },
+                        employeeAccountList: [],
+                        birthPlace: '',
+                        idStatusMarital: '',
+                        birthday: '',
+                        idAccount: ''
+                    },
+                    joinDate: '',
+                    birthday: '',
+                    timePickerIngreso: '',
+                    timePickerBirthday: '',
+                    regresarBusqueda: ROOT_URL + '/saem/search-employees'
                 },
                 methods: {
                     getDwEmployee: function () {
                         this.$http.get(ROOT_URL + '/dw-employees/' + this.idDwEmployee)
                                 .success(function (data) {
                                     this.dwEmployee = data;
+                                    this.employee.idEmployee = this.dwEmployee.employee.idEmployee;
+                                    this.employee.firstName = this.dwEmployee.employee.firstName;
+                                    this.employee.middleName = this.dwEmployee.employee.middleName;
+                                    this.employee.parentalLast = this.dwEmployee.employee.parentalLast;
+                                    this.employee.motherLast = this.dwEmployee.employee.motherLast;
+                                    this.employee.rfc = this.dwEmployee.employee.rfc;
+                                    this.employee.claveSap = this.dwEmployee.employee.claveSap;
+                                    this.employee.curp = this.dwEmployee.employee.curp;
+                                    this.employee.imss = this.dwEmployee.employee.imss;
+                                    this.employee.infonavitNumber = this.dwEmployee.employee.infonavitNumber;
+                                    this.employee.mail = this.dwEmployee.employee.mail;
+                                    this.employee.employeeType = this.dwEmployee.employee.employeeTypes.employeeTypeName;
+                                    this.employee.contractType = this.dwEmployee.employee.contractTypes.contractTypeName;
+                                    this.employee.salary = this.dwEmployee.employee.salary;
+                                    this.employee.status = this.dwEmployee.employee.status;
+                                    this.employee.birthPlace = this.dwEmployee.employee.birthplace;
+                                    this.employee.state = this.dwEmployee.employee.state;
+                                    this.employee.street = this.dwEmployee.employee.street;
+                                    this.employee.exteriorNumber = this.dwEmployee.employee.exteriorNumber;
+                                    this.employee.interiorNumber = this.dwEmployee.employee.interiorNumber;
+                                    this.employee.colonia = this.dwEmployee.employee.colonia;
+                                    this.employee.city = this.dwEmployee.employee.city;
+                                    this.employee.postcode = this.dwEmployee.employee.postcode;
+                                    this.employee.cellPhone = this.dwEmployee.employee.cellPhone;
+                                    this.employee.fatherName = this.dwEmployee.employee.fatherName;
+                                    this.employee.motherName = this.dwEmployee.employee.motherName;
+                                    this.employee.idEducation = this.dwEmployee.employee.idEducation;
+                                    this.employee.idStatusMarital = this.dwEmployee.employee.idStatusMarital;
+                                    this.employee.homePhone = this.dwEmployee.employee.homePhone;
+                                    this.employee.size = this.dwEmployee.employee.size;
+                                    this.employee.sizeNumber = this.dwEmployee.employee.sizeNumber;
+                                    this.employee.gender = this.dwEmployee.employee.genders.genderName;
+                                    this.joinDate = this.dwEmployee.employee.joinDateFormats.dateNumber;
+                                    this.birthday = this.dwEmployee.employee.birthDayFormats.dateNumber;
+                                    this.employee.idDwEnterprise = this.dwEmployee.idDwEnterprise;
+                                    this.employee.idRole = this.dwEmployee.idRole;
+                                    this.employee.dwEmployees.area.dwEnterprise = this.dwEmployee.dwEnterprise;
+                                    this.employee.dwEmployees.role = this.dwEmployee.role;
+                                    this.employee.idDwEmployee = this.dwEmployee.idDwEmployee;
                                     this.obtainAsentamientos();
                                     this.fetchHierarchy();
-                                    this.$http.get(ROOT_URL + "/employees-accounts/employee/" + this.dwEmployee.employee.idEmployee).success(function (data) {
+                                    this.obtainGenders();
+                                    this.obtainEmployeeTypes();
+                                    this.obtainContractTypes();
+                                    this.$http.get(ROOT_URL + "/employees-accounts/actives/" + this.employee.idEmployee).success(function (data) {
                                         this.account = data;
                                     });
                                 })
                                 .error(function (data) {
 
                                 });
+                    },
+                    obtainGenders: function () {
+                        this.$http.get(ROOT_URL + "/gender").success(function (data) {
+                            this.genders = data;
+                        });
+                    },
+                    obtainEmployeeTypes: function () {
+                        this.$http.get(ROOT_URL + "/employee-type").success(function (data) {
+                            this.employeeTypes = data;
+                        });
+                    },
+                    obtainContractTypes: function () {
+                        this.$http.get(ROOT_URL + "/contract-type").success(function (data) {
+                            this.contractTypes = data;
+                        });
                     },
                     obtainStates: function () {
                         this.$http.get(ROOT_URL + "/states").success(function (data) {
@@ -148,8 +280,8 @@
                         });
                     },
                     obtainAsentamientos: function () {
-                        var postcode = this.dwEmployee.employee.postcode;
-                        if (this.dwEmployee.employee.postcode >= 4) {
+                        var postcode = this.employee.postcode;
+                        if (this.employee.postcode >= 4) {
                             this.$http.get(ROOT_URL + "/settlements/post-code?cp=" + postcode).success(function (data) {
                                 this.asentamiento = data;
                                 if (data.length > 0) {
@@ -219,6 +351,37 @@
                             this.selectOptions.areas = data;
                         });
                     },
+                    updateEmployee: function () {
+                        var cuenta = {
+                            accountNumber: '',
+                            accountClabe: '',
+                            idBank: '',
+                            idCurrency: '',
+                        };
+                        cuenta.accountClabe = this.account.account.accountClabe;
+                        cuenta.accountNumber = this.account.account.accountNumber;
+                        cuenta.idBank = this.account.account.idBank;
+                        cuenta.idCurrency = this.account.account.idCurrency;
+                        this.employee.employeeAccountList.push(cuenta);
+                        this.employee.idAccount = this.account.account.idAccount;
+                        this.employee.city = this.estadosMunicipios.nombreMunicipios;
+                        this.employee.state = this.estadosMunicipios.estado.nombreEstado;
+                        if(this.selectedOptions.area.id.length > 0){
+                            this.employee.dwEmployees.area = this.selectedOptions.area;
+                        }
+                        if(this.selectedOptions.role.id > 0){
+                            this.employee.dwEmployees.role = this.selectedOptions.role;
+                        }
+                        this.employee.joinDate = moment(this.joinDate, 'DD/MM/YYYY').toISOString().slice(0,-1);
+                        this.employee.birthday = moment(this.birthday, 'DD/MM/YYYY').toISOString().slice(0, -1);
+                        
+                        this.$http.post(ROOT_URL + "/employees/update", JSON.stringify(this.employee)).success(function (data) {
+                            showAlert("Actualizaciòn de empleado exitoso");
+                        }).error(function () {
+                            this.employee.employeeAccountList = [];
+                            showAlert("Ha habido un error con la solicitud, intente nuevamente", {type: 3});
+                        });
+                    },
                 }
 
             });
@@ -242,39 +405,36 @@
                         <div class="row">
                             <div class="col-xs-3">
                                 <label>Nombre</label>
-                                <input class="form-control" name="name" v-model="dwEmployee.employee.firstName" onkeypress="return isLetterKey(event)">
+                                <input class="form-control" name="name" v-model="employee.firstName" onkeypress="return isLetterKey(event)">
                             </div>
                             <div class="col-xs-3">
                                 <label>Segundo nombre</label>
-                                <input class="form-control" name="name" v-model="dwEmployee.employee.middleName" onkeypress="return isLetterKey(event)">
+                                <input class="form-control" name="name" v-model="employee.middleName" onkeypress="return isLetterKey(event)">
                             </div>
                             <div class="col-xs-3">
                                 <label>Apellido paterno</label>
-                                <input class="form-control" name="name" v-model="dwEmployee.employee.parentalLast" onkeypress="return isLetterKey(event)">
+                                <input class="form-control" name="name" v-model="employee.parentalLast" onkeypress="return isLetterKey(event)">
                             </div>
                             <div class="col-xs-3">
                                 <label>Apellido materno</label>
-                                <input class="form-control" name="name" v-model="dwEmployee.employee.motherLast" onkeypress="return isLetterKey(event)">
+                                <input class="form-control" name="name" v-model="employee.motherLast" onkeypress="return isLetterKey(event)">
                             </div>
                         </div>
                         <br>
                         <div class="row">
                             <div class="col-xs-3">
                                 <label>Genero</label>
-                                <select id="selectGenero" class="form-control" name="" v-model="dwEmployee.employee.gender">
+                                <select class="form-control" name="" v-model="employee.gender">
                                     <option></option>
-                                    <option value="0">
-                                        Mujer
-                                    </option>
-                                    <option value="1">
-                                        Hombre
+                                    <option v-for="gender in genders" :value="gender.genderName">
+                                        {{gender.genderName}}
                                     </option>
                                 </select>
                             </div>
                             <div class="col-xs-3">
                                 <label>Fecha de Nacimiento</label>
                                 <div class='input-group date' id='dateBirthDay'>
-                                    <input type='text' class="form-control" v-model="dwEmployee.employee.birthDayFormats.dateNumber">
+                                    <input type='text' class="form-control" v-model="birthday">
                                    <span class="input-group-addon">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
@@ -282,7 +442,7 @@
                             </div>
                             <div class="col-xs-3">
                                 <label>Lugar de Nacimiento</label>
-                                <select class="form-control" name="" v-model="dwEmployee.employee.birthPlace">
+                                <select class="form-control" name="" v-model="employee.birthPlace">
                                     <option></option>
                                     <option v-for="estado in estados"
                                             value="{{estado.nombreEstado}}">
@@ -292,14 +452,14 @@
                             </div>
                             <div class="col-xs-3">
                                 <label>CURP</label>
-                                <input class="form-control" name="name" v-model="dwEmployee.employee.curp" maxlength="18" @change="validateCurp(employee.curp)">
+                                <input class="form-control" name="name" v-model="employee.curp" maxlength="18" @change="validateCurp(employee.curp)">
                             </div>
                         </div>
                         <br>
                         <div class="row">
                             <div class="col-xs-3">
                                 <label>Código postal</label>
-                                <input class="form-control" name="name" maxlength="5" v-model="dwEmployee.employee.postcode"
+                                <input class="form-control" name="name" maxlength="5" v-model="employee.postcode"
                                        @input="obtainAsentamientos"
                                        onkeypress="return isNumberKey(event)">
                             </div>
@@ -315,7 +475,7 @@
                             </div>
                             <div class="col-xs-3">
                                 <label>Colonia</label>
-                                <select class="form-control" name="" v-model="dwEmployee.employee.colonia">
+                                <select class="form-control" name="" v-model="employee.colonia">
                                     <option></option>
                                     <option v-for="set in asentamiento" value="{{set.nombreAsentamiento}}">
                                         {{set.nombreAsentamiento}}
@@ -327,32 +487,32 @@
                         <div class="row">
                             <div class="col-xs-3">
                                 <label>Calle</label>
-                                <input class="form-control" name="name" v-model="dwEmployee.employee.street">
+                                <input class="form-control" name="name" v-model="employee.street">
                             </div>
                             <div class="col-xs-2">
                                 <label>Número Exterior</label>
                                 <input class="form-control" name="name" maxlength="5"
-                                       v-model="dwEmployee.employee.exteriorNumber">
+                                       v-model="employee.exteriorNumber">
                             </div>
                             <div class="col-xs-2">
                                 <label>Número Interior</label>
                                 <input class="form-control" name="name" maxlength="5"
-                                       v-model="dwEmployee.employee.interiorNumber">
+                                       v-model="employee.interiorNumber">
                             </div>
                         </div>
                         <br>
                         <div class="row">
                             <div class="col-xs-3">
                                 <label>Nombre del padre</label>
-                                <input class="form-control" name="name" v-model="dwEmployee.employee.fatherName" onkeypress="return isLetterKey(event)">
+                                <input class="form-control" name="name" v-model="employee.fatherName" onkeypress="return isLetterKey(event)">
                             </div>
                             <div class="col-xs-3">
                                 <label>Nombre de la madre</label>
-                                <input class="form-control" name="name" v-model="dwEmployee.employee.motherName" onkeypress="return isLetterKey(event)">
+                                <input class="form-control" name="name" v-model="employee.motherName" onkeypress="return isLetterKey(event)">
                             </div>
                             <div class="col-xs-3">
                                 <label>Estado civil</label>
-                                <select class="form-control" name="" v-model="dwEmployee.employee.idStatusMarital">
+                                <select class="form-control" name="" v-model="employee.idStatusMarital">
                                     <option></option>
                                     <option v-for="status in statusMarital" value="{{status.idStatusMarital}}">
                                         {{status.maritalName}}
@@ -361,7 +521,7 @@
                             </div>
                             <div class="col-xs-3">
                                 <label>Escolaridad</label>
-                                <select class="form-control" name="" v-model="dwEmployee.employee.idEducation">
+                                <select class="form-control" name="" v-model="employee.idEducation">
                                     <option></option>
                                     <option v-for="edu in education" value="{{edu.idEducation}}">
                                         {{edu.educationName}}
@@ -373,39 +533,39 @@
                         <div class="row">
                             <div class="col-xs-3">
                                 <label>Talla</label>
-                                <input class="form-control" name="name" v-model="dwEmployee.employee.size" maxlength="3" onkeypress="return isLetterKey(event)">
+                                <input class="form-control" name="name" v-model="employee.size" maxlength="3" onkeypress="return isLetterKey(event)">
                             </div>
                             <div class="col-xs-3">
                                 <label>Número de talla</label>
-                                <input class="form-control" name="name" v-model="dwEmployee.employee.sizeNumber" maxlength="2" onkeypress="return isNumberKey(event)">
+                                <input class="form-control" name="name" v-model="employee.sizeNumber" maxlength="2" onkeypress="return isNumberKey(event)">
                             </div>
                             <div class="col-xs-3">
                                 <label>Télefono de casa</label>
-                                <input class="form-control" name="name" v-model="dwEmployee.employee.homePhone" maxlength="10" onkeypress="return isNumberKey(event)">
+                                <input class="form-control" name="name" v-model="employee.homePhone" maxlength="10" onkeypress="return isNumberKey(event)">
                             </div>
                             <div class="col-xs-3">
                                 <label>Móvil</label>
-                                <input class="form-control" name="name" v-model="dwEmployee.employee.cellPhone" maxlength="10" onkeypress="return isNumberKey(event)">
+                                <input class="form-control" name="name" v-model="employee.cellPhone" maxlength="10" onkeypress="return isNumberKey(event)">
                             </div>
                         </div>
                         <br>
                         <div class="row">
                             <div class="col-xs-3">
                                 <label>Email</label>
-                                <input class="form-control" name="name" v-model="dwEmployee.employee.mail" @change="validateEmail(employee.mail)">
+                                <input class="form-control" name="name" v-model="employee.mail" @change="validateEmail(employee.mail)">
                             </div>
                             <div class="col-xs-3">
                                 <label>Clave SAP</label>
-                                <input class="form-control" name="name" v-model="dwEmployee.employee.claveSap">
+                                <input class="form-control" name="name" v-model="employee.claveSap">
                             </div>
                             <div class="col-xs-3">
                                 <label>RFC</label>
-                                <input class="form-control" name="name" v-model="dwEmployee.employee.rfc" maxlength="13" @change="validateRfc(employee.rfc)">
+                                <input class="form-control" name="name" v-model="employee.rfc" maxlength="13" @change="validateRfc(employee.rfc)">
                             </div>
                             <div class="col-xs-3">
                                 <label>Fecha de ingreso</label>
                                 <div class='input-group date' id='dateJoin'>
-                                    <input type='text' class="form-control" v-model="dwEmployee.employee.joinDateFormats.dateNumber">
+                                    <input type='text' class="form-control" v-model="joinDate">
                                    <span class="input-group-addon">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
@@ -523,11 +683,8 @@
                                 <label>Tipo de empleado</label>
                                 <select class="form-control" name="" v-model="employee.employeeType">
                                     <option></option>
-                                    <option value="1">
-                                        Base
-                                    </option>
-                                    <option value="2">
-                                        Satelite
+                                    <option v-for="type in employeeTypes" :value="type.employeeTypeName">
+                                        {{type.employeeTypeName}}
                                     </option>
                                 </select>
                             </div>
@@ -535,18 +692,15 @@
                                 <label>Tipo de contrato</label>
                                 <select class="form-control" name="" v-model="employee.contractType">
                                     <option></option>
-                                    <option value="1">
-                                        Determinado
-                                    </option>
-                                    <option value="2">
-                                        Indeterminado
+                                    <option v-for="contract in contractTypes" :value="contract.contractTypeName">
+                                        {{contract.contractTypeName}}
                                     </option>
                                 </select>
                             </div>
-                        </div>
                     </div>
                 </div>
             </div>
+                </div>
             <br>
             <div class="panel panel-default">
                 <!-- Default panel contents -->
@@ -556,7 +710,7 @@
                         <div class="row">
                             <div class="col-xs-3">
                                 <label>Banco</label>
-                                <select class="form-control" name="" v-model="account[0].account.idBank">
+                                <select class="form-control" name="" v-model="account.account.idBank">
                                     <option></option>
                                     <option v-for="bank in banks" value="{{bank.idBank}}">{{bank.acronyms}}
                                     </option>
@@ -568,7 +722,7 @@
                                 <div class="input-group">
                                     <span class="input-group-addon">#</span>
                                     <input id="saccount" class="form-control" maxlength="11"
-                                           v-model="account[0].account.accountNumber"
+                                           v-model="account.account.accountNumber"
                                            onkeypress="return isNumberKey(event)">
                                 </div>
                             </div>
@@ -578,20 +732,33 @@
                                 <div class="input-group">
                                     <span class="input-group-addon">#</span>
                                     <input type="text" id="sclabe" class="form-control" maxlength="18"
-                                           v-model="account[0].account.accountClabe"
+                                           v-model="account.account.accountClabe"
                                            onkeypress="return isNumberKey(event)">
                                 </div>
                             </div>
                             <div class="col-xs-3">
                                 <label>Salario</label>
                                 <input type="text" class="form-control" maxlength="18"
-                                       v-model="dwEmployee.employee.salary"
+                                       v-model="employee.salary"
                                        onkeypress="return isNumberKey(event)">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <br>
+                <div class="row">
+                    <div class="col-xs-10">
+                    </div>
+                    <div class="col-xs-1">
+                        <a class="btn btn-default" :href="regresarBusqueda">Regresar</a>
+                    </div>
+                    <div class="col-xs-1">
+                        <button type="button" class="btn btn-default" @click="updateEmployee()">
+                            Aceptar
+                        </button>
+                    </div>
+                </div>
         </div>
     </jsp:body>
 </t:template>
