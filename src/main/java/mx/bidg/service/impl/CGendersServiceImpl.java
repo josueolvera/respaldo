@@ -28,4 +28,9 @@ public class CGendersServiceImpl implements CGendersService {
     public List<CGenders> findAll() {
         return cGendersDao.findAll();
     }
+
+    @Override
+    public CGenders findByGenderName(String genderName) {
+        return cGendersDao.findByGenderName(genderName);
+    }
 }
