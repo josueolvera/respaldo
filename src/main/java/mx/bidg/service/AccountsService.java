@@ -21,4 +21,7 @@ public interface AccountsService {
     Boolean delete(Accounts account);
     Accounts save(Accounts account);
     void low(Integer idAccount);
+    List<Accounts> findAccountsActive();
+    Accounts findById(Integer idAccount);
+    Accounts update(Accounts accounts);
 }
