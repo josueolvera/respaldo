@@ -6,12 +6,16 @@
 package mx.bidg.dao.impl;
 
 import mx.bidg.dao.EmployeesAccountsDao;
+
+import java.util.ArrayList;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
+import mx.bidg.model.Accounts;
 import mx.bidg.model.Employees;
 import mx.bidg.model.EmployeesAccounts;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -58,5 +62,21 @@ public class EmployeesAccountsDaoImpl extends AbstractDao<Integer, EmployeesAcco
                 .add(Restrictions.eq("idEmployee", idEmployee));
         return (EmployeesAccounts) criteria.uniqueResult();
     }
-    
+
+    @Override
+    public EmployeesAccounts findActiveEmployeeAccounts(Integer idEmployee, List<Accounts> accounts) {
+        Criteria criteria = createEntityCriteria();
+                criteria.add(Restrictions.eq("idEmployee", idEmployee));
+        Disjunction accountsDisjunction = Restrictions.disjunction();
+
+        if (!accounts.isEmpty()) {
+            for (Accounts account : accounts) {
+                accountsDisjunction.add(Restrictions.eq("idAccount", account.getIdAccount()));
+            }
+            criteria.add(accountsDisjunction);
+        }
+
+        return (EmployeesAccounts) criteria.uniqueResult();
+    }
+
 }
