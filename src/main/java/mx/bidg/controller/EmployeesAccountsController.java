@@ -50,5 +50,11 @@ public class EmployeesAccountsController {
         List<EmployeesAccounts> employeesAccount = employeesAccountsService.findByEmployee(new Employees(idEmployee));
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesAccount), HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/actives/{idEmployee}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getEmployeeAccountsActive (@PathVariable Integer idEmployee) throws IOException {
+        EmployeesAccounts employeesAccounts = employeesAccountsService.findEmployeeAccountActive(idEmployee);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesAccounts), HttpStatus.OK);
+    }
     
 }
