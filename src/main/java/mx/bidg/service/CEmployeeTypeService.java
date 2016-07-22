@@ -11,4 +11,5 @@ public interface CEmployeeTypeService {
 
     CEmployeeType findById (Integer idEmployeeType);
     List<CEmployeeType> findAll();
+    CEmployeeType findByEmployeeTypeName (String employeeTypeName);
 }

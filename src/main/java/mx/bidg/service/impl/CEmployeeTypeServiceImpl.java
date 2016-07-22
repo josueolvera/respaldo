@@ -28,4 +28,9 @@ public class CEmployeeTypeServiceImpl implements CEmployeeTypeService {
     public List<CEmployeeType> findAll() {
         return cEmployeeTypeDao.findAll();
     }
+
+    @Override
+    public CEmployeeType findByEmployeeTypeName(String employeeTypeName) {
+        return cEmployeeTypeDao.findByEmployeeTypeName(employeeTypeName);
+    }
 }
