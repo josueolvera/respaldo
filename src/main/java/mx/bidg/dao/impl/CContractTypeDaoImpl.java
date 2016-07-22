@@ -3,6 +3,7 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CContractTypeDao;
 import mx.bidg.model.CContractType;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,5 +40,10 @@ public class CContractTypeDaoImpl extends AbstractDao<Integer, CContractType> im
     public boolean delete(CContractType entity) {
         remove(entity);
         return true;
+    }
+
+    @Override
+    public CContractType findByContractTypeName(String contractTypeName) {
+        return (CContractType) createEntityCriteria().add(Restrictions.eq("contractTypeName", contractTypeName)).uniqueResult();
     }
 }
