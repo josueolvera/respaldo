@@ -7,6 +7,8 @@ package mx.bidg.config;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSessionListener;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.interceptor.ControllerInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -76,4 +78,10 @@ public class AppConfig extends WebMvcConfigurerAdapter {
     public static PropertySourcesPlaceholderConfigurer propertyConfigInDev() {
         return new PropertySourcesPlaceholderConfigurer();
     }
+
+    @Bean
+    public ObjectMapper mapper(){
+        return new ObjectMapper().registerModule(new Hibernate4Module());
+    }
+
 }
