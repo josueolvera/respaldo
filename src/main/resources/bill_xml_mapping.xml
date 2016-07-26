@@ -1,0 +1,144 @@
+<mapping>
+    <class name="mx.bidg.pojos.xml_bill.Comprobante" auto-complete="true">
+        <map-to xml="Comprobante" />
+
+        <field name="total"
+               type="java.lang.Float">
+            <bind-xml name="total" node="attribute"/>
+        </field>
+
+        <field name="folio"
+               type="java.lang.String">
+            <bind-xml name="folio" node="attribute"/>
+        </field>
+
+        <field name="conceptos"
+               type="mx.bidg.pojos.xml_bill.Conceptos">
+            <bind-xml name="Concepto"/>
+        </field>
+
+        <field name="impuestos"
+               type="mx.bidg.pojos.xml_bill.Impuestos">
+            <bind-xml name="Impuestos"/>
+        </field>
+
+    </class>
+
+    <class name="mx.bidg.pojos.xml_bill.Emisor" auto-complete="true">
+        <map-to xml="Emisor" />
+    </class>
+
+    <class name="mx.bidg.pojos.xml_bill.DomicilioFiscal" auto-complete="true">
+        <map-to xml="DomicilioFiscal" />
+    </class>
+
+    <class name="mx.bidg.pojos.xml_bill.ExpedidoEn" auto-complete="true">
+        <map-to xml="ExpedidoEn" />
+    </class>
+
+    <class name="mx.bidg.pojos.xml_bill.RegimenFiscal" auto-complete="true">
+        <map-to xml="RegimenFiscal" />
+    </class>
+
+    <class name="mx.bidg.pojos.xml_bill.Receptor" auto-complete="true">
+        <map-to xml="Receptor" />
+    </class>
+
+    <class name="mx.bidg.pojos.xml_bill.Domicilio" auto-complete="true">
+        <map-to xml="Domicilio" />
+    </class>
+
+    <class name="mx.bidg.pojos.xml_bill.Conceptos" auto-complete="true">
+        <map-to xml="Conceptos" />
+        <field name="conceptos"
+               type="mx.bidg.pojos.xml_bill.Concepto"
+               collection="arraylist">
+            <bind-xml name="Concepto"/>
+        </field>
+    </class>
+
+    <class name="mx.bidg.pojos.xml_bill.Concepto" auto-complete="true">
+        <map-to xml="Concepto" />
+
+        <field name="cantidad"
+               type="java.lang.Float">
+            <bind-xml name="cantidad" node="attribute"/>
+        </field>
+
+        <field name="unidad"
+               type="java.lang.String">
+            <bind-xml name="unidad" node="attribute"/>
+        </field>
+
+        <field name="noIdentificacion"
+               type="java.lang.String">
+            <bind-xml name="noIdentificacion" node="attribute"/>
+        </field>
+        <field name="descripcion"
+               type="java.lang.String">
+            <bind-xml name="descripcion" node="attribute"/>
+        </field>
+
+        <field name="valorUnitario"
+               type="java.lang.Float">
+            <bind-xml name="valorUnitario" node="attribute"/>
+        </field>
+
+        <field name="importe"
+               type="java.lang.Float">
+            <bind-xml name="importe" node="attribute"/>
+        </field>
+
+    </class>
+
+    <class name="mx.bidg.pojos.xml_bill.Impuestos" auto-complete="true">
+        <map-to xml="Impuestos" />
+
+        <field name="totalImpuestosTrasladados"
+               type="java.lang.Float">
+            <bind-xml name="totalImpuestosTrasladados" node="attribute"/>
+        </field>
+
+        <field name="traslados"
+               type="mx.bidg.pojos.xml_bill.Traslados">
+            <bind-xml name="Traslados"/>
+        </field>
+    </class>
+
+    <class name="mx.bidg.pojos.xml_bill.Traslados" auto-complete="true">
+        <map-to xml="Traslados" />
+        <field name="traslados"
+               type="mx.bidg.pojos.xml_bill.Traslado"
+               collection="arraylist">
+            <bind-xml name="Traslado"/>
+        </field>
+    </class>
+
+    <class name="mx.bidg.pojos.xml_bill.Traslado" auto-complete="true">
+        <map-to xml="Traslado" />
+
+        <field name="impuesto"
+               type="java.lang.String">
+            <bind-xml name="impuesto" node="attribute"/>
+        </field>
+
+        <field name="tasa"
+               type="java.lang.Float">
+            <bind-xml name="tasa" node="attribute"/>
+        </field>
+
+        <field name="importe"
+               type="java.lang.Float">
+            <bind-xml name="importe" node="attribute"/>
+        </field>
+
+    </class>
+
+    <class name="mx.bidg.pojos.xml_bill.Complemento" auto-complete="true">
+        <map-to xml="Complemento" />
+    </class>
+
+    <class name="mx.bidg.pojos.xml_bill.TimbreFiscalDigital" auto-complete="true">
+        <map-to xml="TimbreFiscalDigital" />
+    </class>
+</mapping>
