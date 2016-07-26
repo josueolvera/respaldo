@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>mx.bidg</groupId>
-    <artifactId>BIDGroup</artifactId>
+    <artifactId>BIDGroupZona</artifactId>
     <version>1.0</version>
     <packaging>war</packaging>
 
-    <name>BIDGroup</name>
+    <name>BIDGroupZona</name>
 
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>

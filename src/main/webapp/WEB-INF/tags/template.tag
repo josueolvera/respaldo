@@ -18,14 +18,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>${pageTitle}</title>
-    <link rel="stylesheet" href="/BIDGroup/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/BIDGroup/assets/css/styles.css">
-    <link rel="stylesheet" href="/BIDGroup/assets/css/messenger.css">
-    <link rel="stylesheet" href="/BIDGroup/assets/css/messenger-theme-flat.css">
-    <link rel="stylesheet" href="/BIDGroup/assets/css/selectize.css">
-    <link rel="stylesheet" href="/BIDGroup/assets/css/selectize.bootstrap3.css">
-    <link rel="stylesheet" href="/BIDGroup/assets/css/bootstrap-toggle.min.css">
-    <link rel="stylesheet" href="/BIDGroup/assets/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="/BIDGroupZona/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/BIDGroupZona/assets/css/styles.css">
+    <link rel="stylesheet" href="/BIDGroupZona/assets/css/messenger.css">
+    <link rel="stylesheet" href="/BIDGroupZona/assets/css/messenger-theme-flat.css">
+    <link rel="stylesheet" href="/BIDGroupZona/assets/css/selectize.css">
+    <link rel="stylesheet" href="/BIDGroupZona/assets/css/selectize.bootstrap3.css">
+    <link rel="stylesheet" href="/BIDGroupZona/assets/css/bootstrap-toggle.min.css">
+    <link rel="stylesheet" href="/BIDGroupZona/assets/css/bootstrap-datetimepicker.min.css">
     <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users" />
     <jsp:invoke fragment="styles" />
 </head>
@@ -47,9 +47,9 @@
                          :class="{ 'expanded': sidebar.expanded }" class="main-menu flex-box">
                         <ul class="flex-header flex-row">
                             <li>
-                                <a href="/BIDGroup">
+                                <a href="/BIDGroupZona">
                                     <span class="fa fa-home fa-2x glyphicon glyphicon-bidg"></span>
-                                    <span class="nav-text"><img height="40" src="/BIDGroup/assets/img/BID_Blanco_nombre.png" /></span>
+                                    <span class="nav-text"><img height="40" src="/BIDGroupZona/assets/img/BID_Blanco_nombre.png" /></span>
                                 </a>
                             </li>
                         </ul>
@@ -67,7 +67,7 @@
                                         <ul :class="{ 'expanded': moduleSystem.expanded && sidebar.expanded }"
                                             class="menu-sub-nav">
                                             <li v-for="viewModule in moduleSystem.views">
-                                                <a href="/BIDGroup/{{ viewModule.cTasks.taskName }}">
+                                                <a href="/BIDGroupZona/{{ viewModule.cTasks.taskName }}">
                                                     <span class="nav-text">{{ viewModule.viewName }}</span>
                                                 </a>
                                             </li>
@@ -112,20 +112,20 @@
                 <div class="col-xs-10 col-md-11 col-lg-11 body"><jsp:doBody /></div>
             </c:if>
         </div>
-        <script src="/BIDGroup/assets/js/jquery-2.1.4.min.js"></script>
-        <script src="/BIDGroup/assets/js/bootstrap.min.js"></script>
-        <script src="/BIDGroup/assets/js/moment.min.js"></script>
-        <script src="/BIDGroup/assets/js/moment-locale-es-mx.js"></script>
-        <script src="/BIDGroup/assets/js/bootstrap-datetimepicker.min.js"></script>
-        <script src="/BIDGroup/assets/js/jquery.onscreen.min.js"></script>
-        <script src="/BIDGroup/assets/js/vue-1.0.7.js"></script>
-        <script src="/BIDGroup/assets/js/vue-resource-0.7.2-.min.js"></script>
-        <script src="/BIDGroup/assets/js/selectize.standalone.min.js"></script>
-        <script src="/BIDGroup/assets/js/bootstrap-toggle.min.js"></script>
-        <script src="/BIDGroup/assets/js/messenger.min.js"></script>
-        <script src="/BIDGroup/assets/js/messenger-theme-flat.js"></script>
-        <script src="/BIDGroup/assets/js/alerts.js"></script>
-        <script src="/BIDGroup/assets/js/accounting.js"></script>
+        <script src="/BIDGroupZona/assets/js/jquery-2.1.4.min.js"></script>
+        <script src="/BIDGroupZona/assets/js/bootstrap.min.js"></script>
+        <script src="/BIDGroupZona/assets/js/moment.min.js"></script>
+        <script src="/BIDGroupZona/assets/js/moment-locale-es-mx.js"></script>
+        <script src="/BIDGroupZona/assets/js/bootstrap-datetimepicker.min.js"></script>
+        <script src="/BIDGroupZona/assets/js/jquery.onscreen.min.js"></script>
+        <script src="/BIDGroupZona/assets/js/vue-1.0.7.js"></script>
+        <script src="/BIDGroupZona/assets/js/vue-resource-0.7.2-.min.js"></script>
+        <script src="/BIDGroupZona/assets/js/selectize.standalone.min.js"></script>
+        <script src="/BIDGroupZona/assets/js/bootstrap-toggle.min.js"></script>
+        <script src="/BIDGroupZona/assets/js/messenger.min.js"></script>
+        <script src="/BIDGroupZona/assets/js/messenger-theme-flat.js"></script>
+        <script src="/BIDGroupZona/assets/js/alerts.js"></script>
+        <script src="/BIDGroupZona/assets/js/accounting.js"></script>
         <script type="text/javascript">
             Vue.http.interceptors.push({
                 request: function (request) {
@@ -152,7 +152,7 @@
                     return response;
                 }
             });
-            var ROOT_URL = "/BIDGroup";
+            var ROOT_URL = "/BIDGroupZona";
             var USER_VM = new Vue({
                 el: '#main-sidebar',
                 ready: function () {
