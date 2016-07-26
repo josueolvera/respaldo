@@ -19,4 +19,5 @@ public interface BudgetMonthConceptsService {
     boolean delete(BudgetMonthConcepts budgetMonthConcepts);
     List<BudgetMonthConcepts> findByConcept(CBudgetConcepts budgetConcept);
     List<BudgetMonthConcepts> findByConcept(Integer idBudgetConcept);
+    BudgetMonthConcepts saveBudgetMonthConcepts (BudgetMonthConcepts bmc);
 }

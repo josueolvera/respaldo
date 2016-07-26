@@ -27,4 +27,6 @@ public interface BudgetMonthBranchService {
     
     public List<BudgetMonthBranch> findByDWEnterpriseAndYear(Integer dwEnterprise, Integer year) throws Exception;
     
+    public BudgetMonthBranch saveBudgetMonthBranch(BudgetMonthBranch bmb);
+    
 }

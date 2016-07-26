@@ -10,7 +10,14 @@ import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import java.util.List;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.BudgetMonthBranch;
+import mx.bidg.model.BudgetMonthConcepts;
+import mx.bidg.model.Budgets;
+import mx.bidg.model.CBudgetConcepts;
+import mx.bidg.model.CCurrencies;
+import mx.bidg.model.CMonths;
+import mx.bidg.model.DwEnterprises;
 import mx.bidg.service.BudgetMonthBranchService;
+import mx.bidg.service.BudgetMonthConceptsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,8 +40,10 @@ public class BudgetMonthBranchController {
     @Autowired
     BudgetMonthBranchService budgetMonthBranchService;
     
-   // ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
-    ObjectMapper map = new ObjectMapper();
+    @Autowired
+    BudgetMonthConceptsService budgetMonthConceptsService;
+    
+    ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
     
     @RequestMapping(value = "/request", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> getFromRequest(@RequestBody String data) throws Exception {
@@ -54,11 +63,36 @@ public class BudgetMonthBranchController {
         return budgetMonthBranchService.authorizeBudget(data);
     }
     
-    @RequestMapping(value = "/find/{idDwEnterprise}/{idYear}", method = RequestMethod.GET, headers = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public @ResponseBody String findDwAndYear(@PathVariable int idDwEnterprise, @PathVariable int idYear) throws Exception {
-        /*List<BudgetMonthBranch> budgetMonthBranchs = budgetMonthBranchService.findByDWEnterpriseAndYear(idDwEnterprise, idYear);
-        return map.writeValueAsString(budgetMonthBranchs);*/
-        return "Hola";
+    @RequestMapping(value = "/find/{idDwEnterprise}/{fromYear}/{toYear}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody String findDwAndYear(@PathVariable int idDwEnterprise, @PathVariable int fromYear, @PathVariable int toYear) throws Exception {
+        List<BudgetMonthBranch> budgetMonthBranchs = budgetMonthBranchService.findByDWEnterpriseAndYear(idDwEnterprise, fromYear);
+        
+        for (BudgetMonthBranch bmb : budgetMonthBranchs) {
+            BudgetMonthBranch budgetMonth = new BudgetMonthBranch();
+            budgetMonth.setAmount(bmb.getAmount());
+            budgetMonth.setExpendedAmount(bmb.getExpendedAmount());
+            budgetMonth.setYear(toYear);
+            budgetMonth.setBudget(new Budgets(bmb.getIdBudget()));
+            budgetMonth.setMonth(new CMonths(bmb.getIdMonth()));
+            budgetMonth.setDwEnterprise(new DwEnterprises(bmb.getIdDwEnterprise()));
+            budgetMonth.setCurrency(new CCurrencies(bmb.getIdCurrency()));
+            budgetMonth.setIdAccessLevel(1);
+            budgetMonth.setIsAuthorized(0);
+            BudgetMonthBranch bmb1= budgetMonthBranchService.saveBudgetMonthBranch(budgetMonth);
+            
+            for (BudgetMonthConcepts bmc : bmb.getBudgetMonthConceptsList()) {
+               BudgetMonthConcepts bmc1 = new BudgetMonthConcepts();
+               bmc1.setAmount(bmc.getAmount());
+               bmc1.setIdAccessLevel(1);
+               bmc1.setBudgetMonthBranch(bmb1);
+               bmc1.setBudgetConcept(new CBudgetConcepts(bmc.getIdBudgetConcept()));
+               bmc1.setCurrency(new CCurrencies(bmc.getIdCurrency()));
+               budgetMonthConceptsService.saveBudgetMonthConcepts(bmc1);
+            }
+            
+        }
+        
+        return map.writeValueAsString(budgetMonthBranchs);
     }
     
 }

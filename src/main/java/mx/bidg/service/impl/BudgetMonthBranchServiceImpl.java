@@ -186,5 +186,10 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
     public List<BudgetMonthBranch> findByDWEnterpriseAndYear(Integer dwEnterprise, Integer year) throws Exception {
         return budgetMonthBranchDao.findByDWEnterpriseAndYear(dwEnterprise, year);
     }
+    
+    @Override
+    public BudgetMonthBranch saveBudgetMonthBranch(BudgetMonthBranch bmb){
+        return budgetMonthBranchDao.save(bmb);
+    }
 
 }

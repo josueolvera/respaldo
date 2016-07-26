@@ -14,6 +14,7 @@ import mx.bidg.model.Budgets;
 import mx.bidg.model.CMonths;
 import mx.bidg.model.DwEnterprises;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -87,9 +88,10 @@ public class BudgetMonthBranchDaoImpl extends AbstractDao<Integer, BudgetMonthBr
 
     @Override
     public List<BudgetMonthBranch> findByDWEnterpriseAndYear(int dwEnterprise, int year) {
-        Criteria criteria = createEntityCriteria().
-                add(Restrictions.eq("idDwEnterprise", dwEnterprise)).
-                add(Restrictions.eq("year", year));
+        Criteria criteria = createEntityCriteria()
+                .add(Restrictions.eq("dwEnterprise", new DwEnterprises(dwEnterprise)))
+                .add(Restrictions.eq("year", year))
+                .setFetchMode("budgetMonthConceptsList", FetchMode.JOIN);
         return (List<BudgetMonthBranch>) criteria.list();
     }
     
