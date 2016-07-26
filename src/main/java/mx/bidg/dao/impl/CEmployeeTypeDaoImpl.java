@@ -3,6 +3,7 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CEmployeeTypeDao;
 import mx.bidg.model.CEmployeeType;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -38,5 +39,10 @@ public class CEmployeeTypeDaoImpl extends AbstractDao<Integer, CEmployeeType> im
     public boolean delete(CEmployeeType entity) {
         remove(entity);
         return true;
+    }
+
+    @Override
+    public CEmployeeType findByEmployeeTypeName(String employeeTypeName) {
+        return (CEmployeeType) createEntityCriteria().add(Restrictions.eq("employeeTypeName",employeeTypeName)).uniqueResult();
     }
 }

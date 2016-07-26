@@ -3,6 +3,7 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CGendersDao;
 import mx.bidg.model.CGenders;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -38,5 +39,10 @@ public class CGendersDaoImpl extends AbstractDao<Integer, CGenders> implements C
     public boolean delete(CGenders entity) {
         remove(entity);
         return true;
+    }
+
+    @Override
+    public CGenders findByGenderName(String genderName) {
+        return (CGenders) createEntityCriteria().add(Restrictions.eq("genderName",genderName)).uniqueResult();
     }
 }

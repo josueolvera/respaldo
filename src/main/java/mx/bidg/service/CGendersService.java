@@ -10,4 +10,5 @@ import java.util.List;
 public interface CGendersService {
     CGenders findById(Integer idGender);
     List<CGenders> findAll();
+    CGenders findByGenderName (String genderName);
 }

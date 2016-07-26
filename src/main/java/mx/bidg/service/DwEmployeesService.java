@@ -16,6 +16,7 @@ public interface DwEmployeesService {
     DwEmployees findById(Integer id);
     DwEmployees findBy(Employees employees, DwEnterprises dwEnterprises);
     List<DwEmployees> findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(
+            Integer status,
             Integer idDistributor,
             Integer idRegion,
             Integer idBranch,
@@ -29,4 +30,6 @@ public interface DwEmployeesService {
     void createReport(List<DwEmployees> dwEmployees, OutputStream outputStream) throws IOException;
     void changeEmployeeStatus(Integer idDwEmployee);
     DwEmployees findByIdDw(Integer idDwEnterprise);
+    DwEmployees update(DwEmployees dwEmployee);
+    boolean delete (DwEmployees dwEmployees);
 }

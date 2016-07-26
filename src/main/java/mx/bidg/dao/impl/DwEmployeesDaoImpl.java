@@ -56,7 +56,6 @@ public class DwEmployeesDaoImpl extends AbstractDao<Integer, DwEmployees> implem
 
         if (!employees.isEmpty()) {
             for (Employees employee : employees) {
-                System.out.println("Id employee: " + employee.getIdEmployee());
                 employeesDisjunction.add(Restrictions.eq("idEmployee", employee.getIdEmployee()));
             }
             criteria.add(employeesDisjunction);
@@ -64,7 +63,6 @@ public class DwEmployeesDaoImpl extends AbstractDao<Integer, DwEmployees> implem
 
         if (!dwEnterprises.isEmpty()) {
             for (DwEnterprises dwEnterprise : dwEnterprises) {
-                System.out.println("Id dwEnterprise: " + dwEnterprise.getIdDwEnterprise());
                 dwEnterprisesDisjunction.add(Restrictions.eq("idDwEnterprise", dwEnterprise.getIdDwEnterprise()));
             }
             criteria.add(dwEnterprisesDisjunction);
@@ -89,7 +87,8 @@ public class DwEmployeesDaoImpl extends AbstractDao<Integer, DwEmployees> implem
 
     @Override
     public DwEmployees update(DwEmployees entity) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        modify(entity);
+        return entity;
     }
 
     @Override

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  *
@@ -79,5 +80,11 @@ public class AccountsController {
         accountsService.low(idAccount);
 
         return new ResponseEntity<>("Cuenta eliminada", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/actives", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> activeAccounts() throws IOException{
+        List<Accounts> accounts = accountsService.findAccountsActive();
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(accounts), HttpStatus.OK);
     }
 }
