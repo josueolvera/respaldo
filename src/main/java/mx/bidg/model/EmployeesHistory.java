@@ -48,6 +48,18 @@ public class EmployeesHistory implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idEmployee;
 
+    @Column(name = "ID_DW_ENTERPRISE")
+    @JsonView(JsonViews.Root.class)
+    private int idDwEnterprise;
+
+    @Column(name = "ID_ACCOUNT")
+    @JsonView(JsonViews.Root.class)
+    private int idAccount;
+
+    @Column(name = "ID_ROLE")
+    @JsonView(JsonViews.Root.class)
+    private int idRole;
+
     @Size(max = 10)
     @Column(name = "EMPLOYEE_NUMBER")
     @JsonView(JsonViews.Root.class)
@@ -552,6 +564,30 @@ public class EmployeesHistory implements Serializable {
             return null;
         }
         return new DateFormatsPojo(creationDate);
+    }
+
+    public int getIdDwEnterprise() {
+        return idDwEnterprise;
+    }
+
+    public void setIdDwEnterprise(int idDwEnterprise) {
+        this.idDwEnterprise = idDwEnterprise;
+    }
+
+    public int getIdAccount() {
+        return idAccount;
+    }
+
+    public void setIdAccount(int idAccount) {
+        this.idAccount = idAccount;
+    }
+
+    public int getIdRole() {
+        return idRole;
+    }
+
+    public void setIdRole(int idRole) {
+        this.idRole = idRole;
     }
 
     public String getFullName() {

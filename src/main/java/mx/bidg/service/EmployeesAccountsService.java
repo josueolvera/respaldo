@@ -23,4 +23,6 @@ public interface EmployeesAccountsService {
     EmployeesAccounts save (EmployeesAccounts employeesAccounts);
 
     EmployeesAccounts findByIdEmployee(Integer idEmployee);
+
+    EmployeesAccounts findEmployeeAccountActive(Integer idEmployee);
 }

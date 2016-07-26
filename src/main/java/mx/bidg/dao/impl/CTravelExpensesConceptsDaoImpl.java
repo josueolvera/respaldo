@@ -10,6 +10,7 @@ import java.util.List;
 /**
  * Created by josueolvera on 13/07/16.
  */
+@SuppressWarnings("unchecked")
 @Repository
 public class CTravelExpensesConceptsDaoImpl extends AbstractDao<Integer, CTravelExpensesConcepts> implements CTravelExpensesConceptsDao {
 

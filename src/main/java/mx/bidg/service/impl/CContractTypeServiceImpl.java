@@ -28,4 +28,9 @@ public class CContractTypeServiceImpl implements CContractTypeService {
     public List<CContractType> findAll() {
         return cContractTypeDao.findAll();
     }
+
+    @Override
+    public CContractType findByContractTypeName(String contractTypeName) {
+        return cContractTypeDao.findByContractTypeName(contractTypeName);
+    }
 }

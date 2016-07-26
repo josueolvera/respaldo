@@ -44,11 +44,13 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
     }
 
     @Override
-    public EmployeesHistory save(DwEmployees dwEmployee, CActionTypes actionType) {
+    public EmployeesHistory save(DwEmployees dwEmployee, CActionTypes actionType, Accounts accounts) {
 
         if (dwEmployee != null) {
             EmployeesHistory employeesHistory = new EmployeesHistory();
             Employees employee = dwEmployee.getEmployee();
+            DwEnterprises dwEnterprises = dwEmployee.getDwEnterprise();
+            CRoles roles = dwEmployee.getRole();
 
             if (employee != null) {
 
@@ -63,6 +65,18 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
                 }
 
                 employeesHistory.setStatus(1);
+
+                if (dwEnterprises != null) {
+                    employeesHistory.setIdDwEnterprise(dwEnterprises.getIdDwEnterprise());
+                }
+
+                if (roles != null) {
+                    employeesHistory.setIdRole(roles.getIdRole());
+                }
+
+                if (accounts != null) {
+                    employeesHistory.setIdAccount(accounts.getIdAccount());
+                }
 
                 CEducation education = employee.getEducation();
 

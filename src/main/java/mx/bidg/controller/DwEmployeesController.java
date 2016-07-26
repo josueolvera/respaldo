@@ -35,6 +35,7 @@ public class DwEmployeesController {
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getDwEmployees
             (
+                    @RequestParam(name = "status", required = false) Integer status,
                     @RequestParam(name = "idDistributor", required = false) Integer idDistributor,
                     @RequestParam(name = "idRegion", required = false) Integer idRegion,
                     @RequestParam(name = "idBranch", required = false) Integer idBranch,
@@ -46,7 +47,8 @@ public class DwEmployeesController {
 
         List<DwEmployees> dwEmployees;
 
-        if (idDistributor == null &&
+        if (status == null &&
+                idDistributor == null &&
                 idRegion == null &&
                 idBranch == null &&
                 idArea == null &&
@@ -58,6 +60,7 @@ public class DwEmployeesController {
         } else {
             dwEmployees =
                     dwEmployeesService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(
+                            status,
                             idDistributor,
                             idRegion,
                             idBranch,
@@ -78,6 +81,7 @@ public class DwEmployeesController {
     @RequestMapping(value = "/create-report", method = RequestMethod.GET)
     public ResponseEntity<String> createReport
             (
+                    @RequestParam(name = "status", required = false) Integer status,
                     @RequestParam(name = "idDistributor", required = false) Integer idDistributor,
                     @RequestParam(name = "idRegion", required = false) Integer idRegion,
                     @RequestParam(name = "idBranch", required = false) Integer idBranch,
@@ -91,7 +95,8 @@ public class DwEmployeesController {
 
         List<DwEmployees> dwEmployees;
 
-        if (idDistributor == null &&
+        if (status == null &&
+                idDistributor == null &&
                 idRegion == null &&
                 idBranch == null &&
                 idArea == null &&
@@ -103,6 +108,7 @@ public class DwEmployeesController {
         } else {
             dwEmployees =
                     dwEmployeesService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(
+                            status,
                             idDistributor,
                             idRegion,
                             idBranch,

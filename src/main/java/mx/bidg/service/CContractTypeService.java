@@ -10,4 +10,5 @@ import java.util.List;
 public interface CContractTypeService {
     CContractType findById(Integer idContractType);
     List<CContractType> findAll();
+    CContractType findByContractTypeName(String contractTypeName);
 }

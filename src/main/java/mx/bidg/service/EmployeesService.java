@@ -14,4 +14,5 @@ public interface EmployeesService {
     List<Employees> findAll();
     Employees findById(Integer id);
     Employees save(Employees employee);
+    Employees update(Employees employee);
 }

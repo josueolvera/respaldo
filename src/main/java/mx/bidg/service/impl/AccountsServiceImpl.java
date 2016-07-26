@@ -74,4 +74,19 @@ public class AccountsServiceImpl implements AccountsService {
         accounts.setDeleteDay(LocalDateTime.now());
         accountsDao.update(accounts);
     }
+
+    @Override
+    public List<Accounts> findAccountsActive() {
+        return accountsDao.accountsActives();
+    }
+
+    @Override
+    public Accounts findById(Integer idAccount) {
+        return accountsDao.findById(idAccount);
+    }
+
+    @Override
+    public Accounts update(Accounts accounts) {
+        return accountsDao.update(accounts);
+    }
 }

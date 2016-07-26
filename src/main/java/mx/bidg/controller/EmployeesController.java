@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
+import mx.bidg.dao.DwEmployeesDao;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
 import mx.bidg.service.*;
@@ -119,6 +120,7 @@ public class EmployeesController {
         JsonNode jnode = mapper.readTree(data);
 
         Employees employee = new Employees();
+        Accounts accounts;
 
         LocalDateTime joinDate = (jnode.get("joinDate") == null || jnode.findValue("joinDate").asText().equals("")) ? null :
                 LocalDateTime.parse(jnode.get("joinDate").asText(), DateTimeFormatter.ISO_DATE_TIME);
@@ -188,8 +190,100 @@ public class EmployeesController {
         dwEmployees.setCreationDate(LocalDateTime.now());
         dwEmployees = dwEmployeesService.save(dwEmployees);
 
+        EmployeesAccounts employeesAccounts = employeesAccountsService.findEmployeeAccountActive(employee.getIdEmployee());
+        accounts = employeesAccounts.getAccount();
+
         CActionTypes cActionType = CActionTypes.ALTA;
-        employeesHistoryService.save(dwEmployees,cActionType);
+        employeesHistoryService.save(dwEmployees,cActionType, accounts);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(employee), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> update(@RequestBody String data)throws IOException{
+        JsonNode jnode = mapper.readTree(data);
+        Accounts accounts;
+
+        Employees employee = employeesService.findById(jnode.get("idEmployee").asInt());
+        Accounts oldAccount = accountsService.findById(jnode.get("idAccount").asInt());
+        oldAccount.setDeleteDay(LocalDateTime.now());
+        accountsService.update(oldAccount);
+
+        LocalDateTime joinDate = (jnode.get("joinDate") == null || jnode.findValue("joinDate").asText().equals("")) ? null :
+                LocalDateTime.parse(jnode.get("joinDate").asText(), DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime birthday = LocalDateTime.parse(jnode.get("birthday").asText(), DateTimeFormatter.ISO_DATE_TIME);
+
+        employee.setStreet(jnode.get("street").asText());
+        employee.setBirthday(birthday.toLocalDate());
+        employee.setCellPhone(jnode.get("cellPhone").asText());
+        employee.setContractTypes(cContractTypeService.findByContractTypeName(jnode.get("contractType").asText()));
+        employee.setBirthplace(jnode.get("birthPlace").asText());
+        employee.setColonia(jnode.get("colonia").asText());
+        employee.setCity(jnode.get("city").asText());
+        employee.setClaveSap(jnode.get("claveSap").asText());
+        employee.setCurp(jnode.get("curp").asText());
+        employee.setRfc(jnode.get("rfc").asText());
+        employee.setMotherName(jnode.get("motherName").asText());
+        employee.setFatherName(jnode.get("fatherName").asText());
+        employee.setFirstName(jnode.get("firstName").asText());
+        employee.setMiddleName(jnode.get("middleName").asText());
+        employee.setParentalLast(jnode.get("parentalLast").asText());
+        employee.setMotherLast(jnode.get("motherLast").asText());
+        employee.setPostcode(jnode.get("postcode").asText());
+        employee.setEducation(new CEducation(jnode.get("idEducation").asInt()));
+        employee.setEmployeeTypes(cEmployeeTypeService.findByEmployeeTypeName(jnode.get("employeeType").asText()));
+        employee.setSize(jnode.get("size").asText());
+        employee.setSizeNumber(jnode.get("sizeNumber").asInt());
+        employee.setState(jnode.get("state").asText());
+        employee.setExteriorNumber(jnode.get("exteriorNumber").asText());
+        employee.setInteriorNumber(jnode.get("interiorNumber").asText());
+        employee.setGenders(cGendersService.findByGenderName(jnode.get("gender").asText()));
+        employee.setHomePhone(jnode.get("homePhone").asText());
+        employee.setImss(jnode.get("imss").asText());
+        employee.setInfonavitNumber(jnode.get("infonavitNumber").asText());
+        employee.setStatusMarital(new CStatusMarital(jnode.get("idStatusMarital").asInt()));
+        employee.setSalary(new BigDecimal(jnode.get("salary").asInt()));
+        employee.setStatus(1);
+        employee.setMail(jnode.get("mail").asText());
+        employee.setJoinDate(joinDate);
+
+        employee = employeesService.update(employee);
+
+        for (JsonNode node : jnode.get("employeeAccountList")){
+            EmployeesAccounts employeesAccounts = new EmployeesAccounts();
+            employeesAccounts.setIdAccessLevel(1);
+
+            Accounts account = new Accounts();
+            account.setAccountNumber(node.get("accountNumber").asText());
+            account.setAccountClabe(node.get("accountClabe").asText());
+            account.setBank(cBanksService.findById(node.get("idBank").asInt()));
+            account.setCurrencies(currenciesService.geById(1));
+            account.setAccountType(CAccountsTypes.DEFINITIVA);
+            account.setIdAccessLevel(1);
+
+            employeesAccounts.setEmployee(employee);
+            employeesAccounts.setAccount(account);
+
+            accountsService.save(account);
+            employeesAccountsService.save(employeesAccounts);
+        }
+
+        DwEmployees dwEmployee = dwEmployeesService.findById(jnode.get("idDwEmployee").asInt());
+        dwEmployeesService.delete(dwEmployee);
+
+        DwEmployees dwEmployees = new DwEmployees();
+
+        dwEmployees.setEmployee(employee);
+        dwEmployees.setDwEnterprise(dwEnterprisesService.findById(jnode.get("dwEmployees").get("area").get("dwEnterprise").get("idDwEnterprise").asInt()));
+        dwEmployees.setRole(cRolesService.findById(jnode.get("dwEmployees").get("role").get("idRole").asInt()));
+        dwEmployees.setCreationDate(LocalDateTime.now());
+        dwEmployees = dwEmployeesService.save(dwEmployees);
+
+        EmployeesAccounts employeesAccounts = employeesAccountsService.findEmployeeAccountActive(employee.getIdEmployee());
+        accounts = employeesAccounts.getAccount();
+
+        CActionTypes cActionType = CActionTypes.MODIFICAION;
+        employeesHistoryService.save(dwEmployees,cActionType, accounts);
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(employee), HttpStatus.OK);
     }

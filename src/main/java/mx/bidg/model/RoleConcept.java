@@ -60,7 +60,7 @@ public class RoleConcept implements Serializable {
 
     @Column(name = "ID_TRAVEL_EXPENSE_CONCEPT", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idTravelExpenceConcept;
+    private Integer idTravelExpenseConcept;
 
     @JoinColumn(name = "ID_TRAVEL_TYPE", referencedColumnName = "ID_TRAVEL_TYPE")
     @ManyToOne
@@ -70,7 +70,7 @@ public class RoleConcept implements Serializable {
     @JoinColumn(name = "ID_TRAVEL_EXPENSE_CONCEPT", referencedColumnName = "ID_TRAVEL_EXPENSE_CONCEPT")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private CTravelExpensesConcepts travelExpenceConcept;
+    private CTravelExpensesConcepts travelExpenseConcept;
 
     @Column(name = "ID_ROLE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -139,14 +139,6 @@ public class RoleConcept implements Serializable {
         this.idTravelType = idTravelType;
     }
 
-    public Integer getIdTravelExpenceConcept() {
-        return idTravelExpenceConcept;
-    }
-
-    public void setIdTravelExpenceConcept(Integer idTravelExpenceConcept) {
-        this.idTravelExpenceConcept = idTravelExpenceConcept;
-    }
-
     public CTravelTypes getTravelType() {
         return travelType;
     }
@@ -155,12 +147,20 @@ public class RoleConcept implements Serializable {
         this.travelType = travelType;
     }
 
-    public CTravelExpensesConcepts getTravelExpenceConcept() {
-        return travelExpenceConcept;
+    public Integer getIdTravelExpenseConcept() {
+        return idTravelExpenseConcept;
     }
 
-    public void setTravelExpenceConcept(CTravelExpensesConcepts travelExpenceConcept) {
-        this.travelExpenceConcept = travelExpenceConcept;
+    public void setIdTravelExpenseConcept(Integer idTravelExpenseConcept) {
+        this.idTravelExpenseConcept = idTravelExpenseConcept;
+    }
+
+    public CTravelExpensesConcepts getTravelExpenseConcept() {
+        return travelExpenseConcept;
+    }
+
+    public void setTravelExpenseConcept(CTravelExpensesConcepts travelExpenseConcept) {
+        this.travelExpenseConcept = travelExpenseConcept;
     }
 
     public Integer getIdRole() {

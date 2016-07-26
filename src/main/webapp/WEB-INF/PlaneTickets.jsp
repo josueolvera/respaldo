@@ -159,22 +159,25 @@
                         }
                     },
                     setFile: function (event,passenger) {
-                        var reader = new FileReader();
-                        var file = event.target.files[0];
 
-                        reader.onload = (function(theFile) {
-                            return function(e) {
+                        if (this.validateFile(event)) {
+                            var reader = new FileReader();
+                            var file = event.target.files[0];
 
-                                var dataUrl = e.target.result;
+                            reader.onload = (function(theFile) {
+                                return function(e) {
 
-                                Vue.set(passenger, "file", {});
-                                Vue.set(passenger.file, "name", theFile.name);
-                                Vue.set(passenger.file, "size", theFile.size);
-                                Vue.set(passenger.file, "type", theFile.type);
-                                Vue.set(passenger.file, "dataUrl", e.target.result);
-                            };
-                        })(file);
-                        reader.readAsDataURL(file);
+                                    var dataUrl = e.target.result;
+
+                                    Vue.set(passenger, "file", {});
+                                    Vue.set(passenger.file, "name", theFile.name);
+                                    Vue.set(passenger.file, "size", theFile.size);
+                                    Vue.set(passenger.file, "type", theFile.type);
+                                    Vue.set(passenger.file, "dataUrl", e.target.result);
+                                };
+                            })(file);
+                            reader.readAsDataURL(file);
+                        }
                     },
                     savePlaneTicket : function () {
 
@@ -223,6 +226,15 @@
                         this.$http.post(ROOT_URL + '/passenger-documents?idPassenger=' + idPassenger,file)
                                 .success(function (data) {})
                                 .error(function (data) {});
+                    },
+                    validateFile: function (event) {
+                        if (! event.target.files[0].name.match(/(\.jpg|\.jpeg|\.pdf|\.png)$/i)) {
+                            event.target.value = null;
+                            showAlert("Tipo de archivo no admitido", {type:3});
+                            return false;
+                        } else {
+                            return true;
+                        }
                     }
                 }
             });
@@ -420,7 +432,9 @@
                                         </div>
                                         <div class="col-md-4">
                                             <label>Pasaporte</label>
-                                            <input @change="setFile($event,passenger)" type="file" class="form-control" required>
+                                            <input @change="setFile($event,passenger)" type="file" class="form-control"
+                                                   accept="application/pdf,
+                                                         image/png,image/jpg,image/jpeg," required>
                                         </div>
                                         <div class="col-md-4">
                                             <label>Socio frecuente</label>
