@@ -53,11 +53,17 @@ public class CEmployeeDocumentsTypes implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int field;
 
-    @Size(max = 10)
-    @Column(name = "ID_DISTRIBUTORS")
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "REQUIRED")
     @JsonView(JsonViews.Root.class)
-    private String idDistributors;
+    private int required;
 
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "UPDATABLE")
+    @JsonView(JsonViews.Root.class)
+    private boolean updatable;
 
     public CEmployeeDocumentsTypes() {
     }
@@ -96,12 +102,20 @@ public class CEmployeeDocumentsTypes implements Serializable {
         this.field = field;
     }
 
-    public String getIdDistributors() {
-        return idDistributors;
+    public int getRequired() {
+        return required;
     }
 
-    public void setIdDistributors(String idDistributors) {
-        this.idDistributors = idDistributors;
+    public void setRequired(int required) {
+        this.required = required;
+    }
+
+    public boolean isUpdatable() {
+        return updatable;
+    }
+
+    public void setUpdatable(boolean updatable) {
+        this.updatable = updatable;
     }
 
     @Override
@@ -128,5 +142,4 @@ public class CEmployeeDocumentsTypes implements Serializable {
     public String toString() {
         return "mx.bidg.model.CEmployeeDocumentsTypes[ idDocumentType=" + idDocumentType + " ]";
     }
-    
 }
