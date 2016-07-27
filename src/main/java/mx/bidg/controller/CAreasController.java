@@ -46,7 +46,7 @@ public class CAreasController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody String findSapSaleById(@PathVariable int id) throws Exception {
+    public @ResponseBody String findById(@PathVariable int id) throws Exception {
         return map.writerWithView(JsonViews.Root.class).writeValueAsString(cAreasService.findById(id));
     }
 
