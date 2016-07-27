@@ -42,7 +42,7 @@ public class CGenders implements Serializable {
     @Basic(optional = false)
     @Column(name = "GENDER")
     @JsonView(JsonViews.Root.class)
-    private Integer gender;
+    private Integer idGender;
 
     @Basic(optional = false)
     @NotNull
@@ -54,21 +54,21 @@ public class CGenders implements Serializable {
     public CGenders() {
     }
 
-    public CGenders(Integer gender) {
-        this.gender = gender;
+    public CGenders(Integer idGender) {
+        this.idGender = idGender;
     }
 
-    public CGenders(Integer gender, String genderName) {
-        this.gender = gender;
+    public CGenders(Integer idGender, String genderName) {
+        this.idGender = idGender;
         this.genderName = genderName;
     }
 
-    public Integer getGender() {
-        return gender;
+    public Integer getIdGender() {
+        return idGender;
     }
 
-    public void setGender(Integer gender) {
-        this.gender = gender;
+    public void setIdGender(Integer idGender) {
+        this.idGender = idGender;
     }
 
     public String getGenderName() {
@@ -82,7 +82,7 @@ public class CGenders implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (gender != null ? gender.hashCode() : 0);
+        hash += (idGender != null ? idGender.hashCode() : 0);
         return hash;
     }
 
@@ -93,7 +93,7 @@ public class CGenders implements Serializable {
             return false;
         }
         CGenders other = (CGenders) object;
-        if ((this.gender == null && other.gender != null) || (this.gender != null && !this.gender.equals(other.gender))) {
+        if ((this.idGender == null && other.idGender != null) || (this.idGender != null && !this.idGender.equals(other.idGender))) {
             return false;
         }
         return true;
@@ -101,7 +101,7 @@ public class CGenders implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.CGenders[ gender=" + gender + " ]";
+        return "mx.bidg.model.CGenders[ idGender=" + idGender + " ]";
     }
     
 }

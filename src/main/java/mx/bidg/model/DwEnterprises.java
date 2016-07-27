@@ -54,12 +54,6 @@ public class DwEnterprises implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idBrand;
 
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ID_GBRANCH")
-    @JsonView(JsonViews.Root.class)
-    private int idGbranch;
-
     @Column(name = "ID_GROUP", insertable = false, updatable = false)
     @JsonView({JsonViews.Root.class, JsonViews.IdsEnterprises.class})
     private int idGroup;
@@ -79,6 +73,10 @@ public class DwEnterprises implements Serializable {
     @Column(name = "ID_AREA", insertable = false, updatable = false)
     @JsonView({JsonViews.Root.class, JsonViews.IdsEnterprises.class})
     private int idArea;
+
+    @Column(name = "ID_ZONA", insertable = false, updatable = false)
+    @JsonView({JsonViews.Root.class, JsonViews.IdsEnterprises.class})
+    private int idZona;
 
     @Column(name = "BUDGETABLE")
     @JsonView(JsonViews.Root.class)
@@ -123,6 +121,11 @@ public class DwEnterprises implements Serializable {
     @JsonView(JsonViews.Root.class)
     private boolean status;
 
+    @JoinColumn(name = "ID_ZONA", referencedColumnName = "ID_ZONAS")
+    @ManyToOne(optional = false)
+    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
+    private CZonas zona;
+
     public DwEnterprises() {
     }
 
@@ -130,10 +133,9 @@ public class DwEnterprises implements Serializable {
         this.idDwEnterprise = idDwEnterprise;
     }
 
-    public DwEnterprises(Integer idDwEnterprise, int idBrand, int idGbranch) {
+    public DwEnterprises(Integer idDwEnterprise, int idBrand) {
         this.idDwEnterprise = idDwEnterprise;
         this.idBrand = idBrand;
-        this.idGbranch = idGbranch;
     }
 
     public Integer getIdDwEnterprise() {
@@ -150,14 +152,6 @@ public class DwEnterprises implements Serializable {
 
     public void setIdBrand(int idBrand) {
         this.idBrand = idBrand;
-    }
-
-    public int getIdGbranch() {
-        return idGbranch;
-    }
-
-    public void setIdGbranch(int idGbranch) {
-        this.idGbranch = idGbranch;
     }
 
     public int getIdGroup() {
@@ -270,6 +264,22 @@ public class DwEnterprises implements Serializable {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public int getIdZona() {
+        return idZona;
+    }
+
+    public void setIdZona(int idZona) {
+        this.idZona = idZona;
+    }
+
+    public CZonas getZona() {
+        return zona;
+    }
+
+    public void setZona(CZonas zona) {
+        this.zona = zona;
     }
 
     @Override

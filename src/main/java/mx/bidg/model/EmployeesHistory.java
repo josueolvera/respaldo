@@ -233,6 +233,10 @@ public class EmployeesHistory implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
 
+    @Column(name = "ID_DW_EMPLOYEE")
+    @JsonView(JsonViews.Root.class)
+    private Integer idDwEmployee;
+
     public EmployeesHistory() {
     }
 
@@ -588,6 +592,14 @@ public class EmployeesHistory implements Serializable {
 
     public void setIdRole(int idRole) {
         this.idRole = idRole;
+    }
+
+    public Integer getIdDwEmployee() {
+        return idDwEmployee;
+    }
+
+    public void setIdDwEmployee(Integer idDwEmployee) {
+        this.idDwEmployee = idDwEmployee;
     }
 
     public String getFullName() {
