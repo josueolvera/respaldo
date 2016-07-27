@@ -107,11 +107,11 @@ public class Employees implements Serializable {
     
     @Column(name = "EMPLOYEE_TYPE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer employeeType;
+    private Integer idEmployeeType;
     
     @Column(name = "CONTRACT_TYPE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer contractType;
+    private Integer idContractType;
     
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "SALARY")
@@ -203,7 +203,7 @@ public class Employees implements Serializable {
 
     @Column(name = "GENDER", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer gender;
+    private Integer idGender;
 
     @Basic(optional = false)
     @NotNull
@@ -239,17 +239,17 @@ public class Employees implements Serializable {
     @JoinColumn(name = "CONTRACT_TYPE", referencedColumnName = "CONTRACT_TYPE")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private CContractType contractTypes;
+    private CContractType contractType;
 
     @JoinColumn(name = "EMPLOYEE_TYPE", referencedColumnName = "EMPLOYEE_TYPE")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private CEmployeeType employeeTypes;
+    private CEmployeeType employeeType;
 
     @JoinColumn(name = "GENDER", referencedColumnName = "GENDER")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private CGenders genders;
+    private CGenders gender;
 
 
     public Employees() {
@@ -570,20 +570,20 @@ public class Employees implements Serializable {
         this.birthday = birthday;
     }
 
-    public Integer getEmployeeType() {
-        return employeeType;
+    public Integer getIdEmployeeType() {
+        return idEmployeeType;
     }
 
-    public void setEmployeeType(Integer employeeType) {
-        this.employeeType = employeeType;
+    public void setIdEmployeeType(Integer idEmployeeType) {
+        this.idEmployeeType = idEmployeeType;
     }
 
-    public Integer getContractType() {
-        return contractType;
+    public Integer getIdContractType() {
+        return idContractType;
     }
 
-    public void setContractType(Integer contractType) {
-        this.contractType = contractType;
+    public void setIdContractType(Integer idContractType) {
+        this.idContractType = idContractType;
     }
 
     public String getBirthplace() {
@@ -594,36 +594,36 @@ public class Employees implements Serializable {
         this.birthplace = birthplace;
     }
 
-    public Integer getGender() {
+    public Integer getIdGender() {
+        return idGender;
+    }
+
+    public void setIdGender(Integer idGender) {
+        this.idGender = idGender;
+    }
+
+    public CContractType getContractType() {
+        return contractType;
+    }
+
+    public void setContractType(CContractType contractType) {
+        this.contractType = contractType;
+    }
+
+    public CEmployeeType getEmployeeType() {
+        return employeeType;
+    }
+
+    public void setEmployeeType(CEmployeeType employeeType) {
+        this.employeeType = employeeType;
+    }
+
+    public CGenders getGender() {
         return gender;
     }
 
-    public void setGender(Integer gender) {
+    public void setGender(CGenders gender) {
         this.gender = gender;
-    }
-
-    public CContractType getContractTypes() {
-        return contractTypes;
-    }
-
-    public void setContractTypes(CContractType contractTypes) {
-        this.contractTypes = contractTypes;
-    }
-
-    public CEmployeeType getEmployeeTypes() {
-        return employeeTypes;
-    }
-
-    public void setEmployeeTypes(CEmployeeType employeeTypes) {
-        this.employeeTypes = employeeTypes;
-    }
-
-    public CGenders getGenders() {
-        return genders;
-    }
-
-    public void setGenders(CGenders genders) {
-        this.genders = genders;
     }
 
     public String getFullName() {

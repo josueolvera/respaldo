@@ -42,7 +42,7 @@ public class CEmployeeType implements Serializable {
     @Basic(optional = false)
     @Column(name = "EMPLOYEE_TYPE")
     @JsonView(JsonViews.Root.class)
-    private Integer employeeType;
+    private Integer idEmployeeType;
 
     @Basic(optional = false)
     @NotNull
@@ -54,21 +54,21 @@ public class CEmployeeType implements Serializable {
     public CEmployeeType() {
     }
 
-    public CEmployeeType(Integer employeeType) {
-        this.employeeType = employeeType;
+    public CEmployeeType(Integer idEmployeeType) {
+        this.idEmployeeType = idEmployeeType;
     }
 
-    public CEmployeeType(Integer employeeType, String employeeTypeName) {
-        this.employeeType = employeeType;
+    public CEmployeeType(Integer idEmployeeType, String employeeTypeName) {
+        this.idEmployeeType = idEmployeeType;
         this.employeeTypeName = employeeTypeName;
     }
 
-    public Integer getEmployeeType() {
-        return employeeType;
+    public Integer getIdEmployeeType() {
+        return idEmployeeType;
     }
 
-    public void setEmployeeType(Integer employeeType) {
-        this.employeeType = employeeType;
+    public void setIdEmployeeType(Integer idEmployeeType) {
+        this.idEmployeeType = idEmployeeType;
     }
 
     public String getEmployeeTypeName() {
@@ -82,7 +82,7 @@ public class CEmployeeType implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (employeeType != null ? employeeType.hashCode() : 0);
+        hash += (idEmployeeType != null ? idEmployeeType.hashCode() : 0);
         return hash;
     }
 
@@ -93,7 +93,7 @@ public class CEmployeeType implements Serializable {
             return false;
         }
         CEmployeeType other = (CEmployeeType) object;
-        if ((this.employeeType == null && other.employeeType != null) || (this.employeeType != null && !this.employeeType.equals(other.employeeType))) {
+        if ((this.idEmployeeType == null && other.idEmployeeType != null) || (this.idEmployeeType != null && !this.idEmployeeType.equals(other.idEmployeeType))) {
             return false;
         }
         return true;
@@ -101,7 +101,7 @@ public class CEmployeeType implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.CEmployeeType[ employeeType=" + employeeType + " ]";
+        return "mx.bidg.model.CEmployeeType[ idEmployeeType=" + idEmployeeType + " ]";
     }
     
 }

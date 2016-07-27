@@ -43,7 +43,7 @@ public class CContractType implements Serializable {
     @Basic(optional = false)
     @Column(name = "CONTRACT_TYPE")
     @JsonView(JsonViews.Root.class)
-    private Integer contractType;
+    private Integer idContractType;
 
     @Basic(optional = false)
     @NotNull
@@ -55,21 +55,21 @@ public class CContractType implements Serializable {
     public CContractType() {
     }
 
-    public CContractType(Integer contractType) {
-        this.contractType = contractType;
+    public CContractType(Integer idContractType) {
+        this.idContractType = idContractType;
     }
 
-    public CContractType(Integer contractType, String contractTypeName) {
-        this.contractType = contractType;
+    public CContractType(Integer idContractType, String contractTypeName) {
+        this.idContractType = idContractType;
         this.contractTypeName = contractTypeName;
     }
 
-    public Integer getContractType() {
-        return contractType;
+    public Integer getIdContractType() {
+        return idContractType;
     }
 
-    public void setContractType(Integer contractType) {
-        this.contractType = contractType;
+    public void setIdContractType(Integer idContractType) {
+        this.idContractType = idContractType;
     }
 
     public String getContractTypeName() {
@@ -83,7 +83,7 @@ public class CContractType implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (contractType != null ? contractType.hashCode() : 0);
+        hash += (idContractType != null ? idContractType.hashCode() : 0);
         return hash;
     }
 
@@ -94,7 +94,7 @@ public class CContractType implements Serializable {
             return false;
         }
         CContractType other = (CContractType) object;
-        if ((this.contractType == null && other.contractType != null) || (this.contractType != null && !this.contractType.equals(other.contractType))) {
+        if ((this.idContractType == null && other.idContractType != null) || (this.idContractType != null && !this.idContractType.equals(other.idContractType))) {
             return false;
         }
         return true;
@@ -102,7 +102,7 @@ public class CContractType implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.CContractType[ contractType=" + contractType + " ]";
+        return "mx.bidg.model.CContractType[ idContractType=" + idContractType + " ]";
     }
     
 }

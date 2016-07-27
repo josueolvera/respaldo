@@ -90,22 +90,22 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
                     employeesHistory.setIdStatusMarital(statusMarital.getIdStatusMarital());
                 }
 
-                CEmployeeType cEmployeeType = employee.getEmployeeTypes();
+                CEmployeeType cEmployeeType = employee.getEmployeeType();
 
                 if (cEmployeeType != null){
-                    employeesHistory.setEmployeeType(cEmployeeType.getEmployeeType());
+                    employeesHistory.setEmployeeType(cEmployeeType.getIdEmployeeType());
                 }
 
-                CContractType cContractType = employee.getContractTypes();
+                CContractType cContractType = employee.getContractType();
 
                 if(cContractType != null){
-                    employeesHistory.setContractType(cContractType.getContractType());
+                    employeesHistory.setContractType(cContractType.getIdContractType());
                 }
 
-                CGenders cGender = employee.getGenders();
+                CGenders cGender = employee.getGender();
 
                 if (cGender != null){
-                    employeesHistory.setGender(cGender.getGender());
+                    employeesHistory.setGender(cGender.getIdGender());
                 }
 
                 employeesHistory.setIdEmployee(employee.getIdEmployee());
