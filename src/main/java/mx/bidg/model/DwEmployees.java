@@ -71,7 +71,7 @@ public class DwEmployees implements Serializable {
     @JoinColumn(name = "ID_ROLE", referencedColumnName = "ID_ROLE")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CRoles role;
+    private CRoles role;    
     
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "dwEmployee")
     @JsonView(JsonViews.Embedded.class)

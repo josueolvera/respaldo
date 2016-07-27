@@ -38,6 +38,7 @@ public class EmployeesHistoryController {
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getEmployeesHistories
             (
+                    @RequestParam(name="typeOfSeach", required = false) Integer typeOfSearch,
                     @RequestParam(name = "idDistributor", required = false) Integer idDistributor,
                     @RequestParam(name = "idRegion", required = false) Integer idRegion,
                     @RequestParam(name = "idBranch", required = false) Integer idBranch,

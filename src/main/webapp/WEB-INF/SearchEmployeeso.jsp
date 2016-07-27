@@ -226,13 +226,28 @@
                         this.$http.get(
                                 ROOT_URL + this.employeesUrl
                         ).success(function (data) {
+                            /*var jsonObjectIndex = {};
+                            data.forEach(function (dwEmployee) {
+                                if (isNaN(dwEmployee.dwEnterprise)) {
+                                    jsonObjectIndex[dwEmployee.dwEnterprise._id] = dwEmployee.dwEnterprise;
+                                } else {
+                                    dwEmployee.dwEnterprise = jsonObjectIndex[dwEmployee.dwEnterprise];
+                                }
+                            })
                             this.dwEmployees = data;
-                            if (this.dwEmployees.length > 0) {
+                            if (data.length > 0) {
                                 this.isThereItems = true;
-                               
                             }
+                            this.searching = false;
                         }).error(function (data) {
                             showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
+                        });
+                        */
+                        alert("Aqui entra");
+                        this.dwEmployees = data;
+                        if (this.dwEmployees.length > 0) {
+                            this.isThereItems = true;
+                        }
                         });
                     },
                     getEmployees : function () {
