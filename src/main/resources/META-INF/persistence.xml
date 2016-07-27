@@ -25,6 +25,8 @@
     <class>mx.bidg.model.CContractType</class>
     <class>mx.bidg.model.CEmployeeType</class>
     <class>mx.bidg.model.CGenders</class>
+    <class>mx.bidg.model.CZonas</class>
+    <class>mx.bidg.model.DitributorsEmployeeDocuments</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties/>
   </persistence-unit>
