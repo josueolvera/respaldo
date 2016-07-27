@@ -14,7 +14,7 @@
     <jsp:attribute name="scripts">
         <script type="text/javascript">
             function isNumberKey(evt) {
-                var charCode = (evt.which) ? evt.which : event.keyCode
+                var charCode = (evt.which) ? evt.which : event.keyCode;
                 if (charCode > 31 && (charCode < 48 || charCode > 57))
                     return false;
                 return true;
@@ -23,7 +23,7 @@
 
         <script>
             function isLetterKey(evt) {
-                var charCode = (evt.which) ? evt.which : event.keyCode
+                var charCode = (evt.which) ? evt.which : event.keyCode;
                 if (charCode === 32 ||
                         charCode === 13 ||
                         (charCode > 64 && charCode < 91) ||
@@ -37,7 +37,7 @@
                 }
             }
             function isNumberKeyAndLetterKey(evt) {
-                var charCode = (evt.which) ? evt.which : event.keyCode
+                var charCode = (evt.which) ? evt.which : event.keyCode;
                 if (charCode === 13 ||
                         (charCode > 64 && charCode < 91) ||
                         (charCode > 47 && charCode < 58) ||
@@ -70,7 +70,7 @@
 
                     this.timePickerIngreso = $('#dateJoin').datetimepicker({
                         locale: 'es',
-                        format: 'DD-MM-YYYY',
+                        format: 'DD-MM-YYYY'
                     }).data();
                 },
                 ready: function () {
@@ -79,6 +79,9 @@
                     this.obtainEducation();
                     this.obtainStatusMarital();
                     this.obtainBanks();
+                    this.getBranchs();
+                    this.obtainEmployeeTypes();
+                    this.obtainContractTypes();
                 },
                 data: {
                     dwEmployee:{},
@@ -96,7 +99,8 @@
                     selectOptions: {
                         distributors: [],
                         areas: [],
-                        hierarchy: [],
+                        roles: [],
+                        dwEnterprises: [],
                         documentTypes: []
                     },
                     selectedOptions: {
@@ -117,25 +121,18 @@
                         }
                     },
                     defaultArea: {
-                        id: 0,
-                        name: ''
-                    },
-                    defaultDistributor: {
-                        id: 0,
-                        name: ''
-                    },
-                    defaultRegion: {
-                        id: 0,
+                        idArea: 0,
                         name: ''
                     },
                     defaultBranch: {
-                        id: 0,
+                        idBranch: 0,
                         name: ''
                     },
                     defaultRole: {
-                        id: 0,
+                        idRole: 0,
                         name: ''
                     },
+                    branchs:[],
                     employee: {
                         idDwEnterprise: '',
                         idRole: '',
@@ -237,10 +234,7 @@
                                     this.employee.dwEmployees.role = this.dwEmployee.role;
                                     this.employee.idDwEmployee = this.dwEmployee.idDwEmployee;
                                     this.obtainAsentamientos();
-                                    this.fetchHierarchy();
                                     this.obtainGenders();
-                                    this.obtainEmployeeTypes();
-                                    this.obtainContractTypes();
                                     this.$http.get(ROOT_URL + "/employees-accounts/actives/" + this.employee.idEmployee).success(function (data) {
                                         this.account = data;
                                     });
@@ -257,6 +251,7 @@
                     obtainEmployeeTypes: function () {
                         this.$http.get(ROOT_URL + "/employee-type").success(function (data) {
                             this.employeeTypes = data;
+                            console.log(data);
                         });
                     },
                     obtainContractTypes: function () {
@@ -277,6 +272,11 @@
                     obtainStatusMarital: function () {
                         this.$http.get(ROOT_URL + "/status-marital").success(function (data) {
                             this.statusMarital = data;
+                        });
+                    },
+                    getBranchs : function () {
+                        this.$http.get(ROOT_URL + "/branchs").success(function (data) {
+                            this.branchs = data;
                         });
                     },
                     obtainAsentamientos: function () {
@@ -325,39 +325,24 @@
                             showAlert("El curp debe contener 18 caracteres",{type: 3});
                         }
                     },
-                    fetchHierarchy: function () {
-                        var self = this;
-                        this.$http.get(ROOT_URL + "/dw-enterprises/hierarchy").success(function (data) {
-                            this.selectOptions.hierarchy = data;
-                        });
-                    },
-                    selectedOptionsDistributorChanged: function () {
-
-                        this.selectedOptions.region = this.defaultRegion;
-                        this.selectedOptions.branch = this.defaultBranch;
-                        this.selectedOptions.area = this.defaultArea;
-                    },
-                    selectedOptionsRegionChanged: function () {
-                        this.selectedOptions.branch = this.defaultBranch;
-                        this.selectedOptions.area = this.defaultArea;
-                    },
                     selectedOptionsBranchChanged: function () {
                         this.selectedOptions.area = this.defaultArea;
                         this.selectedOptions.role = this.defaultRole;
+                        this.selectOptions.dwEnterprises = [];
+                        this.selectOptions.roles = [];
+                        this.$http.get(ROOT_URL + "/dw-enterprises/branch/" + this.selectedOptions.branch.idBranch).success(function (data) {
+                            this.selectOptions.dwEnterprises = data;
+                        });
                     },
-                    selectedOptionsAreaChanged: function () {
+                    selectedOptionsDwEnterpriseChanged: function () {
+                        this.selectOptions.roles = [];
                         this.selectedOptions.role = this.defaultRole;
-                        this.$http.get(ROOT_URL + "/areas/area-role/" + this.selectedOptions.area.id).success(function (data) {
-                            this.selectOptions.areas = data;
+                        this.$http.get(ROOT_URL + "/areas/area-role/" + this.selectedOptions.area.idArea).success(function (data) {
+                            this.selectOptions.roles = data.roles;
                         });
                     },
                     updateEmployee: function () {
-                        var cuenta = {
-                            accountNumber: '',
-                            accountClabe: '',
-                            idBank: '',
-                            idCurrency: '',
-                        };
+                        var cuenta = {};
                         cuenta.accountClabe = this.account.account.accountClabe;
                         cuenta.accountNumber = this.account.account.accountNumber;
                         cuenta.idBank = this.account.account.idBank;
@@ -374,14 +359,14 @@
                         }
                         this.employee.joinDate = moment(this.joinDate, 'DD/MM/YYYY').toISOString().slice(0,-1);
                         this.employee.birthday = moment(this.birthday, 'DD/MM/YYYY').toISOString().slice(0, -1);
-                        
+
                         this.$http.post(ROOT_URL + "/employees/update", JSON.stringify(this.employee)).success(function (data) {
                             showAlert("Actualizaciòn de empleado exitoso");
                         }).error(function () {
                             this.employee.employeeAccountList = [];
                             showAlert("Ha habido un error con la solicitud, intente nuevamente", {type: 3});
                         });
-                    },
+                    }
                 }
 
             });
@@ -618,89 +603,63 @@
                         </div>
                         <br>
                         <div class="row">
-                            <div class="col-xs-3">
-                                <label>Distribuidor</label>
-                                <select v-model="selectedOptions.distributor" class="form-control"
-                                        @change="selectedOptionsDistributorChanged">
-                                    <option selected :value="defaultDistributor">{{defaultDistributor.name}}</option>
-                                    <option v-for="distributor in selectOptions.hierarchy[0].subLevels"
-                                            :value="distributor">
-                                        {{ distributor.name }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Región</label>
-                                <select v-model="selectedOptions.region" class="form-control"
-                                        @change="selectedOptionsRegionChanged"
-                                        :disabled="selectedOptions.distributor.id == 0">
-                                    <option selected :value="defaultRegion">{{defaultRegion.name}}</option>
-                                    <option v-for="region in selectedOptions.distributor.subLevels"
-                                            :value="region">
-                                        {{ region.name }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-3">
+                            <div class="col-xs-2">
                                 <label>Sucursal</label>
                                 <select v-model="selectedOptions.branch" class="form-control"
-                                        @change="selectedOptionsBranchChanged"
-                                        :disabled="selectedOptions.region.id == 0">
+                                        @change="selectedOptionsBranchChanged">
                                     <option selected :value="defaultBranch">{{defaultBranch.name}}</option>
-                                    <option v-for="branch in selectedOptions.region.subLevels"
+                                    <option v-for="branch in branchs"
                                             :value="branch">
-                                        {{ branch.name }}
+                                        {{ branch.branchShort }}
                                     </option>
                                 </select>
                             </div>
                             <div class="col-xs-3">
                                 <label>Área</label>
                                 <select v-model="selectedOptions.area" class="form-control"
-                                        @change="selectedOptionsAreaChanged"
-                                        :disabled="selectedOptions.branch.id == 0">
+                                        @change="selectedOptionsDwEnterpriseChanged"
+                                        :disabled="selectOptions.dwEnterprises.length <= 0">
                                     <option selected :value="defaultArea">{{defaultArea.name}}</option>
-                                    <option v-for="area in selectedOptions.branch.subLevels"
-                                            :value="area">
-                                        {{ area.name }}
+                                    <option v-for="dwEnterprise in selectOptions.dwEnterprises"
+                                            :value="dwEnterprise.area">
+                                        {{ dwEnterprise.area.areaName }}
                                     </option>
                                 </select>
                             </div>
-                        </div>
-                        <br>
-                        <div class="row">
                             <div class="col-xs-3">
                                 <label>Puesto</label>
                                 <select v-model="selectedOptions.role" class="form-control"
-                                        :disabled="selectedOptions.area.id == 0">
+                                        :disabled="selectOptions.roles.length <= 0">
                                     <option selected :value="defaultRole">{{defaultRole.name}}</option>
-                                    <option v-for="role in selectOptions.areas.roles"
-                                            :value="role.idRole">
+                                    <option v-for="role in selectOptions.roles"
+                                            :value="role">
                                         {{ role.roleName }}
                                     </option>
                                 </select>
                             </div>
-                            <div class="col-xs-3">
+                            <div class="col-xs-2">
                                 <label>Tipo de empleado</label>
-                                <select class="form-control" name="" v-model="employee.employeeType">
+                                <select class="form-control" v-model="employee.employeeType">
                                     <option></option>
                                     <option v-for="type in employeeTypes" :value="type.employeeTypeName">
                                         {{type.employeeTypeName}}
                                     </option>
                                 </select>
                             </div>
-                            <div class="col-xs-3">
+                            <div class="col-xs-2">
                                 <label>Tipo de contrato</label>
-                                <select class="form-control" name="" v-model="employee.contractType">
+                                <select class="form-control" v-model="employee.contractType">
                                     <option></option>
                                     <option v-for="contract in contractTypes" :value="contract.contractTypeName">
                                         {{contract.contractTypeName}}
                                     </option>
                                 </select>
                             </div>
+                        </div>
+                        <br>
                     </div>
                 </div>
             </div>
-                </div>
             <br>
             <div class="panel panel-default">
                 <!-- Default panel contents -->
@@ -747,18 +706,18 @@
                 </div>
             </div>
             <br>
-                <div class="row">
-                    <div class="col-xs-10">
-                    </div>
-                    <div class="col-xs-1">
-                        <a class="btn btn-default" :href="regresarBusqueda">Regresar</a>
-                    </div>
-                    <div class="col-xs-1">
-                        <button type="button" class="btn btn-default" @click="updateEmployee()">
-                            Aceptar
-                        </button>
-                    </div>
+            <div class="row">
+                <div class="col-xs-10">
                 </div>
+                <div class="col-xs-1">
+                    <a class="btn btn-default" :href="regresarBusqueda">Regresar</a>
+                </div>
+                <div class="col-xs-1">
+                    <button type="button" class="btn btn-default" @click="updateEmployee()">
+                        Aceptar
+                    </button>
+                </div>
+            </div>
         </div>
     </jsp:body>
 </t:template>
