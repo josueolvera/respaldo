@@ -66,6 +66,10 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
 
                 employeesHistory.setStatus(1);
 
+
+                employeesHistory.setIdDwEmployee(dwEmployee.getIdDwEmployee());
+
+
                 if (dwEnterprises != null) {
                     employeesHistory.setIdDwEnterprise(dwEnterprises.getIdDwEnterprise());
                 }
