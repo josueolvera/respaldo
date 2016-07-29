@@ -85,6 +85,9 @@
                     employeeTypes: [],
                     genders: [],
                     branchs:[],
+                    documentTypes: [],
+                    employeeDocuments: [],
+                    newEmployeeDocuments: [],
                     selectOptions: {
                         areas: [],
                         roles: [],
@@ -116,7 +119,8 @@
                     },
                     timePickerJoinDate: '',
                     timePickerBirthday: '',
-                    regresarBusqueda: ROOT_URL + '/saem/search-employees'
+                    regresarBusqueda: ROOT_URL + '/saem/search-employees',
+                    downloadUrl: ROOT_URL + '/employee-documents/download/'
                 },
                 methods: {
                     getDwEmployee: function () {
@@ -124,17 +128,28 @@
                                 .success(function (data) {
                                     this.dwEmployee = data;
                                     this.setDates();
-                                    delete this.dwEmployee.idDwEmployee;
-                                    delete this.dwEmployee.creationDate;
-                                    delete this.dwEmployee.idEmployee;
-                                    delete this.dwEmployee.idRole;
                                     this.dwEnterprise = this.dwEmployee.dwEnterprise;
                                     this.role = this.dwEmployee.role;
                                     this.obtainAsentamientos();
                                     this.getEmployeeAccounts();
+                                    this.getEmployeeDocuments();
+                                    this.newEmployeeDocuments = [];
                                 })
                                 .error(function (data) {
 
+                                });
+                    },
+                    getEmployeeDocuments : function () {
+                        this.$http.get(ROOT_URL + '/employee-documents/' + this.dwEmployee.idEmployee)
+                                .success(function (data) {
+                                    this.employeeDocuments = data;
+                                    this.getDocumentTypes();
+                                });
+                    },
+                    getDocumentTypes: function () {
+                        this.$http.get(ROOT_URL + "/employee-document-types/employee/" + this.dwEmployee.idEmployee)
+                                .success(function (data) {
+                                    this.documentTypes = data;
                                 });
                     },
                     setDates:function () {
@@ -222,7 +237,6 @@
                         this.$http.get(ROOT_URL + "/banks")
                                 .success(function (data) {
                                     this.banks = data;
-
                                 });
                     },
                     validateFile: function (event) {
@@ -265,13 +279,94 @@
                         });
                     },
                     updateEmployee: function () {
-                        this.dwEmployee.employee.employeeAccountList.push(this.employeeAccount.account);
-                        this.$http.post(ROOT_URL + "/employees/update", JSON.stringify(this.dwEmployee)).success(function (data) {
-                            showAlert("Actualizaciòn de empleado exitoso");
-                        }).error(function () {
-                            this.employee.employeeAccountList = [];
+                        var self = this;
+
+                        this.dwEmployee.employee.state = this.estadosMunicipios.estado.nombreEstado;
+                        this.dwEmployee.employee.city = this.estadosMunicipios.nombreMunicipios;
+
+                        var requestBody = {
+                            dwEmployee : this.dwEmployee,
+                            employeeAccount : this.employeeAccount
+                        };
+                        
+                        this.$http.post(ROOT_URL + "/dw-employees/update", requestBody).success(function (data) {
+                            if (this.newEmployeeDocuments.length > 0) {
+                                showAlert("Actualización de empleado exitoso");
+                                this.newEmployeeDocuments.forEach(function (document) {
+                                    self.updateEmployeeDocument(document);
+                                });
+                            }
+                        }).error(function (data) {
                             showAlert("Ha habido un error con la solicitud, intente nuevamente", {type: 3});
                         });
+                    },
+                    validateFile: function (file) {
+                        if (! file.name.match(/(\.jpg|\.jpeg|\.pdf|\.png)$/i)) {
+                            event.target.value = null;
+                            showAlert("Tipo de archivo no admitido", {type:3});
+                            return false;
+                        }
+
+                        return true;
+                    },
+                    updateEmployeeDocument : function (document) {
+                        this.$http.post(ROOT_URL + '/employee-documents/update/' + this.dwEmployee.idEmployee, document)
+                                .success(function (data) {
+                                    this.getDwEmployee();
+                                })
+                                .error(function (data) {
+
+                                });
+                    },
+                    setFile : function (event, object) {
+                        var self = this;
+                        var document = {};
+                        var index;
+
+                        if ("idDocumentType" in object) {
+                            index = object.idDocumentType - 1;
+                        } else {
+                            index = object.cDocumentType.idDocumentType - 1;
+                        }
+
+                        if ("idDocument" in object) {
+                            document.idDocument = object.idDocument;
+                        } else {
+                            document.documentType = object;
+                        }
+
+
+                        var reader = new FileReader();
+                        var file = event.target.files[0];
+
+                        if (file) {
+                            if (this.validateFile(file)) {
+                                reader.onload = (function(theFile) {
+                                    return function(e) {
+
+                                        document.file = {
+                                            name:theFile.name,
+                                            size:theFile.size,
+                                            type:theFile.type,
+                                            dataUrl:e.target.result
+                                        };
+
+                                        if (index > -1) {
+                                            self.newEmployeeDocuments[index] = document;
+                                        }
+                                    };
+                                })(file);
+                                reader.readAsDataURL(file);
+                            } else {
+                                if (index > -1) {
+                                    self.newEmployeeDocuments.splice(index,1);
+                                }
+                            }
+                        } else {
+                            if (index > -1) {
+                                self.newEmployeeDocuments.splice(index,1);
+                            }
+                        }
                     }
                 }
 
@@ -316,7 +411,6 @@
                             <div class="col-xs-3">
                                 <label>Genero</label>
                                 <select class="form-control" v-model="dwEmployee.employee.gender">
-                                    <option></option>
                                     <option v-for="gender in genders" :value="gender">
                                         {{gender.genderName}}
                                     </option>
@@ -336,7 +430,6 @@
                             <div class="col-xs-3">
                                 <label>Lugar de Nacimiento</label>
                                 <select class="form-control" v-model="dwEmployee.employee.birthPlace">
-                                    <option></option>
                                     <option v-for="estado in estados"
                                             value="{{estado.nombreEstado}}">
                                         {{estado.nombreEstado}}
@@ -358,18 +451,15 @@
                             </div>
                             <div class="col-xs-3">
                                 <label>Estado</label>
-                                <input class="form-control" v-model="dwEmployee.employee.state"
-                                       v-model="estadosMunicipios.estado.nombreEstado" disabled>
+                                <input class="form-control" v-model="estadosMunicipios.estado.nombreEstado" disabled>
                             </div>
                             <div class="col-xs-3">
                                 <label>Municipio/Delegación</label>
-                                <input class="form-control" v-model="dwEmployee.employee.city"
-                                       v-model="estadosMunicipios.nombreMunicipios" disabled>
+                                <input class="form-control" v-model="estadosMunicipios.nombreMunicipios" disabled>
                             </div>
                             <div class="col-xs-3">
                                 <label>Colonia</label>
                                 <select class="form-control" v-model="dwEmployee.employee.colonia">
-                                    <option></option>
                                     <option v-for="set in asentamiento" value="{{set.nombreAsentamiento}}">
                                         {{set.nombreAsentamiento}}
                                     </option>
@@ -406,7 +496,6 @@
                             <div class="col-xs-3">
                                 <label>Estado civil</label>
                                 <select class="form-control" v-model="dwEmployee.employee.statusMarital">
-                                    <option></option>
                                     <option v-for="statusMarital in statusMaritalList" value="{{statusMarital}}">
                                         {{statusMarital.maritalName}}
                                     </option>
@@ -415,7 +504,6 @@
                             <div class="col-xs-3">
                                 <label>Escolaridad</label>
                                 <select class="form-control" v-model="dwEmployee.employee.education">
-                                    <option></option>
                                     <option v-for="education in educationList" value="{{education}}">
                                         {{education.educationName}}
                                     </option>
@@ -465,6 +553,16 @@
                                    </span>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xs-3">
+                                <label>IMSS</label>
+                                <input class="form-control" v-model="dwEmployee.employee.imss">
+                            </div>
+                            <div class="col-xs-3">
+                                <label>Infonavit</label>
+                                <input class="form-control" v-model="dwEmployee.employee.infonavitNumber">
                             </div>
                         </div>
                     </div>
@@ -550,7 +648,6 @@
                             <div class="col-xs-2">
                                 <label>Tipo de empleado</label>
                                 <select class="form-control" v-model="dwEmployee.employee.employeeType">
-                                    <option></option>
                                     <option v-for="employeeType in employeeTypes" :value="employeeType">
                                         {{employeeType.employeeTypeName}}
                                     </option>
@@ -559,7 +656,6 @@
                             <div class="col-xs-2">
                                 <label>Tipo de contrato</label>
                                 <select class="form-control" v-model="dwEmployee.employee.contractType">
-                                    <option></option>
                                     <option v-for="contractType in contractTypes" :value="contractType">
                                         {{contractType.contractTypeName}}
                                     </option>
@@ -580,7 +676,6 @@
                             <div class="col-xs-3">
                                 <label>Banco</label>
                                 <select class="form-control" v-model="employeeAccount.account.bank">
-                                    <option></option>
                                     <option v-for="bank in banks" value="{{bank}}">
                                         {{bank.acronyms}}
                                     </option>
@@ -614,6 +709,55 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <!-- Default panel contents -->
+                <div class="panel-heading">Datos bancarios</div>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tipo de documento</th>
+                            <th>Nombre</th>
+                            <th>Fecha de actualización</th>
+                            <th>Nuevo Documento</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="employeeDocument in employeeDocuments">
+                            <td>{{$index + 1}}</td>
+                            <td>
+                                {{employeeDocument.cDocumentType.documentName}}
+                            </td>
+                            <td>
+                                <a :href="downloadUrl + employeeDocument.idDocument">{{employeeDocument.documentName}}</a>
+                            </td>
+                            <td>
+                                {{employeeDocument.uploadDateFormats.simpleDate}}
+                            </td>
+                            <td>
+                                <input type="file" class="form-control" @change="setFile($event, employeeDocument)">
+                            </td>
+                        </tr>
+                        <tr v-for="documentType in documentTypes">
+                            <td>{{employeeDocuments.length + $index + 1}}</td>
+                            <td>
+                                {{documentType.documentName}}
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+                                <input type="file" class="form-control" @change="setFile($event, documentType)">
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
             <br>
