@@ -56,8 +56,7 @@ public class EmployeesAccountsServiceImpl implements EmployeesAccountsService {
 
     @Override
     public EmployeesAccounts findEmployeeAccountActive(Integer idEmployee) {
-        List<Accounts> accounts = accountsDao.accountsActives();
-        return employeesAccountsDao.findActiveEmployeeAccounts(idEmployee, accounts);
+        return employeesAccountsDao.findByIdEmployee(idEmployee);
     }
 
 }
