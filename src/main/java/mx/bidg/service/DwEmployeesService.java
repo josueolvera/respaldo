@@ -30,6 +30,6 @@ public interface DwEmployeesService {
     void createReport(List<DwEmployees> dwEmployees, OutputStream outputStream) throws IOException;
     void changeEmployeeStatus(Integer idDwEmployee);
     DwEmployees findByIdDw(Integer idDwEnterprise);
-    DwEmployees update(DwEmployees dwEmployee);
+    DwEmployees update(String data) throws IOException;
     boolean delete (DwEmployees dwEmployees);
 }
