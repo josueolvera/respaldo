@@ -1,5 +1,8 @@
 package mx.bidg.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import mx.bidg.dao.*;
 import mx.bidg.model.*;
 import mx.bidg.service.*;
@@ -11,7 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -30,6 +37,9 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     private DwEnterprisesDao dwEnterprisesDao;
 
     @Autowired
+    private CRolesDao cRolesDao;
+
+    @Autowired
     private EmployeesHistoryService employeesHistoryService;
 
     @Autowired
@@ -46,6 +56,12 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
 
     @Autowired
     private EmployeesAccountsService employeesAccountsService;
+
+    @Autowired
+    private AccountsDao accountsDao;
+
+    @Autowired
+    private ObjectMapper mapper;
 
     @Override
     public DwEmployees findById(Integer id) {
@@ -253,8 +269,88 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     }
 
     @Override
-    public DwEmployees update(DwEmployees dwEmployee) {
-        return dwEmployeesDao.update(dwEmployee);
+    public DwEmployees update(String data) throws IOException {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+
+        JsonNode jsonNode = mapper.readTree(data);
+        JsonNode employeeNode = jsonNode.get("dwEmployee").get("employee");
+
+        DwEmployees dwEmployee = dwEmployeesDao.findById(jsonNode.get("dwEmployee").get("idDwEmployee").asInt());
+        DwEnterprises dwEnterprise = dwEnterprisesDao.findById(jsonNode.get("dwEmployee").get("dwEnterprise").get("idDwEnterprise").asInt());
+        CRoles role = cRolesDao.findById(jsonNode.get("dwEmployee").get("role").get("idRole").asInt());
+        Employees employee = employeesDao.findById(employeeNode.get("idEmployee").asInt());
+
+        LocalDateTime joinDate = LocalDateTime.parse(jsonNode.get("dwEmployee").get("employee").get("joinDate").asText() + " 00:00",formatter);
+        LocalDate birthday = LocalDateTime.parse(jsonNode.get("dwEmployee").get("employee").get("birthday").asText() + " 00:00",formatter).toLocalDate();
+
+        employee.setStreet(employeeNode.get("street").asText());
+        employee.setBirthday(birthday);
+        employee.setCellPhone(employeeNode.get("cellPhone").asText());
+        employee.setContractType(mapper.treeToValue(employeeNode.get("contractType"),CContractType.class));
+        employee.setBirthplace(employeeNode.get("birthPlace").asText());
+        employee.setColonia(employeeNode.get("colonia").asText());
+        employee.setCity(employeeNode.get("city").asText());
+        employee.setClaveSap(employeeNode.get("claveSap").asText());
+        employee.setCurp(employeeNode.get("curp").asText());
+        employee.setRfc(employeeNode.get("rfc").asText());
+        employee.setMotherName(employeeNode.get("motherName").asText());
+        employee.setFatherName(employeeNode.get("fatherName").asText());
+        employee.setFirstName(employeeNode.get("firstName").asText());
+        employee.setMiddleName(employeeNode.get("middleName").asText());
+        employee.setParentalLast(employeeNode.get("parentalLast").asText());
+        employee.setMotherLast(employeeNode.get("motherLast").asText());
+        employee.setPostcode(employeeNode.get("postcode").asText());
+        employee.setEducation(mapper.treeToValue(employeeNode.get("education"),CEducation.class));
+        employee.setEmployeeType(mapper.treeToValue(employeeNode.get("employeeType"),CEmployeeType.class));
+        employee.setSize(employeeNode.get("size").asText());
+        employee.setSizeNumber(employeeNode.get("sizeNumber").asInt());
+        employee.setState(employeeNode.get("state").asText());
+        employee.setExteriorNumber(employeeNode.get("exteriorNumber").asText());
+        employee.setInteriorNumber(employeeNode.get("interiorNumber").asText());
+        employee.setGender(mapper.treeToValue(employeeNode.get("gender"),CGenders.class));
+        employee.setHomePhone(employeeNode.get("homePhone").asText());
+        employee.setImss(employeeNode.get("imss").asText());
+        employee.setInfonavitNumber(employeeNode.get("infonavitNumber").asText());
+        employee.setStatusMarital(mapper.treeToValue(employeeNode.get("statusMarital"),CStatusMarital.class));
+        employee.setSalary(new BigDecimal(employeeNode.get("salary").asInt()));
+        employee.setStatus(1);
+        employee.setMail(employeeNode.get("mail").asText());
+        employee.setJoinDate(joinDate);
+                
+
+        dwEmployee.setDwEnterprise(dwEnterprise);
+        dwEmployee.setRole(role);
+        dwEmployee.setEmployee(employee);
+
+        dwEmployee = dwEmployeesDao.update(dwEmployee);
+
+        Accounts currentAccount = accountsDao.findById(jsonNode.get("employeeAccount").get("account").get("idAccount").asInt());
+
+        ObjectNode accountNode = (ObjectNode) jsonNode.get("employeeAccount").get("account");
+        accountNode.remove("employeesAccountsList");
+        accountNode.remove("providersAccountsList");
+        accountNode.remove("priceEstimationsList");
+        accountNode.remove("idAccount");
+        accountNode.remove("deleteDay");
+        accountNode.remove("idBank");
+        accountNode.remove("idAccountType");
+        accountNode.remove("idCurrency");
+        accountNode.remove("_id");
+
+        Accounts account = mapper.treeToValue(jsonNode.get("employeeAccount").get("account"), Accounts.class);
+
+        if (!account.equals(currentAccount)) {
+            currentAccount.setDeleteDay(LocalDateTime.now());
+            accountsDao.update(currentAccount);
+            account = accountsDao.save(account);
+
+            EmployeesAccounts employeesAccount = employeesAccountsDao.findByIdEmployee(employee.getIdEmployee());
+            employeesAccount.setAccount(account);
+
+            employeesAccountsDao.save(employeesAccount);
+        }
+
+        return dwEmployee;
     }
 
     @Override
