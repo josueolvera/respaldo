@@ -14,7 +14,7 @@ public interface EmployeeDocumentsService {
     List<EmployeeDocuments> findByIdEmployee(Integer idEmployee);
     EmployeeDocuments findBy(Employees employee, CEmployeeDocumentsTypes documentType);
     List<EmployeeDocuments> findRecordBy(Employees employee);
-    EmployeeDocuments save(EmployeeDocuments entity);
+    EmployeeDocuments save(String data, Integer idEmployee) throws IOException;
     EmployeeDocuments findById(int id);
     List<EmployeeDocuments> findAll();
     EmployeeDocuments update(EmployeeDocuments entity);
