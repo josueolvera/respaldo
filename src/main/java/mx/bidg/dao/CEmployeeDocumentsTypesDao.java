@@ -9,4 +9,5 @@ import java.util.List;
  */
 public interface CEmployeeDocumentsTypesDao extends InterfaceDao<CEmployeeDocumentsTypes> {
     List<CEmployeeDocumentsTypes> findByInputField();
+    List<CEmployeeDocumentsTypes> findByEmployee(List<CEmployeeDocumentsTypes> employeeDocumentTypes);
 }
