@@ -104,7 +104,10 @@ public class CRoles implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.CRoles[ idRole=" + idRole + " ]";
+        return "CRoles{" +
+                "idRole=" + idRole +
+                ", roleName='" + roleName + '\'' +
+                ", areas=" + areas +
+                '}';
     }
-    
 }
