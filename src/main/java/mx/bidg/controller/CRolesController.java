@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.IOException;
 import java.util.List;
+import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  * Created by jolvera on 24/06/16.
@@ -31,6 +32,12 @@ public class CRolesController {
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findAll() throws IOException{
         List<CRoles> roles = cRolesService.findAll();
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(roles), HttpStatus.OK);
+    }
+    
+    @RequestMapping(value="/{idRole}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findById(@PathVariable int idRole) throws IOException{
+        CRoles roles = cRolesService.findById(idRole);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(roles), HttpStatus.OK);
     }
 }

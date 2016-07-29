@@ -48,23 +48,28 @@ public class EmployeesHistory implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idEmployee;
 
-    @Column(name = "ID_DW_ENTERPRISE")
+    @Basic(optional = true)
+    @Column(name = "ID_DW_ENTERPRISE", nullable=true)
     @JsonView(JsonViews.Root.class)
     private int idDwEnterprise;
 
-    @Column(name = "ID_ACCOUNT")
+    @Basic(optional = true)
+    @Column(name = "ID_ACCOUNT", nullable=true)
     @JsonView(JsonViews.Root.class)
     private int idAccount;
 
-    @Column(name = "ID_ROLE")
+    @Basic(optional = true)
+    @Column(name = "ID_ROLE", nullable=true)
     @JsonView(JsonViews.Root.class)
     private int idRole;
-
+    
+    @Basic(optional = true)
     @Size(max = 10)
     @Column(name = "EMPLOYEE_NUMBER")
     @JsonView(JsonViews.Root.class)
     private String employeeNumber;
 
+    @Basic(optional = true)
     @Size(max = 50)
     @Column(name = "FIRST_NAME")
     @JsonView(JsonViews.Root.class)
@@ -114,15 +119,17 @@ public class EmployeesHistory implements Serializable {
     @Column(name = "MAIL")
     @JsonView(JsonViews.Root.class)
     private String mail;
-
+    
+    @Basic(optional = true)
     @Column(name = "EMPLOYEE_TYPE")
     @JsonView(JsonViews.Root.class)
     private Integer employeeType;
 
+    @Basic(optional = true)
     @Column(name = "CONTRACT_TYPE")
     @JsonView(JsonViews.Root.class)
     private Integer contractType;
-
+    
     @Column(name = "SALARY")
     @JsonView(JsonViews.Root.class)
     private BigDecimal salary;
@@ -232,11 +239,31 @@ public class EmployeesHistory implements Serializable {
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
+    
+    @Column(name = "H_STATUS")
+    @JsonView(JsonViews.Root.class)
+    private Integer hStatus;
 
-    @Column(name = "ID_DW_EMPLOYEE")
+    @Column(name = "ID_DW_EMPLOYEE", nullable=true)
     @JsonView(JsonViews.Root.class)
     private Integer idDwEmployee;
+    
+    @Column(name = "ID_DISTRIBUTOR")
+    @JsonView(JsonViews.Root.class)
+    private Integer idDistributor;
 
+    @Column(name = "ID_REGION")
+    @JsonView(JsonViews.Root.class)
+    private Integer idRegion;
+        
+    @Column(name = "ID_BRANCH")
+    @JsonView(JsonViews.Root.class)
+    private Integer idBranch;
+
+    @Column(name = "ID_AREA")
+    @JsonView(JsonViews.Root.class)
+    private Integer idArea;
+    
     public EmployeesHistory() {
     }
 
@@ -287,7 +314,7 @@ public class EmployeesHistory implements Serializable {
     public String getFirstName() {
         return firstName;
     }
-
+    
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -547,6 +574,8 @@ public class EmployeesHistory implements Serializable {
     public void setIdActionType(Integer idActionType) {
         this.idActionType = idActionType;
     }
+    
+    
 
     public LocalDateTime getCreationDate() {
         return creationDate;
@@ -605,7 +634,47 @@ public class EmployeesHistory implements Serializable {
     public String getFullName() {
         return StringFormatter.concatWithoutNull(firstName, middleName, parentalLast, motherLast);
     }
+    
+    public Integer gethStatus() {
+        return hStatus;
+    }
 
+    public void sethStatus(Integer hStatus) {
+        this.hStatus = hStatus;
+    }
+    
+        public Integer getIdDistributor() {
+        return idDistributor;
+    }
+
+    public void setIdDistributor(Integer idDistributor) {
+        this.idDistributor = idDistributor;
+    }
+
+    public Integer getIdRegion() {
+        return idRegion;
+    }
+
+    public void setIdRegion(Integer idRegion) {
+        this.idRegion = idRegion;
+    }
+
+    public Integer getIdBranch() {
+        return idBranch;
+    }
+
+    public void setIdBranch(Integer idBranch) {
+        this.idBranch = idBranch;
+    }
+
+    public Integer getIdArea() {
+        return idArea;
+    }
+
+    public void setIdArea(Integer idArea) {
+        this.idArea = idArea;
+    }
+    
     public DateFormatsPojo getJoinDateFormats() {
         if (joinDate == null) {
             return null;

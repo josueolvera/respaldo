@@ -9,6 +9,7 @@ import java.util.List;
  */
 public interface EmployeesHistoryDao  extends InterfaceDao<EmployeesHistory>  {
     List<EmployeesHistory> findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(
+            Integer status,
             Integer idDistributor,
             Integer idRegion,
             Integer idBranch,

@@ -16,6 +16,7 @@ public interface EmployeesHistoryService {
     EmployeesHistory findById(Integer id);
     List<EmployeesHistory> findAll();
     List<EmployeesHistory> findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(
+            Integer status,
             Integer idDistributor,
             Integer idRegion,
             Integer idBranch,
