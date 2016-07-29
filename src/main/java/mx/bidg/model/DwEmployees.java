@@ -178,7 +178,16 @@ public class DwEmployees implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.DwEmployees[ idDwEmployee=" + idDwEmployee + " ]";
+        return "DwEmployees{" +
+                "idDwEmployee=" + idDwEmployee +
+                ", creationDate=" + creationDate +
+                ", idEmployee=" + idEmployee +
+                ", idDwEnterprise=" + idDwEnterprise +
+                ", idRole=" + idRole +
+                ", employee=" + employee +
+                ", dwEnterprise=" + dwEnterprise +
+                ", role=" + role +
+                ", user=" + user +
+                '}';
     }
-    
 }
