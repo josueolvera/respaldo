@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * Created by jolvera on 28/06/16.
  */
+@SuppressWarnings("unchecked")
 @Repository
 public class EmployeeDocumentsDaoImpl extends AbstractDao<Integer,EmployeeDocuments> implements EmployeeDocumentsDao {
     @Override
