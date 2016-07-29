@@ -11,6 +11,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.Disjunction;
 
 /**
  * Created by gerardo8 on 24/06/16.
@@ -50,7 +52,7 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
 
     @Override
     public List<EmployeesHistory> findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
-        (Integer idDistributor, Integer idRegion, Integer idBranch, Integer idArea, Integer idRole, 
+        (Integer status, Integer idDistributor, Integer idRegion, Integer idBranch, Integer idArea, Integer idRole, 
          String startDate, String endDate) {
         Criteria criteria = createEntityCriteria();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
@@ -77,7 +79,22 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
             criteria.add(Restrictions.eq("idRole",idRole));
         }
 
-        criteria.add(Restrictions.eq("status",1));
+        if (status == 0) {
+           criteria.add(Restrictions.eq("hStatus",1)); 
+        }
+        else if (status == 1){
+            Disjunction or = Restrictions.disjunction();
+            criteria.add(Restrictions.eq("hStatus",1));
+            criteria.add(Restrictions.disjunction()
+                    .add(Restrictions.eq("idActionType",1))
+                    .add(Restrictions.eq("idActionType",3))
+                    .add(Restrictions.eq("idActionType",4)));
+        }
+        else{
+            criteria.add(Restrictions.eq("hStatus",1));
+            criteria.add(Restrictions.eq("idActionType",2));
+        }
+        
 
         return criteria.list();
     }

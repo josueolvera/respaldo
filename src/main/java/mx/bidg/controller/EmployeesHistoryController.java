@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,7 +39,7 @@ public class EmployeesHistoryController {
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getEmployeesHistories
             (
-                    @RequestParam(name="typeOfSeach", required = false) Integer typeOfSearch,
+                    @RequestParam(name="status", required = false, defaultValue = "1") Integer status,
                     @RequestParam(name = "idDistributor", required = false) Integer idDistributor,
                     @RequestParam(name = "idRegion", required = false) Integer idRegion,
                     @RequestParam(name = "idBranch", required = false) Integer idBranch,
@@ -48,31 +49,9 @@ public class EmployeesHistoryController {
                     @RequestParam(name = "endDate", required = false) String endDate
             ) throws IOException {
 
-        List<EmployeesHistory> employeesHistories;
-
-        if (idDistributor == null &&
-                idRegion == null &&
-                idBranch == null &&
-                idArea == null &&
-                idRole == null &&
-                startDate == null &&
-                endDate == null
-                ) {
-            employeesHistories = employeesHistoryService.findAll();
-        } else {
-            employeesHistories =
-                    employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(
-                            idDistributor,
-                            idRegion,
-                            idBranch,
-                            idArea,
-                            idRole,
-                            startDate,
-                            endDate
-                    );
-
-        }
-
+        List<EmployeesHistory> employeesHistories = new ArrayList();
+        employeesHistories = employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
+        (status,idDistributor, idRegion, idBranch, idArea, idRole, startDate, endDate);
         return new ResponseEntity<>(
                 map.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesHistories),
                 HttpStatus.OK

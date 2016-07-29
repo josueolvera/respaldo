@@ -74,7 +74,9 @@
                     dateTimePickerEnd:'',
                     reportFileName:'',
                     isThereItems:false,
-                    currentDwEmployee:{}
+                    currentDwEmployee:{},
+                    nameSearch: '',
+                    rfcSearch: ''
                 },
                 methods: {
                     createReport: function () {
@@ -134,13 +136,13 @@
                     setEmployeesUrl : function (status) {
 
                         if (status === 1) {
-                            this.employeesUrl = '/dw-employees';
+                            this.employeesUrl = '/employees-history?status=1';
                             this.createReportUrl = ROOT_URL + '/dw-employees/create-report?status=1';
                         } else if (status === 2) {
-                            this.employeesUrl = '/dw-employees?status=0';
+                            this.employeesUrl = '/employees-history?status=2';
                             this.createReportUrl = ROOT_URL + '/dw-employees/create-report?status=0';
                         } else if (status === 0) {
-                            this.employeesUrl = '/dw-employees';
+                            this.employeesUrl = '/employees-history?status=0 ';
                             this.createReportUrl = ROOT_URL + '/dw-employees/create-report';
                         }
 
@@ -223,13 +225,32 @@
                         }
                     },
                     getDwEmployees: function () {
+                        var self= this;
                         this.$http.get(
                                 ROOT_URL + this.employeesUrl
                         ).success(function (data) {
                             this.dwEmployees = data;
+                            this.dwEmployees.forEach(function(element){
+                                self.$http.get(
+                                        ROOT_URL + "/dw-enterprises/" + element.idDwEnterprise
+                                ).success(function (data) {
+                                    Vue.set(element, "dwEnterprisesR", data)
+
+                                    this.$http.get(
+                                            ROOT_URL + "/roles/" + element.idRole
+                                    ).success(function (data) {
+                                        Vue.set(element, "rolesR", data)
+                                    }).error(function (data) {
+                                        showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
+                                    });
+
+
+                                }).error(function (data) {
+                                    showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
+                                });
+                            });
                             if (this.dwEmployees.length > 0) {
                                 this.isThereItems = true;
-                               
                             }
                         }).error(function (data) {
                             showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
@@ -245,7 +266,7 @@
                             }
                         } else if (this.status.value === 2) {
                             if (this.setEmployeesUrl(this.status.value)) {
-                                this.getEmployeesHistory();
+                                    this.getEmployeesHistory();
                             }
                         } else if (this.status.value === 0) {
                             if (this.setEmployeesUrl(this.status.value)) {
@@ -254,17 +275,35 @@
                         }
                     },
                     getEmployeesHistory : function () {
+                        var self= this;
                         this.$http.get(
                                 ROOT_URL + this.employeesUrl
                         ).success(function (data) {
-                            this.employeesHistories = data;
+                            this.dwEmployees = data;
+                            this.dwEmployees.forEach(function(element){
+                                self.$http.get(
+                                        ROOT_URL + "/dw-enterprises/" + element.idDwEnterprise
+                                ).success(function (data) {
+                                    Vue.set(element, "dwEnterprisesR", data)
 
-                            if (data.length > 0) {
+                                    this.$http.get(
+                                            ROOT_URL + "/roles/" + element.idRole
+                                    ).success(function (data) {
+                                        Vue.set(element, "rolesR", data)
+                                    }).error(function (data) {
+                                        showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
+                                    });
+
+
+                                }).error(function (data) {
+                                    showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
+                                });
+                            });
+                            if (this.dwEmployees.length > 0) {
                                 this.isThereItems = true;
                             }
-                            this.searching = false;
                         }).error(function (data) {
-
+                            showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
                         });
                     },
                     fetchHierarchy: function () {
@@ -426,12 +465,8 @@
                     </div>
                     <div class="row">
                         <div class="col-md-2">
-                            <label>Nombre</label>
-                            <input v-model="searchSelectedOptions.name" type="text" class="form-control" placeholder="Nombre del Empleado">
-                        </div>
-                        <div class="col-md-2">
-                            <label>RFC</label>
-                            <input v-model="searchSelectedOptions.rfc" type="text" class="form-control" placeholder="RFC">
+                            <label>Nombre/RFC</label>
+                            <input v-model="nameSearch" type="text" class="form-control" placeholder="Nombre del Empleado/RFC">
                         </div>
                         <div class="col-md-2">
                             <label>
@@ -485,58 +520,32 @@
                             <div class="col-md-2"><b>Nombre de empleado</b></div>
                             <div class="col-md-2"><b>RFC</b></div>
                             <div class="col-md-2"><b>Puesto</b></div>
-                            <div class="col-md-2"><b>Sucursal</b></div>
+                            <div class="col-md-1"><b>Sucursal</b></div>
                             <div class="col-md-2"><b>Fecha de ingreso</b></div>
                             <div class="col-md-1"><b>Edición</b></div>
-                            <div class="col-md-1"><b>Baja</b></div>
+                            <div class="col-md-2"><b>Baja/Reactivación</b></div>
                         </div>
                         <br>
                         <div class="table-body flex-row flex-content">
-                            <div class="row table-row" v-for="dwEmployee in dwEmployees |
-                            filterBy searchSelectedOptions.name in 'employee.fullName'|
-                            filterBy searchSelectedOptions.rfc in 'employee.rfc'">
-                                <div class="col-md-2">{{dwEmployee.employee.fullName}}</div>
-                                <div class="col-md-2">{{dwEmployee.employee.rfc}}</div>
-                                <div class="col-md-2">{{dwEmployee.role.roleName}}</div>
-                                <div class="col-md-2">{{dwEmployee.dwEnterprise.branch.branchShort}}</div>
-                                <div class="col-md-2">{{dwEmployee.employee.joinDateFormats.simpleDate}}</div>
+                            <div class="row table-row" v-for="dwEmployee in dwEmployees | filterBy nameSearch">
+                                <div class="col-md-2">{{dwEmployee.fullName}}</div>
+                                <div class="col-md-2">{{dwEmployee.rfc}}</div>
+                                <div class="col-md-2">{{dwEmployee.rolesR.roleName}}</div>
+                                <div class="col-md-1">{{dwEmployee.dwEnterprisesR.branch.branchShort}}</div>
+                                <div class="col-md-2">{{dwEmployee.joinDateFormats.simpleDate}}</div>
                                 <div class="col-md-1">
                                     <a class="btn btn-default btn-sm" :href="updateEmployeeUrl + dwEmployee.idDwEmployee"
-                                       data-toggle="tooltip" data-placement="top" title="Modificar">
+                                       data-toggle="tooltip" data-placement="top" title="Modificar" v-if="dwEmployee.idActionType != 2">
                                         <span class="glyphicon glyphicon-pencil"></span>
                                     </a>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-md-2 text-center">
                                     <button class="btn btn-danger btn-sm" @click="onDeleteButton(dwEmployee)"
-                                            data-toggle="tooltip" data-placement="top" title="Eliminar">
+                                            data-toggle="tooltip" data-placement="top" title="Eliminar" v-if="dwEmployee.idActionType != 2">
                                         <span class="glyphicon glyphicon-trash"></span>
                                     </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex-box container-fluid"  v-if="employeesHistories.length > 0">
-                        <div class="row table-header active">
-                            <div class="col-md-2"><b>Nombre de empleado</b></div>
-                            <div class="col-md-2"><b>RFC</b></div>
-                            <div class="col-md-2"><b>Puesto</b></div>
-                            <div class="col-md-2"><b>Sucursal</b></div>
-                            <div class="col-md-2"><b>Fecha de ingreso</b></div>
-                            <div class="col-md-2"><b>Reactivación</b></div>
-                        </div>
-                        <br>
-                        <div class="table-body flex-row flex-content">
-                            <div class="row table-row" v-for="employeesHistory in employeesHistories |
-                            filterBy searchSelectedOptions.name in 'employee.fullName'|
-                            filterBy searchSelectedOptions.rfc in 'employee.rfc'">
-                                <div class="col-md-2">{{employeesHistory.employee.fullName}}</div>
-                                <div class="col-md-2">{{employeesHistory.employee.rfc}}</div>
-                                <div class="col-md-2">{{employeesHistory.role.roleName}}</div>
-                                <div class="col-md-2">{{employeesHistory.dwEnterprise.branch.branchShort}}</div>
-                                <div class="col-md-2">{{employeesHistory.employee.joinDateFormats.simpleDate}}</div>
-                                <div class="col-md-2 text-center">
                                     <button class="btn btn-default btn-sm"
-                                            data-toggle="tooltip" data-placement="top" title="Reactivar">
+                                            data-toggle="tooltip" data-placement="top" title="Reactivar" v-if="dwEmployee.idActionType == 2">
                                         <span class="glyphicon glyphicon-refresh"></span>
                                     </button>
                                 </div>

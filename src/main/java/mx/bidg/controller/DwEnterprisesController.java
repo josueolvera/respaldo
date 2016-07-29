@@ -41,6 +41,12 @@ public class DwEnterprisesController {
     
     private ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
     
+    @RequestMapping(value = "/{idDwEnterprise}", produces = "application/json;charset=UTF-8")
+    public @ResponseBody ResponseEntity<String> getById(@PathVariable int idDwEnterprise) throws Exception {
+        DwEnterprises dwEnterprises = dwEnterprisesService.findById(idDwEnterprise);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEnterprises), HttpStatus.OK);
+    }
+    
     @RequestMapping(value = "/{idGroup}/{idArea}", produces = "application/json;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> getByGroupArea(@PathVariable int idGroup, @PathVariable int idArea) throws Exception {
         List<DwEnterprises> list = dwEnterprisesService.findByGroupArea(new CGroups(idGroup), new CAreas(idArea));
