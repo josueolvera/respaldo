@@ -215,23 +215,24 @@ public class Accounts implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idAccount != null ? idAccount.hashCode() : 0);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Accounts)) return false;
+
+        Accounts accounts = (Accounts) o;
+
+        if (!getAccountNumber().equals(accounts.getAccountNumber())) return false;
+        if (!getAccountClabe().equals(accounts.getAccountClabe())) return false;
+        return getBank().equals(accounts.getBank());
+
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Accounts)) {
-            return false;
-        }
-        Accounts other = (Accounts) object;
-        if ((this.idAccount == null && other.idAccount != null) || (this.idAccount != null && !this.idAccount.equals(other.idAccount))) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        int result = getAccountNumber().hashCode();
+        result = 31 * result + getAccountClabe().hashCode();
+        result = 31 * result + getBank().hashCode();
+        return result;
     }
 
     @Override
