@@ -30,7 +30,8 @@ public class DwEmployeesController {
     @Autowired
     private DwEmployeesService dwEmployeesService;
 
-    private ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getDwEmployees
@@ -73,7 +74,7 @@ public class DwEmployeesController {
         }
 
         return new ResponseEntity<>(
-                map.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEmployees),
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEmployees),
                 HttpStatus.OK
         );
     }
@@ -131,7 +132,7 @@ public class DwEmployeesController {
         outputStream.close();
 
         return new ResponseEntity<>(
-                map.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEmployees),
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEmployees),
                 HttpStatus.OK
         );
     }
@@ -142,17 +143,28 @@ public class DwEmployeesController {
         DwEmployees dwEmployee = dwEmployeesService.findByIdDw(idDwEmployee);
 
         return new ResponseEntity<>(
-                map.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEmployee),
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEmployee),
                 HttpStatus.OK
         );
     }
 
     @RequestMapping(value = "/change-employee-status", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-        public ResponseEntity<String> changeEmployeeStatus(@RequestBody Integer idDwEmployee) throws IOException {
+    public ResponseEntity<String> changeEmployeeStatus(@RequestBody Integer idDwEmployee) throws IOException {
 
         dwEmployeesService.changeEmployeeStatus(idDwEmployee);
 
-            return new ResponseEntity<>("OK", HttpStatus.OK);
-        }
+        return new ResponseEntity<>("OK", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> update(@RequestBody String data) throws IOException {
+
+        DwEmployees dwEmployee = dwEmployeesService.update(data);
+
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEmployee),
+                HttpStatus.OK
+        );
+    }
 
 }
