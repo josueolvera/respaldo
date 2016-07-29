@@ -4,6 +4,7 @@ import mx.bidg.model.CEmployeeDocumentsTypes;
 import mx.bidg.model.EmployeeDocuments;
 import mx.bidg.model.Employees;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -17,5 +18,6 @@ public interface EmployeeDocumentsService {
     EmployeeDocuments findById(int id);
     List<EmployeeDocuments> findAll();
     EmployeeDocuments update(EmployeeDocuments entity);
+    EmployeeDocuments updateDocument(String data, Integer idEmployee) throws IOException;
     boolean delete(EmployeeDocuments entity);
 }
