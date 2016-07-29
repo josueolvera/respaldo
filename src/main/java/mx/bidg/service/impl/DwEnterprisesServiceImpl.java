@@ -100,8 +100,21 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
                     HierarchicalLevel level2 = new HierarchicalLevel(dwR.getIdRegion(), dwR.getRegion().getRegionName());
                     level2.setAlias(dwR.getRegion().getRegionName());
                     level1.addSubLevel(level2);
-
-                    ArrayList<ArrayList<DwEnterprises>> dwBranches = groupArrays.groupInArray(dwRegionsList, new GroupArrays.Filter<DwEnterprises>() {
+                    
+                    ArrayList<ArrayList<DwEnterprises>> dwZonas = groupArrays.groupInArray(dwRegionsList, new GroupArrays.Filter<DwEnterprises>() {
+                        @Override
+                        public String filter(DwEnterprises item) {
+                            return item.getIdZona() + "";
+                        }
+                    });
+                    
+                    for (ArrayList<DwEnterprises> dwZonasList : dwZonas) {
+                    DwEnterprises dwZ = dwZonasList.get(0);
+                    HierarchicalLevel level3 = new HierarchicalLevel(dwZ.getIdZona(), dwZ.getZona().getName());
+                    level3.setAlias(dwZ.getZona().getName());
+                    level2.addSubLevel(level3);
+                    
+                    ArrayList<ArrayList<DwEnterprises>> dwBranches = groupArrays.groupInArray(dwZonasList, new GroupArrays.Filter<DwEnterprises>() {
                         @Override
                         public String filter(DwEnterprises item) {
                             return item.getIdBranch() + "";
@@ -110,9 +123,9 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
 
                     for (ArrayList<DwEnterprises> dwBranchesList : dwBranches) {
                         DwEnterprises dwB = dwBranchesList.get(0);
-                        HierarchicalLevel level3 = new HierarchicalLevel(dwB.getIdBranch(), dwB.getBranch().getBranchName());
+                        HierarchicalLevel level4 = new HierarchicalLevel(dwB.getIdBranch(), dwB.getBranch().getBranchName());
                         level3.setAlias(dwB.getBranch().getBranchShort());
-                        level2.addSubLevel(level3);
+                        level3.addSubLevel(level4);
 
                         ArrayList<ArrayList<DwEnterprises>> dwAreas = groupArrays.groupInArray(dwBranchesList, new GroupArrays.Filter<DwEnterprises>() {
                             @Override
@@ -123,19 +136,20 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
 
                         for (ArrayList<DwEnterprises> dwAreasList : dwAreas) {
                             DwEnterprises dwA = dwAreasList.get(0);
-                            HierarchicalLevel level4 = new HierarchicalLevel(dwA.getIdArea(), dwA.getArea().getAreaName());
-                            level4.setAlias(dwA.getArea().getAreaName());
-                            level3.addSubLevel(level4);
+                            HierarchicalLevel level5 = new HierarchicalLevel(dwA.getIdArea(), dwA.getArea().getAreaName());
+                            level5.setAlias(dwA.getArea().getAreaName());
+                            level4.addSubLevel(level5);
 
                             for (DwEnterprises item : dwAreasList) {
                                 item.setDwEmployeesList(dwEmployeesDao.findByDwEnterprisesId(item));
-                                level4.setDwEnterprise(item);
+                                level5.setDwEnterprise(item);
                             }
                         }
                     }
                 }
             }
         }
+       }
         return hierarchicalGroups;
     }
 
