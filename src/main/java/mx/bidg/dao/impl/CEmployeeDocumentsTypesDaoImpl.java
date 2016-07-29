@@ -3,6 +3,8 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CEmployeeDocumentsTypesDao;
 import mx.bidg.model.CEmployeeDocumentsTypes;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +13,7 @@ import java.util.List;
 /**
  * Created by jolvera on 28/06/16.
  */
+@SuppressWarnings("unchecked")
 @Repository
 public class CEmployeeDocumentsTypesDaoImpl extends AbstractDao<Integer,CEmployeeDocumentsTypes> implements CEmployeeDocumentsTypesDao {
 
@@ -45,5 +48,19 @@ public class CEmployeeDocumentsTypesDaoImpl extends AbstractDao<Integer,CEmploye
     @Override
     public List<CEmployeeDocumentsTypes> findByInputField() {
         return (List<CEmployeeDocumentsTypes>) createEntityCriteria().add(Restrictions.eq("field",1)).list();
+    }
+
+    @Override
+    public List<CEmployeeDocumentsTypes> findByEmployee(List<CEmployeeDocumentsTypes> employeeDocumentTypes) {
+
+        Criteria criteria = createEntityCriteria();
+
+        for (CEmployeeDocumentsTypes cEmployeeDocumentType : employeeDocumentTypes) {
+            if (cEmployeeDocumentType != null) {
+                criteria.add(Restrictions.ne("idDocumentType", cEmployeeDocumentType.getIdDocumentType()));
+            }
+        }
+
+        return criteria.list();
     }
 }
