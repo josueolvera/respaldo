@@ -316,7 +316,10 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
         employee.setStatus(1);
         employee.setMail(employeeNode.get("mail").asText());
         employee.setJoinDate(joinDate);
-                
+
+        if (employeeNode.has("sistarh")) {
+            employee.setSistarh(employeeNode.get("sistarh").asText());
+        }
 
         dwEmployee.setDwEnterprise(dwEnterprise);
         dwEmployee.setRole(role);
