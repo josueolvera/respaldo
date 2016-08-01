@@ -7,6 +7,7 @@ package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -181,6 +182,10 @@ public class EmployeeDocuments implements Serializable {
 
     public void setField(String field) {
         this.field = field;
+    }
+
+    public DateFormatsPojo getUploadDateFormats() {
+        return (uploadingDate == null) ? null : new DateFormatsPojo(uploadingDate);
     }
 
     @Override

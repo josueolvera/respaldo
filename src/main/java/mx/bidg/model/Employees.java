@@ -656,6 +656,49 @@ public class Employees implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.Employees[ idEmployee=" + idEmployee + " ]";
+        return "Employees{" +
+                "idEmployee=" + idEmployee +
+                ", employeeNumber='" + employeeNumber + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", parentalLast='" + parentalLast + '\'' +
+                ", motherLast='" + motherLast + '\'' +
+                ", rfc='" + rfc + '\'' +
+                ", claveSap='" + claveSap + '\'' +
+                ", curp='" + curp + '\'' +
+                ", imss='" + imss + '\'' +
+                ", infonavitNumber='" + infonavitNumber + '\'' +
+                ", mail='" + mail + '\'' +
+                ", idEmployeeType=" + idEmployeeType +
+                ", idContractType=" + idContractType +
+                ", salary=" + salary +
+                ", status=" + status +
+                ", birthplace='" + birthplace + '\'' +
+                ", state='" + state + '\'' +
+                ", street='" + street + '\'' +
+                ", exteriorNumber='" + exteriorNumber + '\'' +
+                ", interiorNumber='" + interiorNumber + '\'' +
+                ", colonia='" + colonia + '\'' +
+                ", city='" + city + '\'' +
+                ", postcode='" + postcode + '\'' +
+                ", cellPhone='" + cellPhone + '\'' +
+                ", fatherName='" + fatherName + '\'' +
+                ", motherName='" + motherName + '\'' +
+                ", idEducation=" + idEducation +
+                ", idStatusMarital=" + idStatusMarital +
+                ", homePhone='" + homePhone + '\'' +
+                ", size='" + size + '\'' +
+                ", sizeNumber=" + sizeNumber +
+                ", idGender=" + idGender +
+                ", joinDate=" + joinDate +
+                ", birthday=" + birthday +
+                ", employeesAccountsList=" + employeesAccountsList +
+                ", education=" + education +
+                ", statusMarital=" + statusMarital +
+                ", employeeDocumentsList=" + employeeDocumentsList +
+                ", contractType=" + contractType +
+                ", employeeType=" + employeeType +
+                ", gender=" + gender +
+                '}';
     }
 }

@@ -117,23 +117,19 @@ public class CBanks implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idBank != null ? idBank.hashCode() : 0);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CBanks cBanks = (CBanks) o;
+
+        return idBank.equals(cBanks.idBank);
+
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CBanks)) {
-            return false;
-        }
-        CBanks other = (CBanks) object;
-        if ((this.idBank == null && other.idBank != null) || (this.idBank != null && !this.idBank.equals(other.idBank))) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        return idBank.hashCode();
     }
 
     @Override

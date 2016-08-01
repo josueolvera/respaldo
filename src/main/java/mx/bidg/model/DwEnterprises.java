@@ -304,8 +304,25 @@ public class DwEnterprises implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.DwEnterprises[ idDwEnterprise=" + idDwEnterprise + " ]";
+        return "DwEnterprises{" +
+                "idDwEnterprise=" + idDwEnterprise +
+                ", idBrand=" + idBrand +
+                ", idGroup=" + idGroup +
+                ", idDistributor=" + idDistributor +
+                ", idRegion=" + idRegion +
+                ", idBranch=" + idBranch +
+                ", idArea=" + idArea +
+                ", idZona=" + idZona +
+                ", budgetable=" + budgetable +
+                ", group=" + group +
+                ", distributor=" + distributor +
+                ", region=" + region +
+                ", branch=" + branch +
+                ", area=" + area +
+                ", budgetMonthBranchList=" + budgetMonthBranchList +
+                ", dwEmployeesList=" + dwEmployeesList +
+                ", status=" + status +
+                ", zona=" + zona +
+                '}';
     }
-
-    
 }
