@@ -1,22 +1,14 @@
 package mx.bidg.service.impl;
 
-import mx.bidg.dao.DwEmployeesDao;
 import mx.bidg.dao.EmployeesHistoryDao;
 import mx.bidg.model.*;
 import mx.bidg.service.EmployeesHistoryService;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by gerardo8 on 24/06/16.
@@ -99,19 +91,19 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
                 CEmployeeType cEmployeeType = employee.getEmployeeType();
 
                 if (cEmployeeType != null){
-                    employeesHistory.setEmployeeType(cEmployeeType.getIdEmployeeType());
+                    employeesHistory.setIdEmployeeType(cEmployeeType.getIdEmployeeType());
                 }
 
                 CContractType cContractType = employee.getContractType();
 
                 if(cContractType != null){
-                    employeesHistory.setContractType(cContractType.getIdContractType());
+                    employeesHistory.setIdContractType(cContractType.getIdContractType());
                 }
 
                 CGenders cGender = employee.getGender();
 
                 if (cGender != null){
-                    employeesHistory.setGender(cGender.getIdGender());
+                    employeesHistory.setIdGender(cGender.getIdGender());
                 }
 
                 employeesHistory.setIdEmployee(employee.getIdEmployee());
@@ -137,7 +129,7 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
                 employeesHistory.setPostcode(employee.getPostcode());
                 employeesHistory.setRfc(employee.getRfc());
                 employeesHistory.setSalary(employee.getSalary());
-                employeesHistory.setSize(employee.getSize());
+                employeesHistory.setIdSize(employee.getSize().getIdSize());
                 employeesHistory.setSizeNumber(employee.getSizeNumber());
                 employeesHistory.setState(employee.getState());
                 employeesHistory.setStreet(employee.getStreet());

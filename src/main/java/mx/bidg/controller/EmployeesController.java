@@ -146,7 +146,7 @@ public class EmployeesController {
         employee.setPostcode(jnode.get("postcode").asText());
         employee.setEducation(new CEducation(jnode.get("idEducation").asInt()));
         employee.setEmployeeType(new CEmployeeType(jnode.get("employeeType").asInt()));
-        employee.setSize(jnode.get("size").asText());
+        employee.setSize(new CSizes(jnode.get("idSize").asInt()));
         employee.setSizeNumber(jnode.get("sizeNumber").asInt());
         employee.setState(jnode.get("state").asText());
         employee.setExteriorNumber(jnode.get("exteriorNumber").asText());
@@ -234,7 +234,7 @@ public class EmployeesController {
         employee.setPostcode(jnode.get("postcode").asText());
         employee.setEducation(new CEducation(jnode.get("idEducation").asInt()));
         employee.setEmployeeType(cEmployeeTypeService.findByEmployeeTypeName(jnode.get("employeeType").asText()));
-        employee.setSize(jnode.get("size").asText());
+        employee.setSize(new CSizes(jnode.get("idSize").asInt()));
         employee.setSizeNumber(jnode.get("sizeNumber").asInt());
         employee.setState(jnode.get("state").asText());
         employee.setExteriorNumber(jnode.get("exteriorNumber").asText());

@@ -192,10 +192,14 @@ public class Employees implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String homePhone;
 
-    @Size(max = 3)
-    @Column(name = "SIZE")
+    @Column(name = "ID_SIZE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private String size;
+    private Integer idSize;
+
+    @JoinColumn(name = "ID_SIZE", referencedColumnName = "ID_SIZE")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CSizes size;
 
     @Column(name = "SIZE_NUMBER")
     @JsonView(JsonViews.Root.class)
@@ -501,11 +505,11 @@ public class Employees implements Serializable {
         this.idEducation = idEducation;
     }
 
-    public String getSize() {
+    public CSizes getSize() {
         return size;
     }
 
-    public void setSize(String size) {
+    public void setSize(CSizes size) {
         this.size = size;
     }
 
@@ -698,11 +702,12 @@ public class Employees implements Serializable {
                 ", idEducation=" + idEducation +
                 ", idStatusMarital=" + idStatusMarital +
                 ", homePhone='" + homePhone + '\'' +
-                ", size='" + size + '\'' +
+                ", size=" + size +
                 ", sizeNumber=" + sizeNumber +
                 ", idGender=" + idGender +
                 ", joinDate=" + joinDate +
                 ", birthday=" + birthday +
+                ", sistarh='" + sistarh + '\'' +
                 ", employeesAccountsList=" + employeesAccountsList +
                 ", education=" + education +
                 ", statusMarital=" + statusMarital +

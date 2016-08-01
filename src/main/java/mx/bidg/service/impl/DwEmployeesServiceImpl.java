@@ -302,7 +302,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
         employee.setPostcode(employeeNode.get("postcode").asText());
         employee.setEducation(mapper.treeToValue(employeeNode.get("education"),CEducation.class));
         employee.setEmployeeType(mapper.treeToValue(employeeNode.get("employeeType"),CEmployeeType.class));
-        employee.setSize(employeeNode.get("size").asText());
+        employee.setSize(new CSizes(employeeNode.get("idSize").asInt()));
         employee.setSizeNumber(employeeNode.get("sizeNumber").asInt());
         employee.setState(employeeNode.get("state").asText());
         employee.setExteriorNumber(employeeNode.get("exteriorNumber").asText());
