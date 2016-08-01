@@ -401,7 +401,7 @@
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Segundo nombre</label>
-                                    <input class="form-control" v-model="dwEmployee.employee.middleName" onkeypress="return isLetterKey(event)" required>
+                                    <input class="form-control" v-model="dwEmployee.employee.middleName" onkeypress="return isLetterKey(event)">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Apellido paterno</label>
@@ -409,7 +409,7 @@
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Apellido materno</label>
-                                    <input class="form-control" v-model="dwEmployee.employee.motherLast" onkeypress="return isLetterKey(event)" required>
+                                    <input class="form-control" v-model="dwEmployee.employee.motherLast" onkeypress="return isLetterKey(event)">
                                 </div>
                             </div>
                             <br>
@@ -520,15 +520,16 @@
                             <div class="row">
                                 <div class="col-xs-3">
                                     <label>Talla</label>
-                                    <input class="form-control" v-model="dwEmployee.employee.size" maxlength="3" onkeypress="return isLetterKey(event)" required>
-                                </div>
-                                <div class="col-xs-3">
-                                    <label>Número de talla</label>
                                     <select class="form-control" v-model="dwEmployee.employee.size" required>
                                         <option v-for="size in sizes" :value="size">
                                             {{size.sizeName}}
                                         </option>
                                     </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Número de talla</label>
+                                    <input class="form-control" name="name" v-model="dwEmployee.employee.sizeNumber"
+                                           maxlength="2" onkeypress="return isNumberKey(event)">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Télefono de casa</label>
