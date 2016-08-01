@@ -45,4 +45,14 @@ public class EmployeesServiceImpl implements EmployeesService {
     public Employees update(Employees employee) {
         return employeesDao.update(employee);
     }
+
+    @Override
+    public Employees findByRfc(String rfc) {
+        return employeesDao.findByRfc(rfc);
+    }
+
+    @Override
+    public Employees findByCurp(String curp) {
+        return employeesDao.findByCurp(curp);
+    }
 }

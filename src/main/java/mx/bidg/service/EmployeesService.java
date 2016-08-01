@@ -15,4 +15,6 @@ public interface EmployeesService {
     Employees findById(Integer id);
     Employees save(Employees employee);
     Employees update(Employees employee);
+    Employees findByRfc(String rfc);
+    Employees findByCurp(String curp);
 }
