@@ -159,6 +159,7 @@ public class EmployeesController {
         employee.setSalary(new BigDecimal(jnode.get("salary").asInt()));
         employee.setStatus(1);
         employee.setMail(jnode.get("mail").asText());
+        employee.setSistarh(jnode.get("sistarh").asText());
         employee.setJoinDate(joinDate);
 
         employee = employeesService.save(employee);
@@ -186,8 +187,8 @@ public class EmployeesController {
         DwEmployees dwEmployees = new DwEmployees();
 
         dwEmployees.setEmployee(employee);
-        dwEmployees.setDwEnterprise(dwEnterprisesService.findById(jnode.get("dwEmployees").get("area").get("dwEnterprise").get("idDwEnterprise").asInt()));
-        dwEmployees.setRole(cRolesService.findById(jnode.get("dwEmployees").get("role").asInt()));
+        dwEmployees.setDwEnterprise(dwEnterprisesService.findByBranchAndArea(jnode.get("dwEmployees").get("branch").get("idBranch").asInt(), jnode.get("dwEmployees").get("area").get("idArea").asInt()));
+        dwEmployees.setRole(cRolesService.findById(jnode.get("dwEmployees").get("role").get("idRole").asInt()));
         dwEmployees.setCreationDate(LocalDateTime.now());
         dwEmployees = dwEmployeesService.save(dwEmployees);
 
@@ -290,8 +291,8 @@ public class EmployeesController {
     }
 
     @RequestMapping(value = "/{idEmployee}/attachments", method = RequestMethod.POST)
-    public ResponseEntity<String> attachDocuments(@PathVariable Integer idEmployee, HttpServletRequest request) throws Exception {
-        saveAttachDocuments(idEmployee, request);
+    public ResponseEntity<String> attachDocuments(@PathVariable Integer idEmployee, @RequestBody String data) throws Exception {
+        employeeDocumentsService.save(data,idEmployee);
         return new ResponseEntity<>("Registro exitoso", HttpStatus.OK);
     }
 
@@ -367,29 +368,12 @@ public class EmployeesController {
             document.setUploadingDate(LocalDateTime.now());
             document.setCurrentDocument(1);
             document.setIdAccessLevel(1);
-            employeeDocumentsService.save(document);
-            saveNameField(document.getIdDocument(), request);
+           // employeeDocumentsService.save(document);
 
             EmployeeDocuments oldDocument = this.findDocument(idDocumentType, documents);
             if (oldDocument != null) {
                 oldDocument.setCurrentDocument(0);
                 employeeDocumentsService.update(oldDocument);
-            }
-        }
-    }
-    private void saveNameField(Integer idDocument, HttpServletRequest request){
-        EmployeeDocuments document = employeeDocumentsService.findById(idDocument);
-        List<CEmployeeDocumentsTypes> documentsTypes = cEmployeeDocumentsTypesService.findByInput();
-        CEmployeeDocumentsTypes cEmployeeDocumentsTypes = document.getcDocumentType();
-
-        for(CEmployeeDocumentsTypes documentsType : documentsTypes) {
-            if (documentsType.getIdDocumentType() == cEmployeeDocumentsTypes.getIdDocumentType()) {
-                    String[] paramValues = request.getParameterValues(documentsType.getDocumentName());
-                    for (int i = 0; i < paramValues.length; i++) {
-                        String paramValue = paramValues[i];
-                        document.setField(paramValue);
-                        employeeDocumentsService.update(document);
-                    }
             }
         }
     }
