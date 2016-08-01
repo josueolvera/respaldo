@@ -217,6 +217,9 @@ public class Employees implements Serializable {
     @Convert(converter = DateConverter.class)
     private LocalDate birthday;
 
+    @Column(name = "SISTARH")
+    @JsonView(JsonViews.Root.class)
+    private String sistarh;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "employee")
     @JsonView(JsonViews.Embedded.class)
@@ -632,6 +635,14 @@ public class Employees implements Serializable {
 
     public String getFullNameReverse() {
         return StringFormatter.concatWithoutNull(parentalLast, motherLast, firstName, middleName);
+    }
+
+    public String getSistarh() {
+        return sistarh;
+    }
+
+    public void setSistarh(String sistarh) {
+        this.sistarh = sistarh;
     }
 
     @Override
