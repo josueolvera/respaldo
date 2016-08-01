@@ -46,9 +46,9 @@ public class CEmployeeDocumentsTypesController {
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(documentsTypes), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/employee/{idEmployee}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findByEmployee(@PathVariable Integer idEmployee) throws Exception{
-        List<CEmployeeDocumentsTypes> documentsTypes = cEmployeeDocumentsTypesService.findByEmployee(idEmployee);
+    @RequestMapping(value = "/employee/{idDwEmployee}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findByEmployee(@PathVariable Integer idDwEmployee) throws Exception{
+        List<CEmployeeDocumentsTypes> documentsTypes = cEmployeeDocumentsTypesService.findByEmployee(idDwEmployee);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(documentsTypes), HttpStatus.OK);
     }
 
