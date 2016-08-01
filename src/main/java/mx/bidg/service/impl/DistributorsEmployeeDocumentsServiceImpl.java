@@ -44,4 +44,9 @@ public class DistributorsEmployeeDocumentsServiceImpl implements DistributorsEmp
         distributorsEmployeeDocumentsDao.delete(ditributorsEmployeeDocuments);
         return true;
     }
+
+    @Override
+    public List<DitributorsEmployeeDocuments> findByDistributor(Integer idDistributor) {
+        return distributorsEmployeeDocumentsDao.findByDistributor(idDistributor);
+    }
 }

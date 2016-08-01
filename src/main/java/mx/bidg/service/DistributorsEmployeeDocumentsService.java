@@ -13,4 +13,5 @@ public interface DistributorsEmployeeDocumentsService {
     DitributorsEmployeeDocuments findById(Integer idDitributorsEmployeeDocuments);
     List<DitributorsEmployeeDocuments> findAll ();
     boolean delete(DitributorsEmployeeDocuments ditributorsEmployeeDocuments);
+    List<DitributorsEmployeeDocuments> findByDistributor(Integer idDistributor);
 }
