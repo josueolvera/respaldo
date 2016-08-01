@@ -69,6 +69,7 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
                 return item.getIdGroup() + "";
             }
         });
+
         for (ArrayList<DwEnterprises> dwList : dwGroups) {
             DwEnterprises dw = dwList.get(0);
             HierarchicalLevel level = new HierarchicalLevel(dw.getIdGroup(), dw.getGroup().getGroupName());
@@ -82,7 +83,7 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
                 }
             });
 
-            for (ArrayList<DwEnterprises> dwDistList : dwDistributors) {
+            for (ArrayList<DwEnterprises> dwDistList : dwDistributors ) {
                 DwEnterprises dwD = dwDistList.get(0);
                 HierarchicalLevel level1 = new HierarchicalLevel(dwD.getIdDistributor(), dwD.getDistributor().getDistributorName());
                 level1.setAlias(dwD.getDistributor().getAcronyms());
@@ -100,58 +101,63 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
                     HierarchicalLevel level2 = new HierarchicalLevel(dwR.getIdRegion(), dwR.getRegion().getRegionName());
                     level2.setAlias(dwR.getRegion().getRegionName());
                     level1.addSubLevel(level2);
-                    
+
                     ArrayList<ArrayList<DwEnterprises>> dwZonas = groupArrays.groupInArray(dwRegionsList, new GroupArrays.Filter<DwEnterprises>() {
-                        @Override
-                        public String filter(DwEnterprises item) {
-                            return item.getIdZona() + "";
-                        }
-                    });
-                    
-                    for (ArrayList<DwEnterprises> dwZonasList : dwZonas) {
-                    DwEnterprises dwZ = dwZonasList.get(0);
-                    HierarchicalLevel level3 = new HierarchicalLevel(dwZ.getIdZona(), dwZ.getZona().getName());
-                    level3.setAlias(dwZ.getZona().getName());
-                    level2.addSubLevel(level3);
-                    
-                    ArrayList<ArrayList<DwEnterprises>> dwBranches = groupArrays.groupInArray(dwZonasList, new GroupArrays.Filter<DwEnterprises>() {
-                        @Override
-                        public String filter(DwEnterprises item) {
-                            return item.getIdBranch() + "";
-                        }
-                    });
-
-                    for (ArrayList<DwEnterprises> dwBranchesList : dwBranches) {
-                        DwEnterprises dwB = dwBranchesList.get(0);
-                        HierarchicalLevel level4 = new HierarchicalLevel(dwB.getIdBranch(), dwB.getBranch().getBranchName());
-                        level3.setAlias(dwB.getBranch().getBranchShort());
-                        level3.addSubLevel(level4);
-
-                        ArrayList<ArrayList<DwEnterprises>> dwAreas = groupArrays.groupInArray(dwBranchesList, new GroupArrays.Filter<DwEnterprises>() {
                             @Override
                             public String filter(DwEnterprises item) {
-                                return item.getIdArea() + "";
+                                return item.getIdZona() + "";
                             }
                         });
 
-                        for (ArrayList<DwEnterprises> dwAreasList : dwAreas) {
-                            DwEnterprises dwA = dwAreasList.get(0);
-                            HierarchicalLevel level5 = new HierarchicalLevel(dwA.getIdArea(), dwA.getArea().getAreaName());
-                            level5.setAlias(dwA.getArea().getAreaName());
-                            level4.addSubLevel(level5);
+                        for(ArrayList<DwEnterprises> dwZonasList : dwZonas){
 
-                            for (DwEnterprises item : dwAreasList) {
-                                item.setDwEmployeesList(dwEmployeesDao.findByDwEnterprisesId(item));
-                                level5.setDwEnterprise(item);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-       }
+                            DwEnterprises dwZ = dwZonasList.get(0);
+                            HierarchicalLevel level3 = new HierarchicalLevel(dwZ.getIdZona(), dwZ.getZona().getName());
+                            level3.setAlias(dwZ.getZona().getName());
+                            level2.addSubLevel(level3);
+
+                            ArrayList<ArrayList<DwEnterprises>> dwBranches = groupArrays.groupInArray(dwZonasList, new GroupArrays.Filter<DwEnterprises>() {
+                                @Override
+                                public String filter(DwEnterprises item) {
+                                    return item.getIdBranch() + "";
+                                }
+                            });
+
+                            for (ArrayList<DwEnterprises> dwBranchesList : dwBranches) {
+                                DwEnterprises dwB = dwBranchesList.get(0);
+                                HierarchicalLevel level4 = new HierarchicalLevel(dwB.getIdBranch(), dwB.getBranch().getBranchName());
+                                level4.setAlias(dwB.getBranch().getBranchShort());
+                                level3.addSubLevel(level4);
+
+                                ArrayList<ArrayList<DwEnterprises>> dwAreas = groupArrays.groupInArray(dwBranchesList, new GroupArrays.Filter<DwEnterprises>() {
+                                    @Override
+                                    public String filter(DwEnterprises item) {
+                                        return item.getIdArea() + "";
+                                    }
+                                });
+
+                                    for(ArrayList<DwEnterprises> dwAreasList : dwAreas) {
+                                        DwEnterprises dwA = dwAreasList.get(0);
+                                        HierarchicalLevel level5 = new HierarchicalLevel(dwA.getIdArea(), dwA.getArea().getAreaName());
+                                        level5.setAlias(dwA.getArea().getAreaName());
+                                        level4.addSubLevel(level5);
+
+                                        for (DwEnterprises item : dwAreasList) {
+                                            item.setDwEmployeesList(dwEmployeesDao.findByDwEnterprisesId(item));
+                                            level5.setDwEnterprise(item);
+                                        }
+
+
+                                    }
+                            } // For Branches
+                        } // For Zonas
+                } // For Region
+            } // For Distribuidor
+        } // For Grupos
+
         return hierarchicalGroups;
     }
+
 
     @Override
     public List<DwEnterprises> findByDistributor(Integer idDistributor) {
