@@ -87,7 +87,7 @@
 
                     this.timePickerIngreso = $('#dateJoin').datetimepicker({
                         locale: 'es',
-                        format: 'DD-MM-YYYY',
+                        format: 'DD-MM-YYYY'
                     }).data();
                 },
                 ready: function () {
@@ -96,11 +96,10 @@
                     this.obtainStatusMarital();
                     this.obtainBanks();
                     this.obtainCurrencies();
-                    this.fetchHierarchy();
-                    this.fetchDocumentTypes();
                     this.obtainGenders();
                     this.obtainEmployeeTypes();
                     this.obtainContractTypes();
+                    this.obtainBranchs();
                 },
                 data: {
                     employee: {
@@ -111,6 +110,7 @@
                         rfc: '',
                         claveSap: '',
                         curp: '',
+                        sistarh: '',
                         imss: '',
                         infonavitNumber: '',
                         mail: '',
@@ -135,39 +135,55 @@
                         sizeNumber: '',
                         gender: '',
                         dwEmployees: {
+                            branch: {
+                                id: 0
+                            },
                             area: {
-                                id: 0,
+                                id: 0
                             },
                             role: {
-                                id: 0,
+                                id: 0
                             }
                         },
                         employeeAccountList: [],
                         birthPlace: '',
                         idStatusMarital: '',
-                        birthday: '',
+                        birthday: ''
                     },
                     estados: [],
                     education: [],
                     statusMarital: [],
+                    newEmployeeDocuments: [],
                     estadosMunicipios: {},
                     asentamiento: [],
                     cuenta: {
                         accountNumber: '',
                         accountClabe: '',
                         idBank: '',
-                        idCurrency: '',
+                        idCurrency: ''
                     },
                     banks: [],
                     currencies: [],
                     contractTypes: [],
                     employeeTypes: [],
                     genders: [],
+                    timePickerIngreso: '',
+                    timePickerBirthday: '',
+                    joinDate: '',
+                    birthday: '',
+                    estadosMunicipios: {},
+                    input: '',
+                    fields: {
+                        IMSS: '',
+                        SISTARH: '',
+                        Infonavit: ''
+                    },
+                    working: {},
                     selectOptions: {
                         distributors: [],
                         areas: [],
-                        hierarchy: [],
-                        documentTypes: [],
+                        roles: [],
+                        dwEnterprises: []
                     },
                     selectedOptions: {
                         area: {
@@ -187,37 +203,22 @@
                         }
                     },
                     defaultArea: {
-                        id: 0,
-                        name: ''
-                    },
-                    defaultDistributor: {
-                        id: 0,
-                        name: ''
-                    },
-                    defaultRegion: {
-                        id: 0,
+                        idArea: 0,
                         name: ''
                     },
                     defaultBranch: {
-                        id: 0,
+                        idBranch: 0,
                         name: ''
                     },
                     defaultRole: {
-                        id: 0,
+                        idRole: 0,
                         name: ''
                     },
-                    timePickerIngreso: '',
-                    timePickerBirthday: '',
-                    joinDate: '',
-                    birthday: '',
-                    estadosMunicipios: {},
-                    input: '',
-                    fields: {
-                        IMSS: '',
-                        SISTARH: '',
-                        Infonavit: '',
-                    },
-                    working: {},
+                    branchs: [],
+                    documentTypes: [],
+                    dwEnter: {
+                        idDistributor: 9
+                    }
                 },
                 methods: {
                     obtainGenders: function () {
@@ -279,105 +280,220 @@
                         });
 
                     },
-                    fetchHierarchy: function () {
-                        this.$http.get(ROOT_URL + "/dw-enterprises/hierarchy").success(function (data) {
-                            this.selectOptions.hierarchy = data;
-                        });
-                    },
-                    selectedOptionsDistributorChanged: function () {
-                        this.selectedOptions.region = this.defaultRegion;
-                        this.selectedOptions.branch = this.defaultBranch;
-                        this.selectedOptions.area = this.defaultArea;
-                    },
-                    selectedOptionsRegionChanged: function () {
-                        this.selectedOptions.branch = this.defaultBranch;
-                        this.selectedOptions.area = this.defaultArea;
-                    },
-                    selectedOptionsBranchChanged: function () {
-                        this.selectedOptions.area = this.defaultArea;
+                    selectedOptionsDwEnterpriseChanged: function () {
+                        this.selectOptions.roles = [];
                         this.selectedOptions.role = this.defaultRole;
-                    },
-                    selectedOptionsAreaChanged: function () {
-                        this.selectedOptions.role = this.defaultRole;
-                        this.$http.get(ROOT_URL + "/areas/area-role/" + this.selectedOptions.area.id).success(function (data) {
-                            this.selectOptions.areas = data;
+                        this.$http.get(ROOT_URL + "/areas/area-role/" + this.selectedOptions.area.idArea).success(function (data) {
+                            this.selectOptions.roles = data.roles;
                         });
                     },
                     saveEmployee: function () {
+                        var self = this;
                         this.employee.employeeAccountList.push(this.cuenta);
                         this.employee.city = this.estadosMunicipios.nombreMunicipios;
                         this.employee.state = this.estadosMunicipios.estado.nombreEstado;
+                        this.employee.dwEmployees.branch = this.selectedOptions.branch;
                         this.employee.dwEmployees.area = this.selectedOptions.area;
                         this.employee.dwEmployees.role = this.selectedOptions.role;
                         this.employee.joinDate = this.timePickerIngreso.DateTimePicker.date().toISOString().slice(0, -1);
                         this.employee.birthday = this.timePickerBirthday.DateTimePicker.date().toISOString().slice(0, -1);
-                        var form = document.getElementById('attachments-form');
-                        var formData = new FormData(form);
-                        console.log(this.employee.employeeType);
-                        console.log(this.employee.contractType);
-                        console.log(this.employee.salary);
-
                         this.$http.post(ROOT_URL + "/employees/save", JSON.stringify(this.employee)).success(function (data) {
                             this.working = data;
                             showAlert("Registro de empleado exitoso");
-                            this.uploadFilesEmployee(this.working, formData);
+                            this.newEmployeeDocuments.forEach(function (document) {
+                                self.uploadFilesEmployee(document, data.idEmployee)
+                            });
+//                            this.uploadFilesEmployee(this.working);
                         }).error(function () {
                             this.employee.employeeAccountList = [];
                             showAlert("Ha habido un error con la solicitud, intente nuevamente", {type: 3});
                         });
                     },
                     fetchDocumentTypes: function () {
-                        this.$http.get(ROOT_URL + "/employee-document-types").success(function (data) {
-                            this.selectOptions.documentTypes = data;
-                        });
+                        this.$http.get(ROOT_URL + "/employee-document-types/" + this.selectedOptions.branch.idBranch + "/" + this.selectedOptions.area.idArea)
+                                .success(function (data) {
+                                    this.documentTypes = data;
+                                    this.getDwEnterpriseSelected();
+                                });
                     },
-                    validateFile: function (event) {
-                        if (! event.target.files[0].name.match(/(\.jpg|\.jpeg|\.pdf|\.png)$/i)) {
+                    validateFile: function (file) {
+                        if (!file.name.match(/(\.jpg|\.jpeg|\.pdf|\.png)$/i)) {
                             event.target.value = null;
-                            showAlert("Tipo de archivo no admitido", {type:3});
+                            showAlert("Tipo de archivo no admitido", {type: 3});
+                            return false;
                         }
+
+                        return true;
                     },
-                    showDocumentsByDistributors: function (distributors) {
-                        var array;
-                        var self = this;
-                        array = distributors.split(":");
-                        var arrayFilltered = array.filter(function (item) {
-                            return item == self.selectedOptions.distributor.id;
-                        });
-                        return arrayFilltered.length > 0;
-                    },
-                    uploadFilesEmployee: function (employee,formData) {
+                    uploadFilesEmployee: function (document, idEmployee) {
                         this.isSaving = true;
                         this.$http.post(
-                                ROOT_URL + "/employees/" + employee.idEmployee + "/attachments",
-                                formData
-                        ).success(function (data)
-                        {
-                            form.reset();
+                                ROOT_URL + "/employees/" + idEmployee + "/attachments",
+                                document
+                        ).success(function (data) {
+                            location.reload();
                         }).error(function (data) {
                             this.isSaving = false;
-                            form.reset();
-                            showAlert(data.error.message, {type:3})
+                            showAlert(data.error.message, {type: 3})
                         });
 
                     },
                     validateEmail: function (email) {
                         var re = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
-                        if(! re.test(email)) {
-                            showAlert("Ingresa un email correcto",{type: 3});
+                        if (!re.test(email)) {
+                            showAlert("Ingresa un email correcto", {type: 3});
                             this.employee.mail = '';
                         }
                     },
                     validateRfc: function (rfc) {
-                        if(rfc.length < 13){
-                            showAlert("El rfc debe contener 13 caracteres",{type: 3});
+                        if (rfc.length < 13) {
+                            showAlert("El rfc debe contener 13 caracteres", {type: 3});
                         }
                     },
                     validateCurp: function (curp) {
-                        if(curp.length < 18){
-                            showAlert("El curp debe contener 18 caracteres",{type: 3});
+                        if (curp.length < 18) {
+                            showAlert("El curp debe contener 18 caracteres", {type: 3});
                         }
                     },
+                    obtainBranchs: function () {
+                        this.$http.get(ROOT_URL + "/branchs").success(function (data) {
+                            this.branchs = data;
+                        })
+                    },
+                    selectedOptionsBranchChanged: function () {
+                        this.selectedOptions.area = this.defaultArea;
+                        this.selectedOptions.role = this.defaultRole;
+                        this.selectOptions.dwEnterprises = [];
+                        this.selectOptions.roles = [];
+                        this.$http.get(ROOT_URL + "/dw-enterprises/branch/" + this.selectedOptions.branch.idBranch).success(function (data) {
+                            this.selectOptions.dwEnterprises = data;
+                        });
+                    },
+                    getDwEnterpriseSelected: function () {
+                        this.$http.get(ROOT_URL + "/dw-enterprises/branch-area/" + this.selectedOptions.branch.idBranch + "/" + this.selectedOptions.area.idArea).success(function (data) {
+                            this.dwEnter = data;
+                        });
+                    },
+                    validateAccountEmployee: function (account, clabe) {
+                        if (account.length > 0 && clabe.length > 0) {
+                            if (clabe.indexOf(account) == -1) {
+                                if (!showAlert("La clabe es incorrecta", {type: 3})) {
+                                    this.cuenta.accountNumber = "";
+                                    this.cuenta.accountClabe = "";
+                                }
+                            }
+                        } else {
+                            if (account.length > 0 && (account.length > 11 || account.length < 5)) {
+                                showAlert("Debes ingresar entre 5 y 11 caracteres en el numero de cuenta", {type: 3});
+                            }
+                            if (clabe.length > 0 && clabe.length < 18) {
+                                showAlert("Debes ingresar 18 caracteres en la CLABE", {type: 3});
+                            }
+                            if (account.length < 5 && clabe.length < 18) {
+                                showAlert("Debes ingresar un Numero de Cuenta o CLABE", {type: 3});
+                            }
+                        }
+                    },
+                    setFile: function (event, docType) {
+                        var self = this;
+                        var document = {};
+                        var index = docType.idDocumentType - 1;
+
+                        document.documentType = docType.documentType;
+
+                        var reader = new FileReader();
+                        var file = event.target.files[0];
+
+                        if (file) {
+                            if (this.validateFile(file)) {
+                                reader.onload = (function (theFile) {
+                                    return function (e) {
+
+                                        document.file = {
+                                            name: theFile.name,
+                                            size: theFile.size,
+                                            type: theFile.type,
+                                            dataUrl: e.target.result
+                                        };
+
+                                        if (index > -1) {
+                                            self.newEmployeeDocuments[index] = document;
+                                        }
+                                    };
+                                })(file);
+                                reader.readAsDataURL(file);
+                            } else {
+                                if (index > -1) {
+                                    self.newEmployeeDocuments.splice(index, 1);
+                                }
+                            }
+                        } else {
+                            if (index > -1) {
+                                self.newEmployeeDocuments.splice(index, 1);
+                            }
+                        }
+                    },
+                    emptyFields: function () {
+                        this.employee.firstName = '';
+                        this.employee.middleName = '';
+                        this.employee.parentalLast = '';
+                        this.employee.motherLast = '';
+                        this.employee.rfc = '';
+                        this.employee.claveSap = '';
+                        this.employee.curp = '';
+                        this.employee.sistarh = '';
+                        this.employee.imss = '';
+                        this.employee.infonavitNumber = '';
+                        this.employee.mail = '';
+                        this.employee.employeeType = '';
+                        this.employee.contractType = '';
+                        this.employee.salary = '';
+                        this.employee.joinDate = '';
+                        this.employee.status = '';
+                        this.employee.street = '';
+                        this.employee.exteriorNumber = '';
+                        this.employee.interiorNumber = '';
+                        this.employee.colonia = '';
+                        this.employee.city = '';
+                        this.employee.state = '';
+                        this.employee.postcode = '';
+                        this.employee.cellPhone = '';
+                        this.employee.fatherName = '';
+                        this.employee.motherName = '';
+                        this.employee.idEducation = '';
+                        this.employee.homePhone = '';
+                        this.employee.size = '';
+                        this.employee.sizeNumber = '';
+                        this.employee.gender = '';
+                        this.employee.dwEmployees.branch.id = 0;
+                        this.employee.dwEmployees.area.id = 0;
+                        this.employee.dwEmployees.role.id = 0;
+                        this.employee.employeeAccountList = [];
+                        this.employee.birthPlace = '';
+                        this.employee.idStatusMarital = '';
+                        this.employee.birthday = '';
+                        this.cuenta.accountNumber = '';
+                        this.cuenta.accountClabe = '';
+                        this.cuenta.idBank = '';
+                        this.cuenta.idCurrency = '';
+                        this.selectedOptions.area = {};
+                        this.selectedOptions.branch = {};
+                        this.selectedOptions.distributor = {};
+                        this.selectedOptions.region = {};
+                        this.selectedOptions.role = {};
+                        this.selectedOptions.area.id = 0;
+                        this.selectedOptions.branch.id = 0;
+                        this.selectedOptions.distributor.id = 0;
+                        this.selectedOptions.region.id = 0;
+                        this.selectedOptions.role.id = 0;
+                        this.estadosMunicipios = {};
+                        this.asentamiento = [];
+                        this.documentTypes = [];
+                        this.joinDate = '';
+                        this.birthday = '';
+                        this.documentTypes = [];
+
+                    }
                 },
                 filters: {}
             });
@@ -395,357 +511,432 @@
                     </div>
                 </div>
             </div>
-            <br>
-            <div class="panel panel-default">
-                <div class="panel-heading">Información personal</div>
-                <div class="panel-body">
-                    <div class="col-xs-12">
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <label>Nombre</label>
-                                <input class="form-control" name="name" v-model="employee.firstName" onkeypress="return isLetterKey(event)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Segundo nombre</label>
-                                <input class="form-control" name="name" v-model="employee.middleName" onkeypress="return isLetterKey(event)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Apellido paterno</label>
-                                <input class="form-control" name="name" v-model="employee.parentalLast" onkeypress="return isLetterKey(event)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Apellido materno</label>
-                                <input class="form-control" name="name" v-model="employee.motherLast" onkeypress="return isLetterKey(event)">
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <label>Genero</label>
-                                <select class="form-control" name="" v-model="employee.gender">
-                                    <option></option>
-                                    <option v-for="gender in genders" :value="gender.gender">
-                                        {{gender.genderName}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Fecha de Nacimiento</label>
-                                <div class='input-group date' id='dateBirthDay'>
-                                    <input type='text' class="form-control" v-model="birthday">
+            <div class="row">
+                <form id="attachments-form" method="post" enctype="multipart/form-data"
+                      v-on:submit.prevent="saveEmployee">
+                    <br>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Información personal</div>
+                        <div class="panel-body">
+                            <div class="col-xs-12">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <label>Nombre</label>
+                                        <input class="form-control" name="name" v-model="employee.firstName"
+                                               onkeypress="return isLetterKey(event)" required>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Segundo nombre</label>
+                                        <input class="form-control" name="name" v-model="employee.middleName"
+                                               onkeypress="return isLetterKey(event)">
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Apellido paterno</label>
+                                        <input class="form-control" name="name" v-model="employee.parentalLast"
+                                               onkeypress="return isLetterKey(event)" required>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Apellido materno</label>
+                                        <input class="form-control" name="name" v-model="employee.motherLast"
+                                               onkeypress="return isLetterKey(event)" required>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <label>Genero</label>
+                                        <select class="form-control" name="" v-model="employee.gender" required>
+                                            <option></option>
+                                            <option v-for="gender in genders" :value="gender.idGender">
+                                                {{gender.genderName}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Fecha de Nacimiento</label>
+                                        <div class='input-group date' id='dateBirthDay'>
+                                            <input type='text' class="form-control" v-model="birthday" required>
                                    <span class="input-group-addon">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Lugar de Nacimiento</label>
+                                        <select class="form-control" name="" v-model="employee.birthPlace" required>
+                                            <option></option>
+                                            <option v-for="estado in estados"
+                                                    value="{{estado.nombreEstado}}">
+                                                {{estado.nombreEstado}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>CURP</label>
+                                        <input class="form-control" name="name" v-model="employee.curp" maxlength="18"
+                                               @change="validateCurp(employee.curp)" required>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Lugar de Nacimiento</label>
-                                <select class="form-control" name="" v-model="employee.birthPlace">
-                                    <option></option>
-                                    <option v-for="estado in estados"
-                                            value="{{estado.nombreEstado}}">
-                                        {{estado.nombreEstado}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>CURP</label>
-                                <input class="form-control" name="name" v-model="employee.curp" maxlength="18" @change="validateCurp(employee.curp)">
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <label>Código postal</label>
-                                <input class="form-control" name="name" maxlength="5" v-model="employee.postcode"
-                                       @input="obtainAsentamientos"
-                                       onkeypress="return isNumberKey(event)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Estado</label>
-                                <input class="form-control" name="name"
-                                       v-model="estadosMunicipios.estado.nombreEstado" value="" disabled="true">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Municipio/Delegación</label>
-                                <input class="form-control" name="name"
-                                       v-model="estadosMunicipios.nombreMunicipios" value="" disabled="true">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Colonia</label>
-                                <select class="form-control" name="" v-model="employee.colonia">
-                                    <option></option>
-                                    <option v-for="set in asentamiento" value="{{set.nombreAsentamiento}}">
-                                        {{set.nombreAsentamiento}}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <label>Calle</label>
-                                <input class="form-control" name="name" v-model="employee.street">
-                            </div>
-                            <div class="col-xs-2">
-                                <label>Número Exterior</label>
-                                <input class="form-control" name="name" maxlength="5"
-                                       v-model="employee.exteriorNumber">
-                            </div>
-                            <div class="col-xs-2">
-                                <label>Número Interior</label>
-                                <input class="form-control" name="name" maxlength="5"
-                                       v-model="employee.interiorNumber">
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <label>Nombre del padre</label>
-                                <input class="form-control" name="name" v-model="employee.fatherName" onkeypress="return isLetterKey(event)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Nombre de la madre</label>
-                                <input class="form-control" name="name" v-model="employee.motherName" onkeypress="return isLetterKey(event)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Estado civil</label>
-                                <select class="form-control" name="" v-model="employee.idStatusMarital">
-                                    <option></option>
-                                    <option v-for="status in statusMarital" value="{{status.idStatusMarital}}">
-                                        {{status.maritalName}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Escolaridad</label>
-                                <select class="form-control" name="" v-model="employee.idEducation">
-                                    <option></option>
-                                    <option v-for="edu in education" value="{{edu.idEducation}}">
-                                        {{edu.educationName}}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <label>Talla</label>
-                                <input class="form-control" name="name" v-model="employee.size" maxlength="3" onkeypress="return isLetterKey(event)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Número de talla</label>
-                                <input class="form-control" name="name" v-model="employee.sizeNumber" maxlength="2" onkeypress="return isNumberKey(event)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Télefono de casa</label>
-                                <input class="form-control" name="name" v-model="employee.homePhone" maxlength="10" onkeypress="return isNumberKey(event)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Móvil</label>
-                                <input class="form-control" name="name" v-model="employee.cellPhone" maxlength="10" onkeypress="return isNumberKey(event)">
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <label>Email</label>
-                                <input class="form-control" name="name" v-model="employee.mail" @change="validateEmail(employee.mail)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Clave SAP</label>
-                                <input class="form-control" name="name" v-model="employee.claveSap">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>RFC</label>
-                                <input class="form-control" name="name" v-model="employee.rfc" maxlength="13" @change="validateRfc(employee.rfc)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Fecha de ingreso</label>
-                                <div class='input-group date' id='dateJoin'>
-                                    <input type='text' class="form-control" v-model="joinDate">
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <label>Código postal</label>
+                                        <input class="form-control" name="name" maxlength="5"
+                                               v-model="employee.postcode"
+                                               @input="obtainAsentamientos"
+                                               onkeypress="return isNumberKey(event)" required>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Estado</label>
+                                        <input class="form-control" name="name"
+                                               v-model="estadosMunicipios.estado.nombreEstado" value="" disabled="true">
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Municipio/Delegación</label>
+                                        <input class="form-control" name="name"
+                                               v-model="estadosMunicipios.nombreMunicipios" value="" disabled="true">
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Colonia</label>
+                                        <select class="form-control" name="" v-model="employee.colonia" required>
+                                            <option></option>
+                                            <option v-for="set in asentamiento" value="{{set.nombreAsentamiento}}">
+                                                {{set.nombreAsentamiento}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <label>Calle</label>
+                                        <input class="form-control" name="name" v-model="employee.street" required>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Número Exterior</label>
+                                        <input class="form-control" name="name" maxlength="5"
+                                               v-model="employee.exteriorNumber" required>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Número Interior</label>
+                                        <input class="form-control" name="name" maxlength="5"
+                                               v-model="employee.interiorNumber" required>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <label>Nombre del padre</label>
+                                        <input class="form-control" name="name" v-model="employee.fatherName"
+                                               onkeypress="return isLetterKey(event)" required>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Nombre de la madre</label>
+                                        <input class="form-control" name="name" v-model="employee.motherName"
+                                               onkeypress="return isLetterKey(event)" required>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Estado civil</label>
+                                        <select class="form-control" name="" v-model="employee.idStatusMarital"
+                                                required>
+                                            <option></option>
+                                            <option v-for="status in statusMarital" value="{{status.idStatusMarital}}">
+                                                {{status.maritalName}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Escolaridad</label>
+                                        <select class="form-control" name="" v-model="employee.idEducation" required>
+                                            <option></option>
+                                            <option v-for="edu in education" value="{{edu.idEducation}}">
+                                                {{edu.educationName}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <label>Talla</label>
+                                        <input class="form-control" name="name" v-model="employee.size" maxlength="3"
+                                               onkeypress="return isLetterKey(event)">
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Número de talla</label>
+                                        <input class="form-control" name="name" v-model="employee.sizeNumber"
+                                               maxlength="2" onkeypress="return isNumberKey(event)">
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Télefono de casa</label>
+                                        <input class="form-control" name="name" v-model="employee.homePhone"
+                                               maxlength="10" onkeypress="return isNumberKey(event)" required>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Móvil</label>
+                                        <input class="form-control" name="name" v-model="employee.cellPhone"
+                                               maxlength="10" onkeypress="return isNumberKey(event)" required>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <label>Email</label>
+                                        <input class="form-control" name="name" v-model="employee.mail"
+                                               @change="validateEmail(employee.mail)" required>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Clave SAP</label>
+                                        <input class="form-control" name="name" v-model="employee.claveSap"
+                                               maxlength="13" required>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>RFC</label>
+                                        <input class="form-control" name="name" v-model="employee.rfc" maxlength="13"
+                                               @change="validateRfc(employee.rfc)" required>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Fecha de ingreso</label>
+                                        <div class='input-group date' id='dateJoin'>
+                                            <input type='text' class="form-control" v-model="joinDate" required>
                                    <span class="input-group-addon">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <label>IMSS</label>
+                                        <input class="form-control" name="name" v-model="employee.imss" maxlength="18"
+                                               onkeypress="return isNumberKey(event)">
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Infonavit</label>
+                                        <input class="form-control" name="name" v-model="employee.infonavitNumber"
+                                               maxlength="18">
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <br>
-            <div class="panel panel-default">
-                <!-- Default panel contents -->
-                <div class="panel-heading">Datos de la empresa</div>
-                <div class="panel-body">
-                    <div class="col-xs-12">
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <label>Distribuidor</label>
-                                <select v-model="selectedOptions.distributor" class="form-control"
-                                        @change="selectedOptionsDistributorChanged">
-                                    <option selected :value="defaultDistributor">{{defaultDistributor.name}}</option>
-                                    <option v-for="distributor in selectOptions.hierarchy[0].subLevels"
-                                            :value="distributor">
-                                        {{ distributor.name }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Región</label>
-                                <select v-model="selectedOptions.region" class="form-control"
-                                        @change="selectedOptionsRegionChanged"
-                                        :disabled="selectedOptions.distributor.id == 0">
-                                    <option selected :value="defaultRegion">{{defaultRegion.name}}</option>
-                                    <option v-for="region in selectedOptions.distributor.subLevels"
-                                            :value="region">
-                                        {{ region.name }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Sucursal</label>
-                                <select v-model="selectedOptions.branch" class="form-control"
-                                        @change="selectedOptionsBranchChanged"
-                                        :disabled="selectedOptions.region.id == 0">
-                                    <option selected :value="defaultBranch">{{defaultBranch.name}}</option>
-                                    <option v-for="branch in selectedOptions.region.subLevels"
-                                            :value="branch">
-                                        {{ branch.name }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Área</label>
-                                <select v-model="selectedOptions.area" class="form-control"
-                                        @change="selectedOptionsAreaChanged"
-                                        :disabled="selectedOptions.branch.id == 0">
-                                    <option selected :value="defaultArea">{{defaultArea.name}}</option>
-                                    <option v-for="area in selectedOptions.branch.subLevels"
-                                            :value="area">
-                                        {{ area.name }}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <label>Puesto</label>
-                                <select v-model="selectedOptions.role" class="form-control"
-                                        :disabled="selectedOptions.area.id == 0">
-                                    <option selected :value="defaultRole">{{defaultRole.name}}</option>
-                                    <option v-for="role in selectOptions.areas.roles"
-                                            :value="role.idRole">
-                                        {{ role.roleName }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Tipo de empleado</label>
-                                <select class="form-control" name="" v-model="employee.employeeType">
-                                    <option></option>
-                                    <option v-for="type in employeeTypes" :value="type.employeeType">
-                                        {{type.employeeTypeName}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Tipo de contrato</label>
-                                <select class="form-control" name="" v-model="employee.contractType">
-                                    <option></option>
-                                    <option v-for="contract in contractTypes" :value="contract.contractType">
-                                        {{contract.contractTypeName}}
-                                    </option>
-                                </select>
+                    <br>
+                    <div class="panel panel-default">
+                        <!-- Default panel contents -->
+                        <div class="panel-heading">Datos de la empresa</div>
+                        <div class="panel-body">
+                            <div class="col-xs-12">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <label>Surcursal</label>
+                                        <select v-model="selectedOptions.branch" class="form-control"
+                                                required @change="selectedOptionsBranchChanged">
+                                            <option selected :value="defaultBranch">{{defaultRole.name}}</option>
+                                            <option v-for="branch in branchs"
+                                                    :value="branch">
+                                                {{ branch.branchShort }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Àrea</label>
+                                        <select v-model="selectedOptions.area" class="form-control"
+                                                required @change="selectedOptionsDwEnterpriseChanged"
+                                                :disabled="selectOptions.dwEnterprises.length <= 0">
+                                            <option selected :value="defaultArea">{{defaultArea.name}}</option>
+                                            <option v-for="dwEnterprise in selectOptions.dwEnterprises"
+                                                    :value="dwEnterprise.area">
+                                                {{ dwEnterprise.area.areaName }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Puesto</label>
+                                        <select v-model="selectedOptions.role" class="form-control"
+                                                required :disabled="selectedOptions.area.idArea <= 0"
+                                                @change="fetchDocumentTypes()">
+                                            <option selected :value="defaultRole">{{defaultRole.name}}</option>
+                                            <option v-for="role in selectOptions.roles"
+                                                    :value="role">
+                                                {{ role.roleName }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Tipo de empleado</label>
+                                        <select class="form-control" name="" v-model="employee.employeeType" required>
+                                            <option></option>
+                                            <option v-for="type in employeeTypes" :value="type.idEmployeeType">
+                                                {{type.employeeTypeName}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Tipo de contrato</label>
+                                        <select class="form-control" name="" v-model="employee.contractType" required>
+                                            <option></option>
+                                            <option v-for="contract in contractTypes" :value="contract.idContractType">
+                                                {{contract.contractTypeName}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row" v-if="dwEnter.idDistributor != 9">
+                                    <div class="col-xs-3">
+                                        <label>SISTARH</label>
+                                        <input class="form-control" name="name" v-model="employee.sistarh">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <br>
-            <div class="panel panel-default">
-                <!-- Default panel contents -->
-                <div class="panel-heading">Datos bancarios</div>
-                <div class="panel-body">
-                    <div class="col-xs-12">
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <label>Banco</label>
-                                <select class="form-control" name="" v-model="cuenta.idBank">
-                                    <option></option>
-                                    <option v-for="bank in banks" value="{{bank.idBank}}">{{bank.acronyms}}
-                                    </option>
-                                </select>
-                            </div>
+                    <br>
+                    <div class="panel panel-default">
+                        <!-- Default panel contents -->
+                        <div class="panel-heading">Datos bancarios</div>
+                        <div class="panel-body">
+                            <div class="col-xs-12">
+                                <div class="row">
+                                    <div class="col-xs-3">
+                                        <label>Banco</label>
+                                        <select class="form-control" name="" v-model="cuenta.idBank" required>
+                                            <option></option>
+                                            <option v-for="bank in banks" value="{{bank.idBank}}">{{bank.acronyms}}
+                                            </option>
+                                        </select>
+                                    </div>
 
-                            <div class="col-xs-3">
-                                <label>Número de Cuenta</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon">#</span>
-                                    <input id="saccount" class="form-control" maxlength="11"
-                                           v-model="cuenta.accountNumber"
-                                           onkeypress="return isNumberKey(event)">
-                                </div>
-                            </div>
+                                    <div class="col-xs-3">
+                                        <label>Número de Cuenta</label>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">#</span>
+                                            <input id="saccount" class="form-control" maxlength="11"
+                                                   v-model="cuenta.accountNumber"
+                                                   onkeypress="return isNumberKey(event)"
+                                                   @change="validateAccountEmployee(cuenta.accountNumber,cuenta.accountClabe)">
+                                        </div>
+                                    </div>
 
-                            <div class="col-xs-3">
-                                <label>CLABE</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon">#</span>
-                                    <input type="text" id="sclabe" class="form-control" maxlength="18"
-                                           v-model="cuenta.accountClabe"
-                                           onkeypress="return isNumberKey(event)">
+                                    <div class="col-xs-3">
+                                        <label>CLABE</label>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">#</span>
+                                            <input type="text" id="sclabe" class="form-control" maxlength="18"
+                                                   v-model="cuenta.accountClabe"
+                                                   onkeypress="return isNumberKey(event)"
+                                                   @change="validateAccountEmployee(cuenta.accountNumber,cuenta.accountClabe)">
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Salario</label>
+                                        <input type="text" class="form-control" maxlength="18"
+                                               v-model="employee.salary"
+                                               onkeypress="return isNumberKey(event)" required>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Salario</label>
-                                <input type="text" class="form-control" maxlength="18"
-                                       v-model="employee.salary"
-                                       onkeypress="return isNumberKey(event)">
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <br>
-            <div class="panel panel-default" v-if="employee.salary.length > 0">
-                <div class="panel-heading">Documentación</div>
-                <div class="panel-body">
-                    <div class="col-xs-12">
-                        <form id="attachments-form" method="post" enctype="multipart/form-data"
-                              v-on:submit.prevent="saveEmployee">
-                        <div class="row">
-                            <table class="table table-striped">
-                                <tr v-for="docType in selectOptions.documentTypes" v-if="showDocumentsByDistributors(docType.idDistributors)">
-
-                                    <td>{{ docType.documentName }}</td>
-                                    <td v-if="docType.field == 1 ">
-                                        <input v-model="fields[docType.documentName]" name="{{docType.documentName}}" required
-                                               type="text" class="form-control"></td>
-                                    <td>
-                                        <input v-if="docType.field == 0 || fields[docType.documentName].length > 0" @change="validateFile($event)" type="file" class="form-control"
-                                               :disabled="isSaving"
-                                               :name="'file-type-' + docType.idDocumentType"
-                                               accept="application/pdf,
+                    <br>
+                    <div class="panel panel-default" v-if="selectOptions.dwEnterprises.length > 0">
+                        <div class="panel-heading">Documentación</div>
+                        <div class="panel-body">
+                            <div class="col-xs-12">
+                                <div class="row">
+                                    <table class="table table-striped">
+                                        <tr v-for="docType in documentTypes"
+                                            v-if="docType.documentType.field == 0 && docType.documentType.required == 1">
+                                            <td v-if="docType.documentType.field == 0 && docType.documentType.required == 1">
+                                                {{ docType.documentType.documentName }}
+                                            </td>
+                                            <td>
+                                                <input v-if="docType.documentType.field == 0 && docType.documentType.required == 1"
+                                                       @change="setFile($event, docType)" type="file"
+                                                       class="form-control"
+                                                       :disabled="isSaving"
+                                                       :name="'file-type-' + docType.documentType.idDocumentType"
+                                                       accept="application/pdf,
+                                                         image/png,image/jpg,image/jpeg," required>
+                                            </td>
+                                        </tr>
+                                        <tr v-for="docType in documentTypes"
+                                            v-if="docType.documentType.field == 0 && docType.documentType.required == 0">
+                                            <td v-if="docType.documentType.field == 0 && docType.documentType.required == 0">
+                                                {{ docType.documentType.documentName }}
+                                            </td>
+                                            <td>
+                                                <input v-if="docType.documentType.field == 0 && docType.documentType.required == 0"
+                                                       @change="setFile($event, docType)" type="file"
+                                                       class="form-control"
+                                                       :disabled="isSaving"
+                                                       :name="'file-type-' + docType.documentType.idDocumentType"
+                                                       accept="application/pdf,
                                                          image/png,image/jpg,image/jpeg,">
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                            <div class="row">
-                                <div class="col-xs-11">
+                                            </td>
+                                        </tr>
+                                        <tr v-for="docType in documentTypes"
+                                            v-if="docType.documentType.field == 1 && employee.infonavitNumber !== '' && docType.documentType.idDocumentType == 10">
+                                            <td v-if="docType.documentType.field == 1 && employee.infonavitNumber !== '' && docType.documentType.idDocumentType == 10">
+                                                {{ docType.documentType.documentName }}
+                                            </td>
+                                            <td>
+                                                <input v-if="docType.documentType.field == 1 && employee.infonavitNumber !== '' && docType.documentType.idDocumentType == 10"
+                                                       @change="setFile($event, docType)" type="file"
+                                                       class="form-control"
+                                                       :disabled="isSaving"
+                                                       :name="'file-type-' + docType.documentType.idDocumentType"
+                                                       accept="application/pdf,
+                                                         image/png,image/jpg,image/jpeg," required>
+                                            </td>
+                                        </tr>
+                                        <tr v-for="docType in documentTypes"
+                                            v-if="docType.documentType.field == 1 && employee.imss !== '' && docType.documentType.idDocumentType == 11">
+                                            <td v-if="docType.documentType.field == 1 && employee.imss !== '' && docType.documentType.idDocumentType == 11">
+                                                {{ docType.documentType.documentName }}
+                                            </td>
+                                            <td>
+                                                <input v-if="docType.documentType.field == 1 && employee.imss !== '' && docType.documentType.idDocumentType == 11"
+                                                       @change="setFile($event, docType)" type="file"
+                                                       class="form-control"
+                                                       :disabled="isSaving"
+                                                       :name="'file-type-' + docType.documentType.idDocumentType"
+                                                       accept="application/pdf,
+                                                         image/png,image/jpg,image/jpeg," required>
+                                            </td>
+                                        </tr>
+                                        <tr v-for="docType in documentTypes"
+                                            v-if="docType.documentType.field == 1 && employee.sistarh !== '' && docType.documentType.idDocumentType == 12">
+                                            <td v-if="docType.documentType.field == 1 && employee.sistarh !== '' && docType.documentType.idDocumentType == 12">
+                                                {{ docType.documentType.documentName }}
+                                            </td>
+                                            <td>
+                                                <input v-if="docType.documentType.field == 1 && employee.sistarh !== '' && docType.documentType.idDocumentType == 12"
+                                                       @change="setFile($event, docType)" type="file"
+                                                       class="form-control"
+                                                       :disabled="isSaving"
+                                                       :name="'file-type-' + docType.documentType.idDocumentType"
+                                                       accept="application/pdf,
+                                                         image/png,image/jpg,image/jpeg," required>
+                                            </td>
+                                        </tr>
+                                    </table>
                                 </div>
-                                <div class="col-xs-1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-11">
+                        </div>
+                        <div class="col-xs-1">
                             <button type="submit" :disabled="isSaving"
                                     class="btn btn-success">
                                 Guardar
                             </button>
-                                </div>
-                            </div>
-                        </form>
+                        </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
         <!-- #contenidos -->
