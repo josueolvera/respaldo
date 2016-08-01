@@ -296,6 +296,27 @@ public class EmployeesController {
         return new ResponseEntity<>("Registro exitoso", HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/validate/rfc", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> validateRfc(@RequestParam(name = "rfc", required = true) String rfc) throws IOException {
+        Employees employees = employeesService.findByRfc(rfc);
+
+        if(employees != null){
+            return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(employees), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("Empleado no encontrado", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/validate/curp", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> validateCurp(@RequestParam(name = "curp", required = true) String curp) throws IOException {
+        Employees employees = employeesService.findByCurp(curp);
+
+        if(employees != null){
+            return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(employees), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>("Empleado no encontrado", HttpStatus.OK);
+    }
+
+
     private EmployeeDocuments findDocument(Integer idDocumentType, List<EmployeeDocuments> documents) {
         if (documents.isEmpty()) {
             return null;
