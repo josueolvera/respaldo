@@ -16,8 +16,10 @@ import mx.bidg.config.JsonViews;
 import mx.bidg.model.CAreas;
 import mx.bidg.model.CGroups;
 import mx.bidg.model.DwEnterprises;
+import mx.bidg.model.EmployeesHistory;
 import mx.bidg.pojos.HierarchicalLevel;
 import mx.bidg.service.DwEnterprisesService;
+import mx.bidg.service.EmployeesHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,6 +40,9 @@ public class DwEnterprisesController {
     
     @Autowired
     private DwEnterprisesService dwEnterprisesService;
+
+    @Autowired
+    private EmployeesHistoryService employeesHistoryService;
     
     private ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
     
@@ -83,6 +88,19 @@ public class DwEnterprisesController {
     @RequestMapping(value = "/branch/{idBranch}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getBranch(@PathVariable Integer idBranch) throws IOException {
         List<DwEnterprises> dwEnterprises = dwEnterprisesService.findByBranches(idBranch);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEnterprises), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/branch-area/{idBranch}/{idArea}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getDwEnterprisebyBranchAndArea(@PathVariable Integer idBranch,@PathVariable Integer idArea) throws IOException{
+        DwEnterprises dwEnterprises = dwEnterprisesService.findByBranchAndArea(idBranch,idArea);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEnterprises), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/employee-history/{idEH}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getByEH(@PathVariable Integer idEH) throws IOException{
+        EmployeesHistory employeesHistory = employeesHistoryService.findById(idEH);
+        DwEnterprises dwEnterprises = dwEnterprisesService.findById(employeesHistory.getIdDwEnterprise());
         return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEnterprises), HttpStatus.OK);
     }
 }
