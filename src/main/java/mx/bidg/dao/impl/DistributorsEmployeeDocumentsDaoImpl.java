@@ -3,6 +3,7 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.DistributorsEmployeeDocumentsDao;
 import mx.bidg.model.DitributorsEmployeeDocuments;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,5 +40,10 @@ public class DistributorsEmployeeDocumentsDaoImpl extends AbstractDao<Integer,Di
     public boolean delete(DitributorsEmployeeDocuments entity) {
         remove(entity);
         return true;
+    }
+
+    @Override
+    public List<DitributorsEmployeeDocuments> findByDistributor(Integer idDistributor) {
+        return (List<DitributorsEmployeeDocuments>) createEntityCriteria().add(Restrictions.eq("idDistributor",idDistributor)).list();
     }
 }
