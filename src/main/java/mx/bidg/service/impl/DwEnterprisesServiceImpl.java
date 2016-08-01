@@ -188,4 +188,9 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
     public List<DwEnterprises> findByBranches(Integer idBranch) {
         return dao.findByBranches(idBranch);
     }
+
+    @Override
+    public DwEnterprises findByBranchAndArea(Integer idBranch, Integer idArea) {
+        return dao.findByBranchAndArea(idBranch,idArea);
+    }
 }
