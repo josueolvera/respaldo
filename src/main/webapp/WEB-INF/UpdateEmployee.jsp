@@ -61,6 +61,7 @@
                 ready: function () {
                     this.getDwEmployee();
                     this.obtainStates();
+                    this.getSizes();
                     this.obtainEducation();
                     this.obtainStatusMarital();
                     this.obtainBanks();
@@ -79,6 +80,7 @@
                     educationList: [],
                     statusMaritalList: [],
                     estados: [],
+                    sizes: [],
                     banks: [],
                     employeeAccount: {},
                     contractTypes: [],
@@ -202,6 +204,11 @@
                             this.estados = data;
                         });
                     },
+                    getSizes: function () {
+                        this.$http.get(ROOT_URL + "/sizes").success(function (data) {
+                            this.sizes = data;
+                        });
+                    },
                     obtainEducation: function () {
                         this.$http.get(ROOT_URL + "/education").success(function (data) {
                             this.educationList = data;
@@ -290,8 +297,8 @@
                         };
                         
                         this.$http.post(ROOT_URL + "/dw-employees/update", requestBody).success(function (data) {
+                            showAlert("Actualización de empleado exitoso");
                             if (this.newEmployeeDocuments.length > 0) {
-                                showAlert("Actualización de empleado exitoso");
                                 this.newEmployeeDocuments.forEach(function (document) {
                                     self.updateEmployeeDocument(document);
                                 });
@@ -517,7 +524,11 @@
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Número de talla</label>
-                                    <input class="form-control" v-model="dwEmployee.employee.sizeNumber" maxlength="2" onkeypress="return isNumberKey(event)" required>
+                                    <select class="form-control" v-model="dwEmployee.employee.size" required>
+                                        <option v-for="size in sizes" :value="size">
+                                            {{size.sizeName}}
+                                        </option>
+                                    </select>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Télefono de casa</label>
@@ -557,11 +568,16 @@
                             <div class="row">
                                 <div class="col-xs-3">
                                     <label>IMSS</label>
-                                    <input class="form-control" v-model="dwEmployee.employee.imss" required>
+                                    <input class="form-control" maxlength="18" v-model="dwEmployee.employee.imss" onkeypress="return isNumberKey(event)" required>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Infonavit</label>
-                                    <input class="form-control" v-model="dwEmployee.employee.infonavitNumber" required>
+                                    <input class="form-control" maxlength="15" v-model="dwEmployee.employee.infonavitNumber" required>
+                                </div>
+                                <div class="col-xs-3" v-if="dwEmployee.dwEnterprise.idDistributor != 9">
+                                    <label>SISTARH</label>
+                                    <input class="form-control" maxlength="3" onkeypress="return isNumberKey(event)"
+                                           v-model="dwEmployee.employee.sistarh" required>
                                 </div>
                             </div>
                         </div>
