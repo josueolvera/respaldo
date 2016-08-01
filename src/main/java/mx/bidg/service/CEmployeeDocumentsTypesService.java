@@ -9,6 +9,6 @@ import java.util.List;
  */
 public interface CEmployeeDocumentsTypesService {
     List<CEmployeeDocumentsTypes> findAll();
-    List<CEmployeeDocumentsTypes> findByEmployee(Integer idEmployee);
+    List<CEmployeeDocumentsTypes> findByEmployee(Integer idDwEmployee);
     List<CEmployeeDocumentsTypes> findByInput();
 }
