@@ -14,4 +14,6 @@ public interface EmployeesDao extends InterfaceDao<Employees> {
     Employees findByClaveSap(String claveSap);
     List<Employees> findByNameAndRfc(String employeeName, String employeeRfc);
     List<Employees> findBetweenJoinDateAndStatus(String startDate, String endDate, Integer Status);
+    Employees findByRfc(String rfc);
+    Employees findByCurp(String curp);
 }
