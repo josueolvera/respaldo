@@ -100,6 +100,7 @@
                     this.obtainEmployeeTypes();
                     this.obtainContractTypes();
                     this.obtainBranchs();
+                    this.getSizes();
                 },
                 data: {
                     employee: {
@@ -131,7 +132,7 @@
                         motherName: '',
                         idEducation: '',
                         homePhone: '',
-                        size: '',
+                        idSize: '',
                         sizeNumber: '',
                         gender: '',
                         dwEmployees: {
@@ -218,7 +219,8 @@
                     documentTypes: [],
                     dwEnter: {
                         idDistributor: 9
-                    }
+                    },
+                    sizes: []
                 },
                 methods: {
                     obtainGenders: function () {
@@ -348,11 +350,25 @@
                     validateRfc: function (rfc) {
                         if (rfc.length < 13) {
                             showAlert("El rfc debe contener 13 caracteres", {type: 3});
+                        }else{
+                            this.$http.get(ROOT_URL + "/employees/validate/rfc?rfc="+rfc).success(function (data) {
+                                return true;
+                            }).error(function (element) {
+                                showAlert("El rfc ya existe", {type: 3});
+                                this.emptyFields();
+                            })
                         }
                     },
                     validateCurp: function (curp) {
                         if (curp.length < 18) {
                             showAlert("El curp debe contener 18 caracteres", {type: 3});
+                        }else {
+                            this.$http.get(ROOT_URL + "/employees/validate/curp?curp="+curp).success(function (data) {
+                                return true;
+                            }).error(function (element) {
+                                showAlert("El curp ya existe", {type: 3});
+                                this.emptyFields();
+                            })
                         }
                     },
                     obtainBranchs: function () {
@@ -462,38 +478,22 @@
                         this.employee.motherName = '';
                         this.employee.idEducation = '';
                         this.employee.homePhone = '';
-                        this.employee.size = '';
+                        this.employee.idSize = '';
                         this.employee.sizeNumber = '';
                         this.employee.gender = '';
-                        this.employee.dwEmployees.branch.id = 0;
-                        this.employee.dwEmployees.area.id = 0;
-                        this.employee.dwEmployees.role.id = 0;
-                        this.employee.employeeAccountList = [];
                         this.employee.birthPlace = '';
                         this.employee.idStatusMarital = '';
                         this.employee.birthday = '';
-                        this.cuenta.accountNumber = '';
-                        this.cuenta.accountClabe = '';
-                        this.cuenta.idBank = '';
-                        this.cuenta.idCurrency = '';
-                        this.selectedOptions.area = {};
-                        this.selectedOptions.branch = {};
-                        this.selectedOptions.distributor = {};
-                        this.selectedOptions.region = {};
-                        this.selectedOptions.role = {};
-                        this.selectedOptions.area.id = 0;
-                        this.selectedOptions.branch.id = 0;
-                        this.selectedOptions.distributor.id = 0;
-                        this.selectedOptions.region.id = 0;
-                        this.selectedOptions.role.id = 0;
-                        this.estadosMunicipios = {};
-                        this.asentamiento = [];
-                        this.documentTypes = [];
                         this.joinDate = '';
                         this.birthday = '';
-                        this.documentTypes = [];
-
-                    }
+                        this.estadosMunicipios.nombreMunicipios = '';
+                        this.estadosMunicipios.estado.nombreEstado = '';
+                    },
+                    getSizes: function () {
+                        this.$http.get(ROOT_URL + "/sizes").success(function (data) {
+                            this.sizes = data;
+                        });
+                    },
                 },
                 filters: {}
             });
@@ -659,8 +659,11 @@
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <label>Talla</label>
-                                        <input class="form-control" name="name" v-model="employee.size" maxlength="3"
-                                               onkeypress="return isLetterKey(event)">
+                                        <select class="form-control" v-model="employee.idSize" required>
+                                            <option v-for="size in sizes" :value="size.idSize">
+                                                {{size.sizeName}}
+                                            </option>
+                                        </select>
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Número de talla</label>
