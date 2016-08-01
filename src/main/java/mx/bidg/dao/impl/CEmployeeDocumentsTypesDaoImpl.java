@@ -54,12 +54,14 @@ public class CEmployeeDocumentsTypesDaoImpl extends AbstractDao<Integer,CEmploye
     public List<CEmployeeDocumentsTypes> findByEmployee(List<CEmployeeDocumentsTypes> employeeDocumentTypes) {
 
         Criteria criteria = createEntityCriteria();
+        Disjunction disjunction = Restrictions.disjunction();
 
         for (CEmployeeDocumentsTypes cEmployeeDocumentType : employeeDocumentTypes) {
-            if (cEmployeeDocumentType != null) {
-                criteria.add(Restrictions.ne("idDocumentType", cEmployeeDocumentType.getIdDocumentType()));
-            }
+            disjunction.add(Restrictions.eq("idDocumentType", cEmployeeDocumentType.getIdDocumentType()));
+
         }
+
+        criteria.add(disjunction);
 
         return criteria.list();
     }
