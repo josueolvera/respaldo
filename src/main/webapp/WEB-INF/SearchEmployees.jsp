@@ -133,6 +133,12 @@
                         idRole: 0,
                         name: ''
                     },
+                    checkLastAssign: false,
+                    rolesRespaldo:{},
+                    branchRespaldo: [],
+                    areaRespaldo: {},
+                    rolesRespaldos: [],
+                    branchRespaldos: []
                 },
                 methods: {
                     createReport: function () {
@@ -446,23 +452,26 @@
                     },
                     obtainBranchs: function () {
                         this.$http.get(ROOT_URL + "/branchs").success(function (data) {
+                            this.branchRespaldo = data;
                             this.branchs = data;
                         })
                     },
                     selectedOptionsBranchChanged: function () {
                         this.selectedOptions.area = this.defaultAreas;
                         this.selectedOptions.role = this.defaultRoles;
-                        this.selectOptions.dwEnterprises = [];
-                        this.selectOptions.roles = [];
+                        this.areaRespaldo = [];
+                        this.rolesRespaldos = [];
                         this.$http.get(ROOT_URL + "/dw-enterprises/branch/" + this.selectedOptions.branch.idBranch).success(function (data) {
-                            this.selectOptions.dwEnterprises = data;
+                            this.areaRespaldo = data;
+                            this.getLastAssign();
                         });
                     },
                     selectedOptionsDwEnterpriseChanged: function () {
-                        this.selectOptions.roles = [];
+                        this.rolesRespaldos = [];
                         this.selectedOptions.role = this.defaultRoles;
                         this.$http.get(ROOT_URL + "/areas/area-role/" + this.selectedOptions.area.idArea).success(function (data) {
-                            this.selectOptions.roles = data.roles;
+                            this.rolesRespaldos = data.roles;
+                            this.getLastAssign();
                         });
                     },
                     reactivationEmployee: function () {
@@ -476,12 +485,34 @@
                                     .success(function (data) {
                                         showAlert("Reactivaciòn de empleado exitosa");
                                         this.getDwEmployees();
+                                        this.selectedOptions.area = {};
+                                        this.selectedOptions.distributor = {};
+                                        this.selectedOptions.region = {};
+                                        this.selectedOptions.branch = {};
+                                        this.selectedOptions.role = {};
                                         $("#reactivacionModal").modal("hide");
                                     }).error(function (data) {
                                 showAlert("Error en la reactivaciòn",{type: 3});
                             });
                         }else {
-                            showAlert("Es necesario otorgar una nueva asignaciòn al empleado",{type: 3});
+                            showAlert("Es necesario reasignar al empleado a una sucursal",{type: 3});
+                        }
+                    },
+                    getLastAssign: function () {
+                        if(this.checkLastAssign){
+                            this.branchs = [];
+                            this.branchs.push(this.dwEnterprise.branch);
+                            this.selectOptions.roles = [];
+                            this.selectOptions.roles.push(this.role);
+                            this.selectOptions.dwEnterprises = [];
+                            this.selectOptions.dwEnterprises.push(this.dwEnterprise);
+                        }else{
+                            this.branchs = [];
+                            this.branchs = this.branchRespaldo;
+                            this.selectOptions.roles = [];
+                            this.selectOptions.roles = this.rolesRespaldos;
+                            this.selectOptions.dwEnterprises = [];
+                            this.selectOptions.dwEnterprises = this.areaRespaldo;
                         }
                     }
                 }
@@ -733,19 +764,13 @@
                             <br>
                             <div class="form-inline">
                                 <div class="form-group">
-                                    <label>Nombre: </label> &nbsp;&nbsp;
-                                    <input type="text" class="form-control" v-model="currentDwEmployee.fullName" disabled>
-                                </div>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <div class="form-group">
-                                    <label>RFC: </label>&nbsp;&nbsp;
-                                    <input type="text" class="form-control" v-model="currentDwEmployee.rfc" disabled>
+                                    El empleado con el nombre <label>{{currentDwEmployee.fullName}}</label> y el rfc <label>{{currentDwEmployee.rfc}}</label> sera dado de baja.
                                 </div>
                             </div>
                             <br>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" @click="changeEmployeeStatus">Baja</button>
+                            <button type="button" class="btn btn-danger" @click="changeEmployeeStatus">Aceptar</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
                         </div>
                     </div>
@@ -782,7 +807,7 @@
                                                 {{dwEnterprise.region.regionName}}
                                             </td>
                                             <td class="col-xs-2">
-                                                {{dwEnterprise.branch.branchName}}
+                                                {{dwEnterprise.branch.branchShort}}
                                             </td>
                                             <td class="col-xs-2">
                                                 {{dwEnterprise.area.areaName}}
@@ -827,11 +852,16 @@
                                         </option>
                                     </select>
                                 </div>
+                                <div class="col-xs-3 checkbox">
+                                    <label>
+                                        <input type="checkbox" v-model="checkLastAssign" @change="getLastAssign()"> Asignaciòn anterior
+                                    </label>
+                                </div>
                             </div>
                             <br>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" @click="reactivationEmployee()">Reactivar</button>
+                            <button type="button" class="btn btn-success" @click="reactivationEmployee()">Reactivar</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
                         </div>
                     </div>
