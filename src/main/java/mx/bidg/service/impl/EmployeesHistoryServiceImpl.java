@@ -67,6 +67,11 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
 
                 if (dwEnterprises != null) {
                     employeesHistory.setIdDwEnterprise(dwEnterprises.getIdDwEnterprise());
+                    employeesHistory.setIdDistributor(dwEnterprises.getIdDistributor());
+                    employeesHistory.setIdRegion(dwEnterprises.getIdRegion());
+                    employeesHistory.setIdZona(dwEnterprises.getIdZona());
+                    employeesHistory.setIdBranch(dwEnterprises.getIdBranch());
+                    employeesHistory.setIdArea(dwEnterprises.getIdArea());
                 }
 
                 if (roles != null) {
