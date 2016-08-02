@@ -302,7 +302,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
         employee.setPostcode(employeeNode.get("postcode").asText());
         employee.setEducation(mapper.treeToValue(employeeNode.get("education"),CEducation.class));
         employee.setEmployeeType(mapper.treeToValue(employeeNode.get("employeeType"),CEmployeeType.class));
-        employee.setSize(employeeNode.get("size").asText());
+        employee.setSize(mapper.treeToValue(employeeNode.get("size"),CSizes.class));
         employee.setSizeNumber(employeeNode.get("sizeNumber").asInt());
         employee.setState(employeeNode.get("state").asText());
         employee.setExteriorNumber(employeeNode.get("exteriorNumber").asText());
@@ -316,7 +316,10 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
         employee.setStatus(1);
         employee.setMail(employeeNode.get("mail").asText());
         employee.setJoinDate(joinDate);
-                
+
+        if (employeeNode.has("sistarh")) {
+            employee.setSistarh(employeeNode.get("sistarh").asText());
+        }
 
         dwEmployee.setDwEnterprise(dwEnterprise);
         dwEmployee.setRole(role);
@@ -339,16 +342,19 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
 
         Accounts account = mapper.treeToValue(jsonNode.get("employeeAccount").get("account"), Accounts.class);
 
+        EmployeesAccounts employeesAccount = employeesAccountsDao.findByIdEmployee(employee.getIdEmployee());
+
         if (!account.equals(currentAccount)) {
             currentAccount.setDeleteDay(LocalDateTime.now());
             accountsDao.update(currentAccount);
             account = accountsDao.save(account);
 
-            EmployeesAccounts employeesAccount = employeesAccountsDao.findByIdEmployee(employee.getIdEmployee());
             employeesAccount.setAccount(account);
 
             employeesAccountsDao.save(employeesAccount);
         }
+
+        employeesHistoryService.save(dwEmployee, CActionTypes.MODIFICAION, employeesAccount.getAccount());
 
         return dwEmployee;
     }

@@ -81,7 +81,46 @@
                     isThereItems:false,
                     currentDwEmployee:{},
                     nameSearch: '',
-                    rfcSearch: ''
+                    rfcSearch: '',
+                    dwEnterprise: {},
+                    role: {},
+                    selectedOptions: {
+                        area: {
+                            id: 0
+                        },
+                        distributor: {
+                            id: 0
+                        },
+                        region: {
+                            id: 0
+                        },
+                        branch: {
+                            id: 0
+                        },
+                        role: {
+                            id: 0
+                        }
+                    },
+                    branchs: [],
+                    selectOptions: {
+                        distributors: [],
+                        areas: [],
+                        roles: [],
+                        dwEnterprises: []
+                    },
+                    employeeH: {},
+                    newAssignamentDwEnterprises: {
+                        idEH: 0,
+                        branch: {
+                            id: 0
+                        },
+                        area: {
+                            id: 0
+                        },
+                        role: {
+                            id: 0
+                        }
+                    }
                 },
                 methods: {
                     createReport: function () {
@@ -372,6 +411,60 @@
                                 .error(function (date) {
 
                                 });
+                    },
+                    getRoleEmployeeHistory: function (idEH) {
+                        this.$http.get(ROOT_URL + '/roles/employee-history/' + idEH).success(function (data) {
+                            this.role = data;
+                        });
+                    },
+                    getDwEnterpriseEH: function (idEH) {
+                        this.$http.get(ROOT_URL + '/dw-enterprises/employee-history/' + idEH).success(function (data) {
+                            this.dwEnterprise = data;
+                        });
+                    },
+                    getReactivationData: function (idEH) {
+                        this.getRoleEmployeeHistory(idEH);
+                        this.getDwEnterpriseEH(idEH);
+                        this.obtainBranchs();
+                        this.$http.get(ROOT_URL + '/employees-history/' + idEH).success(function (data) {
+                            this.employeeH = data;
+                            $("#reactivacionModal").modal("show");
+                        });
+                    },
+                    obtainBranchs: function () {
+                        this.$http.get(ROOT_URL + "/branchs").success(function (data) {
+                            this.branchs = data;
+                        })
+                    },
+                    selectedOptionsBranchChanged: function () {
+                        this.selectedOptions.area = this.defaultArea;
+                        this.selectedOptions.role = this.defaultRole;
+                        this.selectOptions.dwEnterprises = [];
+                        this.selectOptions.roles = [];
+                        this.$http.get(ROOT_URL + "/dw-enterprises/branch/" + this.selectedOptions.branch.idBranch).success(function (data) {
+                            this.selectOptions.dwEnterprises = data;
+                        });
+                    },
+                    selectedOptionsDwEnterpriseChanged: function () {
+                        this.selectOptions.roles = [];
+                        this.selectedOptions.role = this.defaultRole;
+                        this.$http.get(ROOT_URL + "/areas/area-role/" + this.selectedOptions.area.idArea).success(function (data) {
+                            this.selectOptions.roles = data.roles;
+                        });
+                    },
+                    reactivationEmployee: function () {
+                        this.newAssignamentDwEnterprises.branch = this.selectedOptions.branch;
+                        this.newAssignamentDwEnterprises.area = this.selectedOptions.area;
+                        this.newAssignamentDwEnterprises.role = this.selectedOptions.role;
+                        this.newAssignamentDwEnterprises.idEH = this.employeeH.idEh;
+
+                        this.$http.post(ROOT_URL + "/employees-history/reactivation/" + this.employeeH.idEh, JSON.stringify(this.newAssignamentDwEnterprises))
+                                .success(function (data) {
+                            showAlert("Reactivaciòn de empleado exitosa");
+                                $("#reactivacionModal").modal("hide");
+                        }).error(function (data) {
+                            showAlert("Error en la reactivaciòn",{type: 3});
+                        });
                     }
                 }
             });
@@ -634,6 +727,92 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-danger" @click="changeEmployeeStatus">Baja</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="reactivacionModal" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title">Reactivaciòn</h4>
+                        </div>
+                        <div class="modal-body">
+                            <br>
+                            <div class="row">
+                                <label>Asignación actual</label>
+                                <table class="table table-striped">
+                                    <thead>
+                                    <th class="col-xs-2">Distribuidor</th>
+                                    <th class="col-xs-2">Regiòn</th>
+                                    <th class="col-xs-3">Sucursal</th>
+                                    <th class="col-xs-3">Àrea</th>
+                                    <th class="col-xs-2">Puesto</th>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td class="col-xs-2">
+                                            {{dwEnterprise.distributor.distributorName}}
+                                        </td>
+                                        <td class="col-xs-2">
+                                            {{dwEnterprise.region.regionName}}
+                                        </td>
+                                        <td class="col-xs-2">
+                                            {{dwEnterprise.branch.branchName}}
+                                        </td>
+                                        <td class="col-xs-2">
+                                            {{dwEnterprise.area.areaName}}
+                                        </td>
+                                        <td class="col-xs-2">
+                                            {{role.roleName}}
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <label>Surcursal</label>
+                                    <select v-model="selectedOptions.branch" class="form-control"
+                                            required @change="selectedOptionsBranchChanged">
+                                        <option selected :value="defaultBranch">{{defaultRole.name}}</option>
+                                        <option v-for="branch in branchs"
+                                                :value="branch">
+                                            {{ branch.branchShort }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Àrea</label>
+                                    <select v-model="selectedOptions.area" class="form-control"
+                                            required @change="selectedOptionsDwEnterpriseChanged"
+                                            :disabled="selectOptions.dwEnterprises.length <= 0">
+                                        <option selected :value="defaultArea">{{defaultArea.name}}</option>
+                                        <option v-for="dwEnterprise in selectOptions.dwEnterprises"
+                                                :value="dwEnterprise.area">
+                                            {{ dwEnterprise.area.areaName }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Puesto</label>
+                                    <select v-model="selectedOptions.role" class="form-control"
+                                            required :disabled="selectedOptions.area.idArea <= 0"
+                                            @change="fetchDocumentTypes()">
+                                        <option selected :value="defaultRole">{{defaultRole.name}}</option>
+                                        <option v-for="role in selectOptions.roles"
+                                                :value="role">
+                                            {{ role.roleName }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" @click="reactivationEmployee()">Reactivar</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
                         </div>
                     </div>

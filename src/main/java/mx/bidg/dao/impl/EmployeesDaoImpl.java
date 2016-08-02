@@ -77,6 +77,16 @@ public class EmployeesDaoImpl extends AbstractDao<Integer, Employees> implements
     }
 
     @Override
+    public Employees findByRfc(String rfc) {
+        return (Employees) createEntityCriteria().add(Restrictions.eq("rfc",rfc)).uniqueResult();
+    }
+
+    @Override
+    public Employees findByCurp(String curp) {
+        return (Employees) createEntityCriteria().add(Restrictions.eq("curp", curp)).uniqueResult();
+    }
+
+    @Override
     public Employees save(Employees entity) {
         persist(entity);
         return entity;

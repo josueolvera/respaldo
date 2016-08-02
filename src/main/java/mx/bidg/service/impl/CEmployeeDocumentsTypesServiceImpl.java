@@ -1,10 +1,12 @@
 package mx.bidg.service.impl;
 
 import mx.bidg.dao.CEmployeeDocumentsTypesDao;
+import mx.bidg.dao.DistributorsEmployeeDocumentsDao;
+import mx.bidg.dao.DwEmployeesDao;
 import mx.bidg.dao.EmployeeDocumentsDao;
-import mx.bidg.model.CEmployeeDocumentsTypes;
-import mx.bidg.model.EmployeeDocuments;
+import mx.bidg.model.*;
 import mx.bidg.service.CEmployeeDocumentsTypesService;
+import mx.bidg.service.DistributorsEmployeeDocumentsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -26,22 +28,42 @@ public class CEmployeeDocumentsTypesServiceImpl implements CEmployeeDocumentsTyp
     @Autowired
     EmployeeDocumentsDao employeeDocumentsDao;
 
+    @Autowired
+    DwEmployeesDao dwEmployeesDao;
+
+    @Autowired
+    DistributorsEmployeeDocumentsDao distributorsEmployeeDocumentsDao;
+
     @Override
     public List<CEmployeeDocumentsTypes> findAll() {
         return cEmployeeDocumentsTypesDao.findAll();
     }
 
     @Override
-    public List<CEmployeeDocumentsTypes> findByEmployee(Integer idEmployee) {
+    public List<CEmployeeDocumentsTypes> findByEmployee(Integer idDwEmployee) {
 
-        List<EmployeeDocuments> employeeDocuments = employeeDocumentsDao.findByIdEmployee(idEmployee);
-        List<CEmployeeDocumentsTypes> cEmployeeDocumentsTypes = new ArrayList<>();
+        DwEmployees dwEmployee = dwEmployeesDao.findById(idDwEmployee);
+        DwEnterprises dwEnterprise = dwEmployee.getDwEnterprise();
 
-        for (EmployeeDocuments employeeDocument : employeeDocuments) {
-            cEmployeeDocumentsTypes.add(employeeDocument.getcDocumentType());
+        List<CEmployeeDocumentsTypes> currentEmployeeDocumentsTypes = new ArrayList<>();
+        List<CEmployeeDocumentsTypes> employeeDocumentsTypes = new ArrayList<>();
+        List<EmployeeDocuments> employeeDocuments = employeeDocumentsDao.findByIdEmployee(dwEmployee.getIdEmployee());
+        List<DitributorsEmployeeDocuments> ditributorsEmployeeDocuments = distributorsEmployeeDocumentsDao.findByDistributor(dwEnterprise.getIdDistributor());
+
+
+
+        for (DitributorsEmployeeDocuments ditributorsEmployeeDocument : ditributorsEmployeeDocuments) {
+            employeeDocumentsTypes.add(ditributorsEmployeeDocument.getDocumentType());
         }
 
-        return cEmployeeDocumentsTypesDao.findByEmployee(cEmployeeDocumentsTypes);
+        for (EmployeeDocuments employeeDocument : employeeDocuments) {
+            currentEmployeeDocumentsTypes.add(employeeDocument.getcDocumentType());
+        }
+
+        employeeDocumentsTypes.removeAll(currentEmployeeDocumentsTypes);
+
+
+        return cEmployeeDocumentsTypesDao.findByEmployee(employeeDocumentsTypes);
     }
 
     @Override

@@ -25,4 +25,5 @@ public interface DwEnterprisesDao extends InterfaceDao<DwEnterprises> {
     List<DwEnterprises> findByDistributorAndRegionAndBranchAndArea(Integer idDistributor, Integer idRegion, Integer idBranch,Integer idArea);
     DwEnterprises findByBranch (Integer idBranch);
     List<DwEnterprises> findByBranches (Integer idBranch);
+    DwEnterprises findByBranchAndArea(Integer idBranch, Integer idArea);
 }

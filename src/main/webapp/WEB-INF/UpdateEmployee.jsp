@@ -61,6 +61,7 @@
                 ready: function () {
                     this.getDwEmployee();
                     this.obtainStates();
+                    this.getSizes();
                     this.obtainEducation();
                     this.obtainStatusMarital();
                     this.obtainBanks();
@@ -79,6 +80,7 @@
                     educationList: [],
                     statusMaritalList: [],
                     estados: [],
+                    sizes: [],
                     banks: [],
                     employeeAccount: {},
                     contractTypes: [],
@@ -147,7 +149,7 @@
                                 });
                     },
                     getDocumentTypes: function () {
-                        this.$http.get(ROOT_URL + "/employee-document-types/employee/" + this.dwEmployee.idEmployee)
+                        this.$http.get(ROOT_URL + "/employee-document-types/employee/" + this.dwEmployee.idDwEmployee)
                                 .success(function (data) {
                                     this.documentTypes = data;
                                 });
@@ -200,6 +202,11 @@
                     obtainStates: function () {
                         this.$http.get(ROOT_URL + "/states").success(function (data) {
                             this.estados = data;
+                        });
+                    },
+                    getSizes: function () {
+                        this.$http.get(ROOT_URL + "/sizes").success(function (data) {
+                            this.sizes = data;
                         });
                     },
                     obtainEducation: function () {
@@ -290,8 +297,8 @@
                         };
                         
                         this.$http.post(ROOT_URL + "/dw-employees/update", requestBody).success(function (data) {
+                            showAlert("Actualización de empleado exitoso");
                             if (this.newEmployeeDocuments.length > 0) {
-                                showAlert("Actualización de empleado exitoso");
                                 this.newEmployeeDocuments.forEach(function (document) {
                                     self.updateEmployeeDocument(document);
                                 });
@@ -317,6 +324,26 @@
                                 .error(function (data) {
 
                                 });
+                    },
+                    validateAccountEmployee: function (account, clabe) {
+                        if (account.length > 0 && clabe.length > 0) {
+                            if (clabe.indexOf(account) == -1) {
+                                if (!showAlert("La clabe es incorrecta", {type: 3})) {
+                                    this.employeeAccount.account.accountNumber = '';
+                                    this.employeeAccount.account.accountClabe = '';
+                                }
+                            }
+                        } else {
+                            if (account.length > 0 && (account.length > 11 || account.length < 5)) {
+                                showAlert("Debes ingresar entre 5 y 11 caracteres en el numero de cuenta", {type: 3});
+                            }
+                            if (clabe.length > 0 && clabe.length < 18) {
+                                showAlert("Debes ingresar 18 caracteres en la CLABE", {type: 3});
+                            }
+                            if (account.length < 5 && clabe.length < 18) {
+                                showAlert("Debes ingresar un Numero de Cuenta o CLABE", {type: 3});
+                            }
+                        }
                     },
                     setFile : function (event, object) {
                         var self = this;
@@ -376,403 +403,411 @@
 
     <jsp:body>
         <div id="content">
-            <div>
-                <div class="row">
-                    <div class="col-xs-8 text-header">
-                        <h2>Modificación de empleados</h2>
-                    </div>
-                </div>
-            </div>
-            <br>
-            <div class="panel panel-default">
-                <div class="panel-heading">Información personal</div>
-                <div class="panel-body">
-                    <div class="col-xs-12">
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <label>Nombre</label>
-                                <input class="form-control" v-model="dwEmployee.employee.firstName" onkeypress="return isLetterKey(event)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Segundo nombre</label>
-                                <input class="form-control" v-model="dwEmployee.employee.middleName" onkeypress="return isLetterKey(event)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Apellido paterno</label>
-                                <input class="form-control" v-model="dwEmployee.employee.parentalLast" onkeypress="return isLetterKey(event)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Apellido materno</label>
-                                <input class="form-control" v-model="dwEmployee.employee.motherLast" onkeypress="return isLetterKey(event)">
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <label>Genero</label>
-                                <select class="form-control" v-model="dwEmployee.employee.gender">
-                                    <option v-for="gender in genders" :value="gender">
-                                        {{gender.genderName}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Fecha de Nacimiento</label>
-                                <div class="form-group">
-                                    <div class="input-group date" id="birthday" @click="activeDateTimePickerBirthday">
-                                        <input type="text" class="form-control" v-model="dwEmployee.employee.birthday">
-                                   <span class="input-group-addon">
-                                       <span class="glyphicon glyphicon-calendar"></span>
-                                   </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Lugar de Nacimiento</label>
-                                <select class="form-control" v-model="dwEmployee.employee.birthPlace">
-                                    <option v-for="estado in estados"
-                                            value="{{estado.nombreEstado}}">
-                                        {{estado.nombreEstado}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>CURP</label>
-                                <input class="form-control" v-model="dwEmployee.employee.curp" maxlength="18" @change="validateCurp(employee.curp)">
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <label>Código postal</label>
-                                <input class="form-control" maxlength="5" v-model="dwEmployee.employee.postcode"
-                                       @input="obtainAsentamientos"
-                                       onkeypress="return isNumberKey(event)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Estado</label>
-                                <input class="form-control" v-model="estadosMunicipios.estado.nombreEstado" disabled>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Municipio/Delegación</label>
-                                <input class="form-control" v-model="estadosMunicipios.nombreMunicipios" disabled>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Colonia</label>
-                                <select class="form-control" v-model="dwEmployee.employee.colonia">
-                                    <option v-for="set in asentamiento" value="{{set.nombreAsentamiento}}">
-                                        {{set.nombreAsentamiento}}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <label>Calle</label>
-                                <input class="form-control" v-model="dwEmployee.employee.street">
-                            </div>
-                            <div class="col-xs-2">
-                                <label>Número Exterior</label>
-                                <input class="form-control" maxlength="5"
-                                       v-model="dwEmployee.employee.exteriorNumber">
-                            </div>
-                            <div class="col-xs-2">
-                                <label>Número Interior</label>
-                                <input class="form-control" maxlength="5"
-                                       v-model="dwEmployee.employee.interiorNumber">
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <label>Nombre del padre</label>
-                                <input class="form-control" v-model="dwEmployee.employee.fatherName" onkeypress="return isLetterKey(event)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Nombre de la madre</label>
-                                <input class="form-control" v-model="dwEmployee.employee.motherName" onkeypress="return isLetterKey(event)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Estado civil</label>
-                                <select class="form-control" v-model="dwEmployee.employee.statusMarital">
-                                    <option v-for="statusMarital in statusMaritalList" value="{{statusMarital}}">
-                                        {{statusMarital.maritalName}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Escolaridad</label>
-                                <select class="form-control" v-model="dwEmployee.employee.education">
-                                    <option v-for="education in educationList" value="{{education}}">
-                                        {{education.educationName}}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <label>Talla</label>
-                                <input class="form-control" v-model="dwEmployee.employee.size" maxlength="3" onkeypress="return isLetterKey(event)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Número de talla</label>
-                                <input class="form-control" v-model="dwEmployee.employee.sizeNumber" maxlength="2" onkeypress="return isNumberKey(event)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Télefono de casa</label>
-                                <input class="form-control" v-model="dwEmployee.employee.homePhone" maxlength="10" onkeypress="return isNumberKey(event)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Móvil</label>
-                                <input class="form-control" v-model="dwEmployee.employee.cellPhone" maxlength="10" onkeypress="return isNumberKey(event)">
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <label>Email</label>
-                                <input class="form-control" v-model="dwEmployee.employee.mail" @change="validateEmail(employee.mail)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Clave SAP</label>
-                                <input class="form-control" v-model="dwEmployee.employee.claveSap">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>RFC</label>
-                                <input class="form-control" v-model="dwEmployee.employee.rfc" maxlength="13" @change="validateRfc(employee.rfc)">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Fecha de ingreso</label>
-                                <div class="form-group">
-                                    <div class="input-group date" id="joinDate" @click="activeDateTimePickerJoinDate">
-                                        <input type="text" class="form-control" v-model="dwEmployee.employee.joinDate">
-                                   <span class="input-group-addon">
-                                       <span class="glyphicon glyphicon-calendar"></span>
-                                   </span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <label>IMSS</label>
-                                <input class="form-control" v-model="dwEmployee.employee.imss">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Infonavit</label>
-                                <input class="form-control" v-model="dwEmployee.employee.infonavitNumber">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <br>
-            <div class="panel panel-default">
-                <!-- Default panel contents -->
-                <div class="panel-heading">Datos de la empresa</div>
-                <div class="panel-body">
-                    <div class="col-xs-12">
-                        <div class="row">
-                            <label>Asignación actual</label>
-                            <table class="table table-striped">
-                                <thead>
-                                <th class="col-xs-2">Distribuidor</th>
-                                <th class="col-xs-2">Regiòn</th>
-                                <th class="col-xs-3">Sucursal</th>
-                                <th class="col-xs-3">Àrea</th>
-                                <th class="col-xs-2">Puesto</th>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td class="col-xs-2">
-                                        {{dwEnterprise.distributor.distributorName}}
-                                    </td>
-                                    <td class="col-xs-2">
-                                        {{dwEnterprise.region.regionName}}
-                                    </td>
-                                    <td class="col-xs-2">
-                                        {{dwEnterprise.branch.branchName}}
-                                    </td>
-                                    <td class="col-xs-2">
-                                        {{dwEnterprise.area.areaName}}
-                                    </td>
-                                    <td class="col-xs-2">
-                                        {{role.roleName}}
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <label>Reasignar</label>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-xs-2">
-                                <label>Sucursal</label>
-                                <select v-model="selectedOptions.branch" class="form-control"
-                                        @change="selectedOptionsBranchChanged">
-                                    <option selected :value="defaultBranch">{{defaultBranch.name}}</option>
-                                    <option v-for="branch in branchs"
-                                            :value="branch">
-                                        {{ branch.branchShort }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Área</label>
-                                <select v-model="dwEmployee.dwEnterprise" class="form-control"
-                                        @change="selectedOptionsDwEnterpriseChanged"
-                                        :disabled="selectOptions.dwEnterprises.length <= 0">
-                                    <option selected :value="defaultArea">{{defaultArea.name}}</option>
-                                    <option v-for="dwEnterprise in selectOptions.dwEnterprises"
-                                            :value="dwEnterprise">
-                                        {{ dwEnterprise.area.areaName }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Puesto</label>
-                                <select v-model="dwEmployee.role" class="form-control"
-                                        :disabled="selectOptions.roles.length <= 0">
-                                    <option selected :value="defaultRole">{{defaultRole.name}}</option>
-                                    <option v-for="role in selectOptions.roles"
-                                            :value="role">
-                                        {{ role.roleName }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-2">
-                                <label>Tipo de empleado</label>
-                                <select class="form-control" v-model="dwEmployee.employee.employeeType">
-                                    <option v-for="employeeType in employeeTypes" :value="employeeType">
-                                        {{employeeType.employeeTypeName}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-2">
-                                <label>Tipo de contrato</label>
-                                <select class="form-control" v-model="dwEmployee.employee.contractType">
-                                    <option v-for="contractType in contractTypes" :value="contractType">
-                                        {{contractType.contractTypeName}}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                        <br>
-                    </div>
-                </div>
-            </div>
-            <br>
-            <div class="panel panel-default">
-                <!-- Default panel contents -->
-                <div class="panel-heading">Datos bancarios</div>
-                <div class="panel-body">
-                    <div class="col-xs-12">
-                        <div class="row">
-                            <div class="col-xs-3">
-                                <label>Banco</label>
-                                <select class="form-control" v-model="employeeAccount.account.bank">
-                                    <option v-for="bank in banks" value="{{bank}}">
-                                        {{bank.acronyms}}
-                                    </option>
-                                </select>
-                            </div>
-
-                            <div class="col-xs-3">
-                                <label>Número de Cuenta</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon">#</span>
-                                    <input class="form-control" maxlength="11"
-                                           v-model="employeeAccount.account.accountNumber"
-                                           onkeypress="return isNumberKey(event)">
-                                </div>
-                            </div>
-
-                            <div class="col-xs-3">
-                                <label>CLABE</label>
-                                <div class="input-group">
-                                    <span class="input-group-addon">#</span>
-                                    <input type="text" class="form-control" maxlength="18"
-                                           v-model="employeeAccount.account.accountClabe"
-                                           onkeypress="return isNumberKey(event)">
-                                </div>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Salario</label>
-                                <input type="text" class="form-control" maxlength="18"
-                                       v-model="dwEmployee.employee.salary"
-                                       onkeypress="return isNumberKey(event)">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <!-- Default panel contents -->
-                <div class="panel-heading">Datos bancarios</div>
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Tipo de documento</th>
-                            <th>Nombre</th>
-                            <th>Fecha de actualización</th>
-                            <th>Nuevo Documento</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr v-for="employeeDocument in employeeDocuments">
-                            <td>{{$index + 1}}</td>
-                            <td>
-                                {{employeeDocument.cDocumentType.documentName}}
-                            </td>
-                            <td>
-                                <a :href="downloadUrl + employeeDocument.idDocument">{{employeeDocument.documentName}}</a>
-                            </td>
-                            <td>
-                                {{employeeDocument.uploadDateFormats.simpleDate}}
-                            </td>
-                            <td>
-                                <input type="file" class="form-control" @change="setFile($event, employeeDocument)">
-                            </td>
-                        </tr>
-                        <tr v-for="documentType in documentTypes">
-                            <td>{{employeeDocuments.length + $index + 1}}</td>
-                            <td>
-                                {{documentType.documentName}}
-                            </td>
-                            <td>
-
-                            </td>
-                            <td>
-
-                            </td>
-                            <td>
-                                <input type="file" class="form-control" @change="setFile($event, documentType)">
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <br>
             <div class="row">
-                <div class="col-xs-10">
-                </div>
-                <div class="col-xs-1">
-                    <a class="btn btn-default" :href="regresarBusqueda">Regresar</a>
-                </div>
-                <div class="col-xs-1">
-                    <button type="button" class="btn btn-primary" @click="updateEmployee()">
-                        Aceptar
-                    </button>
+                <div class="col-xs-8 text-header">
+                    <h2>Modificación de empleados</h2>
                 </div>
             </div>
+            <br>
+            <form v-on:submit.prevent="updateEmployee">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Información personal</div>
+                    <div class="panel-body">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <label>Nombre</label>
+                                    <input class="form-control" v-model="dwEmployee.employee.firstName" onkeypress="return isLetterKey(event)" required>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Segundo nombre</label>
+                                    <input class="form-control" v-model="dwEmployee.employee.middleName" onkeypress="return isLetterKey(event)">
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Apellido paterno</label>
+                                    <input class="form-control" v-model="dwEmployee.employee.parentalLast" onkeypress="return isLetterKey(event)" required>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Apellido materno</label>
+                                    <input class="form-control" v-model="dwEmployee.employee.motherLast" onkeypress="return isLetterKey(event)">
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <label>Genero</label>
+                                    <select class="form-control" v-model="dwEmployee.employee.gender" required>
+                                        <option v-for="gender in genders" :value="gender">
+                                            {{gender.genderName}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Fecha de Nacimiento</label>
+                                    <div class="form-group">
+                                        <div class="input-group date" id="birthday" @click="activeDateTimePickerBirthday">
+                                            <input type="text" class="form-control" v-model="dwEmployee.employee.birthday" required>
+                                   <span class="input-group-addon">
+                                       <span class="glyphicon glyphicon-calendar"></span>
+                                   </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Lugar de Nacimiento</label>
+                                    <select class="form-control" v-model="dwEmployee.employee.birthPlace" required>
+                                        <option v-for="estado in estados"
+                                                value="{{estado.nombreEstado}}">
+                                            {{estado.nombreEstado}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>CURP</label>
+                                    <input class="form-control" v-model="dwEmployee.employee.curp" maxlength="18" @change="validateCurp(employee.curp)" required>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <label>Código postal</label>
+                                    <input class="form-control" maxlength="5" v-model="dwEmployee.employee.postcode"
+                                           @input="obtainAsentamientos"
+                                           onkeypress="return isNumberKey(event)" required>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Estado</label>
+                                    <input class="form-control" v-model="estadosMunicipios.estado.nombreEstado" disabled required>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Municipio/Delegación</label>
+                                    <input class="form-control" v-model="estadosMunicipios.nombreMunicipios" disabled required>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Colonia</label>
+                                    <select class="form-control" v-model="dwEmployee.employee.colonia" required>
+                                        <option v-for="set in asentamiento" value="{{set.nombreAsentamiento}}">
+                                            {{set.nombreAsentamiento}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <label>Calle</label>
+                                    <input class="form-control" v-model="dwEmployee.employee.street" required>
+                                </div>
+                                <div class="col-xs-2">
+                                    <label>Número Exterior</label>
+                                    <input class="form-control" maxlength="5"
+                                           v-model="dwEmployee.employee.exteriorNumber" required>
+                                </div>
+                                <div class="col-xs-2">
+                                    <label>Número Interior</label>
+                                    <input class="form-control" maxlength="5"
+                                           v-model="dwEmployee.employee.interiorNumber" required>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <label>Nombre del padre</label>
+                                    <input class="form-control" v-model="dwEmployee.employee.fatherName" onkeypress="return isLetterKey(event)" required>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Nombre de la madre</label>
+                                    <input class="form-control" v-model="dwEmployee.employee.motherName" onkeypress="return isLetterKey(event)" required>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Estado civil</label>
+                                    <select class="form-control" v-model="dwEmployee.employee.statusMarital" required>
+                                        <option v-for="statusMarital in statusMaritalList" value="{{statusMarital}}">
+                                            {{statusMarital.maritalName}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Escolaridad</label>
+                                    <select class="form-control" v-model="dwEmployee.employee.education" required>
+                                        <option v-for="education in educationList" value="{{education}}">
+                                            {{education.educationName}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <label>Talla</label>
+                                    <select class="form-control" v-model="dwEmployee.employee.size" required>
+                                        <option v-for="size in sizes" :value="size">
+                                            {{size.sizeName}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Número de talla</label>
+                                    <input class="form-control" name="name" v-model="dwEmployee.employee.sizeNumber"
+                                           maxlength="2" onkeypress="return isNumberKey(event)">
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Télefono de casa</label>
+                                    <input class="form-control" v-model="dwEmployee.employee.homePhone" maxlength="10" onkeypress="return isNumberKey(event)" required>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Móvil</label>
+                                    <input class="form-control" v-model="dwEmployee.employee.cellPhone" maxlength="10" onkeypress="return isNumberKey(event)" required>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <label>Email</label>
+                                    <input class="form-control" v-model="dwEmployee.employee.mail" @change="validateEmail(employee.mail)" required>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Clave SAP</label>
+                                    <input class="form-control" v-model="dwEmployee.employee.claveSap" required>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>RFC</label>
+                                    <input class="form-control" v-model="dwEmployee.employee.rfc" maxlength="13" @change="validateRfc(employee.rfc)" required>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Fecha de ingreso</label>
+                                    <div class="form-group">
+                                        <div class="input-group date" id="joinDate" @click="activeDateTimePickerJoinDate">
+                                            <input type="text" class="form-control" v-model="dwEmployee.employee.joinDate" required>
+                                   <span class="input-group-addon">
+                                       <span class="glyphicon glyphicon-calendar"></span>
+                                   </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <label>IMSS</label>
+                                    <input class="form-control" maxlength="18" v-model="dwEmployee.employee.imss" onkeypress="return isNumberKey(event)">
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Infonavit</label>
+                                    <input class="form-control" maxlength="15" v-model="dwEmployee.employee.infonavitNumber">
+                                </div>
+                                <div class="col-xs-3" v-if="dwEmployee.dwEnterprise.idDistributor != 9">
+                                    <label>SISTARH</label>
+                                    <input class="form-control" maxlength="3" onkeypress="return isNumberKey(event)"
+                                           v-model="dwEmployee.employee.sistarh" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">Datos de la empresa</div>
+                    <div class="panel-body">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <label>Asignación actual</label>
+                                <table class="table table-striped">
+                                    <thead>
+                                    <th class="col-xs-3">Distribuidor</th>
+                                    <th class="col-xs-3">Sucursal</th>
+                                    <th class="col-xs-3">Área</th>
+                                    <th class="col-xs-3">Puesto</th>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td class="col-xs-3">
+                                            {{dwEnterprise.distributor.distributorName}}
+                                        </td>
+                                        <td class="col-xs-3">
+                                            {{dwEnterprise.branch.branchShort}}
+                                        </td>
+                                        <td class="col-xs-3">
+                                            {{dwEnterprise.area.areaName}}
+                                        </td>
+                                        <td class="col-xs-3">
+                                            {{role.roleName}}
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <label>Reasignar</label>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-xs-2">
+                                    <label>Sucursal</label>
+                                    <select v-model="selectedOptions.branch" class="form-control"
+                                            @change="selectedOptionsBranchChanged">
+                                        <option selected :value="defaultBranch">{{defaultBranch.name}}</option>
+                                        <option v-for="branch in branchs"
+                                                :value="branch">
+                                            {{ branch.branchShort }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Área</label>
+                                    <select v-model="dwEmployee.dwEnterprise" class="form-control"
+                                            @change="selectedOptionsDwEnterpriseChanged"
+                                            :disabled="selectOptions.dwEnterprises.length <= 0">
+                                        <option selected :value="defaultArea">{{defaultArea.name}}</option>
+                                        <option v-for="dwEnterprise in selectOptions.dwEnterprises"
+                                                :value="dwEnterprise">
+                                            {{ dwEnterprise.area.areaName }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Puesto</label>
+                                    <select v-model="dwEmployee.role" class="form-control"
+                                            :disabled="selectOptions.roles.length <= 0">
+                                        <option selected :value="defaultRole">{{defaultRole.name}}</option>
+                                        <option v-for="role in selectOptions.roles"
+                                                :value="role">
+                                            {{ role.roleName }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-2">
+                                    <label>Tipo de empleado</label>
+                                    <select class="form-control" v-model="dwEmployee.employee.employeeType" required>
+                                        <option v-for="employeeType in employeeTypes" :value="employeeType">
+                                            {{employeeType.employeeTypeName}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-2">
+                                    <label>Tipo de contrato</label>
+                                    <select class="form-control" v-model="dwEmployee.employee.contractType" required>
+                                        <option v-for="contractType in contractTypes" :value="contractType">
+                                            {{contractType.contractTypeName}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">Datos bancarios</div>
+                    <div class="panel-body">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <div class="col-xs-3">
+                                    <label>Banco</label>
+                                    <select class="form-control" v-model="employeeAccount.account.bank" required>
+                                        <option v-for="bank in banks" value="{{bank}}">
+                                            {{bank.acronyms}}
+                                        </option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <label>Número de Cuenta</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">#</span>
+                                        <input class="form-control" maxlength="11"
+                                               v-model="employeeAccount.account.accountNumber"
+                                               onkeypress="return isNumberKey(event)"
+                                               @change="validateAccountEmployee(employeeAccount.account.accountNumber,employeeAccount.account.accountClabe)">
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-3">
+                                    <label>CLABE</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">#</span>
+                                        <input type="text" class="form-control" maxlength="18"
+                                               v-model="employeeAccount.account.accountClabe"
+                                               onkeypress="return isNumberKey(event)"
+                                               @change="validateAccountEmployee(employeeAccount.account.accountNumber,employeeAccount.account.accountClabe)">
+                                    </div>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Salario</label>
+                                    <input type="text" class="form-control" maxlength="18"
+                                           v-model="dwEmployee.employee.salary"
+                                           onkeypress="return isNumberKey(event)" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">Datos bancarios</div>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tipo de documento</th>
+                                <th>Nombre</th>
+                                <th>Fecha de actualización</th>
+                                <th>Nuevo Documento</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="employeeDocument in employeeDocuments">
+                                <td>{{$index + 1}}</td>
+                                <td>
+                                    {{employeeDocument.cDocumentType.documentName}}
+                                </td>
+                                <td>
+                                    <a :href="downloadUrl + employeeDocument.idDocument">{{employeeDocument.documentName}}</a>
+                                </td>
+                                <td>
+                                    {{employeeDocument.uploadDateFormats.simpleDate}}
+                                </td>
+                                <td>
+                                    <input type="file" class="form-control" @change="setFile($event, employeeDocument)">
+                                </td>
+                            </tr>
+                            <tr v-for="documentType in documentTypes">
+                                <td>{{employeeDocuments.length + $index + 1}}</td>
+                                <td>
+                                    {{documentType.documentName}}
+                                </td>
+                                <td>
+
+                                </td>
+                                <td>
+
+                                </td>
+                                <td>
+                                    <input type="file" class="form-control" @change="setFile($event, documentType)">
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-xs-10">
+                    </div>
+                    <div class="col-xs-1">
+                        <a class="btn btn-default" :href="regresarBusqueda">Regresar</a>
+                    </div>
+                    <div class="col-xs-1">
+                        <button type="submit" class="btn btn-success">
+                            Guardar
+                        </button>
+                    </div>
+                </div>
+            </form>
             <br>
             <br>
         </div>

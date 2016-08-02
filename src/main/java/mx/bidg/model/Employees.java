@@ -192,10 +192,14 @@ public class Employees implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String homePhone;
 
-    @Size(max = 3)
-    @Column(name = "SIZE")
+    @Column(name = "ID_SIZE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private String size;
+    private Integer idSize;
+
+    @JoinColumn(name = "ID_SIZE", referencedColumnName = "ID_SIZE")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CSizes size;
 
     @Column(name = "SIZE_NUMBER")
     @JsonView(JsonViews.Root.class)
@@ -217,6 +221,9 @@ public class Employees implements Serializable {
     @Convert(converter = DateConverter.class)
     private LocalDate birthday;
 
+    @Column(name = "SISTARH")
+    @JsonView(JsonViews.Root.class)
+    private String sistarh;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "employee")
     @JsonView(JsonViews.Embedded.class)
@@ -498,11 +505,11 @@ public class Employees implements Serializable {
         this.idEducation = idEducation;
     }
 
-    public String getSize() {
+    public CSizes getSize() {
         return size;
     }
 
-    public void setSize(String size) {
+    public void setSize(CSizes size) {
         this.size = size;
     }
 
@@ -634,6 +641,14 @@ public class Employees implements Serializable {
         return StringFormatter.concatWithoutNull(parentalLast, motherLast, firstName, middleName);
     }
 
+    public String getSistarh() {
+        return sistarh;
+    }
+
+    public void setSistarh(String sistarh) {
+        this.sistarh = sistarh;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -687,11 +702,12 @@ public class Employees implements Serializable {
                 ", idEducation=" + idEducation +
                 ", idStatusMarital=" + idStatusMarital +
                 ", homePhone='" + homePhone + '\'' +
-                ", size='" + size + '\'' +
+                ", size=" + size +
                 ", sizeNumber=" + sizeNumber +
                 ", idGender=" + idGender +
                 ", joinDate=" + joinDate +
                 ", birthday=" + birthday +
+                ", sistarh='" + sistarh + '\'' +
                 ", employeesAccountsList=" + employeesAccountsList +
                 ", education=" + education +
                 ", statusMarital=" + statusMarital +
