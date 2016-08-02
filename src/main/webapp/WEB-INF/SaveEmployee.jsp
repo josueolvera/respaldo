@@ -592,12 +592,12 @@
                                     <div class="col-xs-3">
                                         <label>Estado</label>
                                         <input class="form-control" name="name"
-                                               v-model="estadosMunicipios.estado.nombreEstado" value="" disabled="true">
+                                               v-model="estadosMunicipios.estado.nombreEstado" disabled>
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Municipio/Delegación</label>
                                         <input class="form-control" name="name"
-                                               v-model="estadosMunicipios.nombreMunicipios" value="" disabled="true">
+                                               v-model="estadosMunicipios.nombreMunicipios" disabled>
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Colonia</label>
@@ -623,7 +623,7 @@
                                     <div class="col-xs-2">
                                         <label>Número Interior</label>
                                         <input class="form-control" name="name" maxlength="5"
-                                               v-model="employee.interiorNumber" required>
+                                               v-model="employee.interiorNumber">
                                     </div>
                                 </div>
                                 <br>
@@ -721,7 +721,7 @@
                                     <div class="col-xs-3">
                                         <label>Infonavit</label>
                                         <input class="form-control" name="name" v-model="employee.infonavitNumber"
-                                               maxlength="18">
+                                               maxlength="15">
                                     </div>
                                 </div>
                             </div>
@@ -738,7 +738,6 @@
                                         <label>Surcursal</label>
                                         <select v-model="selectedOptions.branch" class="form-control"
                                                 required @change="selectedOptionsBranchChanged">
-                                            <option selected :value="defaultBranch">{{defaultRole.name}}</option>
                                             <option v-for="branch in branchs"
                                                     :value="branch">
                                                 {{ branch.branchShort }}
@@ -748,9 +747,7 @@
                                     <div class="col-xs-3">
                                         <label>Àrea</label>
                                         <select v-model="selectedOptions.area" class="form-control"
-                                                required @change="selectedOptionsDwEnterpriseChanged"
-                                                :disabled="selectOptions.dwEnterprises.length <= 0">
-                                            <option selected :value="defaultArea">{{defaultArea.name}}</option>
+                                                required @change="selectedOptionsDwEnterpriseChanged">
                                             <option v-for="dwEnterprise in selectOptions.dwEnterprises"
                                                     :value="dwEnterprise.area">
                                                 {{ dwEnterprise.area.areaName }}
@@ -760,9 +757,7 @@
                                     <div class="col-xs-2">
                                         <label>Puesto</label>
                                         <select v-model="selectedOptions.role" class="form-control"
-                                                required :disabled="selectedOptions.area.idArea <= 0"
-                                                @change="fetchDocumentTypes()">
-                                            <option selected :value="defaultRole">{{defaultRole.name}}</option>
+                                                required @change="fetchDocumentTypes()">
                                             <option v-for="role in selectOptions.roles"
                                                     :value="role">
                                                 {{ role.roleName }}
