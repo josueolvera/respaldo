@@ -255,6 +255,10 @@ public class EmployeesHistory implements Serializable {
     @Column(name = "ID_REGION")
     @JsonView(JsonViews.Root.class)
     private Integer idRegion;
+    
+    @Column(name = "ID_ZONA")
+    @JsonView(JsonViews.Root.class)
+    private Integer idZona;
         
     @Column(name = "ID_BRANCH")
     @JsonView(JsonViews.Root.class)
@@ -263,6 +267,9 @@ public class EmployeesHistory implements Serializable {
     @Column(name = "ID_AREA")
     @JsonView(JsonViews.Root.class)
     private Integer idArea;
+    
+    @JsonView(JsonViews.Root.class)
+    private String fullName;
     
     public EmployeesHistory() {
     }
@@ -695,6 +702,29 @@ public class EmployeesHistory implements Serializable {
     public void setIdArea(Integer idArea) {
         this.idArea = idArea;
     }
+    
+    public Integer getIdZona() {
+        return idZona;
+    }
+
+    public void setIdZona(Integer idZona) {
+        this.idZona = idZona;
+    }
+    
+    public String getFullName() {
+        return parentalLast + " " + motherLast +" " +firstName +" " +middleName;
+    }
+    
+    public DateFormatsPojo getJoinDateFormats() {
+        if (joinDate == null) {
+            return null;
+        }
+        return new DateFormatsPojo(joinDate);
+    }   
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -866,4 +896,6 @@ public class EmployeesHistory implements Serializable {
                 ", idArea=" + idArea +
                 '}';
     }
+
+    
 }
