@@ -400,17 +400,17 @@
                     },
                     onDeleteButton: function (dwEmployee) {
                         this.currentDwEmployee = dwEmployee;
-
                         $("#deleteModal").modal("show");
                     },
                     changeEmployeeStatus: function () {
                         this.$http.post(ROOT_URL + '/dw-employees/change-employee-status',this.currentDwEmployee.idDwEmployee)
                                 .success(function (data) {
+                                    showAlert("Empleado dado de baja exitosamente");
                                     this.getEmployees();
                                     $("#deleteModal").modal("hide");
                                 })
                                 .error(function (date) {
-
+                                    showAlert("Ha habido un error con su solicitud intente nuevamente");
                                 });
                     },
                     getRoleEmployeeHistory: function (idEH) {
