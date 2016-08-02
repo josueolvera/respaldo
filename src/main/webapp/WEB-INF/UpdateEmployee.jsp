@@ -325,6 +325,26 @@
 
                                 });
                     },
+                    validateAccountEmployee: function (account, clabe) {
+                        if (account.length > 0 && clabe.length > 0) {
+                            if (clabe.indexOf(account) == -1) {
+                                if (!showAlert("La clabe es incorrecta", {type: 3})) {
+                                    this.employeeAccount.account.accountNumber = '';
+                                    this.employeeAccount.account.accountClabe = '';
+                                }
+                            }
+                        } else {
+                            if (account.length > 0 && (account.length > 11 || account.length < 5)) {
+                                showAlert("Debes ingresar entre 5 y 11 caracteres en el numero de cuenta", {type: 3});
+                            }
+                            if (clabe.length > 0 && clabe.length < 18) {
+                                showAlert("Debes ingresar 18 caracteres en la CLABE", {type: 3});
+                            }
+                            if (account.length < 5 && clabe.length < 18) {
+                                showAlert("Debes ingresar un Numero de Cuenta o CLABE", {type: 3});
+                            }
+                        }
+                    },
                     setFile : function (event, object) {
                         var self = this;
                         var document = {};
@@ -569,11 +589,11 @@
                             <div class="row">
                                 <div class="col-xs-3">
                                     <label>IMSS</label>
-                                    <input class="form-control" maxlength="18" v-model="dwEmployee.employee.imss" onkeypress="return isNumberKey(event)" required>
+                                    <input class="form-control" maxlength="18" v-model="dwEmployee.employee.imss" onkeypress="return isNumberKey(event)">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Infonavit</label>
-                                    <input class="form-control" maxlength="15" v-model="dwEmployee.employee.infonavitNumber" required>
+                                    <input class="form-control" maxlength="15" v-model="dwEmployee.employee.infonavitNumber">
                                 </div>
                                 <div class="col-xs-3" v-if="dwEmployee.dwEnterprise.idDistributor != 9">
                                     <label>SISTARH</label>
@@ -594,27 +614,23 @@
                                 <label>Asignación actual</label>
                                 <table class="table table-striped">
                                     <thead>
-                                    <th class="col-xs-2">Distribuidor</th>
-                                    <th class="col-xs-2">Regiòn</th>
+                                    <th class="col-xs-3">Distribuidor</th>
                                     <th class="col-xs-3">Sucursal</th>
-                                    <th class="col-xs-3">Àrea</th>
-                                    <th class="col-xs-2">Puesto</th>
+                                    <th class="col-xs-3">Área</th>
+                                    <th class="col-xs-3">Puesto</th>
                                     </thead>
                                     <tbody>
                                     <tr>
-                                        <td class="col-xs-2">
+                                        <td class="col-xs-3">
                                             {{dwEnterprise.distributor.distributorName}}
                                         </td>
-                                        <td class="col-xs-2">
-                                            {{dwEnterprise.region.regionName}}
+                                        <td class="col-xs-3">
+                                            {{dwEnterprise.branch.branchShort}}
                                         </td>
-                                        <td class="col-xs-2">
-                                            {{dwEnterprise.branch.branchName}}
-                                        </td>
-                                        <td class="col-xs-2">
+                                        <td class="col-xs-3">
                                             {{dwEnterprise.area.areaName}}
                                         </td>
-                                        <td class="col-xs-2">
+                                        <td class="col-xs-3">
                                             {{role.roleName}}
                                         </td>
                                     </tr>
@@ -704,7 +720,8 @@
                                         <span class="input-group-addon">#</span>
                                         <input class="form-control" maxlength="11"
                                                v-model="employeeAccount.account.accountNumber"
-                                               onkeypress="return isNumberKey(event)" required>
+                                               onkeypress="return isNumberKey(event)"
+                                               @change="validateAccountEmployee(employeeAccount.account.accountNumber,employeeAccount.account.accountClabe)">
                                     </div>
                                 </div>
 
@@ -714,7 +731,8 @@
                                         <span class="input-group-addon">#</span>
                                         <input type="text" class="form-control" maxlength="18"
                                                v-model="employeeAccount.account.accountClabe"
-                                               onkeypress="return isNumberKey(event)" required>
+                                               onkeypress="return isNumberKey(event)"
+                                               @change="validateAccountEmployee(employeeAccount.account.accountNumber,employeeAccount.account.accountClabe)">
                                     </div>
                                 </div>
                                 <div class="col-xs-3">

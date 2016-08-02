@@ -342,16 +342,19 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
 
         Accounts account = mapper.treeToValue(jsonNode.get("employeeAccount").get("account"), Accounts.class);
 
+        EmployeesAccounts employeesAccount = employeesAccountsDao.findByIdEmployee(employee.getIdEmployee());
+
         if (!account.equals(currentAccount)) {
             currentAccount.setDeleteDay(LocalDateTime.now());
             accountsDao.update(currentAccount);
             account = accountsDao.save(account);
 
-            EmployeesAccounts employeesAccount = employeesAccountsDao.findByIdEmployee(employee.getIdEmployee());
             employeesAccount.setAccount(account);
 
             employeesAccountsDao.save(employeesAccount);
         }
+
+        employeesHistoryService.save(dwEmployee, CActionTypes.MODIFICAION, employeesAccount.getAccount());
 
         return dwEmployee;
     }
