@@ -666,7 +666,8 @@
                                         <span class="glyphicon glyphicon-trash"></span>
                                     </button>
                                     <button class="btn btn-default btn-sm"
-                                            data-toggle="tooltip" data-placement="top" title="Reactivar" v-if="dwEmployee.idActionType == 2">
+                                            data-toggle="tooltip" data-placement="top" title="Reactivar"
+                                            v-if="dwEmployee.idActionType == 2" @click="getReactivationData(dwEmployee.idEmployeeHistory)">
                                         <span class="glyphicon glyphicon-refresh"></span>
                                     </button>
                                 </div>
