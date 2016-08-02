@@ -212,8 +212,7 @@ public class EmployeesHistory implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String homePhone;
 
-    @Size(max = 3)
-    @Column(name = "SIZE")
+    @Column(name = "ID_SIZE")
     @JsonView(JsonViews.Root.class)
     private Integer idSize;
 
