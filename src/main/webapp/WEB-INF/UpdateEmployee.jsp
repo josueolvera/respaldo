@@ -506,7 +506,7 @@
                                 <div class="col-xs-2">
                                     <label>Número Interior</label>
                                     <input class="form-control" maxlength="5"
-                                           v-model="dwEmployee.employee.interiorNumber" required>
+                                           v-model="dwEmployee.employee.interiorNumber">
                                 </div>
                             </div>
                             <br>
