@@ -442,9 +442,9 @@
                         this.newAssignamentDwEnterprises.branch = this.selectedOptions.branch;
                         this.newAssignamentDwEnterprises.area = this.selectedOptions.area;
                         this.newAssignamentDwEnterprises.role = this.selectedOptions.role;
-                        this.newAssignamentDwEnterprises.idEH = this.employeeH.idEh;
+                        this.newAssignamentDwEnterprises.idEH = this.employeeH.idEmployeeHistory;
 
-                        this.$http.post(ROOT_URL + "/employees-history/reactivation/" + this.employeeH.idEh, JSON.stringify(this.newAssignamentDwEnterprises))
+                        this.$http.post(ROOT_URL + "/employees-history/reactivation/" + this.employeeH.idEmployeeHistory, JSON.stringify(this.newAssignamentDwEnterprises))
                                 .success(function (data) {
                             showAlert("Reactivaciòn de empleado exitosa");
                                 $("#reactivacionModal").modal("hide");
