@@ -631,12 +631,12 @@
                                     <div class="col-xs-3">
                                         <label>Nombre del padre</label>
                                         <input class="form-control" name="name" v-model="employee.fatherName"
-                                               onkeypress="return isLetterKey(event)" required>
+                                               onkeypress="return isLetterKey(event)" >
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Nombre de la madre</label>
                                         <input class="form-control" name="name" v-model="employee.motherName"
-                                               onkeypress="return isLetterKey(event)" required>
+                                               onkeypress="return isLetterKey(event)" >
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Estado civil</label>
@@ -662,7 +662,7 @@
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <label>Talla</label>
-                                        <select class="form-control" v-model="employee.idSize" required>
+                                        <select class="form-control" v-model="employee.idSize">
                                             <option v-for="size in sizes" :value="size.idSize">
                                                 {{size.sizeName}}
                                             </option>
@@ -821,7 +821,7 @@
                                             <input id="saccount" class="form-control" maxlength="11"
                                                    v-model="cuenta.accountNumber"
                                                    onkeypress="return isNumberKey(event)"
-                                                   @change="validateAccountEmployee(cuenta.accountNumber,cuenta.accountClabe)">
+                                                   @change="validateAccountEmployee(cuenta.accountNumber,cuenta.accountClabe)" required>
                                         </div>
                                     </div>
 
@@ -832,7 +832,7 @@
                                             <input type="text" id="sclabe" class="form-control" maxlength="18"
                                                    v-model="cuenta.accountClabe"
                                                    onkeypress="return isNumberKey(event)"
-                                                   @change="validateAccountEmployee(cuenta.accountNumber,cuenta.accountClabe)">
+                                                   @change="validateAccountEmployee(cuenta.accountNumber,cuenta.accountClabe)" required>
                                         </div>
                                     </div>
                                     <div class="col-xs-3">
