@@ -141,10 +141,6 @@ public class EmployeesHistory implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime joinDate;
 
-    @Column(name = "STATUS")
-    @JsonView(JsonViews.Root.class)
-    private Integer status;
-
     @Column(name = "ID_EDUCATION")
     @JsonView(JsonViews.Root.class)
     private Integer idEducation;
@@ -297,7 +293,6 @@ public class EmployeesHistory implements Serializable {
         this.idContractType = idContractType;
         this.salary = salary;
         this.joinDate = joinDate;
-        this.status = status;
         this.idEducation = idEducation;
         this.idGender = idGender;
         this.idStatusMarital = idStatusMarital;
@@ -484,14 +479,6 @@ public class EmployeesHistory implements Serializable {
 
     public void setJoinDate(LocalDateTime joinDate) {
         this.joinDate = joinDate;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 
     public Integer getIdEducation() {
@@ -757,7 +744,6 @@ public class EmployeesHistory implements Serializable {
             return false;
         if (salary != null ? !salary.equals(that.salary) : that.salary != null) return false;
         if (joinDate != null ? !joinDate.equals(that.joinDate) : that.joinDate != null) return false;
-        if (status != null ? !status.equals(that.status) : that.status != null) return false;
         if (idEducation != null ? !idEducation.equals(that.idEducation) : that.idEducation != null) return false;
         if (idGender != null ? !idGender.equals(that.idGender) : that.idGender != null) return false;
         if (idStatusMarital != null ? !idStatusMarital.equals(that.idStatusMarital) : that.idStatusMarital != null)
@@ -813,7 +799,6 @@ public class EmployeesHistory implements Serializable {
         result = 31 * result + (idContractType != null ? idContractType.hashCode() : 0);
         result = 31 * result + (salary != null ? salary.hashCode() : 0);
         result = 31 * result + (joinDate != null ? joinDate.hashCode() : 0);
-        result = 31 * result + (status != null ? status.hashCode() : 0);
         result = 31 * result + (idEducation != null ? idEducation.hashCode() : 0);
         result = 31 * result + (idGender != null ? idGender.hashCode() : 0);
         result = 31 * result + (idStatusMarital != null ? idStatusMarital.hashCode() : 0);
@@ -866,7 +851,6 @@ public class EmployeesHistory implements Serializable {
                 ", idContractType=" + idContractType +
                 ", salary=" + salary +
                 ", joinDate=" + joinDate +
-                ", status=" + status +
                 ", idEducation=" + idEducation +
                 ", idGender=" + idGender +
                 ", idStatusMarital=" + idStatusMarital +

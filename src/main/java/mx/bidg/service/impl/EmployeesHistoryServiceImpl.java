@@ -54,12 +54,12 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
                             employeesHistoryDao.findByIdEmployee(employee.getIdEmployee());
 
                     for (EmployeesHistory currentEmployeeHistory : employeesHistories) {
-                        currentEmployeeHistory.setStatus(0);
+                        currentEmployeeHistory.sethStatus(0);
                         employeesHistoryDao.update(currentEmployeeHistory);
                     }
                 }
 
-                employeesHistory.setStatus(1);
+                employeesHistory.sethStatus(1);
 
 
                 employeesHistory.setIdDwEmployee(dwEmployee.getIdDwEmployee());
