@@ -568,7 +568,7 @@
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Clave SAP</label>
-                                    <input class="form-control" v-model="dwEmployee.employee.claveSap" required>
+                                    <input class="form-control" v-model="dwEmployee.employee.claveSap">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>RFC</label>
