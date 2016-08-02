@@ -255,13 +255,16 @@
                     },
                     obtainAsentamientos: function () {
                         var postcode = this.employee.postcode;
-                        if (this.employee.postcode >= 4) {
+                        if (this.employee.postcode.length >= 5) {
                             this.$http.get(ROOT_URL + "/settlements/post-code?cp=" + postcode).success(function (data) {
                                 this.asentamiento = data;
                                 if (data.length > 0) {
                                     this.$http.get(ROOT_URL + "/municipalities/" + data[0].idEstado + "/" + data[0].idMunicipio).success(function (element) {
                                         this.estadosMunicipios = element;
                                     });
+                                }else {
+                                    showAlert("El codigo postal no existe", {type: 3});
+                                    this.estadosMunicipios = {};
                                 }
                             });
                         } else {
@@ -507,7 +510,7 @@
             <div>
                 <div class="row">
                     <div class="col-xs-8 text-header">
-                        <h2>Registro de empleados</h2>
+                        <h2>Registro de empleado</h2>
                     </div>
                 </div>
             </div>
@@ -789,7 +792,7 @@
                                 <div class="row" v-if="dwEnter.idDistributor != 9">
                                     <div class="col-xs-3">
                                         <label>SISTARH</label>
-                                        <input class="form-control" name="name" v-model="employee.sistarh">
+                                        <input class="form-control" maxlength="2" name="name" v-model="employee.sistarh"  onkeypress="return isNumberKey(event)">
                                     </div>
                                 </div>
                             </div>
