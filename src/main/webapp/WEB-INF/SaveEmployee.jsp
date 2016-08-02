@@ -255,13 +255,16 @@
                     },
                     obtainAsentamientos: function () {
                         var postcode = this.employee.postcode;
-                        if (this.employee.postcode >= 4) {
+                        if (this.employee.postcode.length >= 5) {
                             this.$http.get(ROOT_URL + "/settlements/post-code?cp=" + postcode).success(function (data) {
                                 this.asentamiento = data;
                                 if (data.length > 0) {
                                     this.$http.get(ROOT_URL + "/municipalities/" + data[0].idEstado + "/" + data[0].idMunicipio).success(function (element) {
                                         this.estadosMunicipios = element;
                                     });
+                                }else {
+                                    showAlert("El codigo postal no existe", {type: 3});
+                                    this.estadosMunicipios = {};
                                 }
                             });
                         } else {
@@ -507,7 +510,7 @@
             <div>
                 <div class="row">
                     <div class="col-xs-8 text-header">
-                        <h2>Registro de empleados</h2>
+                        <h2>Registro de empleado</h2>
                     </div>
                 </div>
             </div>
@@ -628,12 +631,12 @@
                                     <div class="col-xs-3">
                                         <label>Nombre del padre</label>
                                         <input class="form-control" name="name" v-model="employee.fatherName"
-                                               onkeypress="return isLetterKey(event)" required>
+                                               onkeypress="return isLetterKey(event)" >
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Nombre de la madre</label>
                                         <input class="form-control" name="name" v-model="employee.motherName"
-                                               onkeypress="return isLetterKey(event)" required>
+                                               onkeypress="return isLetterKey(event)" >
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Estado civil</label>
@@ -659,7 +662,7 @@
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <label>Talla</label>
-                                        <select class="form-control" v-model="employee.idSize" required>
+                                        <select class="form-control" v-model="employee.idSize">
                                             <option v-for="size in sizes" :value="size.idSize">
                                                 {{size.sizeName}}
                                             </option>
@@ -789,7 +792,7 @@
                                 <div class="row" v-if="dwEnter.idDistributor != 9">
                                     <div class="col-xs-3">
                                         <label>SISTARH</label>
-                                        <input class="form-control" name="name" v-model="employee.sistarh">
+                                        <input class="form-control" maxlength="2" name="name" v-model="employee.sistarh"  onkeypress="return isNumberKey(event)">
                                     </div>
                                 </div>
                             </div>
@@ -818,7 +821,7 @@
                                             <input id="saccount" class="form-control" maxlength="11"
                                                    v-model="cuenta.accountNumber"
                                                    onkeypress="return isNumberKey(event)"
-                                                   @change="validateAccountEmployee(cuenta.accountNumber,cuenta.accountClabe)">
+                                                   @change="validateAccountEmployee(cuenta.accountNumber,cuenta.accountClabe)" required>
                                         </div>
                                     </div>
 
@@ -829,7 +832,7 @@
                                             <input type="text" id="sclabe" class="form-control" maxlength="18"
                                                    v-model="cuenta.accountClabe"
                                                    onkeypress="return isNumberKey(event)"
-                                                   @change="validateAccountEmployee(cuenta.accountNumber,cuenta.accountClabe)">
+                                                   @change="validateAccountEmployee(cuenta.accountNumber,cuenta.accountClabe)" required>
                                         </div>
                                     </div>
                                     <div class="col-xs-3">
