@@ -77,9 +77,7 @@ public class Employees implements Serializable {
     @Column(name = "RFC")
     @JsonView(JsonViews.Root.class)
     private String rfc;
-    
-    @Basic(optional = false)
-    @NotNull
+
     @Size(min = 1, max = 15)
     @Column(name = "CLAVE_SAP")
     @JsonView(JsonViews.Root.class)

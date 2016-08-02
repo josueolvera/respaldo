@@ -694,7 +694,7 @@
                                     <div class="col-xs-3">
                                         <label>Clave SAP</label>
                                         <input class="form-control" name="name" v-model="employee.claveSap"
-                                               maxlength="13">
+                                               maxlength="15">
                                     </div>
                                     <div class="col-xs-3">
                                         <label>RFC</label>
