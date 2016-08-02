@@ -117,7 +117,7 @@
                         mail: '',
                         employeeType: '',
                         contractType: '',
-                        salary: '',
+                        salary: 0,
                         joinDate: '',
                         status: '',
                         street: '',
@@ -466,7 +466,7 @@
                         this.employee.mail = '';
                         this.employee.employeeType = '';
                         this.employee.contractType = '';
-                        this.employee.salary = '';
+                        this.employee.salary = 0;
                         this.employee.joinDate = '';
                         this.employee.status = '';
                         this.employee.street = '';
@@ -694,7 +694,7 @@
                                     <div class="col-xs-3">
                                         <label>Clave SAP</label>
                                         <input class="form-control" name="name" v-model="employee.claveSap"
-                                               maxlength="13" required>
+                                               maxlength="13">
                                     </div>
                                     <div class="col-xs-3">
                                         <label>RFC</label>
