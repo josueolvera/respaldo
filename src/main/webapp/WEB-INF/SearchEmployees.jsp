@@ -120,7 +120,19 @@
                         role: {
                             id: 0
                         }
-                    }
+                    },
+                    defaultAreas: {
+                        idArea: 0,
+                        name: ''
+                    },
+                    defaultBranchs: {
+                        idBranch: 0,
+                        name: ''
+                    },
+                    defaultRoles: {
+                        idRole: 0,
+                        name: ''
+                    },
                 },
                 methods: {
                     createReport: function () {
@@ -438,8 +450,8 @@
                         })
                     },
                     selectedOptionsBranchChanged: function () {
-                        this.selectedOptions.area = this.defaultArea;
-                        this.selectedOptions.role = this.defaultRole;
+                        this.selectedOptions.area = this.defaultAreas;
+                        this.selectedOptions.role = this.defaultRoles;
                         this.selectOptions.dwEnterprises = [];
                         this.selectOptions.roles = [];
                         this.$http.get(ROOT_URL + "/dw-enterprises/branch/" + this.selectedOptions.branch.idBranch).success(function (data) {
@@ -448,7 +460,7 @@
                     },
                     selectedOptionsDwEnterpriseChanged: function () {
                         this.selectOptions.roles = [];
-                        this.selectedOptions.role = this.defaultRole;
+                        this.selectedOptions.role = this.defaultRoles;
                         this.$http.get(ROOT_URL + "/areas/area-role/" + this.selectedOptions.area.idArea).success(function (data) {
                             this.selectOptions.roles = data.roles;
                         });
@@ -459,13 +471,18 @@
                         this.newAssignamentDwEnterprises.role = this.selectedOptions.role;
                         this.newAssignamentDwEnterprises.idEH = this.employeeH.idEmployeeHistory;
 
-                        this.$http.post(ROOT_URL + "/employees-history/reactivation/" + this.employeeH.idEmployeeHistory, JSON.stringify(this.newAssignamentDwEnterprises))
-                                .success(function (data) {
-                            showAlert("Reactivaciòn de empleado exitosa");
-                                $("#reactivacionModal").modal("hide");
-                        }).error(function (data) {
-                            showAlert("Error en la reactivaciòn",{type: 3});
-                        });
+                        if(this.selectedOptions.branch.idBranch > 0 && this.selectedOptions.area.idArea> 0 && this.selectedOptions.role.idRole > 0){
+                            this.$http.post(ROOT_URL + "/employees-history/reactivation/" + this.employeeH.idEmployeeHistory, JSON.stringify(this.newAssignamentDwEnterprises))
+                                    .success(function (data) {
+                                        showAlert("Reactivaciòn de empleado exitosa");
+                                        this.getDwEmployees();
+                                        $("#reactivacionModal").modal("hide");
+                                    }).error(function (data) {
+                                showAlert("Error en la reactivaciòn",{type: 3});
+                            });
+                        }else {
+                            showAlert("Es necesario otorgar una nueva asignaciòn al empleado",{type: 3});
+                        }
                     }
                 }
             });
@@ -735,7 +752,7 @@
                 </div>
             </div>
             <div class="modal fade" id="reactivacionModal" tabindex="-1" role="dialog">
-                <div class="modal-dialog" role="document">
+                <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -744,42 +761,45 @@
                         <div class="modal-body">
                             <br>
                             <div class="row">
-                                <label>Asignación actual</label>
-                                <table class="table table-striped">
-                                    <thead>
-                                    <th class="col-xs-2">Distribuidor</th>
-                                    <th class="col-xs-2">Regiòn</th>
-                                    <th class="col-xs-3">Sucursal</th>
-                                    <th class="col-xs-3">Àrea</th>
-                                    <th class="col-xs-2">Puesto</th>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td class="col-xs-2">
-                                            {{dwEnterprise.distributor.distributorName}}
-                                        </td>
-                                        <td class="col-xs-2">
-                                            {{dwEnterprise.region.regionName}}
-                                        </td>
-                                        <td class="col-xs-2">
-                                            {{dwEnterprise.branch.branchName}}
-                                        </td>
-                                        <td class="col-xs-2">
-                                            {{dwEnterprise.area.areaName}}
-                                        </td>
-                                        <td class="col-xs-2">
-                                            {{role.roleName}}
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
+                                <div class="col-xs-12">
+                                    <label>Ùltima asignaciòn</label>
+                                </div>
+                                <div class="col-xs-12">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <th class="col-xs-2">Distribuidor</th>
+                                        <th class="col-xs-2">Regiòn</th>
+                                        <th class="col-xs-3">Sucursal</th>
+                                        <th class="col-xs-3">Àrea</th>
+                                        <th class="col-xs-2">Puesto</th>
+                                        </thead>
+                                        <tbody>
+                                        <tr>
+                                            <td class="col-xs-2">
+                                                {{dwEnterprise.distributor.distributorName}}
+                                            </td>
+                                            <td class="col-xs-2">
+                                                {{dwEnterprise.region.regionName}}
+                                            </td>
+                                            <td class="col-xs-2">
+                                                {{dwEnterprise.branch.branchName}}
+                                            </td>
+                                            <td class="col-xs-2">
+                                                {{dwEnterprise.area.areaName}}
+                                            </td>
+                                            <td class="col-xs-2">
+                                                {{role.roleName}}
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="col-xs-3">
                                     <label>Surcursal</label>
                                     <select v-model="selectedOptions.branch" class="form-control"
                                             required @change="selectedOptionsBranchChanged">
-                                        <option selected :value="defaultBranch">{{defaultRole.name}}</option>
                                         <option v-for="branch in branchs"
                                                 :value="branch">
                                             {{ branch.branchShort }}
@@ -791,7 +811,6 @@
                                     <select v-model="selectedOptions.area" class="form-control"
                                             required @change="selectedOptionsDwEnterpriseChanged"
                                             :disabled="selectOptions.dwEnterprises.length <= 0">
-                                        <option selected :value="defaultArea">{{defaultArea.name}}</option>
                                         <option v-for="dwEnterprise in selectOptions.dwEnterprises"
                                                 :value="dwEnterprise.area">
                                             {{ dwEnterprise.area.areaName }}
@@ -801,9 +820,7 @@
                                 <div class="col-xs-3">
                                     <label>Puesto</label>
                                     <select v-model="selectedOptions.role" class="form-control"
-                                            required :disabled="selectedOptions.area.idArea <= 0"
-                                            @change="fetchDocumentTypes()">
-                                        <option selected :value="defaultRole">{{defaultRole.name}}</option>
+                                            required :disabled="selectedOptions.area.id <= 0">
                                         <option v-for="role in selectOptions.roles"
                                                 :value="role">
                                             {{ role.roleName }}
