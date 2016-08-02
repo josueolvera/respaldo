@@ -52,7 +52,7 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
 
     @Override
     public List<EmployeesHistory> findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
-        (Integer status, Integer idDistributor, Integer idRegion, Integer idBranch, Integer idArea, Integer idRole, 
+        (Integer status, Integer idDistributor, Integer idRegion, Integer idZona,Integer idBranch, Integer idArea, Integer idRole, 
          String startDate, String endDate) {
         Criteria criteria = createEntityCriteria();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
@@ -68,6 +68,9 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
         }
         if (idRegion != null) {
             criteria.add(Restrictions.eq("idRegion",idRegion));
+        }
+        if (idZona != null) {
+            criteria.add(Restrictions.eq("idZona",idZona));
         }
         if (idBranch != null) {
             criteria.add(Restrictions.eq("idBranch",idBranch));

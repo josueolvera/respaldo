@@ -40,9 +40,10 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
 
     @Override
     public List<EmployeesHistory> findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
-        (Integer status, Integer idDistributor, Integer idRegion, Integer idBranch, Integer idArea, Integer idRole, 
+        (Integer status, Integer idDistributor, Integer idRegion, Integer idZona ,Integer idBranch, Integer idArea, Integer idRole, 
                 String startDate, String endDate) {
-        return employeesHistoryDao.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(status,idDistributor,idRegion,idBranch,idArea,idRole,startDate,endDate);
+        return employeesHistoryDao.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
+        (status,idDistributor,idRegion,idZona,idBranch,idArea,idRole,startDate,endDate);
     }
 
     @Override

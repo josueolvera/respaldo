@@ -19,6 +19,7 @@ public interface EmployeesHistoryService {
             Integer status,
             Integer idDistributor,
             Integer idRegion,
+            Integer idZona,
             Integer idBranch,
             Integer idArea,
             Integer idRole,

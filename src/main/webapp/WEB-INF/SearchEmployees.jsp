@@ -30,6 +30,7 @@
                         area: null,
                         distributor: null,
                         region: null,
+                        zona: null,
                         branch: null,
                         role: null,
                         startDate: '',
@@ -57,6 +58,10 @@
                         name:'TODOS'
                     },
                     defaultRegion: {
+                        id:0,
+                        name:'TODOS'
+                    },
+                    defaultZona: {
                         id:0,
                         name:'TODOS'
                     },
@@ -162,6 +167,15 @@
                                     this.searchSelectedOptions.region.id;
                             this.createReportUrl += 'idRegion=' +
                                     this.searchSelectedOptions.region.id;
+                        }
+
+                        if (this.searchSelectedOptions.zona.id != 0) {
+                            this.employeesUrl = this.setEmployeesUrlCharacters(this.employeesUrl);
+                            this.createReportUrl = this.setEmployeesUrlCharacters(this.createReportUrl);
+                            this.employeesUrl += 'idZona=' +
+                                    this.searchSelectedOptions.zona.id;
+                            this.createReportUrl += 'idZona=' +
+                                    this.searchSelectedOptions.zona.id;
                         }
 
                         if (this.searchSelectedOptions.branch.id != 0) {
@@ -428,12 +442,24 @@
                             </select>
                         </div>
                         <div class="col-md-2">
+                            <label>Zona</label>
+                            <select v-model="searchSelectedOptions.zona" class="form-control"
+                                    @change="zonaChanged"
+                                    :disabled="searchSelectedOptions.region.id == 0">
+                                <option selected :value="defaultZona">{{defaultZona.name}}</option>
+                                <option v-for="zona in searchSelectedOptions.region.subLevels"
+                                        :value="zona">
+                                    {{ zona.name }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
                             <label>Sucursal</label>
                             <select v-model="searchSelectedOptions.branch" class="form-control"
                                     @change="branchChanged"
-                                    :disabled="searchSelectedOptions.region.id == 0">
+                                    :disabled="searchSelectedOptions.zona.id == 0">
                                 <option selected :value="defaultBranch">{{defaultBranch.name}}</option>
-                                <option v-for="branch in searchSelectedOptions.region.subLevels"
+                                <option v-for="branch in searchSelectedOptions.zona.subLevels"
                                         :value="branch">
                                     {{ branch.name }}
                                 </option>
@@ -451,6 +477,9 @@
                                 </option>
                             </select>
                         </div>
+
+                    </div>
+                    <div class="row">
                         <div class="col-md-2">
                             <label>Puesto</label>
                             <select v-model="searchSelectedOptions.role" class="form-control"
@@ -462,8 +491,6 @@
                                 </option>
                             </select>
                         </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-2">
                             <label>Nombre/RFC</label>
                             <input v-model="nameSearch" type="text" class="form-control" placeholder="Nombre del Empleado/RFC">

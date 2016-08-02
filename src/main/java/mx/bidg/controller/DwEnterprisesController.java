@@ -41,6 +41,12 @@ public class DwEnterprisesController {
     
     private ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
     
+    @RequestMapping(produces = "application/json;charset=UTF-8")
+    public @ResponseBody ResponseEntity<String> findAll( ) throws Exception {
+        List<DwEnterprises> dwEnterprises = dwEnterprisesService.findAll();
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEnterprises), HttpStatus.OK);
+    }
+    
     @RequestMapping(value = "/{idDwEnterprise}", produces = "application/json;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> getById(@PathVariable int idDwEnterprise) throws Exception {
         DwEnterprises dwEnterprises = dwEnterprisesService.findById(idDwEnterprise);

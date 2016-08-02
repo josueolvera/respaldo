@@ -148,7 +148,7 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
                                         }
 
 
-                                    }
+                                    } // For Areas
                             } // For Branches
                         } // For Zonas
                 } // For Region
@@ -187,5 +187,10 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
     @Override
     public List<DwEnterprises> findByBranches(Integer idBranch) {
         return dao.findByBranches(idBranch);
+    }
+
+    @Override
+    public List<DwEnterprises> findAll() {
+        return dao.findAll();
     }
 }

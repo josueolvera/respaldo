@@ -42,6 +42,7 @@ public class EmployeesHistoryController {
                     @RequestParam(name="status", required = false, defaultValue = "1") Integer status,
                     @RequestParam(name = "idDistributor", required = false) Integer idDistributor,
                     @RequestParam(name = "idRegion", required = false) Integer idRegion,
+                    @RequestParam(name = "idZona", required = false) Integer idZona,
                     @RequestParam(name = "idBranch", required = false) Integer idBranch,
                     @RequestParam(name = "idArea", required = false) Integer idArea,
                     @RequestParam(name = "idRole", required = false) Integer idRole,
@@ -51,7 +52,7 @@ public class EmployeesHistoryController {
 
         List<EmployeesHistory> employeesHistories = new ArrayList();
         employeesHistories = employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
-        (status,idDistributor, idRegion, idBranch, idArea, idRole, startDate, endDate);
+        (status,idDistributor, idRegion, idZona,idBranch, idArea, idRole, startDate, endDate);
         return new ResponseEntity<>(
                 map.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesHistories),
                 HttpStatus.OK

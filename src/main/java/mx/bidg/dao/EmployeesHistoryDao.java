@@ -12,6 +12,7 @@ public interface EmployeesHistoryDao  extends InterfaceDao<EmployeesHistory>  {
             Integer status,
             Integer idDistributor,
             Integer idRegion,
+            Integer idZona,
             Integer idBranch,
             Integer idArea,
             Integer idRole,

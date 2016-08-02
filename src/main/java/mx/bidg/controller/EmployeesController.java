@@ -367,7 +367,7 @@ public class EmployeesController {
             document.setUploadingDate(LocalDateTime.now());
             document.setCurrentDocument(1);
             document.setIdAccessLevel(1);
-            employeeDocumentsService.save(document);
+            //employeeDocumentsService.save(document);
             saveNameField(document.getIdDocument(), request);
 
             EmployeeDocuments oldDocument = this.findDocument(idDocumentType, documents);
