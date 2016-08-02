@@ -369,28 +369,28 @@
                         this.searchSelectedOptions.branch = this.defaultBranch;
                         this.searchSelectedOptions.area = this.defaultArea;
                         this.searchSelectedOptions.role = this.defaultRole;
-                        this.isThereItems = false;
+                        //this.isThereItems = false;
                     },
                     regionChanged: function () {
                         this.searchSelectedOptions.branch = this.defaultBranch;
                         this.searchSelectedOptions.area = this.defaultArea;
                         this.searchSelectedOptions.role = this.defaultRole;
-                        this.isThereItems = false;
+                        //this.isThereItems = false;
                     },
                     branchChanged: function () {
                         this.searchSelectedOptions.area = this.defaultArea;
                         this.searchSelectedOptions.role = this.defaultRole;
-                        this.isThereItems = false;
+                        //this.isThereItems = false;
                     },
                     areaChanged: function () {
                         this.searchSelectedOptions.role = this.defaultRole;
                         this.$http.get(ROOT_URL + "/areas/area-role/" + this.searchSelectedOptions.area.id).success(function (data) {
                             this.selectedArea = data;
                         });
-                        this.isThereItems = false;
+                        //this.isThereItems = false;
                     },
                     statusChanged: function () {
-                        this.isThereItems = false;
+                        //this.isThereItems = false;
                     },
                     startDateChanged: function () {
                         this.isThereItems = false;
@@ -400,6 +400,7 @@
                     },
                     onDeleteButton: function (dwEmployee) {
                         this.currentDwEmployee = dwEmployee;
+
                         $("#deleteModal").modal("show");
                     },
                     changeEmployeeStatus: function () {
@@ -497,10 +498,10 @@
                         <h2>Busqueda de Empleado</h2>
                     </div>
                 </div>
-                <div v-if="!hierarchy.length > 0"
+                <%-- <div v-if="!hierarchy.length > 0"
                      style="height: 6rem; padding: 2rem 0;">
                     <div class="loader">Cargando...</div>
-                </div>
+                </div> --%>
                 <div v-if="hierarchy.length > 0">
                     <div class="row">
                         <div class="col-md-2">
@@ -715,12 +716,12 @@
                             <div class="form-inline">
                                 <div class="form-group">
                                     <label>Nombre: </label> &nbsp;&nbsp;
-                                    <input type="text" class="form-control" v-model="currentDwEmployee.employee.fullName" disabled>
+                                    <input type="text" class="form-control" v-model="currentDwEmployee.fullName" disabled>
                                 </div>
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <div class="form-group">
                                     <label>RFC: </label>&nbsp;&nbsp;
-                                    <input type="text" class="form-control" v-model="currentDwEmployee.employee.rfc" disabled>
+                                    <input type="text" class="form-control" v-model="currentDwEmployee.rfc" disabled>
                                 </div>
                             </div>
                             <br>
