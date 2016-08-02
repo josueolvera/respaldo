@@ -406,7 +406,7 @@
                         this.$http.post(ROOT_URL + '/dw-employees/change-employee-status',this.currentDwEmployee.idDwEmployee)
                                 .success(function (data) {
                                     showAlert("Empleado dado de baja exitosamente");
-                                    this.getEmployees();
+                                    this.getDwEmployees();
                                     $("#deleteModal").modal("hide");
                                 })
                                 .error(function (date) {
