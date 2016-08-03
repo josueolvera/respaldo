@@ -747,7 +747,7 @@
                 </div>
                 <div class="panel panel-default">
                     <!-- Default panel contents -->
-                    <div class="panel-heading">Datos bancarios</div>
+                    <div class="panel-heading">Documentos</div>
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
