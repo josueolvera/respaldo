@@ -78,7 +78,6 @@ public class Employees implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String rfc;
 
-    @Size(min = 1, max = 15)
     @Column(name = "CLAVE_SAP")
     @JsonView(JsonViews.Root.class)
     private String claveSap;
@@ -195,7 +194,7 @@ public class Employees implements Serializable {
     private Integer idSize;
 
     @JoinColumn(name = "ID_SIZE", referencedColumnName = "ID_SIZE")
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JsonView(JsonViews.Embedded.class)
     private CSizes size;
 
