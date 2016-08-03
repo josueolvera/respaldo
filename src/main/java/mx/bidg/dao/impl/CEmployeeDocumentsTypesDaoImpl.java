@@ -8,6 +8,7 @@ import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,12 +54,15 @@ public class CEmployeeDocumentsTypesDaoImpl extends AbstractDao<Integer,CEmploye
     @Override
     public List<CEmployeeDocumentsTypes> findByEmployee(List<CEmployeeDocumentsTypes> employeeDocumentTypes) {
 
+        if (employeeDocumentTypes.isEmpty()) {
+            return new ArrayList<>();
+        }
+
         Criteria criteria = createEntityCriteria();
         Disjunction disjunction = Restrictions.disjunction();
 
         for (CEmployeeDocumentsTypes cEmployeeDocumentType : employeeDocumentTypes) {
             disjunction.add(Restrictions.eq("idDocumentType", cEmployeeDocumentType.getIdDocumentType()));
-
         }
 
         criteria.add(disjunction);
