@@ -44,9 +44,38 @@ public class EmployeesHistory implements Serializable {
 
     @Basic(optional = false)
     @NotNull
-    @Column(name = "ID_EMPLOYEE")
+    @Column(name = "ID_EMPLOYEE", nullable=true)
     @JsonView(JsonViews.Root.class)
     private int idEmployee;
+
+    @Column(name = "ID_DISTRIBUTOR", nullable=true)
+    @JsonView(JsonViews.Root.class)
+    private Integer idDistributor;
+
+    @Column(name = "ID_REGION", nullable=true)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRegion;
+
+    @Column(name = "ID_ZONA", nullable=true)
+    @JsonView(JsonViews.Root.class)
+    private Integer idZona;
+
+    @Column(name = "ID_BRANCH", nullable=true)
+    @JsonView(JsonViews.Root.class)
+    private Integer idBranch;
+
+    @Column(name = "ID_AREA")
+    @JsonView(JsonViews.Root.class)
+    private Integer idArea;
+
+    @Basic(optional = true)
+    @Column(name = "ID_ROLE", nullable=true)
+    @JsonView(JsonViews.Root.class)
+    private int idRole;
+
+    @Column(name = "ID_DW_EMPLOYEE", nullable=true)
+    @JsonView(JsonViews.Root.class)
+    private Integer idDwEmployee;
 
     @Basic(optional = true)
     @Column(name = "ID_DW_ENTERPRISE", nullable=true)
@@ -58,35 +87,60 @@ public class EmployeesHistory implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idAccount;
 
-    @Basic(optional = true)
-    @Column(name = "ID_ROLE", nullable=true)
+    @Column(name = "ID_ACTION_TYPE", nullable=true)
     @JsonView(JsonViews.Root.class)
-    private int idRole;
-    
+    private Integer idActionType;
+
+    @Basic
+    @Column(name = "ID_CONTRACT_TYPE", nullable=true)
+    @JsonView(JsonViews.Root.class)
+    private Integer idContractType;
+
+    @Basic
+    @Column(name = "ID_EMPLOYEE_TYPE", nullable=true)
+    @JsonView(JsonViews.Root.class)
+    private Integer idEmployeeType;
+
+    @Column(name = "ID_GENDER", nullable=true)
+    @JsonView(JsonViews.Root.class)
+    private Integer idGender;
+
+    @Column(name = "ID_EDUCATION", nullable=true)
+    @JsonView(JsonViews.Root.class)
+    private Integer idEducation;
+
+    @Column(name = "ID_SIZE", nullable=true)
+    @JsonView(JsonViews.Root.class)
+    private Integer idSize;
+
+    @Column(name = "ID_STATUS_MARITAL", nullable=true)
+    @JsonView(JsonViews.Root.class)
+    private Integer idStatusMarital;
+
     @Basic(optional = true)
     @Size(max = 10)
-    @Column(name = "EMPLOYEE_NUMBER")
+    @Column(name = "EMPLOYEE_NUMBER", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String employeeNumber;
 
     @Basic(optional = true)
     @Size(max = 50)
-    @Column(name = "FIRST_NAME")
+    @Column(name = "FIRST_NAME", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String firstName;
 
     @Size(max = 50)
-    @Column(name = "MIDDLE_NAME")
+    @Column(name = "MIDDLE_NAME", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String middleName;
 
     @Size(max = 40)
-    @Column(name = "PARENTAL_LAST")
+    @Column(name = "PARENTAL_LAST", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String parentalLast;
 
     @Size(max = 40)
-    @Column(name = "MOTHER_LAST")
+    @Column(name = "MOTHER_LAST", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String motherLast;
 
@@ -96,41 +150,31 @@ public class EmployeesHistory implements Serializable {
     private String rfc;
 
     @Size(max = 15)
-    @Column(name = "CLAVE_SAP")
+    @Column(name = "CLAVE_SAP", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String claveSap;
 
     @Size(max = 18)
-    @Column(name = "CURP")
+    @Column(name = "CURP", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String curp;
 
     @Size(max = 18)
-    @Column(name = "IMSS")
+    @Column(name = "IMSS", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String imss;
 
     @Size(max = 15)
-    @Column(name = "INFONAVIT_NUMBER")
+    @Column(name = "INFONAVIT_NUMBER", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String infonavitNumber;
 
     @Size(max = 50)
-    @Column(name = "MAIL")
+    @Column(name = "MAIL", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String mail;
     
-    @Basic
-    @Column(name = "ID_EMPLOYEE_TYPE")
-    @JsonView(JsonViews.Root.class)
-    private Integer idEmployeeType;
-
-    @Basic
-    @Column(name = "ID_CONTRACT_TYPE")
-    @JsonView(JsonViews.Root.class)
-    private Integer idContractType;
-    
-    @Column(name = "SALARY")
+    @Column(name = "SALARY", nullable=true)
     @JsonView(JsonViews.Root.class)
     private BigDecimal salary;
 
@@ -141,128 +185,93 @@ public class EmployeesHistory implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime joinDate;
 
-    @Column(name = "ID_EDUCATION")
+    @Column(name = "SISTARH", nullable=true)
     @JsonView(JsonViews.Root.class)
-    private Integer idEducation;
-
-    @Column(name = "ID_GENDER")
-    @JsonView(JsonViews.Root.class)
-    private Integer idGender;
-
-    @Column(name = "ID_STATUS_MARITAL")
-    @JsonView(JsonViews.Root.class)
-    private Integer idStatusMarital;
+    private String sistarh;
 
     @Size(max = 50)
-    @Column(name = "BIRTHPLACE")
+    @Column(name = "BIRTHPLACE", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String birthplace;
 
-    @Column(name = "BIRTHDAY")
+    @Column(name = "BIRTHDAY", nullable=true)
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateConverter.class)
     private LocalDate birthday;
 
     @Size(max = 50)
-    @Column(name = "STATE")
+    @Column(name = "STATE", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String state;
 
     @Size(max = 80)
-    @Column(name = "STREET")
+    @Column(name = "STREET", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String street;
 
     @Size(max = 15)
-    @Column(name = "EXTERIOR_NUMBER")
+    @Column(name = "EXTERIOR_NUMBER", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String exteriorNumber;
 
     @Size(max = 15)
-    @Column(name = "INTERIOR_NUMBER")
+    @Column(name = "INTERIOR_NUMBER", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String interiorNumber;
 
     @Size(max = 100)
-    @Column(name = "COLONIA")
+    @Column(name = "COLONIA", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String colonia;
 
     @Size(max = 50)
-    @Column(name = "CITY")
+    @Column(name = "CITY", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String city;
 
     @Size(max = 5)
-    @Column(name = "POSTCODE")
+    @Column(name = "POSTCODE", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String postcode;
 
     @Size(max = 25)
-    @Column(name = "CELL_PHONE")
+    @Column(name = "CELL_PHONE", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String cellPhone;
 
     @Size(max = 25)
-    @Column(name = "HOME_PHONE")
+    @Column(name = "HOME_PHONE", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String homePhone;
 
-    @Column(name = "ID_SIZE")
-    @JsonView(JsonViews.Root.class)
-    private Integer idSize;
-
-    @Column(name = "SIZE_NUMBER")
+    @Column(name = "SIZE_NUMBER", nullable=true)
     @JsonView(JsonViews.Root.class)
     private Integer sizeNumber;
 
     @Size(max = 150)
-    @Column(name = "FATHER_NAME")
+    @Column(name = "FATHER_NAME", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String fatherName;
 
     @Size(max = 150)
-    @Column(name = "MOTHER_NAME")
+    @Column(name = "MOTHER_NAME", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String motherName;
 
-    @Column(name = "ID_ACTION_TYPE")
+    @Column(name = "USERNAME", nullable=true)
     @JsonView(JsonViews.Root.class)
-    private Integer idActionType;
+    private String username;
 
-    @Column(name = "CREATION_DATE")
+    @Column(name = "CREATION_DATE", nullable=true)
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
     
-    @Column(name = "H_STATUS")
+    @Column(name = "H_STATUS", nullable=true)
     @JsonView(JsonViews.Root.class)
     private Integer hStatus;
 
-    @Column(name = "ID_DW_EMPLOYEE", nullable=true)
-    @JsonView(JsonViews.Root.class)
-    private Integer idDwEmployee;
-    
-    @Column(name = "ID_DISTRIBUTOR")
-    @JsonView(JsonViews.Root.class)
-    private Integer idDistributor;
-
-    @Column(name = "ID_REGION")
-    @JsonView(JsonViews.Root.class)
-    private Integer idRegion;
-    
-    @Column(name = "ID_ZONA")
-    @JsonView(JsonViews.Root.class)
-    private Integer idZona;
-        
-    @Column(name = "ID_BRANCH")
-    @JsonView(JsonViews.Root.class)
-    private Integer idBranch;
-
-    @Column(name = "ID_AREA")
-    @JsonView(JsonViews.Root.class)
-    private Integer idArea;
-    
+    @Transient
     @JsonView(JsonViews.Root.class)
     private String fullName;
     
@@ -710,6 +719,14 @@ public class EmployeesHistory implements Serializable {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
