@@ -82,63 +82,63 @@ public class DwEmployeesController {
         );
     }
 
-    @RequestMapping(value = "/create-report", method = RequestMethod.GET)
-    public ResponseEntity<String> createReport
-            (
-                    @RequestParam(name = "status", required = false) Integer status,
-                    @RequestParam(name = "idDistributor", required = false) Integer idDistributor,
-                    @RequestParam(name = "idRegion", required = false) Integer idRegion,
-                    @RequestParam(name = "idBranch", required = false) Integer idBranch,
-                    @RequestParam(name = "idArea", required = false) Integer idArea,
-                    @RequestParam(name = "idRole", required = false) Integer idRole,
-                    @RequestParam(name = "startDate", required = false) String startDate,
-                    @RequestParam(name = "endDate", required = false) String endDate,
-                    @RequestParam(name = "reportFileName") String reportFileName,
-                    HttpServletResponse response
-            ) throws IOException {
-
-        List<DwEmployees> dwEmployees;
-
-        if (status == null &&
-                idDistributor == null &&
-                idRegion == null &&
-                idBranch == null &&
-                idArea == null &&
-                idRole == null &&
-                startDate == null &&
-                endDate == null
-                ) {
-            dwEmployees = dwEmployeesService.findAll();
-        } else {
-            dwEmployees =
-                    dwEmployeesService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(
-                            status,
-                            idDistributor,
-                            idRegion,
-                            idBranch,
-                            idArea,
-                            idRole,
-                            startDate,
-                            endDate
-                    );
-
-        }
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        LocalDateTime dateTime = LocalDateTime.now();
-
-        response.setContentType("application/octet-stream");
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + reportFileName + "_" + dateTime.format(formatter) + ".xlsx"+ "\"");
-        OutputStream outputStream = response.getOutputStream();
-        dwEmployeesService.createReport(dwEmployees, outputStream);
-        outputStream.flush();
-        outputStream.close();
-
-        return new ResponseEntity<>(
-                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEmployees),
-                HttpStatus.OK
-        );
-    }
+//    @RequestMapping(value = "/create-report", method = RequestMethod.GET)
+//    public ResponseEntity<String> createReport
+//            (
+//                    @RequestParam(name = "status", required = false) Integer status,
+//                    @RequestParam(name = "idDistributor", required = false) Integer idDistributor,
+//                    @RequestParam(name = "idRegion", required = false) Integer idRegion,
+//                    @RequestParam(name = "idBranch", required = false) Integer idBranch,
+//                    @RequestParam(name = "idArea", required = false) Integer idArea,
+//                    @RequestParam(name = "idRole", required = false) Integer idRole,
+//                    @RequestParam(name = "startDate", required = false) String startDate,
+//                    @RequestParam(name = "endDate", required = false) String endDate,
+//                    @RequestParam(name = "reportFileName") String reportFileName,
+//                    HttpServletResponse response
+//            ) throws IOException {
+//
+//        List<DwEmployees> dwEmployees;
+//
+//        if (status == null &&
+//                idDistributor == null &&
+//                idRegion == null &&
+//                idBranch == null &&
+//                idArea == null &&
+//                idRole == null &&
+//                startDate == null &&
+//                endDate == null
+//                ) {
+//            dwEmployees = dwEmployeesService.findAll();
+//        } else {
+//            dwEmployees =
+//                    dwEmployeesService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(
+//                            status,
+//                            idDistributor,
+//                            idRegion,
+//                            idBranch,
+//                            idArea,
+//                            idRole,
+//                            startDate,
+//                            endDate
+//                    );
+//
+//        }
+//
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+//        LocalDateTime dateTime = LocalDateTime.now();
+//
+//        response.setContentType("application/octet-stream");
+//        response.setHeader("Content-Disposition", "attachment; filename=\"" + reportFileName + "_" + dateTime.format(formatter) + ".xlsx"+ "\"");
+//        OutputStream outputStream = response.getOutputStream();
+//        dwEmployeesService.createReport(dwEmployees, outputStream);
+//        outputStream.flush();
+//        outputStream.close();
+//
+//        return new ResponseEntity<>(
+//                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEmployees),
+//                HttpStatus.OK
+//        );
+//    }
 
     @RequestMapping(value = "/{idDwEmployee}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getDwEmployeeById(@PathVariable Integer idDwEmployee) throws IOException {

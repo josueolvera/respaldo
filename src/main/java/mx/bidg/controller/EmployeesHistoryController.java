@@ -105,4 +105,40 @@ public class EmployeesHistoryController {
         EmployeesHistory employeesHistories = employeesHistoryService.save(dwEmployees,cActionType,employeesAccounts.getAccount(),user);
         return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesHistories),HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/create-report", method = RequestMethod.GET)
+    public ResponseEntity<String> createReport
+            (
+                    @RequestParam(name="status", required = false, defaultValue = "1") Integer status,
+                    @RequestParam(name = "idDistributor", required = false) Integer idDistributor,
+                    @RequestParam(name = "idRegion", required = false) Integer idRegion,
+                    @RequestParam(name = "idZona", required = false) Integer idZona,
+                    @RequestParam(name = "idBranch", required = false) Integer idBranch,
+                    @RequestParam(name = "idArea", required = false) Integer idArea,
+                    @RequestParam(name = "idRole", required = false) Integer idRole,
+                    @RequestParam(name = "startDate", required = false) String startDate,
+                    @RequestParam(name = "endDate", required = false) String endDate,
+                    @RequestParam(name = "reportFileName") String reportFileName,
+                    HttpServletResponse response
+            ) throws IOException {
+
+        List<EmployeesHistory> employeesHistories = new ArrayList();
+        employeesHistories = employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
+                (status,idDistributor, idRegion, idZona,idBranch, idArea, idRole, startDate, endDate);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDateTime dateTime = LocalDateTime.now();
+
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + reportFileName + "_" + dateTime.format(formatter) + ".xlsx"+ "\"");
+        OutputStream outputStream = response.getOutputStream();
+        dwEmployeesService.createReport(employeesHistories, outputStream);
+        outputStream.flush();
+        outputStream.close();
+
+        return new ResponseEntity<>(
+                map.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesHistories),
+                HttpStatus.OK
+        );
+    }
 }
