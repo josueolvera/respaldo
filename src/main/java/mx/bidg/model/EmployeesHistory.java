@@ -46,7 +46,7 @@ public class EmployeesHistory implements Serializable {
     @NotNull
     @Column(name = "ID_EMPLOYEE", nullable=true)
     @JsonView(JsonViews.Root.class)
-    private int idEmployee;
+    private Integer idEmployee;
 
     @Column(name = "ID_DISTRIBUTOR", nullable=true)
     @JsonView(JsonViews.Root.class)
@@ -71,7 +71,7 @@ public class EmployeesHistory implements Serializable {
     @Basic(optional = true)
     @Column(name = "ID_ROLE", nullable=true)
     @JsonView(JsonViews.Root.class)
-    private int idRole;
+    private Integer idRole;
 
     @Column(name = "ID_DW_EMPLOYEE", nullable=true)
     @JsonView(JsonViews.Root.class)
@@ -80,12 +80,12 @@ public class EmployeesHistory implements Serializable {
     @Basic(optional = true)
     @Column(name = "ID_DW_ENTERPRISE", nullable=true)
     @JsonView(JsonViews.Root.class)
-    private int idDwEnterprise;
+    private Integer idDwEnterprise;
 
     @Basic(optional = true)
     @Column(name = "ID_ACCOUNT", nullable=true)
     @JsonView(JsonViews.Root.class)
-    private int idAccount;
+    private Integer idAccount;
 
     @Column(name = "ID_ACTION_TYPE", nullable=true)
     @JsonView(JsonViews.Root.class)
@@ -282,7 +282,7 @@ public class EmployeesHistory implements Serializable {
         this.idEmployeeHistory = idEmployeeHistory;
     }
 
-    public EmployeesHistory(int idEmployee, int idDwEnterprise, int idAccount, int idRole, String employeeNumber, String firstName, String middleName, String parentalLast, String motherLast, String rfc, String claveSap, String curp, String imss, String infonavitNumber, String mail, Integer idEmployeeType, Integer idContractType, BigDecimal salary, LocalDateTime joinDate, Integer status, Integer idEducation, Integer idGender, Integer idStatusMarital, String birthplace, LocalDate birthday, String state, String street, String exteriorNumber, String interiorNumber, String colonia, String city, String postcode, String cellPhone, String homePhone, Integer idSize, Integer sizeNumber, String fatherName, String motherName, Integer idActionType, LocalDateTime creationDate, Integer hStatus, Integer idDwEmployee, Integer idDistributor, Integer idRegion, Integer idBranch, Integer idArea) {
+    public EmployeesHistory(Integer idEmployee, Integer idDwEnterprise, Integer idAccount, Integer idRole, String employeeNumber, String firstName, String middleName, String parentalLast, String motherLast, String rfc, String claveSap, String curp, String imss, String infonavitNumber, String mail, Integer idEmployeeType, Integer idContractType, BigDecimal salary, LocalDateTime joinDate, Integer status, Integer idEducation, Integer idGender, Integer idStatusMarital, String birthplace, LocalDate birthday, String state, String street, String exteriorNumber, String interiorNumber, String colonia, String city, String postcode, String cellPhone, String homePhone, Integer idSize, Integer sizeNumber, String fatherName, String motherName, Integer idActionType, LocalDateTime creationDate, Integer hStatus, Integer idDwEmployee, Integer idDistributor, Integer idRegion, Integer idBranch, Integer idArea) {
         this.idEmployee = idEmployee;
         this.idDwEnterprise = idDwEnterprise;
         this.idAccount = idAccount;
@@ -338,35 +338,35 @@ public class EmployeesHistory implements Serializable {
         this.idEmployeeHistory = idEmployeeHistory;
     }
 
-    public int getIdEmployee() {
+    public Integer getIdEmployee() {
         return idEmployee;
     }
 
-    public void setIdEmployee(int idEmployee) {
+    public void setIdEmployee(Integer idEmployee) {
         this.idEmployee = idEmployee;
     }
 
-    public int getIdDwEnterprise() {
+    public Integer getIdDwEnterprise() {
         return idDwEnterprise;
     }
 
-    public void setIdDwEnterprise(int idDwEnterprise) {
+    public void setIdDwEnterprise(Integer idDwEnterprise) {
         this.idDwEnterprise = idDwEnterprise;
     }
 
-    public int getIdAccount() {
+    public Integer getIdAccount() {
         return idAccount;
     }
 
-    public void setIdAccount(int idAccount) {
+    public void setIdAccount(Integer idAccount) {
         this.idAccount = idAccount;
     }
 
-    public int getIdRole() {
+    public Integer getIdRole() {
         return idRole;
     }
 
-    public void setIdRole(int idRole) {
+    public void setIdRole(Integer idRole) {
         this.idRole = idRole;
     }
 
@@ -727,6 +727,14 @@ public class EmployeesHistory implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getSistarh() {
+        return sistarh;
+    }
+
+    public void setSistarh(String sistarh) {
+        this.sistarh = sistarh;
     }
 
     @Override
