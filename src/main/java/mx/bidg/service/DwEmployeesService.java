@@ -1,9 +1,6 @@
 package mx.bidg.service;
 
-import mx.bidg.model.DwEmployees;
-import mx.bidg.model.DwEnterprises;
-import mx.bidg.model.Employees;
-import mx.bidg.model.Users;
+import mx.bidg.model.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -28,7 +25,7 @@ public interface DwEmployeesService {
     );
     List<DwEmployees> findAll();
     DwEmployees save(DwEmployees dwEmployees);
-    void createReport(List<DwEmployees> dwEmployees, OutputStream outputStream) throws IOException;
+    void createReport(List<EmployeesHistory> employeesHistories, OutputStream outputStream) throws IOException;
     void changeEmployeeStatus(Integer idDwEmployee, Users user);
     DwEmployees findByIdDw(Integer idDwEnterprise);
     DwEmployees update(String data, Users user) throws IOException;
