@@ -55,10 +55,6 @@ public class CGroups implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String acronyms;
     
-    @OneToMany(mappedBy = "group")
-    @JsonView(JsonViews.EmbeddedBudget.class)
-    private List<Budgets> budgetsList;
-    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "group")
     @JsonView(JsonViews.Embedded.class)
     private List<DwEnterprises> dwEnterprisesList;
@@ -99,14 +95,6 @@ public class CGroups implements Serializable {
         this.acronyms = acronyms;
     }
 
-    public List<Budgets> getBudgetsList() {
-        return budgetsList;
-    }
-
-    public void setBudgetsList(List<Budgets> budgetsList) {
-        this.budgetsList = budgetsList;
-    }
-    
     public List<DwEnterprises> getDwEnterprisesList() {
         return dwEnterprisesList;
     }
