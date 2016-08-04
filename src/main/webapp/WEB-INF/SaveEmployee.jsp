@@ -302,6 +302,9 @@
                         this.employee.dwEmployees.role = this.selectedOptions.role;
                         this.employee.joinDate = this.timePickerIngreso.DateTimePicker.date().toISOString().slice(0, -1);
                         this.employee.birthday = this.timePickerBirthday.DateTimePicker.date().toISOString().slice(0, -1);
+                        if(this.employee.idSize.length == 0){
+                            this.employee.idSize = 7;
+                        }
                         this.$http.post(ROOT_URL + "/employees/save", JSON.stringify(this.employee)).success(function (data) {
                             this.working = data;
                             showAlert("Registro de empleado exitoso");

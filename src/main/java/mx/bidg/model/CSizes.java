@@ -20,7 +20,6 @@ public class CSizes implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_SIZE")
     @JsonView(JsonViews.Root.class)
     private Integer idSize;

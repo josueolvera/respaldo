@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -189,7 +190,7 @@ public class Employees implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String homePhone;
 
-    @Column(name = "ID_SIZE", insertable = false, updatable = false)
+    @Column(name = "ID_SIZE", insertable = false, updatable = false, nullable=true)
     @JsonView(JsonViews.Root.class)
     private Integer idSize;
 
@@ -644,6 +645,14 @@ public class Employees implements Serializable {
 
     public void setSistarh(String sistarh) {
         this.sistarh = sistarh;
+    }
+
+    public Integer getIdSize() {
+        return idSize;
+    }
+
+    public void setIdSize(Integer idSize) {
+        this.idSize = idSize;
     }
 
     @Override
