@@ -199,13 +199,13 @@
 
                         if (status === 1) {
                             this.employeesUrl = '/employees-history?status=1';
-                            this.createReportUrl = ROOT_URL + '/dw-employees/create-report?status=1';
+                            this.createReportUrl = ROOT_URL + '/employees-history/create-report?status=1';
                         } else if (status === 2) {
                             this.employeesUrl = '/employees-history?status=2';
-                            this.createReportUrl = ROOT_URL + '/dw-employees/create-report?status=0';
+                            this.createReportUrl = ROOT_URL + '/employees-history/create-report?status=2';
                         } else if (status === 0) {
                             this.employeesUrl = '/employees-history?status=0 ';
-                            this.createReportUrl = ROOT_URL + '/dw-employees/create-report';
+                            this.createReportUrl = ROOT_URL + '/employees-history/create-report?status=0';
                         }
 
                         if (this.searchSelectedOptions.distributor.id != 0) {
