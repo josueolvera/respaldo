@@ -47,9 +47,9 @@ public class Budgets implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idBudget;
     
-    @Column(name = "ID_GROUP", insertable = false, updatable = false)
+    @Column(name = "ID_DISTRIBUTOR", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idGroup;
+    private Integer idDistributor;
     
     @Column(name = "ID_AREA", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -75,10 +75,10 @@ public class Budgets implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int isentry;
         
-    @JoinColumn(name = "ID_GROUP", referencedColumnName = "ID_GROUP")
+    @JoinColumn(name = "ID_DISTRIBUTOR", referencedColumnName = "ID_DISTRIBUTOR")
     @ManyToOne
     @JsonView({JsonViews.Embedded.class})
-    private CGroups group;
+    private CDistributors distributor;
     
     @JoinColumn(name = "ID_AREA", referencedColumnName = "ID_AREA")
     @ManyToOne
@@ -117,9 +117,9 @@ public class Budgets implements Serializable {
         this.budgetMonthBranchList = budgetMonthBranchList;
     }
 
-    public Budgets(Integer idBudget, Integer idGroup, Integer idArea, Integer idBudgetCategory, Integer idBudgetSubcategory, int idAccessLevel, List<BudgetMonthBranch> budgetMonthBranchList) {
+    public Budgets(Integer idBudget, Integer idDistributor, Integer idArea, Integer idBudgetCategory, Integer idBudgetSubcategory, int idAccessLevel, List<BudgetMonthBranch> budgetMonthBranchList) {
         this.idBudget = idBudget;
-        this.idGroup = idGroup;
+        this.idDistributor = idDistributor;
         this.idArea = idArea;
         this.idBudgetCategory = idBudgetCategory;
         this.idBudgetSubcategory = idBudgetSubcategory;
@@ -127,9 +127,9 @@ public class Budgets implements Serializable {
         this.budgetMonthBranchList = budgetMonthBranchList;
     }
 
-    public Budgets(Integer idBudget, Integer idGroup, Integer idArea, Integer idBudgetCategory, Integer idBudgetSubcategory, int idAccessLevel) {
+    public Budgets(Integer idBudget, Integer idDistributor, Integer idArea, Integer idBudgetCategory, Integer idBudgetSubcategory, int idAccessLevel) {
         this.idBudget = idBudget;
-        this.idGroup = idGroup;
+        this.idDistributor = idDistributor;
         this.idArea = idArea;
         this.idBudgetCategory = idBudgetCategory;
         this.idBudgetSubcategory = idBudgetSubcategory;
@@ -160,12 +160,12 @@ public class Budgets implements Serializable {
         this.budgetMonthBranchList = budgetMonthBranchList;
     }
 
-    public Integer getIdGroup() {
-        return idGroup;
+    public Integer getIdDistributor() {
+        return idDistributor;
     }
 
-    public void setIdGroup(Integer idGroup) {
-        this.idGroup = idGroup;
+    public void setIdDistributor(Integer idDistributor) {
+        this.idDistributor = idDistributor;
     }
 
     public Integer getIdBudgetSubcategory() {
@@ -192,12 +192,12 @@ public class Budgets implements Serializable {
         this.idArea = idArea;
     }
 
-    public CGroups getGroup() {
-        return group;
+    public CDistributors getDistributor() {
+        return distributor;
     }
 
-    public void setGroup(CGroups group) {
-        this.group = group;
+    public void setDistributor(CDistributors distributor) {
+        this.distributor = distributor;
     }
 
     public CAreas getArea() {

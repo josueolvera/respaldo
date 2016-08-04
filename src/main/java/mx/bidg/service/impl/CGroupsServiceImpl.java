@@ -45,7 +45,7 @@ public class CGroupsServiceImpl implements CGroupsService {
         CGroups group = dao.findById(idGroup);
         CAreas area = new CAreas(idArea);
         List<Budgets> budgets = budgetsDao.findByGroupArea(group, area);
-        group.setBudgetsList(budgets);
+//        group.setBudgetsList(budgets);
         return group;
     }
     
