@@ -75,7 +75,7 @@ public class Budgets implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int isentry;
         
-    @JoinColumn(name = "ID_DISTRIBUTOR", referencedColumnName = "ID_GROUP")
+    @JoinColumn(name = "ID_DISTRIBUTOR", referencedColumnName = "ID_DISTRIBUTOR")
     @ManyToOne
     @JsonView({JsonViews.Embedded.class})
     private CDistributors distributor;
