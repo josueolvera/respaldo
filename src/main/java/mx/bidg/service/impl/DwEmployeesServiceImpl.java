@@ -243,7 +243,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     }
 
     @Override
-    public void changeEmployeeStatus(Integer idDwEmployee) {
+    public void changeEmployeeStatus(Integer idDwEmployee, Users user) {
         DwEmployees dwEmployee = dwEmployeesDao.findById(idDwEmployee);
 
         Employees employee = dwEmployee.getEmployee();
@@ -253,7 +253,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
         EmployeesAccounts employeesAccounts = employeesAccountsService.findEmployeeAccountActive(employee.getIdEmployee());
 
         CActionTypes actionType = CActionTypes.BAJA;
-        employeesHistoryService.save(dwEmployee, actionType, employeesAccounts.getAccount());
+        employeesHistoryService.save(dwEmployee, actionType, employeesAccounts.getAccount(), user);
 
         dwEmployeesDao.delete(dwEmployee);
 
@@ -269,7 +269,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     }
 
     @Override
-    public DwEmployees update(String data) throws IOException {
+    public DwEmployees update(String data, Users user) throws IOException {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
         JsonNode jsonNode = mapper.readTree(data);
@@ -354,7 +354,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
             employeesAccountsDao.save(employeesAccount);
         }
 
-        employeesHistoryService.save(dwEmployee, CActionTypes.MODIFICAION, employeesAccount.getAccount());
+        employeesHistoryService.save(dwEmployee, CActionTypes.MODIFICAION, employeesAccount.getAccount(), user);
 
         return dwEmployee;
     }

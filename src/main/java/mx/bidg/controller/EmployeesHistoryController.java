@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
@@ -83,8 +84,9 @@ public class EmployeesHistoryController {
     }
 
     @RequestMapping(value = "/reactivation/{idEH}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> reactivation(@PathVariable Integer idEH, @RequestBody String data) throws IOException{
+    public ResponseEntity<String> reactivation(@PathVariable Integer idEH, @RequestBody String data, HttpSession session) throws IOException{
         JsonNode node = map.readTree(data);
+        Users user = (Users) session.getAttribute("user");
         EmployeesHistory employeesHistory = employeesHistoryService.findById(idEH);
         Employees employees = employeesService.findById(employeesHistory.getIdEmployee());
         employees.setStatus(1);
@@ -100,7 +102,7 @@ public class EmployeesHistoryController {
         dwEmployees.setCreationDate(LocalDateTime.now());
         dwEmployees = dwEmployeesService.save(dwEmployees);
         CActionTypes cActionType = CActionTypes.REACTIVACION;
-        EmployeesHistory employeesHistories = employeesHistoryService.save(dwEmployees,cActionType,employeesAccounts.getAccount());
+        EmployeesHistory employeesHistories = employeesHistoryService.save(dwEmployees,cActionType,employeesAccounts.getAccount(),user);
         return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesHistories),HttpStatus.OK);
     }
 }

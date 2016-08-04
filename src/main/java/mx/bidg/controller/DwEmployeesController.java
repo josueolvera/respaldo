@@ -2,8 +2,10 @@ package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.DwEmployees;
+import mx.bidg.model.Users;
 import mx.bidg.service.DwEmployeesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
@@ -149,17 +152,22 @@ public class DwEmployeesController {
     }
 
     @RequestMapping(value = "/change-employee-status", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> changeEmployeeStatus(@RequestBody Integer idDwEmployee) throws IOException {
+    public ResponseEntity<String> changeEmployeeStatus(@RequestBody Integer idDwEmployee, HttpSession session) throws IOException {
 
-        dwEmployeesService.changeEmployeeStatus(idDwEmployee);
+        Users user = (Users) session.getAttribute("user");
+        System.out.println(user.getIdUser());
+
+        dwEmployeesService.changeEmployeeStatus(idDwEmployee, user);
 
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> update(@RequestBody String data) throws IOException {
+    public ResponseEntity<String> update(@RequestBody String data, HttpSession session) throws IOException {
 
-        DwEmployees dwEmployee = dwEmployeesService.update(data);
+        Users user = (Users) session.getAttribute("user");
+
+        DwEmployees dwEmployee = dwEmployeesService.update(data, user);
 
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEmployee),

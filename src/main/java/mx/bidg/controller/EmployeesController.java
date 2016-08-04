@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 import java.io.*;
 import java.math.BigDecimal;
@@ -117,8 +118,10 @@ public class EmployeesController {
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> save(@RequestBody String data)throws IOException{
+    public ResponseEntity<String> save(@RequestBody String data, HttpSession session)throws IOException{
         JsonNode jnode = mapper.readTree(data);
+
+        Users user = (Users) session.getAttribute("user");
 
         Employees employee = new Employees();
         Accounts accounts;
@@ -196,15 +199,17 @@ public class EmployeesController {
         accounts = employeesAccounts.getAccount();
 
         CActionTypes cActionType = CActionTypes.ALTA;
-        employeesHistoryService.save(dwEmployees,cActionType, accounts);
+        employeesHistoryService.save(dwEmployees,cActionType, accounts, user);
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(employee), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> update(@RequestBody String data)throws IOException{
+    public ResponseEntity<String> update(@RequestBody String data, HttpSession session)throws IOException{
         JsonNode jnode = mapper.readTree(data);
         Accounts accounts;
+
+        Users user = (Users) session.getAttribute("user");
 
         Employees employee = employeesService.findById(jnode.get("idEmployee").asInt());
         Accounts oldAccount = accountsService.findById(jnode.get("idAccount").asInt());
@@ -285,7 +290,7 @@ public class EmployeesController {
         accounts = employeesAccounts.getAccount();
 
         CActionTypes cActionType = CActionTypes.MODIFICAION;
-        employeesHistoryService.save(dwEmployees,cActionType, accounts);
+        employeesHistoryService.save(dwEmployees,cActionType, accounts, user);
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(employee), HttpStatus.OK);
     }

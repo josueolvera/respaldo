@@ -39,7 +39,7 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
     }
 
     @Override
-    public EmployeesHistory save(DwEmployees dwEmployee, CActionTypes actionType, Accounts accounts) {
+    public EmployeesHistory save(DwEmployees dwEmployee, CActionTypes actionType, Accounts accounts, Users user) {
 
         if (dwEmployee != null) {
             EmployeesHistory employeesHistory = new EmployeesHistory();
@@ -112,6 +112,10 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
                     employeesHistory.setIdGender(cGender.getIdGender());
                 }
 
+                if (user != null){
+                    employeesHistory.setUsername(user.getUsername());
+                }
+
                 employeesHistory.setIdEmployee(employee.getIdEmployee());
                 employeesHistory.setBirthday(employee.getBirthday());
                 employeesHistory.setBirthplace(employee.getBirthPlace());
@@ -141,6 +145,7 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
                 employeesHistory.setStreet(employee.getStreet());
                 employeesHistory.setImss(employee.getImss());
                 employeesHistory.setInfonavitNumber(employee.getInfonavitNumber());
+                employeesHistory.setSistarh(employee.getSistarh());
             }
 
             employeesHistory.setIdActionType(actionType.getIdActionType());

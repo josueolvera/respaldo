@@ -1,9 +1,6 @@
 package mx.bidg.service;
 
-import mx.bidg.model.Accounts;
-import mx.bidg.model.CActionTypes;
-import mx.bidg.model.DwEmployees;
-import mx.bidg.model.EmployeesHistory;
+import mx.bidg.model.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,5 +23,5 @@ public interface EmployeesHistoryService {
             String startDate,
             String endDate
     );
-    EmployeesHistory save(DwEmployees dwEmployee, CActionTypes actionType, Accounts accounts);
+    EmployeesHistory save(DwEmployees dwEmployee, CActionTypes actionType, Accounts accounts, Users user);
 }
