@@ -165,6 +165,11 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
     }
 
     @Override
+    public List<DwEnterprises> findByDistributorAndArea(Integer idDistributor, Integer idArea) {
+        return dao.findByDistributorAndArea(idDistributor, idArea);
+    }
+
+    @Override
     public DwEnterprises save(DwEnterprises dwEnterprises) {
         return dao.save(dwEnterprises);
     }
