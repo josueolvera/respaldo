@@ -23,6 +23,7 @@ public interface DwEnterprisesService {
     DwEnterprises findByIdUser(int idUser);
     List<HierarchicalLevel> findHierarchicalStructure();
     List<DwEnterprises> findByDistributor(Integer idDistributor);
+    List<DwEnterprises> findByDistributorAndArea(Integer idDistributor, Integer idArea);
     DwEnterprises save(DwEnterprises dwEnterprises);
     DwEnterprises update(DwEnterprises dwEnterprises);
     DwEnterprises findByDistributorRegionBranch (Integer idDistributor, Integer idRegion, Integer idBranch);
