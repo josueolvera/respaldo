@@ -170,11 +170,11 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
     public String authorizeBudget(String data) throws Exception {
         
         JsonNode json = map.readTree(data);
-        int idGroup = json.get("idGroup").asInt();
+        int idDistributor = json.get("idDistributor").asInt();
         int idArea = json.get("idArea").asInt();
         int year = json.get("year").asInt();
 
-        if(!budgetMonthBranchDao.authorizeBudget(idGroup, idArea, year)) {
+        if(!budgetMonthBranchDao.authorizeBudget(idDistributor, idArea, year)) {
             throw new ValidationException("No se han actualizado registros en la autorizacion del Presupuesto", 
                "No se ha podido autorizar el Presupuesto. Intente nuevamente", HttpStatus.OK);
         }
