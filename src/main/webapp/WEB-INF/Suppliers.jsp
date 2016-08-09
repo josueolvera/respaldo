@@ -1600,7 +1600,7 @@
                             </h4>
                         </div>
                         <div class="modal-body">
-                            <p>El proveedor {{modalPregunta.provider.providerName|separate}} será
+                            <p>El proveedor {{modalPregunta.provider.providerName | separate}} será
                                 eliminado</p>
                         </div>
                         <div class="modal-footer">

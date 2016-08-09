@@ -28,7 +28,7 @@
                         data:{
                             branch:{
                                 branchName:'',
-                                branchShort:'',
+                                branchShort:''
                             }
                         },
                         hierarchy:null
