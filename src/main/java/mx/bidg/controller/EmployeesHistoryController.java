@@ -66,6 +66,19 @@ public class EmployeesHistoryController {
         List<EmployeesHistory> employeesHistories = new ArrayList();
         employeesHistories = employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
         (status,idDistributor, idRegion, idZona,idBranch, idArea, idRole, startDate, endDate);
+
+        for(EmployeesHistory employeesHistory : employeesHistories){
+            if (employeesHistory != null){
+                if (employeesHistory.getIdDwEnterprise() != null){
+                    DwEnterprises dwEnterprises = dwEnterprisesService.findById(employeesHistory.getIdDwEnterprise());
+                    employeesHistory.setDwEnterprisesR(dwEnterprises);
+                }
+                if (employeesHistory.getIdRole() != null){
+                    CRoles roles = cRolesService.findById(employeesHistory.getIdRole());
+                    employeesHistory.setRolesR(roles);
+                }
+            }
+        }
         return new ResponseEntity<>(
                 map.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesHistories),
                 HttpStatus.OK
