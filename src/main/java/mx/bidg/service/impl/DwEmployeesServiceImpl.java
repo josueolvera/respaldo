@@ -100,7 +100,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     }
 
     @Override
-    public void createReport(List<DwEmployees> dwEmployees, OutputStream outputStream) throws IOException {
+    public void createReport(List<EmployeesHistory> dwEmployees, OutputStream outputStream) throws IOException {
 
         Workbook wb = new XSSFWorkbook();
         //Definicion del estilo de la cabecera
@@ -156,80 +156,103 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
         int aux = 1;
         String direccion = "";
 
-        for (DwEmployees dwEmployee : dwEmployees) {
+        for (EmployeesHistory dwEmployee : dwEmployees) {
 
             row = hoja.createRow(aux);
 
-            DwEnterprises dwEnterprise = dwEmployee.getDwEnterprise();
-            CDistributors distributor = dwEnterprise.getDistributor();
-            CRegions region = dwEnterprise.getRegion();
-            CBranchs branch = dwEnterprise.getBranch();
-            Employees employee = dwEmployee.getEmployee();
-            List<EmployeesAccounts> employeeAccountList = employee.getEmployeesAccountsList();
+            CBranchs branchs = new CBranchs();
+            CRegions regions = new CRegions();
+            CDistributors distributors = new CDistributors();
 
-            if (!employeeAccountList.isEmpty()) {
-                Accounts account = employeeAccountList.get(0).getAccount();
-                if (account != null) {
-                    row.createCell(6).setCellValue(account.getAccountNumber());
-                    row.createCell(7).setCellValue(account.getAccountClabe());
-                    CBanks bank = account.getBank();
-                    if (bank != null) {
-                        row.createCell(5).setCellValue(bank.getAcronyms());
+            if(dwEmployee.getIdDwEnterprise() != null){
+                DwEnterprises dwEnterprise = dwEnterprisesDao.findById(dwEmployee.getIdDwEnterprise());
+                CDistributors distributor = dwEnterprise.getDistributor();
+                CRegions region = dwEnterprise.getRegion();
+                CBranchs branch = dwEnterprise.getBranch();
+
+                branchs.equals(branch);
+                regions.equals(regions);
+                distributors.equals(distributor);
+            }
+
+            if(dwEmployee.getIdRole() != null){
+                CRoles role = cRolesDao.findById(dwEmployee.getIdRole());
+                row.createCell(4).setCellValue(role.getRoleName());
+            }
+
+            if(distributors != null){
+                row.createCell(0).setCellValue(distributors.getDistributorName());
+            }
+
+            if(regions != null){
+                row.createCell(1).setCellValue(regions.getRegionName());
+            }
+
+            if(branchs != null){
+                row.createCell(8).setCellValue(branchs.getBranchName());
+            }
+
+            if(dwEmployee.getIdEmployee() != null){
+                Employees employee = employeesDao.findById(dwEmployee.getIdEmployee());
+                List<EmployeesAccounts> employeeAccountList = employee.getEmployeesAccountsList();
+
+                if (!employeeAccountList.isEmpty()) {
+                    Accounts account = employeeAccountList.get(0).getAccount();
+                    if (account != null) {
+                        row.createCell(6).setCellValue(account.getAccountNumber());
+                        row.createCell(7).setCellValue(account.getAccountClabe());
+                        CBanks bank = account.getBank();
+                        if (bank != null) {
+                            row.createCell(5).setCellValue(bank.getAcronyms());
+                        }
                     }
                 }
+
+                if (employee.getJoinDate() != null) {
+                    Date joinDate = Date.from(employee.getJoinDate().atZone(ZoneId.systemDefault()).toInstant());
+                    row.createCell(13);
+                    row.getCell(13).setCellValue(joinDate);
+                    row.getCell(13).setCellStyle(cellDateStyle);
+                }
+
+                // Create a cell and put a value in it.
+                row.createCell(2).setCellValue(employee.getFullName().replace("_", " "));
+                row.createCell(3).setCellValue(employee.getClaveSap());
+                row.createCell(9).setCellValue(employee.getRfc());
+                row.createCell(10).setCellValue(employee.getCurp());
+
+                if (employee.getStreet() != null){
+                    direccion = direccion + employee.getStreet().replace("_", " ");
+                }
+
+                if (employee.getExteriorNumber() != null){
+                    direccion = direccion + " No. Ext. "+ employee.getExteriorNumber().replace("_", " ");
+                }
+
+                if (employee.getInteriorNumber() != null){
+                    direccion = direccion + " No. Int. " + employee.getInteriorNumber().replace("_", " ");
+                }
+
+                if(employee.getColonia() != null){
+                    direccion = direccion + " Col. " + employee.getColonia().replace("_", " ");
+                }
+
+                if(employee.getCity() != null){
+                    direccion = direccion + " Ciudad " + employee.getCity().replace("_", " ");
+                }
+
+                if(employee.getState() != null){
+                    direccion = direccion + " Edo. de " + employee.getState().replace("_", " ");
+                }
+
+                if(employee.getPostcode() != null){
+                    direccion = direccion + " C.P. " + employee.getPostcode().replace("_", " ");
+                }
+                row.createCell(11).setCellValue(direccion);
+                direccion = "";
+                row.createCell(12).setCellValue(employee.getMail());
+                row.createCell(14).setCellValue((employee.getSalary().floatValue())/2);
             }
-
-            CRoles role = dwEmployee.getRole();
-
-            if (employee.getJoinDate() != null) {
-                Date joinDate = Date.from(employee.getJoinDate().atZone(ZoneId.systemDefault()).toInstant());
-                row.createCell(13);
-                row.getCell(13).setCellValue(joinDate);
-                row.getCell(13).setCellStyle(cellDateStyle);
-            }
-
-
-            // Create a cell and put a value in it.
-            row.createCell(0).setCellValue(distributor.getDistributorName());
-            row.createCell(1).setCellValue(region.getRegionName());
-            row.createCell(2).setCellValue(employee.getFullName().replace("_", " "));
-            row.createCell(3).setCellValue(employee.getClaveSap());
-            row.createCell(4).setCellValue(role.getRoleName());
-            row.createCell(8).setCellValue(branch.getBranchName());
-            row.createCell(9).setCellValue(employee.getRfc());
-            row.createCell(10).setCellValue(employee.getCurp());
-
-            if (employee.getStreet() != null){
-                direccion = direccion + employee.getStreet().replace("_", " ");
-            }
-
-            if (employee.getExteriorNumber() != null){
-                direccion = direccion + " No. Ext. "+ employee.getExteriorNumber().replace("_", " ");
-            }
-
-            if (employee.getInteriorNumber() != null){
-                direccion = direccion + " No. Int. " + employee.getInteriorNumber().replace("_", " ");
-            }
-
-            if(employee.getColonia() != null){
-                direccion = direccion + " Col. " + employee.getColonia().replace("_", " ");
-            }
-
-            if(employee.getCity() != null){
-                direccion = direccion + " Ciudad " + employee.getCity().replace("_", " ");
-            }
-
-            if(employee.getState() != null){
-                direccion = direccion + " Edo. de " + employee.getState().replace("_", " ");
-            }
-
-            if(employee.getPostcode() != null){
-                direccion = direccion + " C.P. " + employee.getPostcode().replace("_", " ");
-            }
-            row.createCell(11).setCellValue(direccion);
-            direccion = "";
-            row.createCell(12).setCellValue(employee.getMail());
-            row.createCell(14).setCellValue((employee.getSalary().floatValue())/2);
 
             aux++;
         }
