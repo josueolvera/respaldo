@@ -75,6 +75,14 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
     }
 
     @Override
+    public List<DwEnterprises> findByDistributorAndArea(Integer idDistributor, Integer idArea) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idDistributor",idDistributor))
+                .add(Restrictions.eq("idArea",idArea))
+                .list();
+    }
+
+    @Override
     public DwEnterprises findByDistributorRegionBranch(Integer idDistributor, Integer idRegion, Integer idBranch) {
         return (DwEnterprises) createEntityCriteria()
                 .add(Restrictions.eq("idDistributor", idDistributor))
