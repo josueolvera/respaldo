@@ -63,6 +63,15 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     @Autowired
     private ObjectMapper mapper;
 
+    @Autowired
+    private CDistributorsDao distributorsDao;
+
+    @Autowired
+    private CRegionsDao regionsDao;
+
+    @Autowired
+    private  CBranchsDao branchsDao;
+
     @Override
     public DwEmployees findById(Integer id) {
         return dwEmployeesDao.findById(id);
@@ -160,36 +169,28 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
 
             row = hoja.createRow(aux);
 
-            CBranchs branchs = new CBranchs();
-            CRegions regions = new CRegions();
-            CDistributors distributors = new CDistributors();
-
             if(dwEmployee.getIdDwEnterprise() != null){
                 DwEnterprises dwEnterprise = dwEnterprisesDao.findById(dwEmployee.getIdDwEnterprise());
-                CDistributors distributor = dwEnterprise.getDistributor();
-                CRegions region = dwEnterprise.getRegion();
-                CBranchs branch = dwEnterprise.getBranch();
+                CDistributors distributor = distributorsDao.findById(dwEnterprise.getIdDistributor());
+                CRegions region = regionsDao.findById(dwEnterprise.getIdRegion());
+                CBranchs branch = branchsDao.findById(dwEnterprise.getIdBranch());
 
-                branchs.equals(branch);
-                regions.equals(regions);
-                distributors.equals(distributor);
+                if(distributor != null){
+                    row.createCell(0).setCellValue(distributor.getDistributorName());
+                }
+
+                if(region != null){
+                    row.createCell(1).setCellValue(region.getRegionName());
+                }
+
+                if(branch != null){
+                    row.createCell(8).setCellValue(branch.getBranchShort());
+                }
             }
 
             if(dwEmployee.getIdRole() != null){
                 CRoles role = cRolesDao.findById(dwEmployee.getIdRole());
                 row.createCell(4).setCellValue(role.getRoleName());
-            }
-
-            if(distributors != null){
-                row.createCell(0).setCellValue(distributors.getDistributorName());
-            }
-
-            if(regions != null){
-                row.createCell(1).setCellValue(regions.getRegionName());
-            }
-
-            if(branchs != null){
-                row.createCell(8).setCellValue(branchs.getBranchName());
             }
 
             if(dwEmployee.getIdEmployee() != null){
@@ -299,8 +300,8 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
         JsonNode employeeNode = jsonNode.get("dwEmployee").get("employee");
 
         DwEmployees dwEmployee = dwEmployeesDao.findById(jsonNode.get("dwEmployee").get("idDwEmployee").asInt());
-        DwEnterprises dwEnterprise = dwEnterprisesDao.findById(jsonNode.get("dwEmployee").get("dwEnterprise").get("idDwEnterprise").asInt());
-        CRoles role = cRolesDao.findById(jsonNode.get("dwEmployee").get("role").get("idRole").asInt());
+        DwEnterprises dwEnterprise = dwEnterprisesDao.findByBranchAndArea(jsonNode.get("dwEmployee").get("dwEnterprise").get("branch").get("id").asInt(), jsonNode.get("dwEmployee").get("dwEnterprise").get("area").get("id").asInt());
+        CRoles role = cRolesDao.findById(jsonNode.get("dwEmployee").get("dwEnterprise").get("role").get("idRole").asInt());
         Employees employee = employeesDao.findById(employeeNode.get("idEmployee").asInt());
 
         LocalDateTime joinDate = LocalDateTime.parse(jsonNode.get("dwEmployee").get("employee").get("joinDate").asText() + " 00:00",formatter);
