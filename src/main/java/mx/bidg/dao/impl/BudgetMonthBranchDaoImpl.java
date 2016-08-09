@@ -72,14 +72,14 @@ public class BudgetMonthBranchDaoImpl extends AbstractDao<Integer, BudgetMonthBr
     }
 
     @Override
-    public boolean authorizeBudget(int idGroup, int idArea, int year) {
+    public boolean authorizeBudget(int idDistributor, int idArea, int year) {
         globalTracer("UPDATE", new BudgetMonthBranch());
         String query = "update BUDGET_MONTH_BRANCH bmb "
                 + "inner join BUDGETS b on bmb.ID_BUDGET = b.ID_BUDGET set IS_AUTHORIZED = 1 "
-                + "where bmb.YEAR = :year and b.ID_GROUP = :idGroup and b.ID_AREA = :idArea";
+                + "where bmb.YEAR = :year and b.ID_DISTRIBUTOR = :idDistributor and b.ID_AREA = :idArea";
         int updatedEntities = getSession()
                 .createSQLQuery(query)
-                .setInteger("idGroup", idGroup)
+                .setInteger("idDistributor", idDistributor)
                 .setInteger("idArea", idArea)
                 .setInteger("year", year)
                 .executeUpdate();
