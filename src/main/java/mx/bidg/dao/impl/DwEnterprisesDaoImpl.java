@@ -136,6 +136,23 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
     }
 
     @Override
+    public List<DwEnterprises> findZonaByDistributorAndRegion(Integer idDistributor, Integer idRegion) {
+        return (List<DwEnterprises>) createEntityCriteria()
+                .add(Restrictions.eq("idDistributor",idDistributor))
+                .add(Restrictions.eq("idRegion", idRegion))
+                .list();
+    }
+
+    @Override
+    public List<DwEnterprises> findBranchByDistributorAndRegionAndZona(Integer idDistributor, Integer idRegion, Integer idZona) {
+        return (List<DwEnterprises>) createEntityCriteria()
+                .add(Restrictions.eq("idDistributor",idDistributor))
+                .add(Restrictions.eq("idRegion", idRegion))
+                .add(Restrictions.eq("idZona", idZona))
+                .list();
+    }
+
+    @Override
     public DwEnterprises findByCombination(CGroups group, CDistributors distributor, CRegions region, CBranchs branch, CAreas area) {
         Criteria criteria = createEntityCriteria();
         HashMap<String, Object> map = new HashMap<>();
