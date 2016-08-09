@@ -53,8 +53,8 @@ public class CBudgetConceptsController {
     
     ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
     
-    @RequestMapping(value = "/group-area/{idGroup}/{idArea}/{idDwEnterprise}/{year}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public @ResponseBody ResponseEntity<String> getByGroupArea(@PathVariable int idGroup, @PathVariable int idArea, 
+    @RequestMapping(value = "/group-area/{idDistributor}/{idArea}/{idDwEnterprise}/{year}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody ResponseEntity<String> getByDistributorArea(@PathVariable int idDistributor, @PathVariable int idArea,
             @PathVariable Integer idDwEnterprise, @PathVariable int year) throws Exception {
         
         List<BudgetPojo> list = new ArrayList<>();
@@ -66,10 +66,10 @@ public class CBudgetConceptsController {
         ConceptMonthPojo conceptMonthPojo;
         TotalMonthPojo totalMonthPojo;
         CMonths cMonth;
-        List<Budgets> budgetList =  budgetsService.findByGroupAreaEnterprise(new CGroups(idGroup), new CAreas(idArea), idDwEnterprise);
+        List<Budgets> budgetList =  budgetsService.findByDistributorAreaAndEnterprise(idDistributor, idArea, idDwEnterprise);
         
         for(Budgets budget: budgetList) {
-            
+
             List<CBudgetConcepts> conceptsList = budgetConceptsService.findByBudgetEnterprise(budget, year, idDwEnterprise);
             if(!conceptsList.isEmpty()) {
                 
@@ -78,7 +78,7 @@ public class CBudgetConceptsController {
                 budgetPojo = new BudgetPojo();
                 
                 for(CBudgetConcepts budgetConcept : conceptsList) {
-                    
+
                     conceptMonthPojoList = new ArrayList<>();
                     totalMonthPojoList = new ArrayList<>();
                     List<BudgetMonthConcepts> budgetMonthConceptList = budgetConcept.getBudgetMonthConceptsList();
@@ -90,7 +90,7 @@ public class CBudgetConceptsController {
                     conceptPojo.setEquals(false);
                     
                     for(BudgetMonthConcepts budgetMonthConcept : budgetMonthConceptList) {
-                        
+
                         BudgetMonthBranch budgetMonthBranch = budgetMonthConcept.getBudgetMonthBranch();
                         cMonth = monthsService.findById(budgetMonthBranch.getIdMonth());
                         
@@ -118,7 +118,7 @@ public class CBudgetConceptsController {
                 }
                 
                 budgetPojo.setIdBudget(budget.getIdBudget());
-//                budgetPojo.setIdGroup(budget.getIdGroup());
+                budgetPojo.setIdDistributor(budget.getIdDistributor());
                 budgetPojo.setIdArea(budget.getIdArea());
                 budgetPojo.setIdBudgetCategory(budget.getIdBudgetCategory());
                 budgetPojo.setIdBudgetSubcategory(budget.getIdBudgetSubcategory());
