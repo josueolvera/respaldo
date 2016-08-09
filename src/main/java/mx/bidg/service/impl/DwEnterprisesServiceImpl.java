@@ -6,11 +6,10 @@
 package mx.bidg.service.impl;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-import mx.bidg.dao.DwEmployeesDao;
-import mx.bidg.dao.DwEnterprisesDao;
-import mx.bidg.dao.UsersDao;
+import mx.bidg.dao.*;
 import mx.bidg.model.*;
 import mx.bidg.pojos.HierarchicalLevel;
 import mx.bidg.service.DwEnterprisesService;
@@ -31,6 +30,18 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
 
     @Autowired
     UsersDao usersDao;
+
+    @Autowired
+    CAreasDao areasDao;
+
+    @Autowired
+    CRegionsDao regionsDao;
+
+    @Autowired
+    CBranchsDao branchsDao;
+
+    @Autowired
+    CZonaDao cZonaDao;
     
     @Override
     public List<DwEnterprises> findByGroupArea(CGroups idGroup, CAreas idArea) {
@@ -202,5 +213,55 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
     @Override
     public DwEnterprises findByBranchAndArea(Integer idBranch, Integer idArea) {
         return dao.findByBranchAndArea(idBranch,idArea);
+    }
+
+    @Override
+    public List<CAreas> findAreaByDistributor(Integer idDistributor) {
+        List<DwEnterprises> dwEnterprises = dao.findByDistributor(idDistributor);
+        List<CAreas> areas = new ArrayList<CAreas>();
+        for(DwEnterprises dwEnterprise : dwEnterprises){
+            areas.add(areasDao.findById(dwEnterprise.getIdArea()));
+        }
+        return areas;
+    }
+
+    @Override
+    public List<CRegions> findRegionByDistributor(Integer idDistributor) {
+        List<DwEnterprises> dwEnterprises = dao.findByDistributor(idDistributor);
+        List<CRegions> regions = new ArrayList<CRegions>();
+        for (DwEnterprises dwEnterprise : dwEnterprises){
+            regions.add(regionsDao.findById(dwEnterprise.getIdRegion()));
+        }
+        return regions;
+    }
+
+    @Override
+    public List<CZonas> findZonaByDistributorAndRegion(Integer idDistributor, Integer idRegion) {
+        List<DwEnterprises> dwEnterprises = dao.findZonaByDistributorAndRegion(idDistributor,idRegion);
+        List<CZonas> zonas = new ArrayList<CZonas>();
+        for(DwEnterprises dwEnterprise : dwEnterprises){
+            zonas.add(cZonaDao.findById(dwEnterprise.getIdZona()));
+        }
+        return zonas;
+    }
+
+    @Override
+    public List<CAreas> findAreaByBranch(Integer idBranch) {
+        List<DwEnterprises> dwEnterprises = dao.findByBranches(idBranch);
+        List<CAreas> areas = new ArrayList<CAreas>();
+        for (DwEnterprises dwEnterprise : dwEnterprises){
+            areas.add(areasDao.findById(dwEnterprise.getIdArea()));
+        }
+        return areas;
+    }
+
+    @Override
+    public List<CBranchs> findBranchByDistributorAndRegionAndZona(Integer idDistributor, Integer idRegion, Integer idZona) {
+        List<DwEnterprises> dwEnterprises = dao.findBranchByDistributorAndRegionAndZona(idDistributor, idRegion, idZona);
+        List<CBranchs> branchs = new ArrayList<CBranchs>();
+        for (DwEnterprises dwEnterprise : dwEnterprises){
+            branchs.add(branchsDao.findById(dwEnterprise.getIdBranch()));
+        }
+        return branchs;
     }
 }

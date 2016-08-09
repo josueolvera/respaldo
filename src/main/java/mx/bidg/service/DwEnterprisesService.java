@@ -6,11 +6,11 @@
 package mx.bidg.service;
 
 import java.util.List;
-import mx.bidg.model.CAreas;
-import mx.bidg.model.CDistributors;
-import mx.bidg.model.CGroups;
-import mx.bidg.model.DwEnterprises;
+
+import mx.bidg.model.*;
 import mx.bidg.pojos.HierarchicalLevel;
+
+import javax.persistence.criteria.CriteriaBuilder;
 
 /**
  *
@@ -31,4 +31,9 @@ public interface DwEnterprisesService {
     List<DwEnterprises> findByBranches(Integer idBranch);
     List<DwEnterprises> findAll();
     DwEnterprises findByBranchAndArea(Integer idBranch, Integer idArea);
+    List<CAreas> findAreaByDistributor(Integer idDistributor);
+    List<CRegions> findRegionByDistributor(Integer idDistributor);
+    List<CBranchs> findBranchByDistributorAndRegionAndZona(Integer idDistributor, Integer idRegion, Integer idZona);
+    List<CZonas> findZonaByDistributorAndRegion (Integer idDistributor, Integer idRegion);
+    List<CAreas> findAreaByBranch(Integer idBranch);
 }
