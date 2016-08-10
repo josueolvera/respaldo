@@ -356,7 +356,7 @@
                                             });
                                         });
                                     });
-                                    this.mixedArrays();
+                                    this.getBudgets();
                                 });
                     }
                     ,
@@ -767,11 +767,11 @@
                         </div>
                     </form>
                 </div>
-                <div class="row" v-if="budgetCategories.length > 0">
+                <div class="row" v-if="showInfo && budgetCategories.length > 0">
                     <div class="col-md-2">
                         <label>Rubro</label>
                         <select v-model="selected.budgetCategory" class="form-control" @change="getBudgets">
-                            <option :value="butgetAllOption">{{butgetAllOption.budgetCategory}}</option>
+                            <option selected :value="butgetAllOption">{{butgetAllOption.budgetCategory}}</option>
                             <option v-for="budgetCategory in budgetCategories" :value="budgetCategory">{{budgetCategory.budgetCategory}}</option>
                         </select>
                     </div>

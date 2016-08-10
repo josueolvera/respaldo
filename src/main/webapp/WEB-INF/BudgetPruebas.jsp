@@ -114,6 +114,7 @@
                     contenido: {},
                     sucursales: [],
                     budgets: [],
+                    dwEnterprises: [],
                     areas: [],
                     budgetCategories: [],
                     currentYear: null,
@@ -133,7 +134,7 @@
                     branches: false,
                     flag: true,
                     cargando: false,
-                    butgetAllOption: {
+                    budgetAllOption: {
                         budgetCategory:'TODOS',
                         idBudgetCategory:0
                     },
@@ -193,6 +194,8 @@
                         });
                     },
                     searchBudget : function () {
+                        this.contenido = [];
+                        this.showInfo = false;
                         this.getBudgetsByDistributorAndArea();
                     },
                     prepareList: function(event)
@@ -315,16 +318,14 @@
                     },
                     searchConcepts: function()
                     {
-                        this.showInfo = false;
                         var self= this;
+                        this.showInfo = true;
                         var distributor= this.selected.distributor.idDistributor;
                         var area= this.selected.area.idArea;
                         var year= this.selected.year;
                         var dwEnterprise;
                         if (this.selected.dwEnterprise != null) {
                             dwEnterprise = this.selected.dwEnterprise.idDwEnterprise;
-                        } else {
-                            dwEnterprise = 0;
                         }
                         this.isAutorized= false;
                         this.cargando= true;
@@ -347,7 +348,7 @@
                                             });
                                         });
                                     });
-                                    this.mixedArrays();
+                                    this.getBudgets();
                                 });
                     }
                     ,
@@ -392,7 +393,6 @@
                             return item.idBudgetCategory;
                         });
                         this.banderacontenido = true;
-                        this.showInfo = true;
                         this.obtainGranTotal();
                     }
                     ,
@@ -487,9 +487,11 @@
 
                     },
                     getDwEnterprisesByDistributorAndArea: function () {
+                        this.showInfo = false;
                         this.$http.get(ROOT_URL + '/dw-enterprises/distributor/' + this.selected.distributor.idDistributor + '/area/' + this.selected.area.idArea)
                                 .success(function (data) {
                                     this.select.dwEnterprises = data;
+                                    this.dwEnterprises = data;
                                     if(this.select.dwEnterprises.length > 0) {
                                         this.selected.dwEnterprise = this.select.dwEnterprises[0];
                                     }
@@ -520,7 +522,7 @@
                         this.$http.get(ROOT_URL + '/budgets/distributor/' + this.selected.distributor.idDistributor + '/area/' + this.selected.area.idArea)
                                 .success(function (data) {
                                     var self = this;
-                                    this.showInfo = false;
+                                    this.getDwEnterprises();
                                     this.contenido = data;
                                     this.budgets = data;
                                     this.searchConcepts();
@@ -700,6 +702,16 @@
                             });
                             this.mixedArrays();
                         }
+                    },
+                    getDwEnterprises : function () {
+                        var self = this;
+                        this.showInfo = false;
+                        this.select.dwEnterprises = [];
+                        this.dwEnterprises.forEach(function (dwEnterprise) {
+                            if (dwEnterprise.idDwEnterprise === self.selected.dwEnterprise.idDwEnterprise) {
+                                self.select.dwEnterprises.push(dwEnterprise);
+                            }
+                        });
                     }
                 },
                 filters: {
@@ -795,10 +807,10 @@
                                 <option v-for="area in areas" :value="area">{{area.areaName}}</option>
                             </select>
                         </div>
-                        <div class="col-md-2" v-if="select.dwEnterprises.length > 1">
+                        <div class="col-md-2" v-if="dwEnterprises.length > 1">
                             <label>Sucursal</label>
-                            <select v-model="selected.branch" class="form-control">
-                                <option v-for="dwEnterprise in select.dwEnterprises" :value="dwEnterprise.branch">
+                            <select v-model="selected.dwEnterprise" class="form-control" @change="getDwEnterprises">
+                                <option v-for="dwEnterprise in dwEnterprises" :value="dwEnterprise">
                                     {{dwEnterprise.branch.branchShort}}
                                 </option>
                             </select>
@@ -814,17 +826,17 @@
                         </div>
                     </form>
                 </div>
-                <div class="row" v-if="budgetCategories.length > 0">
-                    <div class="col-md-2">
+                <div class="row">
+                    <div class="col-md-2" v-if="showInfo && budgetCategories.length > 0">
                         <label>Rubro</label>
                         <select v-model="selected.budgetCategory" class="form-control" @change="getBudgets">
-                            <option :value="butgetAllOption">{{butgetAllOption.budgetCategory}}</option>
+                            <option selected :value="budgetAllOption">{{budgetAllOption.budgetCategory}}</option>
                             <option v-for="budgetCategory in budgetCategories" :value="budgetCategory">{{budgetCategory.budgetCategory}}</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="row" v-for="sucss in select.dwEnterprises" v-if="showInfo" style="margin-left: 0px; margin-right: 0px">
+                <div class="row" v-for="sucss in select.dwEnterprises" v-show="showInfo" style="margin-left: 0px; margin-right: 0px">
                     <!--  <div class="col-xs-12"> -->
                     <div class="row" style="margin-left: 0px; margin-right: 0px">
                         <div class="col-xs-4 text-left" style="padding-left: 0">
