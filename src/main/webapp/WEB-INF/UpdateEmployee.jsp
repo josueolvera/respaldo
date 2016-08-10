@@ -437,8 +437,15 @@
     <jsp:body>
         <div id="content">
             <div class="row">
-                <div class="col-xs-8 text-header">
+                <div class="col-xs-8 text-header" style="margin-top: 15px">
                     <h2>Modificación de empleados</h2>
+                </div>
+                <div class="col-xs-3">
+                </div>
+                <div class="col-xs-1" style="margin-left: 300px">
+                    <button class="btn btn-default" style="margin-top: 35px"><a style="color: black"
+                                                                                 :href="regresarBusqueda">Regresar</a>
+                    </button>
                 </div>
             </div>
             <br>
@@ -775,7 +782,7 @@
                                 <div class="col-xs-3" v-if="dwEmployee.employee.employeeType.idEmployeeType == 1">
                                     <label>IMSS</label>
                                     <input class="form-control" maxlength="18" v-model="dwEmployee.employee.imss"
-                                           onkeypress="return isNumberKey(event)">
+                                           onkeypress="return isNumberKey(event)" required>
                                 </div>
                                 <div class="col-xs-3" v-if="dwEmployee.employee.employeeType.idEmployeeType == 1">
                                     <label>Infonavit</label>
