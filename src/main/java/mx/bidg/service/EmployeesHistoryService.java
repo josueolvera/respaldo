@@ -20,6 +20,8 @@ public interface EmployeesHistoryService {
             Integer idBranch,
             Integer idArea,
             Integer idRole,
+            String fullname,
+            String rfc,
             String startDate,
             String endDate
     );
