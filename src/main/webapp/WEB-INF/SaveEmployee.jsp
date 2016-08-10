@@ -858,7 +858,7 @@
                                     <div class="col-xs-3" v-if="employee.employeeType == 1">
                                         <label>IMSS</label>
                                         <input class="form-control" name="name" v-model="employee.imss" maxlength="18"
-                                               onkeypress="return isNumberKey(event)">
+                                               onkeypress="return isNumberKey(event)" required>
                                     </div>
                                     <div class="col-xs-3" v-if="employee.employeeType == 1">
                                         <label>Infonavit</label>
