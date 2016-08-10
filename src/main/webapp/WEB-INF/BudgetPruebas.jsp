@@ -504,6 +504,7 @@
                         return -1;
                     },
                     getBudgetsByDistributor: function () {
+                        this.showInfo = false;
                         this.$http.get(ROOT_URL + '/budgets/distributor/' + this.selected.distributor.idDistributor)
                                 .success(function (data) {
                                     var self = this;
@@ -712,6 +713,9 @@
                                 self.select.dwEnterprises.push(dwEnterprise);
                             }
                         });
+                    },
+                    onYearChanged : function () {
+                        this.showInfo = false;
                     }
                 },
                 filters: {
@@ -818,7 +822,7 @@
                         <div class="col-md-2">
                             <label>Año</label>
                             <input type="number" :min="currentYear" :max="maxYear" minlength="4" maxlength="4"
-                                   placeholder="Año" class="form-control" v-model="selected.year">
+                                   placeholder="Año" class="form-control" v-model="selected.year" @change="onYearChanged">
                         </div>
                         <div class="col-md-1">
                             <label style="visibility: hidden">search</label>
@@ -891,8 +895,7 @@
                                             <%--</button>--%>
                                         <%--</div>--%>
                                         <div class="col-xs-1" v-if="!isAutorized">
-                                            <label style="visibility: hidden">delete</label>
-                                            <button type="button" class="btn btn-default"
+                                            <button style="margin-top: 28px" type="button" class="btn btn-default"
                                                     @click="deleteObject(conte, concepto)">
                                                 <span class="glyphicon glyphicon-trash"></span>
                                             </button>

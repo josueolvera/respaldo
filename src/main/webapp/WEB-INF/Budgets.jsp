@@ -832,8 +832,7 @@
                                             <%--</button>--%>
                                             <%--</div>--%>
                                         <div class="col-xs-1" v-if="!isAutorized">
-                                            <label style="visibility: hidden">delete</label>
-                                            <button type="button" class="btn btn-default"
+                                            <button style="margin-top: 28px" type="button" class="btn btn-default"
                                                     @click="deleteObject(conte, concepto)">
                                                 <span class="glyphicon glyphicon-trash"></span>
                                             </button>
