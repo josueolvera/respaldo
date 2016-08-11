@@ -123,7 +123,6 @@
                     selected:{
                         distributor:null,
                         dwEnterprise:null,
-                        branch: null,
                         area:null,
                         budgetCategory:{},
                         year:null
@@ -487,6 +486,7 @@
 
                     },
                     getDwEnterprisesByDistributorAndArea: function () {
+                        this.selected.dwEnterprise = null;
                         this.showInfo = false;
                         this.$http.get(ROOT_URL + '/dw-enterprises/distributor/' + this.selected.distributor.idDistributor + '/area/' + this.selected.area.idArea)
                                 .success(function (data) {
@@ -504,6 +504,9 @@
                         return -1;
                     },
                     getBudgetsByDistributor: function () {
+                        this.selected.area = null;
+                        this.selected.dwEnterprise = null;
+                        this.dwEnterprises = [];
                         this.showInfo = false;
                         this.$http.get(ROOT_URL + '/budgets/distributor/' + this.selected.distributor.idDistributor)
                                 .success(function (data) {
@@ -807,13 +810,15 @@
                         </div>
                         <div class="col-md-2">
                             <label>Area</label>
-                            <select v-model="selected.area" class="form-control" @change="getDwEnterprisesByDistributorAndArea">
+                            <select v-model="selected.area" class="form-control"
+                                    @change="getDwEnterprisesByDistributorAndArea" :disabled="selected.distributor == null">
                                 <option v-for="area in areas" :value="area">{{area.areaName}}</option>
                             </select>
                         </div>
                         <div class="col-md-2" v-if="dwEnterprises.length > 1">
                             <label>Sucursal</label>
-                            <select v-model="selected.dwEnterprise" class="form-control" @change="getDwEnterprises">
+                            <select v-model="selected.dwEnterprise" class="form-control"
+                                    @change="getDwEnterprises" :disabled="selected.area == null">
                                 <option v-for="dwEnterprise in dwEnterprises" :value="dwEnterprise">
                                     {{dwEnterprise.branch.branchShort}}
                                 </option>
