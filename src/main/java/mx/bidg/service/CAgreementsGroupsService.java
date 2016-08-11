@@ -5,10 +5,19 @@
  */
 package mx.bidg.service;
 
+import java.util.List;
+import mx.bidg.model.CAgreementsGroups;
+
 /**
  *
  * @author josueolvera
  */
 public interface CAgreementsGroupsService {
+    
+    CAgreementsGroups save (CAgreementsGroups agreementsGroups);
+    CAgreementsGroups update(CAgreementsGroups agreementsGroups);
+    boolean delete(CAgreementsGroups agreementsGroups);
+    CAgreementsGroups findById (Integer idAG);
+    List<CAgreementsGroups> findAll();
     
 }
