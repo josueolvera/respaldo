@@ -66,7 +66,13 @@ public class CBudgetSubcategories implements Serializable {
     @JoinColumn(name = "ID_ACCOUNTING_ACCOUNT", referencedColumnName = "ID_ACCOUNTING_ACCOUNT")
     @JsonView(JsonViews.Embedded.class)
     private AccountingAccounts accountingAccount;
-
+    
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "IS_REQUEST")
+    @JsonView(JsonViews.Root.class)
+    private int isRequest;
+    
     public CBudgetSubcategories() {
     }
 
@@ -127,6 +133,14 @@ public class CBudgetSubcategories implements Serializable {
 
     public void setAccountingAccount(AccountingAccounts accountingAccount) {
         this.accountingAccount = accountingAccount;
+    }
+    
+    public int getIsRequest() {
+        return isRequest;
+    }
+
+    public void setIsRequest(int isRequest) {
+        this.isRequest = isRequest;
     }
 
     @Override

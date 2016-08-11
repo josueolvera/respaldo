@@ -7,10 +7,12 @@ package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 
@@ -42,6 +44,13 @@ public class CBudgetCategories implements Serializable {
     
     @Basic(optional = false)
     @NotNull
+    @Column(name = "CREATION_DATE", updatable = false)
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime creationDate;
+    
+    @Basic(optional = false)
+    @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
@@ -54,6 +63,12 @@ public class CBudgetCategories implements Serializable {
     @JoinColumn(name = "ID_ACCOUNTING_ACCOUNT", referencedColumnName = "ID_ACCOUNTING_ACCOUNT")
     @JsonView(JsonViews.Embedded.class)
     private AccountingAccounts accountingAccount;
+    
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "IS_REQUEST")
+    @JsonView(JsonViews.Root.class)
+    private int isRequest;
 
     public CBudgetCategories() {
     }
@@ -107,6 +122,23 @@ public class CBudgetCategories implements Serializable {
         this.accountingAccount = accountingAccount;
     }
 
+    public int getIsRequest() {
+        return isRequest;
+    }
+
+    public void setIsRequest(int isRequest) {
+        this.isRequest = isRequest;
+    }
+    
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+    
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -131,5 +163,5 @@ public class CBudgetCategories implements Serializable {
     public String toString() {
         return "mx.bidg.model.CBudgetCategories[ idBudgetCategory=" + idBudgetCategory + " ]";
     }
-    
+
 }

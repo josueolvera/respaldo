@@ -166,8 +166,8 @@ public class NotificationsServiceImpl implements NotificationsService {
         Notifications notification = new Notifications();
         notification.setIdResource(request.getIdRequest());
         notification.setResourcesTasks(request.getRequestTypeProduct().getRequestCategory().getResourcesTasks());
-        notification.setTitle("Solicitud: " + request.getRequestTypeProduct().getRequestType().getRequestType());
-        notification.setSubtitle(request.getRequestTypeProduct().getProductType().getProductType());
+       // notification.setTitle("Solicitud: " + request.getRequestTypeProduct().getRequestType().getRequestType());
+       // notification.setSubtitle(request.getRequestTypeProduct().getProductType().getProductType());
         notification.setText(request.getDescription());
         notification.setUser(user);
         notification.setNotificationTypes(new CNotificationTypes(CNotificationTypes.S));

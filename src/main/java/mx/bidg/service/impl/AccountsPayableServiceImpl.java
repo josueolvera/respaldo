@@ -304,8 +304,8 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
                         priceEstimationsAutorized = priceEstimation;
                     }
                 }
-                RequestTypesProduct requestTypesProduct = requests.getRequestTypeProduct();
-                CProductTypes productType = requestTypesProduct.getProductType();
+                //RequestTypesProduct requestTypesProduct = requests.getRequestTypeProduct();
+                //CProductTypes productType = requestTypesProduct.getProductType();
                 BudgetMonthBranch budgetMonthBranch = requests.getBudgetMonthBranch();
                 DwEnterprises dwEnterprise = budgetMonthBranch.getDwEnterprise();
                 CDistributors cDistributors = dwEnterprise.getDistributor();
@@ -318,7 +318,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
 
                 row = hoja.createRow(aux);
                 // Create a cell and put a value in it.
-                row.createCell(0).setCellValue(productType.getProductType());
+              //  row.createCell(0).setCellValue(productType.getProductType());
                 row.createCell(1).setCellValue(accountsPayable.getAmount().toString());
                 row.createCell(2).setCellValue(cDistributors.getAcronyms());
                 row.createCell(3).setCellValue(cRegions.getRegionName());

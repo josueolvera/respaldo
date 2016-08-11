@@ -56,28 +56,28 @@ public class RequestTypesProduct implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idRequestCategory;
     
-    @Column(name = "ID_REQUEST_TYPE", insertable = false, updatable = false)
+    @Column(name = "ID_BUDGET_CATEGORY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idRequestType;
+    private Integer idBudgetCategory;
     
-    @Column(name = "ID_PRODUCT_TYPE", insertable = false, updatable = false)
+    @Column(name = "ID_BUDGET_SUBCATEGORY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idProductType;
+    private Integer idBudgetSubcategory;
     
     @JoinColumn(name = "ID_REQUEST_CATEGORY", referencedColumnName = "ID_REQUEST_CATEGORY")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private CRequestsCategories requestCategory;
     
-    @JoinColumn(name = "ID_REQUEST_TYPE", referencedColumnName = "ID_REQUEST_TYPE")
+    @JoinColumn(name = "ID_BUDGET_CATEGORY", referencedColumnName = "ID_BUDGET_CATEGORY")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private CRequestTypes requestType;
+    private CBudgetCategories budgetCategory;
     
-    @JoinColumn(name = "ID_PRODUCT_TYPE", referencedColumnName = "ID_PRODUCT_TYPE")
+    @JoinColumn(name = "ID_BUDGET_SUBCATEGORY", referencedColumnName = "ID_BUDGET_SUBCATEGORY")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private CProductTypes productType;
+    private CBudgetSubcategories BudgetSubcategory;
     
     @Basic(optional = false)
     @NotNull
@@ -120,22 +120,38 @@ public class RequestTypesProduct implements Serializable {
         this.idRequestCategory = idRequestCategory;
     }
 
-    public Integer getIdRequestType() {
-        return idRequestType;
+        public Integer getIdBudgetCategory() {
+        return idBudgetCategory;
     }
 
-    public void setIdRequestType(Integer idRequestType) {
-        this.idRequestType = idRequestType;
+    public void setIdBudgetCategory(Integer idBudgetCategory) {
+        this.idBudgetCategory = idBudgetCategory;
     }
 
-    public Integer getIdProductType() {
-        return idProductType;
+    public Integer getIdBudgetSubcategory() {
+        return idBudgetSubcategory;
     }
 
-    public void setIdProductType(Integer idProductType) {
-        this.idProductType = idProductType;
+    public void setIdBudgetSubcategory(Integer idBudgetSubcategory) {
+        this.idBudgetSubcategory = idBudgetSubcategory;
     }
 
+    public CBudgetCategories getBudgetCategory() {
+        return budgetCategory;
+    }
+
+    public void setBudgetCategory(CBudgetCategories budgetCategory) {
+        this.budgetCategory = budgetCategory;
+    }
+
+    public CBudgetSubcategories getBudgetSubcategory() {
+        return BudgetSubcategory;
+    }
+
+    public void setBudgetSubcategory(CBudgetSubcategories BudgetSubcategory) {
+        this.BudgetSubcategory = BudgetSubcategory;
+    }
+    
     public CRequestsCategories getRequestCategory() {
         return requestCategory;
     }
@@ -143,23 +159,7 @@ public class RequestTypesProduct implements Serializable {
     public void setRequestCategory(CRequestsCategories requestCategory) {
         this.requestCategory = requestCategory;
     }
-
-    public CRequestTypes getRequestType() {
-        return requestType;
-    }
-
-    public void setRequestType(CRequestTypes requestType) {
-        this.requestType = requestType;
-    }
-
-    public CProductTypes getProductType() {
-        return productType;
-    }
-
-    public void setProductType(CProductTypes productType) {
-        this.productType = productType;
-    }
-
+    
     public Integer getIdAccessLevel() {
         return idAccessLevel;
     }
