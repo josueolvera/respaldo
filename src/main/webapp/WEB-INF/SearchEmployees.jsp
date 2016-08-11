@@ -335,6 +335,11 @@
                             if (this.dwEmployees.length > 0) {
                                 this.registerNumber = this.dwEmployees.length;
                                 this.isThereItems = true;
+                            }else{
+                                showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
+                                setInterval(function(){
+                                    location.reload();
+                                }, 3000);
                             }
                         }).error(function (data) {
                             showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
