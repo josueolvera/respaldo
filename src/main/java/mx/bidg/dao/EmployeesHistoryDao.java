@@ -16,6 +16,8 @@ public interface EmployeesHistoryDao  extends InterfaceDao<EmployeesHistory>  {
             Integer idBranch,
             Integer idArea,
             Integer idRole,
+            String fullName,
+            String rfc,
             String startDate,
             String endDate
     );

@@ -78,6 +78,34 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
     }
 
     @Override
+    public List<Budgets> findByDistributor(Integer idDistributor) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idDistributor",idDistributor))
+                .list();
+    }
+
+    @Override
+    public List<Budgets> findByDistributorAndArea(Integer idDistributor, Integer idArea) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idDistributor",idDistributor))
+                .add(Restrictions.eq("idArea",idArea))
+                .setResultTransformer(DistinctRootEntityResultTransformer.INSTANCE)
+                .list();
+    }
+
+    @Override
+    public List<Budgets> findByDistributorAreaAndEnterprise(Integer idDistributor, Integer idArea, Integer idDwEnterprise) {
+        return createEntityCriteria()
+                .setResultTransformer(DistinctRootEntityResultTransformer.INSTANCE)
+                .setFetchMode("budgetMonthBranchList", FetchMode.JOIN)
+                .add(Restrictions.eq("idDistributor",idDistributor))
+                .add(Restrictions.eq("idArea",idArea))
+                .createCriteria("budgetMonthBranchList")
+                .add(Restrictions.eq("idDwEnterprise", idDwEnterprise))
+                .list();
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public ArrayList<Budgets> findByGroupAreaEnterprise(CGroups idGroup, CAreas idArea, Integer idDwEnterprise) {
         Criteria criteria = createEntityCriteria();

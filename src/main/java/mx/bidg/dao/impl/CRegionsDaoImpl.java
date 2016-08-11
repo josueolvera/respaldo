@@ -22,7 +22,7 @@ public class CRegionsDaoImpl extends AbstractDao<Integer, CRegions> implements C
 
     @Override
     public CRegions findById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getByKey(id);
     }
 
     @Override

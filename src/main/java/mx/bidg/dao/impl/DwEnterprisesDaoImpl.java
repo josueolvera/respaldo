@@ -75,6 +75,14 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
     }
 
     @Override
+    public List<DwEnterprises> findByDistributorAndArea(Integer idDistributor, Integer idArea) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idDistributor",idDistributor))
+                .add(Restrictions.eq("idArea",idArea))
+                .list();
+    }
+
+    @Override
     public DwEnterprises findByDistributorRegionBranch(Integer idDistributor, Integer idRegion, Integer idBranch) {
         return (DwEnterprises) createEntityCriteria()
                 .add(Restrictions.eq("idDistributor", idDistributor))
@@ -93,6 +101,29 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
         }
         if (idRegion != null) {
             criteria.add(Restrictions.eq("idRegion",idRegion));
+        }
+        if (idBranch != null) {
+            criteria.add(Restrictions.eq("idBranch",idBranch));
+        }
+        if (idArea != null) {
+            criteria.add(Restrictions.eq("idArea",idArea));
+        }
+
+        return criteria.list();
+    }
+
+    @Override
+    public List<DwEnterprises> findByDistributorRegionZonaBranchAndArea(Integer idDistributor, Integer idRegion, Integer idZona, Integer idBranch, Integer idArea) {
+        Criteria criteria = createEntityCriteria();
+
+        if (idDistributor != null) {
+            criteria.add(Restrictions.eq("idDistributor",idDistributor));
+        }
+        if (idRegion != null) {
+            criteria.add(Restrictions.eq("idRegion",idRegion));
+        }
+        if (idZona != null) {
+            criteria.add(Restrictions.eq("idZona",idZona));
         }
         if (idBranch != null) {
             criteria.add(Restrictions.eq("idBranch",idBranch));
@@ -125,6 +156,23 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
                 .add(Restrictions.eq("idBranch",idBranch))
                 .add(Restrictions.eq("idArea", idArea))
                 .uniqueResult();
+    }
+
+    @Override
+    public List<DwEnterprises> findZonaByDistributorAndRegion(Integer idDistributor, Integer idRegion) {
+        return (List<DwEnterprises>) createEntityCriteria()
+                .add(Restrictions.eq("idDistributor",idDistributor))
+                .add(Restrictions.eq("idRegion", idRegion))
+                .list();
+    }
+
+    @Override
+    public List<DwEnterprises> findBranchByDistributorAndRegionAndZona(Integer idDistributor, Integer idRegion, Integer idZona) {
+        return (List<DwEnterprises>) createEntityCriteria()
+                .add(Restrictions.eq("idDistributor",idDistributor))
+                .add(Restrictions.eq("idRegion", idRegion))
+                .add(Restrictions.eq("idZona", idZona))
+                .list();
     }
 
     @Override

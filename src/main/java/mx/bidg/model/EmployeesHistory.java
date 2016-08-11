@@ -274,6 +274,14 @@ public class EmployeesHistory implements Serializable {
     @Transient
     @JsonView(JsonViews.Root.class)
     private String fullName;
+
+    @Transient
+    @JsonView(JsonViews.Embedded.class)
+    private DwEnterprises dwEnterprisesR;
+
+    @Transient
+    @JsonView(JsonViews.Embedded.class)
+    private CRoles rolesR;
     
     public EmployeesHistory() {
     }
@@ -735,6 +743,22 @@ public class EmployeesHistory implements Serializable {
 
     public void setSistarh(String sistarh) {
         this.sistarh = sistarh;
+    }
+
+    public DwEnterprises getDwEnterprisesR() {
+        return dwEnterprisesR;
+    }
+
+    public void setDwEnterprisesR(DwEnterprises dwEnterprisesR) {
+        this.dwEnterprisesR = dwEnterprisesR;
+    }
+
+    public CRoles getRolesR() {
+        return rolesR;
+    }
+
+    public void setRolesR(CRoles rolesR) {
+        this.rolesR = rolesR;
     }
 
     @Override

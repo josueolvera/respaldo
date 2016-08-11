@@ -15,7 +15,7 @@ import java.util.List;
 public class BudgetPojo {
     
     private int idBudget;
-    private int idGroup;
+    private int idDistributor;
     private int idArea;
     private int idBudgetCategory;
     private int idBudgetSubcategory;
@@ -28,9 +28,9 @@ public class BudgetPojo {
     public BudgetPojo() {
     }
 
-    public BudgetPojo(int idBudget, int idGroup, int idArea, int idBudgetCategory, int idBudgetSubcategory, int year, int isAuthorized, BigDecimal granTotal, List<ConceptPojo> conceptos, List<TotalMonthPojo> totalMonth) {
+    public BudgetPojo(int idBudget, int idDistributor, int idArea, int idBudgetCategory, int idBudgetSubcategory, int year, int isAuthorized, BigDecimal granTotal, List<ConceptPojo> conceptos, List<TotalMonthPojo> totalMonth) {
         this.idBudget = idBudget;
-        this.idGroup = idGroup;
+        this.idDistributor = idDistributor;
         this.idArea = idArea;
         this.idBudgetCategory = idBudgetCategory;
         this.idBudgetSubcategory = idBudgetSubcategory;
@@ -49,12 +49,12 @@ public class BudgetPojo {
         this.idBudget = idBudget;
     }
 
-    public int getIdGroup() {
-        return idGroup;
+    public int getIdDistributor() {
+        return idDistributor;
     }
 
-    public void setIdGroup(int idGroup) {
-        this.idGroup = idGroup;
+    public void setIdDistributor(int idDistributor) {
+        this.idDistributor = idDistributor;
     }
 
     public int getIdArea() {

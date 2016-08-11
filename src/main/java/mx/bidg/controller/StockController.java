@@ -68,23 +68,19 @@ public class StockController {
     @Autowired
     private EmployeesService employeesService;
 
-    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findAll(
+    public ResponseEntity<String> getStock(
             @RequestParam(name = "idDistributor", required = false) Integer idDistributor,
             @RequestParam(name = "idRegion", required = false) Integer idRegion,
+            @RequestParam(name = "idZona", required = false) Integer idZona,
             @RequestParam(name = "idBranch", required = false) Integer idBranch,
             @RequestParam(name = "idArea", required = false) Integer idArea
             ) throws IOException {
 
-        List<Stocks> stock;
-
-        if (idDistributor == 0 && idArea == 0 && idBranch == 0 && idRegion ==0) {
-            stock = stockService.findAll();
-        } else {
-            stock = stockService.filter(idDistributor,idRegion,idBranch,idArea);
-        }
+        List<Stocks> stock = stockService.filter(idDistributor, idRegion, idZona, idBranch, idArea);
 
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(stock),

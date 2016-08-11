@@ -6,11 +6,11 @@
 package mx.bidg.service;
 
 import java.util.List;
-import mx.bidg.model.CAreas;
-import mx.bidg.model.CDistributors;
-import mx.bidg.model.CGroups;
-import mx.bidg.model.DwEnterprises;
+
+import mx.bidg.model.*;
 import mx.bidg.pojos.HierarchicalLevel;
+
+import javax.persistence.criteria.CriteriaBuilder;
 
 /**
  *
@@ -23,6 +23,7 @@ public interface DwEnterprisesService {
     DwEnterprises findByIdUser(int idUser);
     List<HierarchicalLevel> findHierarchicalStructure();
     List<DwEnterprises> findByDistributor(Integer idDistributor);
+    List<DwEnterprises> findByDistributorAndArea(Integer idDistributor, Integer idArea);
     DwEnterprises save(DwEnterprises dwEnterprises);
     DwEnterprises update(DwEnterprises dwEnterprises);
     DwEnterprises findByDistributorRegionBranch (Integer idDistributor, Integer idRegion, Integer idBranch);
@@ -30,4 +31,10 @@ public interface DwEnterprisesService {
     List<DwEnterprises> findByBranches(Integer idBranch);
     List<DwEnterprises> findAll();
     DwEnterprises findByBranchAndArea(Integer idBranch, Integer idArea);
+    List<CAreas> findAreaByDistributor(Integer idDistributor);
+    List<CRegions> findRegionByDistributor(Integer idDistributor);
+    List<CBranchs> findBranchByDistributorAndRegionAndZona(Integer idDistributor, Integer idRegion, Integer idZona);
+    List<DwEnterprises> findByDistributorRegionZonaBranchAndArea(Integer idDistributor, Integer idRegion, Integer idZona, Integer idBranch, Integer idArea);
+    List<CZonas> findZonaByDistributorAndRegion (Integer idDistributor, Integer idRegion);
+    List<CAreas> findAreaByBranch(Integer idBranch);
 }

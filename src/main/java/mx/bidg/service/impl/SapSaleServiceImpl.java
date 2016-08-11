@@ -40,9 +40,6 @@ public class SapSaleServiceImpl implements SapSaleService {
     private DwEnterprisesDao dwEnterprisesDao;
 
     @Autowired
-    private DwEnterprisesAgreementsDao dwEnterprisesAgreementsDao;
-
-    @Autowired
     private EmployeesDao employeesDao;
 
     @Override
@@ -134,14 +131,6 @@ public class SapSaleServiceImpl implements SapSaleService {
                                 newAgreement.setStatus(1);
 
                                 newAgreement = cAgreementsDao.save(newAgreement);
-
-                                DwEnterprisesAgreements dwEnterprisesAgreements =
-                                        new DwEnterprisesAgreements();
-
-                                dwEnterprisesAgreements.setAgreement(newAgreement);
-                                dwEnterprisesAgreements.setDwEnterprise(dwEnterprises);
-
-                                dwEnterprisesAgreementsDao.save(dwEnterprisesAgreements);
 
                                 sapSale.setAgreement(newAgreement);
                             }
@@ -333,14 +322,6 @@ public class SapSaleServiceImpl implements SapSaleService {
 
                                         newAgreement = cAgreementsDao.save(newAgreement);
 
-                                        DwEnterprisesAgreements dwEnterprisesAgreements =
-                                                new DwEnterprisesAgreements();
-
-                                        dwEnterprisesAgreements.setAgreement(newAgreement);
-                                        dwEnterprisesAgreements.setDwEnterprise(dwEnterprises);
-
-                                        dwEnterprisesAgreementsDao.save(dwEnterprisesAgreements);
-
                                         sapSale.setAgreement(newAgreement);
                                     }
                                 }
@@ -465,14 +446,6 @@ public class SapSaleServiceImpl implements SapSaleService {
                                         newAgreement.setStatus(1);
 
                                         newAgreement = cAgreementsDao.save(newAgreement);
-
-                                        DwEnterprisesAgreements dwEnterprisesAgreements =
-                                                new DwEnterprisesAgreements();
-
-                                        dwEnterprisesAgreements.setAgreement(newAgreement);
-                                        dwEnterprisesAgreements.setDwEnterprise(dwEnterprises);
-
-                                        dwEnterprisesAgreementsDao.save(dwEnterprisesAgreements);
 
                                         sapSale.setAgreement(newAgreement);
                                     }

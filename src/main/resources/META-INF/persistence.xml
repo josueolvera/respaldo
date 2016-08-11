@@ -27,6 +27,8 @@
     <class>mx.bidg.model.CGenders</class>
     <class>mx.bidg.model.CZonas</class>
     <class>mx.bidg.model.DitributorsEmployeeDocuments</class>
+    <class>mx.bidg.model.GroupsAgreements</class>
+    <class>mx.bidg.model.CAgreementsGroups</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties/>
   </persistence-unit>

@@ -6,6 +6,8 @@
 package mx.bidg.service.impl;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import mx.bidg.dao.BudgetsDao;
 import mx.bidg.model.Budgets;
 import mx.bidg.model.CAreas;
@@ -25,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class BudgetsServiceImpl implements BudgetsService {
-    
+
     @Autowired
     BudgetsDao dao;
 
@@ -35,15 +37,36 @@ public class BudgetsServiceImpl implements BudgetsService {
     }
 
     @Override
+<<<<<<< HEAD
     public Budgets findByCombination(Integer idDistributor, Integer idArea, Integer idCategory, 
             Integer idSubcategory) {
         return dao.findByCombination(new CDistributors(idDistributor), new CAreas(idArea), 
+=======
+    public Budgets findByCombination(Integer idGroup, Integer idArea, Integer idCategory,
+            Integer idSubcategory) {
+        return dao.findByCombination(new CGroups(idGroup), new CAreas(idArea),
+>>>>>>> master
                 new CBudgetCategories(idCategory), new CBudgetSubcategories(idSubcategory));
     }
 
     @Override
     public ArrayList<Budgets> findByGroupArea(CGroups idGroup, CAreas idArea) {
         return dao.findByGroupArea(idGroup, idArea);
+    }
+
+    @Override
+    public List<Budgets> findByDistributorAndArea(Integer idDistributor, Integer idArea) {
+        return dao.findByDistributorAndArea(idDistributor, idArea);
+    }
+
+    @Override
+    public List<Budgets> findByDistributorAreaAndEnterprise(Integer idDistributor, Integer idArea, Integer idDwEnterprise) {
+        return dao.findByDistributorAreaAndEnterprise(idDistributor, idArea, idDwEnterprise);
+    }
+
+    @Override
+    public List<Budgets> findByDistributor(Integer idDistributor) {
+        return dao.findByDistributor(idDistributor);
     }
 
     @Override

@@ -17,7 +17,7 @@
                 el: '#content',
                 ready: function () {
                     this.activateDateTimePickerStart();
-                    this.fetchHierarchy();
+                    this.getDistributors();
                 },
                 data: {
                     updateEmployeeUrl: ROOT_URL + '/saem/update-employee?idDwEmployee=',
@@ -50,23 +50,23 @@
                         value:2
                     },
                     defaultArea: {
-                        id:0,
+                        idArea:0,
                         name:'TODOS'
                     },
                     defaultDistributor: {
-                        id:0,
+                        idDistributor:0,
                         name:'TODOS'
                     },
                     defaultRegion: {
-                        id:0,
+                        idRegion:0,
                         name:'TODOS'
                     },
                     defaultZona: {
-                        id:0,
+                        idZonas:0,
                         name:'TODOS'
                     },
                     defaultBranch: {
-                        id:0,
+                        idBranch:0,
                         name:'TODOS'
                     },
                     defaultRole: {
@@ -138,9 +138,22 @@
                     branchRespaldo: [],
                     areaRespaldo: {},
                     rolesRespaldos: [],
-                    branchRespaldos: []
+                    branchRespaldos: [],
+                    findByRfcStatus: true,
+                    distributors: [],
+                    areas: [],
+                    regions: [],
+                    zonas: [],
+                    branchch: [],
+                    registerNumber: 0
                 },
                 methods: {
+                    arrayObjectIndexOf : function(myArray, searchTerm, property) {
+                        for(var i = 0, len = myArray.length; i < len; i++) {
+                            if (myArray[i][property] === searchTerm) return i;
+                        }
+                        return -1;
+                    },
                     createReport: function () {
                         if (this.reportFileName != '') {
                             $("#exportModal").modal("hide");
@@ -208,49 +221,49 @@
                             this.createReportUrl = ROOT_URL + '/employees-history/create-report?status=0';
                         }
 
-                        if (this.searchSelectedOptions.distributor.id != 0) {
+                        if (this.searchSelectedOptions.distributor.idDistributor != 0) {
                             this.employeesUrl = this.setEmployeesUrlCharacters(this.employeesUrl);
                             this.createReportUrl = this.setEmployeesUrlCharacters(this.createReportUrl);
                             this.employeesUrl += 'idDistributor=' +
-                                    this.searchSelectedOptions.distributor.id;
+                                    this.searchSelectedOptions.distributor.idDistributor;
                             this.createReportUrl += 'idDistributor=' +
-                                    this.searchSelectedOptions.distributor.id;
+                                    this.searchSelectedOptions.distributor.idDistributor;
                         }
 
-                        if (this.searchSelectedOptions.region.id != 0) {
+                        if (this.searchSelectedOptions.region.idRegion != 0) {
                             this.employeesUrl = this.setEmployeesUrlCharacters(this.employeesUrl);
                             this.createReportUrl = this.setEmployeesUrlCharacters(this.createReportUrl);
                             this.employeesUrl += 'idRegion=' +
-                                    this.searchSelectedOptions.region.id;
+                                    this.searchSelectedOptions.region.idRegion;
                             this.createReportUrl += 'idRegion=' +
-                                    this.searchSelectedOptions.region.id;
+                                    this.searchSelectedOptions.region.idRegion;
                         }
 
-                        if (this.searchSelectedOptions.zona.id != 0) {
+                        if (this.searchSelectedOptions.zona.idZonas != 0) {
                             this.employeesUrl = this.setEmployeesUrlCharacters(this.employeesUrl);
                             this.createReportUrl = this.setEmployeesUrlCharacters(this.createReportUrl);
                             this.employeesUrl += 'idZona=' +
-                                    this.searchSelectedOptions.zona.id;
+                                    this.searchSelectedOptions.zona.idZonas;
                             this.createReportUrl += 'idZona=' +
-                                    this.searchSelectedOptions.zona.id;
+                                    this.searchSelectedOptions.zona.idZonas;
                         }
 
-                        if (this.searchSelectedOptions.branch.id != 0) {
+                        if (this.searchSelectedOptions.branch.idBranch != 0) {
                             this.employeesUrl = this.setEmployeesUrlCharacters(this.employeesUrl);
                             this.createReportUrl = this.setEmployeesUrlCharacters(this.createReportUrl);
                             this.employeesUrl += 'idBranch=' +
-                                    this.searchSelectedOptions.branch.id;
+                                    this.searchSelectedOptions.branch.idBranch;
                             this.createReportUrl += 'idBranch=' +
-                                    this.searchSelectedOptions.branch.id;
+                                    this.searchSelectedOptions.branch.idBranch;
                         }
 
-                        if (this.searchSelectedOptions.area.id != 0) {
+                        if (this.searchSelectedOptions.area.idArea != 0) {
                             this.employeesUrl = this.setEmployeesUrlCharacters(this.employeesUrl);
                             this.createReportUrl = this.setEmployeesUrlCharacters(this.createReportUrl);
                             this.employeesUrl += 'idArea=' +
-                                    this.searchSelectedOptions.area.id;
+                                    this.searchSelectedOptions.area.idArea;
                             this.createReportUrl += 'idArea=' +
-                                    this.searchSelectedOptions.area.id;
+                                    this.searchSelectedOptions.area.idArea;
                         }
 
                         if (this.searchSelectedOptions.role.idRole != 0) {
@@ -260,6 +273,24 @@
                                     this.searchSelectedOptions.role.idRole;
                             this.createReportUrl += 'idRole=' +
                                     this.searchSelectedOptions.role.idRole;
+                        }
+
+                        if (this.nameSearch != '') {
+                            this.employeesUrl = this.setEmployeesUrlCharacters(this.employeesUrl);
+                            this.createReportUrl = this.setEmployeesUrlCharacters(this.createReportUrl);
+                            this.employeesUrl += 'fullname=' +
+                                    this.nameSearch;
+                            this.createReportUrl += 'fullname=' +
+                                    this.nameSearch;
+                        }
+
+                        if (this.rfcSearch != '') {
+                            this.employeesUrl = this.setEmployeesUrlCharacters(this.employeesUrl);
+                            this.createReportUrl = this.setEmployeesUrlCharacters(this.createReportUrl);
+                            this.employeesUrl += 'rfc=' +
+                                    this.rfcSearch;
+                            this.createReportUrl += 'rfc=' +
+                                    this.rfcSearch;
                         }
 
                         if (this.searchSelectedOptions.startDate != '') {
@@ -301,26 +332,8 @@
                                 ROOT_URL + this.employeesUrl
                         ).success(function (data) {
                             this.dwEmployees = data;
-                            this.dwEmployees.forEach(function(element){
-                                self.$http.get(
-                                        ROOT_URL + "/dw-enterprises/" + element.idDwEnterprise
-                                ).success(function (data) {
-                                    Vue.set(element, "dwEnterprisesR", data)
-
-                                    this.$http.get(
-                                            ROOT_URL + "/roles/" + element.idRole
-                                    ).success(function (data) {
-                                        Vue.set(element, "rolesR", data)
-                                    }).error(function (data) {
-                                        showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
-                                    });
-
-
-                                }).error(function (data) {
-                                    showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
-                                });
-                            });
                             if (this.dwEmployees.length > 0) {
+                                this.registerNumber = this.dwEmployees.length;
                                 this.isThereItems = true;
                             }
                         }).error(function (data) {
@@ -377,32 +390,110 @@
                             showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
                         });
                     },
-                    fetchHierarchy: function () {
-                        this.$http.get(ROOT_URL + "/dw-enterprises/hierarchy").success(function (data) {
-                            this.hierarchy = data;
+                    getDistributors: function () {
+                        this.$http.get(ROOT_URL + "/distributors").success(function (data) {
+                            this.distributors = data;
                         });
                     },
                     distributorChanged: function () {
                         this.searchSelectedOptions.region = this.defaultRegion;
+                        this.searchSelectedOptions.zona = this.defaultZona;
                         this.searchSelectedOptions.branch = this.defaultBranch;
                         this.searchSelectedOptions.area = this.defaultArea;
                         this.searchSelectedOptions.role = this.defaultRole;
+                        this.getAreaByDistributor(this.searchSelectedOptions.distributor.idDistributor);
+                        this.getRegionByDistributor(this.searchSelectedOptions.distributor.idDistributor);
+                    },
+                    getRegionByDistributor: function (idDistributor) {
                         //this.isThereItems = false;
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/dw-enterprises/distributor-region/"+idDistributor).success(function (data) {
+                            this.regions = [];
+                            var index;
+                            data.forEach(function (region) {
+                                index =  self.arrayObjectIndexOf(self.regions,region.idRegion,'idRegion');
+                                if(index == -1) self.regions.push(region);
+                            });
+
+                        }).error(function () {
+                            showAlert("No existen regiones para esa compañia", {type : 3});
+                        });
+                    },
+                    getAreaByDistributor: function (idDistributor) {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/dw-enterprises/distributor-area/"+idDistributor).success(function (data) {
+                            this.areas = [];
+                            var index;
+                            data.forEach(function (area) {
+                                index =  self.arrayObjectIndexOf(self.areas,area.idArea,'idArea');
+                                if(index == -1) self.areas.push(area);
+                            });
+                        }).error(function () {
+                            showAlert("No existen areas para esa compañia", {type : 3});
+                        });
                     },
                     regionChanged: function () {
+                        this.searchSelectedOptions.zona = this.defaultZona;
                         this.searchSelectedOptions.branch = this.defaultBranch;
                         this.searchSelectedOptions.area = this.defaultArea;
                         this.searchSelectedOptions.role = this.defaultRole;
                         //this.isThereItems = false;
+                        this.getZonaByDistributorAndRegion(this.searchSelectedOptions.distributor.idDistributor, this.searchSelectedOptions.region.idRegion);
+                    },
+                    getZonaByDistributorAndRegion: function (idDistributor, idRegion) {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/dw-enterprises/distributor-region-zona/"+idDistributor+"/"+idRegion).success(function (data) {
+                            this.zonas = [];
+                            var index;
+                            data.forEach(function (zona) {
+                                index =  self.arrayObjectIndexOf(self.zonas,zona.idZonas,'idZonas');
+                                if(index == -1) self.zonas.push(zona);
+                            });
+                        }).error(function () {
+                            showAlert("No existen zonas para esa compañìa y regiòn ", {type : 3});
+                        });
+                    },
+                    zonaChanged: function () {
+                        this.searchSelectedOptions.branch = this.defaultBranch;
+                        this.searchSelectedOptions.area = this.defaultArea;
+                        this.searchSelectedOptions.role = this.defaultRole;
+                        this.getBranchByDistributorAndRegionAndZona(this.searchSelectedOptions.distributor.idDistributor,  this.searchSelectedOptions.region.idRegion, this.searchSelectedOptions.zona.idZonas);
+                    },
+                    getBranchByDistributorAndRegionAndZona: function (idDistributor, idRegion, idZona) {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/dw-enterprises/distributor-region-zona-branch/"+idDistributor+"/"+idRegion+"/"+idZona).success(function (data) {
+                            this.branchch = [];
+                            var index;
+                            data.forEach(function (branch) {
+                                index =  self.arrayObjectIndexOf(self.branchch,branch.idBranch,'idBranch');
+                                if(index == -1) self.branchch.push(branch);
+                            });
+                        }).error(function () {
+                            showAlert("No existen sucursales para esa compañìa, regiòn y zona", {type : 3});
+                        });
                     },
                     branchChanged: function () {
                         this.searchSelectedOptions.area = this.defaultArea;
                         this.searchSelectedOptions.role = this.defaultRole;
-                        //this.isThereItems = false;
+                        this.getAreaByBranch(this.searchSelectedOptions.branch.idBranch);
+                    },
+                    getAreaByBranch: function (idBranch) {
+                        this.areas = [];
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/dw-enterprises/branch-area/"+idBranch).success(function (data) {
+                            this.areas = [];
+                            var index;
+                            data.forEach(function (area) {
+                                index =  self.arrayObjectIndexOf(self.areas,area.idArea,'idArea');
+                                if(index == -1) self.areas.push(area);
+                            });
+                        }).error(function () {
+                            showAlert("No existen areas para esa compañìa, regiòn, zona y sucursal", {type : 3});
+                        });
                     },
                     areaChanged: function () {
                         this.searchSelectedOptions.role = this.defaultRole;
-                        this.$http.get(ROOT_URL + "/areas/area-role/" + this.searchSelectedOptions.area.id).success(function (data) {
+                        this.$http.get(ROOT_URL + "/areas/area-role/" + this.searchSelectedOptions.area.idArea).success(function (data) {
                             this.selectedArea = data;
                         });
                         //this.isThereItems = false;
@@ -545,12 +636,17 @@
                     <div class="col-md-8">
                         <h2>Busqueda de Empleado</h2>
                     </div>
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-2" v-if="dwEmployees.length > 0" style="margin-top: 35px">
+                        <label><p style="color: darkblue">Nùmero de registros: {{registerNumber}}</p></label>
+                    </div>
                 </div>
                 <%-- <div v-if="!hierarchy.length > 0"
                      style="height: 6rem; padding: 2rem 0;">
                     <div class="loader">Cargando...</div>
                 </div> --%>
-                <div v-if="hierarchy.length > 0">
+                <div>
                     <div class="row">
                         <div class="col-md-2">
                             <label>Status</label>
@@ -565,9 +661,9 @@
                             <select v-model="searchSelectedOptions.distributor" class="form-control"
                                     @change="distributorChanged">
                                 <option selected :value="defaultDistributor">{{defaultDistributor.name}}</option>
-                                <option v-for="distributor in hierarchy[0].subLevels"
+                                <option v-for="distributor in distributors"
                                         :value="distributor">
-                                    {{ distributor.name }}
+                                    {{ distributor.distributorName }}
                                 </option>
                             </select>
                         </div>
@@ -575,11 +671,11 @@
                             <label>Región</label>
                             <select v-model="searchSelectedOptions.region" class="form-control"
                                     @change="regionChanged"
-                                    :disabled="searchSelectedOptions.distributor.id == 0">
+                                    :disabled="searchSelectedOptions.distributor.idDistributor == 0">
                                 <option selected :value="defaultRegion">{{defaultRegion.name}}</option>
-                                <option v-for="region in searchSelectedOptions.distributor.subLevels"
+                                <option v-for="region in regions"
                                         :value="region">
-                                    {{ region.name }}
+                                    {{ region.regionName }}
                                 </option>
                             </select>
                         </div>
@@ -587,9 +683,9 @@
                             <label>Zona</label>
                             <select v-model="searchSelectedOptions.zona" class="form-control"
                                     @change="zonaChanged"
-                                    :disabled="searchSelectedOptions.region.id == 0">
+                                    :disabled="searchSelectedOptions.region.idRegion == 0">
                                 <option selected :value="defaultZona">{{defaultZona.name}}</option>
-                                <option v-for="zona in searchSelectedOptions.region.subLevels"
+                                <option v-for="zona in zonas"
                                         :value="zona">
                                     {{ zona.name }}
                                 </option>
@@ -599,11 +695,11 @@
                             <label>Sucursal</label>
                             <select v-model="searchSelectedOptions.branch" class="form-control"
                                     @change="branchChanged"
-                                    :disabled="searchSelectedOptions.zona.id == 0">
+                                    :disabled="searchSelectedOptions.zona.idZonas == 0">
                                 <option selected :value="defaultBranch">{{defaultBranch.name}}</option>
-                                <option v-for="branch in searchSelectedOptions.zona.subLevels"
+                                <option v-for="branch in branchch"
                                         :value="branch">
-                                    {{ branch.name }}
+                                    {{ branch.branchShort }}
                                 </option>
                             </select>
                         </div>
@@ -611,11 +707,11 @@
                             <label>Área</label>
                             <select v-model="searchSelectedOptions.area"
                                     class="form-control" @change="areaChanged"
-                                    :disabled="searchSelectedOptions.branch.id == 0">
+                                    :disabled="searchSelectedOptions.distributor.idDistributor == 0">
                                 <option selected :value="defaultArea">{{defaultArea.name}}</option>
-                                <option v-for="area in searchSelectedOptions.branch.subLevels"
+                                <option v-for="area in areas"
                                         :value="area">
-                                    {{ area.name }}
+                                    {{ area.areaName }}
                                 </option>
                             </select>
                         </div>
@@ -625,7 +721,7 @@
                         <div class="col-md-2">
                             <label>Puesto</label>
                             <select v-model="searchSelectedOptions.role" class="form-control"
-                                    :disabled="searchSelectedOptions.area.id == 0">
+                                    :disabled="searchSelectedOptions.area.idArea == 0">
                                 <option selected :value="defaultRole">{{defaultRole.roleName}}</option>
                                 <option v-for="role in selectedArea.roles"
                                         :value="role">
@@ -634,8 +730,12 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label>Nombre/RFC</label>
-                            <input v-model="nameSearch" type="text" class="form-control" placeholder="Nombre del Empleado/RFC">
+                            <label>Nombre</label>
+                            <input v-model="nameSearch" type="text" class="form-control" placeholder="Nombre del Empleado">
+                        </div>
+                        <div class="col-md-2">
+                            <label>RFC</label>
+                            <input v-model="rfcSearch" type="text" class="form-control" placeholder="RFC">
                         </div>
                         <div class="col-md-2">
                             <label>
@@ -691,22 +791,22 @@
                             <div class="col-md-2"><b>Puesto</b></div>
                             <div class="col-md-1"><b>Sucursal</b></div>
                             <div class="col-md-2"><b>Fecha de ingreso</b></div>
-                            <div class="col-md-1"><b>Edición</b></div>
+                            <div class="col-md-1"><b>Editar</b></div>
                             <div class="col-md-2"><b>Baja/Reactivación</b></div>
                         </div>
                         <br>
                         <div class="table-body flex-row flex-content">
-                            <div class="row table-row" v-for="dwEmployee in dwEmployees | filterBy nameSearch">
+                            <div class="row table-row" v-for="dwEmployee in dwEmployees">
                                 <div class="col-md-2">{{dwEmployee.fullName}}</div>
                                 <div class="col-md-2">{{dwEmployee.rfc}}</div>
                                 <div class="col-md-2">{{dwEmployee.rolesR.roleName}}</div>
                                 <div class="col-md-1">{{dwEmployee.dwEnterprisesR.branch.branchShort}}</div>
-                                <div class="col-md-2">{{dwEmployee.joinDateFormats.simpleDate}}</div>
+                                <div class="col-md-2"><center>{{dwEmployee.joinDateFormats.simpleDate}}</center></div>
                                 <div class="col-md-1">
-                                    <a class="btn btn-default btn-sm" :href="updateEmployeeUrl + dwEmployee.idDwEmployee"
+                                    <center><a class="btn btn-default btn-sm" :href="updateEmployeeUrl + dwEmployee.idDwEmployee"
                                        data-toggle="tooltip" data-placement="top" title="Modificar" v-if="dwEmployee.idActionType != 2">
                                         <span class="glyphicon glyphicon-pencil"></span>
-                                    </a>
+                                    </a></center>
                                 </div>
                                 <div class="col-md-2 text-center">
                                     <button class="btn btn-danger btn-sm" @click="onDeleteButton(dwEmployee)"
@@ -794,8 +894,9 @@
                                         <thead>
                                         <th class="col-xs-2">Distribuidor</th>
                                         <th class="col-xs-2">Regiòn</th>
-                                        <th class="col-xs-3">Sucursal</th>
-                                        <th class="col-xs-3">Àrea</th>
+                                        <th class="col-xs-2">Zona</th>
+                                        <th class="col-xs-2">Sucursal</th>
+                                        <th class="col-xs-2">Àrea</th>
                                         <th class="col-xs-2">Puesto</th>
                                         </thead>
                                         <tbody>
@@ -805,6 +906,9 @@
                                             </td>
                                             <td class="col-xs-2">
                                                 {{dwEnterprise.region.regionName}}
+                                            </td>
+                                            <td class="col-xs-2">
+                                                {{dwEnterprise.zona.name}}
                                             </td>
                                             <td class="col-xs-2">
                                                 {{dwEnterprise.branch.branchShort}}

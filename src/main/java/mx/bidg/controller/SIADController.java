@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.time.LocalDateTime;
+
 /**
  * @author Rafael Viveros
  * Created on 9/12/15.
@@ -19,13 +21,19 @@ import org.springframework.web.servlet.ModelAndView;
 public class SIADController {
 
     @RequestMapping(value = "/budgets", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public String budgetsView() {
-        return "BudgetPruebas";
+    public ModelAndView budgetsView() {
+        ModelAndView model = new ModelAndView();
+        model.addObject("now", LocalDateTime.now());
+        model.setViewName("BudgetPruebas");
+        return model;
     }
 
     @RequestMapping(value = "/individual-budget", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public String individualBudget() {
-        return "Budgets";
+    public ModelAndView individualBudget() {
+        ModelAndView model = new ModelAndView();
+        model.addObject("now", LocalDateTime.now());
+        model.setViewName("Budgets");
+        return model;
     }
 
 

@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import java.util.ArrayList;
+import java.util.List;
+
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.BudgetMonthConcepts;
@@ -23,6 +25,7 @@ import mx.bidg.model.DwEnterprises;
 import mx.bidg.service.BudgetsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -107,6 +110,17 @@ public class BudgetController {
         ArrayList<Budgets> list = budgetsService.findByGroupArea(new CGroups(idGroup), new CAreas(idArea));
         return new ResponseEntity<>(map.writerWithView(JsonViews.Root.class).writeValueAsString(list), HttpStatus.OK);
     }
-    
+
+    @RequestMapping(value = "/distributor/{idDistributor}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody ResponseEntity<String> getByDistributor(@PathVariable Integer idDistributor) throws Exception {
+        List<Budgets> budgets = budgetsService.findByDistributor(idDistributor);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(budgets), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/distributor/{idDistributor}/area/{idArea}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody ResponseEntity<String> getByDistributor(@PathVariable Integer idDistributor, @PathVariable Integer idArea) throws Exception {
+        List<Budgets> budgets = budgetsService.findByDistributorAndArea(idDistributor, idArea);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(budgets), HttpStatus.OK);
+    }
     
 }

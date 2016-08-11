@@ -5,10 +5,10 @@
   Time: 17:54
   To change this template use File | Settings | File Templates.
 --%>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<jsp:useBean id="user" scope="session" class="mx.bidg.model.Users" />
+<jsp:useBean id="user" scope="session" class="mx.bidg.model.Users"/>
 
 <t:template pageTitle="BID Group: Actualizar empleado">
     <jsp:attribute name="scripts">
@@ -53,7 +53,7 @@
             }
         </script>
         <script type="text/javascript">
-            var vm= new Vue({
+            var vm = new Vue({
                 el: '#content',
                 created: function () {
 
@@ -65,15 +65,15 @@
                     this.obtainEducation();
                     this.obtainStatusMarital();
                     this.obtainBanks();
-                    this.getBranchs();
                     this.obtainEmployeeTypes();
                     this.obtainContractTypes();
                     this.obtainGenders();
+                    this.fetchHierarchy();
                 },
                 data: {
-                    dwEmployee:{},
-                    dwEnterprise:{},
-                    role:{},
+                    dwEmployee: {},
+                    dwEnterprise: {},
+                    role: {},
                     idDwEmployee: ${idDwEmployee},
                     estadosMunicipios: [],
                     asentamiento: [],
@@ -86,7 +86,7 @@
                     contractTypes: [],
                     employeeTypes: [],
                     genders: [],
-                    branchs:[],
+                    branchs: [],
                     documentTypes: [],
                     employeeDocuments: [],
                     newEmployeeDocuments: [],
@@ -94,17 +94,27 @@
                         areas: [],
                         roles: [],
                         dwEnterprises: [],
-                        documentTypes: []
+                        documentTypes: [],
+                        hierarchy: []
                     },
                     selectedOptions: {
-                        dwEnterprise: {
-                            idDwEnterprise: 0
+                        area: {
+                            id: 0
+                        },
+                        distributor: {
+                            id: 0
+                        },
+                        region: {
+                            id: 0
+                        },
+                        zona: {
+                            id: 0
                         },
                         branch: {
-                            idBranch: 0
+                            id: 0
                         },
                         role: {
-                            idRole: 0
+                            id: 0
                         }
                     },
                     defaultArea: {
@@ -113,6 +123,14 @@
                     },
                     defaultBranch: {
                         idBranch: 0,
+                        name: ''
+                    },
+                    defaultRegion: {
+                        idRegion: 0,
+                        name: ''
+                    },
+                    defaultZona: {
+                        idZonas: 0,
                         name: ''
                     },
                     defaultRole: {
@@ -141,7 +159,7 @@
 
                                 });
                     },
-                    getEmployeeDocuments : function () {
+                    getEmployeeDocuments: function () {
                         this.$http.get(ROOT_URL + '/employee-documents/' + this.dwEmployee.idEmployee)
                                 .success(function (data) {
                                     this.employeeDocuments = data;
@@ -154,7 +172,7 @@
                                     this.documentTypes = data;
                                 });
                     },
-                    setDates:function () {
+                    setDates: function () {
                         this.dwEmployee.employee.birthday = this.dwEmployee.employee.birthDayFormats.dateNumber;
                         this.dwEmployee.employee.joinDate = this.dwEmployee.employee.joinDateFormats.dateNumber;
                     },
@@ -179,7 +197,7 @@
                             defaultDate: this.dwEmployee.employee.joinDateFormats.iso
                         }).data();
                     },
-                    getEmployeeAccounts : function () {
+                    getEmployeeAccounts: function () {
                         this.$http.get(ROOT_URL + "/employees-accounts/actives/" + this.dwEmployee.employee.idEmployee).success(function (data) {
                             this.employeeAccount = data;
                         });
@@ -219,11 +237,6 @@
                             this.statusMaritalList = data;
                         });
                     },
-                    getBranchs : function () {
-                        this.$http.get(ROOT_URL + "/branchs").success(function (data) {
-                            this.branchs = data;
-                        });
-                    },
                     obtainAsentamientos: function () {
                         var postcode = this.dwEmployee.employee.postcode;
                         if (postcode >= 4) {
@@ -247,43 +260,27 @@
                                 });
                     },
                     validateFile: function (event) {
-                        if (! event.target.files[0].name.match(/(\.jpg|\.jpeg|\.pdf|\.png)$/i)) {
+                        if (!event.target.files[0].name.match(/(\.jpg|\.jpeg|\.pdf|\.png)$/i)) {
                             event.target.value = null;
-                            showAlert("Tipo de archivo no admitido", {type:3});
+                            showAlert("Tipo de archivo no admitido", {type: 3});
                         }
                     },
                     validateEmail: function (email) {
                         var re = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
-                        if(! re.test(email)) {
-                            showAlert("Ingresa un email correcto",{type: 3});
+                        if (!re.test(email)) {
+                            showAlert("Ingresa un email correcto", {type: 3});
                             this.dwEmployee.employee.mail = '';
                         }
                     },
                     validateRfc: function (rfc) {
-                        if(rfc.length < 13){
-                            showAlert("El rfc debe contener 13 caracteres",{type: 3});
+                        if (rfc.length < 13) {
+                            showAlert("El rfc debe contener 13 caracteres", {type: 3});
                         }
                     },
                     validateCurp: function (curp) {
-                        if(curp.length < 18){
-                            showAlert("El curp debe contener 18 caracteres",{type: 3});
+                        if (curp.length < 18) {
+                            showAlert("El curp debe contener 18 caracteres", {type: 3});
                         }
-                    },
-                    selectedOptionsBranchChanged: function () {
-                        this.dwEmployee.dwEnterprise = this.dwEnterprise;
-                        this.dwEmployee.role = this.role;
-                        this.selectOptions.dwEnterprises = [];
-                        this.selectOptions.roles = [];
-                        this.$http.get(ROOT_URL + "/dw-enterprises/branch/" + this.selectedOptions.branch.idBranch).success(function (data) {
-                            this.selectOptions.dwEnterprises = data;
-                        });
-                    },
-                    selectedOptionsDwEnterpriseChanged: function () {
-                        this.dwEmployee.role = this.role;
-                        this.selectOptions.roles = [];
-                        this.$http.get(ROOT_URL + "/areas/area-role/" + this.dwEmployee.dwEnterprise.area.idArea).success(function (data) {
-                            this.selectOptions.roles = data.roles;
-                        });
                     },
                     updateEmployee: function () {
                         var self = this;
@@ -292,10 +289,12 @@
                         this.dwEmployee.employee.city = this.estadosMunicipios.nombreMunicipios;
 
                         var requestBody = {
-                            dwEmployee : this.dwEmployee,
-                            employeeAccount : this.employeeAccount
+                            dwEmployee: this.dwEmployee,
+                            employeeAccount: this.employeeAccount
                         };
-                        
+
+                        this.dwEmployee.dwEnterprise = this.selectedOptions;
+
                         this.$http.post(ROOT_URL + "/dw-employees/update", requestBody).success(function (data) {
                             showAlert("Actualización de empleado exitoso");
                             if (this.newEmployeeDocuments.length > 0) {
@@ -308,15 +307,15 @@
                         });
                     },
                     validateFile: function (file) {
-                        if (! file.name.match(/(\.jpg|\.jpeg|\.pdf|\.png)$/i)) {
+                        if (!file.name.match(/(\.jpg|\.jpeg|\.pdf|\.png)$/i)) {
                             event.target.value = null;
-                            showAlert("Tipo de archivo no admitido", {type:3});
+                            showAlert("Tipo de archivo no admitido", {type: 3});
                             return false;
                         }
 
                         return true;
                     },
-                    updateEmployeeDocument : function (document) {
+                    updateEmployeeDocument: function (document) {
                         this.$http.post(ROOT_URL + '/employee-documents/update/' + this.dwEmployee.idEmployee, document)
                                 .success(function (data) {
                                     this.getDwEmployee();
@@ -345,7 +344,7 @@
                             }
                         }
                     },
-                    setFile : function (event, object) {
+                    setFile: function (event, object) {
                         var self = this;
                         var document = {};
                         var index;
@@ -368,14 +367,14 @@
 
                         if (file) {
                             if (this.validateFile(file)) {
-                                reader.onload = (function(theFile) {
-                                    return function(e) {
+                                reader.onload = (function (theFile) {
+                                    return function (e) {
 
                                         document.file = {
-                                            name:theFile.name,
-                                            size:theFile.size,
-                                            type:theFile.type,
-                                            dataUrl:e.target.result
+                                            name: theFile.name,
+                                            size: theFile.size,
+                                            type: theFile.type,
+                                            dataUrl: e.target.result
                                         };
 
                                         if (index > -1) {
@@ -386,14 +385,48 @@
                                 reader.readAsDataURL(file);
                             } else {
                                 if (index > -1) {
-                                    self.newEmployeeDocuments.splice(index,1);
+                                    self.newEmployeeDocuments.splice(index, 1);
                                 }
                             }
                         } else {
                             if (index > -1) {
-                                self.newEmployeeDocuments.splice(index,1);
+                                self.newEmployeeDocuments.splice(index, 1);
                             }
                         }
+                    },
+                    fetchHierarchy: function () {
+                        this.$http.get(ROOT_URL + "/dw-enterprises/hierarchy").success(function (data) {
+                            this.selectOptions.hierarchy = data;
+                        });
+                    },
+                    selectedOptionsDistributorChanged: function () {
+                        this.selectedOptions.region = this.defaultRegion;
+                        this.selectedOptions.zona = this.defaultZona;
+                        this.selectedOptions.branch = this.defaultBranch;
+                        this.selectedOptions.area = this.defaultArea;
+                        this.selectedOptions.role = this.defaultRole;
+                    },
+                    selectedOptionsRegionChanged: function () {
+                        this.selectedOptions.zona = this.defaultZona;
+                        this.selectedOptions.branch = this.defaultBranch;
+                        this.selectedOptions.area = this.defaultArea;
+                        this.selectedOptions.role = this.defaultRole;
+                    },
+                    selectedOptionsZonaChanged: function () {
+                        this.selectedOptions.branch = this.defaultBranch;
+                        this.selectedOptions.area = this.defaultArea;
+                        this.selectedOptions.role = this.defaultRole;
+                    },
+                    selectedOptionsBranchChanged: function () {
+                        this.selectedOptions.area = this.defaultArea;
+                        this.selectedOptions.role = this.defaultRole;
+                    },
+                    selectedOptionsAreaChanged: function () {
+                        this.selectOptions.roles = [];
+                        this.selectedOptions.role = this.defaultRole;
+                        this.$http.get(ROOT_URL + "/areas/area-role/" + this.selectedOptions.area.id).success(function (data) {
+                            this.selectOptions.roles = data.roles;
+                        });
                     }
                 }
 
@@ -404,8 +437,15 @@
     <jsp:body>
         <div id="content">
             <div class="row">
-                <div class="col-xs-8 text-header">
+                <div class="col-xs-8 text-header" style="margin-top: 15px">
                     <h2>Modificación de empleados</h2>
+                </div>
+                <div class="col-xs-3">
+                </div>
+                <div class="col-xs-1" style="margin-left: 300px">
+                    <button class="btn btn-default" style="margin-top: 35px"><a style="color: black"
+                                                                                 :href="regresarBusqueda">Regresar</a>
+                    </button>
                 </div>
             </div>
             <br>
@@ -417,19 +457,23 @@
                             <div class="row">
                                 <div class="col-xs-3">
                                     <label>Nombre</label>
-                                    <input class="form-control" v-model="dwEmployee.employee.firstName" onkeypress="return isLetterKey(event)" required>
+                                    <input class="form-control" v-model="dwEmployee.employee.firstName"
+                                           onkeypress="return isLetterKey(event)" required>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Segundo nombre</label>
-                                    <input class="form-control" v-model="dwEmployee.employee.middleName" onkeypress="return isLetterKey(event)">
+                                    <input class="form-control" v-model="dwEmployee.employee.middleName"
+                                           onkeypress="return isLetterKey(event)">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Apellido paterno</label>
-                                    <input class="form-control" v-model="dwEmployee.employee.parentalLast" onkeypress="return isLetterKey(event)" required>
+                                    <input class="form-control" v-model="dwEmployee.employee.parentalLast"
+                                           onkeypress="return isLetterKey(event)" required>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Apellido materno</label>
-                                    <input class="form-control" v-model="dwEmployee.employee.motherLast" onkeypress="return isLetterKey(event)">
+                                    <input class="form-control" v-model="dwEmployee.employee.motherLast"
+                                           onkeypress="return isLetterKey(event)">
                                 </div>
                             </div>
                             <br>
@@ -445,8 +489,10 @@
                                 <div class="col-xs-3">
                                     <label>Fecha de Nacimiento</label>
                                     <div class="form-group">
-                                        <div class="input-group date" id="birthday" @click="activeDateTimePickerBirthday">
-                                            <input type="text" class="form-control" v-model="dwEmployee.employee.birthday" required>
+                                        <div class="input-group date" id="birthday"
+                                             @click="activeDateTimePickerBirthday">
+                                            <input type="text" class="form-control"
+                                                   v-model="dwEmployee.employee.birthday" required>
                                    <span class="input-group-addon">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
@@ -464,7 +510,8 @@
                                 </div>
                                 <div class="col-xs-3">
                                     <label>CURP</label>
-                                    <input class="form-control" v-model="dwEmployee.employee.curp" maxlength="18" @change="validateCurp(employee.curp)" required>
+                                    <input class="form-control" v-model="dwEmployee.employee.curp" maxlength="18"
+                                           @change="validateCurp(employee.curp)" required>
                                 </div>
                             </div>
                             <br>
@@ -477,11 +524,13 @@
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Estado</label>
-                                    <input class="form-control" v-model="estadosMunicipios.estado.nombreEstado" disabled required>
+                                    <input class="form-control" v-model="estadosMunicipios.estado.nombreEstado" disabled
+                                           required>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Municipio/Delegación</label>
-                                    <input class="form-control" v-model="estadosMunicipios.nombreMunicipios" disabled required>
+                                    <input class="form-control" v-model="estadosMunicipios.nombreMunicipios" disabled
+                                           required>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Colonia</label>
@@ -513,11 +562,13 @@
                             <div class="row">
                                 <div class="col-xs-3">
                                     <label>Nombre del padre</label>
-                                    <input class="form-control" v-model="dwEmployee.employee.fatherName" onkeypress="return isLetterKey(event)">
+                                    <input class="form-control" v-model="dwEmployee.employee.fatherName"
+                                           onkeypress="return isLetterKey(event)">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Nombre de la madre</label>
-                                    <input class="form-control" v-model="dwEmployee.employee.motherName" onkeypress="return isLetterKey(event)">
+                                    <input class="form-control" v-model="dwEmployee.employee.motherName"
+                                           onkeypress="return isLetterKey(event)">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Estado civil</label>
@@ -553,18 +604,21 @@
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Télefono de casa</label>
-                                    <input class="form-control" v-model="dwEmployee.employee.homePhone" maxlength="10" onkeypress="return isNumberKey(event)" required>
+                                    <input class="form-control" v-model="dwEmployee.employee.homePhone" maxlength="10"
+                                           onkeypress="return isNumberKey(event)" required>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Móvil</label>
-                                    <input class="form-control" v-model="dwEmployee.employee.cellPhone" maxlength="10" onkeypress="return isNumberKey(event)" required>
+                                    <input class="form-control" v-model="dwEmployee.employee.cellPhone" maxlength="10"
+                                           onkeypress="return isNumberKey(event)" required>
                                 </div>
                             </div>
                             <br>
                             <div class="row">
                                 <div class="col-xs-3">
                                     <label>Email</label>
-                                    <input class="form-control" v-model="dwEmployee.employee.mail" @change="validateEmail(employee.mail)" required>
+                                    <input class="form-control" v-model="dwEmployee.employee.mail"
+                                           @change="validateEmail(employee.mail)" required>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Clave SAP</label>
@@ -572,33 +626,21 @@
                                 </div>
                                 <div class="col-xs-3">
                                     <label>RFC</label>
-                                    <input class="form-control" v-model="dwEmployee.employee.rfc" maxlength="13" @change="validateRfc(employee.rfc)" required>
+                                    <input class="form-control" v-model="dwEmployee.employee.rfc" maxlength="13"
+                                           @change="validateRfc(employee.rfc)" required>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Fecha de ingreso</label>
                                     <div class="form-group">
-                                        <div class="input-group date" id="joinDate" @click="activeDateTimePickerJoinDate">
-                                            <input type="text" class="form-control" v-model="dwEmployee.employee.joinDate" required>
+                                        <div class="input-group date" id="joinDate"
+                                             @click="activeDateTimePickerJoinDate">
+                                            <input type="text" class="form-control"
+                                                   v-model="dwEmployee.employee.joinDate" required>
                                    <span class="input-group-addon">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <label>IMSS</label>
-                                    <input class="form-control" maxlength="18" v-model="dwEmployee.employee.imss" onkeypress="return isNumberKey(event)">
-                                </div>
-                                <div class="col-xs-3">
-                                    <label>Infonavit</label>
-                                    <input class="form-control" maxlength="15" v-model="dwEmployee.employee.infonavitNumber">
-                                </div>
-                                <div class="col-xs-3" v-if="dwEmployee.dwEnterprise.idDistributor != 9">
-                                    <label>SISTARH</label>
-                                    <input class="form-control" maxlength="3" onkeypress="return isNumberKey(event)"
-                                           v-model="dwEmployee.employee.sistarh" required>
                                 </div>
                             </div>
                         </div>
@@ -614,23 +656,31 @@
                                 <label>Asignación actual</label>
                                 <table class="table table-striped">
                                     <thead>
-                                    <th class="col-xs-3">Distribuidor</th>
-                                    <th class="col-xs-3">Sucursal</th>
-                                    <th class="col-xs-3">Área</th>
-                                    <th class="col-xs-3">Puesto</th>
+                                    <th class="col-xs-2">Distribuidor</th>
+                                    <th class="col-xs-2">Region</th>
+                                    <th class="col-xs-2">Zona</th>
+                                    <th class="col-xs-2">Sucursal</th>
+                                    <th class="col-xs-2">Área</th>
+                                    <th class="col-xs-2">Puesto</th>
                                     </thead>
                                     <tbody>
                                     <tr>
-                                        <td class="col-xs-3">
+                                        <td class="col-xs-2">
                                             {{dwEnterprise.distributor.distributorName}}
                                         </td>
-                                        <td class="col-xs-3">
+                                        <td class="col-xs-2">
+                                            {{dwEnterprise.region.regionName}}
+                                        </td>
+                                        <td class="col-xs-2">
+                                            {{dwEnterprise.zona.name}}
+                                        </td>
+                                        <td class="col-xs-2">
                                             {{dwEnterprise.branch.branchShort}}
                                         </td>
-                                        <td class="col-xs-3">
+                                        <td class="col-xs-2">
                                             {{dwEnterprise.area.areaName}}
                                         </td>
-                                        <td class="col-xs-3">
+                                        <td class="col-xs-2">
                                             {{role.roleName}}
                                         </td>
                                     </tr>
@@ -643,34 +693,67 @@
                             </div>
                             <br>
                             <div class="row">
-                                <div class="col-xs-2">
-                                    <label>Sucursal</label>
-                                    <select v-model="selectedOptions.branch" class="form-control"
-                                            @change="selectedOptionsBranchChanged">
-                                        <option selected :value="defaultBranch">{{defaultBranch.name}}</option>
-                                        <option v-for="branch in branchs"
-                                                :value="branch">
-                                            {{ branch.branchShort }}
+                                <div class="col-xs-3">
+                                    <label>Distribuidor</label>
+                                    <select v-model="selectedOptions.distributor" class="form-control"
+                                            @change="selectedOptionsDistributorChanged" required>
+                                        <option v-for="distributor in selectOptions.hierarchy[0].subLevels"
+                                                :value="distributor">
+                                            {{ distributor.name }}
                                         </option>
                                     </select>
                                 </div>
                                 <div class="col-xs-3">
+                                    <label>Región</label>
+                                    <select v-model="selectedOptions.region" class="form-control"
+                                            @change="selectedOptionsRegionChanged"
+                                            :disabled="selectedOptions.distributor.id == 0" required>
+                                        <option v-for="region in selectedOptions.distributor.subLevels"
+                                                :value="region">
+                                            {{ region.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Zona</label>
+                                    <select v-model="selectedOptions.zona" class="form-control"
+                                            @change="selectedOptionsZonaChanged()"
+                                            :disabled="selectedOptions.region.id == 0" required>
+                                        <option v-for="area in selectedOptions.region.subLevels"
+                                                :value="area">
+                                            {{ area.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Sucursal</label>
+                                    <select v-model="selectedOptions.branch" class="form-control"
+                                            @change="selectedOptionsBranchChanged"
+                                            :disabled="selectedOptions.zona.id == 0" required>
+                                        <option v-for="branch in selectedOptions.zona.subLevels"
+                                                :value="branch">
+                                            {{ branch.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-xs-3">
                                     <label>Área</label>
-                                    <select v-model="dwEmployee.dwEnterprise" class="form-control"
-                                            @change="selectedOptionsDwEnterpriseChanged"
-                                            :disabled="selectOptions.dwEnterprises.length <= 0">
-                                        <option selected :value="defaultArea">{{defaultArea.name}}</option>
-                                        <option v-for="dwEnterprise in selectOptions.dwEnterprises"
-                                                :value="dwEnterprise">
-                                            {{ dwEnterprise.area.areaName }}
+                                    <select v-model="selectedOptions.area" class="form-control"
+                                            @change="selectedOptionsAreaChanged()"
+                                            :disabled="selectedOptions.branch.id == 0" required>
+                                        <option v-for="area in selectedOptions.branch.subLevels"
+                                                :value="area">
+                                            {{ area.name }}
                                         </option>
                                     </select>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Puesto</label>
-                                    <select v-model="dwEmployee.role" class="form-control"
-                                            :disabled="selectOptions.roles.length <= 0">
-                                        <option selected :value="defaultRole">{{defaultRole.name}}</option>
+                                    <select v-model="selectedOptions.role" class="form-control"
+                                            :disabled="selectedOptions.area.id == 0" required>
                                         <option v-for="role in selectOptions.roles"
                                                 :value="role">
                                             {{ role.roleName }}
@@ -692,6 +775,25 @@
                                             {{contractType.contractTypeName}}
                                         </option>
                                     </select>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-xs-3" v-if="dwEmployee.employee.employeeType.idEmployeeType == 1">
+                                    <label>IMSS</label>
+                                    <input class="form-control" maxlength="18" v-model="dwEmployee.employee.imss"
+                                           onkeypress="return isNumberKey(event)" required>
+                                </div>
+                                <div class="col-xs-3" v-if="dwEmployee.employee.employeeType.idEmployeeType == 1">
+                                    <label>Infonavit</label>
+                                    <input class="form-control" maxlength="15"
+                                           v-model="dwEmployee.employee.infonavitNumber">
+                                </div>
+                                <div class="col-xs-3"
+                                     v-show="dwEnterprise.distributor.idDistributor == 2 && role.idRole == 4">
+                                    <label>SISTARH</label>
+                                    <input class="form-control" maxlength="3" onkeypress="return isNumberKey(event)"
+                                           v-model="dwEmployee.employee.sistarh">
                                 </div>
                             </div>
                             <br>
@@ -721,7 +823,8 @@
                                         <input class="form-control" maxlength="11"
                                                v-model="employeeAccount.account.accountNumber"
                                                onkeypress="return isNumberKey(event)"
-                                               @change="validateAccountEmployee(employeeAccount.account.accountNumber,employeeAccount.account.accountClabe)" required>
+                                               @change="validateAccountEmployee(employeeAccount.account.accountNumber,employeeAccount.account.accountClabe)"
+                                               required>
                                     </div>
                                 </div>
 
@@ -732,7 +835,8 @@
                                         <input type="text" class="form-control" maxlength="18"
                                                v-model="employeeAccount.account.accountClabe"
                                                onkeypress="return isNumberKey(event)"
-                                               @change="validateAccountEmployee(employeeAccount.account.accountNumber,employeeAccount.account.accountClabe)" required>
+                                               @change="validateAccountEmployee(employeeAccount.account.accountNumber,employeeAccount.account.accountClabe)"
+                                               required>
                                     </div>
                                 </div>
                                 <div class="col-xs-3">
@@ -747,7 +851,7 @@
                 </div>
                 <div class="panel panel-default">
                     <!-- Default panel contents -->
-                    <div class="panel-heading">Documentos</div>
+                    <div class="panel-heading">Documentos de empleado</div>
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
@@ -775,36 +879,112 @@
                                     <input type="file" class="form-control" @change="setFile($event, employeeDocument)">
                                 </td>
                             </tr>
-                            <tr v-for="documentType in documentTypes">
-                                <td>{{employeeDocuments.length + $index + 1}}</td>
-                                <td>
-                                    {{documentType.documentName}}
-                                </td>
-                                <td>
-
-                                </td>
-                                <td>
-
-                                </td>
-                                <td>
-                                    <input type="file" class="form-control" @change="setFile($event, documentType)">
-                                </td>
-                            </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
                 <br>
+                <div class="panel panel-default">
+                    <div class="panel-heading">Cargar documentos de empleado</div>
+                    <div class="panel-body">
+                        <div class="col-xs-12">
+                            <div class="row">
+                                <table class="table table-striped">
+                                    <tr v-for="docType in documentTypes"
+                                        v-if="docType.field == 0 && docType.required == 1">
+                                        <td v-if="docType.field == 0 && docType.required == 1">
+                                            {{ docType.documentName }}
+                                        </td>
+                                        <td>
+                                            <input v-if="docType.field == 0 && docType.required == 1"
+                                                   @change="setFile($event, docType)" type="file"
+                                                   class="form-control"
+                                                   :disabled="isSaving"
+                                                   :name="'file-type-' + docType.idDocumentType"
+                                                   accept="application/pdf,
+                                                         image/png,image/jpg,image/jpeg,">
+                                        </td>
+                                    </tr>
+                                    <tr v-for="docType in documentTypes"
+                                        v-if="docType.field == 0 && docType.required == 0 && docType.documentType.idDocumentType < 13">
+                                        <td v-if="docType.field == 0 && docType.required == 0 && docType.documentType.idDocumentType < 13">
+                                            {{ docType.documentName }}
+                                        </td>
+                                        <td>
+                                            <input v-if="docType.field == 0 && docType.required == 0 && docType.documentType.idDocumentType < 13"
+                                                   @change="setFile($event, docType)" type="file"
+                                                   class="form-control"
+                                                   :disabled="isSaving"
+                                                   :name="'file-type-' + docType.idDocumentType"
+                                                   accept="application/pdf,
+                                                         image/png,image/jpg,image/jpeg,">
+                                        </td>
+                                    </tr>
+                                    <tr v-for="docType in documentTypes"
+                                        v-if="docType.field == 1 && dwEmployee.employee.infonavitNumber.length !== 0 && docType.idDocumentType == 10">
+                                        <td v-if="docType.field == 1 && dwEmployee.employee.infonavitNumber.length !== 0 && docType.idDocumentType == 10">
+                                            {{ docType.documentName }}
+                                        </td>
+                                        <td>
+                                            <input v-if="docType.field == 1 && dwEmployee.employee.infonavitNumber.length !== 0 && docType.idDocumentType == 10"
+                                                   @change="setFile($event, docType)" type="file"
+                                                   class="form-control"
+                                                   :disabled="isSaving"
+                                                   :name="'file-type-' + docType.idDocumentType"
+                                                   accept="application/pdf,
+                                                         image/png,image/jpg,image/jpeg,">
+                                        </td>
+                                    </tr>
+                                    <tr v-for="docType in documentTypes"
+                                        v-if="docType.field == 1 && dwEmployee.employee.imss.length !== 0 && docType.idDocumentType == 11">
+                                        <td v-if="docType.field == 1 && dwEmployee.employee.imss.length !== 0 && docType.idDocumentType == 11">
+                                            {{ docType.documentName }}
+                                        </td>
+                                        <td>
+                                            <input v-if="docType.field == 1 && dwEmployee.employee.imss.length !== 0 && docType.idDocumentType == 11"
+                                                   @change="setFile($event, docType)" type="file"
+                                                   class="form-control"
+                                                   :disabled="isSaving"
+                                                   :name="'file-type-' + docType.idDocumentType"
+                                                   accept="application/pdf,
+                                                         image/png,image/jpg,image/jpeg,">
+                                        </td>
+                                    </tr>
+                                    <tr v-for="docType in documentTypes"
+                                        v-if="docType.field == 1 && dwEmployee.employee.sistarh.length !== 0 && docType.idDocumentType == 12 && dwEmployee.dwEnterprise.idDistributor == 2 && dwEmployee.role.idRole == 4">
+                                        <td v-if="docType.field == 1 && dwEmployee.employee.sistarh.length !== 0 && docType.idDocumentType == 12 && dwEmployee.dwEnterprise.idDistributor == 2 && dwEmployee.role.idRole == 4">
+                                            {{ docType.documentName }}
+                                        </td>
+                                        <td>
+                                            <input v-if="docType.field == 1 && dwEmployee.employee.sistarh.length !== 0 && docType.idDocumentType == 12 && dwEmployee.dwEnterprise.idDistributor == 2 && dwEmployee.role.idRole == 4"
+                                                   @change="setFile($event, docType)" type="file"
+                                                   class="form-control"
+                                                   :disabled="isSaving"
+                                                   :name="'file-type-' + docType.idDocumentType"
+                                                   accept="application/pdf,
+                                                         image/png,image/jpg,image/jpeg,">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <br>
                 <div class="row">
-                    <div class="col-xs-10">
-                    </div>
-                    <div class="col-xs-1">
-                        <a class="btn btn-default" :href="regresarBusqueda">Regresar</a>
-                    </div>
-                    <div class="col-xs-1">
-                        <button type="submit" class="btn btn-success">
-                            Guardar
-                        </button>
+                    <div class="col-xs-12">
+                        <div class="col-xs-10">
+                        </div>
+                        <div class="col-xs-1">
+                            <button class="btn btn-default" style="margin-left: 35px"><a style="color: black"
+                                                                                         :href="regresarBusqueda">Salir</a>
+                            </button>
+                        </div>
+                        <div class="col-xs-1">
+                            <button type="submit" class="btn btn-success" style="margin-left: 5px">
+                                Guardar
+                            </button>
+                        </div>
                     </div>
                 </div>
             </form>

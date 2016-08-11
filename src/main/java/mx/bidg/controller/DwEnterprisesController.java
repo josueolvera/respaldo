@@ -13,10 +13,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
-import mx.bidg.model.CAreas;
-import mx.bidg.model.CGroups;
-import mx.bidg.model.DwEnterprises;
-import mx.bidg.model.EmployeesHistory;
+import mx.bidg.model.*;
 import mx.bidg.pojos.HierarchicalLevel;
 import mx.bidg.service.DwEnterprisesService;
 import mx.bidg.service.EmployeesHistoryService;
@@ -25,10 +22,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.xml.bind.annotation.XmlAttribute;
 
 /**
  *
@@ -47,8 +44,14 @@ public class DwEnterprisesController {
     private ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
     
     @RequestMapping(produces = "application/json;charset=UTF-8")
-    public @ResponseBody ResponseEntity<String> findAll( ) throws Exception {
-        List<DwEnterprises> dwEnterprises = dwEnterprisesService.findAll();
+    public @ResponseBody ResponseEntity<String> getDwEnterprises(
+            @RequestParam(name = "idDistributor", required = false) Integer idDistributor,
+            @RequestParam(name = "idRegion", required = false) Integer idRegion,
+            @RequestParam(name = "idZona", required = false) Integer idZona,
+            @RequestParam(name = "idBranch", required = false) Integer idBranch,
+            @RequestParam(name = "idArea", required = false) Integer idArea
+    ) throws Exception {
+        List<DwEnterprises> dwEnterprises = dwEnterprisesService.findByDistributorRegionZonaBranchAndArea(idDistributor, idRegion, idZona, idBranch, idArea);
         return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEnterprises), HttpStatus.OK);
     }
     
@@ -67,6 +70,12 @@ public class DwEnterprisesController {
     @RequestMapping(value = "distributor/{idDistributor}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> getByDistrubutor(@PathVariable int idDistributor) throws Exception {
         List<DwEnterprises> list = dwEnterprisesService.findByDistributor(idDistributor);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(list), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "distributor/{idDistributor}/area/{idArea}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody ResponseEntity<String> getByDistrubutorAndArea(@PathVariable int idDistributor, @PathVariable int idArea) throws Exception {
+        List<DwEnterprises> list = dwEnterprisesService.findByDistributorAndArea(idDistributor, idArea);
         return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(list), HttpStatus.OK);
     }
     
@@ -108,5 +117,35 @@ public class DwEnterprisesController {
         EmployeesHistory employeesHistory = employeesHistoryService.findById(idEH);
         DwEnterprises dwEnterprises = dwEnterprisesService.findById(employeesHistory.getIdDwEnterprise());
         return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEnterprises), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/distributor-area/{idDistributor}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getAreaByDistributor(@PathVariable Integer idDistributor) throws IOException{
+        List<CAreas> areasList = dwEnterprisesService.findAreaByDistributor(idDistributor);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(areasList), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/distributor-region/{idDistributor}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getRegionByDistributor(@PathVariable Integer idDistributor) throws IOException{
+        List<CRegions> regionsList = dwEnterprisesService.findRegionByDistributor(idDistributor);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(regionsList), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/distributor-region-zona/{idDistributor}/{idRegion}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getZonaByDistributorAndRegion(@PathVariable Integer idDistributor, @PathVariable Integer idRegion) throws IOException{
+        List<CZonas> zonasList = dwEnterprisesService.findZonaByDistributorAndRegion(idDistributor, idRegion);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(zonasList), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/distributor-region-zona-branch/{idDistributor}/{idRegion}/{idZonas}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getBranchByDistributorAndRegionAndZona(@PathVariable Integer idDistributor, @PathVariable Integer idRegion, @PathVariable Integer idZonas) throws IOException{
+        List<CBranchs> branchsList = dwEnterprisesService.findBranchByDistributorAndRegionAndZona(idDistributor, idRegion, idZonas);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(branchsList), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/branch-area/{idBranch}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getAreasByBranch(@PathVariable Integer idBranch) throws IOException{
+        List<CAreas> areasList = dwEnterprisesService.findAreaByBranch(idBranch);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(areasList), HttpStatus.OK);
     }
 }

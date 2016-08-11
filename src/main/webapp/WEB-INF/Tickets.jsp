@@ -30,8 +30,7 @@
                         ticketStatus:{
                             idTicketStatus: 1,
                             ticketStatusName: "Abierto"
-                        },
-
+                        }
                     },
                     ticketFound:'',
                     incidences:[],

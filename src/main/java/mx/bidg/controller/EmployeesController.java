@@ -190,7 +190,7 @@ public class EmployeesController {
         DwEmployees dwEmployees = new DwEmployees();
 
         dwEmployees.setEmployee(employee);
-        dwEmployees.setDwEnterprise(dwEnterprisesService.findByBranchAndArea(jnode.get("dwEmployees").get("branch").get("idBranch").asInt(), jnode.get("dwEmployees").get("area").get("idArea").asInt()));
+        dwEmployees.setDwEnterprise(dwEnterprisesService.findByBranchAndArea(jnode.get("dwEmployees").get("branch").get("id").asInt(), jnode.get("dwEmployees").get("area").get("id").asInt()));
         dwEmployees.setRole(cRolesService.findById(jnode.get("dwEmployees").get("role").get("idRole").asInt()));
         dwEmployees.setCreationDate(LocalDateTime.now());
         dwEmployees = dwEmployeesService.save(dwEmployees);

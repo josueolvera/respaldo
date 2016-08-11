@@ -39,42 +39,21 @@ public class DwEmployeesController {
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getDwEmployees
             (
-                    @RequestParam(name = "status", required = false) Integer status,
                     @RequestParam(name = "idDistributor", required = false) Integer idDistributor,
                     @RequestParam(name = "idRegion", required = false) Integer idRegion,
                     @RequestParam(name = "idBranch", required = false) Integer idBranch,
-                    @RequestParam(name = "idArea", required = false) Integer idArea,
-                    @RequestParam(name = "idRole", required = false) Integer idRole,
-                    @RequestParam(name = "startDate", required = false) String startDate,
-                    @RequestParam(name = "endDate", required = false) String endDate
+                    @RequestParam(name = "idZona", required = false) Integer idZona,
+                    @RequestParam(name = "idArea", required = false) Integer idArea
             ) throws IOException {
 
-        List<DwEmployees> dwEmployees;
-
-        if (status == null &&
-                idDistributor == null &&
-                idRegion == null &&
-                idBranch == null &&
-                idArea == null &&
-                idRole == null &&
-                startDate == null &&
-                endDate == null
-                ) {
-            dwEmployees = dwEmployeesService.findAll();
-        } else {
-            dwEmployees =
-                    dwEmployeesService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(
-                            status,
-                            idDistributor,
-                            idRegion,
-                            idBranch,
-                            idArea,
-                            idRole,
-                            startDate,
-                            endDate
-                    );
-
-        }
+        List<DwEmployees> dwEmployees =
+                dwEmployeesService.findByDistributorRegionZonaBranchAndArea(
+                        idDistributor,
+                        idRegion,
+                        idZona,
+                        idBranch,
+                        idArea
+                );
 
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEmployees),

@@ -23,6 +23,13 @@ public interface DwEmployeesService {
             String startDate,
             String endDate
     );
+    List<DwEmployees> findByDistributorRegionZonaBranchAndArea(
+            Integer idDistributor,
+            Integer idRegion,
+            Integer idZona,
+            Integer idBranch,
+            Integer idArea
+    );
     List<DwEmployees> findAll();
     DwEmployees save(DwEmployees dwEmployees);
     void createReport(List<EmployeesHistory> employeesHistories, OutputStream outputStream) throws IOException;
