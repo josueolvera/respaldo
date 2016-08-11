@@ -4,6 +4,7 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.EmployeesHistoryDao;
 import mx.bidg.model.EmployeesHistory;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -53,9 +54,10 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
     @Override
     public List<EmployeesHistory> findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
         (Integer status, Integer idDistributor, Integer idRegion, Integer idZona,Integer idBranch, Integer idArea, Integer idRole, 
-         String startDate, String endDate) {
+         String fullname, String rfc,String startDate, String endDate) {
         Criteria criteria = createEntityCriteria();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        Disjunction dis = Restrictions.disjunction();
 
         if (startDate != null && endDate != null) {
             LocalDateTime startLocalDateTime = LocalDateTime.parse(startDate + " 00:00:00",formatter);
@@ -80,6 +82,18 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
         }
         if (idRole != null) {
             criteria.add(Restrictions.eq("idRole",idRole));
+        }
+
+        if(fullname != null){
+            dis.add(Restrictions.ilike("firstName",fullname, MatchMode.ANYWHERE));
+            dis.add(Restrictions.ilike("middleName",fullname, MatchMode.ANYWHERE));
+            dis.add(Restrictions.ilike("parentalLast",fullname, MatchMode.ANYWHERE));
+            dis.add(Restrictions.ilike("motherLast",fullname, MatchMode.ANYWHERE));
+            criteria.add(dis);
+        }
+
+        if (rfc != null){
+            criteria.add(Restrictions.ilike("rfc", rfc, MatchMode.ANYWHERE));
         }
 
         if (status == 0) {

@@ -59,13 +59,15 @@ public class EmployeesHistoryController {
                     @RequestParam(name = "idBranch", required = false) Integer idBranch,
                     @RequestParam(name = "idArea", required = false) Integer idArea,
                     @RequestParam(name = "idRole", required = false) Integer idRole,
+                    @RequestParam(name = "fullname", required = false) String fullname,
+                    @RequestParam(name = "rfc", required = false) String rfc,
                     @RequestParam(name = "startDate", required = false) String startDate,
                     @RequestParam(name = "endDate", required = false) String endDate
             ) throws IOException {
 
         List<EmployeesHistory> employeesHistories = new ArrayList();
         employeesHistories = employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
-        (status,idDistributor, idRegion, idZona,idBranch, idArea, idRole, startDate, endDate);
+        (status,idDistributor, idRegion, idZona,idBranch, idArea, idRole, fullname, rfc, startDate, endDate);
 
         for(EmployeesHistory employeesHistory : employeesHistories){
             if (employeesHistory != null){
@@ -129,6 +131,8 @@ public class EmployeesHistoryController {
                     @RequestParam(name = "idBranch", required = false) Integer idBranch,
                     @RequestParam(name = "idArea", required = false) Integer idArea,
                     @RequestParam(name = "idRole", required = false) Integer idRole,
+                    @RequestParam(name = "fullname", required = false) String fullname,
+                    @RequestParam(name = "rfc", required = false) String rfc,
                     @RequestParam(name = "startDate", required = false) String startDate,
                     @RequestParam(name = "endDate", required = false) String endDate,
                     @RequestParam(name = "reportFileName") String reportFileName,
@@ -137,7 +141,7 @@ public class EmployeesHistoryController {
 
         List<EmployeesHistory> employeesHistories = new ArrayList();
         employeesHistories = employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
-                (status,idDistributor, idRegion, idZona,idBranch, idArea, idRole, startDate, endDate);
+                (status,idDistributor, idRegion, idZona,idBranch, idArea, idRole, fullname, rfc,startDate, endDate);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDateTime dateTime = LocalDateTime.now();

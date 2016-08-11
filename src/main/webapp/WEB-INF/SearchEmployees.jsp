@@ -144,7 +144,8 @@
                     areas: [],
                     regions: [],
                     zonas: [],
-                    branchch: []
+                    branchch: [],
+                    registerNumber: 0
                 },
                 methods: {
                     arrayObjectIndexOf : function(myArray, searchTerm, property) {
@@ -274,6 +275,24 @@
                                     this.searchSelectedOptions.role.idRole;
                         }
 
+                        if (this.nameSearch != '') {
+                            this.employeesUrl = this.setEmployeesUrlCharacters(this.employeesUrl);
+                            this.createReportUrl = this.setEmployeesUrlCharacters(this.createReportUrl);
+                            this.employeesUrl += 'fullname=' +
+                                    this.nameSearch;
+                            this.createReportUrl += 'fullname=' +
+                                    this.nameSearch;
+                        }
+
+                        if (this.rfcSearch != '') {
+                            this.employeesUrl = this.setEmployeesUrlCharacters(this.employeesUrl);
+                            this.createReportUrl = this.setEmployeesUrlCharacters(this.createReportUrl);
+                            this.employeesUrl += 'rfc=' +
+                                    this.rfcSearch;
+                            this.createReportUrl += 'rfc=' +
+                                    this.rfcSearch;
+                        }
+
                         if (this.searchSelectedOptions.startDate != '') {
                             this.employeesUrl = this.setEmployeesUrlCharacters(this.employeesUrl);
                             this.createReportUrl = this.setEmployeesUrlCharacters(this.createReportUrl);
@@ -314,6 +333,7 @@
                         ).success(function (data) {
                             this.dwEmployees = data;
                             if (this.dwEmployees.length > 0) {
+                                this.registerNumber = this.dwEmployees.length;
                                 this.isThereItems = true;
                             }
                         }).error(function (data) {
@@ -616,6 +636,11 @@
                     <div class="col-md-8">
                         <h2>Busqueda de Empleado</h2>
                     </div>
+                    <div class="col-md-2">
+                    </div>
+                    <div class="col-md-2" v-if="dwEmployees.length > 0" style="margin-top: 35px">
+                        <label><p style="color: darkblue">Nùmero de registros: {{registerNumber}}</p></label>
+                    </div>
                 </div>
                 <%-- <div v-if="!hierarchy.length > 0"
                      style="height: 6rem; padding: 2rem 0;">
@@ -705,8 +730,12 @@
                             </select>
                         </div>
                         <div class="col-md-2">
-                            <label>Nombre/RFC</label>
-                            <input v-model="nameSearch" type="text" class="form-control" placeholder="Nombre del Empleado/RFC">
+                            <label>Nombre</label>
+                            <input v-model="nameSearch" type="text" class="form-control" placeholder="Nombre del Empleado">
+                        </div>
+                        <div class="col-md-2">
+                            <label>RFC</label>
+                            <input v-model="rfcSearch" type="text" class="form-control" placeholder="RFC">
                         </div>
                         <div class="col-md-2">
                             <label>
@@ -767,7 +796,7 @@
                         </div>
                         <br>
                         <div class="table-body flex-row flex-content">
-                            <div class="row table-row" v-for="dwEmployee in dwEmployees | filterBy nameSearch">
+                            <div class="row table-row" v-for="dwEmployee in dwEmployees">
                                 <div class="col-md-2">{{dwEmployee.fullName}}</div>
                                 <div class="col-md-2">{{dwEmployee.rfc}}</div>
                                 <div class="col-md-2">{{dwEmployee.rolesR.roleName}}</div>
