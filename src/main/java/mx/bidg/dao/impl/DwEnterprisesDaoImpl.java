@@ -113,6 +113,29 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
     }
 
     @Override
+    public List<DwEnterprises> findByDistributorRegionZonaBranchAndArea(Integer idDistributor, Integer idRegion, Integer idZona, Integer idBranch, Integer idArea) {
+        Criteria criteria = createEntityCriteria();
+
+        if (idDistributor != null) {
+            criteria.add(Restrictions.eq("idDistributor",idDistributor));
+        }
+        if (idRegion != null) {
+            criteria.add(Restrictions.eq("idRegion",idRegion));
+        }
+        if (idZona != null) {
+            criteria.add(Restrictions.eq("idZona",idZona));
+        }
+        if (idBranch != null) {
+            criteria.add(Restrictions.eq("idBranch",idBranch));
+        }
+        if (idArea != null) {
+            criteria.add(Restrictions.eq("idArea",idArea));
+        }
+
+        return criteria.list();
+    }
+
+    @Override
     public DwEnterprises findByBranch(Integer idBranch) {
         return (DwEnterprises) createEntityCriteria()
                 .add(Restrictions.eq("idBranch", idBranch))

@@ -22,10 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -47,8 +44,14 @@ public class DwEnterprisesController {
     private ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
     
     @RequestMapping(produces = "application/json;charset=UTF-8")
-    public @ResponseBody ResponseEntity<String> findAll( ) throws Exception {
-        List<DwEnterprises> dwEnterprises = dwEnterprisesService.findAll();
+    public @ResponseBody ResponseEntity<String> getDwEnterprises(
+            @RequestParam(name = "idDistributor", required = false) Integer idDistributor,
+            @RequestParam(name = "idRegion", required = false) Integer idRegion,
+            @RequestParam(name = "idZona", required = false) Integer idZona,
+            @RequestParam(name = "idBranch", required = false) Integer idBranch,
+            @RequestParam(name = "idArea", required = false) Integer idArea
+    ) throws Exception {
+        List<DwEnterprises> dwEnterprises = dwEnterprisesService.findByDistributorRegionZonaBranchAndArea(idDistributor, idRegion, idZona, idBranch, idArea);
         return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEnterprises), HttpStatus.OK);
     }
     
