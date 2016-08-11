@@ -15,7 +15,7 @@
             var vm = new Vue({
                 el: '#content',
                 ready: function () {
-                    this.fetchHierarchy();
+                    this.getDistributors();
                     this.fetchDocumentTypes();
                     this.fetchArticleStatus();
                     this.getArticlesCategories();
@@ -26,46 +26,53 @@
                     isSaving: false,
                     stockGroups: [],
                     searching:false,
+                    distributors: [],
+                    areas: [],
+                    regions: [],
+                    zonas: [],
+                    branchs: [],
+                    searchUrl: '',
+                    searchSelectedOptions: {
+                        area: null,
+                        distributor: null,
+                        region: null,
+                        zona: null,
+                        branch: null
+                    },
+                    selectedOptions: {
+                        distributor: null,
+                        region: null,
+                        branch: null,
+                        area: null,
+                        zona: null,
+                        dwEmployee:null
+                    },
                     selectOptions: {
-                        distributors: [],
-                        areas: [],
+                        hierarchy:[],
                         articleStatus:[],
                         employees: [],
-                        hierarchy: [],
-                        documentTypes: [],
-                        documentTypesRequired: [],
-                        documentTypesNoRequired: []
+                        documentTypes: []
                     },
                     stockFilter:'',
-                    selectedOptions: {
-                        area: {
-                            id:0
-                        },
-                        distributor: {
-                            id:0
-                        },
-                        region: {
-                            id:0
-                        },
-                        branch: {
-                            id:0
-                        }
-                    },
                     defaultArea: {
-                        id:0,
-                        name:''
+                        idArea:0,
+                        name:'TODOS'
                     },
                     defaultDistributor: {
-                        id:0,
-                        name:''
+                        idDistributor:0,
+                        name:'TODOS'
                     },
                     defaultRegion: {
-                        id:0,
-                        name:''
+                        idRegion:0,
+                        name:'TODOS'
+                    },
+                    defaultZona: {
+                        idZonas:0,
+                        name:'TODOS'
                     },
                     defaultBranch: {
-                        id:0,
-                        name:''
+                        idBranch:0,
+                        name:'TODOS'
                     },
                     historicalModal: {
                         article: null,
@@ -110,13 +117,6 @@
                         selectAttr: '',
                         selectValue:'',
                         articlesCategories:[],
-                        selected: {
-                            distributor: null,
-                            region: null,
-                            branch: null,
-                            area: null,
-                            dwEmployees:null
-                        },
                         fileInput: "file-type-"
                     },
                     attachmentsModal: {
@@ -124,22 +124,22 @@
                         fileInput: "file-type-"
                     },
                     assignmentsModal: {
-                        selected: {
-                            distributor: null,
-                            region: null,
-                            branch: null,
-                            area: null,
-                            dwEmployees:null
-                        },
                         fileInput: "file-type-",
                         article: null
                     },
+                    dwEmployees: [],
                     attachmentsDownloadUrl: ROOT_URL + "/stock/attachments/download/",
                     selectedInvoiceNumber:false,
                     invoiceNumber:'',
                     datetimepickerPurchaseDate:''
                 },
                 methods: {
+                    arrayObjectIndexOf : function(myArray, searchTerm, property) {
+                        for(var i = 0, len = myArray.length; i < len; i++) {
+                            if (myArray[i][property] === searchTerm) return i;
+                        }
+                        return -1;
+                    },
                     setUpTimePickerPurchaseDate:function () {
                         this.datetimepickerPurchaseDate = $('#datetimepickerPurchaseDate').datetimepicker({
                             locale: 'es',
@@ -240,11 +240,6 @@
                             Vue.set(article, "assignmentsRecord", data);
                         }).error(function () {
                             showAlert("Permiso denegado", {type: 3});
-                        });
-                    },
-                    fetchHierarchy: function () {
-                        this.$http.get(ROOT_URL + "/dw-enterprises/hierarchy").success(function (data) {
-                            this.selectOptions.hierarchy = data;
                         });
                     },
                     fetchDocumentTypes: function () {
@@ -454,7 +449,7 @@
                     },
                     addProperties: function (idStock,properties) {
                         this.$http.post(ROOT_URL + "/stock/" + idStock + "/properties", JSON.stringify(properties)).success(function (data) {
-                            showAlert("Articulo guardado")
+                            showAlert("Articulo guardado");
                             this.saved = true;
                             this.getStocks();
                             this.doNotSeeAssignView();
@@ -564,10 +559,8 @@
                                 formData
                         ).success(function (data)
                         {
-                            form.reset();
                         }).error(function (data) {
                             this.isSaving = false;
-                            form.reset();
                             showAlert(data.error.message, {type:3})
                         });
 
@@ -577,39 +570,6 @@
                         var formData = new FormData(form);
                         return formData;
                     },
-                    distributorChanged: function () {
-                        this.assignmentsModal.selected.region = null;
-                        this.assignmentsModal.selected.branch = null;
-                        this.assignmentsModal.selected.area = null;
-                        this.assignmentsModal.selected.dwEmployees = null;
-
-                        this.newArticleModal.selected.region = null;
-                        this.newArticleModal.selected.branch = null;
-                        this.newArticleModal.selected.area = null;
-                        this.newArticleModal.selected.dwEmployees = null;
-                    },
-                    regionChanged: function () {
-                        this.assignmentsModal.selected.branch = null;
-                        this.assignmentsModal.selected.area = null;
-                        this.assignmentsModal.selected.dwEmployees = null;
-
-                        this.newArticleModal.selected.branch = null;
-                        this.newArticleModal.selected.area = null;
-                        this.newArticleModal.selected.dwEmployees = null;
-                    },
-                    branchChanged: function () {
-                        this.assignmentsModal.selected.area = null;
-                        this.assignmentsModal.selected.dwEmployees = null;
-
-                        this.newArticleModal.selected.area = null;
-                        this.newArticleModal.selected.dwEmployees = null;
-                    },
-                    areaChanged: function () {
-                        this.assignmentsModal.selected.dwEmployees = null;
-
-                        this.newArticleModal.selected.dwEmployees = null;
-
-                    },
                     validateFile: function (event) {
                         if (! event.target.files[0].name.match(/(\.jpg|\.jpeg|\.pdf|\.png)$/i)) {
                             event.target.value = null;
@@ -617,14 +577,6 @@
                         }
                         if (event.target.name == 'file-type-4' && event.target.files[0] != null) {
                             this.selectedInvoiceNumber = true;
-                        }
-                    },
-                    areaFilter: function (item) {
-                        if (this.selectedOptions.area == null || this.selectedOptions.area == 0) {
-                            return item;
-                        }
-                        if (item[0].dwEnterprises.idArea == this.selectedOptions.area.idArea) {
-                            return item;
                         }
                     },
                     showHistoricalModal: function (article) {
@@ -646,6 +598,7 @@
                     },
                     showAssignmentsModal: function (article) {
                         this.assignmentsModal.article = article;
+                        this.dwEmployees = null;
                         $("#assignmentsModal").modal("show");
                     },
                     closeEditModal: function () {
@@ -682,7 +635,14 @@
                         var form = document.getElementById('newArticleFrom');
                         var formData = new FormData(form);
                         this.$http.post(ROOT_URL + "/stock", formData).success(function (data) {
-                            this.addProperties(data.idStock,properties)
+                            this.addProperties(data.idStock,properties);
+                            this.selectedOptions.distributor = null;
+                            this.selectedOptions.region = null;
+                            this.selectedOptions.branch = null;
+                            this.selectedOptions.zona = null;
+                            this.selectedOptions.area = null;
+                            this.selectedOptions.dwEmployee = null;
+                            this.dwEmployees = null;
                         }).error(function (data) {
                             this.isSaving = false;
                         })
@@ -691,41 +651,48 @@
                         this.isSaving = true;
 
                         var idEmployee;
+                        var idDwEnterprise;
 
-                        if (this.assignmentsModal.selected.dwEmployees != null) {
-                            idEmployee = this.assignmentsModal.selected.dwEmployees.idEmployee;
+                        if (this.selectedOptions.dwEmployee != null) {
+                            idEmployee = this.selectedOptions.dwEmployee.idEmployee;
+                            idDwEnterprise = this.selectedOptions.dwEmployee.idDwEnterprise
                         } else {
                             idEmployee = 0;
+                            idDwEnterprise = this.dwEmployees[0].idDwEnterprise;
                         }
 
                         this.$http.post(
                                 ROOT_URL + "/stock/" + article.idStock + "/assignments/" + idEmployee,
                                 {
-                                    idDwEnterprise: this.assignmentsModal.selected.area.dwEnterprise.idDwEnterprise,
+                                    idDwEnterprise: idDwEnterprise,
                                     invoiceNumber:this.invoiceNumber
                                 }
                         ).success(function () {
                             this.isSaving = false;
                             this.saved = true;
                             this.getStocks();
-                            this.assignmentsModal.selected.distributor = null;
-                            this.assignmentsModal.selected.region = null;
-                            this.assignmentsModal.selected.branch = null;
-                            this.assignmentsModal.selected.area = null;
-                            this.assignmentsModal.selected.dwEmployees = null;
+                            this.selectedOptions.distributor = null;
+                            this.selectedOptions.region = null;
+                            this.selectedOptions.branch = null;
+                            this.selectedOptions.zona = null;
+                            this.selectedOptions.area = null;
+                            this.selectedOptions.dwEmployee = null;
+                            this.dwEmployees = null;
                             showAlert("Asignación exitosa");
                         }).error(function (data) {
                             this.isSaving = false;
-                            this.assignmentsModal.selected.distributor = null;
-                            this.assignmentsModal.selected.region = null;
-                            this.assignmentsModal.selected.branch = null;
-                            this.assignmentsModal.selected.area = null;
-                            this.assignmentsModal.selected.dwEmployees = null;
+                            this.selectedOptions.distributor = null;
+                            this.selectedOptions.region = null;
+                            this.selectedOptions.branch = null;
+                            this.selectedOptions.zona = null;
+                            this.selectedOptions.area = null;
+                            this.selectedOptions.dwEmployee = null;
+                            this.dwEmployees = null;
                             showAlert(data.error.message, {type:3});
                         })
                     },
                     onSaveAssignmentsModal : function (article) {
-                        if (this.assignmentsModal.selected.area == null) {
+                        if (this.selectedOptions.area == null) {
                             showAlert("Distribudor, region, sucursal y area son requeridos", {type:3});
                             return;
                         }
@@ -738,6 +705,7 @@
                         this.closeAssignmentsModal();
                     },
                     showNewArticleModal: function () {
+                        this.dwEmployees = null;
                         $("#newArticleModal").modal("show");
                     },
                     closeNewArticleModal: function () {
@@ -769,22 +737,11 @@
                         });
                     },
                     getStocks: function () {
-
-                        if (this.selectedOptions.distributor.id == 0 && this.saved == false) {
-                            showAlert('Selecciona un criterio de busqueda',{type:3})
-                            return;
-                        }
                         this.saved = false;
                         this.stockGroups = [];
                         this.searching = true;
-
-                        this.$http.get(
-                                ROOT_URL + "/stock?idDistributor=" +
-                                this.selectedOptions.distributor.id + "&idRegion=" +
-                                this.selectedOptions.region.id  + "&idBranch=" +
-                                this.selectedOptions.branch.id + "&idArea=" +
-                                this.selectedOptions.area.id
-                        ).success(function (data) {
+                        this.setSearchUrl();
+                        this.$http.get(this.searchUrl).success(function (data) {
                             var jsonObjectIndex = {};
                             data.forEach(function (stock) {
                                 if (isNaN(stock.dwEnterprises)) {
@@ -828,11 +785,11 @@
                         this.newArticleModal.serialNumber = '';
                         this.newArticleModal.invoiceNumber = '';
                         this.newArticleModal.purchaseDate = '';
-                        this.newArticleModal.selected.area = null;
-                        this.newArticleModal.selected.distributor = null;
-                        this.newArticleModal.selected.region = null;
-                        this.newArticleModal.selected.branch = null;
-                        this.newArticleModal.selected.dwEmployees = null;
+                        this.selectedOptions.area = null;
+                        this.selectedOptions.distributor = null;
+                        this.selectedOptions.region = null;
+                        this.selectedOptions.branch = null;
+                        this.selectedOptions.dwEmployees = null;
                         $("input:file").val('');
                     },
                     resetFromArticleCategory:function () {
@@ -841,12 +798,185 @@
                         this.newArticleModal.serialNumber = '';
                         this.newArticleModal.invoiceNumber = '';
                         this.newArticleModal.purchaseDate = '';
-                        this.newArticleModal.selected.area = null;
-                        this.newArticleModal.selected.distributor = null;
-                        this.newArticleModal.selected.region = null;
-                        this.newArticleModal.selected.branch = null;
-                        this.newArticleModal.selected.dwEmployees = null;
+                        this.selectedOptions.area = null;
+                        this.selectedOptions.distributor = null;
+                        this.selectedOptions.region = null;
+                        this.selectedOptions.branch = null;
+                        this.selectedOptions.dwEmployees = null;
                         $("input:file").val('');
+                    },
+                    getDistributors: function () {
+                        this.$http.get(ROOT_URL + "/distributors?forStock=true").success(function (data) {
+                            this.distributors = data;
+                        });
+                    },
+                    getRegionByDistributor: function (idDistributor) {
+                        //this.isThereItems = false;
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/dw-enterprises/distributor-region/"+idDistributor).success(function (data) {
+                            this.regions = [];
+                            var index;
+                            data.forEach(function (region) {
+                                index =  self.arrayObjectIndexOf(self.regions,region.idRegion,'idRegion');
+                                if(index == -1) self.regions.push(region);
+                            });
+
+                        }).error(function () {
+                            showAlert("No existen regiones para esa compañía", {type : 3});
+                        });
+                    },
+                    getZonaByDistributorAndRegion: function (idDistributor, idRegion) {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/dw-enterprises/distributor-region-zona/"+idDistributor+"/"+idRegion).success(function (data) {
+                            this.zonas = [];
+                            var index;
+                            data.forEach(function (zona) {
+                                index =  self.arrayObjectIndexOf(self.zonas,zona.idZonas,'idZonas');
+                                if(index == -1) self.zonas.push(zona);
+                            });
+                        }).error(function () {
+                            showAlert("No existen zonas para esa compañía y región ", {type : 3});
+                        });
+                    },
+                    getBranchByDistributorAndRegionAndZona: function (idDistributor, idRegion, idZona) {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/dw-enterprises/distributor-region-zona-branch/"+idDistributor+"/"+idRegion+"/"+idZona).success(function (data) {
+                            this.branchs = [];
+                            var index;
+                            data.forEach(function (branch) {
+                                index =  self.arrayObjectIndexOf(self.branchs,branch.idBranch,'idBranch');
+                                if(index == -1) self.branchs.push(branch);
+                            });
+                        }).error(function () {
+                            showAlert("No existen sucursales para esa compañía, región y zona", {type : 3});
+                        });
+                    },
+                    getAreaByBranch: function (idBranch) {
+                        this.areas = [];
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/dw-enterprises/branch-area/"+idBranch).success(function (data) {
+                            this.areas = [];
+                            var index;
+                            data.forEach(function (area) {
+                                index =  self.arrayObjectIndexOf(self.areas,area.idArea,'idArea');
+                                if(index == -1) self.areas.push(area);
+                            });
+                        }).error(function () {
+                            showAlert("No existen areas para esa compañìa, regiòn, zona y sucursal", {type : 3});
+                        });
+                    },
+                    getAreaByDistributor: function (idDistributor) {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/dw-enterprises/distributor-area/"+idDistributor).success(function (data) {
+                            this.areas = [];
+                            var index;
+                            data.forEach(function (area) {
+                                index =  self.arrayObjectIndexOf(self.areas,area.idArea,'idArea');
+                                if(index == -1) self.areas.push(area);
+                            });
+                        }).error(function () {
+                            showAlert("No existen areas para esa compañia", {type : 3});
+                        });
+                    },
+                    getDwEmployees : function (idDistributor, idRegion, idZona, idBranch, idArea) {
+                        this.$http.get(
+                                ROOT_URL + '/dw-employees?idDistributor=' + idDistributor +
+                                '&idRegion=' + idRegion + '&idZona=' + idZona +
+                                '&idBranch=' + idBranch + '&idArea=' + idArea
+                        ).success(function (data) {
+                            this.dwEmployees = data;
+                        }).error(function (data) {
+
+                        });
+                    },
+                    distributorChanged: function () {
+                        this.searchSelectedOptions.region = this.defaultRegion;
+                        this.searchSelectedOptions.zona = this.defaultZona;
+                        this.searchSelectedOptions.branch = this.defaultBranch;
+                        this.searchSelectedOptions.area = this.defaultArea;
+                        this.getAreaByDistributor(this.searchSelectedOptions.distributor.idDistributor);
+                        this.getRegionByDistributor(this.searchSelectedOptions.distributor.idDistributor);
+                    },
+                    regionChanged: function () {
+                        this.searchSelectedOptions.zona = this.defaultZona;
+                        this.searchSelectedOptions.branch = this.defaultBranch;
+                        this.searchSelectedOptions.area = this.defaultArea;
+                        this.getZonaByDistributorAndRegion(this.searchSelectedOptions.distributor.idDistributor, this.searchSelectedOptions.region.idRegion);
+                    },
+                    zonaChanged: function () {
+                        this.searchSelectedOptions.branch = this.defaultBranch;
+                        this.searchSelectedOptions.area = this.defaultArea;
+                        this.getBranchByDistributorAndRegionAndZona(this.searchSelectedOptions.distributor.idDistributor,  this.searchSelectedOptions.region.idRegion, this.searchSelectedOptions.zona.idZonas);
+                    },
+                    branchChanged: function () {
+                        this.searchSelectedOptions.area = this.defaultArea;
+                        this.getAreaByBranch(this.searchSelectedOptions.branch.idBranch);
+                    },
+                    modalDistributorChanged: function () {
+                        this.selectedOptions.region = null;
+                        this.selectedOptions.zona = null;
+                        this.selectedOptions.branch = null;
+                        this.selectedOptions.area = null;
+                        this.getRegionByDistributor(this.selectedOptions.distributor.idDistributor);
+                    },
+                    modalRegionChanged: function () {
+                        this.selectedOptions.zona = null;
+                        this.selectedOptions.branch = null;
+                        this.selectedOptions.area = null;
+                        this.getZonaByDistributorAndRegion(this.selectedOptions.distributor.idDistributor, this.selectedOptions.region.idRegion);
+                    },
+                    modalZonaChanged: function () {
+                        this.selectedOptions.branch = null;
+                        this.selectedOptions.area = null;
+                        this.getBranchByDistributorAndRegionAndZona(this.selectedOptions.distributor.idDistributor,  this.selectedOptions.region.idRegion, this.selectedOptions.zona.idZonas);
+                    },
+                    modalBranchChanged: function () {
+                        this.selectedOptions.area = null;
+                        this.getAreaByBranch(this.selectedOptions.branch.idBranch);
+                    },
+                    modalAreaChanged: function (idDistributor, idRegion, idZona, idBranch, idArea) {
+                        this.dwEmployees = null;
+                        this.getDwEmployees(idDistributor, idRegion, idZona, idBranch, idArea);
+                    },
+                    setSearchUrl:function () {
+                        this.searchUrl = ROOT_URL + '/stock';
+
+                        if (this.searchSelectedOptions.distributor.idDistributor != 0) {
+                            this.searchUrl = this.setSearchUrlCharacters(this.searchUrl);
+                            this.searchUrl += 'idDistributor=' +
+                                    this.searchSelectedOptions.distributor.idDistributor;
+                        }
+                        if (this.searchSelectedOptions.region.idRegion != 0) {
+                            this.searchUrl = this.setSearchUrlCharacters(this.searchUrl);
+                            this.searchUrl += 'idRegion=' +
+                                    this.searchSelectedOptions.region.idRegion;
+                        }
+                        if (this.searchSelectedOptions.zona.idZonas != 0) {
+                            this.searchUrl = this.setSearchUrlCharacters(this.searchUrl);
+                            this.searchUrl += 'idZona=' +
+                                    this.searchSelectedOptions.zona.idZonas;
+                        }
+                        if (this.searchSelectedOptions.branch.idBranch != 0) {
+                            this.searchUrl = this.setSearchUrlCharacters(this.searchUrl);
+                            this.searchUrl += 'idBranch=' +
+                                    this.searchSelectedOptions.branch.idBranch;
+                        }
+                        if (this.searchSelectedOptions.area.idArea != 0) {
+                            this.searchUrl = this.setSearchUrlCharacters(this.searchUrl);
+                            this.searchUrl += 'idArea=' +
+                                    this.searchSelectedOptions.area.idArea;
+                        }
+
+                    },
+                    setSearchUrlCharacters : function (url) {
+                        if(url.indexOf('?') > -1)
+                        {
+                            url += '&';
+                            return url;
+                        } else {
+                            url += '?';
+                            return url;
+                        }
                     }
                 }
             });
@@ -886,65 +1016,68 @@
                     </div>
                 </div>
             </div>
-            <div v-if="!selectOptions.hierarchy.length > 0" class="col-xs-12"
-                 style="height: 6rem; padding: 2rem 0;">
-                <div class="loader">Cargando...</div>
-            </div>
-            <div class="col-xs-12" v-if="selectOptions.hierarchy.length > 0">
+            <div class="col-xs-12">
                 <hr size="30" style="border-top: 1px solid #ccc;">
-                <div class="col-xs-2">
-                    <label>Distribuidor</label>
-                    <select v-model="selectedOptions.distributor" class="form-control"
-                            @change="selectedOptionsDistributorChanged">
-                        <option selected :value="defaultDistributor">{{defaultDistributor.name}}</option>
-                        <option v-for="distributor in selectOptions.hierarchy[0].subLevels"
-                                :value="distributor">
-                            {{ distributor.name }}
-                        </option>
-                    </select>
-                </div>
-                <div class="col-xs-2">
-                    <label>Región</label>
-                    <select v-model="selectedOptions.region" class="form-control"
-                            @change="selectedOptionsRegionChanged"
-                            :disabled="selectedOptions.distributor.id == 0">
-                        <option selected :value="defaultRegion">{{defaultRegion.name}}</option>
-                        <option v-for="region in selectedOptions.distributor.subLevels"
-                                :value="region">
-                            {{ region.name }}
-                        </option>
-                    </select>
-                </div>
-                <div class="col-xs-2">
-                    <label>Sucursal</label>
-                    <select v-model="selectedOptions.branch" class="form-control"
-                            @change="selectedOptionsBranchChanged"
-                            :disabled="selectedOptions.region.id == 0">
-                        <option selected :value="defaultBranch">{{defaultBranch.name}}</option>
-                        <option v-for="branch in selectedOptions.region.subLevels"
-                                :value="branch">
-                            {{ branch.name }}
-                        </option>
-                    </select>
-                </div>
-                <div class="col-xs-2">
-                    <label>Área</label>
-                    <select v-model="selectedOptions.area" class="form-control"
-                            :disabled="selectedOptions.branch.id == 0">
-                        <option selected :value="defaultArea">{{defaultArea.name}}</option>
-                        <option v-for="area in selectedOptions.branch.subLevels"
-                                :value="area">
-                            {{ area.name }}
-                        </option>
-                    </select>
-                </div>
-                <div class="col-xs-1">
-                    <label style="visibility: hidden">search</label>
-                    <button class="btn btn-default" @click="getStocks"
-                            data-toggle="tooltip" data-placement="top" title="Buscar artículo">
-                        <span class="glyphicon glyphicon-search"></span>
-                    </button>
-                </div>
+                <form v-on:submit.prevent="getStocks">
+                    <div class="col-xs-2">
+                        <label>Distribuidor</label>
+                        <select v-model="searchSelectedOptions.distributor" class="form-control"
+                                @change="distributorChanged">
+                            <option selected :value="defaultDistributor">{{defaultDistributor.name}}</option>
+                            <option v-for="distributor in distributors"
+                                    :value="distributor">
+                                {{ distributor.distributorName }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-xs-2">
+                        <label>Región</label>
+                        <select v-model="searchSelectedOptions.region" class="form-control"
+                                @change="regionChanged" :disabled="searchSelectedOptions.distributor.idDistributor == 0">
+                            <option selected :value="defaultRegion">{{defaultRegion.name}}</option>
+                            <option v-for="region in regions"
+                                    :value="region">
+                                {{ region.regionName }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-xs-2">
+                        <label>Zona</label>
+                        <select v-model="searchSelectedOptions.zona" class="form-control"
+                                @change="zonaChanged" :disabled="searchSelectedOptions.region.idRegion == 0">
+                            <option selected :value="defaultZona">{{defaultZona.name}}</option>
+                            <option v-for="zona in zonas"
+                                    :value="zona">
+                                {{ zona.name }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-xs-2">
+                        <label>Sucursal</label>
+                        <select v-model="searchSelectedOptions.branch" class="form-control"
+                                @change="branchChanged" :disabled="searchSelectedOptions.zona.idZonas == 0">
+                            <option selected :value="defaultBranch">{{defaultBranch.name}}</option>
+                            <option v-for="branch in branchs"
+                                    :value="branch">
+                                {{ branch.branchShort }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-xs-2">
+                        <label>Área</label>
+                        <select v-model="searchSelectedOptions.area" class="form-control"
+                                @change="areaChanged" :disabled="searchSelectedOptions.distributor.idDistributor == 0">
+                            <option selected :value="defaultArea">{{defaultArea.name}}</option>
+                            <option v-for="area in areas"
+                                    :value="area">
+                                {{ area.areaName }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-xs-1">
+                        <button style="margin-top: 25px" class="btn btn-default">Buscar</button>
+                    </div>
+                </form>
             </div>
             <br>
             <div v-if="!stockGroups.length > 0 && searching == true" class="col-xs-12"
@@ -955,7 +1088,7 @@
                 <div v-for="stock in stockGroups | filterBy stockFilter">
                     <div class="text-center col-xs-12">
                         <h4>
-                            {{ stock[0].dwEnterprises.distributor.distributorName }} - {{ stock[0].dwEnterprises.region.regionName }} - {{ stock[0].dwEnterprises.branch.branchShort }} - {{ stock[0].dwEnterprises.area.areaName }}
+                            {{ stock[0].dwEnterprises.distributor.distributorName }} - {{ stock[0].dwEnterprises.region.regionName }} - {{ stock[0].dwEnterprises.zona.name }} - {{ stock[0].dwEnterprises.branch.branchShort }} - {{ stock[0].dwEnterprises.area.areaName }}
                         </h4>
                     </div>
                     <div class="col-xs-12 panel-group">
@@ -981,10 +1114,7 @@
                                         <div class="col-md-3 col-xs-6">
                                             <p><strong>Asignado a</strong></p>
                                             <p>
-                                                {{ article.stockEmployeeAssignmentsList[0].employee.firstName }}
-                                                {{ article.stockEmployeeAssignmentsList[0].employee.middleName }}
-                                                {{ article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
-                                                {{ article.stockEmployeeAssignmentsList[0].employee.motherLast }}
+                                                {{ article.stockEmployeeAssignmentsList[0].employee.fullName }}
                                             </p>
                                         </div>
                                     </div>
@@ -1107,10 +1237,7 @@
                                     </thead>
                                     <tr class="success" v-if="historicalModal.article.stockEmployeeAssignmentsList[0]">
                                         <td>
-                                            {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.firstName }}
-                                            {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.middleName }}
-                                            {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.parentalLast }}
-                                            {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.motherLast }}
+                                            {{ historicalModal.article.stockEmployeeAssignmentsList[0].employee.fullName }}
                                         </td>
                                         <td>{{ historicalModal.article.dwEnterprises.distributor.distributorName }}</td>
                                         <td>{{ historicalModal.article.dwEnterprises.region.regionName }}</td>
@@ -1123,10 +1250,7 @@
                                     </tr>
                                     <tr v-for="assignment in historicalModal.article.assignmentsRecord">
                                         <td>
-                                            {{ assignment.employee.firstName }}
-                                            {{ assignment.employee.middleName }}
-                                            {{ assignment.employee.parentalLast }}
-                                            {{ assignment.employee.motherLast }}
+                                            {{ assignment.employee.fullName }}
                                         </td>
                                         <td>{{ assignment.dwEnterprises.distributor.distributorName }}</td>
                                         <td>{{ assignment.dwEnterprises.region.regionName }}</td>
@@ -1295,85 +1419,94 @@
                         </div>
                         <div class="modal-body">
                             <div class="row">
-                                <div class="col-md-4 col-xs-6">
+                                <div class="col-md-4">
                                     <label>Artículo </label>
                                     {{ assignmentsModal.article.article.articleName }}
                                 </div>
-                                <div class="col-md-4 col-xs-6">
+                                <div class="col-md-4">
                                     <span v-if="assignmentsModal.article.article.hasSerialNumber">
                                         <label>No. de Serie </label>
                                         {{ assignmentsModal.article.serialNumber }}
                                     </span>
                                 </div>
-                                <div class="col-md-4 col-xs-6">
+                                <div class="col-md-4">
                                     <label>Folio </label>
                                     {{ assignmentsModal.article.stockFolio }}
                                 </div>
                                 <br>
-                                <div class="col-xs-12">
+                                <div class="col-md-12">
                                     <hr>
                                     <h4>Asignar a</h4>
                                     <hr>
                                 </div>
-                                <div class="col-md-3 col-xs-6">
+                                <div class="col-md-2">
                                     <label>Distribuidor</label>
-                                    <select v-model="assignmentsModal.selected.distributor" class="form-control"
-                                            @change="distributorChanged">
-                                        <option v-for="distributor in selectOptions.hierarchy[0].subLevels"
+                                    <select v-model="selectedOptions.distributor" class="form-control"
+                                            @change="modalDistributorChanged">
+                                        <option v-for="distributor in distributors"
                                                 :value="distributor">
-                                            {{ distributor.name }}
+                                            {{ distributor.distributorName }}
                                         </option>
                                     </select>
                                 </div>
-                                <div class="col-md-3 col-xs-6">
+                                <div class="col-md-2">
                                     <label>Región</label>
-                                    <select v-model="assignmentsModal.selected.region" class="form-control"
-                                            @change="regionChanged" :disabled="assignmentsModal.selected.distributor == null">
-                                        <option v-for="region in assignmentsModal.selected.distributor.subLevels"
+                                    <select v-model="selectedOptions.region" class="form-control"
+                                            @change="modalRegionChanged" :disabled="selectedOptions.distributor == null">
+                                        <option v-for="region in regions"
                                                 :value="region">
-                                            {{ region.name }}
+                                            {{ region.regionName }}
                                         </option>
                                     </select>
                                 </div>
-                                <div class="col-md-3 col-xs-6">
+                                <div class="col-md-2">
+                                    <label>Zona</label>
+                                    <select v-model="selectedOptions.zona" class="form-control"
+                                            @change="modalZonaChanged" :disabled="selectedOptions.region == null">
+                                        <option v-for="zona in zonas"
+                                                :value="zona">
+                                            {{ zona.name }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
                                     <label>Sucursal</label>
-                                    <select v-model="assignmentsModal.selected.branch" class="form-control"
-                                            @change="branchChanged" :disabled="assignmentsModal.selected.region == null">
-                                        <option v-for="branch in assignmentsModal.selected.region.subLevels"
+                                    <select v-model="selectedOptions.branch" class="form-control"
+                                            @change="modalBranchChanged" :disabled="selectedOptions.zona == null">
+                                        <option v-for="branch in branchs"
                                                 :value="branch">
-                                            {{ branch.name }}
+                                            {{ branch.branchShort }}
                                         </option>
                                     </select>
                                 </div>
-                                <div class="col-md-3 col-xs-6">
+                                <div class="col-md-2">
                                     <label>Área</label>
-                                    <select v-model="assignmentsModal.selected.area" class="form-control"
-                                            @change="areaChanged" :disabled="assignmentsModal.selected.branch == null">
-                                        <option v-for="area in assignmentsModal.selected.branch.subLevels"
+                                    <select v-model="selectedOptions.area" class="form-control"
+                                            @change="modalAreaChanged(selectedOptions.distributor.idDistributor, selectedOptions.region.idRegion, selectedOptions.zona.idZonas, selectedOptions.branch.idBranch, selectedOptions.area.idArea)"
+                                            :disabled="selectedOptions.branch == null">
+                                        <option v-for="area in areas"
                                                 :value="area">
-                                            {{ area.name }}
+                                            {{ area.areaName }}
                                         </option>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-3 col-xs-6">
-                                    <label>Empleado / Almacén</label>
-                                    <select v-model="assignmentsModal.selected.dwEmployees" class="form-control"
-                                            :disabled="assignmentsModal.selected.area == null">
-                                        <option :value=null v-if="assignmentsModal.selected.area.dwEnterprise.dwEmployeesList.length > 0">
+                                <div class="col-md-2">
+                                    <label>Empleado</label>
+                                    <select v-model="selectedOptions.dwEmployee" class="form-control"
+                                            :disabled="selectedOptions.area == null">
+                                        <option :value=null>
                                             SIN ASIGNACIÓN
                                         </option>
-                                        <option v-for="dwEmployees in assignmentsModal.selected.area.dwEnterprise.dwEmployeesList"
-                                                :value="dwEmployees">
-                                            {{ dwEmployees.employee.fullName }}
+                                        <option v-for="dwEmployee in dwEmployees"
+                                                :value="dwEmployee">
+                                            {{ dwEmployee.employee.fullName }}
                                         </option>
                                     </select>
                                 </div>
                             </div>
                             <form id="attachments-form" method="post" enctype="multipart/form-data"
                                   v-on:submit.prevent="onSaveAssignmentsModal(assignmentsModal.article)">
-                                <div v-if="assignmentsModal.selected.dwEmployees != null">
+                                <div v-if="selectedOptions.dwEmployee != null">
                                     <br>
                                     <h4>Documentos</h4>
                                     <hr>
@@ -1610,64 +1743,76 @@
                                                 <h4>Asignar a</h4>
                                                 <hr>
                                             </div>
-                                            <div class="col-md-3 col-xs-6">
+                                            <div class="col-md-2">
                                                 <label>Distribuidor</label>
-                                                <select v-model="newArticleModal.selected.distributor" class="form-control" required
-                                                        @change="distributorChanged">
-                                                    <option v-for="distributor in selectOptions.hierarchy[0].subLevels"
+                                                <select v-model="selectedOptions.distributor" class="form-control"
+                                                        @change="modalDistributorChanged">
+                                                    <option v-for="distributor in distributors"
                                                             :value="distributor">
-                                                        {{ distributor.name }}
+                                                        {{ distributor.distributorName }}
                                                     </option>
                                                 </select>
                                             </div>
-                                            <div class="col-md-3 col-xs-6">
+                                            <div class="col-md-2">
                                                 <label>Región</label>
-                                                <select v-model="newArticleModal.selected.region" class="form-control" required
-                                                        @change="regionChanged" :disabled="newArticleModal.selected.distributor == null">
-                                                    <option v-for="region in newArticleModal.selected.distributor.subLevels"
+                                                <select v-model="selectedOptions.region" class="form-control"
+                                                        @change="modalRegionChanged" :disabled="selectedOptions.distributor == null">
+                                                    <option v-for="region in regions"
                                                             :value="region">
-                                                        {{ region.name }}
+                                                        {{ region.regionName }}
                                                     </option>
                                                 </select>
                                             </div>
-                                            <div class="col-md-3 col-xs-6">
+                                            <div class="col-md-2">
+                                                <label>Zona</label>
+                                                <select v-model="selectedOptions.zona" class="form-control"
+                                                        @change="modalZonaChanged" :disabled="selectedOptions.region == null">
+                                                    <option v-for="zona in zonas"
+                                                            :value="zona">
+                                                        {{ zona.name }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-2">
                                                 <label>Sucursal</label>
-                                                <select v-model="newArticleModal.selected.branch" class="form-control" required
-                                                        @change="branchChanged" :disabled="newArticleModal.selected.region == null">
-                                                    <option v-for="branch in newArticleModal.selected.region.subLevels"
+                                                <select v-model="selectedOptions.branch" class="form-control"
+                                                        @change="modalBranchChanged" :disabled="selectedOptions.zona == null">
+                                                    <option v-for="branch in branchs"
                                                             :value="branch">
-                                                        {{ branch.name }}
+                                                        {{ branch.branchShort }}
                                                     </option>
                                                 </select>
                                             </div>
-                                            <div class="col-md-3 col-xs-6">
+                                            <div class="col-md-2">
                                                 <label>Área</label>
-                                                <select v-model="newArticleModal.selected.area" class="form-control" required
-                                                        @change="areaChanged" :disabled="newArticleModal.selected.branch == null">
-                                                    <option v-for="area in newArticleModal.selected.branch.subLevels"
+                                                <select v-model="selectedOptions.area" class="form-control"
+                                                        @change="modalAreaChanged(selectedOptions.distributor.idDistributor, selectedOptions.region.idRegion, selectedOptions.zona.idZonas, selectedOptions.branch.idBranch, selectedOptions.area.idArea)"
+                                                        :disabled="selectedOptions.branch == null">
+                                                    <option v-for="area in areas"
                                                             :value="area">
-                                                        {{ area.name }}
+                                                        {{ area.areaName }}
                                                     </option>
                                                 </select>
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-3 col-xs-6">
-                                                <label>Empleado / Almacén</label>
-                                                <select v-model="newArticleModal.selected.dwEmployees" class="form-control"
-                                                        :disabled="newArticleModal.selected.area == null">
-                                                    <option v-for="dwEmployees in newArticleModal.selected.area.dwEnterprise.dwEmployeesList"
-                                                            :value="dwEmployees">
-                                                        {{ dwEmployees.employee.fullName }}
+                                            <div class="col-md-2">
+                                                <label>Empleado</label>
+                                                <select v-model="selectedOptions.dwEmployee" class="form-control"
+                                                        :disabled="selectedOptions.area == null">
+                                                    <option :value=null>
+                                                        SIN ASIGNACIÓN
+                                                    </option>
+                                                    <option v-for="dwEmployee in dwEmployees"
+                                                            :value="dwEmployee">
+                                                        {{ dwEmployee.employee.fullName }}
                                                     </option>
                                                 </select>
                                             </div>
                                             <div>
-                                                <input type="text" :value="newArticleModal.selected.dwEmployees.idEmployee" name="employee" hidden>
-                                                <input type="text" :value="newArticleModal.selected.area.dwEnterprise.idDwEnterprise" name="dwEnterprise" hidden>
+                                                <input type="text" :value="selectedOptions.dwEmployee.idEmployee" name="employee" hidden>
+                                                <input type="text" :value="dwEmployees[0].idDwEnterprise" name="dwEnterprise" hidden>
                                             </div>
                                         </div>
-                                        <div v-if="newArticleModal.selected.dwEmployees != null">
+                                        <div v-if="selectedOptions.dwEmployee != null">
                                             <br>
                                             <h4>Documentos</h4>
                                             <hr>

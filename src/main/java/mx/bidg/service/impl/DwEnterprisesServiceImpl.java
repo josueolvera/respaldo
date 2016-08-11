@@ -42,7 +42,7 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
 
     @Autowired
     CZonaDao cZonaDao;
-    
+
     @Override
     public List<DwEnterprises> findByGroupArea(CGroups idGroup, CAreas idArea) {
         return dao.findByGroupArea(idGroup, idArea);
@@ -209,7 +209,7 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
     public List<DwEnterprises> findAll() {
         return dao.findAll();
     }
-    
+
     @Override
     public DwEnterprises findByBranchAndArea(Integer idBranch, Integer idArea) {
         return dao.findByBranchAndArea(idBranch,idArea);
@@ -263,5 +263,10 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
             branchs.add(branchsDao.findById(dwEnterprise.getIdBranch()));
         }
         return branchs;
+    }
+
+    @Override
+    public List<DwEnterprises> findByDistributorRegionZonaBranchAndArea(Integer idDistributor, Integer idRegion, Integer idZona, Integer idBranch, Integer idArea) {
+        return dao.findByDistributorRegionZonaBranchAndArea(idDistributor, idRegion, idZona, idBranch, idArea);
     }
 }

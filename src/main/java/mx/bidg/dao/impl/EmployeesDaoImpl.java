@@ -77,6 +77,17 @@ public class EmployeesDaoImpl extends AbstractDao<Integer, Employees> implements
     }
 
     @Override
+    public List<Employees> findByStatus(Integer status) {
+        Criteria criteria = createEntityCriteria();
+
+        if (status != null) {
+            criteria.add(Restrictions.eq("status",status));
+        }
+
+        return criteria.list();
+    }
+
+    @Override
     public Employees findByRfc(String rfc) {
         return (Employees) createEntityCriteria().add(Restrictions.eq("rfc",rfc)).uniqueResult();
     }

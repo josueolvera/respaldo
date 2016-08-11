@@ -632,7 +632,8 @@ public class Employees implements Serializable {
     }
 
     public String getFullName() {
-        return StringFormatter.concatWithoutNull(firstName, middleName, parentalLast, motherLast);
+        String fullName = StringFormatter.concatWithoutNull(firstName, middleName, parentalLast, motherLast);
+        return fullName.replace("_","");
     }
 
     public String getFullNameReverse() {

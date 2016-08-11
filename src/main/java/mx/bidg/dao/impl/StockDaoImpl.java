@@ -2,13 +2,17 @@ package mx.bidg.dao.impl;
 
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.StockDao;
+import mx.bidg.model.DwEnterprises;
 import mx.bidg.model.Stocks;
+import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.Query;
 import org.hibernate.criterion.CriteriaSpecification;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,36 +53,21 @@ public class StockDaoImpl extends AbstractDao<Integer, Stocks> implements StockD
     }
 
     @Override
-    public List<Stocks> findByDistributorRegionBranchArea(Integer idDistributor, Integer idRegion, Integer idBranch, Integer idArea) {
-        return  createEntityCriteria()
-                .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
-                .createCriteria("dwEnterprises")
-                .add(Restrictions.eq("idDistributor", idDistributor))
-                .add(Restrictions.eq("idRegion", idRegion))
-                .add(Restrictions.eq("idBranch", idBranch))
-                .add(Restrictions.eq("idArea", idArea))
-                .list();
-    }
+    public List<Stocks> findByDwEnterprises(List<DwEnterprises> dwEnterprises) {
+        if (dwEnterprises.isEmpty()) {
+            return new ArrayList<>();
+        }
 
-    @Override
-    public List<Stocks> findByDistributorRegionBranch(Integer idDistributor, Integer idRegion, Integer idBranch) {
-        return  createEntityCriteria()
-                .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
-                .createCriteria("dwEnterprises")
-                .add(Restrictions.eq("idDistributor", idDistributor))
-                .add(Restrictions.eq("idRegion", idRegion))
-                .add(Restrictions.eq("idBranch", idBranch))
-                .list();
-    }
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjunction = Restrictions.disjunction();
 
-    @Override
-    public List<Stocks> findByDistributorRegion(Integer idDistributor, Integer idRegion) {
-        return  createEntityCriteria()
-                .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
-                .createCriteria("dwEnterprises")
-                .add(Restrictions.eq("idDistributor", idDistributor))
-                .add(Restrictions.eq("idRegion", idRegion))
-                .list();
+        for(DwEnterprises dwEnterprise : dwEnterprises) {
+            disjunction.add(Restrictions.eq("idDwEnterprises",dwEnterprise.getIdDwEnterprise()));
+        }
+
+        criteria.add(disjunction);
+
+        return criteria.list();
     }
 
     @Override
