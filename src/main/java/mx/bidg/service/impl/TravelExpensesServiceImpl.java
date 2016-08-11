@@ -72,7 +72,7 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
 
         if (travelType.equals(CTravelTypes.NACIONALES)) {
             budget = budgetsDao.findByCombination(
-                    dwEnterprise.getGroup(),
+                    dwEnterprise.getDistributor(),
                     dwEnterprise.getArea(),
                     CBudgetCategories.GASTOS_DE_VIAJE,
                     CBudgetSubcategories.NACIONALES
@@ -80,7 +80,7 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
             productType = CProductTypes.NACIONALES;
         } else if (travelType.equals(CTravelTypes.INTERNACIONALES)){
             budget = budgetsDao.findByCombination(
-                    dwEnterprise.getGroup(),
+                    dwEnterprise.getDistributor(),
                     dwEnterprise.getArea(),
                     CBudgetCategories.GASTOS_DE_VIAJE,
                     CBudgetSubcategories.INTERNACIONALES

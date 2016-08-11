@@ -79,7 +79,7 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
         DwEnterprises dwEnterprise = user.getDwEmployee().getDwEnterprise();
 
         Budgets budget = budgetsDao.findByCombination(
-                dwEnterprise.getGroup(),
+                dwEnterprise.getDistributor(),
                 dwEnterprise.getArea(),
                 CBudgetCategories.GASTOS_DE_VIAJE,
                 CBudgetSubcategories.NACIONALES

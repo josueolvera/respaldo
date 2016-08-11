@@ -19,7 +19,7 @@ import mx.bidg.model.CGroups;
 public interface BudgetsService {
     
     Budgets saveBudget(Budgets budgets);
-    Budgets findByCombination(Integer idGroup, Integer idArea, Integer idCategory,
+    Budgets findByCombination(Integer idDistributor, Integer idArea, Integer idCategory,
             Integer idSubcategory);
     ArrayList<Budgets> findByGroupAreaEnterprise(CGroups idGroup, CAreas idArea, Integer idDwEnterprise);
     ArrayList<Budgets> findByGroupArea(CGroups idGroup, CAreas idArea);

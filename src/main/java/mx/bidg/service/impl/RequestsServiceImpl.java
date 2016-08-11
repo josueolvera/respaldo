@@ -33,12 +33,6 @@ public class RequestsServiceImpl implements RequestsService {
     CRequestCategoriesDao cRequestCategoriesDao;
     
     @Autowired
-    CRequestTypesDao cRequestTypesDao;
-    
-    @Autowired
-    CProductTypesDao cProductTypesDao;
-    
-    @Autowired
     UsersDao usersDao;
     
     @Autowired
@@ -78,13 +72,14 @@ public class RequestsServiceImpl implements RequestsService {
         
         JsonNode jsonRequest = map.readTree(data);
         HashMap<String, Object> hashMap = new HashMap<>();
-        
+  /*      
         CRequestsCategories cRequestsCategory = cRequestCategoriesDao
                 .findById(jsonRequest.get("idRequestCategory").asInt());
         CRequestTypes cRequestType = cRequestTypesDao
                 .findByIdFetchBudgetCategory(jsonRequest.get("idRequestType").asInt());
         CProductTypes cProductType = cProductTypesDao
                 .findByIdFetchBudgetSubcategory(jsonRequest.get("idProductType").asInt());
+             
         Users userResponsable = usersDao.findByIdFetchDwEmployee(jsonRequest.get("idUserResponsable").asInt());
         LocalDateTime date = LocalDateTime.now();
         
@@ -97,7 +92,7 @@ public class RequestsServiceImpl implements RequestsService {
         
         DwEnterprises dwEnterprise = userResponsable.getDwEmployee().getDwEnterprise();        
         
-        Budgets budget = budgetsDao.findByCombination(dwEnterprise.getGroup(), dwEnterprise.getArea(), 
+        Budgets budget = budgetsDao.findByCombination(dwEnterprise.getDistributor(), dwEnterprise.getArea(), 
                 cRequestType.getBudgetCategory(), cProductType.getBudgetSubcategory());
         
         if(budget == null) {
@@ -120,8 +115,10 @@ public class RequestsServiceImpl implements RequestsService {
         }
         
         hashMap.put("budgetMonthBranch", budgetMonthBranch);
+          */
         return hashMap;
     }
+    
 
     @Override
     public Requests saveData(String data, Users user) throws Exception {

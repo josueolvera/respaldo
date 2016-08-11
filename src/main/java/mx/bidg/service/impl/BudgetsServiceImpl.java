@@ -11,6 +11,7 @@ import mx.bidg.model.Budgets;
 import mx.bidg.model.CAreas;
 import mx.bidg.model.CBudgetCategories;
 import mx.bidg.model.CBudgetSubcategories;
+import mx.bidg.model.CDistributors;
 import mx.bidg.model.CGroups;
 import mx.bidg.service.BudgetsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +35,9 @@ public class BudgetsServiceImpl implements BudgetsService {
     }
 
     @Override
-    public Budgets findByCombination(Integer idGroup, Integer idArea, Integer idCategory, 
+    public Budgets findByCombination(Integer idDistributor, Integer idArea, Integer idCategory, 
             Integer idSubcategory) {
-        return dao.findByCombination(new CGroups(idGroup), new CAreas(idArea), 
+        return dao.findByCombination(new CDistributors(idDistributor), new CAreas(idArea), 
                 new CBudgetCategories(idCategory), new CBudgetSubcategories(idSubcategory));
     }
 

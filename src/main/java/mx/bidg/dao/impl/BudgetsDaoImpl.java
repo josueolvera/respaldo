@@ -51,12 +51,12 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
     }
 
     @Override
-    public Budgets findByCombination(CGroups idGroup, CAreas idArea, CBudgetCategories idCategory, 
+    public Budgets findByCombination(CDistributors cDistributors, CAreas idArea, CBudgetCategories idCategory, 
             CBudgetSubcategories idSubcategory) {
         
         Criteria criteria = createEntityCriteria();
         HashMap<String, Object> map = new HashMap<>();
-        map.put("group", idGroup);
+        map.put("idDistributor", cDistributors);
         map.put("area", idArea);
         map.put("budgetCategory", idCategory);
         map.put("budgetSubcategory", idSubcategory);
