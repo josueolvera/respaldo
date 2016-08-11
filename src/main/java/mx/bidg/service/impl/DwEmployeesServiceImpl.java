@@ -99,6 +99,19 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     }
 
     @Override
+    public List<DwEmployees> findByDistributorRegionZonaBranchAndArea(Integer idDistributor, Integer idRegion, Integer idZona,Integer idBranch, Integer idArea) {
+        List<DwEnterprises> dwEnterprises =
+                dwEnterprisesDao.findByDistributorRegionZonaBranchAndArea(
+                                idDistributor,
+                                idRegion,
+                                idZona,
+                                idBranch,
+                                idArea
+                        );
+        return dwEmployeesDao.findByDwEnterprises(dwEnterprises);
+    }
+
+    @Override
     public List<DwEmployees> findAll() {
         return dwEmployeesDao.findAll();
     }
