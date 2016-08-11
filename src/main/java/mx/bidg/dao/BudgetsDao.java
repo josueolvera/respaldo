@@ -10,6 +10,7 @@ import mx.bidg.model.Budgets;
 import mx.bidg.model.CAreas;
 import mx.bidg.model.CBudgetCategories;
 import mx.bidg.model.CBudgetSubcategories;
+import mx.bidg.model.CDistributors;
 import mx.bidg.model.CGroups;
 
 /**
@@ -18,7 +19,15 @@ import mx.bidg.model.CGroups;
  */
 public interface BudgetsDao extends InterfaceDao<Budgets> {
     
-    Budgets findByCombination(CGroups idGroup, CAreas idArea, CBudgetCategories idCategory,
+    /**
+     *
+     * @param cDistributors
+     * @param idArea
+     * @param idCategory
+     * @param idSubcategory
+     * @return
+     */
+    Budgets findByCombination(CDistributors cDistributors, CAreas idArea, CBudgetCategories idCategory,
             CBudgetSubcategories idSubcategory);
 
     ArrayList<Budgets> findByGroupArea(CGroups idGroup, CAreas idArea);
