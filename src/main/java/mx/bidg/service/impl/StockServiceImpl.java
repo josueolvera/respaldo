@@ -1,5 +1,6 @@
 package mx.bidg.service.impl;
 
+import mx.bidg.dao.DwEnterprisesDao;
 import mx.bidg.dao.StockDao;
 import mx.bidg.model.*;
 import mx.bidg.service.CArticlesService;
@@ -22,6 +23,9 @@ public class StockServiceImpl implements StockService {
 
     @Autowired
     private StockDao stockDao;
+
+    @Autowired
+    private DwEnterprisesDao dwEnterprisesDao;
 
     @Autowired
     private CArticlesService articlesService;
@@ -53,23 +57,12 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public List<Stocks> filter(int idDistributor, int idRegion, int idBranch, int idArea) {
+    public List<Stocks> filter(Integer idDistributor, Integer idRegion, Integer idZona, Integer  idBranch, Integer  idArea) {
 
         List<Stocks> stocks;
 
-        if (idDistributor != 0 && idRegion != 0 && idBranch != 0 && idArea != 0) {
-            stocks = stockDao.findByDistributorRegionBranchArea(idDistributor,idRegion,idBranch,idArea);
-        } else {
-            if (idDistributor != 0 && idRegion != 0 && idBranch != 0) {
-                stocks = stockDao.findByDistributorRegionBranch(idDistributor,idRegion,idBranch);
-            } else {
-                if (idDistributor != 0 && idRegion != 0) {
-                    stocks = stockDao.findByDistributorRegion(idDistributor,idRegion);
-                } else {
-                    stocks = stockDao.findByDistributor(idDistributor);
-                }
-            }
-        }
+        List<DwEnterprises> dwEnterprises = dwEnterprisesDao.findByDistributorRegionZonaBranchAndArea(idDistributor, idRegion, idZona, idBranch, idArea);
+        stocks = stockDao.findByDwEnterprises(dwEnterprises);
 
         return stocks;
     }
