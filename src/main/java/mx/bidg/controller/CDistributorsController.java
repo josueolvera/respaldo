@@ -34,8 +34,9 @@ public class CDistributorsController {
     
     @Autowired
     private CDistributorsService cDistributorsService;
-    
-    ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
+
+    @Autowired
+    ObjectMapper mapper;
     
     @RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public @ResponseBody String getCDistributors(@RequestParam(name = "forStock", required = false) boolean forStock) throws Exception {
@@ -47,18 +48,18 @@ public class CDistributorsController {
             list = cDistributorsService.findAll();
         }
 
-        return map.writerWithView(JsonViews.Root.class).writeValueAsString(list);
+        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(list);
     }
 
     @RequestMapping(value = "/agreement", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getDistributorsByAgreement() throws IOException{
         List<CDistributors> cDistributors = cDistributorsService.findAllForAgreement();
-        return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(cDistributors), HttpStatus.OK);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(cDistributors), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/stock", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getDistributorByStock() throws IOException{
         List<CDistributors> cDistributorses = cDistributorsService.findAllForStock();
-        return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(cDistributorses), HttpStatus.OK);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(cDistributorses), HttpStatus.OK);
     }
 }
