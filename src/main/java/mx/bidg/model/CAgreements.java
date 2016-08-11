@@ -20,6 +20,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import mx.bidg.pojos.DateFormatsPojo;
 
 /**
  *
@@ -150,6 +151,20 @@ public class CAgreements implements Serializable {
     
     public String getNameSQL(){
         return agreementName;
+    }
+    
+    public DateFormatsPojo getUploadDateFormats() {
+        if (uploadedDate == null) {
+            return null;
+        }
+        return new DateFormatsPojo(uploadedDate);
+    }
+    
+    public DateFormatsPojo getLowDateFormats() {
+        if (lowDate == null) {
+            return null;
+        }
+        return new DateFormatsPojo(lowDate);
     }
 
     @Override
