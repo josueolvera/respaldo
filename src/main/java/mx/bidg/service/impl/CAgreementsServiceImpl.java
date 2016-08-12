@@ -25,8 +25,7 @@ public class CAgreementsServiceImpl implements CAgreementsService {
 
     @Override
     public CAgreements save(CAgreements cAgreements) {
-        cAgreementsDao.save(cAgreements);
-        return cAgreements;
+        return cAgreementsDao.save(cAgreements);
     }
 
     @Override

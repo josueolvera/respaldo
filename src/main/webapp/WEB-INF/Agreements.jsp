@@ -73,121 +73,54 @@
 
                 },
                 ready: function () {
-                    this.obtainAgreementsDistributor();
-                    this.obtainDistributors();
-                    this.fetchHierarchy();
-                    this.obtainAgreements();
+                    this.obtainGroups();
+                    this.obtainAgreementsGroups();
                 },
                 data: {
-                    dwEnterpriseAgreements:{
-                        idDistributor:"",
-                        agreementName:"",
-                        idRegion:"",
-                        idBranch:"",
-                        dwEnterprises:[],
+                    groupsAgreements: [],
+                    groups: [],
+                    agreementsGroups: {
+                        agreementName: "",
+                        idAg: ""
                     },
-                    enterpriseAgreements: [],
-                    distributors: [],
-                    regions: [],
-                    dwEnterprise:{
-                        idBranch:'',
-                        idRegion:'',
-                        idDistributor:'',
-                    },
-                    selectOptions: {
-                        distributors: [],
-                        areas: [],
-                        hierarchy: [],
-                    },
-                    defaultDistributor: {
-                        id:0,
-                        name:''
-                    },
-                    selectedOptions: {
-                        distributor: {
-                            id:0
-                        },
-                        region: {
-                            id:0
-                        },
-                        branch: {
-                            id:0
-                        }
-                    },
-                    defaultRegion: {
-                        id:0,
-                        name:''
-                    },
-                    defaultBranch: {
-                        id:0,
-                        name:''
-                    },
-                    agreements:[],
                     modalEliminar: {
                         agreement: {
-                            agreementName: "",
-                        },
+                            agreementName: ""
+                        }
                     },
+                    groupAgreement: {}
                 },
                 methods: {
-                    obtainAgreementsDistributor: function () {
-                        this.$http.get(ROOT_URL + "/enterprises-agreements" ).success(function (data) {
-                            var jsonObjectIndex = {};
-                            data.forEach(function (agreements) {
-                                if (isNaN(agreements.dwEnterprise)) {
-                                    jsonObjectIndex[agreements.dwEnterprise._id] = agreements.dwEnterprise;
-                                } else {
-                                    agreements.dwEnterprise = jsonObjectIndex[agreements.dwEnterprise];
-                                }
-                            });
-                            this.enterpriseAgreements = data;
+                    obtainAgreementsGroups: function () {
+                        this.$http.get(ROOT_URL + "/groups-agreements").success(function (data) {
+                            this.groupsAgreements = data;
                         });
                     },
-                    obtainDistributors: function () {
-                      this.$http.get(ROOT_URL + "/distributors/agreement").success(function (data) {
-                         this.distributors = data;
-                      });
-                    },
-                    obtainRegions: function () {
-                        this.$http.get(ROOT_URL + "/dw-enterprises/distributor/" + this.dwEnterprise.idDistributor).success(function (data) {
-                           this.regions = data;
+                    obtainGroups: function () {
+                        this.groups = [];
+                        this.$http.get(ROOT_URL + "/c-agreements-groups").success(function (data) {
+                            this.groups = data;
                         });
-                    },
-                    fetchHierarchy: function () {
-                        this.$http.get(ROOT_URL + "/dw-enterprises/hierarchy-agreements").success(function (data) {
-                            this.selectOptions.hierarchy = data;
-                        });
-                    },
-                    selectedOptionsDistributorChanged: function () {
-                        this.selectedOptions.region = this.defaultRegion;
-                        this.selectedOptions.branch = this.defaultBranch;
-                    },
-                    selectedOptionsRegionChanged: function () {
-                        this.selectedOptions.branch = this.defaultBranch;
-                        this.selectedOptions.area = this.defaultArea;
-                    },
-                    selectedOptionsBranchChanged: function () {
-                        this.selectedOptions.area = this.defaultArea;
-                    },
-                    obtainAgreements: function () {
-                      this.$http.get(ROOT_URL + "/agreements").success(function (data) {
-                         this.agreements = data;
-                      });
                     },
                     saveAgreement: function () {
-                        this.$http.post(ROOT_URL + "/agreements/new", JSON.stringify(this.dwEnterpriseAgreements)).success(function (data) {
-                            showAlert("Registro de convenio exitoso");
-                            $('#modalAlta').modal('hide');
-                            this.dwEnterpriseAgreements.agreementName = "";
-                            this.dwEnterpriseAgreements.idDistributor = "";
-                            this.obtainAgreements();
-                        }).error(function () {
-                            showAlert("El nombre de convenio ya existe", {type: 3});
-                        });
+                        if(this.agreementsGroups.idAg.length == 0 && this.agreementsGroups.agreementName.length == 0){
+                            showAlert("Es necesario llenar los campos: Nombre del convenio y Grupo de convenio", {type: 3});
+                        } else {
+                            this.$http.post(ROOT_URL + "/groups-agreements/new", JSON.stringify(this.agreementsGroups)).success(function (data) {
+                                showAlert("Registro de convenio exitoso");
+                                $('#modalAlta').modal('hide');
+                                this.agreementsGroups.idAg = '';
+                                this.agreementsGroups.agreementName = '';
+                                this.obtainAgreementsGroups();
+
+                            }).error(function () {
+                                showAlert("Hubo un error al generar la solicitud intente de nuevo", {type: 3});
+                            });
+                        }
                     },
                     cancelar: function () {
-                      this.dwEnterpriseAgreements.agreementName = "";
-                      this.dwEnterpriseAgreements.idDistributor = "";
+                        this.agreementsGroups.idAg = '';
+                        this.agreementsGroups.agreementName = '';
                       $('#modalAlta').modal('hide');
                     },
                     question: function (agreement) {
@@ -197,11 +130,28 @@
                     deleteAgreement: function () {
                         this.$http.post(ROOT_URL + "/agreements/low-date/" + this.modalEliminar.agreement.idAgreement)
                                 .success(function (data) {
-                                    this.obtainAgreements();
+                                    this.obtainAgreementsGroups();
                                     $('#modalEliminar').modal('hide');
                                     showAlert("Convenio eliminado");
                                 });
                     },
+                    modifyAgreements: function (idGa) {
+                        this.$http.get(ROOT_URL + "/groups-agreements/" + idGa).success(function (data) {
+                            this.groupAgreement = data;
+                            this.obtainGroups();
+                            $("#modalReasignar").modal("show");
+                        });
+                    },
+                    reasignAgreement: function () {
+                        this.$http.post(ROOT_URL + "/groups-agreements/re-asign/" + this.groupAgreement.idGa, JSON.stringify(this.groupAgreement)).success(function (data) {
+                            showAlert("Convenio reasignado con exito");
+                            $('#modalReasignar').modal('hide');
+                            this.groupAgreement = {};
+                            this.obtainAgreementsGroups();
+                        }).error(function (data) {
+                           showAlert("Error al reasignar el convenio", {type: 3});
+                        });
+                    }
                 },
                 filters: {
 
@@ -238,19 +188,27 @@
 
                 <div>
                     <div class="row table-header">
-                        <div class="col-xs-11"><b>Convenio</b></div>
+                        <div class="col-xs-5"><b>Convenio</b></div>
+                        <div class="col-xs-5"><b>Grupo</b></div>
+                        <div class="col-xs-1"><b>Reasignar</b></div>
                         <div class="col-xs-1"><b>Eliminar</b></div>
                     </div>
                 </div>
             </div>
             <br>
             <div class="table-body flex-row flex-content">
-                <div class="row table-row" v-for="agreement in agreements | filterBy search in 'agreementName'" v-if="agreement.lowDate == null">
-                    <div class="col-xs-11">{{agreement.agreementName}}</div>
+                <div class="row table-row" v-for="agreementGroup in groupsAgreements | filterBy search in 'agreement.agreementName'" v-if="agreementGroup.agreement.lowDate == null">
+                    <div class="col-xs-5">{{agreementGroup.agreement.agreementName}}</div>
+                    <div class="col-xs-5">{{agreementGroup.agreementGroup.agreementGroupName}}</div>
+                    <div class="col-xs-1">
+                        <button type="button" class="btn btn-default" name="button" data-toggle="tooltip"
+                                data-placement="bottom" title="Reasignar"
+                                @click="modifyAgreements(agreementGroup.idGa)"><span class="glyphicon glyphicon-refresh"></span></button>
+                    </div>
                     <div class="col-xs-1">
                         <button type="button" class="btn btn-danger" name="button" data-toggle="tooltip"
                                 data-placement="bottom" title="Eliminar"
-                                @click="question(agreement)"><span class="glyphicon glyphicon-trash"></span></button>
+                                @click="question(agreementGroup.agreement)"><span class="glyphicon glyphicon-trash"></span></button>
                     </div>
                 </div>
             </div>
@@ -266,7 +224,16 @@
                             <div class="row" >
                                 <div class="col-xs-5">
                                     <label>Nombre del convenio</label>
-                                    <input class="form-control" name="name" v-model="dwEnterpriseAgreements.agreementName">
+                                    <input class="form-control" name="name" v-model="agreementsGroups.agreementName">
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Grupo del convenio</label>
+                                    <select class="form-control" name="" v-model="agreementsGroups.idAg">
+                                        <option></option>
+                                        <option v-for="group in groups" :value="group.idAg">
+                                            {{group.agreementGroupName}}
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
                             </div>
@@ -277,6 +244,43 @@
                             </button>
 
                             <button type="button" class="btn btn-default" @click="cancelar">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- container-fluid -->
+            <div class="modal fade" id="modalReasignar" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">Reasignar convenio</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row" >
+                                <div class="col-xs-5">
+                                    <label>Nombre del convenio</label>
+                                    <input class="form-control" name="name" v-model="groupAgreement.agreement.agreementName" disabled>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Grupo del convenio</label>
+                                    <select class="form-control" name="" v-model="groupAgreement.agreementGroup.idAg">
+                                        <option></option>
+                                        <option v-for="group in groups" :value="group.idAg">
+                                            {{group.agreementGroupName}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+
+                            <button type="button" class="btn btn-success" @click="reasignAgreement">
+                                Reasignar
+                            </button>
+
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         </div>
                     </div>
                 </div>
