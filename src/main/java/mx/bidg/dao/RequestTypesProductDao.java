@@ -6,6 +6,7 @@
 package mx.bidg.dao;
 
 import java.util.List;
+import mx.bidg.model.CBudgetCategories;
 import mx.bidg.model.CProductTypes;
 import mx.bidg.model.CRequestTypes;
 import mx.bidg.model.CRequestsCategories;
@@ -25,5 +26,7 @@ public interface RequestTypesProductDao extends InterfaceDao<RequestTypesProduct
     public List<RequestTypesProduct> findByRequestCategoryRequestType(CRequestsCategories requestCategory, CRequestTypes requestType);
 
     public List<RequestTypesProduct> findByRequestType(CRequestTypes requestTypes);
+    
+    public List<RequestTypesProduct> findByBudgetCategory(CBudgetCategories budgetCategories);
     
 }
