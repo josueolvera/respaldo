@@ -34,6 +34,12 @@ public class SapSaleServiceImpl implements SapSaleService {
     private CAgreementsDao cAgreementsDao;
 
     @Autowired
+    private  GroupsAgreementsDao groupsAgreementsDao;
+
+    @Autowired
+    private CAgreementsGroupsDao cAgreementsGroupsDao;
+
+    @Autowired
     private CBranchsDao cBranchsDao;
 
     @Autowired
@@ -131,6 +137,13 @@ public class SapSaleServiceImpl implements SapSaleService {
                                 newAgreement.setStatus(1);
 
                                 newAgreement = cAgreementsDao.save(newAgreement);
+
+                                GroupsAgreements groupAgreement = new GroupsAgreements();
+
+                                groupAgreement.setAgreement(newAgreement);
+                                groupAgreement.setAgreementGroup(cAgreementsGroupsDao.findById(6));
+
+                                groupsAgreementsDao.save(groupAgreement);
 
                                 sapSale.setAgreement(newAgreement);
                             }
@@ -322,6 +335,13 @@ public class SapSaleServiceImpl implements SapSaleService {
 
                                         newAgreement = cAgreementsDao.save(newAgreement);
 
+                                        GroupsAgreements groupAgreement = new GroupsAgreements();
+
+                                        groupAgreement.setAgreement(newAgreement);
+                                        groupAgreement.setAgreementGroup(cAgreementsGroupsDao.findById(6));
+
+                                        groupsAgreementsDao.save(groupAgreement);
+
                                         sapSale.setAgreement(newAgreement);
                                     }
                                 }
@@ -446,6 +466,13 @@ public class SapSaleServiceImpl implements SapSaleService {
                                         newAgreement.setStatus(1);
 
                                         newAgreement = cAgreementsDao.save(newAgreement);
+
+                                        GroupsAgreements groupAgreement = new GroupsAgreements();
+
+                                        groupAgreement.setAgreement(newAgreement);
+                                        groupAgreement.setAgreementGroup(cAgreementsGroupsDao.findById(6));
+
+                                        groupsAgreementsDao.save(groupAgreement);
 
                                         sapSale.setAgreement(newAgreement);
                                     }
