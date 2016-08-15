@@ -125,6 +125,12 @@ public class DwEnterprisesController {
         return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(areasList), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/distributor-branch/{idDistributor}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getBranchByDistributor(@PathVariable Integer idDistributor) throws IOException{
+        List<CBranchs> branchs = dwEnterprisesService.getBranchByDistributor(idDistributor);
+        return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(branchs), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/distributor-region/{idDistributor}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getRegionByDistributor(@PathVariable Integer idDistributor) throws IOException{
         List<CRegions> regionsList = dwEnterprisesService.findRegionByDistributor(idDistributor);

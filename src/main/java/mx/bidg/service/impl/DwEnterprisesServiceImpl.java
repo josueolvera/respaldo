@@ -226,6 +226,16 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
     }
 
     @Override
+    public List<CBranchs> getBranchByDistributor(Integer idDistributor) {
+        List<DwEnterprises> dwEnterprises = dao.findByDistributor(idDistributor);
+        List<CBranchs> branchs = new ArrayList<>();
+        for(DwEnterprises dwEnterprise : dwEnterprises){
+            branchs.add(dwEnterprise.getBranch());
+        }
+        return branchs;
+    }
+
+    @Override
     public List<CRegions> findRegionByDistributor(Integer idDistributor) {
         List<DwEnterprises> dwEnterprises = dao.findByDistributor(idDistributor);
         List<CRegions> regions = new ArrayList<CRegions>();

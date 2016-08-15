@@ -70,8 +70,10 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
     @Override
     public List<DwEnterprises> findByDistributor(Integer idDistributor) {
 
-        return (List<DwEnterprises>) getSession().createCriteria(DwEnterprises.class)
-                .add(Restrictions.eq("idDistributor", idDistributor)).add(Restrictions.eq("status",true)).list();
+        return createEntityCriteria()
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("status",true))
+                .list();
     }
 
     @Override
