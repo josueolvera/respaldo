@@ -49,4 +49,9 @@ public class CAgreementsDaoImpl extends AbstractDao <Integer,CAgreements> implem
         Criteria criteria = createEntityCriteria();
         return (CAgreements) criteria.add(Restrictions.eq("agreementNameClean", name)).uniqueResult();
     }
+
+    @Override
+    public List<CAgreements> findAgreementsActives() {
+        return (List<CAgreements>) createEntityCriteria().add(Restrictions.eq("status",1)).list();
+    }
 }
