@@ -187,6 +187,7 @@
                             this.getBranchs();
                             this.clearSelectedBranch();
                             this.hideModal("#deleteModal");
+                            showAlert('Sucursal dada de baja')
                         }).error(function (data) {
                         });
                     },
@@ -213,6 +214,7 @@
                             this.getBranchs();
                             this.clearSelectedBranch();
                             this.hideModal("#editModal");
+                            showAlert('Sucursal reasignada')
                         }).error(function (data) {
                         });
                     },

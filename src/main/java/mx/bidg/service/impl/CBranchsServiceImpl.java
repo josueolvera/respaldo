@@ -12,7 +12,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.dao.CBranchsDao;
+import mx.bidg.dao.DwEmployeesDao;
 import mx.bidg.dao.DwEnterprisesDao;
+import mx.bidg.dao.EmployeesDao;
 import mx.bidg.model.*;
 import mx.bidg.service.CBranchsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,12 @@ public class CBranchsServiceImpl implements CBranchsService {
 
     @Autowired
     DwEnterprisesDao dwEnterprisesDao;
+
+    @Autowired
+    DwEmployeesDao dwEmployeesDao;
+
+    @Autowired
+    EmployeesDao employeesDao;
 
     @Override
     public List<CBranchs> findAll() {
@@ -59,7 +67,7 @@ public class CBranchsServiceImpl implements CBranchsService {
         cBranchs.setBranchName(cBranchs.getBranchName().toUpperCase());
         cBranchs.setBranchShort(cBranchs.getBranchShort().toUpperCase());
         cBranchs.setStatus(true);
-        cBranchsDao.save(cBranchs);
+        cBranchs = cBranchsDao.save(cBranchs);
         DwEnterprises dwEnterprises = new DwEnterprises();
         dwEnterprises.setBranch(cBranchs);
         dwEnterprises.setDistributor(new CDistributors(idDistributor));
@@ -77,6 +85,22 @@ public class CBranchsServiceImpl implements CBranchsService {
     @Override
     public CBranchs changeBranchStatus(int idBranch) {
         CBranchs branch = cBranchsDao.findById(idBranch);
+        List<DwEnterprises> dwEnterprises = branch.getDwEnterprises();
+        List<DwEmployees> dwEmployees;
+        for (DwEnterprises dwEnterprise : dwEnterprises) {
+
+            if (dwEnterprise.getStatus()) {
+                dwEnterprise.setStatus(false);
+                dwEnterprisesDao.update(dwEnterprise);
+                dwEmployees = dwEmployeesDao.findByDwEnterprise(dwEnterprise.getIdDwEnterprise());
+                for (DwEmployees dwEmployee : dwEmployees) {
+                    Employees employee = employeesDao.findById(dwEmployee.getIdEmployee());
+                    employee.setStatus(0);
+                    employeesDao.update(employee);
+                }
+            }
+        }
+
         branch.setStatus(false);
         cBranchsDao.update(branch);
         return branch;

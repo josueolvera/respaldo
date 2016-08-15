@@ -83,7 +83,6 @@ public class CBrachsController {
         currentDwEnterprises.setDistributor(new CDistributors(idDistributor));
         currentDwEnterprises.setRegion(new CRegions(idRegion));
         currentDwEnterprises.setZona(new CZonas(idZona));
-        currentDwEnterprises.setStatus(true);
         dwEnterprisesService.update(currentDwEnterprises);
 
         DwEnterprises dwEnterprises = new DwEnterprises();
