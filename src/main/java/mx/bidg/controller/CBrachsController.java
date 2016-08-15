@@ -20,6 +20,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+
 /**
  *
  * @author sistemask
@@ -100,8 +102,9 @@ public class CBrachsController {
     }
 
     @RequestMapping(value = "/change-branch-status", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    private @ResponseBody String changeBranchStatus(@RequestBody Integer idBranch) throws Exception {
-        CBranchs branch = cBranchsService.changeBranchStatus(idBranch);
+    private @ResponseBody String changeBranchStatus(@RequestBody Integer idBranch, HttpSession session) throws Exception {
+        Users user = (Users) session.getAttribute("user");
+        CBranchs branch = cBranchsService.changeBranchStatus(idBranch, user);
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(branch);
     }
 

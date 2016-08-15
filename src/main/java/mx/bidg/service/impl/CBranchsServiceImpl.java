@@ -16,7 +16,7 @@ import mx.bidg.dao.DwEmployeesDao;
 import mx.bidg.dao.DwEnterprisesDao;
 import mx.bidg.dao.EmployeesDao;
 import mx.bidg.model.*;
-import mx.bidg.service.CBranchsService;
+import mx.bidg.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +40,21 @@ public class CBranchsServiceImpl implements CBranchsService {
 
     @Autowired
     EmployeesDao employeesDao;
+
+    @Autowired
+    EmployeesAccountsService employeesAccountsService;
+
+    @Autowired
+    AccountsService accountsService;
+
+    @Autowired
+    EmployeesHistoryService employeesHistoryService;
+
+    @Autowired
+    EmailDeliveryService emailDeliveryService;
+
+    @Autowired
+    EmailTemplatesService emailTemplatesService;
 
     @Override
     public List<CBranchs> findAll() {
@@ -83,7 +98,7 @@ public class CBranchsServiceImpl implements CBranchsService {
     }
 
     @Override
-    public CBranchs changeBranchStatus(int idBranch) {
+    public CBranchs changeBranchStatus(int idBranch, Users user) {
         CBranchs branch = cBranchsDao.findById(idBranch);
         List<DwEnterprises> dwEnterprises = branch.getDwEnterprises();
         List<DwEmployees> dwEmployees;
@@ -95,8 +110,18 @@ public class CBranchsServiceImpl implements CBranchsService {
                 dwEmployees = dwEmployeesDao.findByDwEnterprise(dwEnterprise.getIdDwEnterprise());
                 for (DwEmployees dwEmployee : dwEmployees) {
                     Employees employee = employeesDao.findById(dwEmployee.getIdEmployee());
+                    EmployeesAccounts employeesAccounts = employeesAccountsService.findEmployeeAccountActive(employee.getIdEmployee());
+                    Accounts accounts = employeesAccounts.getAccount();
                     employee.setStatus(0);
                     employeesDao.update(employee);
+                    employeesHistoryService.save(dwEmployee, CActionTypes.BAJA, accounts, user);
+
+                    dwEmployeesDao.delete(dwEmployee);
+
+                    EmailTemplates emailTemplate = emailTemplatesService.findByName("employee_low_notification");
+                    emailTemplate.addProperty("dwEmployee", dwEmployee);
+
+                    emailDeliveryService.deliverEmail(emailTemplate);
                 }
             }
         }

@@ -134,7 +134,6 @@ public class DwEmployeesController {
     public ResponseEntity<String> changeEmployeeStatus(@RequestBody Integer idDwEmployee, HttpSession session) throws IOException {
 
         Users user = (Users) session.getAttribute("user");
-        System.out.println(user.getIdUser());
 
         dwEmployeesService.changeEmployeeStatus(idDwEmployee, user);
 
