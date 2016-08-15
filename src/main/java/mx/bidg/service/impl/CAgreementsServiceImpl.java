@@ -65,6 +65,7 @@ public class CAgreementsServiceImpl implements CAgreementsService {
     public void lowDate (Integer idAgreement) {
         CAgreements agreement = cAgreementsDao.findById(idAgreement);
         agreement.setLowDate(LocalDateTime.now());
+        agreement.setStatus(0);
         cAgreementsDao.update(agreement);
     }
 }
