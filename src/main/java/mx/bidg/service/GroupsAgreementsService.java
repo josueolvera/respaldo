@@ -5,6 +5,8 @@
  */
 package mx.bidg.service;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import mx.bidg.model.GroupsAgreements;
 
@@ -18,5 +20,6 @@ public interface GroupsAgreementsService {
     GroupsAgreements findById(Integer idGa);
     List<GroupsAgreements> findAll();
     boolean delete (GroupsAgreements groupsAgreements);
+    void GroupAgreementsReport(OutputStream stream) throws IOException;
     
 }
