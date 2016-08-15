@@ -9,8 +9,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.ws.Response;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.CAgreements;
@@ -25,10 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -98,5 +98,18 @@ public class GroupsAgreementsController {
     public ResponseEntity<String> findById (@PathVariable Integer idGa) throws IOException{
         GroupsAgreements groupsAgreements = groupsAgreementsService.findById(idGa);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(groupsAgreements), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/report-agreements", method = RequestMethod.GET)
+    public ResponseEntity<String> report(@RequestParam(required = true, name = "file_name") String fileName, HttpServletResponse response) throws IOException{
+
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment; filename=\""+ fileName +".xls\"");
+
+        OutputStream outputStream = response.getOutputStream();
+        groupsAgreementsService.GroupAgreementsReport(outputStream);
+        outputStream.flush();
+        outputStream.close();
+        return new ResponseEntity<>("Reporte", HttpStatus.OK);
     }
 }
