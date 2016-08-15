@@ -9,7 +9,11 @@ import java.util.LinkedList;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.GroupsAgreementsDao;
+import mx.bidg.model.CAgreements;
 import mx.bidg.model.GroupsAgreements;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -42,5 +46,19 @@ public class GroupsAgreementsDaoImpl extends AbstractDao<Integer, GroupsAgreemen
         remove(entity);
         return true;
     }
-    
+
+    @Override
+    public List<GroupsAgreements> findGroupsAgreementsActives(List<CAgreements> agreementsList) {
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjunctionAgreements = Restrictions.disjunction();
+
+        if (!agreementsList.isEmpty()){
+            for (CAgreements agreement : agreementsList){
+                disjunctionAgreements.add(Restrictions.eq("idAgreement", agreement.getIdAgreement()));
+            }
+            criteria.add(disjunctionAgreements);
+        }
+
+        return (List<GroupsAgreements>) criteria.list();
+    }
 }

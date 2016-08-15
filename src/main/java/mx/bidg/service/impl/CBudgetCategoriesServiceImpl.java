@@ -28,5 +28,10 @@ public class CBudgetCategoriesServiceImpl implements CBudgetCategoriesService {
     public List<CBudgetCategories> findAll() {
         return dao.findAll();
     }
+
+    @Override
+    public List<CBudgetCategories> findAllRequest() {
+        return dao.findAllRequest();
+    }
     
 }

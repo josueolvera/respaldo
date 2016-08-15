@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import mx.bidg.model.CBudgetCategories;
 
 @Service
 @Transactional
@@ -38,6 +39,16 @@ public class RequestTypesProductServiceImpl implements RequestTypesProductServic
     @Override
     public List<RequestTypesProduct> findByRequestType(CRequestTypes cRequestTypes) {
         return dao.findByRequestType(cRequestTypes);
+    }
+
+    @Override
+    public List<RequestTypesProduct> findByBudgetCategory(CBudgetCategories budgetCategories) {
+        return dao.findByBudgetCategory(budgetCategories);
+    }
+
+    @Override
+    public List<RequestTypesProduct> findByRequestCategory(CRequestsCategories cRequestCategories) {
+        return dao.findByRequestCategory(cRequestCategories);
     }
 
 }

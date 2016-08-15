@@ -335,6 +335,11 @@
                             if (this.dwEmployees.length > 0) {
                                 this.registerNumber = this.dwEmployees.length;
                                 this.isThereItems = true;
+                            }else{
+                                showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
+                                setInterval(function(){
+                                    location.reload();
+                                }, 3000);
                             }
                         }).error(function (data) {
                             showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
@@ -845,8 +850,8 @@
                             <br>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" @click="createReport">Aceptar</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
+                            <button type="button" class="btn btn-success" @click="createReport">Aceptar</button>
                         </div>
                     </div>
                 </div>
@@ -870,8 +875,8 @@
                             <br>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" @click="changeEmployeeStatus">Aceptar</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
+                            <button type="button" class="btn btn-danger" @click="changeEmployeeStatus">Aceptar</button>
                         </div>
                     </div>
                 </div>
@@ -965,8 +970,8 @@
                             <br>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-success" @click="reactivationEmployee()">Reactivar</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
+                            <button type="button" class="btn btn-success" @click="reactivationEmployee()">Reactivar</button>
                         </div>
                     </div>
                 </div>

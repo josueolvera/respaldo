@@ -9,7 +9,9 @@ import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CBudgetCategoriesDao;
 import mx.bidg.model.CBudgetCategories;
+import org.apache.xmlbeans.XmlObject;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -43,6 +45,13 @@ public class CBudgetCategoriesDaoImpl extends AbstractDao<Integer, CBudgetCatego
     @Override
     public boolean delete(CBudgetCategories entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<CBudgetCategories> findAllRequest() {
+        Criteria criteria = createEntityCriteria()
+                .add(Restrictions.eq("isRequest", 1));
+        return (List<CBudgetCategories>) criteria.list();
     }
     
 }

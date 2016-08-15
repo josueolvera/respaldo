@@ -5,6 +5,7 @@
  */
 package mx.bidg.dao;
 
+import java.util.List;
 import mx.bidg.model.CBudgetCategories;
 
 /**
@@ -12,5 +13,5 @@ import mx.bidg.model.CBudgetCategories;
  * @author sistemask
  */
 public interface CBudgetCategoriesDao extends InterfaceDao<CBudgetCategories> {
-    
+    public List<CBudgetCategories> findAllRequest();
 }

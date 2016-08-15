@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.util.List;
+import mx.bidg.model.CRequestsCategories;
 
 /**
  *
@@ -50,6 +51,12 @@ public class RequestTypesProductController {
     @RequestMapping(value = "/{idRequestType}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> getByRequestType(@PathVariable int idRequestType) throws IOException{
         List<RequestTypesProduct> requestTypesProduct = requestTypesProductService.findByRequestType(new CRequestTypes(idRequestType));
+        return new ResponseEntity<String>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestTypesProduct),HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/requestCateogy/{idRequestCategory}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody ResponseEntity<String> getByRequestCategory(@PathVariable int idRequestCategory) throws IOException{
+        List<RequestTypesProduct> requestTypesProduct = requestTypesProductService.findByRequestCategory(new CRequestsCategories(idRequestCategory));
         return new ResponseEntity<String>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestTypesProduct),HttpStatus.OK);
     }
     

@@ -25,8 +25,7 @@ public class CAgreementsServiceImpl implements CAgreementsService {
 
     @Override
     public CAgreements save(CAgreements cAgreements) {
-        cAgreementsDao.save(cAgreements);
-        return cAgreements;
+        return cAgreementsDao.save(cAgreements);
     }
 
     @Override
@@ -66,6 +65,7 @@ public class CAgreementsServiceImpl implements CAgreementsService {
     public void lowDate (Integer idAgreement) {
         CAgreements agreement = cAgreementsDao.findById(idAgreement);
         agreement.setLowDate(LocalDateTime.now());
+        agreement.setStatus(0);
         cAgreementsDao.update(agreement);
     }
 }

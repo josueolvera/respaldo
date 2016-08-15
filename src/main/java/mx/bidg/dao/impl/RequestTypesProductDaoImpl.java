@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.RequestTypesProductDao;
+import mx.bidg.model.CBudgetCategories;
 import mx.bidg.model.CProductTypes;
 import mx.bidg.model.CRequestTypes;
 import mx.bidg.model.CRequestsCategories;
@@ -86,6 +87,12 @@ public class RequestTypesProductDaoImpl extends AbstractDao<Integer, RequestType
                         .add(Restrictions.eq("idRequestCategory", CRequestsCategories.PERIODICA))
                 )
                 .add(Restrictions.eq("requestType",requestTypes)).list();
+    }
+
+    @Override
+    public List<RequestTypesProduct> findByBudgetCategory(CBudgetCategories budgetCategories) {
+       Criteria criteria = createEntityCriteria().add(Restrictions.eq("budgetCategory", budgetCategories));
+        return (List<RequestTypesProduct>) criteria.list(); 
     }
 
 }
