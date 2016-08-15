@@ -54,7 +54,7 @@ public class CBranchsServiceImpl implements CBranchsService {
     }
 
     @Override
-    public CBranchs save(CBranchs cBranchs, int idDistributor ,int idRegion) {
+    public CBranchs save(CBranchs cBranchs, int idDistributor ,int idRegion, int idZona) {
         cBranchs.setUploadedDate(LocalDateTime.now());
         cBranchs.setBranchName(cBranchs.getBranchName().toUpperCase());
         cBranchs.setBranchShort(cBranchs.getBranchShort().toUpperCase());
@@ -64,6 +64,7 @@ public class CBranchsServiceImpl implements CBranchsService {
         dwEnterprises.setBranch(cBranchs);
         dwEnterprises.setDistributor(new CDistributors(idDistributor));
         dwEnterprises.setRegion(new CRegions(idRegion));
+        dwEnterprises.setZona(new CZonas(idZona));
         dwEnterprises.setGroup(new CGroups(1));
         dwEnterprises.setArea(new CAreas(2));
         dwEnterprises.setBudgetable(1);

@@ -34,31 +34,38 @@ public class CBrachsController {
     @Autowired
     private DwEnterprisesService dwEnterprisesService;
     
-    private ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
     
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody String findAll() throws Exception {
         List<CBranchs> list = cBranchsService.findAll();
-        return map.writerWithView(JsonViews.Root.class).writeValueAsString(list);
+        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(list);
     }
 
-    @RequestMapping(value = "/distributor/{idDistributor}/region/{idRegion}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(
+            value = "/distributor/{idDistributor}/region/{idRegion}/zona/{idZona}",
+            method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE
+    )
     public @ResponseBody String save(
             @RequestBody CBranchs branch,
             @PathVariable Integer idDistributor,
-            @PathVariable Integer idRegion
+            @PathVariable Integer idRegion,
+            @PathVariable Integer idZona
     ) throws Exception {
-        branch = cBranchsService.save(branch, idDistributor, idRegion);
-        return map.writerWithView(JsonViews.Root.class).writeValueAsString(branch);
+        branch = cBranchsService.save(branch, idDistributor, idRegion, idZona);
+        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(branch);
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     private @ResponseBody String update(@RequestBody String data) throws Exception {
-        JsonNode node = map.readTree(data);
+        JsonNode node = mapper.readTree(data);
 
         int idBranch = node.get("idBranch").asInt();
         int idDistributor = node.get("idDistributor").asInt();
         int idRegion = node.get("idRegion").asInt();
+        int idZona = node.get("idZona").asInt();
         int idDwEnterprise = node.get("idDwEnterprise").asInt();
 
         CBranchs cBranchs = cBranchsService.findById(idBranch);
@@ -68,12 +75,14 @@ public class CBrachsController {
         CBranchs oldBranch = currentDwEnterprises.getBranch();
         CDistributors oldDistributor = currentDwEnterprises.getDistributor();
         CRegions oldRegion = currentDwEnterprises.getRegion();
+        CZonas oldZona = currentDwEnterprises.getZona();
         CGroups oldGroup = currentDwEnterprises.getGroup();
         CAreas oldArea = currentDwEnterprises.getArea();
         Integer oldBudgetable = currentDwEnterprises.getBudgetable();
 
         currentDwEnterprises.setDistributor(new CDistributors(idDistributor));
         currentDwEnterprises.setRegion(new CRegions(idRegion));
+        currentDwEnterprises.setZona(new CZonas(idZona));
         currentDwEnterprises.setStatus(true);
         dwEnterprisesService.update(currentDwEnterprises);
 
@@ -81,29 +90,30 @@ public class CBrachsController {
         dwEnterprises.setBranch(oldBranch);
         dwEnterprises.setDistributor(oldDistributor);
         dwEnterprises.setRegion(oldRegion);
+        dwEnterprises.setZona(oldZona);
         dwEnterprises.setGroup(oldGroup);
         dwEnterprises.setArea(oldArea);
         dwEnterprises.setBudgetable(oldBudgetable);
         dwEnterprises.setStatus(false);
         dwEnterprisesService.save(dwEnterprises);
 
-        return map.writerWithView(JsonViews.Root.class).writeValueAsString(cBranchs);
+        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(cBranchs);
     }
 
     @RequestMapping(value = "/change-branch-status", method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     private @ResponseBody String changeBranchStatus(@RequestBody Integer idBranch) throws Exception {
         CBranchs branch = cBranchsService.changeBranchStatus(idBranch);
-        return map.writerWithView(JsonViews.Root.class).writeValueAsString(branch);
+        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(branch);
     }
 
     @RequestMapping(value = "/{idBranch}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     private @ResponseBody String findById(@PathVariable Integer idBranch) throws Exception {
         CBranchs cBranchs = cBranchsService.findById(idBranch);
-        return map.writerWithView(JsonViews.Root.class).writeValueAsString(cBranchs);
+        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(cBranchs);
     }
 
     @RequestMapping(value = "/{idBranch}", method = RequestMethod.DELETE,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     private @ResponseBody String delete(@PathVariable Integer idBranch) throws Exception {
-        return map.writerWithView(JsonViews.Root.class).writeValueAsString(cBranchsService.delete(idBranch));
+        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(cBranchsService.delete(idBranch));
     }
 }

@@ -18,6 +18,6 @@ public interface CBranchsService {
     CBranchs findById(int idBranch);
     boolean delete(int idBranch);
     CBranchs update(CBranchs data);
-    CBranchs save(CBranchs cBranchs, int idDistributor ,int idRegion);
+    CBranchs save(CBranchs cBranchs, int idDistributor ,int idRegion, int idZona);
     CBranchs changeBranchStatus(int idBranch);
 }
