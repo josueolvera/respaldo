@@ -32,9 +32,9 @@ public class DistributorAreaRol implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idArea;
 
-    @Column(name = "ID_ROL", insertable = false, updatable = false)
+    @Column(name = "ID_ROLE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idRol;
+    private Integer idRole;
 
     @JoinColumn(name = "ID_DISTRIBUTOR", referencedColumnName = "ID_DISTRIBUTOR")
     @ManyToOne(optional = false)
@@ -46,10 +46,10 @@ public class DistributorAreaRol implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CAreas area;
 
-    @JoinColumn(name = "ID_ROL", referencedColumnName = "ID_ROLE")
+    @JoinColumn(name = "ID_ROLE", referencedColumnName = "ID_ROLE")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private CRoles rol;
+    private CRoles role;
 
     public DistributorAreaRol() {
     }
@@ -58,13 +58,13 @@ public class DistributorAreaRol implements Serializable {
         this.idDistributorAreaRol = idDistributorAreaRol;
     }
 
-    public DistributorAreaRol(Integer idDistributor, Integer idArea, Integer idRol, CDistributors distributor, CAreas area, CRoles rol) {
+    public DistributorAreaRol(Integer idDistributor, Integer idArea, Integer idRole, CDistributors distributor, CAreas area, CRoles role) {
         this.idDistributor = idDistributor;
         this.idArea = idArea;
-        this.idRol = idRol;
+        this.idRole = idRole;
         this.distributor = distributor;
         this.area = area;
-        this.rol = rol;
+        this.role = role;
     }
 
     public Integer getIdDistributorAreaRol() {
@@ -91,12 +91,12 @@ public class DistributorAreaRol implements Serializable {
         this.idArea = idArea;
     }
 
-    public Integer getIdRol() {
-        return idRol;
+    public Integer getIdRole() {
+        return idRole;
     }
 
-    public void setIdRol(Integer idRol) {
-        this.idRol = idRol;
+    public void setIdRole(Integer idRole) {
+        this.idRole = idRole;
     }
 
     public CDistributors getDistributor() {
@@ -115,12 +115,12 @@ public class DistributorAreaRol implements Serializable {
         this.area = area;
     }
 
-    public CRoles getRol() {
-        return rol;
+    public CRoles getRole() {
+        return role;
     }
 
-    public void setRol(CRoles rol) {
-        this.rol = rol;
+    public void setRole(CRoles role) {
+        this.role = role;
     }
 
     @Override
@@ -135,10 +135,10 @@ public class DistributorAreaRol implements Serializable {
         if (idDistributor != null ? !idDistributor.equals(that.idDistributor) : that.idDistributor != null)
             return false;
         if (idArea != null ? !idArea.equals(that.idArea) : that.idArea != null) return false;
-        if (idRol != null ? !idRol.equals(that.idRol) : that.idRol != null) return false;
+        if (idRole != null ? !idRole.equals(that.idRole) : that.idRole != null) return false;
         if (distributor != null ? !distributor.equals(that.distributor) : that.distributor != null) return false;
         if (area != null ? !area.equals(that.area) : that.area != null) return false;
-        return rol != null ? rol.equals(that.rol) : that.rol == null;
+        return role != null ? role.equals(that.role) : that.role == null;
 
     }
 
@@ -147,10 +147,10 @@ public class DistributorAreaRol implements Serializable {
         int result = idDistributorAreaRol != null ? idDistributorAreaRol.hashCode() : 0;
         result = 31 * result + (idDistributor != null ? idDistributor.hashCode() : 0);
         result = 31 * result + (idArea != null ? idArea.hashCode() : 0);
-        result = 31 * result + (idRol != null ? idRol.hashCode() : 0);
+        result = 31 * result + (idRole != null ? idRole.hashCode() : 0);
         result = 31 * result + (distributor != null ? distributor.hashCode() : 0);
         result = 31 * result + (area != null ? area.hashCode() : 0);
-        result = 31 * result + (rol != null ? rol.hashCode() : 0);
+        result = 31 * result + (role != null ? role.hashCode() : 0);
         return result;
     }
 
@@ -160,10 +160,10 @@ public class DistributorAreaRol implements Serializable {
                 "idDistributorAreaRol=" + idDistributorAreaRol +
                 ", idDistributor=" + idDistributor +
                 ", idArea=" + idArea +
-                ", idRol=" + idRol +
+                ", idRole=" + idRole +
                 ", distributor=" + distributor +
                 ", area=" + area +
-                ", rol=" + rol +
+                ", role=" + role +
                 '}';
     }
 }
