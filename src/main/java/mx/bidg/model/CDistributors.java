@@ -48,18 +48,25 @@ public class CDistributors implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String acronyms;
 
-    @Column(name = "HAS_STOCK")
+    @Column(name = "HAS_STOCK", columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
     @JsonView(JsonViews.Root.class)
-    private Integer hasStock;
+    private Boolean hasStock;
 
-    @Column(name = "HAS_AGREEMENT")
+    @Column(name = "HAS_AGREEMENT", columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
     @JsonView(JsonViews.Root.class)
-    private Integer hasAgreement;
+    private Boolean hasAgreement;
 
     @Column(name = "BUDGET_SHARE", columnDefinition = "TINYINT")
     @Type(type = "org.hibernate.type.NumericBooleanType")
-    private boolean budgetShare;
+    @JsonView(JsonViews.Root.class)
+    private Boolean budgetShare;
 
+    @Column(name = "SAEM_FLAG", columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    @JsonView(JsonViews.Root.class)
+    private Boolean saemFlag;
 
     public CDistributors() {
     }
@@ -97,29 +104,38 @@ public class CDistributors implements Serializable {
         this.acronyms = acronyms;
     }
 
-    public Integer getHasStock() {
+    public Boolean getHasStock() {
         return hasStock;
     }
 
-    public void setHasStock(Integer hasStock) {
+    public void setHasStock(Boolean hasStock) {
         this.hasStock = hasStock;
     }
 
-    public Integer getHasAgreement() {
+    public Boolean getHasAgreement() {
         return hasAgreement;
     }
 
-    public void setHasAgreement(Integer hasAgreement) {
+    public void setHasAgreement(Boolean hasAgreement) {
         this.hasAgreement = hasAgreement;
     }
 
     public boolean getBudgetShare() {
         return budgetShare;
     }
+
     public void setBudgetShare(boolean budgetShare) {
         this.budgetShare = budgetShare;
     }
-    
+
+    public Boolean getSaemFlag() {
+        return saemFlag;
+    }
+
+    public void setSaemFlag(Boolean saemFlag) {
+        this.saemFlag = saemFlag;
+    }
+
     @JsonProperty("nameSql")
     public String nameSql() {
         return "ID_DISTRIBUTOR";
@@ -149,7 +165,4 @@ public class CDistributors implements Serializable {
     public String toString() {
         return "mx.bidg.model.CDistributors[ idDistributor=" + idDistributor + " ]";
     }
-
-
-
 }

@@ -16,4 +16,5 @@ import java.util.List;
 public interface CDistributorsDao extends InterfaceDao<CDistributors> {
     List<CDistributors> findAllForStock();
     List<CDistributors> findAllForAgreement();
+    List<CDistributors> getDistributors(Boolean forStock, Boolean forBudget, Boolean forAgreement);
 }

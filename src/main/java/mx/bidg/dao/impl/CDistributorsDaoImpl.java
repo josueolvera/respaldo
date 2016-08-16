@@ -10,6 +10,7 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CDistributorsDao;
 import mx.bidg.model.CDistributors;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Repository;
  * @author sistemask
  */
 @Repository
+@SuppressWarnings("unchecked")
 public class CDistributorsDaoImpl extends AbstractDao<Integer, CDistributors> implements CDistributorsDao {
 
     @Override
@@ -47,7 +49,6 @@ public class CDistributorsDaoImpl extends AbstractDao<Integer, CDistributors> im
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<CDistributors> findAllForStock() {
         return (List<CDistributors>) createEntityCriteria()
                 .add(Restrictions.eq("hasStock", 1))
@@ -59,5 +60,28 @@ public class CDistributorsDaoImpl extends AbstractDao<Integer, CDistributors> im
         return (List<CDistributors>) createEntityCriteria()
                 .add(Restrictions.eq("hasAgreement", 1))
                 .list();
+    }
+
+    @Override
+    public List<CDistributors> getDistributors(Boolean forStock, Boolean forBudget, Boolean forAgreement) {
+
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjunction = Restrictions.disjunction();
+
+        if (forStock != null) {
+            disjunction.add(Restrictions.eq("hasStock",forStock));
+        }
+
+        if (forBudget != null) {
+            disjunction.add(Restrictions.eq("budgetShare",forBudget));
+        }
+
+        if (forAgreement != null) {
+            disjunction.add(Restrictions.eq("hasAgreement",forAgreement));
+        }
+
+        criteria.add(disjunction);
+
+        return criteria.list();
     }
 }
