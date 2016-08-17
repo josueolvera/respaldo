@@ -39,16 +39,14 @@ public class CDistributorsController {
     ObjectMapper mapper;
     
     @RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-    public @ResponseBody String getCDistributors(@RequestParam(name = "forStock", required = false) boolean forStock) throws Exception {
-        List<CDistributors> list;
+    public @ResponseBody String getCDistributors(
+            @RequestParam(name = "forStock", required = false) Boolean forStock,
+            @RequestParam(name = "forBudget", required = false) Boolean forBudget,
+            @RequestParam(name = "forAgreement", required = false) Boolean forAgreement
+    ) throws Exception {
+        List<CDistributors> distributors = cDistributorsService.getDistributors(forStock, forBudget, forAgreement);
 
-        if (forStock) {
-            list = cDistributorsService.findAllForStock();
-        } else {
-            list = cDistributorsService.findAll();
-        }
-
-        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(list);
+        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(distributors);
     }
 
     @RequestMapping(value = "/agreement", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

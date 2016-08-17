@@ -32,6 +32,7 @@ public interface DwEnterprisesService {
     List<DwEnterprises> findAll();
     DwEnterprises findByBranchAndArea(Integer idBranch, Integer idArea);
     List<CAreas> findAreaByDistributor(Integer idDistributor);
+    List<CBranchs> getBranchByDistributor(Integer idDistributor);
     List<CRegions> findRegionByDistributor(Integer idDistributor);
     List<CBranchs> findBranchByDistributorAndRegionAndZona(Integer idDistributor, Integer idRegion, Integer idZona);
     List<DwEnterprises> findByDistributorRegionZonaBranchAndArea(Integer idDistributor, Integer idRegion, Integer idZona, Integer idBranch, Integer idArea);

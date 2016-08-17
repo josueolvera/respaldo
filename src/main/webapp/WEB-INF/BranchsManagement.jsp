@@ -18,7 +18,7 @@
                 el: '#content',
                 ready: function () {
                     this.getBranchs();
-                    this.fetchHierarchy();
+                    this.getDistributors();
                 },
                 data: {
                     branchs:'',
@@ -30,17 +30,33 @@
                                 branchName:'',
                                 branchShort:''
                             }
-                        },
-                        hierarchy:null
+                        }
                     },
                     selected:{
                         distributor:null,
-                        region:null
+                        region:null,
+                        zona: null
                     },
                     branchFilter:'',
-                    selectedBranch:{}
+                    selectedBranch:{},
+                    selectOptions:{
+                        distributors:[],
+                        regions:[],
+                        zonas:[]
+                    }
                 },
                 methods: {
+                    arrayObjectIndexOf : function(myArray, searchTerm, property) {
+                        for(var i = 0, len = myArray.length; i < len; i++) {
+                            if (myArray[i][property] === searchTerm) return i;
+                        }
+                        return -1;
+                    },
+                    getDistributors: function () {
+                        this.$http.get(ROOT_URL + "/distributors?forStock=true").success(function (data) {
+                            this.selectOptions.distributors = data;
+                        });
+                    },
                     getBranchs : function () {
                         this.$http.get(ROOT_URL + "/branchs")
                                 .success(function (data) {
@@ -51,7 +67,10 @@
                         });
                     },
                     changeFormIsActive : function () {
-                        this.newBranchForm.isActive = (this.newBranchForm.isActive === true) ? false : true;
+                        this.selected.distributor = null;
+                        this.selected.region = null;
+                        this.selected.zona = null;
+                        this.newBranchForm.isActive = (this.newBranchForm.isActive !== true);
                     },
                     newBranchFormValidation: function () {
                         if (
@@ -62,6 +81,8 @@
                                 this.selected.distributor != null
                                 &&
                                 this.selected.region != null
+                                &&
+                                this.selected.zona != null
                         ) {
                             this.newBranchForm.isValid = true;
                         }
@@ -71,12 +92,13 @@
                         this.newBranchFormValidation();
 
                         if (this.newBranchForm.isValid) {
-                            var idDistributor = this.selected.distributor.id;
-                            var idRegion = this.selected.region.id;
+                            var idDistributor = this.selected.distributor.idDistributor;
+                            var idRegion = this.selected.region.idRegion;
+                            var idZona = this.selected.zona.idZonas;
 
                             this.$http.post(
-                                    ROOT_URL + "/branchs/distributor/" + idDistributor + "/region/" + idRegion
-                                    ,this.newBranchForm.data.branch
+                                    ROOT_URL + "/branchs/distributor/" + idDistributor + "/region/" + idRegion + "/zona/" + idZona,
+                                    this.newBranchForm.data.branch
                             ).success(function (data) {
 
                                 this.newBranchForm.isActive = false;
@@ -88,7 +110,7 @@
                                 this.newBranchForm.data = {
                                     branch: {
                                         branchName: '',
-                                        branchShort: '',
+                                        branchShort: ''
                                     }
                                 };
 
@@ -105,7 +127,7 @@
                                 this.newBranchForm.data = {
                                     branch:{
                                         branchName:'',
-                                        branchShort:'',
+                                        branchShort:''
                                     }
                                 };
 
@@ -120,13 +142,42 @@
                             showAlert("Nombre, Nombre corto distribuidor y region son campos requeridos",{type:3});
                         }
                     },
-                    fetchHierarchy : function () {
-                        this.$http.get(ROOT_URL + "/dw-enterprises/hierarchy").success(function (data) {
-                            this.newBranchForm.hierarchy = data;
+                    onChangeDistributor : function () {
+                        this.selected.region = null;
+                        this.selected.zona = null;
+                        this.getRegionByDistributor(this.selected.distributor.idDistributor);
+                    },
+                    onChangeRegion : function () {
+                        this.selected.zona = null;
+                        this.getZonaByDistributorAndRegion(this.selected.distributor.idDistributor, this.selected.region.idRegion);
+                    },
+                    getRegionByDistributor: function (idDistributor) {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/dw-enterprises/distributor-region/"+idDistributor)
+                                .success(function (data) {
+                                    this.selectOptions.regions = [];
+                                    var index;
+                                    data.forEach(function (region) {
+                                        index =  self.arrayObjectIndexOf(self.selectOptions.regions,region.idRegion,'idRegion');
+                                        if(index == -1) self.selectOptions.regions.push(region);
+                                    });
+                                }).error(function (data) {
+                            showAlert("No existen regiones para esa compañía", {type : 3});
                         });
                     },
-                    distributorChanged : function () {
-                        this.selected.region = null;
+                    getZonaByDistributorAndRegion: function (idDistributor, idRegion) {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/dw-enterprises/distributor-region-zona/"+idDistributor+"/"+idRegion)
+                                .success(function (data) {
+                                    this.selectOptions.zonas = [];
+                                    var index;
+                                    data.forEach(function (zona) {
+                                        index =  self.arrayObjectIndexOf(self.selectOptions.zonas,zona.idZonas,'idZonas');
+                                        if(index == -1) self.selectOptions.zonas.push(zona);
+                                    });
+                                }).error(function (data) {
+                            showAlert("No existen zonas para esa compañía y región ", {type : 3});
+                        });
                     },
                     changeBranchStatus : function () {
                         this.$http.post(
@@ -136,14 +187,16 @@
                             this.getBranchs();
                             this.clearSelectedBranch();
                             this.hideModal("#deleteModal");
+                            showAlert('Sucursal dada de baja')
                         }).error(function (data) {
                         });
                     },
                     editBranch : function () {
 
                         var requestBody = {
-                            idDistributor : this.selected.distributor.id,
-                            idRegion : this.selected.region.id,
+                            idDistributor : this.selected.distributor.idDistributor,
+                            idRegion : this.selected.region.idRegion,
+                            idZona : this.selected.zona.idZonas,
                             idBranch : this.selectedBranch.idBranch,
                             idDwEnterprise : this.selectedBranch.dwEnterprises[0].idDwEnterprise
                         };
@@ -152,15 +205,16 @@
                                 ROOT_URL + "/branchs/update"
                                 ,requestBody
                         ).success(function (data) {
-
                             this.selected = {
                                 distributor:null,
-                                region:null
+                                region:null,
+                                zona:null
                             };
 
                             this.getBranchs();
                             this.clearSelectedBranch();
                             this.hideModal("#editModal");
+                            showAlert('Sucursal reasignada')
                         }).error(function (data) {
                         });
                     },
@@ -168,7 +222,14 @@
                         this.setSelectedBranch(branch);
                         this.showModal("#deleteModal");
                     },
+                    hideEditModal : function () {
+                        this.hideModal("#editModal");
+                    },
                     onEditBranch : function (branch) {
+                        this.selected.distributor = null;
+                        this.selected.region = null;
+                        this.selected.zona = null;
+                        this.newBranchForm.isActive = false;
                         this.setSelectedBranch(branch);
                         this.showModal("#editModal");
                     },
@@ -230,6 +291,9 @@
                                     <th>
                                         REGION
                                     </th>
+                                    <th>
+                                        ZONA
+                                    </th>
                                     <th class="text-center">
                                         <div>
                                             <button class="btn btn-default btn-sm" @click="changeFormIsActive" v-if="!newBranchForm.isActive"
@@ -264,10 +328,10 @@
                                         <div class="form-group">
                                             <label class="sr-only">Distribuidor</label>
                                             <select v-model="selected.distributor" class="form-control"
-                                                    @change="distributorChanged" required>
-                                                <option v-for="distributor in newBranchForm.hierarchy[0].subLevels"
+                                                    @change="onChangeDistributor" required>
+                                                <option v-for="distributor in selectOptions.distributors"
                                                         :value="distributor">
-                                                    {{ distributor.name }}
+                                                    {{ distributor.distributorName }}
                                                 </option>
                                             </select>
                                         </div>
@@ -276,10 +340,22 @@
                                         <div class="form-group">
                                             <label class="sr-only">Region</label>
                                             <select v-model="selected.region" class="form-control" required
-                                                    :disabled="selected.distributor == null">
-                                                <option v-for="region in selected.distributor.subLevels"
+                                                    :disabled="selected.distributor == null" @change="onChangeRegion">
+                                                <option v-for="region in selectOptions.regions"
                                                         :value="region">
-                                                    {{ region.name }}
+                                                    {{ region.regionName }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-group">
+                                            <label class="sr-only">Zona</label>
+                                            <select v-model="selected.zona" class="form-control" required
+                                                    :disabled="selected.region == null">
+                                                <option v-for="zona in selectOptions.zonas"
+                                                        :value="zona">
+                                                    {{ zona.name }}
                                                 </option>
                                             </select>
                                         </div>
@@ -306,6 +382,9 @@
                                     <td>
                                         {{branch.dwEnterprises[0].region.regionName}}
                                     </td>
+                                    <td>
+                                        {{branch.dwEnterprises[0].zona.name}}
+                                    </td>
                                     <td class="text-center">
                                         <div>
                                             <button class="btn btn-default btn-sm" @click="onEditBranch(branch)"
@@ -328,18 +407,18 @@
 
             <!-- deleteModal -->
             <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="deleteModalLabel">Eliminar {{selectedBranch.branchShort}}</h4>
+                            <h4 class="modal-title" id="deleteModalLabel">Confirmación de baja de sucursal</b></h4>
                         </div>
                         <div class="modal-body">
-                            ¿Estas seguro de que quieres eliminar la sucursal {{selectedBranch.branchName}}?
+                            La sucursal <b>{{selectedBranch.branchName}}</b> sera dada de baja.
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" @click="changeBranchStatus">Eliminar</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-danger" @click="changeBranchStatus">Aceptar</button>
                         </div>
                     </div>
                 </div>
@@ -347,51 +426,66 @@
 
             <!-- editModal -->
             <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <button type="button" class="close" @click="hideEditModal"><span aria-hidden="true">&times;</span></button>
                             <h4 class="modal-title" id="editModalLabel">Editar</h4>
                         </div>
                         <form v-on:submit.prevent="editBranch">
                             <div class="modal-body">
 
-                                <div class="form-group">
-                                    <label>Nombre</label>
-                                    <p>
-                                        {{selectedBranch.branchName}}
-                                    </p>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label>Nombre</label>
+                                        <p>
+                                            {{selectedBranch.branchName}}
+                                        </p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Nombre corto</label>
+                                        <p>
+                                            {{selectedBranch.branchShort}}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label>Nombre corto</label>
-                                    <p>
-                                        {{selectedBranch.branchShort}}
-                                    </p>
-                                </div>
-                                <div class="form-group">
-                                    <label>Distribuidor</label>
-                                    <select v-model="selected.distributor" class="form-control"
-                                            @change="distributorChanged" required>
-                                        <option v-for="distributor in newBranchForm.hierarchy[0].subLevels"
-                                                :value="distributor">
-                                            {{ distributor.name }}
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Region</label>
-                                    <select v-model="selected.region" class="form-control" required
-                                            :disabled="selected.distributor == null">
-                                        <option v-for="region in selected.distributor.subLevels"
-                                                :value="region">
-                                            {{ region.name }}
-                                        </option>
-                                    </select>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>Distribuidor</label>
+                                        <select v-model="selected.distributor" class="form-control"
+                                                @change="onChangeDistributor" required>
+                                            <option v-for="distributor in selectOptions.distributors"
+                                                    :value="distributor">
+                                                {{ distributor.distributorName }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Region</label>
+                                        <select v-model="selected.region" class="form-control" required
+                                                :disabled="selected.distributor == null" @change="onChangeRegion">
+                                            <option v-for="region in selectOptions.regions"
+                                                    :value="region">
+                                                {{ region.regionName }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Zona</label>
+                                        <select v-model="selected.zona" class="form-control" required
+                                                :disabled="selected.region == null">
+                                            <option v-for="zona in selectOptions.zonas"
+                                                    :value="zona">
+                                                {{ zona.name }}
+                                            </option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-success">Guardar cambios</button>
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-default" @click="hideEditModal">Cancelar</button>
+                                <button type="submit" class="btn btn-success">Guardar</button>
                             </div>
                         </form>
                     </div>

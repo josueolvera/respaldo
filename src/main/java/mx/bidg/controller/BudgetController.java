@@ -56,8 +56,8 @@ public class BudgetController {
         
 //        budget.setGroup(new CGroups(json.get("group").asInt()));
         budget.setArea(new CAreas(json.get("area").asInt()));
-        budget.setBudgetCategory(new CBudgetCategories(json.get("category").asInt()));
-        budget.setBudgetSubcategory(new CBudgetSubcategories(json.get("subcategory").asInt()));
+//        budget.setBudgetCategory(new CBudgetCategories(json.get("category").asInt()));
+//        budget.setBudgetSubcategory(new CBudgetSubcategories(json.get("subcategory").asInt()));
         
         ArrayList<BudgetMonthBranch> budgetMonthBranchList = new ArrayList<>();
         BudgetMonthBranch budgetMonthBranch;

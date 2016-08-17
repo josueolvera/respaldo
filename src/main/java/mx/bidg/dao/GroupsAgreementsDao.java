@@ -5,12 +5,16 @@
  */
 package mx.bidg.dao;
 
+import mx.bidg.model.CAgreements;
 import mx.bidg.model.GroupsAgreements;
+
+import java.util.List;
 
 /**
  *
  * @author josueolvera
  */
 public interface GroupsAgreementsDao extends InterfaceDao<GroupsAgreements>{
+    List<GroupsAgreements> findGroupsAgreementsActives(List<CAgreements> agreementsList);
     
 }

@@ -7,6 +7,7 @@ package mx.bidg.service;
 
 import java.util.List;
 import mx.bidg.model.CBranchs;
+import mx.bidg.model.Users;
 
 /**
  *
@@ -18,6 +19,6 @@ public interface CBranchsService {
     CBranchs findById(int idBranch);
     boolean delete(int idBranch);
     CBranchs update(CBranchs data);
-    CBranchs save(CBranchs cBranchs, int idDistributor ,int idRegion);
-    CBranchs changeBranchStatus(int idBranch);
+    CBranchs save(CBranchs cBranchs, int idDistributor ,int idRegion, int idZona);
+    CBranchs changeBranchStatus(int idBranch, Users user);
 }

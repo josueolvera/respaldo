@@ -57,21 +57,6 @@ public class CBudgetSubcategories implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
-
-    @Column(name = "ID_ACCOUNTING_ACCOUNT", updatable = false, insertable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idAccountingAccount;
-
-    @ManyToOne
-    @JoinColumn(name = "ID_ACCOUNTING_ACCOUNT", referencedColumnName = "ID_ACCOUNTING_ACCOUNT")
-    @JsonView(JsonViews.Embedded.class)
-    private AccountingAccounts accountingAccount;
-    
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "IS_REQUEST")
-    @JsonView(JsonViews.Root.class)
-    private int isRequest;
     
     public CBudgetSubcategories() {
     }
@@ -117,30 +102,6 @@ public class CBudgetSubcategories implements Serializable {
 
     public void setIdAccessLevel(int idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
-    }
-
-    public Integer getIdAccountingAccount() {
-        return idAccountingAccount;
-    }
-
-    public void setIdAccountingAccount(Integer idAccountingAccount) {
-        this.idAccountingAccount = idAccountingAccount;
-    }
-
-    public AccountingAccounts getAccountingAccount() {
-        return accountingAccount;
-    }
-
-    public void setAccountingAccount(AccountingAccounts accountingAccount) {
-        this.accountingAccount = accountingAccount;
-    }
-    
-    public int getIsRequest() {
-        return isRequest;
-    }
-
-    public void setIsRequest(int isRequest) {
-        this.isRequest = isRequest;
     }
 
     @Override

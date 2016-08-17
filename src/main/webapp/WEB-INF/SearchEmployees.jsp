@@ -850,8 +850,8 @@
                             <br>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" @click="createReport">Aceptar</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
+                            <button type="button" class="btn btn-success" @click="createReport">Aceptar</button>
                         </div>
                     </div>
                 </div>
@@ -875,8 +875,8 @@
                             <br>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-danger" @click="changeEmployeeStatus">Aceptar</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
+                            <button type="button" class="btn btn-danger" @click="changeEmployeeStatus">Aceptar</button>
                         </div>
                     </div>
                 </div>
@@ -970,8 +970,8 @@
                             <br>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-success" @click="reactivationEmployee()">Reactivar</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
+                            <button type="button" class="btn btn-success" @click="reactivationEmployee()">Reactivar</button>
                         </div>
                     </div>
                 </div>

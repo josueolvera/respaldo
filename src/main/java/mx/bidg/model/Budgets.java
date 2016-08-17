@@ -55,13 +55,9 @@ public class Budgets implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idArea;
     
-    @Column(name = "ID_BUDGET_CATEGORY", insertable = false, updatable = false)
+    @Column(name = "ID_ACCOUNTING_ACCOUNT", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idBudgetCategory;
-    
-    @Column(name = "ID_BUDGET_SUBCATEGORY", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idBudgetSubcategory;
+    private Integer idAccountingAccount;
 
     @Basic(optional = false)
     @NotNull
@@ -85,15 +81,10 @@ public class Budgets implements Serializable {
     @JsonView({JsonViews.Embedded.class})
     private CAreas area;
     
-    @JoinColumn(name = "ID_BUDGET_CATEGORY", referencedColumnName = "ID_BUDGET_CATEGORY")
+    @JoinColumn(name = "ID_ACCOUNTING_ACCOUNT", referencedColumnName = "ID_ACCOUNTING_ACCOUNT")
     @ManyToOne
     @JsonView({JsonViews.Embedded.class})
-    private CBudgetCategories budgetCategory;
-    
-    @JoinColumn(name = "ID_BUDGET_SUBCATEGORY", referencedColumnName = "ID_BUDGET_SUBCATEGORY")
-    @ManyToOne(optional = false)
-    @JsonView({JsonViews.Embedded.class})
-    private CBudgetSubcategories budgetSubcategory;
+    private AccountingAccounts accountingAccount;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "budget")
     @JsonView(JsonViews.Embedded.class)
@@ -117,23 +108,16 @@ public class Budgets implements Serializable {
         this.budgetMonthBranchList = budgetMonthBranchList;
     }
 
-    public Budgets(Integer idBudget, Integer idDistributor, Integer idArea, Integer idBudgetCategory, Integer idBudgetSubcategory, int idAccessLevel, List<BudgetMonthBranch> budgetMonthBranchList) {
-        this.idBudget = idBudget;
+    public Budgets(Integer idDistributor, Integer idArea, Integer idAccountingAccount, int idAccessLevel, int isentry, CDistributors distributor, CAreas area, AccountingAccounts accountingAccount, List<BudgetMonthBranch> budgetMonthBranchList) {
         this.idDistributor = idDistributor;
         this.idArea = idArea;
-        this.idBudgetCategory = idBudgetCategory;
-        this.idBudgetSubcategory = idBudgetSubcategory;
+        this.idAccountingAccount = idAccountingAccount;
         this.idAccessLevel = idAccessLevel;
+        this.isentry = isentry;
+        this.distributor = distributor;
+        this.area = area;
+        this.accountingAccount = accountingAccount;
         this.budgetMonthBranchList = budgetMonthBranchList;
-    }
-
-    public Budgets(Integer idBudget, Integer idDistributor, Integer idArea, Integer idBudgetCategory, Integer idBudgetSubcategory, int idAccessLevel) {
-        this.idBudget = idBudget;
-        this.idDistributor = idDistributor;
-        this.idArea = idArea;
-        this.idBudgetCategory = idBudgetCategory;
-        this.idBudgetSubcategory = idBudgetSubcategory;
-        this.idAccessLevel = idAccessLevel;
     }
 
     public Integer getIdBudget() {
@@ -168,20 +152,20 @@ public class Budgets implements Serializable {
         this.idDistributor = idDistributor;
     }
 
-    public Integer getIdBudgetSubcategory() {
-        return idBudgetSubcategory;
+    public Integer getIdAccountingAccount() {
+        return idAccountingAccount;
     }
 
-    public void setIdBudgetSubcategory(Integer idBudgetSubcategory) {
-        this.idBudgetSubcategory = idBudgetSubcategory;
+    public void setIdAccountingAccount(Integer idAccountingAccount) {
+        this.idAccountingAccount = idAccountingAccount;
     }
 
-    public Integer getIdBudgetCategory() {
-        return idBudgetCategory;
+    public AccountingAccounts getAccountingAccount() {
+        return accountingAccount;
     }
 
-    public void setIdBudgetCategory(Integer idBudgetCategory) {
-        this.idBudgetCategory = idBudgetCategory;
+    public void setAccountingAccount(AccountingAccounts accountingAccount) {
+        this.accountingAccount = accountingAccount;
     }
 
     public Integer getIdArea() {
@@ -207,23 +191,6 @@ public class Budgets implements Serializable {
     public void setArea(CAreas area) {
         this.area = area;
     }
-
-    public CBudgetCategories getBudgetCategory() {
-        return budgetCategory;
-    }
-
-    public void setBudgetCategory(CBudgetCategories budgetCategory) {
-        this.budgetCategory = budgetCategory;
-    }
-
-    public CBudgetSubcategories getBudgetSubcategory() {
-        return budgetSubcategory;
-    }
-
-    public void setBudgetSubcategory(CBudgetSubcategories budgetSubcategory) {
-        this.budgetSubcategory = budgetSubcategory;
-    }
-    
     
 
     @Override

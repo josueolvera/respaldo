@@ -88,7 +88,8 @@
                             agreementName: ""
                         }
                     },
-                    groupAgreement: {}
+                    groupAgreement: {},
+                    name: ''
                 },
                 methods: {
                     obtainAgreementsGroups: function () {
@@ -151,6 +152,15 @@
                         }).error(function (data) {
                            showAlert("Error al reasignar el convenio", {type: 3});
                         });
+                    },
+                    buildReport: function () {
+                        if(this.name.length > 0) {
+                            window.location = ROOT_URL + "/groups-agreements/report-agreements?file_name=" + this.name;
+                            $('#modalNombre').modal('hide');
+                            this.name = '';
+                        } else {
+                            showAlert("Ingresa un nombre al reporte", {type: 3})
+                        }
                     }
                 },
                 filters: {
@@ -167,29 +177,36 @@
             <br>
             <div>
                 <div class="row">
-                    <div class="col-xs-8 text-header">
-                        <h2>Convenios</h2>
+                    <div class="col-xs-6 text-header">
+                        <h2>Gestión de convenios</h2>
                     </div>
 
-                    <div class="col-xs-4 text-right" style="padding: 0px">
+                    <div class="col-xs-6 text-right" style="padding: 0px">
                         <div class="col-xs-7 text-left" style="padding: 0px">
                             <label>Buscar Convenio</label>
                             <input class="form-control" maxlength="13" v-model="search">
                         </div>
-
-
-                        <button type="button" class="btn btn-default" name="button"
-                                style="margin-top: 25px" data-toggle="modal" data-target="#modalAlta">
-                            Nuevo convenio
-                        </button>
+                        <div class="col-xs-3">
+                            <button type="button" class="btn btn-default" name="button"
+                                    style="margin-top: 25px" data-toggle="modal" data-target="#modalAlta">
+                                Nuevo convenio
+                            </button>
+                        </div>
+                        <div class="col-xs-2">
+                            <button type="button" class="btn btn-success" name="button"
+                                    style="margin-top: 25px" data-toggle="modal" data-target="#modalNombre">
+                                Exportar
+                            </button>
+                        </div>
                     </div>
                 </div>
 
 
                 <div>
                     <div class="row table-header">
+                        <div class="col-xs-1"><b>Id</b></div>
                         <div class="col-xs-5"><b>Convenio</b></div>
-                        <div class="col-xs-5"><b>Grupo</b></div>
+                        <div class="col-xs-3"><b>Grupo</b></div>
                         <div class="col-xs-1"><b>Reasignar</b></div>
                         <div class="col-xs-1"><b>Eliminar</b></div>
                     </div>
@@ -197,10 +214,11 @@
             </div>
             <br>
             <div class="table-body flex-row flex-content">
-                <div class="row table-row" v-for="agreementGroup in groupsAgreements | filterBy search in 'agreement.agreementName'" v-if="agreementGroup.agreement.lowDate == null">
+                <div class="row table-row" v-for="agreementGroup in groupsAgreements | filterBy search in 'agreement.agreementName'" v-if="agreementGroup.agreement.status == 1">
+                    <div class="col-xs-1">{{agreementGroup.agreement.idAgreement}}</div>
                     <div class="col-xs-5">{{agreementGroup.agreement.agreementName}}</div>
-                    <div class="col-xs-5">{{agreementGroup.agreementGroup.agreementGroupName}}</div>
-                    <div class="col-xs-1">
+                    <div class="col-xs-3">{{agreementGroup.agreementGroup.agreementGroupName}}</div>
+                    <div class="col-xs-1" style="margin-left: 30px" >
                         <button type="button" class="btn btn-default" name="button" data-toggle="tooltip"
                                 data-placement="bottom" title="Reasignar"
                                 @click="modifyAgreements(agreementGroup.idGa)"><span class="glyphicon glyphicon-refresh"></span></button>
@@ -238,12 +256,10 @@
                             </div>
                             </div>
                         <div class="modal-footer">
-
+                            <button type="button" class="btn btn-default" @click="cancelar">Cancelar</button>
                             <button type="button" class="btn btn-success" @click="saveAgreement">
                                 Guardar
                             </button>
-
-                            <button type="button" class="btn btn-default" @click="cancelar">Cancelar</button>
                         </div>
                     </div>
                 </div>
@@ -275,12 +291,10 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-
-                            <button type="button" class="btn btn-success" @click="reasignAgreement">
-                                Reasignar
-                            </button>
-
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-success" @click="reasignAgreement">
+                                Asignar
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -292,18 +306,44 @@
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                             <h4 class="modal-title">
-                                Eliminar Convenio
+                                Confirmaciòn de baja de convenio
                             </h4>
                         </div>
                         <div class="modal-body">
-                            <p>El convenio {{modalEliminar.agreement.agreementName}} será
-                                eliminado</p>
+                            <p>El convenio <label>{{modalEliminar.agreement.agreementName}}</label> será
+                                dado de baja</p>
                         </div>
                         <div class="modal-footer">
-                            <button id="btnFlag" type="button" class="btn btn-default" @click="deleteAgreement">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button id="btnFlag" type="button" class="btn btn-danger" @click="deleteAgreement">
                                 Aceptar
                             </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modalNombre" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                <div class="modal-dialog ">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">
+                                Nombre del archivo
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-xs-6">
+                                <input class="form-control" name="name" v-model="name">
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-success" @click="buildReport">
+                                Aceptar
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -118,4 +118,11 @@ public class DwEmployeesDaoImpl extends AbstractDao<Integer, DwEmployees> implem
     public DwEmployees findByEmployee(Integer idEmployee) {
         return getByKey(idEmployee);
     }
+
+    @Override
+    public List<DwEmployees> findByDwEnterprise(Integer idDwEnterprise) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idDwEnterprise",idDwEnterprise))
+                .list();
+    }
 }

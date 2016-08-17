@@ -70,8 +70,10 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
     @Override
     public List<DwEnterprises> findByDistributor(Integer idDistributor) {
 
-        return (List<DwEnterprises>) getSession().createCriteria(DwEnterprises.class)
-                .add(Restrictions.eq("idDistributor", idDistributor)).list();
+        return createEntityCriteria()
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("status",true))
+                .list();
     }
 
     @Override
@@ -132,6 +134,8 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
             criteria.add(Restrictions.eq("idArea",idArea));
         }
 
+        criteria.add(Restrictions.eq("status",true));
+
         return criteria.list();
     }
 
@@ -147,6 +151,7 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
     public List<DwEnterprises> findByBranches(Integer idBranch) {
         return (List<DwEnterprises>) createEntityCriteria()
                 .add(Restrictions.eq("idBranch", idBranch))
+                .add(Restrictions.eq("status",true))
                 .list();
     }
 
@@ -163,6 +168,7 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
         return (List<DwEnterprises>) createEntityCriteria()
                 .add(Restrictions.eq("idDistributor",idDistributor))
                 .add(Restrictions.eq("idRegion", idRegion))
+                .add(Restrictions.eq("status",true))
                 .list();
     }
 
@@ -172,6 +178,7 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
                 .add(Restrictions.eq("idDistributor",idDistributor))
                 .add(Restrictions.eq("idRegion", idRegion))
                 .add(Restrictions.eq("idZona", idZona))
+                .add(Restrictions.eq("status",true))
                 .list();
     }
 
