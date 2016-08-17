@@ -85,6 +85,24 @@ public class AccountingAccounts implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CAccountingAccountType cAccountingAccountType;
 
+    @JoinColumn(name = "ID_BUDGET_CATEGORY", referencedColumnName = "ID_BUDGET_CATEGORY")
+    @ManyToOne
+    @JsonView({JsonViews.Embedded.class})
+    private CBudgetCategories budgetCategory;
+
+    @JoinColumn(name = "ID_BUDGET_SUBCATEGORY", referencedColumnName = "ID_BUDGET_SUBCATEGORY")
+    @ManyToOne(optional = false)
+    @JsonView({JsonViews.Embedded.class})
+    private CBudgetSubcategories budgetSubcategory;
+
+    @Column(name = "ID_BUDGET_CATEGORY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idBudgetCategory;
+
+    @Column(name = "ID_BUDGET_SUBCATEGORY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idBudgetSubcategory;
+
     public AccountingAccounts() {
     }
 
