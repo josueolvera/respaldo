@@ -1,7 +1,7 @@
 package mx.bidg.dao;
 
+import java.util.List;
 import mx.bidg.model.AccountingAccounts;
-import mx.bidg.model.CDistributors;
 
 /**
  * @author Rafael Viveros
@@ -9,4 +9,5 @@ import mx.bidg.model.CDistributors;
  */
 public interface AccountingAccountsDao extends InterfaceDao<AccountingAccounts> {
     AccountingAccounts findByThreeLevels(Integer firstLevel, Integer secondLevel, Integer thirdLevel);
+    List<AccountingAccounts> findAllCategories();
 }
