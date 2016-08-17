@@ -1,5 +1,6 @@
 package mx.bidg.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.CSizes;
 import mx.bidg.service.CSizesService;
@@ -23,6 +24,9 @@ public class CSizesController {
 
     @Autowired
     private CSizesService cSizesService;
+
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<CSizes>> findAll() throws IOException {

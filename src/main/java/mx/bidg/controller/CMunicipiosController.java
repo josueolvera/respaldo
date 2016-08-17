@@ -26,24 +26,25 @@ import java.util.List;
 @RequestMapping("municipalities")
 public class CMunicipiosController {
 
-        @Autowired
-        private CMunicipiosService service;
+    @Autowired
+    private CMunicipiosService service;
 
-        @Autowired
-        private CEstadosService estadosService;
+    @Autowired
+    private CEstadosService estadosService;
 
-        private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
 
-        @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-        public ResponseEntity<String> findAll() throws IOException {
-            List<CMunicipios> municipios = service.findAll();
-            return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(municipios), HttpStatus.OK);
-        }
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findAll() throws IOException {
+        List<CMunicipios> municipios = service.findAll();
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(municipios), HttpStatus.OK);
+    }
 
-        @RequestMapping(value = "/{idEstado}/{idMunicipio}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-        public ResponseEntity<String> findByMunicipio(@PathVariable int idEstado,@PathVariable int idMunicipio) throws IOException{
-            CEstados estados = estadosService.findById(idEstado);
-            CMunicipios municipio = service.findMunicipio(estados,idMunicipio);
-            return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(municipio), HttpStatus.OK);
-        }
+    @RequestMapping(value = "/{idEstado}/{idMunicipio}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findByMunicipio(@PathVariable int idEstado,@PathVariable int idMunicipio) throws IOException{
+        CEstados estados = estadosService.findById(idEstado);
+        CMunicipios municipio = service.findMunicipio(estados,idMunicipio);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(municipio), HttpStatus.OK);
+    }
 }

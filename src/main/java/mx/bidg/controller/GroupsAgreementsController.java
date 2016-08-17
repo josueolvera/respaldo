@@ -48,7 +48,7 @@ public class GroupsAgreementsController {
     CAgreementsGroupsService cAgreementsGroupsService;
 
     @Autowired
-    ObjectMapper mapper;
+    private ObjectMapper mapper;
     
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findAll()throws IOException{

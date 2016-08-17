@@ -30,21 +30,22 @@ public class CGroupsController {
     
     @Autowired
     CGroupsService cGroupsService;
-    
-    ObjectMapper map = new ObjectMapper();
+
+    @Autowired
+    private ObjectMapper mapper;
     
     @RequestMapping(produces = "application/json;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> getCGroups() 
             throws Exception {
         List<CGroups> list = cGroupsService.findAll();
-        return new ResponseEntity<>(map.writerWithView(JsonViews.Root.class).writeValueAsString(list), HttpStatus.OK);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(list), HttpStatus.OK);
     }
     
     @RequestMapping(value = "/{idGroup}", produces = "application/json;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> getCGroupsParams(
         @PathVariable Integer idGroup) throws Exception {        
         CGroups cGroup = cGroupsService.getByIdBudgetsCatalogs(idGroup);
-        return new ResponseEntity<>(map.writerWithView(JsonViews.EmbeddedBudget.class).writeValueAsString(cGroup), HttpStatus.OK);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.EmbeddedBudget.class).writeValueAsString(cGroup), HttpStatus.OK);
     }
     
     @RequestMapping(value = "/area", produces = "application/json;charset=UTF-8")
@@ -52,7 +53,7 @@ public class CGroupsController {
         Users user = (Users) session.getAttribute("user");
         CGroups cGroup = cGroupsService.getBudgetListByGroupsArea(user.getDwEmployee().getDwEnterprise().getIdGroup(), 
                 user.getDwEmployee().getDwEnterprise().getIdArea());
-        return new ResponseEntity<>(map.writerWithView(JsonViews.EmbeddedBudget.class).writeValueAsString(cGroup), HttpStatus.OK);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.EmbeddedBudget.class).writeValueAsString(cGroup), HttpStatus.OK);
     }
     
 }

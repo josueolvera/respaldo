@@ -42,7 +42,8 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     @Autowired
     private ProvidersAccountsDao providersAcountsdao;
 
-    ObjectMapper mapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper mapper;
 
     @Override
     public PriceEstimations saveData(String data, Users user) throws Exception {

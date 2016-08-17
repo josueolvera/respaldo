@@ -34,22 +34,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsService {
 
     @Autowired
-    BudgetMonthConceptsDao budgetMonthConceptsDao;
+    private BudgetMonthConceptsDao budgetMonthConceptsDao;
 
     @Autowired
-    DwEnterprisesService dwEnterprisesService;
+    private DwEnterprisesService dwEnterprisesService;
 
     @Autowired
-    CBudgetConceptsService cBudgetConceptsService;
+    private CBudgetConceptsService cBudgetConceptsService;
 
     @Autowired
-    BudgetMonthBranchDao budgetMonthBranchDao;
+    private BudgetMonthBranchDao budgetMonthBranchDao;
     
     @Autowired
-    BudgetsDao budgetsDao;
+    private BudgetsDao budgetsDao;
 
     @Autowired
-    ObjectMapper mapper;
+    private ObjectMapper mapper;
 
     @Override
     public List<BudgetMonthConcepts> saveList(String data) throws Exception {

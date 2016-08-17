@@ -35,7 +35,8 @@ public class AccountsController {
     @Autowired
     private ProvidersAccountsService providersAccountsService;
 
-    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(value = "/provider/{idProvider}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> accountsByProvider(@PathVariable int idProvider) throws Exception {

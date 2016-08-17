@@ -28,7 +28,8 @@ public class ProvidersAccountsController {
     @Autowired
     ProvidersAccountsService providersAccountsService;
 
-    ObjectMapper mapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"}, produces = "application/json;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> saveProviderAccount(@RequestBody String data) throws Exception {

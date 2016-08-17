@@ -25,13 +25,14 @@ public class CBudgetTypesController {
     
     @Autowired
     CBudgetTypesService cBudgetTypesService;
-    
-    ObjectMapper map = new ObjectMapper();
+
+    @Autowired
+    private ObjectMapper mapper;
     
     @RequestMapping(produces = "application/json;charset=UTF-8")
     public @ResponseBody String getBudgetTypes() throws Exception {
         List<CBudgetTypes> list = cBudgetTypesService.findAll();
-        return map.writerWithView(JsonViews.RootExtras.class).writeValueAsString(list);
+        return mapper.writerWithView(JsonViews.RootExtras.class).writeValueAsString(list);
     }
     
 }

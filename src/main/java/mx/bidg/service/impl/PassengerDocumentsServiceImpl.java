@@ -42,7 +42,8 @@ public class PassengerDocumentsServiceImpl implements PassengerDocumentsService 
     @Autowired
     private Environment env;
 
-    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
 
     @Override
     public List<PassengerDocuments> findAll() {

@@ -68,9 +68,9 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
 
     @Autowired
     private EmailDeliveryService emailDeliveryService;
-    
-    private ObjectMapper mapper = new ObjectMapper();
 
+    @Autowired
+    private ObjectMapper mapper;
 
     @Override
     public List<AccountsPayable> findByFolio(String folio) {

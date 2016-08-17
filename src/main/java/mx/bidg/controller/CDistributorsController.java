@@ -36,7 +36,7 @@ public class CDistributorsController {
     private CDistributorsService cDistributorsService;
 
     @Autowired
-    ObjectMapper mapper;
+    private ObjectMapper mapper;
     
     @RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public @ResponseBody String getCDistributors(

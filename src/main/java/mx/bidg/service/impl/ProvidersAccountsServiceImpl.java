@@ -20,8 +20,9 @@ public class ProvidersAccountsServiceImpl implements ProvidersAccountsService {
     
     @Autowired
     private ProvidersAccountsDao dao;
-    
-    private ObjectMapper mapper = new ObjectMapper();
+
+    @Autowired
+    private ObjectMapper mapper;
 
     @Override
     public List<ProvidersAccounts> findByProvider(Providers provider) {

@@ -25,13 +25,14 @@ public class CBudgetPerdiodsController {
     
     @Autowired
     CBudgetPeriodsService cBudgetPeriodsService;
-    
-    ObjectMapper map = new ObjectMapper();
+
+    @Autowired
+    private ObjectMapper mapper;
     
     @RequestMapping(produces = "application/json;charset=UTF-8")
     public @ResponseBody String getBudgetPeriods() throws Exception {
         List<CBudgetPeriods> list = cBudgetPeriodsService.findAll();
-        return map.writerWithView(JsonViews.Root.class).writeValueAsString(list);
+        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(list);
     }
     
 }

@@ -23,7 +23,9 @@ public class PeriodicPaymentsController {
 
     @Autowired
     private PeriodicPaymentsService paymentsService;
-    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(value = "/folio", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public @ResponseBody String findByFolio(@RequestParam(name = "folio", required = true) String folio) throws Exception {

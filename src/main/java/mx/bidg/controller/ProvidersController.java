@@ -41,8 +41,9 @@ public class ProvidersController {
 
     @Autowired
     private  ProvidersProductsTypesService providersProductsTypesService;
-    
-    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+
+    @Autowired
+    private ObjectMapper mapper;
     
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> getProvidersList() throws Exception {

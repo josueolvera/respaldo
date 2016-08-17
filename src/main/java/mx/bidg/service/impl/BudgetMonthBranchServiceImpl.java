@@ -50,13 +50,14 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
     @Autowired
     CBudgetConceptsService cBudgetConceptsService;
 
-    ObjectMapper map = new ObjectMapper();
+    @Autowired
+    private ObjectMapper mapper;
 
     @Override
     public List<BudgetMonthBranch> saveList(String data) throws Exception {
 
         List<BudgetMonthBranch> bmbList = new ArrayList<>();
-        JsonNode jsonConcepts = map.readTree(data);
+        JsonNode jsonConcepts = mapper.readTree(data);
 
         for (JsonNode jsonRequest : jsonConcepts) {
 
@@ -138,7 +139,7 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
     @Override
     public BudgetMonthBranch findFromRequest(String data) throws Exception {
 
-        JsonNode jsonRequest = map.readTree(data);
+        JsonNode jsonRequest = mapper.readTree(data);
         int idGroup = jsonRequest.get("idGroup").asInt();
         int idDistributor = jsonRequest.get("idDistributor").asInt();
         int idRegion = jsonRequest.get("idRegion").asInt();
@@ -169,7 +170,7 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
     @Override
     public String authorizeBudget(String data) throws Exception {
         
-        JsonNode json = map.readTree(data);
+        JsonNode json = mapper.readTree(data);
         int idDistributor = json.get("idDistributor").asInt();
         int idArea = json.get("idArea").asInt();
         int year = json.get("year").asInt();

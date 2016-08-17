@@ -24,7 +24,8 @@ public class SapSaleController {
     @Autowired
     private SapSaleService sapSaleService;
 
-    ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody String findSapSales() throws Exception {

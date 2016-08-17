@@ -25,7 +25,8 @@ public class PassengerDocumentsController {
     @Autowired
     private PassengerDocumentsService passengerDocumentsService;
 
-    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> save(

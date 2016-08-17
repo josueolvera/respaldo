@@ -47,7 +47,8 @@ public class EmployeesHistoryController {
     @Autowired
     private CRolesService cRolesService;
 
-    private ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getEmployeesHistories
@@ -82,7 +83,7 @@ public class EmployeesHistoryController {
             }
         }
         return new ResponseEntity<>(
-                map.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesHistories),
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesHistories),
                 HttpStatus.OK
         );
     }
@@ -93,14 +94,14 @@ public class EmployeesHistoryController {
         EmployeesHistory employeeHistory = employeesHistoryService.findById(idEmployeeHistory);
 
         return new ResponseEntity<>(
-                map.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeeHistory),
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeeHistory),
                 HttpStatus.OK
         );
     }
 
     @RequestMapping(value = "/reactivation/{idEH}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> reactivation(@PathVariable Integer idEH, @RequestBody String data, HttpSession session) throws IOException{
-        JsonNode node = map.readTree(data);
+        JsonNode node = mapper.readTree(data);
         Users user = (Users) session.getAttribute("user");
         EmployeesHistory employeesHistory = employeesHistoryService.findById(idEH);
         Employees employees = employeesService.findById(employeesHistory.getIdEmployee());
@@ -118,7 +119,7 @@ public class EmployeesHistoryController {
         dwEmployees = dwEmployeesService.save(dwEmployees);
         CActionTypes cActionType = CActionTypes.REACTIVACION;
         EmployeesHistory employeesHistories = employeesHistoryService.save(dwEmployees,cActionType,employeesAccounts.getAccount(),user);
-        return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesHistories),HttpStatus.OK);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesHistories),HttpStatus.OK);
     }
 
     @RequestMapping(value = "/create-report", method = RequestMethod.GET)
@@ -154,7 +155,7 @@ public class EmployeesHistoryController {
         outputStream.close();
 
         return new ResponseEntity<>(
-                map.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesHistories),
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesHistories),
                 HttpStatus.OK
         );
     }

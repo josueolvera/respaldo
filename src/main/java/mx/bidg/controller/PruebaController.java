@@ -48,7 +48,8 @@ public class PruebaController {
     @Autowired
     ActiveSessionsList activeSessions;
 
-    ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
     
     @RequestMapping( method = RequestMethod.GET)
     public @ResponseBody String prueba() throws Exception {

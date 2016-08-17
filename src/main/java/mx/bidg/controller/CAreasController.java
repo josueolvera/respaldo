@@ -36,23 +36,24 @@ public class CAreasController {
     
     @Autowired
     CAreasService cAreasService;
-    
-    ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
+
+    @Autowired
+    private ObjectMapper mapper;
     
     @RequestMapping(produces = "application/json;charset=UTF-8")
     public @ResponseBody String getAreas() throws Exception {
         List<CAreas> list = cAreasService.findAll();
-        return map.writerWithView(JsonViews.Embedded.class).writeValueAsString(list);
+        return mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(list);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody String findById(@PathVariable int id) throws Exception {
-        return map.writerWithView(JsonViews.Root.class).writeValueAsString(cAreasService.findById(id));
+        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(cAreasService.findById(id));
     }
 
     @RequestMapping(value = "/area-role/{idArea}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getAreasWithRoles(@PathVariable Integer idArea)throws IOException{
         CAreas areas = cAreasService.findAreaWhitRole(idArea);
-        return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(areas),HttpStatus.OK);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(areas),HttpStatus.OK);
     }
 }

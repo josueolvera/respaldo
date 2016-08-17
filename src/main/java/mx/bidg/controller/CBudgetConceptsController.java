@@ -50,8 +50,9 @@ public class CBudgetConceptsController {
     
     @Autowired
     CMonthsService monthsService;
-    
-    ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+
+    @Autowired
+    private ObjectMapper mapper;
     
     @RequestMapping(value = "/group-area/{idDistributor}/{idArea}/{idDwEnterprise}/{year}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> getByDistributorArea(@PathVariable int idDistributor, @PathVariable int idArea,

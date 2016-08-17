@@ -25,13 +25,14 @@ public class CBudgetSubcategoriesController {
     
     @Autowired
     CBudgetSubcategoriesService cBudgetSubcategoriesService;
-    
-    ObjectMapper map = new ObjectMapper();
+
+    @Autowired
+    private ObjectMapper mapper;
     
     @RequestMapping(produces = "application/json;charset=UTF-8")
     public @ResponseBody String getCBudgetSubcategories() throws Exception {
         List<CBudgetSubcategories> list = cBudgetSubcategoriesService.findAll();
-        return map.writerWithView(JsonViews.Root.class).writeValueAsString(list);
+        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(list);
     }
     
 }
