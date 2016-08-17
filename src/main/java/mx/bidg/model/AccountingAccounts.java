@@ -218,6 +218,38 @@ public class AccountingAccounts implements Serializable {
         this.cAccountingAccountType = cAccountingAccountType;
     }
 
+    public CBudgetCategories getBudgetCategory() {
+        return budgetCategory;
+    }
+
+    public void setBudgetCategory(CBudgetCategories budgetCategory) {
+        this.budgetCategory = budgetCategory;
+    }
+
+    public CBudgetSubcategories getBudgetSubcategory() {
+        return budgetSubcategory;
+    }
+
+    public void setBudgetSubcategory(CBudgetSubcategories budgetSubcategory) {
+        this.budgetSubcategory = budgetSubcategory;
+    }
+
+    public Integer getIdBudgetCategory() {
+        return idBudgetCategory;
+    }
+
+    public void setIdBudgetCategory(Integer idBudgetCategory) {
+        this.idBudgetCategory = idBudgetCategory;
+    }
+
+    public Integer getIdBudgetSubcategory() {
+        return idBudgetSubcategory;
+    }
+
+    public void setIdBudgetSubcategory(Integer idBudgetSubcategory) {
+        this.idBudgetSubcategory = idBudgetSubcategory;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;

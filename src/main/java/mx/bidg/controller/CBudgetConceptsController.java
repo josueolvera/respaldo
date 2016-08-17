@@ -120,8 +120,8 @@ public class CBudgetConceptsController {
                 budgetPojo.setIdBudget(budget.getIdBudget());
                 budgetPojo.setIdDistributor(budget.getIdDistributor());
                 budgetPojo.setIdArea(budget.getIdArea());
-//                budgetPojo.setIdBudgetCategory(budget.getIdBudgetCategory());
-//                budgetPojo.setIdBudgetSubcategory(budget.getIdBudgetSubcategory());
+                budgetPojo.setIdBudgetCategory(budget.getAccountingAccount().getIdBudgetCategory());
+                budgetPojo.setIdBudgetSubcategory(budget.getAccountingAccount().getIdBudgetSubcategory());
                 budgetPojo.setConceptos(conceptPojoList);
                 budgetPojo.setTotalMonth(totalMonthPojoList);
                 budgetPojo.setGranTotal(BigDecimal.ZERO);

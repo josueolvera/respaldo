@@ -76,7 +76,7 @@
                                 this.bandera3ernivel= true;
                             });
 
-                    this.$http.get(ROOT_URL + "/distributors")
+                    this.$http.get(ROOT_URL + "/distributors?forStock=true")
                             .success(function (data)
                             {
                                 this.catalogoDistribuidor= data;
@@ -623,7 +623,7 @@
                     },
                     getDistributors: function()
                     {
-                        this.$http.get(ROOT_URL + "/distributors")
+                        this.$http.get(ROOT_URL + "/distributors?forStock=true")
                                 .success(function (data)
                                 {
                                     this.distributors = data;

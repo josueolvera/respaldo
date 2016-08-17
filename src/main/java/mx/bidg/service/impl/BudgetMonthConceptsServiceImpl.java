@@ -48,14 +48,15 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
     @Autowired
     BudgetsDao budgetsDao;
 
-    ObjectMapper map = new ObjectMapper();
+    @Autowired
+    ObjectMapper mapper;
 
     @Override
     public List<BudgetMonthConcepts> saveList(String data) throws Exception {
 
         List<BudgetMonthConcepts> list = new ArrayList<>();
         CBudgetConcepts concept;
-        JsonNode jsonConcepts = map.readTree(data);
+        JsonNode jsonConcepts = mapper.readTree(data);
 
         for (JsonNode jsonRequest : jsonConcepts) {
 

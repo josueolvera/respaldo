@@ -5,6 +5,9 @@
  */
 package mx.bidg.pojos;
 
+import mx.bidg.model.CBudgetCategories;
+import mx.bidg.model.CBudgetSubcategories;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -19,6 +22,8 @@ public class BudgetPojo {
     private int idArea;
     private int idBudgetCategory;
     private int idBudgetSubcategory;
+    private CBudgetCategories budgetCategory;
+    private CBudgetSubcategories budgetSubcategory;
     private int year;
     private int isAuthorized;
     private BigDecimal granTotal;
@@ -79,6 +84,22 @@ public class BudgetPojo {
 
     public void setIdBudgetSubcategory(int idBudgetSubcategory) {
         this.idBudgetSubcategory = idBudgetSubcategory;
+    }
+
+    public CBudgetCategories getBudgetCategory() {
+        return budgetCategory;
+    }
+
+    public void setBudgetCategory(CBudgetCategories budgetCategory) {
+        this.budgetCategory = budgetCategory;
+    }
+
+    public CBudgetSubcategories getBudgetSubcategory() {
+        return budgetSubcategory;
+    }
+
+    public void setBudgetSubcategory(CBudgetSubcategories budgetSubcategory) {
+        this.budgetSubcategory = budgetSubcategory;
     }
 
     public BigDecimal getGranTotal() {
