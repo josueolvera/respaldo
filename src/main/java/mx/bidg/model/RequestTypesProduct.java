@@ -68,7 +68,7 @@ public class RequestTypesProduct implements Serializable {
     @JoinColumn(name = "ID_ACCOUNTING_ACCOUNT", referencedColumnName = "ID_ACCOUNTING_ACCOUNT")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private ProductTypesProduct productTypesProduct;
+    private AccountingAccounts accountingAccounts;
     
     @Basic(optional = false)
     @NotNull
@@ -82,7 +82,7 @@ public class RequestTypesProduct implements Serializable {
 
     public RequestTypesProduct() {
     }
-
+ 
     public RequestTypesProduct(Integer idRequestTypeProduct) {
         this.idRequestTypeProduct = idRequestTypeProduct;
     }
@@ -127,13 +127,6 @@ public class RequestTypesProduct implements Serializable {
         this.idAccountingAccount = idAccountingAccount;
     }
 
-    public ProductTypesProduct getProductTypesProduct() {
-        return productTypesProduct;
-    }
-
-    public void setProductTypesProduct(ProductTypesProduct productTypesProduct) {
-        this.productTypesProduct = productTypesProduct;
-    }
     
     public Integer getIdAccessLevel() {
         return idAccessLevel;
@@ -149,6 +142,14 @@ public class RequestTypesProduct implements Serializable {
 
     public void setRequestsList(List<Requests> requestsList) {
         this.requestsList = requestsList;
+    }
+    
+    public AccountingAccounts getAccountingAccounts() {
+        return accountingAccounts;
+    }
+
+    public void setAccountingAccounts(AccountingAccounts accountingAccounts) {
+        this.accountingAccounts = accountingAccounts;
     }
 
     
