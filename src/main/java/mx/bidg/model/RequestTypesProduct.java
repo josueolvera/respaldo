@@ -61,6 +61,15 @@ public class RequestTypesProduct implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CRequestsCategories requestCategory;
     
+    @Column(name = "ID_ACCOUNTING_ACCOUNT", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idAccountingAccount;
+    
+    @JoinColumn(name = "ID_ACCOUNTING_ACCOUNT", referencedColumnName = "ID_ACCOUNTING_ACCOUNT")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private ProductTypesProduct productTypesProduct;
+    
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
@@ -110,6 +119,22 @@ public class RequestTypesProduct implements Serializable {
         this.requestCategory = requestCategory;
     }
     
+        public Integer getIdAccountingAccount() {
+        return idAccountingAccount;
+    }
+
+    public void setIdAccountingAccount(Integer idAccountingAccount) {
+        this.idAccountingAccount = idAccountingAccount;
+    }
+
+    public ProductTypesProduct getProductTypesProduct() {
+        return productTypesProduct;
+    }
+
+    public void setProductTypesProduct(ProductTypesProduct productTypesProduct) {
+        this.productTypesProduct = productTypesProduct;
+    }
+    
     public Integer getIdAccessLevel() {
         return idAccessLevel;
     }
@@ -126,6 +151,7 @@ public class RequestTypesProduct implements Serializable {
         this.requestsList = requestsList;
     }
 
+    
     @Override
     public int hashCode() {
         int hash = 0;
