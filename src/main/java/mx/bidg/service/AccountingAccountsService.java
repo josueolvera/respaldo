@@ -15,4 +15,5 @@ public interface AccountingAccountsService {
     AccountingAccounts save(AccountingAccounts accountingAccounts);
     AccountingAccounts update(AccountingAccounts accountingAccounts);
     AccountingAccounts findById(Integer idAccountingAccount);
+    List<AccountingAccounts> findAllCategories();
 }

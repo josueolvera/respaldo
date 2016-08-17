@@ -54,4 +54,11 @@ public class AccountingAccountsDaoImpl extends AbstractDao<Integer, AccountingAc
     public boolean delete(AccountingAccounts entity) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
+
+    @Override
+    public List<AccountingAccounts> findAllCategories() {
+        return createEntityCriteria()
+                .add(Restrictions.eq("isOfRequest", 1))
+                .list();
+    }
 }

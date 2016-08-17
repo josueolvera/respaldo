@@ -47,4 +47,9 @@ public class AccountingAccountsServiceImpl implements AccountingAccountsService 
     public AccountingAccounts findById(Integer idAccountingAccount) {
         return accountingAccountsDao.findById(idAccountingAccount);
     }
+
+    @Override
+    public List<AccountingAccounts> findAllCategories() {
+        return accountingAccountsDao.findAllCategories();
+    }
 }
