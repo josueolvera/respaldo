@@ -51,4 +51,9 @@ public class RequestTypesProductServiceImpl implements RequestTypesProductServic
         return dao.findByRequestCategory(cRequestCategories);
     }
 
+    @Override
+    public List<RequestTypesProduct> findByRequestCategoryBudgetCategory(CRequestsCategories requestCategory, CBudgetCategories budgetCategories) {
+        return dao.findByRequestCategoryBudgetCategory(requestCategory, budgetCategories);
+    }
+
 }

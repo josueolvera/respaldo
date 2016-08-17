@@ -23,5 +23,5 @@ public interface RequestTypesProductService {
     public List<RequestTypesProduct> findByRequestType(CRequestTypes cRequestTypes);
     public List<RequestTypesProduct> findByBudgetCategory(CBudgetCategories budgetCategories);
     public List<RequestTypesProduct> findByRequestCategory(CRequestsCategories cRequestCategories);    
-    
+    public List<RequestTypesProduct> findByRequestCategoryBudgetCategory(CRequestsCategories requestCategory, CBudgetCategories budgetCategories);
 }

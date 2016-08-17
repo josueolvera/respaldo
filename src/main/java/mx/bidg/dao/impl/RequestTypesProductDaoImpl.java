@@ -16,6 +16,7 @@ import mx.bidg.model.CRequestsCategories;
 import mx.bidg.model.RequestTypesProduct;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -64,7 +65,9 @@ public class RequestTypesProductDaoImpl extends AbstractDao<Integer, RequestType
 
     @Override
     public List<RequestTypesProduct> findByRequestCategory(CRequestsCategories requestCategory) {
-        Criteria criteria = createEntityCriteria().add(Restrictions.eq("requestCategory", requestCategory));
+        
+        Criteria criteria = createEntityCriteria().add(Restrictions.eq("requestCategory", requestCategory))
+                 .setProjection(Projections.distinct(Projections.property("budgetCategory")));
         return (List<RequestTypesProduct>) criteria.list();
     }
 
@@ -93,6 +96,13 @@ public class RequestTypesProductDaoImpl extends AbstractDao<Integer, RequestType
     public List<RequestTypesProduct> findByBudgetCategory(CBudgetCategories budgetCategories) {
        Criteria criteria = createEntityCriteria().add(Restrictions.eq("budgetCategory", budgetCategories));
         return (List<RequestTypesProduct>) criteria.list(); 
+    }
+
+    @Override
+    public List<RequestTypesProduct> findByRequestCategoryBudgetCategory(CRequestsCategories requestCategory, CBudgetCategories budgetCategories) {
+        Criteria criteria = createEntityCriteria().add(Restrictions.eq("requestCategory", requestCategory))
+                .add(Restrictions.eq("budgetCategory", budgetCategories));
+         return (List<RequestTypesProduct>) criteria.list(); 
     }
 
 }

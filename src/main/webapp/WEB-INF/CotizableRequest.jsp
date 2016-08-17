@@ -64,7 +64,7 @@
             this.obtainCurrencies();
             this.obtainAllPeriods();
             this.obtainRequestInformation.idRequestCategory= this.RequestCategory;
-            this.$http.get(ROOT_URL+"/request-types/request-category/"+ this.obtainRequestInformation.idRequestCategory)
+            this.$http.get(ROOT_URL+"/request-type-product/category/"+ this.obtainRequestInformation.idRequestCategory)
                     .success(function (data)
                     {
                        this.RequestTypes= data;
@@ -217,7 +217,7 @@
               this.obtainRequestInformation.idUserResponsable='';
               this.ProductTypes= {};
               this.Productos= {};
-              this.$http.get(ROOT_URL+"/product-types/request-category-type/"+this.obtainRequestInformation.idRequestCategory+"/"+this.obtainRequestInformation.idRequestType)
+              this.$http.get(ROOT_URL+"/request-type-product/categorybudget/"+this.obtainRequestInformation.idRequestCategory+"/"+this.obtainRequestInformation.idRequestType)
                       .success(function (data)
                       {
                          this.ProductTypes= data;
@@ -1282,7 +1282,7 @@
                </label>
                <select class="form-control" v-model="obtainRequestInformation.idRequestType" :disabled="desactivarCombos || isUpdate" @change="obtainProductType" required>
                  <option v-for="RequestType in RequestTypes"
-                   value="{{RequestType.idRequestType}}">{{RequestType.requestType}}
+                   value="{{RequestType.idBudgetCategory}}">{{RequestType.budgetCategory}}
                  </option>
                </select>
               </div>
@@ -1294,8 +1294,8 @@
                 <select class="form-control" v-model="obtainRequestInformation.idProductType" :disabled="desactivarCombos || isUpdate"
                   @change="obtainProducts" id="productTypesin" required>
                   <option></option>
-                  <option v-for="ProductType in ProductTypes" value="{{ProductType.idProductType}}">
-                    {{ProductType.productType}}
+                  <option v-for="ProductType in ProductTypes" value="{{ProductType.idBudgetSubcategory}}">
+                    {{ProductType.budgetSubcategory.budgetSubcategory}}
                   </option>
                 </select>
               </div>

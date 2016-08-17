@@ -23,6 +23,8 @@ public interface RequestTypesProductDao extends InterfaceDao<RequestTypesProduct
     
     public List<RequestTypesProduct> findByRequestCategory(CRequestsCategories requestCategory);
     
+    public List<RequestTypesProduct> findByRequestCategoryBudgetCategory(CRequestsCategories requestCategory, CBudgetCategories budgetCategories);
+
     public List<RequestTypesProduct> findByRequestCategoryRequestType(CRequestsCategories requestCategory, CRequestTypes requestType);
 
     public List<RequestTypesProduct> findByRequestType(CRequestTypes requestTypes);

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.util.List;
+import mx.bidg.model.CBudgetCategories;
 import mx.bidg.model.CRequestsCategories;
 
 /**
@@ -54,9 +55,15 @@ public class RequestTypesProductController {
         return new ResponseEntity<String>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestTypesProduct),HttpStatus.OK);
     }
     
-    @RequestMapping(value = "/requestCateogy/{idRequestCategory}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/category/{idRequestCategory}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> getByRequestCategory(@PathVariable int idRequestCategory) throws IOException{
         List<RequestTypesProduct> requestTypesProduct = requestTypesProductService.findByRequestCategory(new CRequestsCategories(idRequestCategory));
+        return new ResponseEntity<String>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestTypesProduct),HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/categorybudget/{idRequestCategory}/{idBudgetCategory}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody ResponseEntity<String> getByRequestCategoryBudgetCategory(@PathVariable int idRequestCategory, @PathVariable int idBudgetCategory) throws IOException{
+        List<RequestTypesProduct> requestTypesProduct = requestTypesProductService.findByRequestCategoryBudgetCategory(new CRequestsCategories(idRequestCategory), new CBudgetCategories(idBudgetCategory));
         return new ResponseEntity<String>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestTypesProduct),HttpStatus.OK);
     }
     
