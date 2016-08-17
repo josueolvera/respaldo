@@ -56,28 +56,10 @@ public class RequestTypesProduct implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idRequestCategory;
     
-    @Column(name = "ID_BUDGET_CATEGORY", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idBudgetCategory;
-    
-    @Column(name = "ID_BUDGET_SUBCATEGORY", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idBudgetSubcategory;
-    
     @JoinColumn(name = "ID_REQUEST_CATEGORY", referencedColumnName = "ID_REQUEST_CATEGORY")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private CRequestsCategories requestCategory;
-    
-    @JoinColumn(name = "ID_BUDGET_CATEGORY", referencedColumnName = "ID_BUDGET_CATEGORY")
-    @ManyToOne
-    @JsonView(JsonViews.Embedded.class)
-    private CBudgetCategories budgetCategory;
-    
-    @JoinColumn(name = "ID_BUDGET_SUBCATEGORY", referencedColumnName = "ID_BUDGET_SUBCATEGORY")
-    @ManyToOne
-    @JsonView(JsonViews.Embedded.class)
-    private CBudgetSubcategories BudgetSubcategory;
     
     @Basic(optional = false)
     @NotNull
@@ -118,38 +100,6 @@ public class RequestTypesProduct implements Serializable {
 
     public void setIdRequestCategory(Integer idRequestCategory) {
         this.idRequestCategory = idRequestCategory;
-    }
-
-        public Integer getIdBudgetCategory() {
-        return idBudgetCategory;
-    }
-
-    public void setIdBudgetCategory(Integer idBudgetCategory) {
-        this.idBudgetCategory = idBudgetCategory;
-    }
-
-    public Integer getIdBudgetSubcategory() {
-        return idBudgetSubcategory;
-    }
-
-    public void setIdBudgetSubcategory(Integer idBudgetSubcategory) {
-        this.idBudgetSubcategory = idBudgetSubcategory;
-    }
-
-    public CBudgetCategories getBudgetCategory() {
-        return budgetCategory;
-    }
-
-    public void setBudgetCategory(CBudgetCategories budgetCategory) {
-        this.budgetCategory = budgetCategory;
-    }
-
-    public CBudgetSubcategories getBudgetSubcategory() {
-        return BudgetSubcategory;
-    }
-
-    public void setBudgetSubcategory(CBudgetSubcategories BudgetSubcategory) {
-        this.BudgetSubcategory = BudgetSubcategory;
     }
     
     public CRequestsCategories getRequestCategory() {
