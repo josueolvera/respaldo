@@ -55,11 +55,6 @@ public class ProductTypesProduct implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CProducts product;
     
-    @JoinColumn(name = "ID_PRODUCT_TYPE", referencedColumnName = "ID_PRODUCT_TYPE")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private CProductTypes productType;
-    
     @Column(name = "ID_ACCOUNTING_ACCOUNT", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idAccountingAccount;
@@ -108,16 +103,8 @@ public class ProductTypesProduct implements Serializable {
     public void setProduct(CProducts product) {
         this.product = product;
     }
-
-    public CProductTypes getProductType() {
-        return productType;
-    }
-
-    public void setProductType(CProductTypes productType) {
-        this.productType = productType;
-    }
     
-        public Integer getIdAccountingAccount() {
+    public Integer getIdAccountingAccount() {
         return idAccountingAccount;
     }
 
