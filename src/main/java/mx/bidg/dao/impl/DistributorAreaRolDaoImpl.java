@@ -4,6 +4,7 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.DistributorAreaRolDao;
 import mx.bidg.model.CZonas;
 import mx.bidg.model.DistributorAreaRol;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -41,5 +42,13 @@ public class DistributorAreaRolDaoImpl extends AbstractDao<Integer, DistributorA
     public boolean delete(DistributorAreaRol entity) {
         remove(entity);
         return true;
+    }
+
+    @Override
+    public List<DistributorAreaRol> findRolByDistributorArea(Integer idDistributor, Integer idArea) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idDistributor",idDistributor))
+                .add(Restrictions.eq("idArea",idArea))
+                .list();
     }
 }
