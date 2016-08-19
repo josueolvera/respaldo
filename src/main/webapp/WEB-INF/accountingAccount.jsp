@@ -99,45 +99,50 @@
                 },
                 methods: {
                     getAccountingAccounts: function () {
-                        this.$http.get(ROOT_URL + '/accounting-accounts').success(function (data) {
-                            this.accountingAccounts = data;
-                        });
+                        this.$http.get(ROOT_URL + '/accounting-accounts')
+                                .success(function (data) {
+                                    this.accountingAccounts = data;
+                                });
                     },
                     getAccountigCategorys: function () {
-                        this.$http.get(ROOT_URL + '/accounting-category').success(function (data) {
-                            this.accountingCategorys = data;
-                        });
+                        this.$http.get(ROOT_URL + '/accounting-category')
+                                .success(function (data) {
+                                    this.accountingCategorys = data;
+                                });
                     },
                     getAccountigNatures: function () {
-                        this.$http.get(ROOT_URL + '/accounting-nature').success(function (data) {
-                            this.accountingNatures = data;
-                        });
+                        this.$http.get(ROOT_URL + '/accounting-nature')
+                                .success(function (data) {
+                                    this.accountingNatures = data;
+                                });
                     },
                     getAccountingTypes: function () {
-                        this.$http.get(ROOT_URL + '/accounting-type').success(function (data) {
-                            this.accountingTypes = data;
-                        });
+                        this.$http.get(ROOT_URL + '/accounting-type')
+                                .success(function (data) {
+                                    this.accountingTypes = data;
+                                });
                     },
                     saveAccountingAccount: function () {
-                        this.$http.post(ROOT_URL + '/accounting-accounts', JSON.stringify(this.accounting)).success(function (data) {
-                            showAlert('Registro guardado con éxito');
-                            $('#modalAlta').modal('hide');
-                            this.getAccountingAccounts();
-                        }).error(function () {
-                            showAlert('Error en la solicitud', {type: 3});
+                        this.$http.post(ROOT_URL + '/accounting-accounts', JSON.stringify(this.accounting))
+                                .success(function (data) {
+                                    showAlert('Registro guardado con éxito');
+                                    $('#modalAlta').modal('hide');
+                                    this.getAccountingAccounts();
+                                }).error(function (data) {
+                            showAlert(data.error.message, {type: 3});
                         });
-                        this.cancelar();
                     },
                     modifyAccounting: function (accounting) {
                         $('#modalModificar').modal('show');
                         this.accountingAccount = (JSON.parse(JSON.stringify(accounting)));
                     },
                     updateAccountingAccount: function (accountingAccount) {
-                        this.$http.post(ROOT_URL + '/accounting-accounts/' + accountingAccount.idAccountingAccount, accountingAccount).success(function (data) {
-                            showAlert('Cuenta contable actualizada');
-                            $('#modalModificar').modal('hide');
-                            this.getAccountingAccounts();
-                        }).error(function () {
+                        this.$http.post(ROOT_URL + '/accounting-accounts/' + accountingAccount.idAccountingAccount, accountingAccount)
+                                .success(function (data) {
+                                    showAlert('Cuenta contable actualizada');
+                                    $('#modalModificar').modal('hide');
+                                    this.getAccountingAccounts();
+                                }).error(function (data) {
                             showAlert('Error en la solicitud', {type: 3});
                         });
                     },
@@ -238,141 +243,130 @@
         <div class="modal fade" id="modalAlta" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title">Registro de cuenta contable</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-xs-4">
-                                <label>Descripción</label>
-                                <input class="form-control"  v-model="accounting.description">
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Tipo</label>
-                                <select class="form-control" v-model="accounting.accountingAccountType">
-                                    <option v-for="type in accountingTypes"
-                                            value="{{type}}">
-                                        {{type.name}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Naturaleza</label>
-                                <select class="form-control" v-model="accounting.accountingAccountNature">
-                                    <option v-for="nature in accountingNatures"
-                                            value="{{nature}}">
-                                        {{nature.nature}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-2">
-                                <label>Clasificación</label>
-                                <select class="form-control" v-model="accounting.accountingAccountCategory">
-                                    <option v-for="category in accountingCategorys"
-                                            value="{{category}}">
-                                        {{category.classification}}
-                                    </option>
-                                </select>
-                            </div>
+                    <form v-on:submit.prevent="saveAccountingAccount">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">Registro de cuenta contable</h4>
                         </div>
-                        <br>
-                        <div>
+                        <div class="modal-body">
                             <div class="row">
                                 <div class="col-xs-4">
-                                    <label>Cuenta contable</label>
+                                    <label>Descripción</label>
+                                    <input class="form-control"  v-model="accounting.description" required>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Tipo</label>
+                                    <select class="form-control" v-model="accounting.accountingAccountType" required>
+                                        <option v-for="type in accountingTypes"
+                                                value="{{type}}">
+                                            {{type.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Naturaleza</label>
+                                    <select class="form-control" v-model="accounting.accountingAccountNature" required>
+                                        <option v-for="nature in accountingNatures"
+                                                value="{{nature}}">
+                                            {{nature.nature}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-2">
+                                    <label>Clasificación</label>
+                                    <select class="form-control" v-model="accounting.accountingAccountCategory" required>
+                                        <option v-for="category in accountingCategorys"
+                                                value="{{category}}">
+                                            {{category.classification}}
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
                             <br>
-                            <div class="row">
-                                <div class="col-xs-2">
-                                    <label>Primer nivel</label>
-                                    <input maxlength="4" class="form-control text-center" name="name"
-                                           v-model="accounting.firstLevel"
-                                           onkeypress="return isNumberKey(event)">
+                            <div>
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <label>Cuenta contable</label>
+                                    </div>
                                 </div>
-                                <div class="col-xs-2">
-                                    <label>Segundo nivel</label>
-                                    <input maxlength="3" class="form-control text-center" name="name"
-                                           v-model="accounting.secondLevel"
-                                           onkeypress="return isNumberKey(event)">
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <label>Primer nivel</label>
+                                        <input maxlength="4" class="form-control text-center" v-model="accounting.firstLevel"
+                                               onkeypress="return isNumberKey(event)"  required>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Segundo nivel</label>
+                                        <input maxlength="3" class="form-control text-center" v-model="accounting.secondLevel"
+                                               onkeypress="return isNumberKey(event)" required>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Tercer nivel</label>
+                                        <input maxlength="4" class="form-control text-center" v-model="accounting.thirdLevel"
+                                               onkeypress="return isNumberKey(event)" required>
+                                    </div>
                                 </div>
-                                <div class="col-xs-2">
-                                    <label>Tercer nivel</label>
-                                    <input maxlength="4" class="form-control text-center" name="name"
-                                           v-model="accounting.thirdLevel"
-                                           onkeypress="return isNumberKey(event)">
-                                </div>
+                                <br>
                             </div>
-                            <br>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-
-                        <button type="button" class="btn btn-success" @click="saveAccountingAccount()">
-                            Guardar
-                        </button>
-
-                        <button type="button" class="btn btn-default" @click="cancelar">Cancelar</button>
-                    </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-success">Guardar</button>
+                            <button type="button" class="btn btn-default" @click="cancelar">Cancelar</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
         <div class="modal fade" id="modalModificar" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title">Modificación de cuenta contable</h4>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-xs-4">
-                                <label>Descripción</label>
-                                <input class="form-control"  v-model="accountingAccount.description">
+                    <form v-on:submit.prevent="updateAccountingAccount(accountingAccount)">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">Modificación de cuenta contable</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-xs-4">
+                                    <label>Descripción</label>
+                                    <input class="form-control"  v-model="accountingAccount.description" required>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Tipo</label>
+                                    <select class="form-control" v-model="accountingAccount.accountingAccountType" required>
+                                        <option v-for="type in accountingTypes"
+                                                value="{{type}}">
+                                            {{type.name}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>Naturaleza</label>
+                                    <select class="form-control" v-model="accountingAccount.accountingAccountNature" required>
+                                        <option v-for="nature in accountingNatures"
+                                                value="{{nature}}">
+                                            {{nature.nature}}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-2">
+                                    <label>Clasificación</label>
+                                    <select class="form-control" v-model="accountingAccount.accountingAccountCategory" required>
+                                        <option v-for="category in accountingCategorys"
+                                                value="{{category}}">
+                                            {{category.classification}}
+                                        </option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="col-xs-3">
-                                <label>Tipo</label>
-                                <select class="form-control" v-model="accountingAccount.accountingAccountType">
-                                    <option></option>
-                                    <option v-for="type in accountingTypes"
-                                            value="{{type}}">
-                                        {{type.name}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-3">
-                                <label>Naturaleza</label>
-                                <select class="form-control" v-model="accountingAccount.accountingAccountNature">
-                                    <option></option>
-                                    <option v-for="nature in accountingNatures"
-                                            value="{{nature}}">
-                                        {{nature.nature}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-xs-2">
-                                <label>Clasificación</label>
-                                <select class="form-control" v-model="accountingAccount.accountingAccountCategory">
-                                    <option></option>
-                                    <option v-for="category in accountingCategorys"
-                                            value="{{category}}">
-                                        {{category.classification}}
-                                    </option>
-                                </select>
+                            <br>
+                            <div class="modal-footer">
+                                <button class="btn btn-success">Guardar</button>
+                                <button type="button" class="btn btn-default" @click="cancelar">Cancelar</button>
                             </div>
                         </div>
-                        <br>
-                        <div class="modal-footer">
-
-                            <button type="button" class="btn btn-success"
-                                    @click="updateAccountingAccount(accountingAccount)">
-                                Guardar
-                            </button>
-
-                            <button type="button" class="btn btn-default" @click="cancelar">Cancelar</button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>

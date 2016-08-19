@@ -97,7 +97,7 @@ public class AccountingAccountsController {
 
                     accountingAccount.setBudgetCategory(budgetCategory);
                 } else {
-                    throw new ValidationException("CUENTA INEXISTENTE", "No existe una cuenta con el número " + firstLevel);
+                    throw new ValidationException("CUENTA INEXISTENTE", "No existe una cuenta contable con el número " + firstLevel);
                 }
 
             } else if (thirdLevel == 0) {
@@ -114,7 +114,7 @@ public class AccountingAccountsController {
 
                     accountingAccount.setBudgetSubcategory(budgetSubcategory);
                 } else {
-                    throw new ValidationException("CUENTA INEXISTENTE", "No existe una cuenta con el número " + firstLevel);
+                    throw new ValidationException("CUENTA INEXISTENTE", "No existe una cuenta contable con el número " + secondLevel);
                 }
 
             }
