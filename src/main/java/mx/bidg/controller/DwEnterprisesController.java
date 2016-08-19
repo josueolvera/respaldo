@@ -155,4 +155,16 @@ public class DwEnterprisesController {
         List<CAreas> areasList = dwEnterprisesService.findAreaByBranch(idBranch);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(areasList), HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/distributor-area/region/{idDistributor}/{idArea}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getRegionByDistrAndArea (@PathVariable Integer idDistributor, @PathVariable Integer idArea) throws IOException{
+        List<CRegions> regionsList = dwEnterprisesService.findRegionByDistributorAndArea(idDistributor,idArea);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(regionsList), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/distributor-area/branch/{idDistributor}/{idArea}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getBranchByDistrAndArea (@PathVariable Integer idDistributor, @PathVariable Integer idArea) throws IOException{
+        List<CBranchs> branchsList = dwEnterprisesService.findBranchByDistributorAndArea(idDistributor,idArea);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(branchsList), HttpStatus.OK);
+    }
 }
