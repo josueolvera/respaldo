@@ -18,6 +18,7 @@ import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@SuppressWarnings("unchecked")
 public class ProvidersAccountsDaoImpl extends AbstractDao<Integer, ProvidersAccounts> implements ProvidersAccountsDao {
 
     @Override
@@ -53,7 +54,7 @@ public class ProvidersAccountsDaoImpl extends AbstractDao<Integer, ProvidersAcco
                 .add(Restrictions.eq("provider", p))
                 .createCriteria("account", JoinType.INNER_JOIN)
                     .add(Restrictions.isNull("deleteDay"));
-        return (List<ProvidersAccounts>) criteria.list();
+        return criteria.list();
     }
 
     @Override

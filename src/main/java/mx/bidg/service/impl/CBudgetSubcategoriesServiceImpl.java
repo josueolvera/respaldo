@@ -5,8 +5,12 @@
  */
 package mx.bidg.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import mx.bidg.dao.AccountingAccountsDao;
 import mx.bidg.dao.CBudgetSubcategoriesDao;
+import mx.bidg.model.AccountingAccounts;
 import mx.bidg.model.CBudgetSubcategories;
 import mx.bidg.service.CBudgetSubcategoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +26,27 @@ import org.springframework.transaction.annotation.Transactional;
 public class CBudgetSubcategoriesServiceImpl implements CBudgetSubcategoriesService {
     
     @Autowired
-    CBudgetSubcategoriesDao dao;
+    CBudgetSubcategoriesDao cBudgetSubcategoriesDao;
+
+    @Autowired
+    AccountingAccountsDao accountingAccountsDao;
 
     @Override
     public List<CBudgetSubcategories> findAll() {
-        return dao.findAll();
+        return cBudgetSubcategoriesDao.findAll();
     }
-    
+
+    @Override
+    public List<CBudgetSubcategories> getByBudgetCategory(Integer idBudgetCategory) {
+
+        List<AccountingAccounts> accountingAccounts = accountingAccountsDao.findByBudgetCategory(idBudgetCategory);
+        List<CBudgetSubcategories> budgetSubcategories = new ArrayList<>();
+
+        for (AccountingAccounts accountingAccount : accountingAccounts) {
+            budgetSubcategories.add(accountingAccount.getBudgetSubcategory());
+        }
+
+        return budgetSubcategories;
+    }
+
 }

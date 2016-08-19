@@ -56,10 +56,6 @@
                         idDistributor:0,
                         name:'TODOS'
                     },
-                    defaultZona: {
-                        idZonas:0,
-                        name:'TODOS'
-                    },
                     defaultBranch: {
                         idBranch:0,
                         name:'TODOS'

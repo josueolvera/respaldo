@@ -11,11 +11,14 @@ import mx.bidg.dao.ProvidersDao;
 import mx.bidg.model.CProductTypes;
 import mx.bidg.model.Providers;
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@SuppressWarnings("unchecked")
 public class ProvidersDaoImpl extends AbstractDao<Integer, Providers> implements ProvidersDao {
 
     @Override
@@ -34,7 +37,10 @@ public class ProvidersDaoImpl extends AbstractDao<Integer, Providers> implements
     @Override
     public List<Providers> findAll() {
         Criteria criteria = createEntityCriteria();
-        return (List<Providers>) criteria.list();
+        return criteria
+                .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
+                .setFetchMode("providersBudgetSubcategories", FetchMode.JOIN)
+                .list();
     }
 
     @Override

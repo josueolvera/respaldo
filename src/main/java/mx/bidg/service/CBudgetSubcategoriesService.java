@@ -13,7 +13,6 @@ import mx.bidg.model.CBudgetSubcategories;
  * @author sistemask
  */
 public interface CBudgetSubcategoriesService {
-    
-    public List<CBudgetSubcategories> findAll();
-    
+    List<CBudgetSubcategories> findAll();
+    List<CBudgetSubcategories> getByBudgetCategory(Integer idBudgetCategory);
 }

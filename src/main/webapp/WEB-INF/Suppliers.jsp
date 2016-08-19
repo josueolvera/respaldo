@@ -27,7 +27,7 @@
     <jsp:attribute name="scripts">
         <script type="text/javascript">
             function isNumberKey(evt) {
-                var charCode = (evt.which) ? evt.which : event.keyCode
+                var charCode = (evt.which) ? evt.which : event.keyCode;
                 if (charCode > 31 && (charCode < 48 || charCode > 57))
                     return false;
                 return true;
@@ -36,7 +36,7 @@
 
         <script>
             function isLetterKey(evt) {
-                var charCode = (evt.which) ? evt.which : event.keyCode
+                var charCode = (evt.which) ? evt.which : event.keyCode;
                 if (charCode === 32 ||
                         charCode === 13 ||
                         (charCode > 64 && charCode < 91) ||
@@ -73,11 +73,10 @@
 
                 },
                 ready: function () {
-                    this.obtainBanks();
                     this.getProviders();
+                    this.obtainBanks();
                     this.obtainCurrencies();
-                    this.obtainRequestTypes();
-                    this.productTypes();
+                    this.getBudgetCategories();
                 },
                 data: {
                     supplier: {
@@ -88,12 +87,12 @@
                         providersAccountsList: [],
                         providersContactList: [],
                         providerAddressList: [],
-                        providersProductsTypes: [],
+                        providersBudgetSubcategories: [],
                         creditDays: '',
                         cuttingDate: '',
                         firstLevel: '',
                         secondLevel: '',
-                        thirdLevel: '',
+                        thirdLevel: ''
                     },
                     provider: {
                         providerName: '',
@@ -103,12 +102,12 @@
                         providersAccountsList: [],
                         providersContactList: [],
                         providerAddressList: [],
-                        providersProductsTypes: [],
+                        providersBudgetSubcategories: [],
                         creditDays: '',
                         cuttingDate: '',
                         firstLevel: '',
                         secondLevel: '',
-                        thirdLevel: '',
+                        thirdLevel: ''
                     },
                     idBanks: '',
                     banks: [],
@@ -130,26 +129,26 @@
                     idMunicipality: '',
                     telephone: {
                         phoneNumber: '',
-                        email: "",
-                        post: "",
-                        name: "",
+                        email: '',
+                        post: '',
+                        name: ''
                     },
                     cuenta: {
                         accountNumber: '',
                         accountClabe: '',
                         idBank: '',
-                        idCurrency: '',
+                        idCurrency: ''
                     },
                     direccion: {
                         cp: '',
                         numExt: '',
                         numInt: '',
                         street: '',
-                        idAsentamiento: '',
+                        idAsentamiento: ''
                     },
                     modalPregunta: {
                         provider: {
-                            providerName: ""
+                            providerName: ''
                         }
                     },
                     modalCuenta: {
@@ -162,14 +161,15 @@
                     accountNumbers: '',
                     clabes: '',
                     requestInformation: {
-                        idRequestType:'',
-                        idProductType:'',
+                        budgetCategory:{},
+                        budgetSubcategory:{}
                     },
                     ProductTypes: {},
-                    RequestTypes: {},
+                    budgetCategories: {},
+                    budgetSubcategories: {},
                     asentamiento:[],
                     estadosMunicipios:{
-                    },
+                    }
 
                 },
                 methods: {
@@ -178,11 +178,11 @@
                         var providerLastName = this.providerLastName;
                         var providerSecondName = this.providerSecondName;
 
-                        this.supplier.providerName = (providerNames + ":" + providerLastName + ":" + providerSecondName);
+                        this.supplier.providerName = (providerNames + ':' + providerLastName + ':' + providerSecondName);
                     },
                     splitProviderName: function (provider) {
                         var array;
-                        array = provider.providerName.split(":");
+                        array = provider.providerName.split(':');
                         this.supplierNames = array[0];
                         this.supplierLastName = array[1];
                         this.supplierSecondName = array[2];
@@ -192,16 +192,15 @@
                         var providerLastName = this.supplierLastName;
                         var providerSecondName = this.supplierSecondName;
 
-                        this.provider.providerName = (providerNames + ":" + providerLastName + ":" + providerSecondName);
+                        this.provider.providerName = (providerNames + ':' + providerLastName + ':' + providerSecondName);
                     },
                     saveAccount: function (bank, account, clabe, currency) {
-                        var cuenta =
-                        {
+                        var cuenta = {
                             accountNumber: '',
                             accountClabe: '',
                             idBank: '',
                             idCurrency: ''
-                        }
+                        };
 
                         cuenta.accountNumber = account;
                         cuenta.accountClabe = clabe;
@@ -210,9 +209,9 @@
 
                         this.supplier.providersAccountsList.push(cuenta);
 
-                        this.idBanks = ''
-                        this.accountNumbers = ''
-                        this.clabes = ''
+                        this.idBanks = '';
+                        this.accountNumbers = '';
+                        this.clabes = '';
                         this.idCurrency = '';
 
                     },
@@ -221,31 +220,31 @@
                             if (this.providerNames.length != 0 || this.supplierLastName.length != 0 || this.supplierSecondName.length != 0) {
                                 return true;
                             } else {
-                                showAlert("Ingresa los campos Requeridos: Nombre, Apellido paterno, Apellido materno", {type: 3});
+                                showAlert('Ingresa los campos Requeridos: Nombre, Apellido paterno, Apellido materno', {type: 3});
                                 return false;
                             }
                         }
                         if(this.supplier.rfc.length == 12){
-                                if (this.supplier.providerName.length != 0) {
-                                    return true;
-                                } else {
-                                    showAlert("Ingresa los campos Requeridos: Razón social", {type: 3});
-                                    return false;
-                                }
+                            if (this.supplier.providerName.length != 0) {
+                                return true;
+                            } else {
+                                showAlert('Ingresa los campos Requeridos: Razón social', {type: 3});
+                                return false;
+                            }
                         }
                     },
                     validationAccount: function () {
                         if (this.idBanks != 0 && this.idCurrency != 0) {
                             if (this.accountNumbers.length > 0 && (this.accountNumbers.length > 11 || this.accountNumbers.length < 5)) {
-                                showAlert("Debes ingresar entre 5 y 11 caracteres en el numero de cuenta", {type: 3});
+                                showAlert('Debes ingresar entre 5 y 11 caracteres en el numero de cuenta', {type: 3});
                                 return false;
                             }
                             if (this.clabes.length > 0 && this.clabes.length < 18) {
-                                showAlert("Debes ingresar 18 caracteres en la CLABE", {type: 3});
+                                showAlert('Debes ingresar 18 caracteres en la CLABE', {type: 3});
                                 return false;
                             }
                             if (this.accountNumbers.length < 5 && this.clabes.length < 18) {
-                                showAlert("Debes ingresar un Numero de Cuenta o CLABE", {type: 3});
+                                showAlert('Debes ingresar un Numero de Cuenta o CLABE', {type: 3});
                                 return false;
                             }
                             this.saveAccount(this.idBanks, this.accountNumbers, this.clabes, this.idCurrency);
@@ -254,30 +253,30 @@
                             if (this.supplier.providersAccountsList.length > 0) {
                                 return true;
                             }
-                            showAlert("Debes ingresar los datos requeridos: Banco, Moneda y Numero de Cuenta o CLABE", {type: 3});
+                            showAlert('Debes ingresar los datos requeridos: Banco, Moneda y Numero de Cuenta o CLABE', {type: 3});
                             return false;
                         }
                     },
                     validationProduct: function () {
-                        if (this.supplier.providersProductsTypes.length != 0) {
-                            if (this.requestInformation.idRequestType.length != 0 && this.requestInformation.idProductType.length != 0) {
-                                this.addProviderProduct(this.requestInformation.idRequestType, this.requestInformation.idProductType);
+                        if (this.supplier.providersBudgetSubcategories.length != 0) {
+                            if (this.requestInformation.budgetCategory.idBudgetCategory.length != 0 && this.requestInformation.budgetSubcategory.idBudgetSubcategory.length != 0) {
+                                this.addProviderProduct(this.requestInformation.budgetCategory, this.requestInformation.budgetSubcategory);
                                 return true;
                             } else {
                                 return true;
                             }
                         } else {
-                            if (this.requestInformation.idRequestType.length != 0 && this.requestInformation.idProductType.length != 0) {
-                                this.addProviderProduct(this.requestInformation.idRequestType, this.requestInformation.idProductType);
+                            if (this.requestInformation.budgetCategory.idBudgetCategory.length != 0 && this.requestInformation.budgetSubcategory.idBudgetSubcategory.length != 0) {
+                                this.addProviderProduct(this.requestInformation.budgetCategory, this.requestInformation.budgetSubcategory);
                                 return true;
                             } else {
-                                showAlert("Ingresa los campos Requeridos: Rubro,Producto", {type: 3});
+                                showAlert('Ingresa los campos Requeridos: Rubro,Producto', {type: 3});
                                 return false;
                             }
                         }
                     },
                     obtainBanks: function () {
-                        this.$http.get(ROOT_URL + "/banks")
+                        this.$http.get(ROOT_URL + '/banks')
                                 .success(function (data) {
                                     this.banks = data;
 
@@ -292,7 +291,7 @@
                                 this.saveAddress(this.direccion.street, this.direccion.numExt, this.direccion.numInt, this.direccion.idAsentamiento);
                                 return true;
                             } else {
-                                showAlert("Ingresa los campos requeridos: Calle, Núm. Exterior, Núm. Interior, Colonia", {type: 3});
+                                showAlert('Ingresa los campos requeridos: Calle, Núm. Exterior, Núm. Interior, Colonia', {type: 3});
                                 return false;
                             }
                         }else{
@@ -306,12 +305,12 @@
                             street: '',
                             idAsentamiento: ''
                         };
-                            direccion.numExt = numExt;
-                            direccion.numInt = numInt;
-                            direccion.street = street;
-                            direccion.idAsentamiento = idAsentamiento;
+                        direccion.numExt = numExt;
+                        direccion.numInt = numInt;
+                        direccion.street = street;
+                        direccion.idAsentamiento = idAsentamiento;
 
-                            this.supplier.providerAddressList.push(direccion);
+                        this.supplier.providerAddressList.push(direccion);
                     },
                     validationSave: function () {
                         if (this.supplier.rfc.length != 0) {
@@ -324,7 +323,7 @@
                                 this.obtainAccountinAccount();
                             }
                         } else {
-                            showAlert("Ingresa el RFC", {type: 3});
+                            showAlert('Ingresa el RFC', {type: 3});
                         }
                     },
 
@@ -332,19 +331,19 @@
                         if (this.supplier.rfc.length == 13) {
                             this.providerRfc();
                         }
-                        this.$http.post(ROOT_URL + "/providers", JSON.stringify(this.supplier)).success(function (data) {
-                            showAlert("Registro de proveedor exitoso");
+                        this.$http.post(ROOT_URL + '/providers', JSON.stringify(this.supplier)).success(function (data) {
+                            showAlert('Registro de proveedor exitoso');
                             $('#modalAlta').modal('hide');
                             this.getProviders();
 
                         }).error(function () {
-                            showAlert("Ha habido un error con la solicitud, intente nuevamente", {type: 3});
+                            showAlert('Ha habido un error con la solicitud, intente nuevamente', {type: 3});
                         });
 
                         this.cancelar();
                     },
                     getProviders: function () {
-                        this.$http.get(ROOT_URL + "/providers")
+                        this.$http.get(ROOT_URL + '/providers')
                                 .success(function (data) {
                                     var jsonObjectIndex = {};
                                     data.forEach(function (provider) {
@@ -358,26 +357,19 @@
                                 });
                     },
                     getProviderAccount: function (provider) {
-                        this.$http.get(ROOT_URL + "/accounts/provider/" + provider.idProvider)
+                        this.$http.get(ROOT_URL + '/accounts/provider/' + provider.idProvider)
                                 .success(function (data) {
                                     Vue.set(provider, 'providersAccountsList', data);
                                 });
                     },
                     getProviderAddress: function (provider) {
-                        this.$http.get(ROOT_URL + "/provider-address/provider/" + provider.idProvider)
+                        this.$http.get(ROOT_URL + '/provider-address/provider/' + provider.idProvider)
                                 .success(function (data) {
                                     Vue.set(this.provider, 'providerAddressList', data);
                                 });
                     },
-                    getProviderProduct: function (provider) {
-                        this.$http.get(ROOT_URL + "/providers-products-types/provider/"+provider.idProvider)
-                                .success(function (data) {
-                                    Vue.set(this.provider, 'providersProductsTypes', data);
-                        });
-                    },
                     modifyProvider: function (provider) {
-                        $('#modalModi').modal('show');
-                        this.$http.get(ROOT_URL + "/provider-contact/provider/" + provider.idProvider)
+                        this.$http.get(ROOT_URL + '/provider-contact/provider/' + provider.idProvider)
                                 .success(function (data) {
 
                                     this.provider = (JSON.parse(JSON.stringify(provider)));
@@ -387,56 +379,56 @@
                                     }
                                     this.getProviderAddress(this.provider);
                                     this.getProviderAccount(this.provider);
-                                    this.getProviderProduct(this.provider);
                                     Vue.set(this.provider, 'providersContactList', data);
+                                    $('#modalModi').modal('show');
                                 });
                     },
                     deleteAccount: function (account) {
-                        this.$http.post(ROOT_URL + "/accounts/low/" + account.idAccount)
+                        this.$http.post(ROOT_URL + '/accounts/low/' + account.idAccount)
                                 .success(function (data) {
                                     this.provider.providersAccountsList.$remove(account);
                                     this.getProviderAccount(this.provider);
-                                    showAlert("Cuenta Eliminada");
+                                    showAlert('Cuenta Eliminada');
                                     $('#modalCuenta').modal('hide');
                                 });
 
                     },
                     removePhone: function (phone) {
-                        this.$http.delete(ROOT_URL + "/provider-contact/" + phone.idProviderContact)
+                        this.$http.delete(ROOT_URL + '/provider-contact/' + phone.idProviderContact)
                                 .success(function (data) {
-                                    showAlert("Contacto eliminado");
+                                    showAlert('Contacto eliminado');
                                     this.provider.providersContactList.$remove(phone);
                                 });
                     },
                     addProviderAccount: function (supplier, cuenta) {
                         if (this.cuenta.idBank != 0 && this.cuenta.idCurrency != 0) {
                             if (this.cuenta.accountNumber.length > 0 && (this.cuenta.accountNumber.length > 11 || this.cuenta.accountNumber.length < 5)) {
-                                showAlert("Debes ingresar entre 5 y 11 caracteres en el numero de cuenta", {type: 3});
+                                showAlert('Debes ingresar entre 5 y 11 caracteres en el numero de cuenta', {type: 3});
                                 return false;
                             }
                             if (this.cuenta.accountClabe.length > 0 && this.cuenta.accountClabe.length < 18) {
-                                showAlert("Debes ingresar 18 caracteres en la CLABE", {type: 3});
+                                showAlert('Debes ingresar 18 caracteres en la CLABE', {type: 3});
                                 return false;
                             }
                             if (this.cuenta.accountNumber.length < 5 && this.cuenta.accountClabe.length < 18) {
-                                showAlert("Debes ingresar un Numero de Cuenta o CLABE", {type: 3});
+                                showAlert('Debes ingresar un Numero de Cuenta o CLABE', {type: 3});
                                 return false;
                             }
-                            this.$http.post(ROOT_URL + "/accounts/provider/" + supplier.idProvider, cuenta)
+                            this.$http.post(ROOT_URL + '/accounts/provider/' + supplier.idProvider, cuenta)
                                     .success(function (data) {
-                                        showAlert("Cuenta guardada con éxito");
-                                        this.$http.get(ROOT_URL + "/accounts/provider/" + this.provider.idProvider)
+                                        showAlert('Cuenta guardada con éxito');
+                                        this.$http.get(ROOT_URL + '/accounts/provider/' + this.provider.idProvider)
                                                 .success(function (data) {
                                                     Vue.set(this.provider, 'providersAccountsList', data);
                                                 });
-                                        cuenta.accountNumber = "";
-                                        cuenta.accountClabe = "";
-                                        cuenta.idBank = "";
-                                        cuenta.idCurrency = "";
+                                        cuenta.accountNumber = '';
+                                        cuenta.accountClabe = '';
+                                        cuenta.idBank = '';
+                                        cuenta.idCurrency = '';
                                     });
                             return true;
                         } else {
-                            showAlert("Debes ingresar los datos requeridos: Banco, Moneda y Numero de Cuenta o CLABE", {type: 3});
+                            showAlert('Debes ingresar los datos requeridos: Banco, Moneda y Numero de Cuenta o CLABE', {type: 3});
                             return false;
                         }
                     },
@@ -444,85 +436,85 @@
                         if (provider.rfc.length == 13) {
                             this.modifyName();
                         }
-                        this.$http.post(ROOT_URL + "/providers/" + provider.idProvider, provider)
+                        this.$http.post(ROOT_URL + '/providers/' + provider.idProvider, provider)
                                 .success(function (data) {
-                                    showAlert("Proveedor actualizado");
+                                    showAlert('Proveedor actualizado');
                                     $('#modalModi').modal('hide');
                                     this.getProviders();
                                 }).error(function () {
-                            showAlert("Ha habido un error con la solicitud, intente nuevamente", {type: 3});
+                            showAlert('Ha habido un error con la solicitud, intente nuevamente', {type: 3});
                         });
                         this.cancelar();
                     },
                     deleteProvider: function () {
-                        this.$http.post(ROOT_URL + "/providers/low/" + this.modalPregunta.provider.idProvider)
+                        this.$http.post(ROOT_URL + '/providers/low/' + this.modalPregunta.provider.idProvider)
                                 .success(function (data) {
                                     this.getProviders();
                                     $('#modalPregunta').modal('hide');
-                                    showAlert("Provedor eliminado");
+                                    showAlert('Provedor eliminado');
                                 });
                     },
                     filterNumber: function (val) {
                         return isNaN(val) ? '' : val;
                     },
                     obtainCurrencies: function () {
-                        this.$http.get(ROOT_URL + "/currencies").success(function (data) {
+                        this.$http.get(ROOT_URL + '/currencies').success(function (data) {
                             this.currencies = data;
                         });
 
                     },
                     obtainStates: function () {
-                        this.$http.get(ROOT_URL + "/states").success(function (data) {
+                        this.$http.get(ROOT_URL + '/states').success(function (data) {
                             this.states = data;
                         });
                     },
                     obtainSettlements: function () {
-                        this.$http.get(ROOT_URL + "/settlements").success(function (data) {
+                        this.$http.get(ROOT_URL + '/settlements').success(function (data) {
                             this.settlements = data;
                         });
                     },
                     obtainMunicipalities: function () {
-                        this.$http.get(ROOT_URL + "/municipalities").success(function (data) {
+                        this.$http.get(ROOT_URL + '/municipalities').success(function (data) {
                             this.municipalities = data;
                         });
                     },
-                    obtainRequestTypes: function () {
-                        this.$http.get(ROOT_URL + "/request-types").success(function (data) {
-                            this.RequestTypes = data;
-                        });
+                    getBudgetCategories: function () {
+                        this.$http.get(ROOT_URL + '/budget-categories')
+                                .success(function (data) {
+                                    this.budgetCategories = data;
+                                });
                     },
-                    obtainRequestTypeProduct: function () {
-                        this.$http.get(ROOT_URL + "/request-type-product/" + this.requestInformation.idRequestType).success(function (data) {
-                            this.ProductTypes = data;
-                        });
+                    getBudgetSubcategories: function () {
+                        this.$http.get(ROOT_URL + '/budget-subcategories/category/' + this.requestInformation.budgetCategory.idBudgetCategory)
+                                .success(function (data) {
+                                    this.budgetSubcategories = data;
+                                });
                     },
-                    addProviderProduct: function (idRequestType,idProductType) {
+                    addProviderProduct: function (budgetCategory,budgetSubcategory) {
                         var requestInformation = {
-                            idRequestType:'',
-                            idProductType:'',
-                        }
-                      requestInformation.idRequestType = idRequestType;
-                      requestInformation.idProductType = idProductType;
+                            budgetCategory:budgetCategory,
+                            budgetSubcategory:budgetSubcategory
+                        };
                         if (this.validationProviderProduct().length == 0) {
-                            this.supplier.providersProductsTypes.push(requestInformation);
+                            this.supplier.providersBudgetSubcategories.push(requestInformation);
                         }
                     },
                     validationProviderProduct: function () {
                         var self = this;
-                        return this.supplier.providersProductsTypes.filter(function (element){
-                            if(self.requestInformation.idProductType == element.idProductType) {
+                        return this.supplier.providersBudgetSubcategories.filter(function (element){
+                            if(self.requestInformation.budgetSubcategory.idBudgetSubcategory == element.budgetSubcategory.idBudgetSubcategory) {
                                 return element;
                             }
-                      });
+                        });
                     },
                     savePhone: function (names, phones, emails, posts) {
                         var contact = {
-                            phoneNumber: "",
-                            email: "",
-                            post: "",
-                            name: "",
+                            phoneNumber: '',
+                            email: '',
+                            post: '',
+                            name: ''
 
-                        }
+                        };
 
                         contact.phoneNumber = phones;
                         contact.email = emails;
@@ -531,16 +523,16 @@
 
                         this.supplier.providersContactList.push(contact);
 
-                        this.phoneNumber = "";
-                        this.email = "";
-                        this.post = "";
-                        this.name = "";
+                        this.phoneNumber = '';
+                        this.email = '';
+                        this.post = '';
+                        this.name = '';
 
                     },
                     validateEmail: function (email) {
-                      var re = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
+                        var re = /^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i;
                         if(! re.test(email)) {
-                            showAlert("Ingresa un email correcto",{type: 3});
+                            showAlert('Ingresa un email correcto',{type: 3});
                             return false;
                         }else{
                             this.savePhone(this.name, this.phoneNumber, this.email, this.post);
@@ -563,7 +555,7 @@
                                 this.validateEmail(this.email);
                                 return true;
                             } else {
-                                showAlert("Ingresa los campos Requeridos: Nombre, Teléfono, Email", {type: 3});
+                                showAlert('Ingresa los campos Requeridos: Nombre, Teléfono, Email', {type: 3});
                                 return false;
                             }
                         }
@@ -573,77 +565,77 @@
                         this.phoneNumbers = '';
                     },
                     deleteProduct: function (product) {
-                        this.supplier.providersProductsTypes.$remove(product);
+                        this.supplier.providersBudgetSubcategories.$remove(product);
                     },
                     addProviderPhone: function (supplier, phone) {
                         if(this.validateEmail(phone.email)) {
-                            this.$http.post(ROOT_URL + "/provider-contact/provider/" + supplier.idProvider, phone)
+                            this.$http.post(ROOT_URL + '/provider-contact/provider/' + supplier.idProvider, phone)
                                     .success(function (data) {
                                         this.provider.providersContactList.push(data);
                                         this.phoneNumbers = '';
-                                        showAlert("Contacto guardado con éxito");
+                                        showAlert('Contacto guardado con éxito');
                                         this.telephone.phoneNumbers = '';
                                     });
-                            this.telephone.name = "";
-                            this.telephone.email = "";
-                            this.telephone.phoneNumber = "";
-                            this.telephone.post = "";
+                            this.telephone.name = '';
+                            this.telephone.email = '';
+                            this.telephone.phoneNumber = '';
+                            this.telephone.post = '';
                         }
                     },
                     addAddress: function (provider, address) {
-                        this.$http.post(ROOT_URL + "/provider-address/provider/" + provider.idProvider, address)
+                        this.$http.post(ROOT_URL + '/provider-address/provider/' + provider.idProvider, address)
                                 .success(function (data) {
                                     this.provider.providerAddressList.push(data);
-                                    showAlert("Dirección guardada con éxito");
+                                    showAlert('Dirección guardada con éxito');
                                     this.getProviderAddress(provider);
                                 });
-                        this.direccion.cp = "";
-                        this.direccion.street = "";
-                        this.direccion.numExt = "";
-                        this.direccion.numInt = "";
-                        this.direccion.idAsentamiento = "";
-                        this.estadosMunicipios.nombreMunicipios = "";
-                        this.estadosMunicipios.estado.nombreEstado = "";
+                        this.direccion.cp = '';
+                        this.direccion.street = '';
+                        this.direccion.numExt = '';
+                        this.direccion.numInt = '';
+                        this.direccion.idAsentamiento = '';
+                        this.estadosMunicipios.nombreMunicipios = '';
+                        this.estadosMunicipios.estado.nombreEstado = '';
                     },
-                    saveProviderProduct: function (provider, product) {
-                        if(this.validationSupplierProduct(product) == 0 ) {
-                            this.$http.post(ROOT_URL + "/providers-products-types/provider/" + provider.idProvider, product)
+                    saveProviderProduct: function (provider, requestInformation) {
+                        if(this.validationSupplierProduct(requestInformation).length == 0 ) {
+                            this.$http.post(ROOT_URL + '/providers-budget-subcategories/provider/' + provider.idProvider, requestInformation)
                                     .success(function (data) {
-                                        this.provider.providersProductsTypes.push(data);
-                                        showAlert("Producto guardado con exito");
-                                        this.getProviderProduct(provider);
+                                        this.provider.providersBudgetSubcategories.push(data);
+                                        showAlert('Producto guardado con exito');
                                     });
+                        } else {
+                            showAlert('Este producto ya existe para este proveedor',{type:3})
                         }
                     },
                     validationSupplierProduct: function (product) {
-                        return this.provider.providersProductsTypes.filter(function (element){
-                            if(product.idProductType == element.idProductType) {
+                        return this.provider.providersBudgetSubcategories.filter(function (element){
+                            if(product.budgetSubcategory.idBudgetSubcategory == element.idBudgetSubcategory) {
                                 return element;
                             }
                         });
                     },
-                    removeProviderProduct: function (product) {
-                        this.$http.delete(ROOT_URL + "/providers-products-types/" + product.idProvidersProductsTypes)
+                    removeProviderProduct: function (providersBudgetSubcategory) {
+                        this.$http.delete(ROOT_URL + '/providers-budget-subcategories/' + providersBudgetSubcategory.idProviderBudgetSubcategory)
                                 .success(function (data) {
-                                    this.provider.providersProductsTypes.$remove(product);
-                                    showAlert("Producto eliminado");
+                                    this.provider.providersBudgetSubcategories.$remove(providersBudgetSubcategory);
+                                    showAlert('Producto eliminado');
                                 });
                     },
                     removeAddress: function (address) {
-                        this.$http.delete(ROOT_URL + "/provider-address/" + address.idProviderAddress)
+                        this.$http.delete(ROOT_URL + '/provider-address/' + address.idProviderAddress)
                                 .success(function (data) {
                                     this.provider.providerAddressList.$remove(address);
-                                    showAlert("Dirección eliminada");
+                                    showAlert('Dirección eliminada');
                                 });
                     },
                     obtainAccountinAccount: function () {
-                        this.$http.get(ROOT_URL + "/accounting-accounts/" + this.supplier.firstLevel + "/" + this.supplier.secondLevel + "/" + this.supplier.thirdLevel)
+                        this.$http.get(ROOT_URL + '/accounting-accounts/' + this.supplier.firstLevel + '/' + this.supplier.secondLevel + '/' + this.supplier.thirdLevel)
                                 .success(function (data) {
-                                    console.log(data);
-                                this.supplier.idAccountingAccount = data.idAccountingAccount;
+                                    this.supplier.idAccountingAccount = data.idAccountingAccount;
                                     this.saveProvider();
-                        }).error(function () {
-                           showAlert("No existe la cuenta contable");
+                                }).error(function (data) {
+                            showAlert('No existe la cuenta contable');
                         });
                     },
                     cancelar: function () {
@@ -652,8 +644,8 @@
                         this.cuenta.accountClabe = '';
                         this.cuenta.idBank = '';
                         this.cuenta.idCurrency = '';
-                        this.clabes = "";
-                        this.accountNumbers = "";
+                        this.clabes = '';
+                        this.accountNumbers = '';
                         this.direccion.cp = '';
                         this.direccion.numExt = '';
                         this.direccion.numInt = '';
@@ -683,18 +675,18 @@
                         this.supplier.rfc = '';
                         this.supplier.accountingAccount = '';
                         this.supplier.addressProvider = [];
-                        this.supplier.providersProductsTypes = [];
-                        this.supplier.firstLevel =  '',
-                        this.supplier.secondLevel = '',
-                        this.supplier.thirdLevel = '',
-                        this.name = "";
-                        this.email = "";
-                        this.phoneNumber = "";
-                        this.post = "";
-                        this.requestInformation.idRequestType = '',
-                        this.requestInformation.idProductType = '',
+                        this.supplier.firstLevel =  '';
+                        this.supplier.secondLevel = '';
+                        this.supplier.thirdLevel = '';
+                        this.name = '';
+                        this.email = '';
+                        this.phoneNumber = '';
+                        this.post = '';
+                        this.requestInformation.budgetCategory = {};
+                        this.requestInformation.budgetSubcategory = {};
                         this.asentamiento = [];
                         this.estadosMunicipios = {};
+                        this.getProviders();
                         $('#modalAlta').modal('hide');
                         $('#modalModi').modal('hide');
                     },
@@ -706,44 +698,39 @@
                         this.modalCuenta.account = (JSON.parse(JSON.stringify(account)));
                         $('#modalCuenta').modal('show');
                     },
-                    productTypes: function () {
-                      this.$http.get(ROOT_URL + "/product-types").success(function (data) {
-                          this.productos = data;
-                      });
-                    },
                     validateClabe: function(accountNumbers,clabes) {
                         var account = accountNumbers;
                         var clabe = clabes;
-                            if (clabe.indexOf(account) == -1) {
-                                if (!alert("La clabe es incorrecta")) {
-                                    this.clabes = "";
-                                    this.accountNumbers = "";
-                                    this.cuenta.accountNumber = "";
-                                    this.cuenta.accountClabe = "";
-                                }
+                        if (clabe.indexOf(account) == -1) {
+                            if (!alert('La clabe es incorrecta')) {
+                                this.clabes = '';
+                                this.accountNumbers = '';
+                                this.cuenta.accountNumber = '';
+                                this.cuenta.accountClabe = '';
                             }
+                        }
                     },
                     validateCuenta: function(accountNumbers,clabes) {
                         var account = accountNumbers;
                         var clabe = clabes;
-                            if (!(clabes == null || clabes === "")) {
-                                if (clabe.indexOf(account) == -1) {
-                                    if (!alert("La clabe es incorrecta")) {
-                                        this.accountNumbers = "";
-                                        this.clabes = "";
-                                        this.cuenta.accountNumber = "";
-                                        this.cuenta.accountClabe = "";
-                                    }
+                        if (!(clabes == null || clabes === '')) {
+                            if (clabe.indexOf(account) == -1) {
+                                if (!alert('La clabe es incorrecta')) {
+                                    this.accountNumbers = '';
+                                    this.clabes = '';
+                                    this.cuenta.accountNumber = '';
+                                    this.cuenta.accountClabe = '';
                                 }
                             }
+                        }
                     },
                     obtainAsentamientos: function(){
                         var postcode = this.direccion.cp;
                         if(this.direccion.cp >= 4){
-                            this.$http.get(ROOT_URL + "/settlements/post-code?cp=" + postcode).success(function (data) {
+                            this.$http.get(ROOT_URL + '/settlements/post-code?cp=' + postcode).success(function (data) {
                                 this.asentamiento =  data;
                                 if(data.length > 0){
-                                    this.$http.get(ROOT_URL + "/municipalities/" + data[0].idEstado + "/" + data[0].idMunicipio).success(function (element) {
+                                    this.$http.get(ROOT_URL + '/municipalities/' + data[0].idEstado + '/' + data[0].idMunicipio).success(function (element) {
                                         this.estadosMunicipios = element;
                                     });
                                 }
@@ -756,17 +743,17 @@
                     numberAndLetter: function(rfc){
                         var re = /^[a-z0-9]+$/i;
                         if(! re.test(rfc)) {
-                            showAlert("Ingresa un RFC correcto",{type: 3});
-                            this.supplier.rfc = "";
+                            showAlert('Ingresa un RFC correcto',{type: 3});
+                            this.supplier.rfc = '';
                         }
                     }
                 },
                 filters: {
                     numbersPadding: function (value) {
-                        var result = "";
+                        var result = '';
                         var padding = 4;
                         if (typeof value != 'undefined') {
-                            result = "00000" + value;
+                            result = '00000' + value;
                             result = result.substr(result.length - padding);
                         }
                         return result;
@@ -789,26 +776,17 @@
                         });
                         return name;
                     },
-                    changeidProduct: function(value) {
-                      var name;
-                        this.productos.forEach(function (element) {
-                            if(value == element.idProductType){
-                                name = element.productType;
-                            }
-                        });
-                        return name;
-                    },
                     separateProviderName: function (value) {
                         var name;
                         this.providers.forEach(function (element) {
                             if (value == element.providerName) {
-                                name = element.providerName.replace(/:/g, " ");
+                                name = element.providerName.replace(/:/g, ' ');
                             }
                         });
                         return name;
                     },
                     separate: function (value) {
-                        return value.replace(/:/g, " ");
+                        return value.replace(/:/g, ' ');
                     }
                 }
             });
@@ -884,7 +862,7 @@
                             <div class="row">
                                 <div class="col-xs-4">
                                     <label>RFC</label>
-                                    <input maxlength="13" class="form-control" name="name" v-model="supplier.rfc"
+                                    <input maxlength="13" class="form-control" v-model="supplier.rfc"
                                            @change="numberAndLetter(supplier.rfc)" onkeypress="return isNumberKeyAndLetterKey(event)">
                                 </div>
                             </div>
@@ -892,21 +870,21 @@
                             <div class="row" v-show="supplier.rfc.length==12">
                                 <div class="col-xs-6">
                                     <label>Razón social</label>
-                                    <input class="form-control" name="name" v-model="supplier.providerName">
+                                    <input class="form-control" v-model="supplier.providerName">
                                 </div>
                             </div>
                             <div class="row" v-show="supplier.rfc.length==13">
                                 <div class="col-xs-3">
                                     <label>Nombre(s)</label>
-                                    <input class="form-control" name="name" v-model="providerNames">
+                                    <input class="form-control" v-model="providerNames">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Apellido paterno</label>
-                                    <input class="form-control" name="name" v-model="providerLastName">
+                                    <input class="form-control" v-model="providerLastName">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Apellido materno</label>
-                                    <input class="form-control" name="name" v-model="providerSecondName">
+                                    <input class="form-control" v-model="providerSecondName">
                                 </div>
                             </div>
                             <br>
@@ -944,44 +922,42 @@
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <label>Rubro</label>
-                                        <select class="form-control" name="" v-model="requestInformation.idRequestType"
-                                                @change="obtainRequestTypeProduct">
-                                            <option></option>
-                                            <option v-for="RequestType in RequestTypes"
-                                                    value="{{RequestType.idRequestType}}">
-                                                {{RequestType.requestType}}
+                                        <select class="form-control" name="" v-model="requestInformation.budgetCategory"
+                                                @change="getBudgetSubcategories">
+                                            <option v-for="budgetCategory in budgetCategories"
+                                                    value="{{budgetCategory}}">
+                                                {{budgetCategory.budgetCategory}}
                                             </option>
                                         </select>
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Producto</label>
-                                        <select class="form-control" name="" v-model="requestInformation.idProductType">
-                                            <option></option>
-                                            <option v-for="ProductType in ProductTypes"
-                                                    value="{{ProductType.productType.idProductType}}">
-                                                {{ProductType.productType.productType}}
+                                        <select class="form-control" v-model="requestInformation.budgetSubcategory">
+                                            <option v-for="budgetSubcategory in budgetSubcategories"
+                                                    value="{{budgetSubcategory}}">
+                                                {{budgetSubcategory.budgetSubcategory}}
                                             </option>
                                         </select>
                                     </div>
                                     <div class="col-xs-1">
                                         <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip"
                                                 data-placement="bottom" title="Agregar" style="margin-top: 25px"
-                                                @click="validationProduct()">
+                                                @click="validationProduct">
                                             <span class="glyphicon glyphicon-plus"></span>
                                         </button>
                                     </div>
                                 </div>
                                 <br>
-                                <table class="table table-striped" v-show="supplier.providersProductsTypes.length> 0">
+                                <table class="table table-striped" v-show="supplier.providersBudgetSubcategories.length> 0">
                                     <thead>
                                     <th class="col-xs-10">Producto</th>
                                     <th class="col-xs-1">Eliminar</th>
                                     </thead>
                                     <tbody>
-                                    <tr v-for="product in supplier.providersProductsTypes">
-                                        <td class="col-xs-10">{{product.idProductType | changeidProduct}}</td>
+                                    <tr v-for="providersBudgetSubcategory in supplier.providersBudgetSubcategories">
+                                        <td class="col-xs-10">{{providersBudgetSubcategory.budgetSubcategory.budgetSubcategory}}</td>
                                         <td class="col-xs-1">
-                                            <button class="btn btn-danger" @click="deleteProduct(product)"
+                                            <button class="btn btn-danger" @click="deleteProduct(providersBudgetSubcategory)"
                                                     :disabled="isUpdate"
                                                     data-toggle="tooltip" data-placement="top" title="Quitar Producto">
                                                 <span class="glyphicon glyphicon-trash"></span>
@@ -1004,21 +980,21 @@
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <label>Calle</label>
-                                        <input class="form-control" name="name" v-model="direccion.street">
+                                        <input class="form-control" v-model="direccion.street">
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Número Exterior</label>
-                                        <input class="form-control" name="name" maxlength="5"
+                                        <input class="form-control" maxlength="5"
                                                v-model="direccion.numExt">
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Número Interior</label>
-                                        <input class="form-control" name="name" maxlength="5"
+                                        <input class="form-control" maxlength="5"
                                                v-model="direccion.numInt">
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Código postal</label>
-                                        <input class="form-control" name="name" maxlength="5" v-model="direccion.cp"
+                                        <input class="form-control" maxlength="5" v-model="direccion.cp"
                                                @input="obtainAsentamientos"
                                                onkeypress="return isNumberKey(event)">
                                     </div>
@@ -1028,12 +1004,12 @@
                                     <div class="col-xs-3">
                                         <label>Estado</label>
                                         <input class="form-control" name="name"
-                                               v-model="estadosMunicipios.estado.nombreEstado" value="" disabled="true">
+                                               v-model="estadosMunicipios.estado.nombreEstado" disabled>
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Municipio/Delegación</label>
                                         <input class="form-control" name="name"
-                                               v-model="estadosMunicipios.nombreMunicipios" value="" disabled="true">
+                                               v-model="estadosMunicipios.nombreMunicipios" disabled>
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Colonia</label>
@@ -1055,22 +1031,22 @@
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <label>Nombre</label>
-                                        <input class="form-control" name="name" v-model="name"
+                                        <input class="form-control" v-model="name"
                                                onkeypress="return isLetterKey(event)">
                                     </div>
                                     <div class="col-xs-2">
                                         <label>Puesto</label>
-                                        <input class="form-control" name="name" v-model="post"
+                                        <input class="form-control" v-model="post"
                                                onkeypress="return isLetterKey(event)">
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Teléfono (10 dígitos)</label>
-                                        <input maxlength="10" class="form-control" name="name" v-model="phoneNumber"
+                                        <input maxlength="10" class="form-control" v-model="phoneNumber"
                                                onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Correo</label>
-                                        <input class="form-control" name="name" v-model="email"
+                                        <input class="form-control" v-model="email"
                                                @change="validateEmail(email)">
                                     </div>
                                     <div class="col-xs-1">
@@ -1197,7 +1173,7 @@
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <label>Días de crédito</label>
-                                        <input class="form-control" name="name" v-model="supplier.creditDays"
+                                        <input class="form-control" v-model="supplier.creditDays"
                                                onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="col-xs-3">
@@ -1234,32 +1210,32 @@
                             <div class="row">
                                 <div class="col-xs-4">
                                     <label>RFC</label>
-                                    <input maxlength="13" class="form-control" name="name" v-model="provider.rfc"
-                                           disabled="true">
+                                    <input maxlength="13" class="form-control" v-model="provider.rfc"
+                                           disabled>
                                 </div>
                             </div>
                             <div class="row" v-show="provider.rfc.length==12">
                                 <div class="col-xs-9">
                                     <label>Razón social</label>
-                                    <input class="form-control" name="name" v-model="provider.providerName"
-                                           disabled="true">
+                                    <input class="form-control" v-model="provider.providerName"
+                                           disabled>
                                 </div>
                             </div>
                             <div class="row" v-show="provider.rfc.length==13">
                                 <div class="col-xs-3">
                                     <label>Nombre(s)</label>
-                                    <input class="form-control" name="name" v-model="supplierNames"
-                                           onkeypress="return isLetterKey(event)" disabled="true">
+                                    <input class="form-control" v-model="supplierNames"
+                                           onkeypress="return isLetterKey(event)" disabled>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Apellido paterno</label>
-                                    <input class="form-control" name="name" v-model="supplierLastName"
-                                           onkeypress="return isLetterKey(event)" disabled="true">
+                                    <input class="form-control" v-model="supplierLastName"
+                                           onkeypress="return isLetterKey(event)" disabled>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Apellido materno</label>
-                                    <input class="form-control" name="name" v-model="supplierSecondName"
-                                           onkeypress="return isLetterKey(event)" disabled="true">
+                                    <input class="form-control" v-model="supplierSecondName"
+                                           onkeypress="return isLetterKey(event)" disabled>
                                 </div>
                             </div>
                             <br>
@@ -1298,19 +1274,18 @@
                             <div class="row">
                                 <div class="col-xs-3">
                                     <label>Rubro</label>
-                                    <select class="form-control" name="" v-model="requestInformation.idRequestType" @change="obtainRequestTypeProduct">
-                                        <option></option>
-                                        <option v-for="RequestType in RequestTypes" value="{{RequestType.idRequestType}}">
-                                            {{RequestType.requestType}}
+                                    <select class="form-control" v-model="requestInformation.budgetCategory"
+                                            @change="getBudgetSubcategories">
+                                        <option v-for="budgetCategory in budgetCategories" value="{{budgetCategory}}">
+                                            {{budgetCategory.budgetCategory}}
                                         </option>
                                     </select>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Producto</label>
-                                    <select class="form-control" name="" v-model="requestInformation.idProductType">
-                                        <option></option>
-                                        <option v-for="ProductType in ProductTypes" value="{{ProductType.productType.idProductType}}">
-                                            {{ProductType.productType.productType}}
+                                    <select class="form-control" v-model="requestInformation.budgetSubcategory">
+                                        <option v-for="budgetSubcategory in budgetSubcategories" value="{{budgetSubcategory}}">
+                                            {{budgetSubcategory.budgetSubcategory}}
                                         </option>
                                     </select>
                                 </div>
@@ -1323,23 +1298,23 @@
                                 </div>
                             </div>
                             <br>
-                            <table class="table table-striped" v-show="provider.providersProductsTypes.length> 0">
+                            <table class="table table-striped" v-show="provider.providersBudgetSubcategories.length> 0">
                                 <thead>
-                                    <th class="col-xs-10">Producto</th>
-                                    <th class="col-xs-1">Eliminar</th>
+                                <th class="col-xs-10">Producto</th>
+                                <th class="col-xs-1">Eliminar</th>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="product in provider.providersProductsTypes">
-                                        <td class="col-xs-10">
-                                            {{product.idProductType | changeidProduct}}
-                                        </td>
-                                        <td class="col-xs-1">
-                                            <button class="btn btn-danger" @click="removeProviderProduct(product)" :disabled="isUpdate"
-                                                    data-toggle="tooltip" data-placement="top" title="Quitar Producto">
-                                                <span class="glyphicon glyphicon-trash"></span>
-                                            </button>
-                                        </td>
-                                    </tr>
+                                <tr v-for="providersBudgetSubcategory in provider.providersBudgetSubcategories">
+                                    <td class="col-xs-10">
+                                        {{providersBudgetSubcategory.budgetSubcategory.budgetSubcategory}}
+                                    </td>
+                                    <td class="col-xs-1">
+                                        <button class="btn btn-danger" @click="removeProviderProduct(providersBudgetSubcategory)" :disabled="isUpdate"
+                                                data-toggle="tooltip" data-placement="top" title="Quitar Producto">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </button>
+                                    </td>
+                                </tr>
                                 </tbody>
                             </table>
                             <br>
@@ -1351,28 +1326,28 @@
                             <div class="row">
                                 <div class="col-xs-3">
                                     <label>Calle</label>
-                                    <input class="form-control" name="name" v-model="direccion.street">
+                                    <input class="form-control" v-model="direccion.street">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Número  Exterior</label>
-                                    <input class="form-control" name="name" maxlength="5" v-model="direccion.numExt">
+                                    <input class="form-control" maxlength="5" v-model="direccion.numExt">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Número Interior</label>
-                                    <input class="form-control" name="name" maxlength="5" v-model="direccion.numInt">
+                                    <input class="form-control" maxlength="5" v-model="direccion.numInt">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Código postal</label>
-                                    <input class="form-control" name="name" maxlength="5" v-model="direccion.cp" @input="obtainAsentamientos"
+                                    <input class="form-control" maxlength="5" v-model="direccion.cp" @input="obtainAsentamientos"
                                            onkeypress="return isNumberKey(event)">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Estado</label>
-                                    <input class="form-control" name="name" v-model="estadosMunicipios.estado.nombreEstado" value="" disabled="true">
+                                    <input class="form-control" v-model="estadosMunicipios.estado.nombreEstado" value="" disabled>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Municipio/Delegación</label>
-                                    <input class="form-control" name="name" v-model="estadosMunicipios.nombreMunicipios" value="" disabled="true">
+                                    <input class="form-control" v-model="estadosMunicipios.nombreMunicipios" value="" disabled>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Colonia</label>
@@ -1394,14 +1369,14 @@
                             <br>
                             <table class="table table-striped" v-show="provider.providerAddressList.length> 0">
                                 <thead>
-                                    <th class="col-xs-2">Calle</th>
-                                    <th class="col-xs-1">Número Exterior</th>
-                                    <th class="col-xs-1">Número Interior</th>
-                                    <th class="col-xs-1">Código postal</th>
-                                    <th class="col-xs-2">Estado</th>
-                                    <th class="col-xs-2">Municipio/Delegación</th>
-                                    <th class="col-xs-2">Colonia</th>
-                                    <th class="col-xs-1">Eliminar</th>
+                                <th class="col-xs-2">Calle</th>
+                                <th class="col-xs-1">Número Exterior</th>
+                                <th class="col-xs-1">Número Interior</th>
+                                <th class="col-xs-1">Código postal</th>
+                                <th class="col-xs-2">Estado</th>
+                                <th class="col-xs-2">Municipio/Delegación</th>
+                                <th class="col-xs-2">Colonia</th>
+                                <th class="col-xs-1">Eliminar</th>
                                 </thead>
                                 <tbody>
                                 <tr v-for="address in provider.providerAddressList">
@@ -1433,12 +1408,12 @@
                             <div class="row">
                                 <div class="col-xs-3">
                                     <label>Nombre</label>
-                                    <input class="form-control" name="name" v-model="telephone.name"
+                                    <input class="form-control" v-model="telephone.name"
                                            onkeypress="return isLetterKey(event)">
                                 </div>
                                 <div class="col-xs-2">
                                     <label>Puesto</label>
-                                    <input class="form-control" name="name" v-model="telephone.post"
+                                    <input class="form-control" v-model="telephone.post"
                                            onkeypress="return isLetterKey(event)">
                                 </div>
                                 <div class="col-xs-3">
@@ -1448,7 +1423,7 @@
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Correo</label>
-                                    <input class="form-control" name="name" v-model="telephone.email" @change="validateEmail(telephone.email)">
+                                    <input class="form-control" v-model="telephone.email" @change="validateEmail(telephone.email)">
                                 </div>
                                 <div class="col-xs-1">
                                     <button type="button" class="btn btn-sm btn-default" data-toggle="tooltip"
@@ -1461,11 +1436,11 @@
                             <br>
                             <table class="table table-striped" v-show="provider.providersContactList.length> 0">
                                 <thead>
-                                    <th class="col-xs-2">Nombre</th>
-                                    <th class="col-xs-2">Puesto</th>
-                                    <th class="col-xs-3">Teléfono (10 dígitos)</th>
-                                    <th class="col-xs-4">Correo</th>
-                                    <th class="col-xs-1">Eliminar</th>
+                                <th class="col-xs-2">Nombre</th>
+                                <th class="col-xs-2">Puesto</th>
+                                <th class="col-xs-3">Teléfono (10 dígitos)</th>
+                                <th class="col-xs-4">Correo</th>
+                                <th class="col-xs-1">Eliminar</th>
                                 </thead>
                                 <tbody>
                                 <tr v-for="phone in provider.providersContactList">
@@ -1534,11 +1509,11 @@
 
                             <table class="table table-striped" v-show="provider.providersAccountsList.length> 0">
                                 <thead>
-                                    <th>Banco</th>
-                                    <th>Número de cuenta</th>
-                                    <th>CLABE</th>
-                                    <th>Moneda</th>
-                                    <th>Eliminar</th>
+                                <th>Banco</th>
+                                <th>Número de cuenta</th>
+                                <th>CLABE</th>
+                                <th>Moneda</th>
+                                <th>Eliminar</th>
                                 </thead>
                                 <tbody>
                                 <tr v-for="account in provider.providersAccountsList" v-if="account.deleteDay == null">
@@ -1567,7 +1542,7 @@
                             <div class="row" v-show="provider.rfc.length==12||provider.rfc.length==13">
                                 <div class="col-xs-3">
                                     <label>Días de crédito</label>
-                                    <input class="form-control" name="name" v-model="provider.creditDays"
+                                    <input class="form-control" v-model="provider.creditDays"
                                            onkeypress="return isNumberKey(event)">
                                 </div>
                                 <div class="col-xs-3">

@@ -2,7 +2,6 @@ package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.*;
 import mx.bidg.service.*;
@@ -40,7 +39,7 @@ public class ProvidersController {
     private ProviderAddressService providerAddressService;
 
     @Autowired
-    private  ProvidersProductsTypesService providersProductsTypesService;
+    private ProvidersBudgetSubcategoriesService providersBudgetSubcategoriesService;
 
     @Autowired
     private ObjectMapper mapper;
@@ -139,13 +138,13 @@ public class ProvidersController {
             providersContactService.save(phone);
         }
 
-        for (JsonNode node : jnode.get("providersProductsTypes")){
-            ProvidersProductsTypes providersProductsTypes = new ProvidersProductsTypes();
-            providersProductsTypes.setcProductType(new CProductTypes(node.get("idProductType").asInt()));
-            providersProductsTypes.setIdAccessLevel(1);
-            providersProductsTypes.setProvider(provider);
+        for (JsonNode node : jnode.get("providersBudgetSubcategories")){
+            ProvidersBudgetSubcategories providersBudgetSubcategories = new ProvidersBudgetSubcategories();
+            providersBudgetSubcategories.setBudgetSubcategory(mapper.treeToValue(node.get("budgetSubcategory"),CBudgetSubcategories.class));
+            providersBudgetSubcategories.setIdAccessLevel(1);
+            providersBudgetSubcategories.setProvider(provider);
 
-            providersProductsTypesService.save(providersProductsTypes);
+            providersBudgetSubcategoriesService.save(providersBudgetSubcategories);
         }
 
         return new ResponseEntity<>(

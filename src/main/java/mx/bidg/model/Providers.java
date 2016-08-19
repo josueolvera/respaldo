@@ -6,6 +6,7 @@
 package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
@@ -27,7 +28,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "PROVIDERS")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Providers implements Serializable {
 
 
@@ -96,7 +96,7 @@ public class Providers implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "provider")
     @JsonView(JsonViews.Embedded.class)
-    private List<ProvidersProductsTypes> providersProductsTypes;
+    private List<ProvidersBudgetSubcategories> providersBudgetSubcategories;
 
     @JoinColumn(name = "ID_ACCOUNTING_ACCOUNT", referencedColumnName = "ID_ACCOUNTING_ACCOUNT")
     @ManyToOne(optional = false)
@@ -197,7 +197,7 @@ public class Providers implements Serializable {
         this.providerAddressList = providerAddressList;
     }
 
-   public int getIdAccountingAccount() {
+    public int getIdAccountingAccount() {
         return idAccountingAccount;
     }
 
@@ -214,12 +214,13 @@ public class Providers implements Serializable {
         this.providersContactList = providersContactList;
     }
 
-    public List<ProvidersProductsTypes> getProvidersProductsTypes() {
-        return providersProductsTypes;
+    @JsonManagedReference
+    public List<ProvidersBudgetSubcategories> getProvidersBudgetSubcategories() {
+        return providersBudgetSubcategories;
     }
 
-    public void setProvidersProductsTypes(List<ProvidersProductsTypes> providersProductsTypes) {
-        this.providersProductsTypes = providersProductsTypes;
+    public void setProvidersBudgetSubcategories(List<ProvidersBudgetSubcategories> providersBudgetSubcategories) {
+        this.providersBudgetSubcategories = providersBudgetSubcategories;
     }
 
     public AccountingAccounts getAccountingAccounts() {
