@@ -34,4 +34,11 @@ public class SAEMController {
         model.setViewName("UpdateEmployee");
         return model;
     }
+
+    @RequestMapping(value = "/reports", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView saemReports() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("saemReports");
+        return model;
+    }
 }
