@@ -28,7 +28,8 @@ public class CAttributesController {
     @Autowired
     private CAttributesService attributesService;
 
-    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(value = "/{idArticle}",method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> getAttributes(@PathVariable int idArticle) throws IOException {

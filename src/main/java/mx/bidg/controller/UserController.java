@@ -29,7 +29,8 @@ public class UserController {
     @Autowired
     private NotificationsService notificationsService;
 
-    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(value = "/inbox-page", method = RequestMethod.GET)
     public String getInboxPage(HttpSession session) throws IOException {

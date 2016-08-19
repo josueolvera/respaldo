@@ -1,5 +1,6 @@
 package mx.bidg.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.model.CNotificationsStatus;
 import mx.bidg.model.Notifications;
 import mx.bidg.service.NotificationsService;
@@ -24,6 +25,9 @@ public class NotificationsController {
 
     @Autowired
     private NotificationsService notificationsService;
+
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(
             value = "/archive/{idNotification}", method = RequestMethod.PUT,

@@ -1,5 +1,6 @@
 package mx.bidg.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.service.CPassengerDocumentsTypesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,4 +15,7 @@ public class CPassengerDocumentsTypesController {
 
     @Autowired
     private CPassengerDocumentsTypesService cPassengerDocumentsTypesService;
+
+    @Autowired
+    private ObjectMapper mapper;
 }

@@ -21,7 +21,8 @@ public class OutsourcingController {
     @Autowired
     private OutsourcingService outsourcingService;
 
-    ObjectMapper mapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody

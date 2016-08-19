@@ -29,7 +29,8 @@ public class ProvidersContactController {
     @Autowired
     ProvidersService providersService;
 
-    private ObjectMapper mapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> getPhoneList() throws Exception {

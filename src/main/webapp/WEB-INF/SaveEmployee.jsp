@@ -73,22 +73,6 @@
             var vm = new Vue({
                 el: '#contenidos',
                 created: function () {
-                    var fecha = new Date();
-                    var fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth() + 1) + "-" + fecha.getDate();
-                    var fechaMinima = moment(fecha_actual).subtract('years', 18);
-
-                    this.timePickerBirthday = $('#dateBirthDay').datetimepicker({
-                        locale: 'es',
-                        format: 'DD-MM-YYYY',
-                        defaultDate: fechaMinima,
-                        useCurrent: false,
-                        maxDate: fechaMinima
-                    }).data();
-
-                    this.timePickerIngreso = $('#dateJoin').datetimepicker({
-                        locale: 'es',
-                        format: 'DD-MM-YYYY'
-                    }).data();
                 },
                 ready: function () {
                     this.obtainStates();
@@ -100,7 +84,7 @@
                     this.obtainEmployeeTypes();
                     this.obtainContractTypes();
                     this.getSizes();
-                    this.fetchHierarchy();
+                    this.getDistributors();
                 },
                 data: {
                     employee: {
@@ -198,22 +182,22 @@
                     },
                     selectedOptions: {
                         area: {
-                            id: 0
+                            idArea: 0
                         },
                         distributor: {
-                            id: 0
+                            idDistributor: 0
                         },
                         region: {
-                            id: 0
+                            idRegion: 0
                         },
                         zona: {
-                            id: 0
+                            idZonas: 0
                         },
                         branch: {
-                            id: 0
+                            idBranch: 0
                         },
                         role: {
-                            id: 0
+                            idRole: 0
                         }
                     },
                     defaultArea: {
@@ -241,9 +225,34 @@
                     dwEnter: {
                         idDistributor: 0
                     },
-                    sizes: []
+                    sizes: [],
+                    distributors: [],
+                    areas: [],
+                    regions: [],
+                    zonas: [],
+                    branchch: [],
+                    selectedArea: {}
                 },
                 methods: {
+                    activarTimePickerBirthDate: function () {
+                        var fecha = new Date();
+                        var fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth() + 1) + "-" + fecha.getDate();
+                        var fechaMinima = moment(fecha_actual).subtract('years', 18);
+
+                        this.timePickerBirthday = $('#dateBirthDay').datetimepicker({
+                            locale: 'es',
+                            format: 'DD-MM-YYYY',
+                            defaultDate: fechaMinima,
+                            useCurrent: false,
+                            maxDate: fechaMinima
+                        }).data();
+                    },
+                    activarTimePickerIngreso: function () {
+                        this.timePickerIngreso = $('#dateJoin').datetimepicker({
+                            locale: 'es',
+                            format: 'DD-MM-YYYY'
+                        }).data();
+                    },
                     obtainGenders: function () {
                         this.$http.get(ROOT_URL + "/gender").success(function (data) {
                             this.genders = data;
@@ -334,10 +343,12 @@
                         });
                     },
                     fetchDocumentTypes: function () {
-                        this.$http.get(ROOT_URL + "/employee-document-types/" + this.selectedOptions.branch.id + "/" + this.selectedOptions.area.id)
+                        this.selectedOptions.zona = this.defaultZona;
+                        this.selectedOptions.branch = this.defaultBranch;
+                        this.$http.get(ROOT_URL + "/employee-document-types/" + this.selectedOptions.distributor.idDistributor)
                                 .success(function (data) {
                                     this.documentTypes = data;
-                                    this.getDwEnterpriseSelected();
+//                                    this.getDwEnterpriseSelected();
                                 });
                     },
                     validateFile: function (file) {
@@ -394,7 +405,7 @@
                         }
                     },
                     getDwEnterpriseSelected: function () {
-                        this.$http.get(ROOT_URL + "/dw-enterprises/branch-area/" + this.selectedOptions.branch.id + "/" + this.selectedOptions.area.id).success(function (data) {
+                        this.$http.get(ROOT_URL + "/dw-enterprises/branch-area/" + this.selectedOptions.branch.idBranch + "/" + this.selectedOptions.area.idArea).success(function (data) {
                             this.dwEnter = data;
                         });
                     },
@@ -502,38 +513,339 @@
                             this.sizes = data;
                         });
                     },
-                    fetchHierarchy: function () {
-                        this.$http.get(ROOT_URL + "/dw-enterprises/hierarchy").success(function (data) {
-                            this.selectOptions.hierarchy = data;
+                    getDistributors: function () {
+                        this.$http.get(ROOT_URL + "/distributors?forStock=true").success(function (data) {
+                            this.distributors = data;
                         });
                     },
-                    selectedOptionsDistributorChanged: function () {
+                    distributorChanged: function () {
+                        this.regions = [];
+                        this.zonas = [];
+                        this.branchch = [];
+                        this.areas = [];
+                        this.selectedArea = [];
                         this.selectedOptions.region = this.defaultRegion;
                         this.selectedOptions.zona = this.defaultZona;
                         this.selectedOptions.branch = this.defaultBranch;
                         this.selectedOptions.area = this.defaultArea;
                         this.selectedOptions.role = this.defaultRole;
+                        this.getAreaByDistributor(this.selectedOptions.distributor.idDistributor);
+                        this.getRegionByDistributor(this.selectedOptions.distributor.idDistributor);
                     },
-                    selectedOptionsRegionChanged: function () {
+                    getRegionByDistributor: function (idDistributor) {
+                        //this.isThereItems = false;
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/dw-enterprises/distributor-region/" + idDistributor).success(function (data) {
+                            this.regions = [];
+                            var index;
+                            data.forEach(function (region) {
+                                index = self.arrayObjectIndexOf(self.regions, region.idRegion, 'idRegion');
+                                if (index == -1) self.regions.push(region);
+                            });
+
+                        }).error(function () {
+                            showAlert("No existen regiones para esa compañia", {type: 3});
+                        });
+                    },
+                    getAreaByDistributor: function (idDistributor) {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/dw-enterprises/distributor-area/" + idDistributor).success(function (data) {
+                            this.areas = [];
+                            var index;
+                            data.forEach(function (area) {
+                                index = self.arrayObjectIndexOf(self.areas, area.idArea, 'idArea');
+                                if (index == -1) self.areas.push(area);
+                            });
+                        }).error(function () {
+                            showAlert("No existen areas para esa compañia", {type: 3});
+                        });
+                    },
+                    regionChanged: function () {
                         this.selectedOptions.zona = this.defaultZona;
                         this.selectedOptions.branch = this.defaultBranch;
-                        this.selectedOptions.area = this.defaultArea;
-                        this.selectedOptions.role = this.defaultRole;
+                        //this.isThereItems = false;
+                        this.getZonaByDistributorAndRegion(this.selectedOptions.distributor.idDistributor, this.selectedOptions.region.idRegion);
                     },
-                    selectedOptionsZonaChanged: function () {
+                    getZonaByDistributorAndRegion: function (idDistributor, idRegion) {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/dw-enterprises/distributor-region-zona/" + idDistributor + "/" + idRegion).success(function (data) {
+                            this.zonas = [];
+                            var index;
+                            data.forEach(function (zona) {
+                                index = self.arrayObjectIndexOf(self.zonas, zona.idZonas, 'idZonas');
+                                if (index == -1) self.zonas.push(zona);
+                            });
+                        }).error(function () {
+                            showAlert("No existen zonas para esa compañìa y regiòn ", {type: 3});
+                        });
+                    },
+                    zonaChanged: function () {
                         this.selectedOptions.branch = this.defaultBranch;
-                        this.selectedOptions.area = this.defaultArea;
-                        this.selectedOptions.role = this.defaultRole;
+                        this.getBranchByDistributorAndRegionAndZona(this.selectedOptions.distributor.idDistributor, this.selectedOptions.region.idRegion, this.selectedOptions.zona.idZonas);
                     },
-                    selectedOptionsBranchChanged: function () {
-                        this.selectedOptions.area = this.defaultArea;
-                        this.selectedOptions.role = this.defaultRole;
+                    getBranchByDistributorAndRegionAndZona: function (idDistributor, idRegion, idZona) {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/dw-enterprises/distributor-region-zona-branch/" + idDistributor + "/" + idRegion + "/" + idZona).success(function (data) {
+                            this.branchch = [];
+                            var index;
+                            data.forEach(function (branch) {
+                                index = self.arrayObjectIndexOf(self.branchch, branch.idBranch, 'idBranch');
+                                if (index == -1) self.branchch.push(branch);
+                            });
+                        }).error(function () {
+                            showAlert("No existen sucursales para esa compañìa, regiòn y zona", {type: 3});
+                        });
                     },
-                    selectedOptionsAreaChanged: function () {
-                        this.selectOptions.roles = [];
+//                    branchChanged: function () {
+//                        this.getAreaByBranch(this.selectedOptions.branch.idBranch);
+//                    },
+//                    getAreaByBranch: function (idBranch) {
+//                        this.areas = [];
+//                        var self = this;
+//                        this.$http.get(ROOT_URL + "/dw-enterprises/branch-area/" + idBranch).success(function (data) {
+//                            this.areas = [];
+//                            var index;
+//                            data.forEach(function (area) {
+//                                index = self.arrayObjectIndexOf(self.areas, area.idArea, 'idArea');
+//                                if (index == -1) self.areas.push(area);
+//                            });
+//                        }).error(function () {
+//                            showAlert("No existen areas para esa compañìa, regiòn, zona y sucursal", {type: 3});
+//                        });
+//                    },
+                    areaChanged: function () {
                         this.selectedOptions.role = this.defaultRole;
-                        this.$http.get(ROOT_URL + "/areas/area-role/" + this.selectedOptions.area.id).success(function (data) {
-                            this.selectOptions.roles = data.roles;
+                        this.$http.get(ROOT_URL + "/distributor-area-rol/" + this.selectedOptions.distributor.idDistributor + "/" + this.selectedOptions.area.idArea).success(function (data) {
+                            this.selectedArea = data;
+                            this.getRegionByDistributorArea();
+                            this.getBranchByDistributorArea();
+                        });
+                        //this.isThereItems = false;
+                    },
+                    getRegionByDistributorArea: function () {
+                        var self = this;
+                        this.$http.get(
+                                ROOT_URL + "/dw-enterprises/distributor-area/region/" + this.selectedOptions.distributor.idDistributor + "/" + this.selectedOptions.area.idArea)
+                                .success(function (data) {
+                                    this.regions = [];
+                                    var index;
+                                    data.forEach(function (region) {
+                                        index = self.arrayObjectIndexOf(self.regions, region.idRegion, 'idRegion');
+                                        if (index == -1) self.regions.push(region);
+                                    });
+
+                                }).error(function () {
+                            showAlert("No existen regiones para esa compañia", {type: 3});
+                        });
+                    },
+                    getBranchByDistributorArea: function () {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/dw-enterprises/distributor-area/branch/" + this.selectedOptions.distributor.idDistributor + "/" + this.selectedOptions.area.idArea).success(function (data) {
+                            this.branchch = [];
+                            var index;
+                            data.forEach(function (branch) {
+                                index = self.arrayObjectIndexOf(self.branchch, branch.idBranch, 'idBranch');
+                                if (index == -1) self.branchch.push(branch);
+                            });
+                        }).error(function () {
+                            showAlert("No existen sucursales para esa compañìa, regiòn y zona", {type: 3});
+                        });
+                    },
+                    arrayObjectIndexOf: function (myArray, searchTerm, property) {
+                        for (var i = 0, len = myArray.length; i < len; i++) {
+                            if (myArray[i][property] === searchTerm) return i;
+                        }
+                        return -1;
+                    },
+                    validateRoleBranch: function () {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/dw-enterprises?idDistributor="+this.selectedOptions.distributor.idDistributor
+                                +"&idRegion="+this.selectedOptions.region.idRegion+"&idZona="+this.selectedOptions.zona.idZonas
+                                +"&idBranch="+this.selectedOptions.branch.idBranch+"&idArea="+this.selectedOptions.area.idArea).success(function (data) {
+                            self.$http.get(ROOT_URL + "/dw-employees/validate-role/"+data[0].idDwEnterprise+"/"+self.selectedOptions.role.idRole).success(function () {
+
+                            }).error(function () {
+                               showAlert("El puesto seleccionado ya esta ocupado por otra persona", {type: 3});
+                                self.branchch = [];
+                                self.regions = [];
+                                self.zonas = [];
+                                self.areas = [];
+                                self.selectedArea = [];
+                                self.selectedOptions = {
+                                    area: {
+                                        idArea: 0
+                                    },
+                                    distributor: {
+                                        idDistributor: 0
+                                    },
+                                    region: {
+                                        idRegion: 0
+                                    },
+                                    zona: {
+                                        idZonas: 0
+                                    },
+                                    branch: {
+                                        idBranch: 0
+                                    },
+                                    role: {
+                                        idRole: 0
+                                    }
+                                }
+                            });
+                        }).error(function () {
+                            showAlert("Error al obtener informaciòn para esa sucursal", {type: 3});
+                            this.branchch = [];
+                            this.regions = [];
+                            this.zonas = [];
+                            this.areas = [];
+                            this.selectedArea = [];
+                            this.selectedOptions = {
+                                area: {
+                                    idArea: 0
+                                },
+                                distributor: {
+                                    idDistributor: 0
+                                },
+                                region: {
+                                    idRegion: 0
+                                },
+                                zona: {
+                                    idZonas: 0
+                                },
+                                branch: {
+                                    idBranch: 0
+                                },
+                                role: {
+                                    idRole: 0
+                                }
+                            }
+                        });
+                    },
+                    validateRoleZona: function () {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/dw-enterprises?idDistributor="+this.selectedOptions.distributor.idDistributor
+                                +"&idRegion="+this.selectedOptions.region.idRegion+"&idZona="+this.selectedOptions.zona.idZonas
+                                +"&idBranch=0&idArea="+this.selectedOptions.area.idArea).success(function (data) {
+                            self.$http.get(ROOT_URL + "/dw-employees/validate-role/"+data[0].idDwEnterprise+"/"+self.selectedOptions.role.idRole).success(function () {
+
+                            }).error(function () {
+                                showAlert("El puesto seleccionado ya esta ocupado por otra persona", {type: 3});
+                                self.branchch = [];
+                                self.regions = [];
+                                self.zonas = [];
+                                self.areas = [];
+                                self.selectedArea = [];
+                                self.selectedOptions = {
+                                    area: {
+                                        idArea: 0
+                                    },
+                                    distributor: {
+                                        idDistributor: 0
+                                    },
+                                    region: {
+                                        idRegion: 0
+                                    },
+                                    zona: {
+                                        idZonas: 0
+                                    },
+                                    branch: {
+                                        idBranch: 0
+                                    },
+                                    role: {
+                                        idRole: 0
+                                    }
+                                }
+                            });
+                        }).error(function () {
+                            showAlert("Error al obtener informaciòn para esa zona", {type: 3});
+                            this.branchch = [];
+                            this.regions = [];
+                            this.zonas = [];
+                            this.areas = [];
+                            this.selectedArea = [];
+                            this.selectedOptions = {
+                                area: {
+                                    idArea: 0
+                                },
+                                distributor: {
+                                    idDistributor: 0
+                                },
+                                region: {
+                                    idRegion: 0
+                                },
+                                zona: {
+                                    idZonas: 0
+                                },
+                                branch: {
+                                    idBranch: 0
+                                },
+                                role: {
+                                    idRole: 0
+                                }
+                            }
+                        });
+                    },
+                    validateRoleRegion: function () {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/dw-enterprises?idDistributor="+this.selectedOptions.distributor.idDistributor
+                                +"&idRegion="+this.selectedOptions.region.idRegion+"&idZona=0&idBranch=0&idArea="+this.selectedOptions.area.idArea).success(function (data) {
+                            self.$http.get(ROOT_URL + "/dw-employees/validate-role/"+data[0].idDwEnterprise+"/"+self.selectedOptions.role.idRole).success(function () {
+
+                            }).error(function () {
+                                showAlert("El puesto seleccionado ya esta ocupado por otra persona", {type: 3});
+                                self.branchch = [];
+                                self.regions = [];
+                                self.zonas = [];
+                                self.areas = [];
+                                self.selectedArea = [];
+                                self.selectedOptions = {
+                                    area: {
+                                        idArea: 0
+                                    },
+                                    distributor: {
+                                        idDistributor: 0
+                                    },
+                                    region: {
+                                        idRegion: 0
+                                    },
+                                    zona: {
+                                        idZonas: 0
+                                    },
+                                    branch: {
+                                        idBranch: 0
+                                    },
+                                    role: {
+                                        idRole: 0
+                                    }
+                                }
+                            });
+                        }).error(function () {
+                            showAlert("Error al obtener informaciòn para esa regiòn", {type: 3});
+                            this.branchch = [];
+                            this.regions = [];
+                            this.zonas = [];
+                            this.areas = [];
+                            this.selectedArea = [];
+                            this.selectedOptions = {
+                                area: {
+                                    idArea: 0
+                                },
+                                distributor: {
+                                    idDistributor: 0
+                                },
+                                region: {
+                                    idRegion: 0
+                                },
+                                zona: {
+                                    idZonas: 0
+                                },
+                                branch: {
+                                    idBranch: 0
+                                },
+                                role: {
+                                    idRole: 0
+                                }
+                            }
                         });
                     }
                 },
@@ -558,6 +870,174 @@
                       v-on:submit.prevent="saveEmployee">
                     <br>
                     <div class="panel panel-default">
+                        <!-- Default panel contents -->
+                        <div class="panel-heading">Datos de la empresa</div>
+                        <div class="panel-body">
+                            <div class="col-xs-12">
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <label>Selecciona Distribuidor/Empresa</label>
+                                        <select v-model="selectedOptions.distributor" class="form-control"
+                                                required @change="distributorChanged">
+                                            <option v-for="distributor in distributors"
+                                                    :value="distributor">
+                                                {{ distributor.distributorName }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <div class="col-xs-4">
+                                            <label>Área</label>
+                                            <select v-model="selectedOptions.area" class="form-control"
+                                                    required @change="areaChanged"
+                                                    :disabled="selectedOptions.distributor.idDistributor == 0">
+                                                <option v-for="area in areas"
+                                                        :value="area">
+                                                    {{ area.areaName }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-4">
+                                            <label>Puesto</label>
+                                            <select v-model="selectedOptions.role" class="form-control"
+                                                    required @change="fetchDocumentTypes()"
+                                                    :disabled="selectedOptions.area.idArea == 0">
+                                                <option v-for="role in selectedArea"
+                                                        :value="role.role">
+                                                    {{ role.role.roleName }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row"
+                                     v-if="selectedOptions.role.idRole == 80 || selectedOptions.role.idRole == 81 || selectedOptions.role.idRole == 64">
+                                    <div class="col-xs-4">
+                                        <label>Región</label>
+                                        <select v-model="selectedOptions.region" class="form-control"
+                                                required @change="regionChanged"
+                                                :disabled="selectedOptions.distributor.idDistributor == 0">
+                                            <option v-for="region in regions"
+                                                    :value="region">
+                                                {{ region.regionName }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <label>Zona</label>
+                                        <select v-model="selectedOptions.zona" class="form-control"
+                                                required @change="zonaChanged"
+                                                :disabled="selectedOptions.region.idRegion == 0">
+                                            <option v-for="zona in zonas"
+                                                    :value="zona">
+                                                {{ zona.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <label>Sucursal</label>
+                                        <select v-model="selectedOptions.branch" class="form-control"
+                                                required
+                                                :disabled="selectedOptions.zona.idZonas == 0">
+                                            <option v-for="branch in branchch"
+                                                    :value="branch">
+                                                {{ branch.branchShort }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row"
+                                     v-if="selectedOptions.role.idRole == 63">
+                                    <div class="col-xs-4">
+                                        <label>Región</label>
+                                        <select v-model="selectedOptions.region" class="form-control"
+                                                required @change="regionChanged"
+                                                :disabled="selectedOptions.distributor.idDistributor == 0">
+                                            <option v-for="region in regions"
+                                                    :value="region">
+                                                {{ region.regionName }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <label>Zona</label>
+                                        <select v-model="selectedOptions.zona" class="form-control"
+                                                required @change="zonaChanged"
+                                                :disabled="selectedOptions.region.idRegion == 0">
+                                            <option v-for="zona in zonas"
+                                                    :value="zona">
+                                                {{ zona.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <label>Sucursal</label>
+                                        <select v-model="selectedOptions.branch" class="form-control"
+                                                required @change="validateRoleBranch()"
+                                                :disabled="selectedOptions.zona.idZonas == 0">
+                                            <option v-for="branch in branchch"
+                                                    :value="branch">
+                                                {{ branch.branchShort }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row" v-if="selectedOptions.role.idRole == 62">
+                                    <div class="col-xs-4">
+                                        <label>Región</label>
+                                        <select v-model="selectedOptions.region" class="form-control"
+                                                required @change="regionChanged"
+                                                :disabled="selectedOptions.distributor.idDistributor == 0">
+                                            <option v-for="region in regions"
+                                                    :value="region">
+                                                {{ region.regionName }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-4">
+                                        <label>Zona</label>
+                                        <select v-model="selectedOptions.zona" class="form-control"
+                                                required @change="validateRoleZona()"
+                                                :disabled="selectedOptions.region.idRegion == 0">
+                                            <option v-for="zona in zonas"
+                                                    :value="zona">
+                                                {{ zona.name }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row" v-if="selectedOptions.role.idRole == 61">
+                                    <div class="col-xs-4">
+                                        <label>Región</label>
+                                        <select v-model="selectedOptions.region" class="form-control"
+                                                required @change="validateRoleRegion()"
+                                                :disabled="selectedOptions.distributor.idDistributor == 0">
+                                            <option v-for="region in regions"
+                                                    :value="region">
+                                                {{ region.regionName }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row" v-if="selectedOptions.distributor.saemFlag == false">
+                                    <div class="col-xs-4">
+                                        <label>Sucursal</label>
+                                        <select v-model="selectedOptions.branch" class="form-control"
+                                                required
+                                                :disabled="selectedOptions.area.idArea == 0">
+                                            <option v-for="branch in branchch"
+                                                    :value="branch">
+                                                {{ branch.branchShort }}
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="panel panel-default" v-if="selectedOptions.role.idRole > 0">
                         <div class="panel-heading">Información personal</div>
                         <div class="panel-body">
                             <div class="col-xs-12">
@@ -598,7 +1078,7 @@
                                         <label>Fecha de Nacimiento</label>
                                         <div class='input-group date' id='dateBirthDay'>
                                             <input type='text' class="form-control" v-model="birthday" required>
-                                   <span class="input-group-addon">
+                                   <span class="input-group-addon" @click="activarTimePickerBirthDate()">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
                                         </div>
@@ -730,7 +1210,7 @@
                                         <input class="form-control" name="name" v-model="employee.mail"
                                                @change="validateEmail(employee.mail)" required>
                                     </div>
-                                    <div class="col-xs-3">
+                                    <div class="col-xs-3" v-if="selectedOptions.distributor.saemFlag == true">
                                         <label>Clave SAP</label>
                                         <input class="form-control" name="name" v-model="employee.claveSap"
                                                maxlength="15">
@@ -744,7 +1224,7 @@
                                         <label>Fecha de ingreso</label>
                                         <div class='input-group date' id='dateJoin'>
                                             <input type='text' class="form-control" v-model="joinDate" required>
-                                   <span class="input-group-addon">
+                                   <span class="input-group-addon" @click="activarTimePickerIngreso()">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
                                         </div>
@@ -754,80 +1234,12 @@
                         </div>
                     </div>
                     <br>
-                    <div class="panel panel-default">
+                    <div class="panel panel-default" v-if="selectedOptions.role.idRole > 0">
                         <!-- Default panel contents -->
-                        <div class="panel-heading">Datos de la empresa</div>
+                        <div class="panel-heading">Datos del contrato</div>
                         <div class="panel-body">
                             <div class="col-xs-12">
                                 <div class="row">
-                                    <div class="col-xs-3">
-                                        <label>Distribuidor</label>
-                                        <select v-model="selectedOptions.distributor" class="form-control"
-                                                required @change="selectedOptionsDistributorChanged">
-                                            <option v-for="distributor in selectOptions.hierarchy[0].subLevels"
-                                                    :value="distributor">
-                                                {{ distributor.name }}
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="col-xs-3">
-                                        <label>Región</label>
-                                        <select v-model="selectedOptions.region" class="form-control"
-                                                required @change="selectedOptionsRegionChanged"
-                                                :disabled="selectedOptions.distributor.id == 0">
-                                            <option v-for="region in selectedOptions.distributor.subLevels"
-                                                    :value="region">
-                                                {{ region.name }}
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="col-xs-3">
-                                        <label>Zona</label>
-                                        <select v-model="selectedOptions.zona" class="form-control"
-                                                required @change="selectedOptionsZonaChanged()"
-                                                :disabled="selectedOptions.region.id == 0">
-                                            <option v-for="area in selectedOptions.region.subLevels"
-                                                    :value="area">
-                                                {{ area.name }}
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="col-xs-3">
-                                        <label>Sucursal</label>
-                                        <select v-model="selectedOptions.branch" class="form-control"
-                                                required @change="selectedOptionsBranchChanged"
-                                                :disabled="selectedOptions.zona.id == 0">
-                                            <option v-for="branch in selectedOptions.zona.subLevels"
-                                                    :value="branch">
-                                                {{ branch.name }}
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <br>
-                                <div class="row">
-                                    <div class="col-xs-3">
-                                        <label>Área</label>
-                                        <select v-model="selectedOptions.area" class="form-control"
-                                                required @change="selectedOptionsAreaChanged()"
-                                                :disabled="selectedOptions.branch.id == 0">
-                                            <option v-for="area in selectedOptions.branch.subLevels"
-                                                    :value="area">
-                                                {{ area.name }}
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="col-xs-3">
-                                        <label>Puesto</label>
-                                        <select v-model="selectedOptions.role" class="form-control"
-                                                required @change="fetchDocumentTypes()"
-                                                :disabled="selectedOptions.area.id == 0">
-                                            <option v-for="role in selectOptions.roles"
-                                                    :value="role">
-                                                {{ role.roleName }}
-                                            </option>
-                                        </select>
-                                    </div>
                                     <div class="col-xs-2">
                                         <label>Tipo de empleado</label>
                                         <select class="form-control" name="" v-model="employee.employeeType" required>
@@ -850,7 +1262,7 @@
                                 <br>
                                 <div class="row">
                                     <div class="col-xs-3"
-                                         v-if="dwEnter.idDistributor == 2 && selectedOptions.role.idRole == 4">
+                                         v-if="selectedOptions.distributor.idDistributor == 2 && selectedOptions.role.idRole == 63">
                                         <label>SISTARH</label>
                                         <input class="form-control" maxlength="2" name="name" v-model="employee.sistarh"
                                                onkeypress="return isNumberKey(event)">
@@ -870,7 +1282,7 @@
                         </div>
                     </div>
                     <br>
-                    <div class="panel panel-default">
+                    <div class="panel panel-default" v-if="selectedOptions.role.idRole > 0">
                         <!-- Default panel contents -->
                         <div class="panel-heading">Datos bancarios</div>
                         <div class="panel-body">
@@ -919,7 +1331,7 @@
                         </div>
                     </div>
                     <br>
-                    <div class="panel panel-default" v-show="selectOptions.roles.length > 0">
+                    <div class="panel panel-default" v-if="selectedOptions.role.idRole > 0">
                         <div class="panel-heading">Documentación</div>
                         <div class="panel-body">
                             <div class="col-xs-12">
@@ -941,18 +1353,63 @@
                                             </td>
                                         </tr>
                                         <tr v-for="docType in documentTypes"
-                                            v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType < 13">
-                                            <td v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType < 13">
+                                            v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType <= 9 && docType.idDistributor !== 2">
+                                            <td v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType <= 9 && docType.idDistributor !== 2">
                                                 {{ docType.documentType.documentName }}
                                             </td>
                                             <td>
-                                                <input v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType < 13"
+                                                <input v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType <= 9 && docType.idDistributor !== 2"
                                                        @change="setFile($event, docType)" type="file"
                                                        class="form-control"
                                                        :disabled="isSaving"
                                                        :name="'file-type-' + docType.documentType.idDocumentType"
                                                        accept="application/pdf,
                                                          image/png,image/jpg,image/jpeg,">
+                                            </td>
+                                        </tr>
+                                        <tr v-for="docType in documentTypes"
+                                            v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType <= 9 && docType.idDistributor == 2  && selectedOptions.role.idRole !== 63">
+                                            <td v-if="docType.documentType.field == 0 && docType.documentType.required == 0  && docType.documentType.idDocumentType <= 9 && docType.idDistributor == 2  && selectedOptions.role.idRole !== 63">
+                                                {{ docType.documentType.documentName }}
+                                            </td>
+                                            <td>
+                                                <input v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType <= 9 && docType.idDistributor == 2  && selectedOptions.role.idRole !== 63"
+                                                       @change="setFile($event, docType)" type="file"
+                                                       class="form-control"
+                                                       :disabled="isSaving"
+                                                       :name="'file-type-' + docType.documentType.idDocumentType"
+                                                       accept="application/pdf,
+                                                         image/png,image/jpg,image/jpeg,">
+                                            </td>
+                                        </tr>
+                                        <tr v-for="docType in documentTypes"
+                                            v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType == 8  && docType.idDistributor == 2 && selectedOptions.role.idRole == 63">
+                                            <td v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType == 8  && docType.idDistributor == 2 && selectedOptions.role.idRole == 63">
+                                                {{ docType.documentType.documentName }}
+                                            </td>
+                                            <td>
+                                                <input v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType == 8  && docType.idDistributor == 2 && selectedOptions.role.idRole == 63"
+                                                       @change="setFile($event, docType)" type="file"
+                                                       class="form-control"
+                                                       :disabled="isSaving"
+                                                       :name="'file-type-' + docType.documentType.idDocumentType"
+                                                       accept="application/pdf,
+                                                         image/png,image/jpg,image/jpeg,">
+                                            </td>
+                                        </tr>
+                                        <tr v-for="docType in documentTypes"
+                                            v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType == 9  && docType.idDistributor == 2 && selectedOptions.role.idRole == 63">
+                                            <td v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType == 9  && docType.idDistributor == 2 && selectedOptions.role.idRole == 63">
+                                                {{ docType.documentType.documentName }}
+                                            </td>
+                                            <td>
+                                                <input v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType == 9  && docType.idDistributor == 2 && selectedOptions.role.idRole == 63"
+                                                       @change="setFile($event, docType)" type="file"
+                                                       class="form-control"
+                                                       :disabled="isSaving"
+                                                       :name="'file-type-' + docType.documentType.idDocumentType"
+                                                       accept="application/pdf,
+                                                         image/png,image/jpg,image/jpeg," required>
                                             </td>
                                         </tr>
                                         <tr v-for="docType in documentTypes"
@@ -986,12 +1443,12 @@
                                             </td>
                                         </tr>
                                         <tr v-for="docType in documentTypes"
-                                            v-show="docType.documentType.field == 1 && employee.sistarh !== '' && docType.documentType.idDocumentType == 12 && docType.idDistributor == 2 && selectedOptions.role.idRole == 4">
-                                            <td v-show="docType.documentType.field == 1 && employee.sistarh !== '' && docType.documentType.idDocumentType == 12 && docType.idDistributor == 2 && selectedOptions.role.idRole == 4">
+                                            v-show="docType.documentType.field == 1 && employee.sistarh !== '' && docType.documentType.idDocumentType == 12 && docType.idDistributor == 2 && selectedOptions.role.idRole == 63">
+                                            <td v-show="docType.documentType.field == 1 && employee.sistarh !== '' && docType.documentType.idDocumentType == 12 && docType.idDistributor == 2 && selectedOptions.role.idRole == 63">
                                                 {{ docType.documentType.documentName }}
                                             </td>
                                             <td>
-                                                <input v-show="docType.documentType.field == 1 && employee.sistarh !== '' && docType.documentType.idDocumentType == 12 && docType.idDistributor == 2 && selectedOptions.role.idRole == 4"
+                                                <input v-show="docType.documentType.field == 1 && employee.sistarh !== '' && docType.documentType.idDocumentType == 12 && docType.idDistributor == 2 && selectedOptions.role.idRole == 63"
                                                        @change="setFile($event, docType)" type="file"
                                                        class="form-control"
                                                        :disabled="isSaving"
@@ -1001,12 +1458,12 @@
                                             </td>
                                         </tr>
                                         <tr v-for="docType in documentTypes"
-                                            v-show="docType.documentType.field == 0 && docType.documentType.idDocumentType >= 13 && docType.idDistributor == 2 && selectedOptions.role.idRole == 4">
-                                            <td v-show="docType.documentType.field == 0 && docType.documentType.idDocumentType >= 13 && docType.idDistributor == 2 && selectedOptions.role.idRole == 4">
+                                            v-show="docType.documentType.field == 0 && docType.documentType.idDocumentType >= 13 && docType.idDistributor == 2 && selectedOptions.role.idRole == 63">
+                                            <td v-show="docType.documentType.field == 0 && docType.documentType.idDocumentType >= 13 && docType.idDistributor == 2 && selectedOptions.role.idRole == 63">
                                                 {{ docType.documentType.documentName }}
                                             </td>
                                             <td>
-                                                <input v-show="docType.documentType.field == 0 && docType.documentType.idDocumentType >= 13 && docType.idDistributor == 2 && selectedOptions.role.idRole == 4"
+                                                <input v-show="docType.documentType.field == 0 && docType.documentType.idDocumentType >= 13 && docType.idDistributor == 2 && selectedOptions.role.idRole == 63"
                                                        @change="setFile($event, docType)" type="file"
                                                        class="form-control"
                                                        :disabled="isSaving"
@@ -1020,7 +1477,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" v-if="selectedOptions.role.idRole > 0">
                         <div class="col-xs-11">
                         </div>
                         <div class="col-xs-1">

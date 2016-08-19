@@ -60,8 +60,9 @@ public class PriceEstimationsController {
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
-    
-    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+
+    @Autowired
+    private ObjectMapper mapper;
     
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json; charset=UTF-8"},
             produces = "application/json; charset=UTF-8")

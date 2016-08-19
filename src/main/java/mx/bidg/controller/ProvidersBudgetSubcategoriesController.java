@@ -3,10 +3,10 @@ package mx.bidg.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.config.JsonViews;
-import mx.bidg.model.CProductTypes;
+import mx.bidg.model.CBudgetSubcategories;
 import mx.bidg.model.Providers;
-import mx.bidg.model.ProvidersProductsTypes;
-import mx.bidg.service.ProvidersProductsTypesService;
+import mx.bidg.model.ProvidersBudgetSubcategories;
+import mx.bidg.service.ProvidersBudgetSubcategoriesService;
 import mx.bidg.service.ProvidersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,16 +21,17 @@ import java.io.IOException;
  * Created by jolvera on 30/05/16.
  */
 @Controller
-@RequestMapping("providers-products-types")
-public class ProvidersProductsTypesController {
+@RequestMapping("providers-budget-subcategories")
+public class ProvidersBudgetSubcategoriesController {
 
     @Autowired
     ProvidersService providersService;
 
     @Autowired
-    ProvidersProductsTypesService providersProductsTypesService;
+    ProvidersBudgetSubcategoriesService providersBudgetSubcategoriesService;
 
-    private ObjectMapper mapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(value = "/provider/{idProvider}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -38,24 +39,24 @@ public class ProvidersProductsTypesController {
     ResponseEntity<String> addProviderProduct(@PathVariable int idProvider, @RequestBody String data) throws IOException {
         JsonNode node = mapper.readTree(data);
         Providers provider = providersService.findById(idProvider);
-        ProvidersProductsTypes providersProductsTypes = new ProvidersProductsTypes();
-        providersProductsTypes.setcProductType(new CProductTypes(node.get("idProductType").asInt()));
-        providersProductsTypes.setProvider(provider);
-        providersProductsTypes.setIdAccessLevel(1);
-        providersProductsTypesService.save(providersProductsTypes);
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(providersProductsTypes), HttpStatus.OK);
+        ProvidersBudgetSubcategories providersBudgetSubcategories = new ProvidersBudgetSubcategories();
+        providersBudgetSubcategories.setBudgetSubcategory(mapper.treeToValue(node.get("budgetSubcategory"), CBudgetSubcategories.class));
+        providersBudgetSubcategories.setProvider(provider);
+        providersBudgetSubcategories.setIdAccessLevel(1);
+        providersBudgetSubcategories = providersBudgetSubcategoriesService.save(providersBudgetSubcategories);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(providersBudgetSubcategories), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{idProvidersProductsTypes}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> deleteProviderProduct(@PathVariable int idProvidersProductsTypes) throws IOException {
-        ProvidersProductsTypes providersProductsTypes= providersProductsTypesService.findById(idProvidersProductsTypes);
-        providersProductsTypesService.delete(providersProductsTypes);
+        ProvidersBudgetSubcategories providersBudgetSubcategories = providersBudgetSubcategoriesService.findById(idProvidersProductsTypes);
+        providersBudgetSubcategoriesService.delete(providersBudgetSubcategories);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "/provider/{idProvider}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody public ResponseEntity<String> productsByProvider(@PathVariable int idProvider)throws Exception{
-        String response = mapper.writerWithView(JsonViews.Root.class).writeValueAsString(providersProductsTypesService
+        String response = mapper.writerWithView(JsonViews.Root.class).writeValueAsString(providersBudgetSubcategoriesService
                 .findByProvider(new Providers(idProvider)));
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

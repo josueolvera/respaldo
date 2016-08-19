@@ -47,7 +47,8 @@ public class EmployeesHistoryController {
     @Autowired
     private CRolesService cRolesService;
 
-    private ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getEmployeesHistories
@@ -82,7 +83,7 @@ public class EmployeesHistoryController {
             }
         }
         return new ResponseEntity<>(
-                map.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesHistories),
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesHistories),
                 HttpStatus.OK
         );
     }
@@ -93,14 +94,14 @@ public class EmployeesHistoryController {
         EmployeesHistory employeeHistory = employeesHistoryService.findById(idEmployeeHistory);
 
         return new ResponseEntity<>(
-                map.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeeHistory),
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeeHistory),
                 HttpStatus.OK
         );
     }
 
     @RequestMapping(value = "/reactivation/{idEH}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> reactivation(@PathVariable Integer idEH, @RequestBody String data, HttpSession session) throws IOException{
-        JsonNode node = map.readTree(data);
+        JsonNode node = mapper.readTree(data);
         Users user = (Users) session.getAttribute("user");
         EmployeesHistory employeesHistory = employeesHistoryService.findById(idEH);
         Employees employees = employeesService.findById(employeesHistory.getIdEmployee());
@@ -112,13 +113,48 @@ public class EmployeesHistoryController {
         DwEmployees dwEmployees = new DwEmployees();
 
         dwEmployees.setEmployee(employees);
-        dwEmployees.setDwEnterprise(dwEnterprisesService.findByBranchAndArea(node.get("branch").get("idBranch").asInt(), node.get("area").get("idArea").asInt()));
+
+        List<DwEnterprises> dwEnterprisesList;
+
+        if(node.get("dwEnterprise").get("distributor").get("idDistributor").asInt() == 2 || node.get("dwEnterprise").get("distributor").get("idDistributor").asInt() == 3){
+
+            if( node.get("dwEnterprise").get("zona").get("idZonas").asInt() == 0 && node.get("dwEnterprise").get("branch").get("idBranch").asInt() == 0){
+
+                dwEnterprisesList = dwEnterprisesService.findByDistributorRegionZonaBranchAndArea(
+                        node.get("dwEnterprise").get("distributor").get("idDistributor").asInt(),
+                        node.get("dwEnterprise").get("region").get("idRegion").asInt(),null,null,
+                        node.get("dwEnterprise").get("area").get("idArea").asInt());
+
+            } else if (node.get("dwEnterprise").get("branch").get("idBranch").asInt() == 0){
+
+                dwEnterprisesList = dwEnterprisesService.findByDistributorRegionZonaBranchAndArea(
+                        node.get("dwEnterprise").get("distributor").get("idDistributor").asInt(),
+                        node.get("dwEnterprise").get("region").get("idRegion").asInt(),
+                        node.get("dwEnterprise").get("zona").get("idZonas").asInt(),null,
+                        node.get("dwEnterprise").get("area").get("idArea").asInt());
+
+            } else {
+
+                dwEnterprisesList = dwEnterprisesService.findByDistributorRegionZonaBranchAndArea(
+                        node.get("dwEnterprise").get("distributor").get("idDistributor").asInt(),
+                        node.get("dwEnterprise").get("region").get("idRegion").asInt(),
+                        node.get("dwEnterprise").get("zona").get("idZonas").asInt(),
+                        node.get("dwEnterprise").get("branch").get("idBranch").asInt(),
+                        node.get("dwEnterprise").get("area").get("idArea").asInt());
+            }
+        } else {
+            dwEnterprisesList = dwEnterprisesService.findByDistributorRegionZonaBranchAndArea(node.get("dwEnterprise").get("distributor").get("idDistributor").asInt(),
+                    null,null,node.get("dwEnterprise").get("branch").get("idBranch").asInt(),
+                    node.get("dwEnterprise").get("area").get("idArea").asInt());
+        }
+
+        dwEmployees.setDwEnterprise(dwEnterprisesList.get(0));
         dwEmployees.setRole(cRolesService.findById(node.get("role").get("idRole").asInt()));
         dwEmployees.setCreationDate(LocalDateTime.now());
         dwEmployees = dwEmployeesService.save(dwEmployees);
         CActionTypes cActionType = CActionTypes.REACTIVACION;
         EmployeesHistory employeesHistories = employeesHistoryService.save(dwEmployees,cActionType,employeesAccounts.getAccount(),user);
-        return new ResponseEntity<>(map.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesHistories),HttpStatus.OK);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesHistories),HttpStatus.OK);
     }
 
     @RequestMapping(value = "/create-report", method = RequestMethod.GET)
@@ -154,7 +190,7 @@ public class EmployeesHistoryController {
         outputStream.close();
 
         return new ResponseEntity<>(
-                map.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesHistories),
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesHistories),
                 HttpStatus.OK
         );
     }

@@ -28,8 +28,9 @@ public class CPeriodsController {
     
     @Autowired
     CPeriodsService periodsService;
-    
-    ObjectMapper mapper = new ObjectMapper();
+
+    @Autowired
+    private ObjectMapper mapper;
     
     @RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> getPeriodsList() throws Exception {

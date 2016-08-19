@@ -28,23 +28,17 @@
                     searching:false,
                     distributors: [],
                     areas: [],
-                    regions: [],
-                    zonas: [],
                     branchs: [],
                     searchUrl: '',
                     searchSelectedOptions: {
                         area: null,
                         distributor: null,
-                        region: null,
-                        zona: null,
                         branch: null
                     },
                     selectedOptions: {
                         distributor: null,
-                        region: null,
                         branch: null,
                         area: null,
-                        zona: null,
                         dwEmployee:null
                     },
                     selectOptions: {
@@ -62,21 +56,13 @@
                         idDistributor:0,
                         name:'TODOS'
                     },
-                    defaultRegion: {
-                        idRegion:0,
-                        name:'TODOS'
-                    },
-                    defaultZona: {
-                        idZonas:0,
-                        name:'TODOS'
-                    },
                     defaultBranch: {
                         idBranch:0,
                         name:'TODOS'
                     },
                     historicalModal: {
                         article: null,
-                        fileInput: "file-type-"
+                        fileInput: 'file-type-'
                     },
                     editModal: {
                         attribute:{
@@ -117,18 +103,19 @@
                         selectAttr: '',
                         selectValue:'',
                         articlesCategories:[],
-                        fileInput: "file-type-"
+                        fileInput: 'file-type-'
                     },
                     attachmentsModal: {
                         article: null,
-                        fileInput: "file-type-"
+                        fileInput: 'file-type-'
                     },
                     assignmentsModal: {
-                        fileInput: "file-type-",
+                        fileInput: 'file-type-',
                         article: null
                     },
                     dwEmployees: [],
-                    attachmentsDownloadUrl: ROOT_URL + "/stock/attachments/download/",
+                    dwEnterprises: [],
+                    attachmentsDownloadUrl: ROOT_URL + '/stock/attachments/download/',
                     selectedInvoiceNumber:false,
                     invoiceNumber:'',
                     datetimepickerPurchaseDate:''
@@ -155,13 +142,13 @@
                     },
                     getArticles : function (articleCategory) {
                         this.resetFromArticleCategory();
-                        this.$http.get(ROOT_URL + "/articles/article-category/" + articleCategory.idArticlesCategory).success(function (data) {
+                        this.$http.get(ROOT_URL + '/articles/article-category/' + articleCategory.idArticlesCategory).success(function (data) {
                             this.newArticleModal.articles = data;
                             this.newArticleModal.idArticle = '';
                         });
                     },
                     getArticlesCategories : function () {
-                        this.$http.get(ROOT_URL + "/articles-categories").success(function (data) {
+                        this.$http.get(ROOT_URL + '/articles-categories').success(function (data) {
                             this.newArticleModal.articlesCategories = data;
                         });
                     },
@@ -191,7 +178,7 @@
                         });
                     },
                     fetchStockProperties: function (article) {
-                        this.$http.get(ROOT_URL + "/stock/" + article.idStock + "/properties").success(function (data) {
+                        this.$http.get(ROOT_URL + '/stock/' + article.idStock + '/properties').success(function (data) {
                             article.propertiesList = data;
                         });
                     },
@@ -199,29 +186,29 @@
                         article.properties.push(property);
                     },
                     fetchStockDocuments: function (article) {
-                        this.$http.get(ROOT_URL + "/stock/" + article.idStock + "/attachments").success(function (data) {
+                        this.$http.get(ROOT_URL + '/stock/' + article.idStock + '/attachments').success(function (data) {
                             article.stockDocumentsList = data;
                             this.isSaving = false;
                         });
                     },
                     fetchStockDocumentsRecord: function (article) {
                         this.$http.get(
-                                ROOT_URL + "/stock/" + article.idStock + "/attachments/record"
+                                ROOT_URL + '/stock/' + article.idStock + '/attachments/record'
                         ).success(function (data) {
-                            Vue.set(article, "documentsRecord", data);
+                            Vue.set(article, 'documentsRecord', data);
                             this.isSaving = false;
                         }).error(function () {
-                            showAlert("Permiso denegado", {type: 3});
+                            showAlert('Permiso denegado', {type: 3});
                         });
                     },
                     fetchStockAssignments: function (article) {
-                        this.$http.get(ROOT_URL + "/stock/" + article.idStock + "/assignments").success(function(data) {
+                        this.$http.get(ROOT_URL + '/stock/' + article.idStock + '/assignments').success(function(data) {
                             article.stockEmployeeAssignmentsList = data;
                         });
                     },
                     fetchStockAssignmentsRecord: function (article) {
                         this.$http.get(
-                                ROOT_URL + "/stock/" + article.idStock + "/assignments/record"
+                                ROOT_URL + '/stock/' + article.idStock + '/assignments/record'
                         ).success(function(data) {
                             var jsonObjectIndex = {};
                             data.forEach(function (el) {
@@ -237,19 +224,19 @@
                                 }
                             });
 
-                            Vue.set(article, "assignmentsRecord", data);
+                            Vue.set(article, 'assignmentsRecord', data);
                         }).error(function () {
-                            showAlert("Permiso denegado", {type: 3});
+                            showAlert('Permiso denegado', {type: 3});
                         });
                     },
                     fetchDocumentTypes: function () {
-                        this.$http.get(ROOT_URL + "/stock-document-types").success(function (data) {
+                        this.$http.get(ROOT_URL + '/stock-document-types').success(function (data) {
                             this.selectOptions.documentTypes = data;
                         });
                     },
                     fetchAttributesEditModal: function (article) {
                         var self = this;
-                        this.$http.get(ROOT_URL + "/attributes/" + article.article.idArticle).success(function (data) {
+                        this.$http.get(ROOT_URL + '/attributes/' + article.article.idArticle).success(function (data) {
                             var attributes = [];
                             this.editModal.attributes = data;
                             this.editModal.attributes.forEach(function (attribute) {
@@ -282,7 +269,7 @@
                     },
                     fetchAttributesNewArticleModal: function (idArticle) {
                         var self = this;
-                        this.$http.get(ROOT_URL + "/attributes/" + idArticle).success(function (data) {
+                        this.$http.get(ROOT_URL + '/attributes/' + idArticle).success(function (data) {
                             this.newArticleModal.articles.forEach(function (article) {
                                 if (article.idArticle == idArticle) {
                                     self.newArticleModal.article = article;
@@ -308,17 +295,17 @@
                         });
                     },
                     fetchArticleStatus: function () {
-                        this.$http.get(ROOT_URL + "/stock-status").success(function (data) {
+                        this.$http.get(ROOT_URL + '/stock-status').success(function (data) {
                             this.selectOptions.articleStatus = data;
                         });
                     },
                     fetchEmployees: function(idDw) {
-                        this.$http.get(ROOT_URL + "/employees?idDwEnterprise=" + idDw).success(function (data) {
+                        this.$http.get(ROOT_URL + '/employees?idDwEnterprise=' + idDw).success(function (data) {
                             this.editModal.employees = data;
                         });
                     },
                     fetchAllEmployees: function() {
-                        this.$http.get(ROOT_URL + "/employees").success(function (data) {
+                        this.$http.get(ROOT_URL + '/employees').success(function (data) {
                             this.selectOptions.employees = data;
                         });
                     },
@@ -344,7 +331,7 @@
                                 searchField: 'value',
                                 options: data,
                                 create: function (input, callback) {
-                                    self.$http.post(ROOT_URL + "/values", {
+                                    self.$http.post(ROOT_URL + '/values', {
                                         idAttribute: self.newArticleModal.selectAttr[0].selectize.getValue(),
                                         idArticlesCategory: self.newArticleModal.articleCategory.idArticlesCategory,
                                         value: input
@@ -370,7 +357,7 @@
                         var self = this;
                         this.$http.get(
                                 ROOT_URL +
-                                "/values?idAttribute=" +
+                                '/values?idAttribute=' +
                                 self.editModal.selectAttr[0].selectize.getValue() +
                                 '&idArticlesCategory=' +
                                 self.editModal.article.article.articlesCategories.idArticlesCategory
@@ -387,7 +374,7 @@
                                 searchField: 'value',
                                 options: data,
                                 create: function (input, callback) {
-                                    self.$http.post(ROOT_URL + "/values", {
+                                    self.$http.post(ROOT_URL + '/values', {
                                         idAttribute: self.editModal.selectAttr[0].selectize.getValue(),
                                         idArticlesCategory: self.editModal.article.article.articlesCategories.idArticlesCategory,
                                         value: input
@@ -421,7 +408,7 @@
                     },
                     removeProperty: function (article, property) {
                         this.isSaving = true;
-                        this.$http.delete(ROOT_URL + "/stock/properties/" + property.idProperty).success(function () {
+                        this.$http.delete(ROOT_URL + '/stock/properties/' + property.idProperty).success(function () {
                             this.fetchStockProperties(article);
                             this.editModal.attributes.push(property.attributesArticles.attributes);
                             this.fetchAttributesEditModal(article);
@@ -429,7 +416,7 @@
                             this.isSaving = false;
                         }).error(function () {
                             this.isSaving = false;
-                            showAlert("No se pudo elimnar la propiedad, intente nuevamente", {type:3});
+                            showAlert('No se pudo elimnar la propiedad, intente nuevamente', {type:3});
                         });
                     },
                     removePropertyNewArticle: function (property) {
@@ -448,8 +435,8 @@
                         this.fetchNewArticleModalValues();
                     },
                     addProperties: function (idStock,properties) {
-                        this.$http.post(ROOT_URL + "/stock/" + idStock + "/properties", JSON.stringify(properties)).success(function (data) {
-                            showAlert("Articulo guardado");
+                        this.$http.post(ROOT_URL + '/stock/' + idStock + '/properties', JSON.stringify(properties)).success(function (data) {
+                            showAlert('Articulo guardado');
                             this.saved = true;
                             this.getStocks();
                             this.doNotSeeAssignView();
@@ -458,7 +445,7 @@
                             this.isSaving = false;
                         }).error(function (data) {
                             this.isSaving = false;
-                            showAlert("No se pudo guardar el artículo", {type:3})
+                            showAlert('No se pudo guardar el artículo', {type:3})
                         });
                     },
                     addProperty: function (article) {
@@ -483,7 +470,7 @@
 
                         this.$http.post
                         (
-                                ROOT_URL + "/stock/" + article.idStock + "/properties",
+                                ROOT_URL + '/stock/' + article.idStock + '/properties',
                                 property
                         ).success(function (data) {
                             this.fetchStockProperties(article);
@@ -501,7 +488,7 @@
                             this.editModal.attribute = '';
                             this.editModal.value = '';
                             this.isSaving = false;
-                            showAlert("No se pudo agregar la propiedad, intente nuevamente", {type:3})
+                            showAlert('No se pudo agregar la propiedad, intente nuevamente', {type:3})
                         });
                     },
                     addPropertyNewArticle: function () {
@@ -555,7 +542,7 @@
                     uploadFilesAssignments: function (article,formData) {
                         this.isSaving = true;
                         this.$http.post(
-                                ROOT_URL + "/stock/" + article.idStock + "/attachments",
+                                ROOT_URL + '/stock/' + article.idStock + '/attachments',
                                 formData
                         ).success(function (data)
                         {
@@ -573,7 +560,7 @@
                     validateFile: function (event) {
                         if (! event.target.files[0].name.match(/(\.jpg|\.jpeg|\.pdf|\.png)$/i)) {
                             event.target.value = null;
-                            showAlert("Tipo de archivo no admitido", {type:3});
+                            showAlert('Tipo de archivo no admitido', {type:3});
                         }
                         if (event.target.name == 'file-type-4' && event.target.files[0] != null) {
                             this.selectedInvoiceNumber = true;
@@ -585,7 +572,7 @@
                         this.fetchStockAssignmentsRecord(article);
                         this.fetchStockDocuments(article);
                         this.fetchStockDocumentsRecord(article);
-                        $("#historicalModal").modal("show");
+                        $('#historicalModal').modal('show');
                     },
                     showEditArticleModal: function (article) {
                         this.editModal.article = article;
@@ -594,27 +581,27 @@
                         this.editModal.articleStatus = article.articleStatus;
                         this.fetchAttributesEditModal(article);
                         this.fetchEmployees(article.idDwEnterprises);
-                        $("#editModal").modal("show");
+                        $('#editModal').modal('show');
                     },
                     showAssignmentsModal: function (article) {
                         this.assignmentsModal.article = article;
                         this.dwEmployees = null;
-                        $("#assignmentsModal").modal("show");
+                        $('#assignmentsModal').modal('show');
                     },
                     closeEditModal: function () {
-                        $("#editModal").modal("hide");
+                        $('#editModal').modal('hide');
                     },
                     closeHistoricalModal: function () {
-                        $("#historicalModal").modal("hide");
+                        $('#historicalModal').modal('hide');
                     },
                     closeAssignmentsModal: function () {
-                        document.getElementById("attachments-form").reset();
+                        document.getElementById('attachments-form').reset();
                         this.selectedInvoiceNumber = false;
-                        $("#assignmentsModal").modal("hide");
+                        $('#assignmentsModal').modal('hide');
                     },
                     saveStockArticle: function (article) {
                         this.isSaving = true;
-                        this.$http.post(ROOT_URL + "/stock/" + article.idStock, {
+                        this.$http.post(ROOT_URL + '/stock/' + article.idStock, {
                             serialNumber: this.editModal.serialNumber,
                             stockFolio: this.editModal.stockFolio,
                             articleStatus: this.editModal.articleStatus,
@@ -624,7 +611,7 @@
                             article.articleStatus = this.editModal.articleStatus;
                             this.closeEditModal();
                             this.isSaving = false;
-                            showAlert("Articulo modificado con exito", {type: 1});
+                            showAlert('Articulo modificado con exito', {type: 1});
                         }).error(function (data) {
                             this.isSaving = false;
                             showAlert(data.error.message, {type: 3});
@@ -634,12 +621,10 @@
                         this.isSaving = true;
                         var form = document.getElementById('newArticleFrom');
                         var formData = new FormData(form);
-                        this.$http.post(ROOT_URL + "/stock", formData).success(function (data) {
+                        this.$http.post(ROOT_URL + '/stock', formData).success(function (data) {
                             this.addProperties(data.idStock,properties);
                             this.selectedOptions.distributor = null;
-                            this.selectedOptions.region = null;
                             this.selectedOptions.branch = null;
-                            this.selectedOptions.zona = null;
                             this.selectedOptions.area = null;
                             this.selectedOptions.dwEmployee = null;
                             this.dwEmployees = null;
@@ -658,11 +643,11 @@
                             idDwEnterprise = this.selectedOptions.dwEmployee.idDwEnterprise
                         } else {
                             idEmployee = 0;
-                            idDwEnterprise = this.dwEmployees[0].idDwEnterprise;
+                            idDwEnterprise = this.dwEnterprises[0].idDwEnterprise;
                         }
 
                         this.$http.post(
-                                ROOT_URL + "/stock/" + article.idStock + "/assignments/" + idEmployee,
+                                ROOT_URL + '/stock/' + article.idStock + '/assignments/' + idEmployee,
                                 {
                                     idDwEnterprise: idDwEnterprise,
                                     invoiceNumber:this.invoiceNumber
@@ -672,19 +657,15 @@
                             this.saved = true;
                             this.getStocks();
                             this.selectedOptions.distributor = null;
-                            this.selectedOptions.region = null;
                             this.selectedOptions.branch = null;
-                            this.selectedOptions.zona = null;
                             this.selectedOptions.area = null;
                             this.selectedOptions.dwEmployee = null;
                             this.dwEmployees = null;
-                            showAlert("Asignación exitosa");
+                            showAlert('Asignación exitosa');
                         }).error(function (data) {
                             this.isSaving = false;
                             this.selectedOptions.distributor = null;
-                            this.selectedOptions.region = null;
                             this.selectedOptions.branch = null;
-                            this.selectedOptions.zona = null;
                             this.selectedOptions.area = null;
                             this.selectedOptions.dwEmployee = null;
                             this.dwEmployees = null;
@@ -692,10 +673,10 @@
                         })
                     },
                     onSaveAssignmentsModal : function (article) {
-                        if (this.selectedOptions.area == null) {
-                            showAlert("Distribudor, region, sucursal y area son requeridos", {type:3});
-                            return;
-                        }
+//                        if (this.selectedOptions.area == null) {
+//                            showAlert('Distribudor, sucursal y area son requeridos', {type:3});
+//                            return;
+//                        }
 
                         var form = document.getElementById('attachments-form');
                         var formData = new FormData(form);
@@ -706,26 +687,26 @@
                     },
                     showNewArticleModal: function () {
                         this.dwEmployees = null;
-                        $("#newArticleModal").modal("show");
+                        $('#newArticleModal').modal('show');
                     },
                     closeNewArticleModal: function () {
                         this.resetFromArticleCategory();
-                        $("#newArticleModal").modal("hide");
+                        $('#newArticleModal').modal('hide');
                     },
                     showAttachmentsModal: function (article) {
                         this.attachmentsModal.article = article;
                         this.fetchStockDocumentsRecord(article);
-                        $("#attachmentsModal").modal("show");
+                        $('#attachmentsModal').modal('show');
                     },
                     closeAttachmentsModal: function () {
-                        document.getElementById("attachments-form2").reset();
-                        $("#attachmentsModal").modal("hide");
+                        document.getElementById('attachments-form2').reset();
+                        $('#attachmentsModal').modal('hide');
                     },
                     uploadAttachments: function (article) {
                         this.isSaving = true;
-                        var form = document.getElementById("attachments-form2");
-                        this.$http.post(ROOT_URL + "/stock/" + article.idStock + "/attachments", new FormData(form)).success(function () {
-                            showAlert("Registro exitoso");
+                        var form = document.getElementById('attachments-form2');
+                        this.$http.post(ROOT_URL + '/stock/' + article.idStock + '/attachments', new FormData(form)).success(function () {
+                            showAlert('Registro exitoso');
                             form.reset();
                             this.closeAttachmentsModal();
                             this.fetchStockDocuments(article);
@@ -758,11 +739,6 @@
                         });
                     },
                     selectedOptionsDistributorChanged: function () {
-                        this.selectedOptions.region = this.defaultRegion;
-                        this.selectedOptions.branch = this.defaultBranch;
-                        this.selectedOptions.area = this.defaultArea;
-                    },
-                    selectedOptionsRegionChanged: function () {
                         this.selectedOptions.branch = this.defaultBranch;
                         this.selectedOptions.area = this.defaultArea;
                     },
@@ -776,7 +752,7 @@
 
                         } else {
                             this.buildArticle(article);
-                            Vue.set(article, "isCollapsed", true);
+                            Vue.set(article, 'isCollapsed', true);
 
                         }
                     },
@@ -787,10 +763,9 @@
                         this.newArticleModal.purchaseDate = '';
                         this.selectedOptions.area = null;
                         this.selectedOptions.distributor = null;
-                        this.selectedOptions.region = null;
                         this.selectedOptions.branch = null;
                         this.selectedOptions.dwEmployees = null;
-                        $("input:file").val('');
+                        $('input:file').val('');
                     },
                     resetFromArticleCategory:function () {
                         this.newArticleModal.idArticle = '';
@@ -800,143 +775,77 @@
                         this.newArticleModal.purchaseDate = '';
                         this.selectedOptions.area = null;
                         this.selectedOptions.distributor = null;
-                        this.selectedOptions.region = null;
                         this.selectedOptions.branch = null;
                         this.selectedOptions.dwEmployees = null;
-                        $("input:file").val('');
+                        $('input:file').val('');
                     },
                     getDistributors: function () {
-                        this.$http.get(ROOT_URL + "/distributors?forStock=true").success(function (data) {
+                        this.$http.get(ROOT_URL + '/distributors?forStock=true').success(function (data) {
                             this.distributors = data;
                         });
                     },
-                    getRegionByDistributor: function (idDistributor) {
-                        //this.isThereItems = false;
+                    getAreasByDistributor: function (idDistributor) {
                         var self = this;
-                        this.$http.get(ROOT_URL + "/dw-enterprises/distributor-region/"+idDistributor).success(function (data) {
-                            this.regions = [];
+                        this.$http.get(ROOT_URL + '/dw-enterprises?idDistributor='+idDistributor).success(function (data) {
+                            this.areas = [];
                             var index;
-                            data.forEach(function (region) {
-                                index =  self.arrayObjectIndexOf(self.regions,region.idRegion,'idRegion');
-                                if(index == -1) self.regions.push(region);
-                            });
-
-                        }).error(function () {
-                            showAlert("No existen regiones para esa compañía", {type : 3});
-                        });
-                    },
-                    getZonaByDistributorAndRegion: function (idDistributor, idRegion) {
-                        var self = this;
-                        this.$http.get(ROOT_URL + "/dw-enterprises/distributor-region-zona/"+idDistributor+"/"+idRegion).success(function (data) {
-                            this.zonas = [];
-                            var index;
-                            data.forEach(function (zona) {
-                                index =  self.arrayObjectIndexOf(self.zonas,zona.idZonas,'idZonas');
-                                if(index == -1) self.zonas.push(zona);
+                            data.forEach(function (dwEnterprise) {
+                                index =  self.arrayObjectIndexOf(self.areas,dwEnterprise.area.idArea,'idArea');
+                                if(index == -1) self.areas.push(dwEnterprise.area);
                             });
                         }).error(function () {
-                            showAlert("No existen zonas para esa compañía y región ", {type : 3});
+                            showAlert('No existen areas para esa compañia', {type : 3});
                         });
                     },
-                    getBranchByDistributorAndRegionAndZona: function (idDistributor, idRegion, idZona) {
+                    getBranchsByDistributorAndArea : function (idDistributor, idArea) {
                         var self = this;
-                        this.$http.get(ROOT_URL + "/dw-enterprises/distributor-region-zona-branch/"+idDistributor+"/"+idRegion+"/"+idZona).success(function (data) {
+                        this.$http.get(ROOT_URL + '/dw-enterprises?idDistributor=' + idDistributor + '&idArea=' + idArea).success(function (data) {
                             this.branchs = [];
                             var index;
-                            data.forEach(function (branch) {
-                                index =  self.arrayObjectIndexOf(self.branchs,branch.idBranch,'idBranch');
-                                if(index == -1) self.branchs.push(branch);
+                            data.forEach(function (dwEnterprise) {
+                                index =  self.arrayObjectIndexOf(self.branchs,dwEnterprise.branch.idBranch,'idBranch');
+                                if(index == -1) self.branchs.push(dwEnterprise.branch);
                             });
-                        }).error(function () {
-                            showAlert("No existen sucursales para esa compañía, región y zona", {type : 3});
                         });
                     },
-                    getAreaByBranch: function (idBranch) {
-                        this.areas = [];
-                        var self = this;
-                        this.$http.get(ROOT_URL + "/dw-enterprises/branch-area/"+idBranch).success(function (data) {
-                            this.areas = [];
-                            var index;
-                            data.forEach(function (area) {
-                                index =  self.arrayObjectIndexOf(self.areas,area.idArea,'idArea');
-                                if(index == -1) self.areas.push(area);
-                            });
-                        }).error(function () {
-                            showAlert("No existen areas para esa compañìa, regiòn, zona y sucursal", {type : 3});
-                        });
-                    },
-                    getAreaByDistributor: function (idDistributor) {
-                        var self = this;
-                        this.$http.get(ROOT_URL + "/dw-enterprises/distributor-area/"+idDistributor).success(function (data) {
-                            this.areas = [];
-                            var index;
-                            data.forEach(function (area) {
-                                index =  self.arrayObjectIndexOf(self.areas,area.idArea,'idArea');
-                                if(index == -1) self.areas.push(area);
-                            });
-                        }).error(function () {
-                            showAlert("No existen areas para esa compañia", {type : 3});
-                        });
-                    },
-                    getDwEmployees : function (idDistributor, idRegion, idZona, idBranch, idArea) {
+                    getDwEmployees : function (idDistributor, idBranch, idArea) {
                         this.$http.get(
                                 ROOT_URL + '/dw-employees?idDistributor=' + idDistributor +
-                                '&idRegion=' + idRegion + '&idZona=' + idZona +
                                 '&idBranch=' + idBranch + '&idArea=' + idArea
                         ).success(function (data) {
                             this.dwEmployees = data;
-                        }).error(function (data) {
-
+                        });
+                    },
+                    getDwEnterprises : function (idDistributor, idBranch, idArea) {
+                        this.$http.get(
+                                ROOT_URL + '/dw-enterprises?idDistributor=' + idDistributor +
+                                '&idBranch=' + idBranch + '&idArea=' + idArea
+                        ).success(function (data) {
+                            this.dwEnterprises = data;
+                            this.getDwEmployees(idDistributor, idBranch, idArea)
                         });
                     },
                     distributorChanged: function () {
-                        this.searchSelectedOptions.region = this.defaultRegion;
-                        this.searchSelectedOptions.zona = this.defaultZona;
+                        this.searchSelectedOptions.area = this.defaultArea;
                         this.searchSelectedOptions.branch = this.defaultBranch;
-                        this.searchSelectedOptions.area = this.defaultArea;
-                        this.getAreaByDistributor(this.searchSelectedOptions.distributor.idDistributor);
-                        this.getRegionByDistributor(this.searchSelectedOptions.distributor.idDistributor);
+                        this.getAreasByDistributor(this.searchSelectedOptions.distributor.idDistributor);
                     },
-                    regionChanged: function () {
-                        this.searchSelectedOptions.zona = this.defaultZona;
+                    areaChanged: function () {
                         this.searchSelectedOptions.branch = this.defaultBranch;
-                        this.searchSelectedOptions.area = this.defaultArea;
-                        this.getZonaByDistributorAndRegion(this.searchSelectedOptions.distributor.idDistributor, this.searchSelectedOptions.region.idRegion);
-                    },
-                    zonaChanged: function () {
-                        this.searchSelectedOptions.branch = this.defaultBranch;
-                        this.searchSelectedOptions.area = this.defaultArea;
-                        this.getBranchByDistributorAndRegionAndZona(this.searchSelectedOptions.distributor.idDistributor,  this.searchSelectedOptions.region.idRegion, this.searchSelectedOptions.zona.idZonas);
-                    },
-                    branchChanged: function () {
-                        this.searchSelectedOptions.area = this.defaultArea;
-                        this.getAreaByBranch(this.searchSelectedOptions.branch.idBranch);
+                        this.getBranchsByDistributorAndArea(this.searchSelectedOptions.distributor.idDistributor, this.searchSelectedOptions.area.idArea);
                     },
                     modalDistributorChanged: function () {
-                        this.selectedOptions.region = null;
-                        this.selectedOptions.zona = null;
+                        this.selectedOptions.area = null;
                         this.selectedOptions.branch = null;
-                        this.selectedOptions.area = null;
-                        this.getRegionByDistributor(this.selectedOptions.distributor.idDistributor);
+                        this.getAreasByDistributor(this.selectedOptions.distributor.idDistributor);
                     },
-                    modalRegionChanged: function () {
-                        this.selectedOptions.zona = null;
+                    modalAreaChanged: function (idDistributor, idBranch, idArea) {
                         this.selectedOptions.branch = null;
-                        this.selectedOptions.area = null;
-                        this.getZonaByDistributorAndRegion(this.selectedOptions.distributor.idDistributor, this.selectedOptions.region.idRegion);
+                        this.getBranchsByDistributorAndArea(this.selectedOptions.distributor.idDistributor, this.selectedOptions.area.idArea);
                     },
-                    modalZonaChanged: function () {
-                        this.selectedOptions.branch = null;
-                        this.selectedOptions.area = null;
-                        this.getBranchByDistributorAndRegionAndZona(this.selectedOptions.distributor.idDistributor,  this.selectedOptions.region.idRegion, this.selectedOptions.zona.idZonas);
-                    },
-                    modalBranchChanged: function () {
-                        this.selectedOptions.area = null;
-                        this.getAreaByBranch(this.selectedOptions.branch.idBranch);
-                    },
-                    modalAreaChanged: function (idDistributor, idRegion, idZona, idBranch, idArea) {
+                    modalBranchChanged: function (idDistributor, idBranch, idArea) {
                         this.dwEmployees = null;
-                        this.getDwEmployees(idDistributor, idRegion, idZona, idBranch, idArea);
+                        this.getDwEnterprises(idDistributor, idBranch, idArea);
                     },
                     setSearchUrl:function () {
                         this.searchUrl = ROOT_URL + '/stock';
@@ -946,25 +855,15 @@
                             this.searchUrl += 'idDistributor=' +
                                     this.searchSelectedOptions.distributor.idDistributor;
                         }
-                        if (this.searchSelectedOptions.region.idRegion != 0) {
+                        if (this.searchSelectedOptions.area.idArea != 0) {
                             this.searchUrl = this.setSearchUrlCharacters(this.searchUrl);
-                            this.searchUrl += 'idRegion=' +
-                                    this.searchSelectedOptions.region.idRegion;
-                        }
-                        if (this.searchSelectedOptions.zona.idZonas != 0) {
-                            this.searchUrl = this.setSearchUrlCharacters(this.searchUrl);
-                            this.searchUrl += 'idZona=' +
-                                    this.searchSelectedOptions.zona.idZonas;
+                            this.searchUrl += 'idArea=' +
+                                    this.searchSelectedOptions.area.idArea;
                         }
                         if (this.searchSelectedOptions.branch.idBranch != 0) {
                             this.searchUrl = this.setSearchUrlCharacters(this.searchUrl);
                             this.searchUrl += 'idBranch=' +
                                     this.searchSelectedOptions.branch.idBranch;
-                        }
-                        if (this.searchSelectedOptions.area.idArea != 0) {
-                            this.searchUrl = this.setSearchUrlCharacters(this.searchUrl);
-                            this.searchUrl += 'idArea=' +
-                                    this.searchSelectedOptions.area.idArea;
                         }
 
                     },
@@ -1019,7 +918,7 @@
             <div class="col-xs-12">
                 <hr size="30" style="border-top: 1px solid #ccc;">
                 <form v-on:submit.prevent="getStocks">
-                    <div class="col-xs-2">
+                    <div class="col-xs-3">
                         <label>Distribuidor</label>
                         <select v-model="searchSelectedOptions.distributor" class="form-control"
                                 @change="distributorChanged">
@@ -1030,40 +929,7 @@
                             </option>
                         </select>
                     </div>
-                    <div class="col-xs-2">
-                        <label>Región</label>
-                        <select v-model="searchSelectedOptions.region" class="form-control"
-                                @change="regionChanged" :disabled="searchSelectedOptions.distributor.idDistributor == 0">
-                            <option selected :value="defaultRegion">{{defaultRegion.name}}</option>
-                            <option v-for="region in regions"
-                                    :value="region">
-                                {{ region.regionName }}
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-xs-2">
-                        <label>Zona</label>
-                        <select v-model="searchSelectedOptions.zona" class="form-control"
-                                @change="zonaChanged" :disabled="searchSelectedOptions.region.idRegion == 0">
-                            <option selected :value="defaultZona">{{defaultZona.name}}</option>
-                            <option v-for="zona in zonas"
-                                    :value="zona">
-                                {{ zona.name }}
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-xs-2">
-                        <label>Sucursal</label>
-                        <select v-model="searchSelectedOptions.branch" class="form-control"
-                                @change="branchChanged" :disabled="searchSelectedOptions.zona.idZonas == 0">
-                            <option selected :value="defaultBranch">{{defaultBranch.name}}</option>
-                            <option v-for="branch in branchs"
-                                    :value="branch">
-                                {{ branch.branchShort }}
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-xs-2">
+                    <div class="col-xs-3">
                         <label>Área</label>
                         <select v-model="searchSelectedOptions.area" class="form-control"
                                 @change="areaChanged" :disabled="searchSelectedOptions.distributor.idDistributor == 0">
@@ -1071,6 +937,17 @@
                             <option v-for="area in areas"
                                     :value="area">
                                 {{ area.areaName }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-xs-3">
+                        <label>Sucursal</label>
+                        <select v-model="searchSelectedOptions.branch" class="form-control"
+                                @change="branchChanged" :disabled="searchSelectedOptions.area.idArea == 0">
+                            <option selected :value="defaultBranch">{{defaultBranch.name}}</option>
+                            <option v-for="branch in branchs"
+                                    :value="branch">
+                                {{ branch.branchShort }}
                             </option>
                         </select>
                     </div>
@@ -1088,7 +965,7 @@
                 <div v-for="stock in stockGroups | filterBy stockFilter">
                     <div class="text-center col-xs-12">
                         <h4>
-                            {{ stock[0].dwEnterprises.distributor.distributorName }} - {{ stock[0].dwEnterprises.region.regionName }} - {{ stock[0].dwEnterprises.zona.name }} - {{ stock[0].dwEnterprises.branch.branchShort }} - {{ stock[0].dwEnterprises.area.areaName }}
+                            {{ stock[0].dwEnterprises.distributor.distributorName }} - {{ stock[0].dwEnterprises.branch.branchShort }} - {{ stock[0].dwEnterprises.area.areaName }}
                         </h4>
                     </div>
                     <div class="col-xs-12 panel-group">
@@ -1439,7 +1316,7 @@
                                     <h4>Asignar a</h4>
                                     <hr>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <label>Distribuidor</label>
                                     <select v-model="selectedOptions.distributor" class="form-control"
                                             @change="modalDistributorChanged">
@@ -1449,51 +1326,31 @@
                                         </option>
                                     </select>
                                 </div>
-                                <div class="col-md-2">
-                                    <label>Región</label>
-                                    <select v-model="selectedOptions.region" class="form-control"
-                                            @change="modalRegionChanged" :disabled="selectedOptions.distributor == null">
-                                        <option v-for="region in regions"
-                                                :value="region">
-                                            {{ region.regionName }}
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="col-md-2">
-                                    <label>Zona</label>
-                                    <select v-model="selectedOptions.zona" class="form-control"
-                                            @change="modalZonaChanged" :disabled="selectedOptions.region == null">
-                                        <option v-for="zona in zonas"
-                                                :value="zona">
-                                            {{ zona.name }}
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="col-md-2">
-                                    <label>Sucursal</label>
-                                    <select v-model="selectedOptions.branch" class="form-control"
-                                            @change="modalBranchChanged" :disabled="selectedOptions.zona == null">
-                                        <option v-for="branch in branchs"
-                                                :value="branch">
-                                            {{ branch.branchShort }}
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3">
                                     <label>Área</label>
                                     <select v-model="selectedOptions.area" class="form-control"
-                                            @change="modalAreaChanged(selectedOptions.distributor.idDistributor, selectedOptions.region.idRegion, selectedOptions.zona.idZonas, selectedOptions.branch.idBranch, selectedOptions.area.idArea)"
-                                            :disabled="selectedOptions.branch == null">
+                                            @change="modalAreaChanged"
+                                            :disabled="selectedOptions.distributor == null">
                                         <option v-for="area in areas"
                                                 :value="area">
                                             {{ area.areaName }}
                                         </option>
                                     </select>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-3">
+                                    <label>Sucursal</label>
+                                    <select v-model="selectedOptions.branch" class="form-control"
+                                            @change="modalBranchChanged(selectedOptions.distributor.idDistributor, selectedOptions.branch.idBranch, selectedOptions.area.idArea)" :disabled="selectedOptions.area == null">
+                                        <option v-for="branch in branchs"
+                                                :value="branch">
+                                            {{ branch.branchShort }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
                                     <label>Empleado</label>
                                     <select v-model="selectedOptions.dwEmployee" class="form-control"
-                                            :disabled="selectedOptions.area == null">
+                                            :disabled="selectedOptions.branch == null">
                                         <option :value=null>
                                             SIN ASIGNACIÓN
                                         </option>
@@ -1743,7 +1600,7 @@
                                                 <h4>Asignar a</h4>
                                                 <hr>
                                             </div>
-                                            <div class="col-md-2">
+                                            <div class="col-md-3">
                                                 <label>Distribuidor</label>
                                                 <select v-model="selectedOptions.distributor" class="form-control"
                                                         @change="modalDistributorChanged">
@@ -1753,51 +1610,31 @@
                                                     </option>
                                                 </select>
                                             </div>
-                                            <div class="col-md-2">
-                                                <label>Región</label>
-                                                <select v-model="selectedOptions.region" class="form-control"
-                                                        @change="modalRegionChanged" :disabled="selectedOptions.distributor == null">
-                                                    <option v-for="region in regions"
-                                                            :value="region">
-                                                        {{ region.regionName }}
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <label>Zona</label>
-                                                <select v-model="selectedOptions.zona" class="form-control"
-                                                        @change="modalZonaChanged" :disabled="selectedOptions.region == null">
-                                                    <option v-for="zona in zonas"
-                                                            :value="zona">
-                                                        {{ zona.name }}
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <label>Sucursal</label>
-                                                <select v-model="selectedOptions.branch" class="form-control"
-                                                        @change="modalBranchChanged" :disabled="selectedOptions.zona == null">
-                                                    <option v-for="branch in branchs"
-                                                            :value="branch">
-                                                        {{ branch.branchShort }}
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-2">
+                                            <div class="col-md-3">
                                                 <label>Área</label>
                                                 <select v-model="selectedOptions.area" class="form-control"
-                                                        @change="modalAreaChanged(selectedOptions.distributor.idDistributor, selectedOptions.region.idRegion, selectedOptions.zona.idZonas, selectedOptions.branch.idBranch, selectedOptions.area.idArea)"
-                                                        :disabled="selectedOptions.branch == null">
+                                                        @change="modalAreaChanged"
+                                                        :disabled="selectedOptions.distributor == null">
                                                     <option v-for="area in areas"
                                                             :value="area">
                                                         {{ area.areaName }}
                                                     </option>
                                                 </select>
                                             </div>
-                                            <div class="col-md-2">
+                                            <div class="col-md-3">
+                                                <label>Sucursal</label>
+                                                <select v-model="selectedOptions.branch" class="form-control"
+                                                        @change="modalBranchChanged(selectedOptions.distributor.idDistributor, selectedOptions.branch.idBranch, selectedOptions.area.idArea)" :disabled="selectedOptions.area == null">
+                                                    <option v-for="branch in branchs"
+                                                            :value="branch">
+                                                        {{ branch.branchShort }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-3">
                                                 <label>Empleado</label>
                                                 <select v-model="selectedOptions.dwEmployee" class="form-control"
-                                                        :disabled="selectedOptions.area == null">
+                                                        :disabled="selectedOptions.branch == null">
                                                     <option :value=null>
                                                         SIN ASIGNACIÓN
                                                     </option>

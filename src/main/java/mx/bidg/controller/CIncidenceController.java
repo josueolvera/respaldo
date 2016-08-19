@@ -28,7 +28,8 @@ public class CIncidenceController {
     @Autowired
     private CIncidenceService cIncidenceService;
 
-    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(value = "/category/{idTicketCategory}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findAll(@PathVariable int idTicketCategory) throws IOException {

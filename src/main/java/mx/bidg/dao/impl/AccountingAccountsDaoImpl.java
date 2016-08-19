@@ -16,6 +16,7 @@ import org.hibernate.criterion.Projections;
  * Created on 6/06/16.
  */
 @Repository
+@SuppressWarnings("unchecked")
 public class AccountingAccountsDaoImpl extends AbstractDao<Integer, AccountingAccounts> implements AccountingAccountsDao {
     @Override
     public AccountingAccounts findByThreeLevels(Integer firstLevel, Integer secondLevel, Integer thirdLevel) {
@@ -41,7 +42,9 @@ public class AccountingAccountsDaoImpl extends AbstractDao<Integer, AccountingAc
 
     @Override
     public List<AccountingAccounts> findAll() {
-        return createEntityCriteria().addOrder(Order.asc("firstLevel")).addOrder(Order.asc("secondLevel")).addOrder(Order.asc("thirdLevel"))
+        return createEntityCriteria().addOrder(Order.asc("firstLevel"))
+                .addOrder(Order.asc("secondLevel"))
+                .addOrder(Order.asc("thirdLevel"))
                 .list();
     }
 
@@ -61,6 +64,13 @@ public class AccountingAccountsDaoImpl extends AbstractDao<Integer, AccountingAc
         return createEntityCriteria()
                 .add(Restrictions.eq("isOfRequest", 1))
                 .setProjection(Projections.distinct(Projections.property("budgetCategory")))
+                .list();
+    }
+
+    @Override
+    public List<AccountingAccounts> findByBudgetCategory(Integer idBudgetCategory) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idBudgetCategory",idBudgetCategory))
                 .list();
     }
 }

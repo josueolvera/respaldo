@@ -38,7 +38,8 @@ public class CEmployeeDocumentsTypesController {
     @Autowired
     DistributorsEmployeeDocumentsService distributorsEmployeeDocumentsService;
 
-    ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findAll() throws Exception{
@@ -53,9 +54,15 @@ public class CEmployeeDocumentsTypesController {
     }
 
     @RequestMapping(value = "/{idBranch}/{idArea}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findByDistributor(@PathVariable Integer idBranch, @PathVariable Integer idArea) throws IOException{
+    public ResponseEntity<String> findByBranchAndArea(@PathVariable Integer idBranch, @PathVariable Integer idArea) throws IOException{
         DwEnterprises dwEnterprise = dwEnterprisesService.findByBranchAndArea(idBranch,idArea);
         List<DitributorsEmployeeDocuments> distributorsDocuments = distributorsEmployeeDocumentsService.findByDistributor(dwEnterprise.getIdDistributor());
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(distributorsDocuments), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{idDistributor}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public  ResponseEntity<String> findByDistributor (@PathVariable Integer idDistributor) throws IOException{
+        List<DitributorsEmployeeDocuments> documentsList = distributorsEmployeeDocumentsService.findByDistributor(idDistributor);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(documentsList), HttpStatus.OK);
     }
 }

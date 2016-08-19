@@ -20,13 +20,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class CRegionsController {
     @Autowired
     CRegionsService cRegionsService;
-    
-    ObjectMapper map = new ObjectMapper();
+
+    @Autowired
+    private ObjectMapper mapper;
     
     @RequestMapping(produces = "application/json;charset=UTF-8")
     public @ResponseBody String getRegions() throws Exception {
         List<CRegions> list = cRegionsService.findAll();
-        return map.writerWithView(JsonViews.Root.class).writeValueAsString(list);
+        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(list);
     }
     
 }

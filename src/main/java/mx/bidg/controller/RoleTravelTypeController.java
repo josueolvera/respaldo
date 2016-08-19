@@ -26,7 +26,8 @@ public class RoleTravelTypeController {
     @Autowired
     private RoleTravelTypeService roleTravelTypeService;
 
-    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(value = "/role/{idRole}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findByIdRole(@PathVariable Integer idRole) throws Exception {

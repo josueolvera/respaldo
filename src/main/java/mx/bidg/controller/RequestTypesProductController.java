@@ -36,8 +36,9 @@ public class RequestTypesProductController {
     
     @Autowired
     RequestTypesProductService requestTypesProductService;
-    
-    ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+
+    @Autowired
+    private ObjectMapper mapper;
     
     @RequestMapping(value = "/{idRequestCategory}/{idRequestType}/{idProductType}", produces = "application/json;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> getByCombination(@PathVariable int idRequestCategory, 

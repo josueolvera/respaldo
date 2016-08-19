@@ -125,4 +125,12 @@ public class DwEmployeesDaoImpl extends AbstractDao<Integer, DwEmployees> implem
                 .add(Restrictions.eq("idDwEnterprise",idDwEnterprise))
                 .list();
     }
+
+    @Override
+    public List<DwEmployees> findDwEmployeeByDwEnterpirseAndRole(Integer idDwEnterprise, Integer idRole) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idDwEnterprise", idDwEnterprise))
+                .add(Restrictions.eq("idRole", idRole))
+                .list();
+    }
 }

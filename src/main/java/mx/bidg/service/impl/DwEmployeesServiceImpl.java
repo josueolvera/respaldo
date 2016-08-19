@@ -72,6 +72,9 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     @Autowired
     private  CBranchsDao branchsDao;
 
+    @Autowired
+    private DwEnterprisesService dwEnterprisesService;
+
     @Override
     public DwEmployees findById(Integer id) {
         return dwEmployeesDao.findById(id);
@@ -313,8 +316,42 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
         JsonNode employeeNode = jsonNode.get("dwEmployee").get("employee");
 
         DwEmployees dwEmployee = dwEmployeesDao.findById(jsonNode.get("dwEmployee").get("idDwEmployee").asInt());
-        DwEnterprises dwEnterprise = dwEnterprisesDao.findByBranchAndArea(jsonNode.get("dwEmployee").get("dwEnterprise").get("branch").get("id").asInt(), jsonNode.get("dwEmployee").get("dwEnterprise").get("area").get("id").asInt());
-        CRoles role = cRolesDao.findById(jsonNode.get("dwEmployee").get("dwEnterprise").get("role").get("idRole").asInt());
+
+        List<DwEnterprises> dwEnterprisesList;
+
+        if(jsonNode.get("dwEmployee").get("dwEnterprise").get("distributor").get("idDistributor").asInt() == 2 || jsonNode.get("dwEmployee").get("dwEnterprise").get("distributor").get("idDistributor").asInt() == 3){
+
+            if( jsonNode.get("dwEmployee").get("dwEnterprise").get("zona").get("idZonas").asInt() == 0 && jsonNode.get("dwEmployee").get("dwEnterprise").get("branch").get("idBranch").asInt() == 0){
+
+                dwEnterprisesList = dwEnterprisesService.findByDistributorRegionZonaBranchAndArea(
+                        jsonNode.get("dwEmployee").get("dwEnterprise").get("distributor").get("idDistributor").asInt(),
+                        jsonNode.get("dwEmployee").get("dwEnterprise").get("region").get("idRegion").asInt(),null,null,
+                        jsonNode.get("dwEmployee").get("dwEnterprise").get("area").get("idArea").asInt());
+
+            } else if (jsonNode.get("dwEmployee").get("dwEnterprise").get("branch").get("idBranch").asInt() == 0){
+
+                dwEnterprisesList = dwEnterprisesService.findByDistributorRegionZonaBranchAndArea(
+                        jsonNode.get("dwEmployee").get("dwEnterprise").get("distributor").get("idDistributor").asInt(),
+                        jsonNode.get("dwEmployee").get("dwEnterprise").get("region").get("idRegion").asInt(),
+                        jsonNode.get("dwEmployee").get("dwEnterprise").get("zona").get("idZonas").asInt(),null,
+                        jsonNode.get("dwEmployee").get("dwEnterprise").get("area").get("idArea").asInt());
+
+            } else {
+
+                dwEnterprisesList = dwEnterprisesService.findByDistributorRegionZonaBranchAndArea(
+                        jsonNode.get("dwEmployee").get("dwEnterprise").get("distributor").get("idDistributor").asInt(),
+                        jsonNode.get("dwEmployee").get("dwEnterprise").get("region").get("idRegion").asInt(),
+                        jsonNode.get("dwEmployee").get("dwEnterprise").get("zona").get("idZonas").asInt(),
+                        jsonNode.get("dwEmployee").get("dwEnterprise").get("branch").get("idBranch").asInt(),
+                        jsonNode.get("dwEmployee").get("dwEnterprise").get("area").get("idArea").asInt());
+            }
+        } else {
+            dwEnterprisesList = dwEnterprisesService.findByDistributorRegionZonaBranchAndArea(jsonNode.get("dwEmployee").get("dwEnterprise").get("distributor").get("idDistributor").asInt(),
+                    null,null,jsonNode.get("dwEmployee").get("dwEnterprise").get("branch").get("idBranch").asInt(),
+                    jsonNode.get("dwEmployee").get("dwEnterprise").get("area").get("idArea").asInt());
+        }
+
+        CRoles role = cRolesDao.findById(jsonNode.get("dwEmployee").get("role").get("idRole").asInt());
         Employees employee = employeesDao.findById(employeeNode.get("idEmployee").asInt());
 
         LocalDateTime joinDate = LocalDateTime.parse(jsonNode.get("dwEmployee").get("employee").get("joinDate").asText() + " 00:00",formatter);
@@ -358,7 +395,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
             employee.setSistarh(employeeNode.get("sistarh").asText());
         }
 
-        dwEmployee.setDwEnterprise(dwEnterprise);
+        dwEmployee.setDwEnterprise(dwEnterprisesList.get(0));
         dwEmployee.setRole(role);
         dwEmployee.setEmployee(employee);
 
@@ -400,5 +437,17 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     public boolean delete(DwEmployees dwEmployees) {
         dwEmployeesDao.delete(dwEmployees);
         return true;
+    }
+
+    @Override
+    public boolean validateExistRole(Integer idDwEnterprise, Integer idRole) {
+        boolean exist = false;
+        List<DwEmployees> dwEmployeesList = dwEmployeesDao.findDwEmployeeByDwEnterpirseAndRole(idDwEnterprise, idRole);
+
+        if (dwEmployeesList.size()>0){
+            exist = true;
+        }
+
+        return exist;
     }
 }

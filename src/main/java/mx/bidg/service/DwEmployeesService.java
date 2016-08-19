@@ -37,4 +37,5 @@ public interface DwEmployeesService {
     DwEmployees findByIdDw(Integer idDwEnterprise);
     DwEmployees update(String data, Users user) throws IOException;
     boolean delete (DwEmployees dwEmployees);
+    boolean validateExistRole (Integer idDwEnterprise, Integer idRole);
 }

@@ -32,7 +32,8 @@ public class PlaneTicketsController {
     @Autowired
     private RequestPlaneTicketEmailNotificationService requestPlaneTicketEmailNotificationService;
 
-    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> save(@RequestBody String data, HttpSession httpSession) throws Exception {

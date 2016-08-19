@@ -5,6 +5,7 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -41,11 +42,11 @@ public class CBudgetCategories implements Serializable {
     @Column(name = "BUDGET_CATEGORY")
     @JsonView(JsonViews.Root.class)
     private String budgetCategory;
-    
+
+    @JsonIgnore
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE", updatable = false)
-    @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
     

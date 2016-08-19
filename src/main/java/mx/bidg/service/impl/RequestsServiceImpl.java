@@ -64,13 +64,14 @@ public class RequestsServiceImpl implements RequestsService {
 
     @Autowired
     private EmailTemplatesService emailTemplatesService;
-    
-    ObjectMapper map = new ObjectMapper();
+
+    @Autowired
+    private ObjectMapper mapper;
     
     @Override
     public HashMap<String, Object> getBudgetMonthProductType(String data) throws Exception {
         
-        JsonNode jsonRequest = map.readTree(data);
+        JsonNode jsonRequest = mapper.readTree(data);
         HashMap<String, Object> hashMap = new HashMap<>();
   /*      
         CRequestsCategories cRequestsCategory = cRequestCategoriesDao
@@ -123,7 +124,7 @@ public class RequestsServiceImpl implements RequestsService {
     @Override
     public Requests saveData(String data, Users user) throws Exception {
         
-        JsonNode jsonRequest = map.readTree(data);        
+        JsonNode jsonRequest = mapper.readTree(data);        
         Requests request = new Requests();
         request.setDescription(jsonRequest.get("request").get("description").asText());
         request.setPurpose(jsonRequest.get("request").get("purpose").asText());

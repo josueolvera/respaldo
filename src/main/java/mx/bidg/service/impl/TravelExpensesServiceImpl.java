@@ -48,7 +48,8 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
     @Autowired
     BudgetMonthBranchDao budgetMonthBranchDao;
 
-    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
 
     @Override
     public TravelExpenses save(String data, Users user) throws IOException {

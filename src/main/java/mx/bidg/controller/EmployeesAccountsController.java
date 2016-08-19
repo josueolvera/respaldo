@@ -35,8 +35,9 @@ public class EmployeesAccountsController {
     
     @Autowired
     EmployeesAccountsService employeesAccountsService;
-    
-    ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+
+    @Autowired
+    private ObjectMapper mapper;
     
     @RequestMapping(value = "/user/{idUser}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> getByIdUser(@PathVariable int idUser) throws Exception {

@@ -32,8 +32,9 @@ public class PeriodicPaymentsServiceImpl implements PeriodicPaymentsService {
     
     @Autowired
     RequestsDao requestsDao;
-    
-    ObjectMapper mapper = new ObjectMapper();
+
+    @Autowired
+    private ObjectMapper mapper;
 
     @Override
     public PeriodicsPayments saveData(String data) throws Exception {

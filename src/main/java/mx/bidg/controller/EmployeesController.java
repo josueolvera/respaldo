@@ -190,7 +190,42 @@ public class EmployeesController {
         DwEmployees dwEmployees = new DwEmployees();
 
         dwEmployees.setEmployee(employee);
-        dwEmployees.setDwEnterprise(dwEnterprisesService.findByBranchAndArea(jnode.get("dwEmployees").get("branch").get("id").asInt(), jnode.get("dwEmployees").get("area").get("id").asInt()));
+
+        List<DwEnterprises> dwEnterprisesList;
+
+        if(jnode.get("dwEmployees").get("distributor").get("idDistributor").asInt() == 2 || jnode.get("dwEmployees").get("distributor").get("idDistributor").asInt() == 3){
+
+            if( jnode.get("dwEmployees").get("zona").get("idZonas").asInt() == 0 && jnode.get("dwEmployees").get("branch").get("idBranch").asInt() == 0){
+
+                dwEnterprisesList = dwEnterprisesService.findByDistributorRegionZonaBranchAndArea(
+                        jnode.get("dwEmployees").get("distributor").get("idDistributor").asInt(),
+                        jnode.get("dwEmployees").get("region").get("idRegion").asInt(),null,null,
+                        jnode.get("dwEmployees").get("area").get("idArea").asInt());
+
+            } else if (jnode.get("dwEmployees").get("branch").get("idBranch").asInt() == 0){
+
+                dwEnterprisesList = dwEnterprisesService.findByDistributorRegionZonaBranchAndArea(
+                        jnode.get("dwEmployees").get("distributor").get("idDistributor").asInt(),
+                        jnode.get("dwEmployees").get("region").get("idRegion").asInt(),
+                        jnode.get("dwEmployees").get("zona").get("idZonas").asInt(),null,
+                        jnode.get("dwEmployees").get("area").get("idArea").asInt());
+
+            } else {
+
+                dwEnterprisesList = dwEnterprisesService.findByDistributorRegionZonaBranchAndArea(
+                        jnode.get("dwEmployees").get("distributor").get("idDistributor").asInt(),
+                        jnode.get("dwEmployees").get("region").get("idRegion").asInt(),
+                        jnode.get("dwEmployees").get("zona").get("idZonas").asInt(),
+                        jnode.get("dwEmployees").get("branch").get("idBranch").asInt(),
+                        jnode.get("dwEmployees").get("area").get("idArea").asInt());
+            }
+        } else {
+            dwEnterprisesList = dwEnterprisesService.findByDistributorRegionZonaBranchAndArea(jnode.get("dwEmployees").get("distributor").get("idDistributor").asInt(),
+                    null,null,jnode.get("dwEmployees").get("branch").get("idBranch").asInt(),
+                    jnode.get("dwEmployees").get("area").get("idArea").asInt());
+        }
+
+        dwEmployees.setDwEnterprise(dwEnterprisesList.get(0));
         dwEmployees.setRole(cRolesService.findById(jnode.get("dwEmployees").get("role").get("idRole").asInt()));
         dwEmployees.setCreationDate(LocalDateTime.now());
         dwEmployees = dwEmployeesService.save(dwEmployees);

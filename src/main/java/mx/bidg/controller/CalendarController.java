@@ -24,7 +24,4 @@ public class CalendarController {
         model.setViewName("Rooms");
         return model;
     }
-    
-
-    
 }

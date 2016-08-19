@@ -38,7 +38,7 @@ public class BudgetController {
     BudgetsService budgetsService;
 
     @Autowired
-    ObjectMapper mapper;
+    private ObjectMapper mapper;
     
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json; charset=UTF-8"})
     public @ResponseBody ResponseEntity<String> saveBudget(@RequestBody String data) throws Exception {

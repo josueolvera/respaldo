@@ -29,7 +29,8 @@ public class ProviderAddressController {
     @Autowired
     ProvidersService providersService;
 
-    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(value = "/provider/{idProvider}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody public ResponseEntity<String> addressByProvider(@PathVariable int idProvider) throws Exception {

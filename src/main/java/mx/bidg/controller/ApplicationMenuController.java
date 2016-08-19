@@ -36,7 +36,8 @@ public class ApplicationMenuController {
     @Autowired
     private NotificationsService notificationsService;
 
-    ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public ResponseEntity<String> getAppMenu(HttpServletRequest request) throws IOException {

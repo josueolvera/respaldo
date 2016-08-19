@@ -47,9 +47,10 @@ public class RequestsController {
     private ApplicationEventPublisher eventPublisher;
     
     @Autowired
-    private EmailTemplatesService emailTemplatesService; 
-    
-    ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    private EmailTemplatesService emailTemplatesService;
+
+    @Autowired
+    private ObjectMapper mapper;
     
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"})
     public @ResponseBody ResponseEntity<String> saveRequest(@RequestBody String data, HttpSession session) 

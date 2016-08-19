@@ -13,4 +13,5 @@ public interface DistributorAreaRolService {
     DistributorAreaRol save(DistributorAreaRol distributorAreaRol);
     DistributorAreaRol update(DistributorAreaRol distributorAreaRol);
     Boolean delete(DistributorAreaRol distributorAreaRol);
+    List<DistributorAreaRol> findRolByDistributorArea(Integer idDistributor, Integer idArea);
 }

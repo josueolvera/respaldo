@@ -27,7 +27,8 @@ public class ProductsController {
     @Autowired
     CProductsService productsService;
 
-    ObjectMapper mapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody String findProducts() throws Exception {

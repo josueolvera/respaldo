@@ -32,7 +32,8 @@ public class PassengersServiceImpl implements PassengersService {
     @Autowired
     private PlaneTicketsDao planeTicketsDao;
 
-    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
 
     @Override
     public List<Passengers> findAll() {

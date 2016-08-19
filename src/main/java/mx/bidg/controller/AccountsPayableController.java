@@ -51,7 +51,8 @@ public class AccountsPayableController {
     @Autowired
     private RequestsService requestsService;
 
-    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
     
     @RequestMapping(value = "/{idAccountPayable}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody String findById(@PathVariable int idAccountPayable) throws Exception {

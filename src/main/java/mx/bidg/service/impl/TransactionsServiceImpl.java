@@ -42,7 +42,8 @@ public class TransactionsServiceImpl implements TransactionsService {
     @Autowired
     ProvidersAccountsService providersAccountsService;
 
-    private ObjectMapper mapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper mapper;
 
     @Override
     public Transactions findById(Integer id) {

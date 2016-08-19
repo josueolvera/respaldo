@@ -48,7 +48,8 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
     @Autowired
     RequestTypesProductDao requestTypesProductDao;
 
-    private ObjectMapper mapper = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
 
     @Override
     public List<PlaneTickets> findAll() {

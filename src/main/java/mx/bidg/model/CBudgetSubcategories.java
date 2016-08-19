@@ -5,6 +5,7 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -25,7 +26,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "C_BUDGET_SUBCATEGORIES")
 
 public class CBudgetSubcategories implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
 
     public static final CBudgetSubcategories NACIONALES = new CBudgetSubcategories(214);
@@ -37,27 +38,27 @@ public class CBudgetSubcategories implements Serializable {
     @Column(name = "ID_BUDGET_SUBCATEGORY")
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetSubcategory;
-    
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 45)
     @Column(name = "BUDGET_SUBCATEGORY")
     @JsonView(JsonViews.Root.class)
     private String budgetSubcategory;
-    
+
+    @JsonIgnore
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE", updatable = false)
-    @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
-    
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
-    
+
     public CBudgetSubcategories() {
     }
 

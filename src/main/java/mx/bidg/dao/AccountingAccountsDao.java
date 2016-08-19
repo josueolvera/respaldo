@@ -10,4 +10,5 @@ import mx.bidg.model.AccountingAccounts;
 public interface AccountingAccountsDao extends InterfaceDao<AccountingAccounts> {
     AccountingAccounts findByThreeLevels(Integer firstLevel, Integer secondLevel, Integer thirdLevel);
     List<AccountingAccounts> findAllCategories();
+    List<AccountingAccounts> findByBudgetCategory(Integer idBudgetCategory);
 }

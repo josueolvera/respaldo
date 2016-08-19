@@ -42,8 +42,9 @@ public class CCurrenciesController {
     
     @Autowired
     CCurrenciesService currenciesService;
-    
-    ObjectMapper mapper = new ObjectMapper();
+
+    @Autowired
+    private ObjectMapper mapper;
     
     @RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> getCurrencies() throws Exception {

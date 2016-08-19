@@ -12,6 +12,7 @@ import mx.bidg.config.JsonViews;
 import mx.bidg.model.CBudgetCategories;
 import mx.bidg.service.CBudgetCategoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,19 +27,20 @@ public class CBudgetCategoriesController {
     
     @Autowired
     CBudgetCategoriesService cBudgetCategoriesService;
+
+    @Autowired
+    private ObjectMapper mapper;
     
-    ObjectMapper map = new ObjectMapper();
-    
-    @RequestMapping(produces = "application/json;charset=UTF-8")
+    @RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody String getCBudgetCategories() throws Exception {
         List<CBudgetCategories> list = cBudgetCategoriesService.findAll();
-        return map.writerWithView(JsonViews.Root.class).writeValueAsString(list);
+        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(list);
     }
     
-    @RequestMapping(value="/request", produces = "application/json;charset=UTF-8")
+    @RequestMapping(value="/request", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody String getCBudgetCategoriesofRequest() throws Exception {
         List<CBudgetCategories> list = cBudgetCategoriesService.findAllRequest();
-        return map.writerWithView(JsonViews.Root.class).writeValueAsString(list);
+        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(list);
     }
     
 }

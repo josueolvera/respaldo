@@ -1,4 +1,4 @@
-package mx.bidg.dao.impl;
+package mx.bidg.service.impl;
 
 import mx.bidg.dao.DistributorAreaRolDao;
 import mx.bidg.model.DistributorAreaRol;
@@ -42,5 +42,10 @@ public class DistributorAreaRolServiceImpl implements DistributorAreaRolService 
     @Override
     public Boolean delete(DistributorAreaRol distributorAreaRol) {
         return distributorAreaRolDao.delete(distributorAreaRol);
+    }
+
+    @Override
+    public List<DistributorAreaRol> findRolByDistributorArea(Integer idDistributor, Integer idArea) {
+        return distributorAreaRolDao.findRolByDistributorArea(idDistributor, idArea);
     }
 }

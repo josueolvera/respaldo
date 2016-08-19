@@ -24,7 +24,8 @@ public class DwBranchsController {
     @Autowired
     private DwBranchsService dwBranchsService;
 
-    ObjectMapper mapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody

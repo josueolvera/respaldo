@@ -33,13 +33,14 @@ public class BudgetMonthConceptsController {
     @Autowired
     private BudgetMonthConceptsService budgetMonthConceptsService;
     
-    private ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
+    @Autowired
+    private ObjectMapper mapper;
 
     @RequestMapping(value = "/{idConcept}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findByConcept(@PathVariable int idConcept) throws IOException {
         List<BudgetMonthConcepts> list = budgetMonthConceptsService.findByConcept(new CBudgetConcepts(idConcept));
         return new ResponseEntity<>(
-                map.writerWithView(JsonViews.Embedded.class).writeValueAsString(list), HttpStatus.OK
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(list), HttpStatus.OK
         );
     }
     

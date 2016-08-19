@@ -42,8 +42,9 @@ public class BudgetMonthBranchController {
     
     @Autowired
     BudgetMonthConceptsService budgetMonthConceptsService;
-    
-    ObjectMapper map = new ObjectMapper().registerModule(new Hibernate4Module());
+
+    @Autowired
+    private ObjectMapper mapper;
     
     @RequestMapping(value = "/request", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> getFromRequest(@RequestBody String data) throws Exception {
@@ -54,7 +55,7 @@ public class BudgetMonthBranchController {
             return new ResponseEntity<>("Error al guardar la solicitud", HttpStatus.CONFLICT);
         }
         
-        return new ResponseEntity<>(map.writerWithView(JsonViews.Root.class).writeValueAsString(budgetMonthBranch), HttpStatus.OK);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(budgetMonthBranch), HttpStatus.OK);
     }
     
     
@@ -92,7 +93,7 @@ public class BudgetMonthBranchController {
             
         }
         
-        return map.writeValueAsString(budgetMonthBranchs);
+        return mapper.writeValueAsString(budgetMonthBranchs);
     }
     
 }
