@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  */
 @Controller
 @RequestMapping("/distributor-area-rol")
-public class DistributorAreaRolServiceController {
+public class DistributorAreaRolController {
 
     @Autowired
     private DistributorAreaRolService distributorAreaRolService;
