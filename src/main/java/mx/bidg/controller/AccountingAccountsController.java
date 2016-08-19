@@ -79,7 +79,7 @@ public class AccountingAccountsController {
         List<AccountingAccounts> accountingAccounts;
 
         if (firstLevel == 0) {
-            throw new DataIntegrityViolationException("Cuenta contable no valida");
+            throw new ValidationException("CUENTA CONTABLE NO VALIDA", "Cuenta contable no valida");
         } else {
 
             accountingAccount = new AccountingAccounts();
@@ -124,6 +124,7 @@ public class AccountingAccountsController {
             accountingAccount.setFirstLevel(firstLevel);
             accountingAccount.setSecondLevel(secondLevel);
             accountingAccount.setThirdLevel(thirdLevel);
+            accountingAccount.setIsOfRequest(0);
             accountingAccount.setcAccountingAccountCategory(mapper.treeToValue(node.get("accountingAccountCategory"), CAccountingAccountCategory.class));
             accountingAccount.setcAccountingAccountNature(mapper.treeToValue(node.get("accountingAccountNature"), CAccountingAccountNature.class));
             accountingAccount.setcAccountingAccountType(mapper.treeToValue(node.get("accountingAccountType"), CAccountingAccountType.class));
