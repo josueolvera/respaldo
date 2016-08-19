@@ -4,7 +4,7 @@
 <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users" />
 
 
-<t:template pageTitle="BID Group: Presupuestos">
+<t:template pageTitle="BID Group: Solicitud">
     <jsp:attribute name="scripts">
 
         <script type="text/javascript">
@@ -123,7 +123,7 @@
             idProductType: '',
             optionSelect: [],
             RequestTypes: {},
-            ProductTypes: {},
+            ProductTypes: [],
             Productos: {},
             Users: {},
             idProducto: '',
@@ -214,7 +214,15 @@
             },
             obtainProductType: function()
             {
-              this.obtainRequestInformation.idUserResponsable='';
+                this.ProductTypes= [];
+                var self = this;
+                this.RequestTypes.forEach(function(element){
+                    if (element.accountingAccounts.idBudgetCategory == self.obtainRequestInformation.idRequestType ) {
+                        self.ProductTypes.push(element);
+                    }
+
+                });
+              /*this.obtainRequestInformation.idUserResponsable='';
               this.ProductTypes= {};
               this.Productos= {};
               this.$http.get(ROOT_URL+"/request-type-product/categorybudget/"+this.obtainRequestInformation.idRequestCategory+"/"+this.obtainRequestInformation.idRequestType)
@@ -225,7 +233,8 @@
               this.objectRequest.request.description='';
               this.objectRequest.request.purpose= '';
               this.idProducto= '';
-              this.obtainRequestInformation.idProductType='';
+              this.obtainRequestInformation.idProductType='';*/
+
 
             },
             obtainProducts: function()
@@ -1282,7 +1291,7 @@
                </label>
                <select class="form-control" v-model="obtainRequestInformation.idRequestType" :disabled="desactivarCombos || isUpdate" @change="obtainProductType" required>
                  <option v-for="RequestType in RequestTypes"
-                   value="{{RequestType.idBudgetCategory}}">{{RequestType.budgetCategory}}
+                   value="{{RequestType.accountingAccounts.idBudgetCategory}}">{{RequestType.accountingAccounts.budgetCategory.budgetCategory}}
                  </option>
                </select>
               </div>
@@ -1294,8 +1303,8 @@
                 <select class="form-control" v-model="obtainRequestInformation.idProductType" :disabled="desactivarCombos || isUpdate"
                   @change="obtainProducts" id="productTypesin" required>
                   <option></option>
-                  <option v-for="ProductType in ProductTypes" value="{{ProductType.idBudgetSubcategory}}">
-                    {{ProductType.budgetSubcategory.budgetSubcategory}}
+                  <option v-for="ProductType in ProductTypes" value="{{ProductType.accountingAccounts.idBudgetSubcategory}}">
+                    {{ProductType.accountingAccounts.budgetSubcategory.budgetSubcategory}}
                   </option>
                 </select>
               </div>

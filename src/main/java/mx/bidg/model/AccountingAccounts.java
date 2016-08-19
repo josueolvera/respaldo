@@ -102,6 +102,12 @@ public class AccountingAccounts implements Serializable {
     @Column(name = "ID_BUDGET_SUBCATEGORY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetSubcategory;
+    
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "IS_OF_REQUEST")
+    @JsonView(JsonViews.Root.class)
+    private Integer isOfRequest;
 
     public AccountingAccounts() {
     }
@@ -249,6 +255,15 @@ public class AccountingAccounts implements Serializable {
     public void setIdBudgetSubcategory(Integer idBudgetSubcategory) {
         this.idBudgetSubcategory = idBudgetSubcategory;
     }
+    
+        public Integer getIsOfRequest() {
+        return isOfRequest;
+    }
+
+    public void setIsOfRequest(Integer isOfRequest) {
+        this.isOfRequest = isOfRequest;
+    }
+    
 
     @Override
     public int hashCode() {
@@ -274,5 +289,5 @@ public class AccountingAccounts implements Serializable {
     public String toString() {
         return "mx.bidg.model.AccountingAccounts[ idAccountingAccount=" + idAccountingAccount + " ]";
     }
-    
+
 }

@@ -5,6 +5,7 @@
  */
 package mx.bidg.service.impl;
 
+import java.util.ArrayList;
 import mx.bidg.dao.RequestTypesProductDao;
 import mx.bidg.model.CProductTypes;
 import mx.bidg.model.CRequestTypes;

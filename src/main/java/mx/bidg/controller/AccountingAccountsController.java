@@ -86,7 +86,7 @@ public class AccountingAccountsController {
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(accountingAccounts), HttpStatus.OK);
     }
     
-    @RequestMapping(value="/allCategories", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping( value="/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findAllCategories() throws IOException {
         List<AccountingAccounts> accountingAccounts = accountingAccountsService.findAllCategories();
         return new ResponseEntity<>(

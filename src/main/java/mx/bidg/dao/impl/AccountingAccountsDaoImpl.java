@@ -9,6 +9,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import org.hibernate.criterion.Projections;
 
 /**
  * @author Rafael Viveros
@@ -59,6 +60,7 @@ public class AccountingAccountsDaoImpl extends AbstractDao<Integer, AccountingAc
     public List<AccountingAccounts> findAllCategories() {
         return createEntityCriteria()
                 .add(Restrictions.eq("isOfRequest", 1))
+                .setProjection(Projections.distinct(Projections.property("budgetCategory")))
                 .list();
     }
 }

@@ -66,8 +66,7 @@ public class RequestTypesProductDaoImpl extends AbstractDao<Integer, RequestType
     @Override
     public List<RequestTypesProduct> findByRequestCategory(CRequestsCategories requestCategory) {
         
-        Criteria criteria = createEntityCriteria().add(Restrictions.eq("requestCategory", requestCategory))
-                 .setProjection(Projections.distinct(Projections.property("budgetCategory")));
+        Criteria criteria = createEntityCriteria().add(Restrictions.eq("requestCategory", requestCategory));
         return (List<RequestTypesProduct>) criteria.list();
     }
 

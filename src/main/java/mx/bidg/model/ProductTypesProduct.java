@@ -46,10 +46,6 @@ public class ProductTypesProduct implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idProduct;
     
-    @Column(name = "ID_PRODUCT_TYPE", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idProductType;
-    
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
@@ -95,14 +91,6 @@ public class ProductTypesProduct implements Serializable {
 
     public void setIdProduct(Integer idProduct) {
         this.idProduct = idProduct;
-    }
-
-    public Integer getIdProductType() {
-        return idProductType;
-    }
-
-    public void setIdProductType(Integer idProductType) {
-        this.idProductType = idProductType;
     }
 
     public Integer getIdAccessLevel() {
