@@ -153,4 +153,12 @@ public class DwEmployeesController {
         );
     }
 
+    @RequestMapping(value = "/validate-role/{idDwEnterprise}/{idRole}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String>  validateRole(@PathVariable Integer idDwEnterprise, @PathVariable Integer idRole) throws IOException {
+        if (!dwEmployeesService.validateExistRole(idDwEnterprise, idRole)) {
+            return new ResponseEntity<>("El puesto no esta ocupado", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("El puesto ya esta ocupado", HttpStatus.BAD_REQUEST);
+        }
+    }
 }
