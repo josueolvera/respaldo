@@ -9,6 +9,7 @@ import java.util.List;
 
 import mx.bidg.model.*;
 import mx.bidg.pojos.HierarchicalLevel;
+import org.codehaus.groovy.runtime.dgmimpl.arrays.IntegerArrayGetAtMetaMethod;
 
 import javax.persistence.criteria.CriteriaBuilder;
 
@@ -38,4 +39,7 @@ public interface DwEnterprisesService {
     List<DwEnterprises> findByDistributorRegionZonaBranchAndArea(Integer idDistributor, Integer idRegion, Integer idZona, Integer idBranch, Integer idArea);
     List<CZonas> findZonaByDistributorAndRegion (Integer idDistributor, Integer idRegion);
     List<CAreas> findAreaByBranch(Integer idBranch);
+    DwEnterprises findByDistributorBranchArea(Integer idDistributor, Integer idBranch, Integer idArea);
+    List<CRegions> findRegionByDistributorAndArea (Integer idDistributor, Integer idArea);
+    List<CBranchs> findBranchByDistributorAndArea (Integer idDistributor, Integer idArea);
 }
