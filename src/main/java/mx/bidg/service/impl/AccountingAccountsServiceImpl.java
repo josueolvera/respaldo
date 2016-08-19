@@ -27,6 +27,21 @@ public class AccountingAccountsServiceImpl implements AccountingAccountsService 
     }
 
     @Override
+    public List<AccountingAccounts> findByFirstLevel(Integer firstLevel) {
+        return accountingAccountsDao.findByFirstLevel(firstLevel);
+    }
+
+    @Override
+    public List<AccountingAccounts> findBySecondLevel(Integer secondLevel) {
+        return accountingAccountsDao.findBySecondLevel(secondLevel);
+    }
+
+    @Override
+    public List<AccountingAccounts> findByThirdLevel(Integer thirdLevel) {
+        return accountingAccountsDao.findByThirdLevel(thirdLevel);
+    }
+
+    @Override
     public List<AccountingAccounts> findAll() {
         return accountingAccountsDao.findAll();
     }

@@ -88,43 +88,43 @@
                         secondLevel: '',
                         thirdLevel: '',
                         description: '',
-                        idAccountingType: '',
-                        idAccountingNature: '',
-                        idAccountingCategory: '',
+                        accountingAccountType: {},
+                        accountingAccountNature: {},
+                        accountingAccountCategory: {}
                     },
                     accountingCategorys: [],
                     accountingNatures: [],
                     accountingTypes: [],
-                    accountingAccount: {},
+                    accountingAccount: {}
                 },
                 methods: {
                     getAccountingAccounts: function () {
-                        this.$http.get(ROOT_URL + "/accounting-accounts").success(function (data) {
+                        this.$http.get(ROOT_URL + '/accounting-accounts').success(function (data) {
                             this.accountingAccounts = data;
                         });
                     },
                     getAccountigCategorys: function () {
-                        this.$http.get(ROOT_URL + "/accounting-category").success(function (data) {
+                        this.$http.get(ROOT_URL + '/accounting-category').success(function (data) {
                             this.accountingCategorys = data;
                         });
                     },
                     getAccountigNatures: function () {
-                        this.$http.get(ROOT_URL + "/accounting-nature").success(function (data) {
+                        this.$http.get(ROOT_URL + '/accounting-nature').success(function (data) {
                             this.accountingNatures = data;
                         });
                     },
                     getAccountingTypes: function () {
-                        this.$http.get(ROOT_URL + "/accounting-type").success(function (data) {
+                        this.$http.get(ROOT_URL + '/accounting-type').success(function (data) {
                             this.accountingTypes = data;
                         });
                     },
                     saveAccountingAccount: function () {
-                        this.$http.post(ROOT_URL + "/accounting-accounts", JSON.stringify(this.accounting)).success(function (data) {
-                            showAlert("Registro guardado con éxito");
+                        this.$http.post(ROOT_URL + '/accounting-accounts', JSON.stringify(this.accounting)).success(function (data) {
+                            showAlert('Registro guardado con éxito');
                             $('#modalAlta').modal('hide');
                             this.getAccountingAccounts();
                         }).error(function () {
-                            showAlert("Error en la solicitud", {type: 3});
+                            showAlert('Error en la solicitud', {type: 3});
                         });
                         this.cancelar();
                     },
@@ -133,12 +133,12 @@
                         this.accountingAccount = (JSON.parse(JSON.stringify(accounting)));
                     },
                     updateAccountingAccount: function (accountingAccount) {
-                        this.$http.post(ROOT_URL + "/accounting-accounts/" + accountingAccount.idAccountingAccount, accountingAccount).success(function (data) {
-                            showAlert("Cuenta contable actualizada");
+                        this.$http.post(ROOT_URL + '/accounting-accounts/' + accountingAccount.idAccountingAccount, accountingAccount).success(function (data) {
+                            showAlert('Cuenta contable actualizada');
                             $('#modalModificar').modal('hide');
                             this.getAccountingAccounts();
                         }).error(function () {
-                            showAlert("Error en la solicitud", {type: 3});
+                            showAlert('Error en la solicitud', {type: 3});
                         });
                     },
                     cancelar: function () {
@@ -146,19 +146,19 @@
                         this.accounting.firstLevel = '';
                         this.accounting.secondLevel = '';
                         this.accounting.thirdLevel = '';
-                        this.accounting.idAccountingType = '';
-                        this.accounting.idAccountingCategory = '';
-                        this.accounting.idAccountingNature = '';
+                        this.accounting.accountingAccountType = {};
+                        this.accounting.accountingAccountCategory = {};
+                        this.accounting.accountingAccountNature = {};
                         $('#modalAlta').modal('hide');
                         $('#modalModificar').modal('hide');
-                    },
+                    }
                 },
                 filters: {
                     numbersPadding: function (value) {
                         var result = "";
                         var padding = 4;
                         if (typeof value != 'undefined') {
-                            result = "00000" + value;
+                            result = '00000' + value;
                             result = result.substr(result.length - padding);
                         }
                         return result;
@@ -167,11 +167,11 @@
                         var result = "";
                         var padding = 3;
                         if (typeof value != 'undefined') {
-                            result = "0000" + value;
+                            result = '0000' + value;
                             result = result.substr(result.length - padding);
                         }
                         return result;
-                    },
+                    }
                 }
             });
 
@@ -246,34 +246,31 @@
                         <div class="row">
                             <div class="col-xs-4">
                                 <label>Descripción</label>
-                                <input class="form-control" name="name" v-model="accounting.description">
+                                <input class="form-control"  v-model="accounting.description">
                             </div>
                             <div class="col-xs-3">
                                 <label>Tipo</label>
-                                <select class="form-control" name="" v-model="accounting.idAccountingType">
-                                    <option></option>
+                                <select class="form-control" v-model="accounting.accountingAccountType">
                                     <option v-for="type in accountingTypes"
-                                            value="{{type.idAccountingType}}">
+                                            value="{{type}}">
                                         {{type.name}}
                                     </option>
                                 </select>
                             </div>
                             <div class="col-xs-3">
                                 <label>Naturaleza</label>
-                                <select class="form-control" name="" v-model="accounting.idAccountingNature">
-                                    <option></option>
+                                <select class="form-control" v-model="accounting.accountingAccountNature">
                                     <option v-for="nature in accountingNatures"
-                                            value="{{nature.idAccountingNature}}">
+                                            value="{{nature}}">
                                         {{nature.nature}}
                                     </option>
                                 </select>
                             </div>
                             <div class="col-xs-2">
                                 <label>Clasificación</label>
-                                <select class="form-control" name="" v-model="accounting.idAccountingCategory">
-                                    <option></option>
+                                <select class="form-control" v-model="accounting.accountingAccountCategory">
                                     <option v-for="category in accountingCategorys"
-                                            value="{{category.idAccountingCategory}}">
+                                            value="{{category}}">
                                         {{category.classification}}
                                     </option>
                                 </select>
@@ -332,34 +329,34 @@
                         <div class="row">
                             <div class="col-xs-4">
                                 <label>Descripción</label>
-                                <input class="form-control" name="name" v-model="accountingAccount.description">
+                                <input class="form-control"  v-model="accountingAccount.description">
                             </div>
                             <div class="col-xs-3">
                                 <label>Tipo</label>
-                                <select class="form-control" name="" v-model="accountingAccount.idAccountingType">
+                                <select class="form-control" v-model="accountingAccount.accountingAccountType">
                                     <option></option>
                                     <option v-for="type in accountingTypes"
-                                            value="{{type.idAccountingType}}">
+                                            value="{{type}}">
                                         {{type.name}}
                                     </option>
                                 </select>
                             </div>
                             <div class="col-xs-3">
                                 <label>Naturaleza</label>
-                                <select class="form-control" name="" v-model="accountingAccount.idAccountingNature">
+                                <select class="form-control" v-model="accountingAccount.accountingAccountNature">
                                     <option></option>
                                     <option v-for="nature in accountingNatures"
-                                            value="{{nature.idAccountingNature}}">
+                                            value="{{nature}}">
                                         {{nature.nature}}
                                     </option>
                                 </select>
                             </div>
                             <div class="col-xs-2">
                                 <label>Clasificación</label>
-                                <select class="form-control" name="" v-model="accountingAccount.idAccountingCategory">
+                                <select class="form-control" v-model="accountingAccount.accountingAccountCategory">
                                     <option></option>
                                     <option v-for="category in accountingCategorys"
-                                            value="{{category.idAccountingCategory}}">
+                                            value="{{category}}">
                                         {{category.classification}}
                                     </option>
                                 </select>

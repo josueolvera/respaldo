@@ -28,6 +28,27 @@ public class AccountingAccountsDaoImpl extends AbstractDao<Integer, AccountingAc
     }
 
     @Override
+    public List<AccountingAccounts> findByFirstLevel(Integer firstLevel) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("firstLevel", firstLevel))
+                .list();
+    }
+
+    @Override
+    public List<AccountingAccounts> findBySecondLevel(Integer secondLevel) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("secondLevel", secondLevel))
+                .list();
+    }
+
+    @Override
+    public List<AccountingAccounts> findByThirdLevel(Integer thirdLevel) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("thirdLevel", thirdLevel))
+                .list();
+    }
+
+    @Override
     public AccountingAccounts save(AccountingAccounts entity) {
         persist(entity);
         return entity;
@@ -42,7 +63,8 @@ public class AccountingAccountsDaoImpl extends AbstractDao<Integer, AccountingAc
 
     @Override
     public List<AccountingAccounts> findAll() {
-        return createEntityCriteria().addOrder(Order.asc("firstLevel"))
+        return createEntityCriteria()
+                .addOrder(Order.asc("firstLevel"))
                 .addOrder(Order.asc("secondLevel"))
                 .addOrder(Order.asc("thirdLevel"))
                 .list();

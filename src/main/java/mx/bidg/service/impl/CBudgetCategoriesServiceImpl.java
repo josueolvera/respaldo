@@ -22,16 +22,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class CBudgetCategoriesServiceImpl implements CBudgetCategoriesService {
     
     @Autowired
-    CBudgetCategoriesDao dao;
+    CBudgetCategoriesDao cBudgetCategoriesDao;
 
     @Override
     public List<CBudgetCategories> findAll() {
-        return dao.findAll();
+        return cBudgetCategoriesDao.findAll();
     }
 
     @Override
     public List<CBudgetCategories> findAllRequest() {
-        return dao.findAllRequest();
+        return cBudgetCategoriesDao.findAllRequest();
     }
-    
+
+    @Override
+    public CBudgetCategories save(CBudgetCategories budgetCategory) {
+        return cBudgetCategoriesDao.save(budgetCategory);
+    }
+
 }

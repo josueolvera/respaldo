@@ -11,6 +11,9 @@ import java.util.List;
  */
 public interface AccountingAccountsService {
     AccountingAccounts findByThreeLevels(Integer firstLevel, Integer secondLevel, Integer thirdLevel);
+    List<AccountingAccounts> findByFirstLevel(Integer firstLevel);
+    List<AccountingAccounts> findBySecondLevel(Integer secondLevel);
+    List<AccountingAccounts> findByThirdLevel(Integer thirdLevel);
     List<AccountingAccounts> findAll();
     AccountingAccounts save(AccountingAccounts accountingAccounts);
     AccountingAccounts update(AccountingAccounts accountingAccounts);
