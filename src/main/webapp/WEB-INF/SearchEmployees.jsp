@@ -1028,7 +1028,7 @@
             <div class="col-md-12">
                 <div class="row">
                     <div class="col-md-8">
-                        <h2>Busqueda de Empleado</h2>
+                        <h2>Busqueda de empleado</h2>
                     </div>
                     <div class="col-md-2">
                     </div>
@@ -1125,7 +1125,7 @@
                         <div class="col-md-2">
                             <label>Nombre</label>
                             <input v-model="nameSearch" type="text" class="form-control"
-                                   placeholder="Nombre del Empleado">
+                                   placeholder="Nombre del empleado">
                         </div>
                         <div class="col-md-2">
                             <label>RFC</label>
@@ -1260,14 +1260,14 @@
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                     aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title">Confirmacion de Baja de Empleado</h4>
+                            <h4 class="modal-title">Confirmación</h4>
                         </div>
                         <div class="modal-body">
                             <br>
                             <div class="form-inline">
                                 <div class="form-group">
                                     El empleado con el nombre <label>{{currentDwEmployee.fullName}}</label> y el rfc
-                                    <label>{{currentDwEmployee.rfc}}</label> sera dado de baja.
+                                    <label>{{currentDwEmployee.rfc}}</label> será dado de baja.
                                 </div>
                             </div>
                             <br>
