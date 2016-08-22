@@ -12,6 +12,7 @@ public interface AccountingAccountsDao extends InterfaceDao<AccountingAccounts> 
     List<AccountingAccounts> findByFirstLevel(Integer firstLevel);
     List<AccountingAccounts> findBySecondLevel(Integer secondLevel);
     List<AccountingAccounts> findByThirdLevel(Integer thirdLevel);
+    List<AccountingAccounts> findByFirstAndSecondLevel(Integer firstLevel, Integer secondLevel);
     List<AccountingAccounts> findAllCategories();
     List<AccountingAccounts> findByBudgetCategory(Integer idBudgetCategory);
 }

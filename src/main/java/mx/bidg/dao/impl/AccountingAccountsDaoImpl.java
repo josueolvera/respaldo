@@ -49,6 +49,15 @@ public class AccountingAccountsDaoImpl extends AbstractDao<Integer, AccountingAc
     }
 
     @Override
+    public List<AccountingAccounts> findByFirstAndSecondLevel(Integer firstLevel, Integer secondLevel) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("firstLevel", firstLevel))
+                .add(Restrictions.eq("secondLevel", secondLevel))
+                .add(Restrictions.ne("secondLevel", 0))
+                .list();
+    }
+
+    @Override
     public AccountingAccounts save(AccountingAccounts entity) {
         persist(entity);
         return entity;

@@ -33,12 +33,6 @@ public class AccountingAccountsController {
     private AccountingAccountsService accountingAccountsService;
 
     @Autowired
-    private CBudgetCategoriesService cBudgetCategoriesService;
-
-    @Autowired
-    private CBudgetSubcategoriesService cBudgetSubcategoriesService;
-
-    @Autowired
     private ObjectMapper mapper;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -64,74 +58,7 @@ public class AccountingAccountsController {
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> save(@RequestBody String data) throws IOException{
-
-        JsonNode node = mapper.readTree(data);
-        LocalDateTime now = LocalDateTime.now();
-
-        Integer firstLevel = node.get("firstLevel").asInt();
-        Integer secondLevel = node.get("secondLevel").asInt();
-        Integer thirdLevel = node.get("thirdLevel").asInt();
-
-        String description = node.get("description").asText();
-
-        AccountingAccounts accountingAccount;
-
-        List<AccountingAccounts> accountingAccounts;
-
-        if (firstLevel == 0) {
-            throw new ValidationException("CUENTA CONTABLE NO VALIDA", "Cuenta contable no valida");
-        } else {
-
-            accountingAccount = new AccountingAccounts();
-            if (secondLevel == 0 && thirdLevel == 0) {
-
-                accountingAccounts = accountingAccountsService.findByFirstLevel(firstLevel);
-
-                if (!accountingAccounts.isEmpty()) {
-                    CBudgetCategories budgetCategory = new CBudgetCategories();
-                    budgetCategory.setBudgetCategory(description);
-                    budgetCategory.setCreationDate(now);
-                    budgetCategory.setIdAccessLevel(1);
-
-                    budgetCategory = cBudgetCategoriesService.save(budgetCategory);
-
-                    accountingAccount.setBudgetCategory(budgetCategory);
-                } else {
-                    throw new ValidationException("CUENTA INEXISTENTE", "No existe una cuenta contable con el número " + firstLevel);
-                }
-
-            } else if (thirdLevel == 0) {
-
-                accountingAccounts = accountingAccountsService.findBySecondLevel(secondLevel);
-
-                if (!accountingAccounts.isEmpty()) {
-                    CBudgetSubcategories budgetSubcategory = new CBudgetSubcategories();
-                    budgetSubcategory.setBudgetSubcategory(description);
-                    budgetSubcategory.setCreationDate(now);
-                    budgetSubcategory.setIdAccessLevel(1);
-
-                    budgetSubcategory = cBudgetSubcategoriesService.save(budgetSubcategory);
-
-                    accountingAccount.setBudgetSubcategory(budgetSubcategory);
-                } else {
-                    throw new ValidationException("CUENTA INEXISTENTE", "No existe una cuenta contable con el número " + secondLevel);
-                }
-
-            }
-
-            accountingAccount.setAvailable(true);
-            accountingAccount.setDescription(description);
-            accountingAccount.setFirstLevel(firstLevel);
-            accountingAccount.setSecondLevel(secondLevel);
-            accountingAccount.setThirdLevel(thirdLevel);
-            accountingAccount.setIsOfRequest(0);
-            accountingAccount.setcAccountingAccountCategory(mapper.treeToValue(node.get("accountingAccountCategory"), CAccountingAccountCategory.class));
-            accountingAccount.setcAccountingAccountNature(mapper.treeToValue(node.get("accountingAccountNature"), CAccountingAccountNature.class));
-            accountingAccount.setcAccountingAccountType(mapper.treeToValue(node.get("accountingAccountType"), CAccountingAccountType.class));
-
-            accountingAccount = accountingAccountsService.save(accountingAccount);
-        }
-
+        AccountingAccounts accountingAccount = accountingAccountsService.save(data);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(accountingAccount), HttpStatus.OK);
     }
 

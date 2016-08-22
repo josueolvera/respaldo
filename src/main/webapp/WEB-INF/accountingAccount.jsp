@@ -30,7 +30,7 @@
     <jsp:attribute name="scripts">
         <script type="text/javascript">
             function isNumberKey(evt) {
-                var charCode = (evt.which) ? evt.which : event.keyCode
+                var charCode = (evt.which) ? evt.which : event.keyCode;
                 if (charCode > 31 && (charCode < 48 || charCode > 57))
                     return false;
                 return true;
@@ -39,7 +39,7 @@
 
         <script>
             function isLetterKey(evt) {
-                var charCode = (evt.which) ? evt.which : event.keyCode
+                var charCode = (evt.which) ? evt.which : event.keyCode;
                 if (charCode === 32 ||
                         charCode === 13 ||
                         (charCode > 64 && charCode < 91) ||
@@ -53,7 +53,7 @@
                 }
             }
             function isNumberKeyAndLetterKey(evt) {
-                var charCode = (evt.which) ? evt.which : event.keyCode
+                var charCode = (evt.which) ? evt.which : event.keyCode;
                 if (charCode === 13 ||
                         (charCode > 64 && charCode < 91) ||
                         (charCode > 47 && charCode < 58) ||
@@ -125,9 +125,18 @@
                     saveAccountingAccount: function () {
                         this.$http.post(ROOT_URL + '/accounting-accounts', JSON.stringify(this.accounting))
                                 .success(function (data) {
+                                    this.getAccountingAccounts();
                                     showAlert('Registro guardado con éxito');
                                     $('#modalAlta').modal('hide');
-                                    this.getAccountingAccounts();
+                                    this.accounting = {
+                                        firstLevel: '',
+                                                secondLevel: '',
+                                                thirdLevel: '',
+                                                description: '',
+                                                accountingAccountType: {},
+                                        accountingAccountNature: {},
+                                        accountingAccountCategory: {}
+                                    };
                                 }).error(function (data) {
                             showAlert(data.error.message, {type: 3});
                         });
@@ -139,9 +148,9 @@
                     updateAccountingAccount: function (accountingAccount) {
                         this.$http.post(ROOT_URL + '/accounting-accounts/' + accountingAccount.idAccountingAccount, accountingAccount)
                                 .success(function (data) {
+                                    this.getAccountingAccounts();
                                     showAlert('Cuenta contable actualizada');
                                     $('#modalModificar').modal('hide');
-                                    this.getAccountingAccounts();
                                 }).error(function (data) {
                             showAlert('Error en la solicitud', {type: 3});
                         });
