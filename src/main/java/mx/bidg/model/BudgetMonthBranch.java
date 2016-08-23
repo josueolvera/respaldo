@@ -10,20 +10,12 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 
@@ -106,6 +98,15 @@ public class BudgetMonthBranch implements Serializable {
     @Column(name = "IS_AUTHORIZED")
     @JsonView(JsonViews.Root.class)
     private Integer isAuthorized;
+
+    @Column(name = "USERNAME")
+    @JsonView(JsonViews.Root.class)
+    private String username;
+
+    @Column(name = "CREATION_DATE")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime creationDate;
     
     @Column(name = "ID_CURRENCY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -226,6 +227,22 @@ public class BudgetMonthBranch implements Serializable {
 
     public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
     }
 
     public Integer getIsAuthorized() {
