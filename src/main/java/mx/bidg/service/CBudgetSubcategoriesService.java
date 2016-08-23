@@ -15,4 +15,5 @@ import mx.bidg.model.CBudgetSubcategories;
 public interface CBudgetSubcategoriesService {
     List<CBudgetSubcategories> findAll();
     List<CBudgetSubcategories> getByBudgetCategory(Integer idBudgetCategory);
+    CBudgetSubcategories save(CBudgetSubcategories budgetSubcategory);
 }

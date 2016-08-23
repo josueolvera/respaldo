@@ -18,40 +18,44 @@ import org.springframework.stereotype.Repository;
  *
  * @author sistemask
  */
+@SuppressWarnings("unchecked")
 @Repository
 public class CBudgetCategoriesDaoImpl extends AbstractDao<Integer, CBudgetCategories> implements CBudgetCategoriesDao {
 
     @Override
     public CBudgetCategories save(CBudgetCategories entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        persist(entity);
+        return entity;
     }
 
     @Override
     public CBudgetCategories findById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getByKey(id);
     }
 
     @Override
     public List<CBudgetCategories> findAll() {
         Criteria criteria = createEntityCriteria();
-        return (List<CBudgetCategories>) criteria.list();
+        return criteria.list();
     }
 
     @Override
     public CBudgetCategories update(CBudgetCategories entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        modify(entity);
+        return entity;
     }
 
     @Override
     public boolean delete(CBudgetCategories entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        remove(entity);
+        return true;
     }
 
     @Override
     public List<CBudgetCategories> findAllRequest() {
         Criteria criteria = createEntityCriteria()
                 .add(Restrictions.eq("isRequest", 1));
-        return (List<CBudgetCategories>) criteria.list();
+        return criteria.list();
     }
     
 }

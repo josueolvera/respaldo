@@ -92,7 +92,7 @@ public class AccountingAccounts implements Serializable {
     private CBudgetCategories budgetCategory;
 
     @JoinColumn(name = "ID_BUDGET_SUBCATEGORY", referencedColumnName = "ID_BUDGET_SUBCATEGORY")
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JsonView({JsonViews.Embedded.class})
     private CBudgetSubcategories budgetSubcategory;
 

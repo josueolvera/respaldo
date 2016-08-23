@@ -26,7 +26,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "C_BUDGET_CATEGORIES")
 
 public class CBudgetCategories implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
 
     public static final CBudgetCategories GASTOS_DE_VIAJE = new CBudgetCategories(68);
@@ -37,7 +37,7 @@ public class CBudgetCategories implements Serializable {
     @Column(name = "ID_BUDGET_CATEGORY")
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetCategory;
-    
+
     @Size(max = 100)
     @Column(name = "BUDGET_CATEGORY")
     @JsonView(JsonViews.Root.class)
@@ -49,7 +49,7 @@ public class CBudgetCategories implements Serializable {
     @Column(name = "CREATION_DATE", updatable = false)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
-    
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
@@ -91,7 +91,7 @@ public class CBudgetCategories implements Serializable {
     public void setIdAccessLevel(int idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
     }
-    
+
     public LocalDateTime getCreationDate() {
         return creationDate;
     }
@@ -99,7 +99,7 @@ public class CBudgetCategories implements Serializable {
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
-    
+
 
     @Override
     public int hashCode() {

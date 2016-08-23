@@ -14,7 +14,8 @@ import mx.bidg.model.CBudgetCategories;
  */
 public interface CBudgetCategoriesService {
     
-    public List<CBudgetCategories> findAll();
-    public List<CBudgetCategories> findAllRequest();
-    
+    List<CBudgetCategories> findAll();
+    List<CBudgetCategories> findAllRequest();
+    CBudgetCategories save(CBudgetCategories budgetCategory);
+
 }

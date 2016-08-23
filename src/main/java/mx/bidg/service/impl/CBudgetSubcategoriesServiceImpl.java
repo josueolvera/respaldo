@@ -49,4 +49,9 @@ public class CBudgetSubcategoriesServiceImpl implements CBudgetSubcategoriesServ
         return budgetSubcategories;
     }
 
+    @Override
+    public CBudgetSubcategories save(CBudgetSubcategories budgetSubcategory) {
+        return cBudgetSubcategoriesDao.save(budgetSubcategory);
+    }
+
 }
