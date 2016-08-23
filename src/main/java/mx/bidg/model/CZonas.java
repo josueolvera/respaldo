@@ -48,6 +48,10 @@ public class CZonas implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String name;
 
+    @Column(name = "SAEM_FLAG")
+    @JsonView(JsonViews.Root.class)
+    private int saemFlag;
+
     @OneToMany(mappedBy = "zona")
     @JsonView(JsonViews.Root.class)
     private List<DwEnterprises> dwEnterprisesList;
@@ -81,6 +85,14 @@ public class CZonas implements Serializable {
 
     public void setDwEnterprisesList(List<DwEnterprises> dwEnterprisesList) {
         this.dwEnterprisesList = dwEnterprisesList;
+    }
+
+    public int getSaemFlag() {
+        return saemFlag;
+    }
+
+    public void setSaemFlag(int saemFlag) {
+        this.saemFlag = saemFlag;
     }
 
     @Override
