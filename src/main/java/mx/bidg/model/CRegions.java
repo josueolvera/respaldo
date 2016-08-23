@@ -51,6 +51,10 @@ public class CRegions implements Serializable {
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private String regionName;
 
+    @Column(name = "SAEM_FLAG")
+    @JsonView(JsonViews.Root.class)
+    private int saemFlag;
+
     public CRegions() {
     }
 
@@ -81,6 +85,14 @@ public class CRegions implements Serializable {
     
     public String getNameSQL(){
         return regionName;
+    }
+
+    public int getSaemFlag() {
+        return saemFlag;
+    }
+
+    public void setSaemFlag(int saemFlag) {
+        this.saemFlag = saemFlag;
     }
 
     @Override
