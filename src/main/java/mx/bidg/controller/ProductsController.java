@@ -3,6 +3,7 @@ package mx.bidg.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import mx.bidg.config.JsonViews;
+import mx.bidg.model.AccountingAccounts;
 import mx.bidg.model.CProductTypes;
 import mx.bidg.model.CProducts;
 import mx.bidg.service.CProductsService;
@@ -40,10 +41,10 @@ public class ProductsController {
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(productsService.findById(id));
     }
     
-    @RequestMapping(value = "/product-type/{idProductType}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public @ResponseBody ResponseEntity<String> findByProductType(@PathVariable int idProductType) throws Exception {
+    @RequestMapping(value = "/product-type/{idAccountingAccount}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody ResponseEntity<String> findByProductType(@PathVariable int idAccountingAccount) throws Exception {
         
-        List<CProducts> list = productsService.findByProductTypes(new CProductTypes(idProductType));
+        List<CProducts> list = productsService.findByProductTypes(new AccountingAccounts(idAccountingAccount));
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(list), HttpStatus.OK);
     }
 }

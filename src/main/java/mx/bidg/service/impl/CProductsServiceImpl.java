@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import mx.bidg.dao.ProductTypesProductDao;
-import mx.bidg.model.CProductTypes;
+import mx.bidg.model.AccountingAccounts;
 import mx.bidg.model.ProductTypesProduct;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,10 +38,10 @@ public class CProductsServiceImpl implements CProductsService {
     }
 
     @Override
-    public List<CProducts> findByProductTypes(CProductTypes cProductType) {
+    public List<CProducts> findByProductTypes(AccountingAccounts accountingAccounts) {
         
         List<CProducts> list = new ArrayList<>();
-        List<ProductTypesProduct> productTypesProducts = productTypesProductDao.findByProductType(cProductType);
+        List<ProductTypesProduct> productTypesProducts = productTypesProductDao.findByProductType(accountingAccounts);
         List<CProducts> cProducts = productsDao.findAll();
         
         for(ProductTypesProduct productTypesProduct : productTypesProducts) {

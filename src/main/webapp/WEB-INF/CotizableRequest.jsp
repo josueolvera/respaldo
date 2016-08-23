@@ -245,7 +245,7 @@
                       {
                          this.Productos= data;
                       });
-              this.obtainSuppliers(this.obtainRequestInformation.idProductType);
+                     this.obtainSuppliers(this.obtainRequestInformation.idProductType);
             },
             obtainRequestInfo: function()
             {
@@ -266,9 +266,7 @@
                         this.desactivarCombos= false;
                         this.ProductTypes= {};
                         this.Productos= {};
-
                       });
-
             }
             ,
             matchInformation: function(requestInformation)
@@ -281,6 +279,7 @@
             },
             saveProduct: function()
             {
+              this.obtainRequestInformation.idUserResponsable = this.userInSession.idUser;
               var producto= this.createProduct();
               var self= this;
               this.Productos.forEach(function(element)
@@ -297,6 +296,8 @@
                 this.desactivarCombos= true;
                 this.desactivarGuardar= false;
               }
+              this.obtainRequestInfo();
+              console.log();
             },
             createProduct: function()
             {
@@ -1303,7 +1304,7 @@
                 <select class="form-control" v-model="obtainRequestInformation.idProductType" :disabled="desactivarCombos || isUpdate"
                   @change="obtainProducts" id="productTypesin" required>
                   <option></option>
-                  <option v-for="ProductType in ProductTypes" value="{{ProductType.accountingAccounts.idBudgetSubcategory}}">
+                  <option v-for="ProductType in ProductTypes" value="{{ProductType.idAccountingAccount}}">
                     {{ProductType.accountingAccounts.budgetSubcategory.budgetSubcategory}}
                   </option>
                 </select>
@@ -1330,8 +1331,7 @@
                 </div>
               </div>
 
-
-              <div class="col-xs-5">
+              <%-- <div class="col-xs-5">
                 <label>
                   Centro de Costos
                 </label>
@@ -1342,7 +1342,7 @@
                     {{ userInSession.dwEmployee.dwEnterprise.area.areaName }}
                   </option>
                 </select>
-              </div>
+              </div> --%>
             </div>
             <br>
               <div class="row">

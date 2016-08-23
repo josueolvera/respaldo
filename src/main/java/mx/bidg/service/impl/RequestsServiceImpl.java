@@ -27,6 +27,9 @@ public class RequestsServiceImpl implements RequestsService {
     RequestsDao requestsDao;
     
     @Autowired
+    AccountingAccountsDao accountingAccountsDao;
+    
+    @Autowired
     RequestTypesProductDao requestTypesProductDao;
     
     @Autowired
@@ -73,13 +76,11 @@ public class RequestsServiceImpl implements RequestsService {
         
         JsonNode jsonRequest = mapper.readTree(data);
         HashMap<String, Object> hashMap = new HashMap<>();
-  /*      
+        
         CRequestsCategories cRequestsCategory = cRequestCategoriesDao
-                .findById(jsonRequest.get("idRequestCategory").asInt());
-        CRequestTypes cRequestType = cRequestTypesDao
-                .findByIdFetchBudgetCategory(jsonRequest.get("idRequestType").asInt());
-        CProductTypes cProductType = cProductTypesDao
-                .findByIdFetchBudgetSubcategory(jsonRequest.get("idProductType").asInt());
+        .findById(jsonRequest.get("idRequestCategory").asInt());
+        
+        AccountingAccounts accountingAccounts = accountingAccountsDao.findById(jsonRequest.get("idProductType").asInt());
              
         Users userResponsable = usersDao.findByIdFetchDwEmployee(jsonRequest.get("idUserResponsable").asInt());
         LocalDateTime date = LocalDateTime.now();
@@ -94,14 +95,14 @@ public class RequestsServiceImpl implements RequestsService {
         DwEnterprises dwEnterprise = userResponsable.getDwEmployee().getDwEnterprise();        
         
         Budgets budget = budgetsDao.findByCombination(dwEnterprise.getDistributor(), dwEnterprise.getArea(), 
-                cRequestType.getBudgetCategory(), cProductType.getBudgetSubcategory());
+                accountingAccounts);
         
         if(budget == null) {
             throw new ValidationException("No existe el Presupuesto", "No existe un presupuesto para esta solicitud");
         }
         
         RequestTypesProduct requestTypesProduct = requestTypesProductDao.findByCombination(cRequestsCategory, 
-                cRequestType, cProductType);
+                accountingAccounts);
         
         if(requestTypesProduct == null) {
             throw new ValidationException("No existe el RequestTypesProduct", "No existe un tipo de producto "
@@ -116,7 +117,7 @@ public class RequestsServiceImpl implements RequestsService {
         }
         
         hashMap.put("budgetMonthBranch", budgetMonthBranch);
-          */
+          
         return hashMap;
     }
     

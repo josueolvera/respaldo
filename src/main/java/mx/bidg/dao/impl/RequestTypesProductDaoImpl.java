@@ -9,14 +9,13 @@ import java.util.HashMap;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.RequestTypesProductDao;
+import mx.bidg.model.AccountingAccounts;
 import mx.bidg.model.CBudgetCategories;
-import mx.bidg.model.CProductTypes;
 import mx.bidg.model.CRequestTypes;
 import mx.bidg.model.CRequestsCategories;
 import mx.bidg.model.RequestTypesProduct;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.Projections;
+import org.hibernate.FetchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -53,20 +52,19 @@ public class RequestTypesProductDaoImpl extends AbstractDao<Integer, RequestType
     }
 
     @Override
-    public RequestTypesProduct findByCombination(CRequestsCategories requestCategory, CRequestTypes requestType, 
-            CProductTypes productType) {
+    public RequestTypesProduct findByCombination(CRequestsCategories requestCategory, 
+            AccountingAccounts accountingAccounts) {
         Criteria criteria = createEntityCriteria();
         HashMap<String, Object> map = new HashMap<>();
         map.put("requestCategory", requestCategory);
-        map.put("requestType", requestType);
-        map.put("productType", productType);
+        map.put("accountingAccounts", accountingAccounts);
         return (RequestTypesProduct) criteria.add(Restrictions.allEq(map)).uniqueResult();
     }
 
     @Override
     public List<RequestTypesProduct> findByRequestCategory(CRequestsCategories requestCategory) {
-        
-        Criteria criteria = createEntityCriteria().add(Restrictions.eq("requestCategory", requestCategory));
+        Criteria criteria = createEntityCriteria().add(Restrictions.eq("requestCategory", requestCategory))
+                .setFetchMode("cProductTypesProducts", FetchMode.JOIN);
         return (List<RequestTypesProduct>) criteria.list();
     }
 

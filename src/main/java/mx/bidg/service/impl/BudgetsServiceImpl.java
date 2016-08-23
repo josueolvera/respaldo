@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mx.bidg.dao.BudgetsDao;
+import mx.bidg.model.AccountingAccounts;
 import mx.bidg.model.Budgets;
 import mx.bidg.model.CAreas;
 import mx.bidg.model.CBudgetCategories;
@@ -37,10 +38,9 @@ public class BudgetsServiceImpl implements BudgetsService {
     }
 
     @Override
-    public Budgets findByCombination(Integer idDistributor, Integer idArea, Integer idCategory,
-            Integer idSubcategory) {
+    public Budgets findByCombination(Integer idDistributor, Integer idArea, Integer idAccountingAccount) {
         return dao.findByCombination(new CDistributors(idDistributor), new CAreas(idArea), 
-                new CBudgetCategories(idCategory), new CBudgetSubcategories(idSubcategory));
+                new AccountingAccounts(idAccountingAccount));
     }
 
     @Override

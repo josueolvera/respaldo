@@ -87,13 +87,15 @@ public class BudgetController {
         return new ResponseEntity<>("Presupuesto guardado con éxito", HttpStatus.OK);
     }
     
-    @RequestMapping(value = "/{idGroup}/{idArea}/{idCategory}/{idSubcategory}", produces = "application/json")
+   /* @RequestMapping(value = "/{idGroup}/{idArea}/{idCategory}/{idSubcategory}", produces = "application/json")
     public @ResponseBody ResponseEntity<String> getByCombination(@PathVariable int idGroup, @PathVariable int idArea, 
             @PathVariable int idCategory, @PathVariable int idSubcategory) throws Exception {
         
         Budgets budget = budgetsService.findByCombination(idGroup, idArea, idCategory, idSubcategory);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(budget), HttpStatus.OK);
-    }
+    } 
+        Revisar este controller ya que la estructura cambio de categoria y subcategoria a cuenta contable
+    */
     
     @RequestMapping(value = "/{idGroup}/{idArea}", produces = "application/json")
     public @ResponseBody ResponseEntity<String> getByGroupArea(@PathVariable int idGroup, @PathVariable int idArea) 

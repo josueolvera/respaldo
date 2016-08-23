@@ -7,11 +7,10 @@ package mx.bidg.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import mx.bidg.model.AccountingAccounts;
 
 import mx.bidg.model.Budgets;
 import mx.bidg.model.CAreas;
-import mx.bidg.model.CBudgetCategories;
-import mx.bidg.model.CBudgetSubcategories;
 import mx.bidg.model.CDistributors;
 import mx.bidg.model.CGroups;
 
@@ -25,12 +24,12 @@ public interface BudgetsDao extends InterfaceDao<Budgets> {
      *
      * @param cDistributors
      * @param idArea
+     * @param accountingAccounts
      * @param idCategory
      * @param idSubcategory
      * @return
      */
-    Budgets findByCombination(CDistributors cDistributors, CAreas idArea, CBudgetCategories idCategory,
-            CBudgetSubcategories idSubcategory);
+    Budgets findByCombination(CDistributors cDistributors, CAreas idArea, AccountingAccounts accountingAccounts);
     ArrayList<Budgets> findByGroupArea(CGroups idGroup, CAreas idArea);
     List<Budgets> findByDistributor(Integer idDistributor);
     List<Budgets> findByDistributorAndArea(Integer idDistributor, Integer idArea);
