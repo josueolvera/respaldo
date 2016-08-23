@@ -157,7 +157,7 @@
                     },
                     showInfo: false,
                     sucursal: {},
-                    distributors: {},
+                    distributors: [],
                     conceptoProrrateo: '',
                     distributorChecked: [],
                     prorrateoOpcion: '',
@@ -198,10 +198,12 @@
                     getUserInSession: function() {
                         this.$http.get(ROOT_URL + "/user")
                                 .success(function (data) {
+                                    this.distributors = data.distributors;
                                     this.selected.distributor = data.dwEmployee.dwEnterprise.distributor;
                                     this.selected.area = data.dwEmployee.dwEnterprise.area;
                                     this.selected.dwEnterprise = data.dwEmployee.dwEnterprise;
                                     this.getDwEnterprisesByDistributorAndArea();
+                                    this.getBudgetsByDistributorAndArea();
                                 })
                                 .error(function(data) {
                                     showAlert("Ha habido un error al obtener al usuario en sesion",{type:3});
@@ -588,26 +590,6 @@
                             showAlert("Ha habido un error con la solicitud, intente nuevamente");
                         });
                     },
-                    getDistributors: function()
-                    {
-                        this.$http.get(ROOT_URL + "/distributors")
-                                .success(function (data)
-                                {
-                                    this.distributors = data;
-                                });
-                    },
-                    showModalProrrateo: function(concepto, idArea)
-                    {
-                        this.distributorChecked= [];
-                        this.monthChecked= [];
-                        this.monthsOfConcept= {};
-                        this.conceptoProrrateo = concepto;
-                        this.idAreaforModal= idArea;
-                        this.getDistributors();
-                        this.getMonthsConcept(concepto.idConcept);
-                        this.fetchBudgetConceptShare(concepto.idConcept);
-                        $("#prorrateo").modal("show");
-                    },
                     getMonthsConcept : function(idConcept)
                     {
                         this.idConcepto = idConcept;
@@ -655,10 +637,6 @@
                             console.log(response);
                         });
                     },
-                    copyBudgetOtherYear: function()
-                    {
-                        alert("Hola");
-                    },
                     getBudgets: function () {
                         var self = this;
                         this.contenido = [];
@@ -674,74 +652,6 @@
                             this.mixedArrays();
                         }
                     }
-                },
-                filters: {
-                    areaName: function (argument)
-                    {
-                        var name;
-                        this.catalogoAreas.forEach(function(elemento)
-                        {
-                            if (argument == elemento.idArea)
-                            {
-                                name = elemento.areaName;
-                            }
-                        });
-                        return name;
-                    },
-                    budgetCategory: function(argument)
-                    {
-                        var name;
-                        this.catalogoRubros.forEach(function(elemento)
-                        {
-                            if (argument == elemento.idBudgetCategory)
-                            {
-                                name = elemento.budgetCategory;
-                            }
-                        });
-                        return name;
-                    },
-                    BudgetSubcategory: function(argument)
-                    {
-                        var name;
-                        this.catalogoSubRubros.forEach(function(elemento)
-                        {
-                            if (argument == elemento.idBudgetSubcategory)
-                            {
-                                name = elemento.budgetSubcategory;
-                            }
-                        });
-                        return name;
-                    },
-                    DistributorFilter: function (argument)
-                    {
-                        var name;
-                        this.catalogoDistribuidor.forEach(function(elemento)
-                        {
-                            if (argument == elemento.idDistributor)
-                            {
-                                name = elemento.distributorName;
-                            }
-                        });
-                        return name;
-                    },
-                    SucursalFilter: function (argument)
-                    {
-                        var name;
-                        this.catalogoSucursales.forEach(function(elemento)
-                        {
-                            if (argument == elemento.idBranch)
-                            {
-                                name = elemento.branchShort;
-                            }
-                        });
-                        return name;
-                    },
-                    shortName: function(nombre)
-                    {
-                        var name;
-                        name = nombre.substring(0, 3);
-                        return name;
-                    }
                 }
             });
 
@@ -752,10 +662,16 @@
         <div id="contenidos">
             <div class="container-fluid">
                 <br>
-                <h2>Presupuesto</h2>
+                <h2>Captura de presupuesto</h2>
                 <br>
                 <div class="row">
                     <form v-on:submit.prevent="searchBudget">
+                        <div class="col-md-2" v-if="distributors.length > 0">
+                            <label>Distribuidor</label>
+                            <select v-model="selected.distributor" class="form-control" @change="getBudgetsByDistributor">
+                                <option v-for="distributor in distributors" :value="distributor">{{distributor.distributorName}}</option>
+                            </select>
+                        </div>
                         <div class="col-md-2">
                             <label>Año</label>
                             <input type="number" :min="currentYear" :max="maxYear" minlength="4" maxlength="4"
@@ -781,22 +697,22 @@
                     <!--  <div class="col-xs-12"> -->
                     <div class="row" style="margin-left: 0px; margin-right: 0px">
                         <div class="col-xs-4 text-left" style="padding-left: 0">
-                            <h2 style="font-weight: bold">{{sucss.idDistributor | DistributorFilter}}<small>&nbsp;{{sucss.idBranch | SucursalFilter}}</small></h2>
+                            <h2 style="font-weight: bold">{{sucss.distributor.distributorName}}<small>&nbsp;{{sucss.branch.branchShort}}</small></h2>
                         </div>
                         <div class="col-xs-8 text-right">
-                            <h3>{{sucss.idArea | areaName}}</h3>
+                            <h3>{{sucss.area.areaName}}</h3>
                         </div>
                     </div>
                     <hr>
                     <div class="row" v-for="cont in contenido" style="margin-left: 0px; margin-right: 0px" id="1-{{sucss.idArea}}-{{cont[0].idBudgetCategory}}">
                         <!--  <div class="col-xs-12" style="padding-left: -10px"> -->
                         <div class="bs-callout bs-callout-default">
-                            <h4>{{cont[0].idBudgetCategory | budgetCategory }}</h4>
+                            <h4>{{cont[0].budgetCategory.budgetCategory }}</h4>
                             <div class="row" v-for="conte in cont" id="1-{{sucss.idArea}}-{{cont[0].idBudgetCategory}}-{{conte.idBudgetSubcategory}}"
                                  style="margin-left: 0px; margin-right: 0px">
                                 <div class="row" style="margin-left: 0px; margin-right: 0px">
                                     <div class="col-xs-4">
-                                        <h5>{{conte.idBudgetSubcategory | BudgetSubcategory }}</h5>
+                                        <h5>{{conte.budgetSubcategory.budgetSubcategory }}</h5>
                                         <div class="input-group">
                                             <span class="input-group-addon">$</span>
                                             <input type="text" class="form-control" placeholder="" disabled="true" v-model=conte.granTotal>
@@ -887,115 +803,6 @@
                         </div>
                         <!--  </div> -->
                         <!--  </div> -->
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal fade" id="prorrateo" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title" id="">Prorrateo</h4>
-                        </div>
-                        <div class="modal-body">
-                            <ul id="tabs" class="nav nav-tabs" data-tabs="tabs" role="tablist">
-                                <li class="active" role="presentation">
-                                    <a href="#tab-save" role="tab" data-toggle="tab">Creación / Modificación</a>
-                                </li>
-                                <li role="presentation">
-                                    <a href="#tab-view" role="tab" data-toggle="tab">Consultar actual</a>
-                                </li>
-                            </ul>
-                            <div class="tab-content">
-                                <div id="tab-save" class="tab-pane fade in active" role="tabpanel">
-                                    <div class="row">
-                                        <div class="col-xs-4">
-                                            <label>Área</label>
-                                            <input class="form-control" disabled="true" value="{{idAreaforModal | areaName}}">
-                                        </div>
-                                        <div class="col-xs-4">
-                                            <label>Concepto</label>
-                                            <input class="form-control" disabled="true" v-model="conceptoProrrateo.conceptName">
-                                        </div>
-                                        <div class="col-xs-4">
-                                            <label>Monto Anual</label>
-                                            <input class="form-control" disabled="true" v-model="conceptoProrrateo.total">
-                                        </div>
-                                    </div>
-                                    <br>
-                                    <div class="row">
-                                        <div class="col-xs-3">
-                                            <label>Empresas</label>
-                                            <div class="checkbox" v-for="distributor in distributors" v-if="distributor.budgetShare">
-                                                <label>
-                                                    <input type="checkbox" value="{{distributor}}" v-model="distributorChecked" >
-                                                    <span v-if="distributor.budgetShare">{{distributor.distributorName}}</span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-4" v-if="distributorChecked.length>0">
-                                            <label>Período</label>
-                                            <div class="row">
-                                                <div class="col-xs-3" v-for="meses in monthsOfConcept">
-                                                    <div class="btn-group" style="margin-bottom: 5px">
-                                                        <label class="btn btn-default" style="width: 60px">
-                                                            <input type="checkbox" value="{{meses}}" v-model="monthChecked">
-                                                            {{meses.budgetMonthBranch.month.month | shortName}}
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-xs-12 text-left">
-                                                    <label @click.prevent="checkAllMonthsProrrateo">
-                                                        <input :checked="monthChecked.length == 12" type="checkbox">
-                                                        Seleccionar todos
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-5" v-if="distributorChecked.length>0 && monthChecked.length > 0 ">
-                                            <label>Porcentajes</label>
-                                            <div class="row" v-for="distributor in distributorChecked">
-                                                <div class="col-xs-7">
-                                                    <label>{{distributor.distributorName}}</label>
-                                                </div>
-                                                <div class="col-xs-5">
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon">%</span>
-                                                        <input v-model="distributor.percent" type="text" class="form-control">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-xs-12 text-left">
-                                                    <label> %  Total:  {{totalPorcentaje}}</label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div id="tab-view" class="tab-pane fade horizontal-scroll">
-                                    <table class="table">
-                                        <tr v-for="(index, monthShare) in budgetConceptShare
-                                                | orderBy '[0].budgetMonthConcept.budgetMonthBranch.idMonth'">
-                                            <td>{{ monthShare[0].budgetMonthConcept.budgetMonthBranch.month.month }}</td>
-                                            <td v-for="distributorShare in monthShare | orderBy 'idDistributor'">
-                                                <small>{{ distributorShare.distributor.acronyms }}</small>
-                                                <p>{{ (distributorShare.percent * 100).toFixed(2) }} % : $ {{ distributorShare.amount }}</p>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                                <button @click="saveBudgetShare" type="button"
-                                        class="btn btn-success" v-if="distributorChecked.length>0 && monthChecked.length > 0 && (totalPorcentaje == 100 ) ">Guardar</button>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

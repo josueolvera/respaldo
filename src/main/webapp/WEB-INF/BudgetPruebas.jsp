@@ -55,66 +55,24 @@
                     this.selected.year = now.getFullYear();
                     this.currentYear = now.getFullYear();
                     this.maxYear = this.currentYear + 5;
-                    this.$http.get(ROOT_URL + "/areas")
-                            .success(function (data)
-                            {
-                                this.catalogoAreas= data;
-                                this.bandera1ernivel= true;
-                            });
-
-                    this.$http.get(ROOT_URL + "/budget-categories")
-                            .success(function (data)
-                            {
-                                this.catalogoRubros= data;
-                                this.bandera2donivel= true;
-                            });
-
-                    this.$http.get(ROOT_URL + "/budget-subcategories")
-                            .success(function (data)
-                            {
-                                this.catalogoSubRubros= data;
-                                this.bandera3ernivel= true;
-                            });
-
-                    this.$http.get(ROOT_URL + "/distributors?forStock=true")
-                            .success(function (data)
-                            {
-                                this.catalogoDistribuidor= data;
-                                //this.bandera3ernivel= true;
-                            });
-
-                    this.$http.get(ROOT_URL + "/branchs")
-                            .success(function (data)
-                            {
-                                this.catalogoSucursales= data;
-                                //this.bandera3ernivel= true;
-                            });
-                    this.$http.get(ROOT_URL + "/groups")
-                            .success(function (data)
-                            {
-                                this.catalogoGrupo= data;
-                                //this.bandera3ernivel= true;
-                            });
                 },
-                ready: function ()
-                {},
+                ready : function () {
+                    this.getDistributors();
+                },
                 data: {
                     meses: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
                         'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-                    catalogoGrupo: {},
                     datosPresupuesto: {},
-                    catalogoDistribuidor: {},
-                    catalogoRegion: {},
-                    catalogoSucursales: {},
-                    catalogoAreas: {},
-                    catalogoRubros: {},
-                    catalogoSubRubros: {},
                     idBranchSelected: '',
                     arbolNiveles: {},
                     contenido: {},
                     sucursales: [],
                     budgets: [],
                     dwEnterprises: [],
+                    distributors: [],
+                    regions: [],
+                    zonas: [],
+                    branchs: [],
                     areas: [],
                     budgetCategories: [],
                     currentYear: null,
@@ -154,12 +112,11 @@
                     },
                     showInfo: false,
                     sucursal: {},
-                    distributors: {},
                     conceptoProrrateo: '',
                     distributorChecked: [],
                     prorrateoOpcion: '',
                     monthChecked: [],
-                    idAreaforModal: 0,
+                    prorrateoArea: 0,
                     monthsOfConcept: {},
                     budgetConceptShare: null,
                     idConcepto: 0,
@@ -179,8 +136,7 @@
                 },
                 methods:
                 {
-                    groupBy: function (array, filter)
-                    {
+                    groupBy: function (array, filter) {
                         var groups = {};
                         array.forEach(function (element)
                         {
@@ -197,15 +153,13 @@
                         this.showInfo = false;
                         this.getBudgetsByDistributorAndArea();
                     },
-                    prepareList: function(event)
-                    {
+                    prepareList: function(event) {
                         $(event.target).toggleClass('expanded');
                         $(event.target).children('ul').toggle('medium');
                         event.stopPropagation();
                         this.navigation(event.target.id);
                     },
-                    prepareList1: function(event)
-                    {
+                    prepareList1: function(event) {
                         $(event.target).toggleClass('expanded');
                         $(event.target).children('ul').toggle('medium');
                         var ids= event.target.id.substr(2, event.target.id.length);
@@ -214,10 +168,8 @@
                         var posicion= position.top;
                         $("#page-content-wrapper").scrollTop(posicion);
                         event.stopPropagation();
-                    }
-                    ,
-                    navigation: function(key)
-                    {
+                    },
+                    navigation: function(key) {
                         var ids= key.substr(2, key.length);
                         var res = ids.split("-");
                         if (this.lastkeysearch !== key)
@@ -269,8 +221,7 @@
 
 
                     },
-                    createConcept: function ()
-                    {
+                    createConcept: function () {
                         var objeto = {
                             idConcept: 0,
                             idBudget: 0,
@@ -296,8 +247,7 @@
                         };
                         return objeto;
                     },
-                    createTotalMonths: function()
-                    {
+                    createTotalMonths: function() {
                         var objeto =
                                 [
                                     {month: 1, montoConcept: ''},
@@ -315,8 +265,7 @@
                                 ];
                         return objeto;
                     },
-                    searchConcepts: function()
-                    {
+                    searchConcepts: function() {
                         var self= this;
                         this.showInfo = true;
                         var distributor= this.selected.distributor.idDistributor;
@@ -349,10 +298,8 @@
                                     });
                                     this.getBudgets();
                                 });
-                    }
-                    ,
-                    seteoInfo: function(idDwEnterprise, budget, event)
-                    {
+                    },
+                    seteoInfo: function(idDwEnterprise, budget, event) {
                         event.preventDefault();
                         var concepto= this.createConcept();
                         var totalMeses= this.createTotalMonths();
@@ -385,18 +332,15 @@
                         });
                         self.groupArray();
                     },
-                    groupArray: function()
-                    {
+                    groupArray: function() {
                         this.contenido = this.groupBy(this.contenido, function (item)
                         {
                             return item.idBudgetCategory;
                         });
                         this.banderacontenido = true;
                         this.obtainGranTotal();
-                    }
-                    ,
-                    deleteObject: function(budget, concepto)
-                    {
+                    },
+                    deleteObject: function(budget, concepto) {
                         if (concepto.idConcept> 0)
                         {
                             this.$http.delete(ROOT_URL + "/budget-concepts/"+concepto.idConcept)
@@ -411,14 +355,12 @@
                             this.obtainTotalConcept(concepto, budget);
                         }
                     },
-                    moneyFormat: function(mes, concepto, budget)
-                    {
+                    moneyFormat: function(mes, concepto, budget) {
                         var total= accounting.formatMoney(mes.amountConcept);
                         mes.amountConcept= total;
                         this.obtainTotalConcept(concepto, budget);
                     },
-                    equalsImport: function(concepto, budget)
-                    {
+                    equalsImport: function(concepto, budget) {
                         if (concepto.equals)
                         {
                             if (concepto.conceptMonth[0].amountConcept)
@@ -450,8 +392,7 @@
                         }
                         this.obtainTotalConcept(concepto, budget);
                     },
-                    obtainTotalConcept: function(concepto, budget)
-                    {
+                    obtainTotalConcept: function(concepto, budget) {
                         concepto.total= 0;
                         budget.granTotal= 0;
 
@@ -540,8 +481,7 @@
                                     });
                                 });
                     },
-                    obtainGranTotal: function()
-                    {
+                    obtainGranTotal: function() {
                         this.totalArea= 0;
                         this.totalIngresos = 0;
                         this.utilidad = 0;
@@ -567,12 +507,10 @@
                         this.utilidad = accounting.formatMoney(this.utilidad);
                         this.cargando= false;
                     },
-                    obtainConceptsYear: function()
-                    {
+                    obtainConceptsYear: function() {
                         this.getBudgetsByDistributorAndArea();
                     },
-                    autorizar: function()
-                    {
+                    autorizar: function() {
                         this.autorizacion.idDistributor = this.selected.distributor.idDistributor;
                         this.autorizacion.idArea = this.selected.area.idArea;
                         this.autorizacion.year = this.selected.year;
@@ -586,10 +524,8 @@
                             showAlert("Ha habido un error con la solicitud, intente nuevamente");
                         });
 
-                    }
-                    ,
-                    copyBranch: function()
-                    {
+                    },
+                    copyBranch: function() {
                         this.cargando= true;
                         this.sucursales= [];
                         var self= this;
@@ -608,45 +544,38 @@
                             });
                         });
                         this.getBudgetsByDistributorAndArea();
-                    }
-                    ,
-                    saveBudget: function(eventoconcepto)
-                    {
-                        this.$http.post(ROOT_URL + "/budget-month-concepts", JSON.stringify(eventoconcepto)).
-                        success(function(data)
-                        {
-                            showAlert(data);
-                            this.getBudgetsByDistributorAndArea();
-                        }).error(function(){
-                            showAlert("Ha habido un error con la solicitud, intente nuevamente");
-                        });
                     },
-                    getDistributors: function()
-                    {
+                    saveBudget: function(eventoconcepto) {
+                        this.$http.post(ROOT_URL + "/budget-month-concepts", JSON.stringify(eventoconcepto))
+                                .success(function(data) {
+                                    showAlert(data);
+                                    this.getBudgetsByDistributorAndArea();
+                                })
+                                .error(function(data) {
+                                    showAlert("Ha habido un error con la solicitud, intente nuevamente");
+                                });
+                    },
+                    getDistributors: function() {
                         this.$http.get(ROOT_URL + "/distributors?forStock=true")
-                                .success(function (data)
-                                {
+                                .success(function (data) {
                                     this.distributors = data;
                                 });
                     },
-                    showModalProrrateo: function(concepto, idArea)
-                    {
+                    showModalProrrateo: function(concepto, area) {
                         this.distributorChecked= [];
                         this.monthChecked= [];
                         this.monthsOfConcept= {};
                         this.conceptoProrrateo = concepto;
-                        this.idAreaforModal= idArea;
+                        this.prorrateoArea= idArea;
                         this.getDistributors();
                         this.getMonthsConcept(concepto.idConcept);
                         this.fetchBudgetConceptShare(concepto.idConcept);
                         $("#prorrateo").modal("show");
                     },
-                    getMonthsConcept : function(idConcept)
-                    {
+                    getMonthsConcept : function(idConcept) {
                         this.idConcepto = idConcept;
                         this.$http.get(ROOT_URL + "/budget-month-concepts/"+idConcept)
-                                .success(function (data)
-                                {
+                                .success(function (data) {
                                     this.monthsOfConcept= data;
                                 });
                     },
@@ -688,10 +617,6 @@
                             console.log(response);
                         });
                     },
-                    copyBudgetOtherYear: function()
-                    {
-                        alert("Hola");
-                    },
                     getBudgets: function () {
                         var self = this;
                         this.contenido = [];
@@ -716,72 +641,9 @@
                                 self.select.dwEnterprises.push(dwEnterprise);
                             }
                         });
-                    },
-                    onYearChanged : function () {
-                        this.showInfo = false;
                     }
                 },
                 filters: {
-                    areaName: function (argument)
-                    {
-                        var name;
-                        this.catalogoAreas.forEach(function(elemento)
-                        {
-                            if (argument == elemento.idArea)
-                            {
-                                name = elemento.areaName;
-                            }
-                        });
-                        return name;
-                    },
-                    budgetCategory: function(argument)
-                    {
-                        var name;
-                        this.catalogoRubros.forEach(function(elemento)
-                        {
-                            if (argument == elemento.idBudgetCategory)
-                            {
-                                name = elemento.budgetCategory;
-                            }
-                        });
-                        return name;
-                    },
-                    BudgetSubcategory: function(argument)
-                    {
-                        var name;
-                        this.catalogoSubRubros.forEach(function(elemento)
-                        {
-                            if (argument == elemento.idBudgetSubcategory)
-                            {
-                                name = elemento.budgetSubcategory;
-                            }
-                        });
-                        return name;
-                    },
-                    DistributorFilter: function (argument)
-                    {
-                        var name;
-                        this.catalogoDistribuidor.forEach(function(elemento)
-                        {
-                            if (argument == elemento.idDistributor)
-                            {
-                                name = elemento.distributorName;
-                            }
-                        });
-                        return name;
-                    },
-                    SucursalFilter: function (argument)
-                    {
-                        var name;
-                        this.catalogoSucursales.forEach(function(elemento)
-                        {
-                            if (argument == elemento.idBranch)
-                            {
-                                name = elemento.branchShort;
-                            }
-                        });
-                        return name;
-                    },
                     shortName: function(nombre)
                     {
                         var name;
@@ -805,7 +667,7 @@
                         <div class="col-md-2">
                             <label>Distribuidor</label>
                             <select v-model="selected.distributor" class="form-control" @change="getBudgetsByDistributor">
-                                <option v-for="distributor in catalogoDistribuidor" :value="distributor">{{distributor.distributorName}}</option>
+                                <option v-for="distributor in distributors" :value="distributor">{{distributor.distributorName}}</option>
                             </select>
                         </div>
                         <div class="col-md-2">
@@ -849,22 +711,22 @@
                     <!--  <div class="col-xs-12"> -->
                     <div class="row" style="margin-left: 0px; margin-right: 0px">
                         <div class="col-xs-4 text-left" style="padding-left: 0">
-                            <h2 style="font-weight: bold">{{sucss.idDistributor | DistributorFilter}}<small>&nbsp;{{sucss.idBranch | SucursalFilter}}</small></h2>
+                            <h2 style="font-weight: bold">{{sucss.distributor.distributorName}}<small>&nbsp;{{sucss.branch.branchShort}}</small></h2>
                         </div>
                         <div class="col-xs-8 text-right">
-                            <h3>{{sucss.idArea | areaName}}</h3>
+                            <h3>{{sucss.area.areaName}}</h3>
                         </div>
                     </div>
                     <hr>
                     <div class="row" v-for="cont in contenido" style="margin-left: 0px; margin-right: 0px" id="1-{{sucss.idArea}}-{{cont[0].idBudgetCategory}}">
                         <!--  <div class="col-xs-12" style="padding-left: -10px"> -->
                         <div class="bs-callout bs-callout-default">
-                            <h4>{{cont[0].idBudgetCategory | budgetCategory }}</h4>
+                            <h4>{{cont[0].budgetCategory.budgetCategory }}</h4>
                             <div class="row" v-for="conte in cont" id="1-{{sucss.idArea}}-{{cont[0].idBudgetCategory}}-{{conte.idBudgetSubcategory}}"
                                  style="margin-left: 0px; margin-right: 0px">
                                 <div class="row" style="margin-left: 0px; margin-right: 0px">
                                     <div class="col-xs-4">
-                                        <h5>{{conte.idBudgetSubcategory | BudgetSubcategory }}</h5>
+                                        <h5>{{conte.budgetSubcategory.budgetSubcategory }}</h5>
                                         <div class="input-group">
                                             <span class="input-group-addon">$</span>
                                             <input type="text" class="form-control" placeholder="" disabled="true" v-model=conte.granTotal>
@@ -895,7 +757,7 @@
                                         </div>
                                         <%--<div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">--%>
                                             <%--<button type="button" class="btn btn-default" title="Prorrateo"--%>
-                                                    <%--@click="showModalProrrateo(concepto, sucss.idArea)" v-if="concepto.idConcept>0">--%>
+                                                    <%--@click="showModalProrrateo(concepto, sucss.area)" v-if="concepto.idConcept>0">--%>
                                                 <%--<span class="glyphicon glyphicon-align-left"></span>--%>
                                             <%--</button>--%>
                                         <%--</div>--%>
@@ -985,7 +847,7 @@
                                     <div class="row">
                                         <div class="col-xs-4">
                                             <label>Área</label>
-                                            <input class="form-control" disabled="true" value="{{idAreaforModal | areaName}}">
+                                            <input class="form-control" disabled="true" value="{{prorrateoArea.areaName}}">
                                         </div>
                                         <div class="col-xs-4">
                                             <label>Concepto</label>
