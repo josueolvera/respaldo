@@ -64,7 +64,7 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
     @Override
     public PlaneTickets save(String data, Users user) throws IOException {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        /*DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
         LocalDateTime now = LocalDateTime.now();
 
         int month = now.getMonthValue();
@@ -127,7 +127,9 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
             }
         } else {
             throw new ValidationException("Sin presupuesto","No tiene presupuesto asignado para este tipo de solicitud");
-        }
+        }*/
+        PlaneTickets planeTickets = null;
+        return planeTickets;
     }
 
     @Override

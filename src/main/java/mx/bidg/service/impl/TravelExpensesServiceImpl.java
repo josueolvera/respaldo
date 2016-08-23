@@ -54,7 +54,7 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
     @Override
     public TravelExpenses save(String data, Users user) throws IOException {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        /*DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
         LocalDateTime now = LocalDateTime.now();
 
         int month = now.getMonthValue();
@@ -87,8 +87,9 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
                     CBudgetSubcategories.INTERNACIONALES
             );
             productType = CProductTypes.INTERNACIONALES;
-        }
-
+        } 
+                
+        
         if (budget != null) {
             BudgetMonthBranch budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget,cMonth,dwEnterprise,year);
 
@@ -157,7 +158,9 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
             }
         } else {
             throw new ValidationException("Sin presupuesto","No tiene presupuesto asignado para este tipo de solicitud");
-        }
+        }*/
+        TravelExpenses expenses = null;
+        return expenses;
     }
 
     @Override

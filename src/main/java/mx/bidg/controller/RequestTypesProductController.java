@@ -40,7 +40,7 @@ public class RequestTypesProductController {
     @Autowired
     private ObjectMapper mapper;
     
-    @RequestMapping(value = "/{idRequestCategory}/{idRequestType}/{idProductType}", produces = "application/json;charset=UTF-8")
+   /* @RequestMapping(value = "/{idRequestCategory}/{idRequestType}/{idProductType}", produces = "application/json;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> getByCombination(@PathVariable int idRequestCategory, 
             @PathVariable int idRequestType, @PathVariable int idProductType) throws Exception {
         
@@ -48,7 +48,9 @@ public class RequestTypesProductController {
                 writeValueAsString(requestTypesProductService.findByCombination(idRequestCategory, idRequestType, idProductType));
         
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+    } 
+    Revisar este controller ya que la estructura cambio de categoria y subcategoria a cuenta contable
+    */
 
     @RequestMapping(value = "/{idRequestType}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> getByRequestType(@PathVariable int idRequestType) throws IOException{

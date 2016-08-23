@@ -6,7 +6,7 @@
 package mx.bidg.dao;
 
 import java.util.List;
-import mx.bidg.model.CProductTypes;
+import mx.bidg.model.AccountingAccounts;
 import mx.bidg.model.ProductTypesProduct;
 
 /**
@@ -15,6 +15,6 @@ import mx.bidg.model.ProductTypesProduct;
  */
 public interface ProductTypesProductDao extends InterfaceDao<ProductTypesProduct> {
     
-    public List<ProductTypesProduct> findByProductType(CProductTypes cProductType);
+    public List<ProductTypesProduct> findByProductType(AccountingAccounts accountingAccounts  );
     
 }

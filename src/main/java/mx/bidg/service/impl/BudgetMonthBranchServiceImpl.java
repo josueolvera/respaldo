@@ -149,9 +149,12 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
         int year = jsonRequest.get("year").asInt();
         int idCategory = jsonRequest.get("idCategory").asInt();
         int idSubcategory = jsonRequest.get("idSubcategory").asInt();
+        
+        //Cambios para busqueda de request
+        int idAccountingAccount = jsonRequest.get("idAccountingAccount").asInt();
 
         DwEnterprises dwEnterprise = dwEnterprisesService.findByCombination(idGroup, idDistributor, idRegion, idBranch, idArea);
-        Budgets budget = budgetsService.findByCombination(idGroup, idArea, idCategory, idSubcategory);
+        Budgets budget = budgetsService.findByCombination(idGroup, idArea, idAccountingAccount);
 
         if (dwEnterprise == null || budget == null) {
             return null;

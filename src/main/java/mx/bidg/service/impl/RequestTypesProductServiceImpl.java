@@ -5,9 +5,7 @@
  */
 package mx.bidg.service.impl;
 
-import java.util.ArrayList;
 import mx.bidg.dao.RequestTypesProductDao;
-import mx.bidg.model.CProductTypes;
 import mx.bidg.model.CRequestTypes;
 import mx.bidg.model.CRequestsCategories;
 import mx.bidg.model.RequestTypesProduct;
@@ -17,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import mx.bidg.model.AccountingAccounts;
 import mx.bidg.model.CBudgetCategories;
 
 @Service
@@ -32,9 +31,9 @@ public class RequestTypesProductServiceImpl implements RequestTypesProductServic
     }
 
     @Override
-    public RequestTypesProduct findByCombination(int idRequestCategory, int idRequestType, int idProductType) {
-        return dao.findByCombination(new CRequestsCategories(idRequestCategory), new CRequestTypes(idRequestType), 
-                new CProductTypes(idProductType));
+    public RequestTypesProduct findByCombination(int idRequestCategory, int idAccountingAccount) {
+        return dao.findByCombination(new CRequestsCategories(idRequestCategory),  
+                new AccountingAccounts(idAccountingAccount));
     }
 
     @Override

@@ -19,7 +19,7 @@ import mx.bidg.model.CRequestsCategories;
 public interface RequestTypesProductService {
     
     public RequestTypesProduct findById(int id);
-    public RequestTypesProduct findByCombination(int idRequestCategory, int idRequestType, int idProductType);
+    public RequestTypesProduct findByCombination(int idRequestCategory, int idAccountingAccount);
     public List<RequestTypesProduct> findByRequestType(CRequestTypes cRequestTypes);
     public List<RequestTypesProduct> findByBudgetCategory(CBudgetCategories budgetCategories);
     public List<RequestTypesProduct> findByRequestCategory(CRequestsCategories cRequestCategories);    

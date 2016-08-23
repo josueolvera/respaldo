@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -108,7 +109,7 @@ public class AccountingAccounts implements Serializable {
     @Column(name = "IS_OF_REQUEST")
     @JsonView(JsonViews.Root.class)
     private Integer isOfRequest;
-
+    
     public AccountingAccounts() {
     }
 
@@ -271,7 +272,7 @@ public class AccountingAccounts implements Serializable {
         hash += (idAccountingAccount != null ? idAccountingAccount.hashCode() : 0);
         return hash;
     }
-
+    
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set

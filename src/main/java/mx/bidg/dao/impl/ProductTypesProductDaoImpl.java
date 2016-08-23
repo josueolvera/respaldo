@@ -8,7 +8,7 @@ package mx.bidg.dao.impl;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.ProductTypesProductDao;
-import mx.bidg.model.CProductTypes;
+import mx.bidg.model.AccountingAccounts;
 import mx.bidg.model.ProductTypesProduct;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.Restrictions;
@@ -43,9 +43,9 @@ public class ProductTypesProductDaoImpl extends AbstractDao<Integer, ProductType
     }
     
     @Override
-    public List<ProductTypesProduct> findByProductType(CProductTypes cProductType) {
+    public List<ProductTypesProduct> findByProductType(AccountingAccounts accountingAccounts ) {
         return (List<ProductTypesProduct>) createEntityCriteria()
-                .add(Restrictions.eq("productType", cProductType))
+                .add(Restrictions.eq("accountingAccounts", accountingAccounts ))
                 .setFetchMode("product", FetchMode.JOIN)
                 .list();
     }

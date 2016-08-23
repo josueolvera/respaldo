@@ -3,7 +3,7 @@ package mx.bidg.service;
 import mx.bidg.model.CProducts;
 
 import java.util.List;
-import mx.bidg.model.CProductTypes;
+import mx.bidg.model.AccountingAccounts;
 
 /**
  * @author Rafael Viveros
@@ -15,6 +15,6 @@ public interface CProductsService {
     
     public List<CProducts> findAll();
     
-    public List<CProducts> findByProductTypes(CProductTypes cProductType);
+    public List<CProducts> findByProductTypes(AccountingAccounts accountingAccounts);
     
 }
