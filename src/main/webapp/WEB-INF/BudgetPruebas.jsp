@@ -72,15 +72,16 @@
                     distributors: [],
                     regions: [],
                     zonas: [],
-                    branchs: [],
                     areas: [],
                     budgetCategories: [],
                     currentYear: null,
                     maxYearmaxYear: null,
                     now: "${now}",
                     selected:{
-                        distributor:null,
                         dwEnterprise:null,
+                        distributor:null,
+                        region:null,
+                        zona:null,
                         area:null,
                         budgetCategory:{},
                         year:null
@@ -95,10 +96,6 @@
                         budgetCategory:'TODOS',
                         idBudgetCategory:0
                     },
-                    bandera1ernivel: false,
-                    bandera2donivel: false,
-                    bandera3ernivel: false,
-                    banderacontenido: false,
                     lastkeysearch: '',
                     area: '',
                     totalArea: '',
@@ -138,8 +135,7 @@
                 {
                     groupBy: function (array, filter) {
                         var groups = {};
-                        array.forEach(function (element)
-                        {
+                        array.forEach(function (element) {
                             var group = JSON.stringify(filter(element));
                             groups[group] = groups[group] || [];
                             groups[group].push(element);
@@ -182,7 +178,7 @@
                             this.$http.get(ROOT_URL + "/dw-enterprises/"+res[0]+"/"+res[1])
                                     .success(function (data)
                                     {
-                                        var self= this;
+                                        var self = this;
                                         var count = Object.keys(data).length;
                                         if (count > 1)
                                         {
@@ -218,8 +214,6 @@
                             this.area = res[1];
                             this.lastkeysearch = key;
                         }
-
-
                     },
                     createConcept: function () {
                         var objeto = {
@@ -266,7 +260,7 @@
                         return objeto;
                     },
                     searchConcepts: function() {
-                        var self= this;
+                        var self = this;
                         this.showInfo = true;
                         var distributor= this.selected.distributor.idDistributor;
                         var area= this.selected.area.idArea;
@@ -315,7 +309,7 @@
                         budget.conceptos.push(concepto);
                     },
                     mixedArrays: function() {
-                        var self= this;
+                        var self = this;
                         $.each(this.datosPresupuesto, function(index, el)
                         {
                             var BudgetTem = el;
@@ -333,24 +327,20 @@
                         self.groupArray();
                     },
                     groupArray: function() {
-                        this.contenido = this.groupBy(this.contenido, function (item)
-                        {
+                        this.contenido = this.groupBy(this.contenido, function (item) {
                             return item.idBudgetCategory;
                         });
-                        this.banderacontenido = true;
                         this.obtainGranTotal();
                     },
                     deleteObject: function(budget, concepto) {
-                        if (concepto.idConcept> 0)
-                        {
+                        if (concepto.idConcept> 0) {
                             this.$http.delete(ROOT_URL + "/budget-concepts/"+concepto.idConcept)
                                     .success(function (data)
                                     {
                                         showAlert(data);
                                         this.getBudgetsByDistributorAndArea();
                                     });
-                        }
-                        else{
+                        } else {
                             budget.conceptos.$remove(concepto);
                             this.obtainTotalConcept(concepto, budget);
                         }
@@ -361,31 +351,22 @@
                         this.obtainTotalConcept(concepto, budget);
                     },
                     equalsImport: function(concepto, budget) {
-                        if (concepto.equals)
-                        {
-                            if (concepto.conceptMonth[0].amountConcept)
-                            {
+                        if (concepto.equals) {
+                            if (concepto.conceptMonth[0].amountConcept) {
 
-                                $.each(concepto.conceptMonth, function(index, el)
-                                {
+                                $.each(concepto.conceptMonth, function(index, el) {
                                     el.amountConcept= concepto.conceptMonth[0].amountConcept;
 
                                 });
-                            }
-                            else{
+                            } else {
                                 alert("Debes ingresar un monto en el primer mes para esta acción");
                                 concepto.equals= false;
                             }
-                        }
-                        else
-                        {
-                            $.each(concepto.conceptMonth, function(index, el)
-                            {
-                                if (el.month> 1)
-                                {
+                        } else {
+                            $.each(concepto.conceptMonth, function(index, el) {
+                                if (el.month> 1) {
                                     el.amountConcept= '';
-                                }
-                                else{
+                                } else {
                                     concepto.total= accounting.unformat(el.amountConcept);
                                 }
                             });
@@ -426,17 +407,96 @@
                         budget.granTotal= accounting.formatMoney(budget.granTotal);
 
                     },
+                    onChangeDistributor : function () {
+                        this.selected.area = null;
+                        this.selected.region = null;
+                        this.selected.zona = null;
+                        this.selected.dwEnterprise = null;
+                        this.getBudgetsByDistributor();
+                    },
+                    onChangeArea : function () {
+                        this.selected.region = null;
+                        this.selected.zona = null;
+                        this.selected.dwEnterprise = null;
+                        this.getDwEnterprisesByDistributorAndArea();
+                    },
+                    onChangeRegion : function () {
+                        this.selected.zona = null;
+                        this.selected.dwEnterprise = null;
+                        this.getDwEnterprisesByDistributorRegionAndArea();
+                    },
+                    onChangeZona : function () {
+                        this.selected.dwEnterprise = null;
+                        this.getDwEnterprisesByDistributorRegionZonaAndArea();
+                    },
+                    onChangeBranch : function () {
+                        this.getDwEnterprises();
+                    },
                     getDwEnterprisesByDistributorAndArea: function () {
                         this.selected.dwEnterprise = null;
+                        this.dwEnterprises = [];
+                        this.regions = [];
                         this.showInfo = false;
-                        this.$http.get(ROOT_URL + '/dw-enterprises/distributor/' + this.selected.distributor.idDistributor + '/area/' + this.selected.area.idArea)
-                                .success(function (data) {
-                                    this.select.dwEnterprises = data;
-                                    this.dwEnterprises = data;
-                                    if(this.select.dwEnterprises.length > 0) {
-                                        this.selected.dwEnterprise = this.select.dwEnterprises[0];
+                        this.$http.get(
+                                ROOT_URL + 
+                                '/dw-enterprises?idDistributor=' + this.selected.distributor.idDistributor + 
+                                '&idArea=' + this.selected.area.idArea
+                        ).success(function (data) {
+                            var self = this;
+                            if(this.selected.distributor.saemFlag) {
+                                data.forEach(function (dwEnterprise) {
+                                    var index;
+                                    index = self.arrayObjectIndexOf(self.regions,dwEnterprise.idRegion,'idRegion');
+                                    if (index == -1) {
+                                        self.regions.push(dwEnterprise.region)
                                     }
                                 });
+                            } else {
+                                this.select.dwEnterprises = data;
+                                this.dwEnterprises = data;
+                                if(this.select.dwEnterprises.length > 0) {
+                                    this.selected.dwEnterprise = this.select.dwEnterprises[0];
+                                }
+                            }
+                        });
+                    },
+                    getDwEnterprisesByDistributorRegionAndArea: function () {
+                        this.zonas = [];
+                        this.selected.dwEnterprise = null;
+                        this.showInfo = false;
+                        this.$http.get(
+                                ROOT_URL + 
+                                '/dw-enterprises?idDistributor=' + this.selected.distributor.idDistributor +
+                                '&idRegion=' + this.selected.region.idRegion +
+                                '&idArea=' + this.selected.area.idArea
+                        ).success(function (data) {
+                            var self = this;
+                            data.forEach(function (dwEnterprise) {
+                                var index;
+                                index = self.arrayObjectIndexOf(self.zonas,dwEnterprise.idZona,'idZonas');
+                                if (index == -1) {
+                                    self.zonas.push(dwEnterprise.zona)
+                                }
+                            });
+                        });
+                    },
+                    getDwEnterprisesByDistributorRegionZonaAndArea: function () {
+                        this.dwEnterprises = [];
+                        this.selected.dwEnterprise = null;
+                        this.showInfo = false;
+                        this.$http.get(
+                                ROOT_URL + 
+                                '/dw-enterprises?idDistributor=' + this.selected.distributor.idDistributor +
+                                '&idRegion=' + this.selected.region.idRegion +
+                                '&idZona=' + this.selected.zona.idZonas +
+                                '&idArea=' + this.selected.area.idArea
+                        ).success(function (data) {
+                            this.select.dwEnterprises = data;
+                            this.dwEnterprises = data;
+                            if(this.select.dwEnterprises.length > 0) {
+                                this.selected.dwEnterprise = this.select.dwEnterprises[0];
+                            }
+                        });
                     },
                     arrayObjectIndexOf : function(myArray, searchTerm, property) {
                         for(var i = 0, len = myArray.length; i < len; i++) {
@@ -448,6 +508,7 @@
                         this.selected.area = null;
                         this.selected.dwEnterprise = null;
                         this.dwEnterprises = [];
+                        this.areas = [];
                         this.showInfo = false;
                         this.$http.get(ROOT_URL + '/budgets/distributor/' + this.selected.distributor.idDistributor)
                                 .success(function (data) {
@@ -485,7 +546,7 @@
                         this.totalArea= 0;
                         this.totalIngresos = 0;
                         this.utilidad = 0;
-                        var self= this;
+                        var self = this;
                         vm.contenido.forEach(function(budgetagrupado){
                             budgetagrupado.forEach(function(budget){
                                 if ( typeof budget.granTotal != "undefined")
@@ -528,7 +589,7 @@
                     copyBranch: function() {
                         this.cargando= true;
                         this.sucursales= [];
-                        var self= this;
+                        var self = this;
                         this.sucursal.forEach(function (element)
                         {
                             element.forEach(function (ele)
@@ -624,9 +685,9 @@
                             this.contenido = this.budgets;
                             this.mixedArrays();
                         } else {
-                            this.budgets.forEach(function (butget) {
-                                if (butget.idBudgetCategory === self.selected.budgetCategory.idBudgetCategory) {
-                                    self.contenido.push(butget);
+                            this.budgets.forEach(function (budget) {
+                                if (budget.idBudgetCategory === self.selected.budgetCategory.idBudgetCategory) {
+                                    self.contenido.push(budget);
                                 }
                             });
                             this.mixedArrays();
@@ -641,6 +702,9 @@
                                 self.select.dwEnterprises.push(dwEnterprise);
                             }
                         });
+                    },
+                    onYearChanged : function () {
+                        this.showInfo = false;
                     }
                 },
                 filters: {
@@ -652,7 +716,6 @@
                     }
                 }
             });
-
         </script>
     </jsp:attribute>
 
@@ -666,22 +729,41 @@
                     <form v-on:submit.prevent="searchBudget">
                         <div class="col-md-2">
                             <label>Distribuidor</label>
-                            <select v-model="selected.distributor" class="form-control" @change="getBudgetsByDistributor">
+                            <select v-model="selected.distributor" class="form-control" @change="onChangeDistributor">
                                 <option v-for="distributor in distributors" :value="distributor">{{distributor.distributorName}}</option>
                             </select>
                         </div>
                         <div class="col-md-2">
                             <label>Area</label>
                             <select v-model="selected.area" class="form-control"
-                                    @change="getDwEnterprisesByDistributorAndArea" :disabled="selected.distributor == null">
-                                <option v-for="area in areas" :value="area">{{area.areaName}}</option>
+                                    @change="onChangeArea" :disabled="selected.distributor == null">
+                                <option v-for="area in areas" :value="area" v-if="area.saemFlag == 1">{{area.areaName}}</option>
                             </select>
                         </div>
-                        <div class="col-md-2" v-if="dwEnterprises.length > 1">
+                        <div class="col-md-2" v-if="selected.distributor.saemFlag">
+                            <label>Región</label>
+                            <select v-model="selected.region" class="form-control"
+                                    @change="onChangeRegion" :disabled="selected.area == null">
+                                <option v-for="region in regions" :value="region" v-if="region.saemFlag == 1">
+                                    {{region.regionName}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-2"  v-if="selected.distributor.saemFlag">
+                            <label>Zona</label>
+                            <select v-model="selected.zona" class="form-control"
+                                    @change="onChangeZona" :disabled="selected.region == null">
+                                <option v-for="zona in zonas" :value="zona" v-if="zona.saemFlag == 1">
+                                    {{zona.name}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
                             <label>Sucursal</label>
                             <select v-model="selected.dwEnterprise" class="form-control"
-                                    @change="getDwEnterprises" :disabled="selected.area == null">
-                                <option v-for="dwEnterprise in dwEnterprises" :value="dwEnterprise">
+                                    @change="onChangeBranch" :disabled="selected.zona == null && selected.area == null">
+                                <option v-for="dwEnterprise in dwEnterprises" :value="dwEnterprise"
+                                        v-if="dwEnterprise.branch.idBranch != 0">
                                     {{dwEnterprise.branch.branchShort}}
                                 </option>
                             </select>

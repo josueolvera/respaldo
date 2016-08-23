@@ -120,19 +120,19 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
         Criteria criteria = createEntityCriteria();
 
         if (idDistributor != null) {
-            criteria.add(Restrictions.eq("idDistributor",idDistributor));
+            criteria.add(Restrictions.eq("idDistributor", idDistributor));
         }
         if (idRegion != null) {
-            criteria.add(Restrictions.eq("idRegion",idRegion));
+            criteria.add(Restrictions.eq("idRegion", idRegion));
         }
         if (idZona != null) {
-            criteria.add(Restrictions.eq("idZona",idZona));
+            criteria.add(Restrictions.eq("idZona", idZona));
         }
         if (idBranch != null) {
-            criteria.add(Restrictions.eq("idBranch",idBranch));
+            criteria.add(Restrictions.eq("idBranch", idBranch));
         }
         if (idArea != null) {
-            criteria.add(Restrictions.eq("idArea",idArea));
+            criteria.add(Restrictions.eq("idArea", idArea));
         }
 
         criteria.add(Restrictions.eq("status",true));

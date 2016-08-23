@@ -6,7 +6,6 @@
 package mx.bidg.service.impl;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import mx.bidg.dao.*;
@@ -23,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class DwEnterprisesServiceImpl implements DwEnterprisesService {
 
     @Autowired
-    DwEnterprisesDao dao;
+    DwEnterprisesDao dwEnterprisesDao;
 
     @Autowired
     DwEmployeesDao dwEmployeesDao;
@@ -45,7 +44,7 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
 
     @Override
     public List<DwEnterprises> findByGroupArea(CGroups idGroup, CAreas idArea) {
-        return dao.findByGroupArea(idGroup, idArea);
+        return dwEnterprisesDao.findByGroupArea(idGroup, idArea);
     }
 
     @Override
@@ -55,12 +54,12 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
         CRegions region = new CRegions(idRegion);
         CBranchs branch = new CBranchs(idBranch);
         CAreas area = new CAreas(idArea);
-        return dao.findByCombination(group, distributor, region, branch, area);
+        return dwEnterprisesDao.findByCombination(group, distributor, region, branch, area);
     }
 
     @Override
     public DwEnterprises findById(int idDwEnterprise) {
-        return dao.findById(idDwEnterprise);
+        return dwEnterprisesDao.findById(idDwEnterprise);
     }
 
     @Override
@@ -72,7 +71,7 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
     public List<HierarchicalLevel> findHierarchicalStructure() {
         GroupArrays<DwEnterprises> groupArrays = new GroupArrays<>();
 
-        ArrayList<DwEnterprises> dwEnterprises = (ArrayList<DwEnterprises>) dao.findAll();
+        ArrayList<DwEnterprises> dwEnterprises = (ArrayList<DwEnterprises>) dwEnterprisesDao.findAll();
         List<HierarchicalLevel> hierarchicalGroups = new ArrayList<>();
         ArrayList<ArrayList<DwEnterprises>> dwGroups = groupArrays.groupInArray(dwEnterprises, new GroupArrays.Filter<DwEnterprises>() {
             @Override
@@ -172,52 +171,52 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
 
     @Override
     public List<DwEnterprises> findByDistributor(Integer idDistributor) {
-        return dao.findByDistributor(idDistributor);
+        return dwEnterprisesDao.findByDistributor(idDistributor);
     }
 
     @Override
     public List<DwEnterprises> findByDistributorAndArea(Integer idDistributor, Integer idArea) {
-        return dao.findByDistributorAndArea(idDistributor, idArea);
+        return dwEnterprisesDao.findByDistributorAndArea(idDistributor, idArea);
     }
 
     @Override
     public DwEnterprises save(DwEnterprises dwEnterprises) {
-        return dao.save(dwEnterprises);
+        return dwEnterprisesDao.save(dwEnterprises);
     }
 
     @Override
     public DwEnterprises update(DwEnterprises dwEnterprises) {
-        return dao.update(dwEnterprises);
+        return dwEnterprisesDao.update(dwEnterprises);
     }
 
     @Override
     public DwEnterprises findByDistributorRegionBranch(Integer idDistributor, Integer idRegion, Integer idBranch) {
-        return dao.findByDistributorRegionBranch(idDistributor,idRegion,idBranch);
+        return dwEnterprisesDao.findByDistributorRegionBranch(idDistributor,idRegion,idBranch);
     }
 
     @Override
     public DwEnterprises findByBranch(Integer idBranch) {
-        return dao.findByBranch(idBranch);
+        return dwEnterprisesDao.findByBranch(idBranch);
     }
 
     @Override
     public List<DwEnterprises> findByBranches(Integer idBranch) {
-        return dao.findByBranches(idBranch);
+        return dwEnterprisesDao.findByBranches(idBranch);
     }
 
     @Override
     public List<DwEnterprises> findAll() {
-        return dao.findAll();
+        return dwEnterprisesDao.findAll();
     }
 
     @Override
     public DwEnterprises findByBranchAndArea(Integer idBranch, Integer idArea) {
-        return dao.findByBranchAndArea(idBranch,idArea);
+        return dwEnterprisesDao.findByBranchAndArea(idBranch,idArea);
     }
 
     @Override
     public List<CAreas> findAreaByDistributor(Integer idDistributor) {
-        List<DwEnterprises> dwEnterprises = dao.findByDistributor(idDistributor);
+        List<DwEnterprises> dwEnterprises = dwEnterprisesDao.findByDistributor(idDistributor);
         List<CAreas> areas = new ArrayList<CAreas>();
         for(DwEnterprises dwEnterprise : dwEnterprises){
             areas.add(areasDao.findById(dwEnterprise.getIdArea()));
@@ -227,7 +226,7 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
 
     @Override
     public List<CBranchs> getBranchByDistributor(Integer idDistributor) {
-        List<DwEnterprises> dwEnterprises = dao.findByDistributor(idDistributor);
+        List<DwEnterprises> dwEnterprises = dwEnterprisesDao.findByDistributor(idDistributor);
         List<CBranchs> branchs = new ArrayList<>();
         for(DwEnterprises dwEnterprise : dwEnterprises){
             branchs.add(dwEnterprise.getBranch());
@@ -237,7 +236,7 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
 
     @Override
     public List<CRegions> findRegionByDistributor(Integer idDistributor) {
-        List<DwEnterprises> dwEnterprises = dao.findByDistributor(idDistributor);
+        List<DwEnterprises> dwEnterprises = dwEnterprisesDao.findByDistributor(idDistributor);
         List<CRegions> regions = new ArrayList<CRegions>();
         for (DwEnterprises dwEnterprise : dwEnterprises){
             regions.add(regionsDao.findById(dwEnterprise.getIdRegion()));
@@ -247,7 +246,7 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
 
     @Override
     public List<CZonas> findZonaByDistributorAndRegion(Integer idDistributor, Integer idRegion) {
-        List<DwEnterprises> dwEnterprises = dao.findZonaByDistributorAndRegion(idDistributor,idRegion);
+        List<DwEnterprises> dwEnterprises = dwEnterprisesDao.findZonaByDistributorAndRegion(idDistributor,idRegion);
         List<CZonas> zonas = new ArrayList<CZonas>();
         for(DwEnterprises dwEnterprise : dwEnterprises){
             zonas.add(cZonaDao.findById(dwEnterprise.getIdZona()));
@@ -257,7 +256,7 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
 
     @Override
     public List<CAreas> findAreaByBranch(Integer idBranch) {
-        List<DwEnterprises> dwEnterprises = dao.findByBranches(idBranch);
+        List<DwEnterprises> dwEnterprises = dwEnterprisesDao.findByBranches(idBranch);
         List<CAreas> areas = new ArrayList<CAreas>();
         for (DwEnterprises dwEnterprise : dwEnterprises){
             areas.add(areasDao.findById(dwEnterprise.getIdArea()));
@@ -267,12 +266,12 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
 
     @Override
     public DwEnterprises findByDistributorBranchArea(Integer idDistributor, Integer idBranch, Integer idArea) {
-        return dao.findByDistributorBranchArea(idDistributor, idBranch, idArea);
+        return dwEnterprisesDao.findByDistributorBranchArea(idDistributor, idBranch, idArea);
     }
 
     @Override
     public List<CRegions> findRegionByDistributorAndArea(Integer idDistributor, Integer idArea) {
-        List<DwEnterprises> dwEnterprisesList = dao.findByDistributorAndArea(idDistributor, idArea);
+        List<DwEnterprises> dwEnterprisesList = dwEnterprisesDao.findByDistributorAndArea(idDistributor, idArea);
         List<CRegions> regions = new ArrayList<CRegions>();
         for (DwEnterprises dwEnterprise : dwEnterprisesList){
             regions.add(regionsDao.findById(dwEnterprise.getIdRegion()));
@@ -282,7 +281,7 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
 
     @Override
     public List<CBranchs> findBranchByDistributorAndArea(Integer idDistributor, Integer idArea) {
-        List<DwEnterprises> dwEnterprises = dao.findByDistributorAndArea(idDistributor, idArea);
+        List<DwEnterprises> dwEnterprises = dwEnterprisesDao.findByDistributorAndArea(idDistributor, idArea);
         List<CBranchs> branchs = new ArrayList<CBranchs>();
         for (DwEnterprises dwEnterprise : dwEnterprises){
             branchs.add(branchsDao.findById(dwEnterprise.getIdBranch()));
@@ -292,7 +291,7 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
 
     @Override
     public List<CBranchs> findBranchByDistributorAndRegionAndZona(Integer idDistributor, Integer idRegion, Integer idZona) {
-        List<DwEnterprises> dwEnterprises = dao.findBranchByDistributorAndRegionAndZona(idDistributor, idRegion, idZona);
+        List<DwEnterprises> dwEnterprises = dwEnterprisesDao.findBranchByDistributorAndRegionAndZona(idDistributor, idRegion, idZona);
         List<CBranchs> branchs = new ArrayList<CBranchs>();
         for (DwEnterprises dwEnterprise : dwEnterprises){
             branchs.add(branchsDao.findById(dwEnterprise.getIdBranch()));
@@ -302,6 +301,6 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
 
     @Override
     public List<DwEnterprises> findByDistributorRegionZonaBranchAndArea(Integer idDistributor, Integer idRegion, Integer idZona, Integer idBranch, Integer idArea) {
-        return dao.findByDistributorRegionZonaBranchAndArea(idDistributor, idRegion, idZona, idBranch, idArea);
+        return dwEnterprisesDao.findByDistributorRegionZonaBranchAndArea(idDistributor, idRegion, idZona, idBranch, idArea);
     }
 }
