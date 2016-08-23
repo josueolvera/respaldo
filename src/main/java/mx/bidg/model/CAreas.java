@@ -51,6 +51,10 @@ public class CAreas implements Serializable {
                     nullable = false) })
     @JsonView(JsonViews.Embedded.class)
     private Set<CRoles> roles;
+
+    @Column(name = "SAEM_FLAG")
+    @JsonView(JsonViews.Root.class)
+    private int saemFlag;
     
     public CAreas() {
     }
@@ -86,6 +90,14 @@ public class CAreas implements Serializable {
 
     public void setRoles(Set<CRoles> roles) {
         this.roles = roles;
+    }
+
+    public int getSaemFlag() {
+        return saemFlag;
+    }
+
+    public void setSaemFlag(int saemFlag) {
+        this.saemFlag = saemFlag;
     }
 
     @Override
