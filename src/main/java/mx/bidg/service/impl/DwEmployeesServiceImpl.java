@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import mx.bidg.dao.*;
+import mx.bidg.dao.impl.CStatusMaritalDaoImpl;
 import mx.bidg.model.*;
 import mx.bidg.service.*;
 import org.apache.poi.ss.usermodel.*;
@@ -75,6 +76,21 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     @Autowired
     private DwEnterprisesService dwEnterprisesService;
 
+    @Autowired
+    private CZonaDao zonaDao;
+
+    @Autowired
+    private CAreasDao areasDao;
+
+    @Autowired
+    private CGendersDao gendersDao;
+
+    @Autowired
+    private CStatusMaritalDao statusMaritalDao;
+
+    @Autowired
+    private CEducationDao cEducationDao;
+
     @Override
     public DwEmployees findById(Integer id) {
         return dwEmployeesDao.findById(id);
@@ -125,7 +141,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     }
 
     @Override
-    public void createReport(List<EmployeesHistory> dwEmployees, OutputStream outputStream) throws IOException {
+    public void createReportDistributors(List<EmployeesHistory> dwEmployees, OutputStream outputStream) throws IOException {
 
         Workbook wb = new XSSFWorkbook();
         //Definicion del estilo de la cabecera
@@ -159,19 +175,18 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
 
         row.createCell(0).setCellValue("EMPRESA");
         row.createCell(1).setCellValue("REGION");
-        row.createCell(2).setCellValue("NOMBRE DEL EMPLEADO");
-        row.createCell(3).setCellValue("CLAVE SAP");
-        row.createCell(4).setCellValue("PUESTO");
-        row.createCell(5).setCellValue("BANCO");
-        row.createCell(6).setCellValue("N. CUENTA");
-        row.createCell(7).setCellValue("CLABE");
-        row.createCell(8).setCellValue("SUCURSAL");
-        row.createCell(9).setCellValue("RFC");
-        row.createCell(10).setCellValue("CURP");
-        row.createCell(11).setCellValue("DOMICILIO");
-        row.createCell(12).setCellValue("MAIL");
-        row.createCell(13).setCellValue("FECHA DE INGRESO");
-        row.createCell(14).setCellValue("SUELDO QUINCENAL");
+        row.createCell(2).setCellValue("ZONA");
+        row.createCell(3).setCellValue("NOMBRE DEL EMPLEADO");
+        row.createCell(4).setCellValue("CLAVE SAP");
+        row.createCell(5).setCellValue("PUESTO");
+        row.createCell(6).setCellValue("BANCO");
+        row.createCell(7).setCellValue("N. CUENTA");
+        row.createCell(8).setCellValue("CLABE");
+        row.createCell(9).setCellValue("SUCURSAL");
+        row.createCell(10).setCellValue("RFC");
+        row.createCell(11).setCellValue("CURP");
+        row.createCell(12).setCellValue("FECHA DE INGRESO");
+        row.createCell(13).setCellValue("SUELDO QUINCENAL");
 
         //Implementacion del estilo
         for (Cell celda : row) {
@@ -179,7 +194,6 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
         }
 
         int aux = 1;
-        String direccion = "";
 
         for (EmployeesHistory dwEmployee : dwEmployees) {
 
@@ -187,26 +201,35 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
 
             if(dwEmployee.getIdDwEnterprise() != null){
                 DwEnterprises dwEnterprise = dwEnterprisesDao.findById(dwEmployee.getIdDwEnterprise());
-                CDistributors distributor = distributorsDao.findById(dwEnterprise.getIdDistributor());
-                CRegions region = regionsDao.findById(dwEnterprise.getIdRegion());
-                CBranchs branch = branchsDao.findById(dwEnterprise.getIdBranch());
+                if(dwEnterprise != null){
+                    CDistributors distributor = distributorsDao.findById(dwEnterprise.getIdDistributor());
+                    CRegions region = regionsDao.findById(dwEnterprise.getIdRegion());
+                    CBranchs branch = branchsDao.findById(dwEnterprise.getIdBranch());
+                    CZonas zona = zonaDao.findById(dwEnterprise.getIdZona());
 
-                if(distributor != null){
-                    row.createCell(0).setCellValue(distributor.getDistributorName());
-                }
+                    if(distributor != null){
+                        row.createCell(0).setCellValue(distributor.getDistributorName());
+                    }
 
-                if(region != null){
-                    row.createCell(1).setCellValue(region.getRegionName());
-                }
+                    if(region != null){
+                        row.createCell(1).setCellValue(region.getRegionName());
+                    }
 
-                if(branch != null){
-                    row.createCell(8).setCellValue(branch.getBranchShort());
+                    if(branch != null){
+                        row.createCell(9).setCellValue(branch.getBranchShort());
+                    }
+
+                    if (zona != null){
+                        row.createCell(2).setCellValue(zona.getName());
+                    }
                 }
             }
 
             if(dwEmployee.getIdRole() != null){
                 CRoles role = cRolesDao.findById(dwEmployee.getIdRole());
-                row.createCell(4).setCellValue(role.getRoleName());
+                if (role != null){
+                    row.createCell(5).setCellValue(role.getRoleName());
+                }
             }
 
             if(dwEmployee.getIdEmployee() != null){
@@ -216,59 +239,28 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
                 if (!employeeAccountList.isEmpty()) {
                     Accounts account = employeeAccountList.get(0).getAccount();
                     if (account != null) {
-                        row.createCell(6).setCellValue(account.getAccountNumber());
-                        row.createCell(7).setCellValue(account.getAccountClabe());
+                        row.createCell(7).setCellValue(account.getAccountNumber());
+                        row.createCell(8).setCellValue(account.getAccountClabe());
                         CBanks bank = account.getBank();
                         if (bank != null) {
-                            row.createCell(5).setCellValue(bank.getAcronyms());
+                            row.createCell(6).setCellValue(bank.getAcronyms());
                         }
                     }
                 }
 
                 if (employee.getJoinDate() != null) {
                     Date joinDate = Date.from(employee.getJoinDate().atZone(ZoneId.systemDefault()).toInstant());
-                    row.createCell(13);
-                    row.getCell(13).setCellValue(joinDate);
-                    row.getCell(13).setCellStyle(cellDateStyle);
+                    row.createCell(12);
+                    row.getCell(12).setCellValue(joinDate);
+                    row.getCell(12).setCellStyle(cellDateStyle);
                 }
 
                 // Create a cell and put a value in it.
-                row.createCell(2).setCellValue(employee.getFullName().replace("_", " "));
-                row.createCell(3).setCellValue(employee.getClaveSap());
-                row.createCell(9).setCellValue(employee.getRfc());
-                row.createCell(10).setCellValue(employee.getCurp());
-
-                if (employee.getStreet() != null){
-                    direccion = direccion + employee.getStreet().replace("_", " ");
-                }
-
-                if (employee.getExteriorNumber() != null){
-                    direccion = direccion + " No. Ext. "+ employee.getExteriorNumber().replace("_", " ");
-                }
-
-                if (employee.getInteriorNumber() != null){
-                    direccion = direccion + " No. Int. " + employee.getInteriorNumber().replace("_", " ");
-                }
-
-                if(employee.getColonia() != null){
-                    direccion = direccion + " Col. " + employee.getColonia().replace("_", " ");
-                }
-
-                if(employee.getCity() != null){
-                    direccion = direccion + " Ciudad " + employee.getCity().replace("_", " ");
-                }
-
-                if(employee.getState() != null){
-                    direccion = direccion + " Edo. de " + employee.getState().replace("_", " ");
-                }
-
-                if(employee.getPostcode() != null){
-                    direccion = direccion + " C.P. " + employee.getPostcode().replace("_", " ");
-                }
-                row.createCell(11).setCellValue(direccion);
-                direccion = "";
-                row.createCell(12).setCellValue(employee.getMail());
-                row.createCell(14).setCellValue((employee.getSalary().floatValue())/2);
+                row.createCell(3).setCellValue(employee.getFullName().replace("_", " "));
+                row.createCell(4).setCellValue(employee.getClaveSap());
+                row.createCell(10).setCellValue(employee.getRfc());
+                row.createCell(11).setCellValue(employee.getCurp());
+                row.createCell(13).setCellValue((employee.getSalary().floatValue())/2);
             }
 
             aux++;
@@ -449,5 +441,308 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
         }
 
         return exist;
+    }
+
+    @Override
+    public void createReportCompanys(List<EmployeesHistory> employeesHistories, OutputStream outputStream) throws IOException {
+        Workbook wb = new XSSFWorkbook();
+        //Definicion del estilo de la cabecera
+        Font font = wb.createFont();
+        font.setBold(true);
+        font.setFontHeightInPoints((short) 10);
+        font.setFontName("Arial");
+        font.setColor(IndexedColors.WHITE.getIndex());
+        CellStyle style = wb.createCellStyle();
+        style.setFont(font);
+        style.setFillForegroundColor(IndexedColors.DARK_BLUE.getIndex());
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+
+        CellStyle cellDateStyle = wb.createCellStyle();
+        CreationHelper createHelper = wb.getCreationHelper();
+        cellDateStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
+
+        Sheet hoja = wb.createSheet();
+
+        //Se crea la fila que contiene la cabecera
+        Row row = hoja.createRow(0);
+
+        row.createCell(0).setCellValue("EMPRESA");
+        row.createCell(1).setCellValue("NOMBRE DEL EMPLEADO");
+        row.createCell(2).setCellValue("AREA");
+        row.createCell(3).setCellValue("PUESTO");
+        row.createCell(4).setCellValue("BANCO");
+        row.createCell(5).setCellValue("N. CUENTA");
+        row.createCell(6).setCellValue("CLABE");
+        row.createCell(7).setCellValue("RFC");
+        row.createCell(8).setCellValue("CURP");
+        row.createCell(9).setCellValue("FECHA DE INGRESO");
+        row.createCell(10).setCellValue("SUELDO QUINCENAL");
+
+        //Implementacion del estilo
+        for (Cell celda : row) {
+            celda.setCellStyle(style);
+        }
+
+        int aux = 1;
+
+        for (EmployeesHistory eH : employeesHistories) {
+
+            row = hoja.createRow(aux);
+
+            if(eH.getIdDwEnterprise() != null){
+                DwEnterprises dwEnterprise = dwEnterprisesDao.findById(eH.getIdDwEnterprise());
+                CDistributors distributor = distributorsDao.findById(eH.getIdDistributor());
+                CAreas area = areasDao.findById(eH.getIdArea());
+
+                if(distributor != null){
+                    row.createCell(0).setCellValue(distributor.getDistributorName());
+                }
+
+                if (area != null){
+                    row.createCell(2).setCellValue(area.getAreaName());
+                }
+            }
+
+            if(eH.getIdRole() != null){
+                CRoles role = cRolesDao.findById(eH.getIdRole());
+                if (role != null){
+                    row.createCell(3).setCellValue(role.getRoleName());
+                }
+            }
+
+            if(eH.getIdEmployee() != null){
+                Employees employee = employeesDao.findById(eH.getIdEmployee());
+                EmployeesAccounts employeeAccount = employeesAccountsService.findEmployeeAccountActive(employee.getIdEmployee());
+
+                if (employeeAccount != null) {
+                    Accounts accounts = employeeAccount.getAccount();
+                    if (accounts != null) {
+                        row.createCell(5).setCellValue(accounts.getAccountNumber());
+                        row.createCell(6).setCellValue(accounts.getAccountClabe());
+                        CBanks bank = accounts.getBank();
+                        if (bank != null) {
+                            row.createCell(4).setCellValue(bank.getAcronyms());
+                        }
+                    }
+                }
+
+                if (employee.getJoinDate() != null) {
+                    Date joinDate = Date.from(employee.getJoinDate().atZone(ZoneId.systemDefault()).toInstant());
+                    row.createCell(9);
+                    row.getCell(9).setCellValue(joinDate);
+                    row.getCell(9).setCellStyle(cellDateStyle);
+                }
+
+                // Create a cell and put a value in it.
+                row.createCell(1).setCellValue(employee.getFullName().replace("_", " "));
+                row.createCell(7).setCellValue(employee.getRfc());
+                row.createCell(8).setCellValue(employee.getCurp());
+                row.createCell(10).setCellValue((employee.getSalary().floatValue())/2);
+            }
+
+            aux++;
+        }
+
+        //Autoajustar al contenido
+        hoja.autoSizeColumn(0);
+        hoja.autoSizeColumn(1);
+        hoja.autoSizeColumn(2);
+
+        wb.write(outputStream);
+    }
+
+    @Override
+    public void createReportBpo(List<EmployeesHistory> employeesHistorys, OutputStream outputStream) throws IOException {
+        Workbook wb = new XSSFWorkbook();
+        //Definicion del estilo de la cabecera
+        Font font = wb.createFont();
+        font.setBold(true);
+        font.setFontHeightInPoints((short) 10);
+        font.setFontName("Arial");
+        font.setColor(IndexedColors.WHITE.getIndex());
+        CellStyle style = wb.createCellStyle();
+        style.setFont(font);
+        style.setFillForegroundColor(IndexedColors.DARK_BLUE.getIndex());
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+
+        CellStyle cellDateStyle = wb.createCellStyle();
+        CreationHelper createHelper = wb.getCreationHelper();
+        cellDateStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
+
+        Sheet hoja = wb.createSheet();
+
+        //Se crea la fila que contiene la cabecera
+        Row row = hoja.createRow(0);
+
+        row.createCell(0).setCellValue("ID DE EMPLEADO");
+        row.createCell(1).setCellValue("CURP");
+        row.createCell(2).setCellValue("CLAVE BANCO");
+        row.createCell(3).setCellValue("APELLIDO PATERNO");
+        row.createCell(4).setCellValue("APELLIDO MATERNO");
+        row.createCell(5).setCellValue("NOMBRES");
+        row.createCell(6).setCellValue("IMSS");
+        row.createCell(7).setCellValue("RFC");
+        row.createCell(8).setCellValue("FECHA DE INGRESO");
+        row.createCell(9).setCellValue("PUESTO");
+        row.createCell(10).setCellValue("FECHA DE NACIMIENTO");
+        row.createCell(11).setCellValue("LUGAR DE NACIMIENTO");
+        row.createCell(12).setCellValue("SEXO");
+        row.createCell(13).setCellValue("ESTADO CIVIL");
+        row.createCell(14).setCellValue("CALLE Y NUMERO");
+        row.createCell(15).setCellValue("COLONIA");
+        row.createCell(16).setCellValue("C.P.");
+        row.createCell(17).setCellValue("ESTADO");
+        row.createCell(18).setCellValue("CIUDAD");
+        row.createCell(19).setCellValue("TELEFONO");
+        row.createCell(20).setCellValue("ESCOLARIDAD");
+        row.createCell(21).setCellValue("CUENTA");
+        row.createCell(22).setCellValue("CLABE");
+        row.createCell(23).setCellValue("BANCO");
+
+
+        //Implementacion del estilo
+        for (Cell celda : row) {
+            celda.setCellStyle(style);
+        }
+
+        int aux = 1;
+        String direccion = "";
+
+        for (EmployeesHistory eHistorys : employeesHistorys) {
+
+            row = hoja.createRow(aux);
+
+            if(eHistorys.getIdRole() != null){
+                CRoles role = cRolesDao.findById(eHistorys.getIdRole());
+                if (role != null){
+                    row.createCell(9).setCellValue(role.getRoleName());
+                }
+            }
+
+            if(eHistorys.getIdEmployee() != null){
+                Employees employee = employeesDao.findById(eHistorys.getIdEmployee());
+                EmployeesAccounts employeeAccount = employeesAccountsService.findEmployeeAccountActive(employee.getIdEmployee());
+
+                if (employeeAccount != null) {
+                    Accounts accounts = employeeAccount.getAccount();
+                    if (accounts != null) {
+                        row.createCell(21).setCellValue(accounts.getAccountNumber());
+                        row.createCell(22).setCellValue(accounts.getAccountClabe());
+                        CBanks bank = accounts.getBank();
+                        if (bank != null) {
+                            row.createCell(23).setCellValue(bank.getAcronyms());
+                            row.createCell(2).setCellValue(bank.getClave());
+                        }
+                    }
+                }
+
+                if (employee.getJoinDate() != null) {
+                    Date joinDate = Date.from(employee.getJoinDate().atZone(ZoneId.systemDefault()).toInstant());
+                    row.createCell(8);
+                    row.getCell(8).setCellValue(joinDate);
+                    row.getCell(8).setCellStyle(cellDateStyle);
+                }
+
+                if (employee.getBirthday() != null) {
+                    Date birthDate = Date.from(employee.getBirthday().atStartOfDay(ZoneId.systemDefault()).toInstant());
+                    row.createCell(10);
+                    row.getCell(10).setCellValue(birthDate);
+                    row.getCell(10).setCellStyle(cellDateStyle);
+                }
+
+                if (employee.getIdGender() != null) {
+                    CGenders gender = gendersDao.findById(employee.getIdGender());
+                    if (gender != null){
+                        row.createCell(12).setCellValue(gender.getGenderName());
+                    }
+                }
+
+                if (employee.getIdStatusMarital() != null) {
+                    CStatusMarital statusMarital = statusMaritalDao.findById(employee.getIdStatusMarital());
+                    if (statusMarital != null){
+                        row.createCell(13).setCellValue(statusMarital.getMaritalName());
+                    }
+                }
+
+                if (employee.getStreet() != null){
+                    direccion = direccion + employee.getStreet().replace("_", " ");
+                }
+
+                if (employee.getExteriorNumber() != null){
+                    direccion = direccion + " No. Ext. "+ employee.getExteriorNumber().replace("_", " ");
+                }
+
+                if (employee.getInteriorNumber() != null){
+                    direccion = direccion + " No. Int. " + employee.getInteriorNumber().replace("_", " ");
+                }
+
+                row.createCell(14).setCellValue(direccion);
+                direccion = "";
+
+                if (employee.getColonia() != null){
+                    row.createCell(15).setCellValue(employee.getColonia());
+                }
+
+                if (employee.getPostcode() != null){
+                    row.createCell(16).setCellValue(employee.getPostcode());
+                }
+
+                if (employee.getState() != null){
+                    row.createCell(17).setCellValue(employee.getState());
+                }
+
+                if (employee.getCity() != null){
+                    row.createCell(18).setCellValue(employee.getCity());
+                }
+
+                if (employee.getCellPhone() != null){
+                    row.createCell(19).setCellValue(employee.getCellPhone());
+                }
+
+                if (employee.getIdEducation() != null){
+                    CEducation education = cEducationDao.findById(employee.getIdEducation());
+                    if (education != null){
+                        row.createCell(20).setCellValue(education.getEducationName());
+                    }
+                }
+
+                // Create a cell and put a value in it.
+                row.createCell(0).setCellValue(employee.getIdEmployee());
+                row.createCell(7).setCellValue(employee.getRfc());
+                row.createCell(1).setCellValue(employee.getCurp());
+                row.createCell(3).setCellValue(employee.getParentalLast().replace("_", " "));
+                row.createCell(4).setCellValue(employee.getMotherLast().replace("_", " "));
+                row.createCell(5).setCellValue(employee.getFirstName().replace("_", " ")+" "+employee.getMiddleName().replace("_", " "));
+                row.createCell(6).setCellValue(employee.getImss());
+                row.createCell(11).setCellValue(employee.getBirthplace());
+            }
+
+            aux++;
+        }
+
+        //Autoajustar al contenido
+        hoja.autoSizeColumn(0);
+        hoja.autoSizeColumn(1);
+        hoja.autoSizeColumn(2);
+
+        wb.write(outputStream);
     }
 }

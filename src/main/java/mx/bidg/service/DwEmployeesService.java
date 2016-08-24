@@ -32,10 +32,12 @@ public interface DwEmployeesService {
     );
     List<DwEmployees> findAll();
     DwEmployees save(DwEmployees dwEmployees);
-    void createReport(List<EmployeesHistory> employeesHistories, OutputStream outputStream) throws IOException;
+    void createReportDistributors(List<EmployeesHistory> employeesHistories, OutputStream outputStream) throws IOException;
     void changeEmployeeStatus(Integer idDwEmployee, Users user);
     DwEmployees findByIdDw(Integer idDwEnterprise);
     DwEmployees update(String data, Users user) throws IOException;
     boolean delete (DwEmployees dwEmployees);
     boolean validateExistRole (Integer idDwEnterprise, Integer idRole);
+    void createReportCompanys(List<EmployeesHistory> employeesHistories, OutputStream outputStream) throws IOException;
+    void createReportBpo(List<EmployeesHistory> employeesHistorys, OutputStream outputStream) throws IOException;
 }
