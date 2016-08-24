@@ -21,4 +21,5 @@ public interface CBranchsService {
     CBranchs update(CBranchs data);
     CBranchs save(CBranchs cBranchs, int idDistributor ,int idRegion, int idZona);
     CBranchs changeBranchStatus(int idBranch, Users user);
+    List<CBranchs> findSaemFlag(Integer idBranch,Integer saemFlag);
 }

@@ -131,4 +131,9 @@ public class CBranchsServiceImpl implements CBranchsService {
         return branch;
     }
 
+    @Override
+    public List<CBranchs> findSaemFlag(Integer idBranch,Integer saemFlag) {
+        return cBranchsDao.findBySaemFlag(idBranch,saemFlag);
+    }
+
 }
