@@ -282,6 +282,10 @@ public class EmployeesHistory implements Serializable {
     @Transient
     @JsonView(JsonViews.Embedded.class)
     private CRoles rolesR;
+
+    @Transient
+    @JsonView(JsonViews.Embedded.class)
+    private CActionTypes actionTypesR;
     
     public EmployeesHistory() {
     }
@@ -759,6 +763,14 @@ public class EmployeesHistory implements Serializable {
 
     public void setRolesR(CRoles rolesR) {
         this.rolesR = rolesR;
+    }
+
+    public CActionTypes getActionTypesR() {
+        return actionTypesR;
+    }
+
+    public void setActionTypesR(CActionTypes actionTypesR) {
+        this.actionTypesR = actionTypesR;
     }
 
     @Override
