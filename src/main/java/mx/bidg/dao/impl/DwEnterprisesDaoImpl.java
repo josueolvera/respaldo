@@ -13,6 +13,7 @@ import mx.bidg.dao.DwEnterprisesDao;
 import mx.bidg.model.*;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -191,6 +192,105 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
                 .add(Restrictions.eq("idArea",idArea))
                 .add(Restrictions.eq("status",true))
                 .uniqueResult();
+    }
+
+    @Override
+    public List<DwEnterprises> findByDistributorsSaem(List<CDistributors> distributorsList) {
+        Criteria criteria = createEntityCriteria();
+        Disjunction dwEnterprisesDisjunction = Restrictions.disjunction();
+
+        if (!distributorsList.isEmpty()) {
+            for (CDistributors distributors : distributorsList) {
+                dwEnterprisesDisjunction.add(Restrictions.eq("idDistributor", distributors.getIdDistributor()));
+            }
+            criteria.add(dwEnterprisesDisjunction);
+        }
+
+        criteria.add(Restrictions.eq("status",true));
+
+        return criteria.list();
+    }
+
+    @Override
+    public List<DwEnterprises> findByRegionsSaem(List<CRegions> regionsList) {
+        Criteria criteria = createEntityCriteria();
+        Disjunction dwEnterprisesDisjunction = Restrictions.disjunction();
+
+        if (!regionsList.isEmpty()) {
+            for (CRegions region : regionsList) {
+                dwEnterprisesDisjunction.add(Restrictions.eq("idRegion", region.getIdRegion()));
+            }
+            criteria.add(dwEnterprisesDisjunction);
+        }
+
+        criteria.add(Restrictions.eq("status",true));
+
+        return criteria.list();
+    }
+
+    @Override
+    public List<DwEnterprises> findByZonasSaem(List<CZonas> zonasList) {
+        Criteria criteria = createEntityCriteria();
+        Disjunction dwEnterprisesDisjunction = Restrictions.disjunction();
+
+        if (!zonasList.isEmpty()) {
+            for (CZonas zonas : zonasList) {
+                dwEnterprisesDisjunction.add(Restrictions.eq("idZona", zonas.getIdZonas()));
+            }
+            criteria.add(dwEnterprisesDisjunction);
+        }
+
+        criteria.add(Restrictions.eq("status",true));
+
+        return criteria.list();
+    }
+
+    @Override
+    public List<DwEnterprises> findByBranchsSaem(List<CBranchs> branchsList) {
+        Criteria criteria = createEntityCriteria();
+        Disjunction dwEnterprisesDisjunction = Restrictions.disjunction();
+
+        if (!branchsList.isEmpty()) {
+            for (CBranchs branchs : branchsList) {
+                dwEnterprisesDisjunction.add(Restrictions.eq("idBranch", branchs.getIdBranch()));
+            }
+            criteria.add(dwEnterprisesDisjunction);
+        }
+
+        criteria.add(Restrictions.eq("status",true));
+
+        return criteria.list();
+    }
+
+    @Override
+    public List<DwEnterprises> findByAreasSaem(List<CAreas> areasList) {
+        Criteria criteria = createEntityCriteria();
+        Disjunction dwEnterprisesDisjunction = Restrictions.disjunction();
+
+        if (!areasList.isEmpty()) {
+            for (CAreas areas : areasList) {
+                dwEnterprisesDisjunction.add(Restrictions.eq("idArea", areas.getIdArea()));
+            }
+            criteria.add(dwEnterprisesDisjunction);
+        }
+
+        criteria.add(Restrictions.eq("status",true));
+
+        return criteria.list();
+    }
+
+    @Override
+    public List<DwEnterprises> findByRegion(Integer idRegion) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idRegion", idRegion))
+                .add(Restrictions.eq("status", true)).list();
+    }
+
+    @Override
+    public List<DwEnterprises> findByZona(Integer idZonas) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idZona", idZonas))
+                .add(Restrictions.eq("status", true)).list();
     }
 
     @Override

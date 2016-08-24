@@ -6,12 +6,9 @@
 package mx.bidg.dao;
 
 import java.util.List;
-import mx.bidg.model.CAreas;
-import mx.bidg.model.CBranchs;
-import mx.bidg.model.CDistributors;
-import mx.bidg.model.CGroups;
-import mx.bidg.model.CRegions;
-import mx.bidg.model.DwEnterprises;
+
+import mx.bidg.model.*;
+import org.apache.xmlbeans.impl.piccolo.xml.UnicodeLittleXMLDecoder;
 
 /**
  *
@@ -31,4 +28,11 @@ public interface DwEnterprisesDao extends InterfaceDao<DwEnterprises> {
     List<DwEnterprises> findZonaByDistributorAndRegion(Integer idDistributor, Integer idRegion);
     List<DwEnterprises> findBranchByDistributorAndRegionAndZona(Integer idDistributor, Integer idRegion, Integer idZona);
     DwEnterprises findByDistributorBranchArea(Integer idDistributor, Integer idBranch, Integer idArea);
+    List<DwEnterprises> findByDistributorsSaem(List <CDistributors> distributorsList);
+    List<DwEnterprises> findByRegionsSaem(List<CRegions> regionsList);
+    List<DwEnterprises> findByZonasSaem(List<CZonas> zonasList);
+    List<DwEnterprises> findByBranchsSaem(List<CBranchs> branchsList);
+    List<DwEnterprises> findByAreasSaem(List<CAreas> areasList);
+    List<DwEnterprises> findByRegion (Integer idRegion);
+    List<DwEnterprises> findByZona (Integer idZonas);
 }
