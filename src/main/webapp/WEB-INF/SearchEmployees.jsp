@@ -357,7 +357,7 @@
 //                            }
 //                        }
                         if (this.setEmployeesUrl(0)) {
-                            this.getDwEmployees();
+                            this.getEmployeesHistory();
                         }
                     },
                     getEmployeesHistory: function () {
@@ -366,27 +366,14 @@
                                 ROOT_URL + this.employeesUrl
                         ).success(function (data) {
                             this.dwEmployees = data;
-                            this.dwEmployees.forEach(function (element) {
-                                self.$http.get(
-                                        ROOT_URL + "/dw-enterprises/" + element.idDwEnterprise
-                                ).success(function (data) {
-                                    Vue.set(element, "dwEnterprisesR", data)
-
-                                    this.$http.get(
-                                            ROOT_URL + "/roles/" + element.idRole
-                                    ).success(function (data) {
-                                        Vue.set(element, "rolesR", data)
-                                    }).error(function (data) {
-                                        showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
-                                    });
-
-
-                                }).error(function (data) {
-                                    showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
-                                });
-                            });
                             if (this.dwEmployees.length > 0) {
                                 this.isThereItems = true;
+                                this.registerNumber = this.dwEmployees.length;
+                            }else {
+                                showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
+                                setInterval(function () {
+                                    location.reload();
+                                }, 3000);
                             }
                         }).error(function (data) {
                             showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
