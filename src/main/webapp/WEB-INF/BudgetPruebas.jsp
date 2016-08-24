@@ -775,7 +775,7 @@
                         </div>
                         <div class="col-md-1">
                             <label style="visibility: hidden">search</label>
-                            <button class="btn btn-primary">Buscar</button>
+                            <button class="btn btn-info">Buscar</button>
                         </div>
                     </form>
                 </div>
