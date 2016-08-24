@@ -7,6 +7,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 /**
  * Created by gerardo8 on 30/06/16.
@@ -15,7 +16,7 @@ import javax.validation.constraints.Size;
 @DynamicUpdate
 @Table(name = "C_ACTION_TYPES")
 
-public class CActionTypes {
+public class CActionTypes implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
