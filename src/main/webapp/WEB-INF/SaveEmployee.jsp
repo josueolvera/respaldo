@@ -231,7 +231,8 @@
                     regions: [],
                     zonas: [],
                     branchch: [],
-                    selectedArea: {}
+                    selectedArea: {},
+                    haveImss: false
                 },
                 methods: {
                     activarTimePickerBirthDate: function () {
@@ -507,6 +508,10 @@
                         this.birthday = '';
                         this.estadosMunicipios.nombreMunicipios = '';
                         this.estadosMunicipios.estado.nombreEstado = '';
+                        this.cuenta.accountNumber = "";
+                        this.cuenta.accountClabe = "";
+                        this.cuenta.idBank = "";
+                        this.employee.employeeAccountList = [];
                     },
                     getSizes: function () {
                         this.$http.get(ROOT_URL + "/sizes").success(function (data) {
@@ -531,6 +536,7 @@
                         this.selectedOptions.role = this.defaultRole;
                         this.getAreaByDistributor(this.selectedOptions.distributor.idDistributor);
                         this.getRegionByDistributor(this.selectedOptions.distributor.idDistributor);
+                        this.emptyFields();
                     },
                     getRegionByDistributor: function (idDistributor) {
                         //this.isThereItems = false;
@@ -619,6 +625,7 @@
                             this.selectedArea = data;
                             this.getRegionByDistributorArea();
                             this.getBranchByDistributorArea();
+                            this.emptyFields();
                         });
                         //this.isThereItems = false;
                     },
@@ -847,6 +854,13 @@
                                 }
                             }
                         });
+                    },
+                    validateImss: function () {
+                        if(this.employee.imss.length > 0){
+                            this.haveImss = true;
+                        }else{
+                            this.haveImss = false;
+                        }
                     }
                 },
                 filters: {}
@@ -912,7 +926,7 @@
                                 </div>
                                 <br>
                                 <div class="row"
-                                     v-if="selectedOptions.role.idRole == 80 || selectedOptions.role.idRole == 81 || selectedOptions.role.idRole == 64">
+                                     v-if="selectedOptions.role.idRole == 80 || selectedOptions.role.idRole == 81 || selectedOptions.role.idRole == 64 || selectedOptions.role.idRole == 82">
                                     <div class="col-xs-4">
                                         <label>Región</label>
                                         <select v-model="selectedOptions.region" class="form-control"
@@ -1150,12 +1164,12 @@
                                     <div class="col-xs-3">
                                         <label>Nombre del padre</label>
                                         <input class="form-control" name="name" v-model="employee.fatherName"
-                                               onkeypress="return isLetterKey(event)">
+                                               onkeypress="return isLetterKey(event)" :required="haveImss == true">
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Nombre de la madre</label>
                                         <input class="form-control" name="name" v-model="employee.motherName"
-                                               onkeypress="return isLetterKey(event)">
+                                               onkeypress="return isLetterKey(event)" :required="haveImss == true">
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Estado civil</label>
@@ -1270,7 +1284,7 @@
                                     <div class="col-xs-3" v-if="employee.employeeType == 1">
                                         <label>IMSS</label>
                                         <input class="form-control" name="name" v-model="employee.imss" maxlength="18"
-                                               onkeypress="return isNumberKey(event)" required>
+                                               onkeypress="return isNumberKey(event)" required @change="validateImss">
                                     </div>
                                     <div class="col-xs-3" v-if="employee.employeeType == 1">
                                         <label>Infonavit</label>
