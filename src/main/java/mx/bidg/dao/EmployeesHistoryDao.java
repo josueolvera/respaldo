@@ -1,5 +1,6 @@
 package mx.bidg.dao;
 
+import mx.bidg.model.CDistributors;
 import mx.bidg.model.EmployeesHistory;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 public interface EmployeesHistoryDao  extends InterfaceDao<EmployeesHistory>  {
     List<EmployeesHistory> findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(
             Integer status,
-            Integer idDistributor,
+            List<CDistributors> distributors,
             Integer idRegion,
             Integer idZona,
             Integer idBranch,

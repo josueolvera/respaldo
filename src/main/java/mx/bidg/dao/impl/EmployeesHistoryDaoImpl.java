@@ -2,9 +2,11 @@ package mx.bidg.dao.impl;
 
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.EmployeesHistoryDao;
+import mx.bidg.model.CDistributors;
 import mx.bidg.model.EmployeesHistory;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -53,11 +55,12 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
 
     @Override
     public List<EmployeesHistory> findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
-        (Integer status, Integer idDistributor, Integer idRegion, Integer idZona,Integer idBranch, Integer idArea, Integer idRole, 
-         String fullname, String rfc,String startDate, String endDate) {
+        (Integer status, List<CDistributors> distributors, Integer idRegion, Integer idZona, Integer idBranch, Integer idArea, Integer idRole,
+         String fullname, String rfc, String startDate, String endDate) {
         Criteria criteria = createEntityCriteria();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         Disjunction dis = Restrictions.disjunction();
+        Disjunction distribuidorDisjunction = Restrictions.disjunction();
 
         if (startDate != null && endDate != null) {
             LocalDateTime startLocalDateTime = LocalDateTime.parse(startDate + " 00:00:00",formatter);
@@ -65,9 +68,11 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
             criteria.add(Restrictions.between("joinDate",startLocalDateTime,endLocalDateTime));
         }
 
-        if (idDistributor != null) {
-            criteria.add(Restrictions.eq("idDistributor",idDistributor));
+        for(CDistributors distributor : distributors ){
+            distribuidorDisjunction.add(Restrictions.eq("idDistributor", distributor.getIdDistributor()));
         }
+        criteria.add(distribuidorDisjunction);
+
         if (idRegion != null) {
             criteria.add(Restrictions.eq("idRegion",idRegion));
         }
@@ -113,7 +118,7 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
         }
         
 
-        return criteria.list();
+        return criteria.addOrder(Order.asc("rfc")).list();
     }
 
     @Override
