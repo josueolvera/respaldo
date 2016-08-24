@@ -48,6 +48,12 @@ public class EmployeesHistoryController {
     private CRolesService cRolesService;
 
     @Autowired
+    private CDistributorsService cDistributorsService;
+
+    @Autowired
+    private CActionTypesService cActionTypesService;
+
+    @Autowired
     private ObjectMapper mapper;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -63,12 +69,29 @@ public class EmployeesHistoryController {
                     @RequestParam(name = "fullname", required = false) String fullname,
                     @RequestParam(name = "rfc", required = false) String rfc,
                     @RequestParam(name = "startDate", required = false) String startDate,
-                    @RequestParam(name = "endDate", required = false) String endDate
+                    @RequestParam(name = "endDate", required = false) String endDate,
+                    @RequestParam(name = "idReport", required = false) Integer idReport
             ) throws IOException {
 
+        List<CDistributors> distributors;
+
+        if (idDistributor != null){
+            distributors = new ArrayList<>();
+            distributors.add(new CDistributors(idDistributor));
+        }else{
+            if (idReport == null){
+                distributors =  cDistributorsService.findAll();
+            } else if(idReport.equals(1)){
+                distributors = cDistributorsService.getDistributorForSaem(null, true);
+            } else if(idReport.equals(2)){
+                distributors = cDistributorsService.getDistributorForSaem(null, false);
+            } else{
+                distributors = cDistributorsService.findAll();
+            }
+        }
         List<EmployeesHistory> employeesHistories = new ArrayList();
         employeesHistories = employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
-        (status,idDistributor, idRegion, idZona,idBranch, idArea, idRole, fullname, rfc, startDate, endDate);
+        (status,distributors, idRegion, idZona,idBranch, idArea, idRole, fullname, rfc, startDate, endDate);
 
         for(EmployeesHistory employeesHistory : employeesHistories){
             if (employeesHistory != null){
@@ -79,6 +102,10 @@ public class EmployeesHistoryController {
                 if (employeesHistory.getIdRole() != null){
                     CRoles roles = cRolesService.findById(employeesHistory.getIdRole());
                     employeesHistory.setRolesR(roles);
+                }
+                if(employeesHistory.getIdActionType() != null){
+                    CActionTypes actionTypes = cActionTypesService.findById(employeesHistory.getIdActionType());
+                    employeesHistory.setActionTypesR(actionTypes);
                 }
             }
         }
@@ -172,23 +199,70 @@ public class EmployeesHistoryController {
                     @RequestParam(name = "startDate", required = false) String startDate,
                     @RequestParam(name = "endDate", required = false) String endDate,
                     @RequestParam(name = "reportFileName") String reportFileName,
+                    @RequestParam(name = "idReport", required = false) Integer idReport,
                     HttpServletResponse response
             ) throws IOException {
 
+        List<CDistributors> cDistributorsList;
         List<EmployeesHistory> employeesHistories = new ArrayList();
-        employeesHistories = employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
-                (status,idDistributor, idRegion, idZona,idBranch, idArea, idRole, fullname, rfc,startDate, endDate);
-
+        OutputStream outputStream;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDateTime dateTime = LocalDateTime.now();
 
-        response.setContentType("application/octet-stream");
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + reportFileName + "_" + dateTime.format(formatter) + ".xlsx"+ "\"");
-        OutputStream outputStream = response.getOutputStream();
-        dwEmployeesService.createReport(employeesHistories, outputStream);
-        outputStream.flush();
-        outputStream.close();
+        switch (idReport){
+            case 1:
+                if (idDistributor != null){
+                    cDistributorsList = new ArrayList<>();
+                    cDistributorsList.add(new CDistributors(idDistributor));
+                }else{
+                    cDistributorsList = cDistributorsService.getDistributorForSaem(null, true);
+                }
 
+                employeesHistories = employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
+                        (status,cDistributorsList, idRegion, idZona,idBranch, idArea, idRole, fullname, rfc,startDate, endDate);
+
+                response.setContentType("application/octet-stream");
+                response.setHeader("Content-Disposition", "attachment; filename=\"" + reportFileName + "_" + dateTime.format(formatter) + ".xlsx"+ "\"");
+                outputStream = response.getOutputStream();
+                dwEmployeesService.createReportDistributors(employeesHistories, outputStream);
+                outputStream.flush();
+                outputStream.close();
+
+                break;
+            case 2:
+                if (idDistributor != null){
+                    cDistributorsList = new ArrayList<>();
+                    cDistributorsList.add(new CDistributors(idDistributor));
+                }else{
+                    cDistributorsList = cDistributorsService.getDistributorForSaem(null, false);
+                }
+
+                employeesHistories = employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
+                        (status,cDistributorsList, idRegion, idZona,idBranch, idArea, idRole, fullname, rfc,startDate, endDate);
+
+                response.setContentType("application/octet-stream");
+                response.setHeader("Content-Disposition", "attachment; filename=\"" + reportFileName + "_" + dateTime.format(formatter) + ".xlsx"+ "\"");
+                outputStream = response.getOutputStream();
+                dwEmployeesService.createReportCompanys(employeesHistories, outputStream);
+                outputStream.flush();
+                outputStream.close();
+
+                break;
+            case 3:
+                cDistributorsList = cDistributorsService.findAll();
+
+                employeesHistories = employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
+                        (status,cDistributorsList, idRegion, idZona,idBranch, idArea, idRole, fullname, rfc,startDate, endDate);
+
+                response.setContentType("application/octet-stream");
+                response.setHeader("Content-Disposition", "attachment; filename=\"" + reportFileName + "_" + dateTime.format(formatter) + ".xlsx"+ "\"");
+                outputStream = response.getOutputStream();
+                dwEmployeesService.createReportBpo(employeesHistories, outputStream);
+                outputStream.flush();
+                outputStream.close();
+
+                break;
+        }
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesHistories),
                 HttpStatus.OK
