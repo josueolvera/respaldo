@@ -84,4 +84,17 @@ public class CDistributorsDaoImpl extends AbstractDao<Integer, CDistributors> im
 
         return criteria.list();
     }
+
+    @Override
+    public List<CDistributors> getDistributorsBySaemReports(Integer idDistributor, Boolean saemFlag) {
+        Criteria criteria = createEntityCriteria();
+
+        if (idDistributor != null){
+            criteria.add(Restrictions.eq("idDistributor",idDistributor));
+        }
+
+        criteria.add(Restrictions.eq("saemFlag", saemFlag));
+
+        return criteria.list();
+    }
 }
