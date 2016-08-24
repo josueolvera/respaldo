@@ -54,4 +54,17 @@ public class CAreasDaoImpl extends AbstractDao<Integer, CAreas> implements CArea
                 .setFetchMode("roles", FetchMode.JOIN)
                 .uniqueResult();
     }
+
+    @Override
+    public List<CAreas> findBySaemFlag(Integer idArea, Integer saemFlag) {
+        Criteria criteria = createEntityCriteria();
+
+        if (idArea != null){
+            criteria.add(Restrictions.eq("idArea",idArea));
+        }
+
+        criteria.add(Restrictions.eq("saemFlag", saemFlag));
+
+        return criteria.list();
+    }
 }

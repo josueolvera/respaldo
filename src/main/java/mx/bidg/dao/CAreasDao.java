@@ -7,6 +7,8 @@ package mx.bidg.dao;
 
 import mx.bidg.model.CAreas;
 
+import java.util.List;
+
 /**
  *
  * @author sistemask
@@ -14,5 +16,6 @@ import mx.bidg.model.CAreas;
 public interface CAreasDao extends InterfaceDao<CAreas> {
 
     CAreas findAreaWithRoles (Integer idArea);
+    List<CAreas> findBySaemFlag(Integer idArea,Integer saemFlag);
     
 }
