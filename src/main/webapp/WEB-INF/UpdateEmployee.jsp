@@ -150,7 +150,8 @@
                     regions: [],
                     zonas: [],
                     branchch: [],
-                    selectedArea: {}
+                    selectedArea: {},
+                    haveImss: false
                 },
                 methods: {
                     getDwEmployee: function () {
@@ -748,6 +749,16 @@
                     roleChanged: function () {
                         this.selectedOptions.zona = this.defaultZona;
                         this.selectedOptions.branch = this.defaultBranch;
+                    },
+                    validateImss: function () {
+                        if(this.dwEmployee.employee.imss.length > 0){
+                            this.haveImss = true;
+                        }else{
+                            this.haveImss = false;
+                        }
+                    },
+                    exit: function () {
+                        window.location = this.regresarBusqueda;
                     }
                 }
 
@@ -764,8 +775,7 @@
                 <div class="col-xs-3">
                 </div>
                 <div class="col-xs-1" style="margin-left: 300px">
-                    <button class="btn btn-default" style="margin-top: 35px"><a style="color: black"
-                                                                                 :href="regresarBusqueda">Regresar</a>
+                    <button class="btn btn-default" style="margin-top: 35px" @click="exit">Regresar
                     </button>
                 </div>
             </div>
@@ -939,7 +949,7 @@
                             </div>
                             <br>
                             <div class="row"
-                                 v-if="selectedOptions.role.idRole == 80 || selectedOptions.role.idRole == 81 || selectedOptions.role.idRole == 64">
+                                 v-if="selectedOptions.role.idRole == 80 || selectedOptions.role.idRole == 81 || selectedOptions.role.idRole == 64 || selectedOptions.role.idRole == 82">
                                 <div class="col-xs-4">
                                     <label>Región</label>
                                     <select v-model="selectedOptions.region" class="form-control"
@@ -1177,12 +1187,12 @@
                                 <div class="col-xs-3">
                                     <label>Nombre del padre</label>
                                     <input class="form-control" v-model="dwEmployee.employee.fatherName"
-                                           onkeypress="return isLetterKey(event)">
+                                           onkeypress="return isLetterKey(event)" :required="haveImss == true">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Nombre de la madre</label>
                                     <input class="form-control" v-model="dwEmployee.employee.motherName"
-                                           onkeypress="return isLetterKey(event)">
+                                           onkeypress="return isLetterKey(event)" :required="haveImss == true">
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Estado civil</label>
@@ -1289,7 +1299,7 @@
                                 <div class="col-xs-3" v-if="dwEmployee.employee.employeeType.idEmployeeType == 1">
                                     <label>IMSS</label>
                                     <input class="form-control" maxlength="18" v-model="dwEmployee.employee.imss"
-                                           onkeypress="return isNumberKey(event)" required>
+                                           onkeypress="return isNumberKey(event)" required @change="validateImss">
                                 </div>
                                 <div class="col-xs-3" v-if="dwEmployee.employee.employeeType.idEmployeeType == 1">
                                     <label>Infonavit</label>
@@ -1410,7 +1420,7 @@
                                                    :disabled="isSaving"
                                                    :name="'file-type-' + docType.idDocumentType"
                                                    accept="application/pdf,
-                                                         image/png,image/jpg,image/jpeg," required>
+                                                         image/png,image/jpg,image/jpeg,">
                                         </td>
                                     </tr>
                                     <tr v-for="docType in documentTypes"
@@ -1470,7 +1480,7 @@
                                                    :disabled="isSaving"
                                                    :name="'file-type-' + docType.idDocumentType"
                                                    accept="application/pdf,
-                                                         image/png,image/jpg,image/jpeg," required>
+                                                         image/png,image/jpg,image/jpeg,">
                                         </td>
                                     </tr>
                                     <tr v-for="docType in documentTypes"
@@ -1485,7 +1495,7 @@
                                                    :disabled="isSaving"
                                                    :name="'file-type-' + docType.idDocumentType"
                                                    accept="application/pdf,
-                                                         image/png,image/jpg,image/jpeg," required>
+                                                         image/png,image/jpg,image/jpeg,">
                                         </td>
                                     </tr>
                                     <tr v-for="docType in documentTypes"
@@ -1500,7 +1510,7 @@
                                                    :disabled="isSaving"
                                                    :name="'file-type-' + docType.idDocumentType"
                                                    accept="application/pdf,
-                                                         image/png,image/jpg,image/jpeg," required>
+                                                         image/png,image/jpg,image/jpeg,">
                                         </td>
                                     </tr>
                                     <tr v-for="docType in documentTypes"
@@ -1544,8 +1554,7 @@
                         <div class="col-xs-10">
                         </div>
                         <div class="col-xs-1">
-                            <button class="btn btn-default" style="margin-left: 35px"><a style="color: black"
-                                                                                         :href="regresarBusqueda">Salir</a>
+                            <button class="btn btn-default" style="margin-left: 35px" @click="exit">Salir
                             </button>
                         </div>
                         <div class="col-xs-1">
