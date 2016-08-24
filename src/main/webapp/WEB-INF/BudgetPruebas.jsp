@@ -768,14 +768,14 @@
                                 </option>
                             </select>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-1">
                             <label>Año</label>
                             <input type="number" :min="currentYear" :max="maxYear" minlength="4" maxlength="4"
                                    placeholder="Año" class="form-control" v-model="selected.year" @change="onYearChanged">
                         </div>
                         <div class="col-md-1">
                             <label style="visibility: hidden">search</label>
-                            <button class="btn btn-default">Buscar</button>
+                            <button class="btn btn-primary">Buscar</button>
                         </div>
                     </form>
                 </div>
