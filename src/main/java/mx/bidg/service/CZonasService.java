@@ -13,4 +13,5 @@ public interface CZonasService {
     CZonas findById(Integer idZona);
     List<CZonas> findAll();
     boolean delete(CZonas zona);
+    List<CZonas> findBySaemFlag(Integer idZonas, Integer saemFlag);
 }

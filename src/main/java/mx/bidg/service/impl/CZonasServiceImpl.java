@@ -44,4 +44,9 @@ public class CZonasServiceImpl implements CZonasService {
         cZonaDao.delete(zona);
         return true;
     }
+
+    @Override
+    public List<CZonas> findBySaemFlag(Integer idZonas, Integer saemFlag) {
+        return cZonaDao.findBySaemFlag(idZonas, saemFlag);
+    }
 }
