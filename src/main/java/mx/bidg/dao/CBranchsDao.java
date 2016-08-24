@@ -7,10 +7,13 @@ package mx.bidg.dao;
 
 import mx.bidg.model.CBranchs;
 
+import java.util.List;
+
 /**
  *
  * @author sistemask
  */
 public interface CBranchsDao extends InterfaceDao<CBranchs> {
     CBranchs findByName(String branchName);
+    List<CBranchs> findBySaemFlag(Integer idBranch, Integer saemFlag);
 }

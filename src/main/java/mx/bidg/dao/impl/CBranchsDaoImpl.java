@@ -61,4 +61,17 @@ public class CBranchsDaoImpl extends AbstractDao<Integer, CBranchs> implements C
         Criteria criteria = createEntityCriteria();
         return (CBranchs) criteria.add(Restrictions.eq("branchNameClean", branchName)).uniqueResult();
     }
+
+    @Override
+    public List<CBranchs> findBySaemFlag(Integer idBranch,Integer saemFlag) {
+        Criteria criteria = createEntityCriteria();
+
+        if (idBranch != null){
+            criteria.add(Restrictions.eq("idBranch",idBranch));
+        }
+
+        criteria.add(Restrictions.eq("saemFlag", saemFlag));
+
+        return criteria.list();
+    }
 }
