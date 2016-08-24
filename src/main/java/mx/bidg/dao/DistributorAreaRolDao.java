@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface DistributorAreaRolDao extends InterfaceDao <DistributorAreaRol> {
     List<DistributorAreaRol> findRolByDistributorArea (Integer idDistributor, Integer idArea);
+    List<DistributorAreaRol> findRolByArea(Integer idArea);
 }

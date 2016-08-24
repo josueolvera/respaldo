@@ -51,4 +51,11 @@ public class DistributorAreaRolDaoImpl extends AbstractDao<Integer, DistributorA
                 .add(Restrictions.eq("idArea",idArea))
                 .list();
     }
+
+    @Override
+    public List<DistributorAreaRol> findRolByArea(Integer idArea) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idArea",idArea))
+                .list();
+    }
 }
