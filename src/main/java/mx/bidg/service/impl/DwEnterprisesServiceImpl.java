@@ -42,6 +42,9 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
     @Autowired
     CZonaDao cZonaDao;
 
+    @Autowired
+    CDistributorsDao distributorsDao;
+
     @Override
     public List<DwEnterprises> findByGroupArea(CGroups idGroup, CAreas idArea) {
         return dwEnterprisesDao.findByGroupArea(idGroup, idArea);
@@ -287,6 +290,112 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
             branchs.add(branchsDao.findById(dwEnterprise.getIdBranch()));
         }
         return branchs;
+    }
+
+    @Override
+    public List<DwEnterprises> finDwEnterprisesByDistributorSaem(Integer idDistributor, Integer idReporte) {
+
+        List<DwEnterprises> dwEnterprisesList;
+
+        if(idDistributor.equals(0)){
+            if (idReporte.equals(1)){
+                List<CDistributors> distributorsList = distributorsDao.getDistributorsBySaemReports(null,true);
+                dwEnterprisesList = dwEnterprisesDao.findByDistributorsSaem(distributorsList);
+            }else {
+                List<CDistributors> distributorsList = distributorsDao.getDistributorsBySaemReports(null, false);
+                dwEnterprisesList = dwEnterprisesDao.findByDistributorsSaem(distributorsList);
+            }
+        } else {
+            CDistributors distributor = distributorsDao.findById(idDistributor);
+            List<CDistributors> distributorsList = distributorsDao.getDistributorsBySaemReports(idDistributor,distributor.getSaemFlag());
+            dwEnterprisesList = dwEnterprisesDao.findByDistributorsSaem(distributorsList);
+        }
+
+        return dwEnterprisesList;
+    }
+
+    @Override
+    public List<DwEnterprises> findDwEnterprisesByRegionSaem(Integer idRegion, Integer idReporte) {
+        List<DwEnterprises> dwEnterprisesList;
+
+        if(idRegion.equals(0)){
+            if (idReporte.equals(1)){
+                List<CRegions> regionsList = regionsDao.findRegionsBySaemFlag(null, 1);
+                dwEnterprisesList = dwEnterprisesDao.findByRegionsSaem(regionsList);
+            }else {
+                List<CRegions> regionsList = regionsDao.findRegionsBySaemFlag(null, 0);
+                dwEnterprisesList = dwEnterprisesDao.findByRegionsSaem(regionsList);
+            }
+        } else {
+            CRegions region = regionsDao.findById(idRegion);
+            List<CRegions> regionsList = regionsDao.findRegionsBySaemFlag(idRegion, region.getSaemFlag());
+            dwEnterprisesList = dwEnterprisesDao.findByRegionsSaem(regionsList);
+        }
+
+        return dwEnterprisesList;
+    }
+
+    @Override
+    public List<DwEnterprises> findDwEnterprisesByZonaSaem(Integer idZonas, Integer idReporte) {
+        List<DwEnterprises> dwEnterprisesList;
+
+        if(idZonas.equals(0)){
+            if (idReporte.equals(1)){
+                List<CZonas> zonasList = cZonaDao.findBySaemFlag(null, 1);
+                dwEnterprisesList = dwEnterprisesDao.findByZonasSaem(zonasList);
+            }else {
+                List<CZonas> zonasList = cZonaDao.findBySaemFlag(null, 0);
+                dwEnterprisesList = dwEnterprisesDao.findByZonasSaem(zonasList);
+            }
+        } else {
+            CZonas zonas = cZonaDao.findById(idZonas);
+            List<CZonas> zonasList = cZonaDao.findBySaemFlag(idZonas, zonas.getSaemFlag());
+            dwEnterprisesList = dwEnterprisesDao.findByZonasSaem(zonasList);
+        }
+
+        return dwEnterprisesList;
+    }
+
+    @Override
+    public List<DwEnterprises> findDwEnterprisesByBranchSaem(Integer idBranch, Integer idReporte) {
+        List<DwEnterprises> dwEnterprisesList;
+
+        if(idBranch.equals(0)){
+            if (idReporte.equals(1)){
+                List<CBranchs> branchsList = branchsDao.findBySaemFlag(null, 1);
+                dwEnterprisesList = dwEnterprisesDao.findByBranchsSaem(branchsList);
+            }else {
+                List<CBranchs> branchsList = branchsDao.findBySaemFlag(null, 0);
+                dwEnterprisesList = dwEnterprisesDao.findByBranchsSaem(branchsList);
+            }
+        } else {
+            CBranchs branch = branchsDao.findById(idBranch);
+            List<CBranchs> branchsList = branchsDao.findBySaemFlag(idBranch, branch.getSaemFlag());
+            dwEnterprisesList = dwEnterprisesDao.findByBranchsSaem(branchsList);
+        }
+
+        return dwEnterprisesList;
+    }
+
+    @Override
+    public List<DwEnterprises> findDwEnterprisesByAreaSaem(Integer idArea, Integer idReporte) {
+        List<DwEnterprises> dwEnterprisesList;
+
+        if(idArea.equals(0)){
+            if (idReporte.equals(1)){
+                List<CAreas> areasList = areasDao.findBySaemFlag(null, 1);
+                dwEnterprisesList = dwEnterprisesDao.findByAreasSaem(areasList);
+            }else {
+                List<CAreas> areasList = areasDao.findBySaemFlag(null, 0);
+                dwEnterprisesList = dwEnterprisesDao.findByAreasSaem(areasList);
+            }
+        } else {
+            CAreas areas = areasDao.findById(idArea);
+            List<CAreas> areasList = areasDao.findBySaemFlag(idArea, areas.getSaemFlag());
+            dwEnterprisesList = dwEnterprisesDao.findByAreasSaem(areasList);
+        }
+
+        return dwEnterprisesList;
     }
 
     @Override

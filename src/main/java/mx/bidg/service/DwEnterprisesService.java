@@ -42,4 +42,9 @@ public interface DwEnterprisesService {
     DwEnterprises findByDistributorBranchArea(Integer idDistributor, Integer idBranch, Integer idArea);
     List<CRegions> findRegionByDistributorAndArea (Integer idDistributor, Integer idArea);
     List<CBranchs> findBranchByDistributorAndArea (Integer idDistributor, Integer idArea);
+    List<DwEnterprises> finDwEnterprisesByDistributorSaem (Integer idDistributor, Integer idReporte);
+    List<DwEnterprises> findDwEnterprisesByRegionSaem(Integer idRegion, Integer idReporte);
+    List<DwEnterprises> findDwEnterprisesByZonaSaem(Integer idZonas, Integer idReporte);
+    List<DwEnterprises> findDwEnterprisesByBranchSaem(Integer idBranch, Integer idReporte);
+    List<DwEnterprises> findDwEnterprisesByAreaSaem (Integer idArea, Integer idReporte);
 }
