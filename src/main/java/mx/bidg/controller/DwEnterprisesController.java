@@ -167,4 +167,34 @@ public class DwEnterprisesController {
         List<CBranchs> branchsList = dwEnterprisesService.findBranchByDistributorAndArea(idDistributor,idArea);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(branchsList), HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/distributor-saem/{idDistributor}/{idReporte}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getDistributorSaem(@PathVariable Integer idDistributor, @PathVariable Integer idReporte)throws IOException{
+        List<DwEnterprises> dwEnterprisesList = dwEnterprisesService.finDwEnterprisesByDistributorSaem(idDistributor, idReporte);
+        return new ResponseEntity<> (mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEnterprisesList), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/region-saem/{idRegion}/{idReporte}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getRegionSaem(@PathVariable Integer idRegion, @PathVariable Integer idReporte)throws IOException{
+        List<DwEnterprises> dwEnterprisesList = dwEnterprisesService.findDwEnterprisesByRegionSaem(idRegion, idReporte);
+        return new ResponseEntity<> (mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEnterprisesList), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/zona-saem/{idZonas}/{idReporte}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getZonaSaem(@PathVariable Integer idZonas, @PathVariable Integer idReporte)throws IOException{
+        List<DwEnterprises> dwEnterprisesList = dwEnterprisesService.findDwEnterprisesByZonaSaem(idZonas, idReporte);
+        return new ResponseEntity<> (mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEnterprisesList), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/branch-saem/{idBranch}/{idReporte}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getBranchSaem(@PathVariable Integer idBranch, @PathVariable Integer idReporte)throws IOException{
+        List<DwEnterprises> dwEnterprisesList = dwEnterprisesService.findDwEnterprisesByBranchSaem(idBranch, idReporte);
+        return new ResponseEntity<> (mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEnterprisesList), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/area-saem/{idArea}/{idReporte}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getAreaSaem(@PathVariable Integer idArea, @PathVariable Integer idReporte)throws IOException{
+        List<DwEnterprises> dwEnterprisesList = dwEnterprisesService.findDwEnterprisesByAreaSaem(idArea, idReporte);
+        return new ResponseEntity<> (mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEnterprisesList), HttpStatus.OK);
+    }
 }
