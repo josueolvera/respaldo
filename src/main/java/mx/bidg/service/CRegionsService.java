@@ -9,5 +9,6 @@ import mx.bidg.model.CRegions;
  */
 public interface CRegionsService {
     List<CRegions> findAll();
+    List<CRegions> findBySaemFlags(Integer idRegion, Integer saemFlag);
     
 }

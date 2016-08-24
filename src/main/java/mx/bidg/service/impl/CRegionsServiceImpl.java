@@ -19,5 +19,10 @@ public class CRegionsServiceImpl implements CRegionsService {
     public List<CRegions> findAll() {
         return cRegionsDao.findAll();
     }
-    
+
+    @Override
+    public List<CRegions> findBySaemFlags(Integer idRegion, Integer saemFlag) {
+        return cRegionsDao.findRegionsBySaemFlag(idRegion, saemFlag);
+    }
+
 }
