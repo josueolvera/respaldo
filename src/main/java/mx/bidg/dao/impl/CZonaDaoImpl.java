@@ -3,6 +3,8 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CZonaDao;
 import mx.bidg.model.CZonas;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,5 +41,18 @@ public class CZonaDaoImpl extends AbstractDao <Integer, CZonas> implements CZona
     public boolean delete(CZonas entity) {
         remove(entity);
         return true;
+    }
+
+    @Override
+    public List<CZonas> findBySaemFlag(Integer idZonas, Integer saemFlag) {
+        Criteria criteria = createEntityCriteria();
+
+        if (idZonas != null){
+            criteria.add(Restrictions.eq("idZonas",idZonas));
+        }
+
+        criteria.add(Restrictions.eq("saemFlag", saemFlag));
+
+        return criteria.list();
     }
 }
