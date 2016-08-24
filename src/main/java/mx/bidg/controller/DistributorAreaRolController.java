@@ -34,4 +34,10 @@ public class DistributorAreaRolController {
         List<DistributorAreaRol> distributorAreaRoles = distributorAreaRolService.findRolByDistributorArea(idDistributor, idArea);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(distributorAreaRoles), HttpStatus.OK);
     }
+
+    @RequestMapping(value = "/{idArea}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getRolByArea(@PathVariable Integer idArea) throws IOException{
+        List<DistributorAreaRol> distributorAreaRols = distributorAreaRolService.findRolByArea(idArea);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(distributorAreaRols),HttpStatus.OK);
+    }
 }
