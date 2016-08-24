@@ -17,5 +17,6 @@ public interface CAreasService {
     List<CAreas> findAll();
     CAreas findById(Integer idArea);
     CAreas findAreaWhitRole(Integer idArea);
+    List<CAreas> findBySaemFlag(Integer idArea, Integer saemFlag);
     
 }

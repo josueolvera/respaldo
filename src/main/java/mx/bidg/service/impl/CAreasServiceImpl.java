@@ -39,4 +39,9 @@ public class CAreasServiceImpl implements CAreasService {
         return dao.findAreaWithRoles(idArea);
     }
 
+    @Override
+    public List<CAreas> findBySaemFlag(Integer idArea,Integer saemFlag) {
+        return dao.findBySaemFlag(idArea, saemFlag);
+    }
+
 }
