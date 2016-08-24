@@ -43,4 +43,9 @@ public class CDistributorsServiceImpl implements CDistributorsService {
     public List<CDistributors> getDistributors(Boolean forStock, Boolean forBudget, Boolean forAgreement) {
         return cDistributorsDao.getDistributors(forStock, forBudget, forAgreement);
     }
+
+    @Override
+    public List<CDistributors> getDistributorForSaem(Integer idDistributor, Boolean saemFlag) {
+        return cDistributorsDao.getDistributorsBySaemReports(idDistributor, saemFlag);
+    }
 }
