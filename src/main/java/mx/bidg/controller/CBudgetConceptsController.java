@@ -119,8 +119,8 @@ public class CBudgetConceptsController {
                 }
                 
                 budgetPojo.setIdBudget(budget.getIdBudget());
-                budgetPojo.setIdDistributor(budget.getIdDistributor());
-                budgetPojo.setIdArea(budget.getIdArea());
+//                budgetPojo.setIdDistributor(budget.getIdDistributor());
+//                budgetPojo.setIdArea(budget.getIdArea());
                 budgetPojo.setIdBudgetCategory(budget.getAccountingAccount().getIdBudgetCategory());
                 budgetPojo.setIdBudgetSubcategory(budget.getAccountingAccount().getIdBudgetSubcategory());
                 budgetPojo.setConceptos(conceptPojoList);

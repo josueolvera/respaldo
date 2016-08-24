@@ -11,6 +11,7 @@ import java.util.List;
  * Created by josueolvera on 13/07/16.
  */
 @Repository
+@SuppressWarnings("unchecked")
 public class TravelExpensesDaoImpl extends AbstractDao<Integer,TravelExpenses> implements TravelExpensesDao {
 
     @Override
@@ -26,7 +27,7 @@ public class TravelExpensesDaoImpl extends AbstractDao<Integer,TravelExpenses> i
 
     @Override
     public List<TravelExpenses> findAll() {
-        return (List<TravelExpenses>) createEntityCriteria().list();
+        return createEntityCriteria().list();
     }
 
     @Override

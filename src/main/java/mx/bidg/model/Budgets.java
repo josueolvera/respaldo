@@ -47,13 +47,9 @@ public class Budgets implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idBudget;
     
-    @Column(name = "ID_DISTRIBUTOR", insertable = false, updatable = false)
+    @Column(name = "ID_DW_ENTERPRISE_BUDGET", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idDistributor;
-    
-    @Column(name = "ID_AREA", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idArea;
+    private Integer idDwEnterpriseBudget;
     
     @Column(name = "ID_ACCOUNTING_ACCOUNT", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -71,15 +67,10 @@ public class Budgets implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int isentry;
         
-    @JoinColumn(name = "ID_DISTRIBUTOR", referencedColumnName = "ID_DISTRIBUTOR")
+    @JoinColumn(name = "ID_DW_ENTERPRISE_BUDGET", referencedColumnName = "ID_DW_ENTERPRISE_BUDGET")
     @ManyToOne
     @JsonView({JsonViews.Embedded.class})
-    private CDistributors distributor;
-    
-    @JoinColumn(name = "ID_AREA", referencedColumnName = "ID_AREA")
-    @ManyToOne
-    @JsonView({JsonViews.Embedded.class})
-    private CAreas area;
+    private DwEnterprisesCBudgets dwEnterpriseCBudget;
     
     @JoinColumn(name = "ID_ACCOUNTING_ACCOUNT", referencedColumnName = "ID_ACCOUNTING_ACCOUNT")
     @ManyToOne
@@ -97,27 +88,9 @@ public class Budgets implements Serializable {
         this.idBudget = idBudget;
     }
 
-    public Budgets(Integer idBudget, int idAccessLevel) {
-        this.idBudget = idBudget;
-        this.idAccessLevel = idAccessLevel;
-    }
-
-    public Budgets(Integer idBudget, int idAccessLevel, List<BudgetMonthBranch> budgetMonthBranchList) {
-        this.idBudget = idBudget;
-        this.idAccessLevel = idAccessLevel;
-        this.budgetMonthBranchList = budgetMonthBranchList;
-    }
-
-    public Budgets(Integer idDistributor, Integer idArea, Integer idAccountingAccount, int idAccessLevel, int isentry, CDistributors distributor, CAreas area, AccountingAccounts accountingAccount, List<BudgetMonthBranch> budgetMonthBranchList) {
-        this.idDistributor = idDistributor;
-        this.idArea = idArea;
-        this.idAccountingAccount = idAccountingAccount;
-        this.idAccessLevel = idAccessLevel;
-        this.isentry = isentry;
-        this.distributor = distributor;
-        this.area = area;
+    public Budgets(DwEnterprisesCBudgets dwEnterpriseCBudget, AccountingAccounts accountingAccount) {
+        this.dwEnterpriseCBudget = dwEnterpriseCBudget;
         this.accountingAccount = accountingAccount;
-        this.budgetMonthBranchList = budgetMonthBranchList;
     }
 
     public Integer getIdBudget() {
@@ -144,14 +117,6 @@ public class Budgets implements Serializable {
         this.budgetMonthBranchList = budgetMonthBranchList;
     }
 
-    public Integer getIdDistributor() {
-        return idDistributor;
-    }
-
-    public void setIdDistributor(Integer idDistributor) {
-        this.idDistributor = idDistributor;
-    }
-
     public Integer getIdAccountingAccount() {
         return idAccountingAccount;
     }
@@ -168,30 +133,29 @@ public class Budgets implements Serializable {
         this.accountingAccount = accountingAccount;
     }
 
-    public Integer getIdArea() {
-        return idArea;
+    public int getIsentry() {
+        return isentry;
     }
 
-    public void setIdArea(Integer idArea) {
-        this.idArea = idArea;
+    public void setIsentry(int isentry) {
+        this.isentry = isentry;
     }
 
-    public CDistributors getDistributor() {
-        return distributor;
+    public Integer getIdDwEnterpriseBudget() {
+        return idDwEnterpriseBudget;
     }
 
-    public void setDistributor(CDistributors distributor) {
-        this.distributor = distributor;
+    public void setIdDwEnterpriseBudget(Integer idDwEnterpriseBudget) {
+        this.idDwEnterpriseBudget = idDwEnterpriseBudget;
     }
 
-    public CAreas getArea() {
-        return area;
+    public DwEnterprisesCBudgets getDwEnterpriseCBudget() {
+        return dwEnterpriseCBudget;
     }
 
-    public void setArea(CAreas area) {
-        this.area = area;
+    public void setDwEnterpriseCBudget(DwEnterprisesCBudgets dwEnterpriseCBudget) {
+        this.dwEnterpriseCBudget = dwEnterpriseCBudget;
     }
-    
 
     @Override
     public int hashCode() {
@@ -216,14 +180,6 @@ public class Budgets implements Serializable {
     @Override
     public String toString() {
         return "mx.bidg.model.Budgets[ idBudget=" + idBudget + " ]";
-    }
-
-    public int getIsentry() {
-        return isentry;
-    }
-
-    public void setIsentry(int isentry) {
-        this.isentry = isentry;
     }
     
 }

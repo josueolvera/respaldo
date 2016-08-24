@@ -47,7 +47,7 @@ public class BudgetController {
                 
         Budgets budget = new Budgets();
         
-        budget.setArea(new CAreas(json.get("area").asInt()));
+//        budget.setArea(new CAreas(json.get("area").asInt()));
 //        budget.setBudgetCategory(new CBudgetCategories(json.get("category").asInt()));
 //        budget.setBudgetSubcategory(new CBudgetSubcategories(json.get("subcategory").asInt()));
         
@@ -118,8 +118,8 @@ public class BudgetController {
 
         for (Budgets budget : budgets) {
             BudgetPojo budgetPojo = new BudgetPojo();
-            budgetPojo.setIdDistributor(budget.getIdDistributor());
-            budgetPojo.setIdArea(budget.getIdArea());
+//            budgetPojo.setIdDistributor(budget.getIdDistributor());
+//            budgetPojo.setIdArea(budget.getIdArea());
             budgetPojo.setIdBudgetCategory(budget.getAccountingAccount().getIdBudgetCategory());
             budgetPojo.setIdBudgetSubcategory(budget.getAccountingAccount().getIdBudgetSubcategory());
             budgetPojo.setIdBudget(budget.getIdBudget());
