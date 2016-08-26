@@ -13,6 +13,7 @@ import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -72,6 +73,6 @@ public class CBranchsDaoImpl extends AbstractDao<Integer, CBranchs> implements C
 
         criteria.add(Restrictions.eq("saemFlag", saemFlag));
 
-        return criteria.list();
+        return criteria.setFetchMode("dwEnterprises", FetchMode.JOIN).addOrder(Order.asc("branchName")).list();
     }
 }

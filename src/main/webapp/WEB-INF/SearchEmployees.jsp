@@ -1436,7 +1436,7 @@
                                             </option>
                                         </select>
                                     </div>
-                                    <div class="col-xs-3 checkbox">
+                                    <div class="col-xs-3 checkbox" v-if="dwEnterprise.status == true">
                                         <label>
                                             <input type="checkbox" v-model="checkLastAssign" @change="cleanAndBuild()">
                                             Asignaciòn anterior
