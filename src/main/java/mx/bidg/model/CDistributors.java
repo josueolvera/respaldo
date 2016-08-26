@@ -58,10 +58,9 @@ public class CDistributors implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Boolean hasAgreement;
 
-    @Column(name = "BUDGET_SHARE", columnDefinition = "TINYINT")
-    @Type(type = "org.hibernate.type.NumericBooleanType")
+    @Column(name = "BUDGET_SHARE")
     @JsonView(JsonViews.Root.class)
-    private Boolean budgetShare;
+    private Integer budgetShare;
 
     @Column(name = "SAEM_FLAG", columnDefinition = "TINYINT")
     @Type(type = "org.hibernate.type.NumericBooleanType")
@@ -120,11 +119,11 @@ public class CDistributors implements Serializable {
         this.hasAgreement = hasAgreement;
     }
 
-    public boolean getBudgetShare() {
+    public Integer getBudgetShare() {
         return budgetShare;
     }
 
-    public void setBudgetShare(boolean budgetShare) {
+    public void setBudgetShare(Integer budgetShare) {
         this.budgetShare = budgetShare;
     }
 
