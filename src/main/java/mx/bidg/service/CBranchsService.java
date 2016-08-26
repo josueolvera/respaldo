@@ -5,6 +5,8 @@
  */
 package mx.bidg.service;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import mx.bidg.model.CBranchs;
 import mx.bidg.model.Users;
@@ -22,4 +24,5 @@ public interface CBranchsService {
     CBranchs save(CBranchs cBranchs, int idDistributor ,int idRegion, int idZona);
     CBranchs changeBranchStatus(int idBranch, Users user);
     List<CBranchs> findSaemFlag(Integer idBranch,Integer saemFlag);
+    void branchDistributorsReport(OutputStream stream) throws IOException;
 }
