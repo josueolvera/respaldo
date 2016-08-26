@@ -72,6 +72,6 @@ public class CBranchsDaoImpl extends AbstractDao<Integer, CBranchs> implements C
 
         criteria.add(Restrictions.eq("saemFlag", saemFlag));
 
-        return criteria.list();
+        return criteria.setFetchMode("dwEnterprises", FetchMode.JOIN).list();
     }
 }
