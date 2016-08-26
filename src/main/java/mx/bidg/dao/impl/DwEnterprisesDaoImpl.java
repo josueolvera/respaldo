@@ -14,6 +14,7 @@ import mx.bidg.model.*;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -257,7 +258,7 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
             criteria.add(dwEnterprisesDisjunction);
         }
 
-        criteria.add(Restrictions.eq("status",true));
+        criteria.add(Restrictions.eq("status",true)).addOrder(Order.asc("idBranch"));
 
         return criteria.list();
     }
