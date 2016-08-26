@@ -141,7 +141,7 @@
                                 this.newBranchForm.isValid = false;
                             });
                         } else {
-                            showAlert("Nombre, Nombre corto distribuidor y region son campos requeridos",{type:3});
+                            showAlert("Nombre, Nombre corto, Distribuidor, Regiòn y Zona son campos requeridos",{type:3});
                         }
                     },
                     onChangeDistributor : function () {
@@ -202,7 +202,7 @@
                                     idZona : this.selected.zona.idZonas,
                                     idBranch : this.selectedBranch.idBranch,
                                     idDwEnterprise : this.selectedBranch.dwEnterprises[0].idDwEnterprise,
-                                    branchName: this.selectedBranch.branchName,
+                                    branchName: this.branchName,
                                     edit: 1
                                 };
 
@@ -223,14 +223,14 @@
                                 }).error(function (data) {
                                 });
                         } else {
-                            if (this.branchName.length != this.selectedBranch.branchName.length && this.selectedBranch.branchName.length > 0){
+                            if (this.branchName.length != this.selectedBranch.branchName.length && this.branchName.length > 0){
                                 var requestBody2 = {
                                     idDistributor : 0,
                                     idRegion : 0,
                                     idZona : 0,
                                     idBranch : this.selectedBranch.idBranch,
                                     idDwEnterprise : this.selectedBranch.dwEnterprises[0].idDwEnterprise,
-                                    branchName: this.selectedBranch.branchName,
+                                    branchName: this.branchName,
                                     edit: 0
                                 };
 
@@ -472,10 +472,12 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title" id="deleteModalLabel">Confirmación de baja de sucursal</b></h4>
+                            <h4 class="modal-title" id="deleteModalLabel">Confirmación</h4>
                         </div>
                         <div class="modal-body">
                             La sucursal <b>{{selectedBranch.branchName}}</b> sera dada de baja.
+                            <br>
+                            (Los empleados asignados a esta sucursal seran dados de baja).
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -499,7 +501,7 @@
                                 <div class="row">
                                     <div class="col-md-8">
                                         <label>Nombre</label>
-                                        <input class="form-control" name="name" v-model="selectedBranch.branchName">
+                                        <input class="form-control" name="name" v-model="branchName">
                                     </div>
                                     <div class="col-md-4">
                                         <label>Nombre corto</label>
