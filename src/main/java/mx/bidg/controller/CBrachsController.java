@@ -7,6 +7,12 @@ package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
@@ -16,10 +22,13 @@ import mx.bidg.service.CBranchsService;
 import mx.bidg.service.DwEnterprisesService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -69,35 +78,44 @@ public class CBrachsController {
         int idRegion = node.get("idRegion").asInt();
         int idZona = node.get("idZona").asInt();
         int idDwEnterprise = node.get("idDwEnterprise").asInt();
+        String branchName = node.get("branchName").asText();
+        int flag = node.get("edit").asInt();
 
         CBranchs cBranchs = cBranchsService.findById(idBranch);
-        DwEnterprises currentDwEnterprises =
-                dwEnterprisesService.findById(idDwEnterprise);
 
-        CBranchs oldBranch = currentDwEnterprises.getBranch();
-        CDistributors oldDistributor = currentDwEnterprises.getDistributor();
-        CRegions oldRegion = currentDwEnterprises.getRegion();
-        CZonas oldZona = currentDwEnterprises.getZona();
-        CGroups oldGroup = currentDwEnterprises.getGroup();
-        CAreas oldArea = currentDwEnterprises.getArea();
-        Integer oldBudgetable = currentDwEnterprises.getBudgetable();
+        if(flag == 1){
+            cBranchs.setBranchName(branchName);
+            cBranchs = cBranchsService.update(cBranchs);
+            DwEnterprises currentDwEnterprises =
+                    dwEnterprisesService.findById(idDwEnterprise);
 
-        currentDwEnterprises.setDistributor(new CDistributors(idDistributor));
-        currentDwEnterprises.setRegion(new CRegions(idRegion));
-        currentDwEnterprises.setZona(new CZonas(idZona));
-        dwEnterprisesService.update(currentDwEnterprises);
+            CBranchs oldBranch = currentDwEnterprises.getBranch();
+            CDistributors oldDistributor = currentDwEnterprises.getDistributor();
+            CRegions oldRegion = currentDwEnterprises.getRegion();
+            CZonas oldZona = currentDwEnterprises.getZona();
+            CGroups oldGroup = currentDwEnterprises.getGroup();
+            CAreas oldArea = currentDwEnterprises.getArea();
+            Integer oldBudgetable = currentDwEnterprises.getBudgetable();
 
-        DwEnterprises dwEnterprises = new DwEnterprises();
-        dwEnterprises.setBranch(oldBranch);
-        dwEnterprises.setDistributor(oldDistributor);
-        dwEnterprises.setRegion(oldRegion);
-        dwEnterprises.setZona(oldZona);
-        dwEnterprises.setGroup(oldGroup);
-        dwEnterprises.setArea(oldArea);
-        dwEnterprises.setBudgetable(oldBudgetable);
-        dwEnterprises.setStatus(false);
-        dwEnterprisesService.save(dwEnterprises);
+            currentDwEnterprises.setDistributor(new CDistributors(idDistributor));
+            currentDwEnterprises.setRegion(new CRegions(idRegion));
+            currentDwEnterprises.setZona(new CZonas(idZona));
+            dwEnterprisesService.update(currentDwEnterprises);
 
+            DwEnterprises dwEnterprises = new DwEnterprises();
+            dwEnterprises.setBranch(oldBranch);
+            dwEnterprises.setDistributor(oldDistributor);
+            dwEnterprises.setRegion(oldRegion);
+            dwEnterprises.setZona(oldZona);
+            dwEnterprises.setGroup(oldGroup);
+            dwEnterprises.setArea(oldArea);
+            dwEnterprises.setBudgetable(oldBudgetable);
+            dwEnterprises.setStatus(false);
+            dwEnterprisesService.save(dwEnterprises);
+        }else {
+            cBranchs.setBranchName(branchName);
+            cBranchs = cBranchsService.update(cBranchs);
+        }
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(cBranchs);
     }
 
@@ -117,5 +135,17 @@ public class CBrachsController {
     @RequestMapping(value = "/{idBranch}", method = RequestMethod.DELETE,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     private @ResponseBody String delete(@PathVariable Integer idBranch) throws Exception {
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(cBranchsService.delete(idBranch));
+    }
+
+    @RequestMapping(value = "/create-report", method = RequestMethod.GET)
+    public ResponseEntity<String> createReport(@RequestParam(required = true, name = "file_name") String fileName, HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment; filename=\""+ fileName +".xls\"");
+
+        OutputStream outputStream = response.getOutputStream();
+        cBranchsService.branchDistributorsReport(outputStream);
+        outputStream.flush();
+        outputStream.close();
+        return new ResponseEntity<>("Reporte", HttpStatus.OK);
     }
 }
