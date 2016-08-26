@@ -22,6 +22,7 @@ import org.springframework.stereotype.Repository;
  * @author sistemask
  */
 @Repository
+@SuppressWarnings("unchecked")
 public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements BudgetsDao {
 
     @Override
@@ -32,7 +33,7 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
 
     @Override
     public Budgets findById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       return getByKey(id);
     }
 
     @Override
@@ -84,6 +85,15 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
     }
 
     @Override
+    public List<Budgets> getBudgets(Integer idCostCenter, Integer idBudgetType, Integer idBudgetNature) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idCostCenter", idCostCenter))
+                .add(Restrictions.eq("idBudgetType", idBudgetType))
+                .add(Restrictions.eq("idBudgetNature", idBudgetNature))
+                .list();
+    }
+
+    @Override
     public List<Budgets> findByDistributorAndArea(Integer idDistributor, Integer idArea) {
         return createEntityCriteria()
                 .add(Restrictions.eq("idDistributor",idDistributor))
@@ -105,7 +115,6 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public ArrayList<Budgets> findByGroupAreaEnterprise(CGroups idGroup, CAreas idArea, Integer idDwEnterprise) {
         Criteria criteria = createEntityCriteria();
         HashMap<String, Object> map = new HashMap<>();

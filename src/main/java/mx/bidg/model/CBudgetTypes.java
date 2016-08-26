@@ -30,8 +30,8 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "C_BUDGET_TYPES")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CBudgetTypes implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -45,19 +45,6 @@ public class CBudgetTypes implements Serializable {
     @Column(name = "BUDGET_TYPE")
     @JsonView(JsonViews.Root.class)
     private String budgetType;
-
-    @Column(name = "ID_ACCESS_LEVEL")
-    @JsonView(JsonViews.Root.class)
-    private Integer idAccessLevel;
-    
-    @Column(name = "ID_TABLE", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idTable;
-
-    @JoinColumn(name = "ID_TABLE", referencedColumnName = "ID_TABLE")
-    @JsonView({JsonViews.RootExtras.class, JsonViews.Embedded.class})
-    @ManyToOne(optional = false)
-    private CTables table;
 
     public CBudgetTypes() {
     }
@@ -82,53 +69,30 @@ public class CBudgetTypes implements Serializable {
         this.budgetType = budgetType;
     }
 
-    public Integer getIdAccessLevel() {
-        return idAccessLevel;
-    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-    public void setIdAccessLevel(Integer idAccessLevel) {
-        this.idAccessLevel = idAccessLevel;
-    }
+        CBudgetTypes that = (CBudgetTypes) o;
 
-    public Integer getIdTable() {
-        return idTable;
-    }
+        if (idBudgetType != null ? !idBudgetType.equals(that.idBudgetType) : that.idBudgetType != null) return false;
+        return budgetType != null ? budgetType.equals(that.budgetType) : that.budgetType == null;
 
-    public void setIdTable(Integer idTable) {
-        this.idTable = idTable;
-    }
-
-    public CTables getTable() {
-        return table;
-    }
-
-    public void setTable(CTables table) {
-        this.table = table;
     }
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (idBudgetType != null ? idBudgetType.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CBudgetTypes)) {
-            return false;
-        }
-        CBudgetTypes other = (CBudgetTypes) object;
-        if ((this.idBudgetType == null && other.idBudgetType != null) || (this.idBudgetType != null && !this.idBudgetType.equals(other.idBudgetType))) {
-            return false;
-        }
-        return true;
+        int result = idBudgetType != null ? idBudgetType.hashCode() : 0;
+        result = 31 * result + (budgetType != null ? budgetType.hashCode() : 0);
+        return result;
     }
 
     @Override
     public String toString() {
-        return "mx.bidg.model.CBudgetTypes[ idBudgetType=" + idBudgetType + " ]";
+        return "CBudgetTypes{" +
+                "idBudgetType=" + idBudgetType +
+                ", budgetType='" + budgetType + '\'' +
+                '}';
     }
-    
 }

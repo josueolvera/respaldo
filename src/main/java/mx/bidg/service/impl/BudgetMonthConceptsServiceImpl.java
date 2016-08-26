@@ -92,8 +92,8 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
                         
                         if(budgetMonthBranch.getBudget().getIdBudget().equals(budget.getIdBudget()) && 
                                 budgetMonthBranch.getMonth().getIdMonth().equals(month.getIdMonth()) && 
-                                budgetMonthBranch.getDwEnterprise().getIdDwEnterprise().equals(
-                                dwEnterprise.getIdDwEnterprise()) && 
+//                                budgetMonthBranch.getDwEnterprise().getIdDwEnterprise().equals(
+//                                dwEnterprise.getIdDwEnterprise()) &&
                                 budgetMonthBranch.getYear() == year) {
                             
                             BigDecimal amountConceptActual = budgetMonthConcepts.getAmount();
@@ -130,7 +130,7 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
                         budgetMonthBranch.setIdAccessLevel(1);
                         budgetMonthBranch.setCurrency(new CCurrencies(1));
                         budgetMonthBranch.setBudget(budget);
-                        budgetMonthBranch.setDwEnterprise(dwEnterprise);
+//                        budgetMonthBranch.setDwEnterprise(dwEnterprise);
                         budgetMonthBranch.setMonth(month);
                         budgetMonthBranch.setYear(year);
                         budgetMonthBranch.setIsAuthorized(0);

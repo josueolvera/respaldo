@@ -20,11 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -72,7 +68,7 @@ public class BudgetController {
             budgetMonthBranch.setBudgetMonthConceptsList(budgetMonthConceptsList);
             budgetMonthBranch.setBudget(new Budgets(jsonRequest.get("budget").asInt()));
             budgetMonthBranch.setMonth(new CMonths(jsonRequest.get("month").asInt()));
-            budgetMonthBranch.setDwEnterprise(new DwEnterprises(jsonRequest.get("dwEnterprise").asInt()));
+//            budgetMonthBranch.setDwEnterprise(new DwEnterprises(jsonRequest.get("dwEnterprise").asInt()));
             budgetMonthBranch.setAmount(jsonRequest.get("amountMonth").decimalValue());
             budgetMonthBranch.setExpendedAmount(jsonRequest.get("expendedAmount").decimalValue());
             budgetMonthBranch.setYear(jsonRequest.get("year").asInt());
@@ -129,6 +125,13 @@ public class BudgetController {
         }
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(budgetPojos), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/cost-center/{idCostCenter}/budget-type/{idBudgetType}/budget-nature/{idBudgetNature}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody ResponseEntity<String> getBudgets(@PathVariable Integer idCostCenter, @PathVariable Integer idBudgetType, @PathVariable Integer idBudgetNature) throws Exception {
+        List<Budgets> budgets = budgetsService.getBudgets(idCostCenter, idBudgetType, idBudgetNature);
+
+        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(budgets));
     }
     
 }

@@ -24,7 +24,7 @@ public class SIADController {
     public ModelAndView budgetsView() {
         ModelAndView model = new ModelAndView();
         model.addObject("now", LocalDateTime.now());
-        model.setViewName("BudgetPruebas");
+        model.setViewName("Budget");
         return model;
     }
 

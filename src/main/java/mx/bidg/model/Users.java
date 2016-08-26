@@ -9,7 +9,6 @@ import mx.bidg.config.JsonViews;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.*;
@@ -109,14 +108,6 @@ public class Users implements Serializable, AccessLevelFilterable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @JsonView(JsonViews.Embedded.class)
     private List<UsersRole> usersRoleList;
-
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "USERS_DISTRIBUTORS",
-            joinColumns = @JoinColumn(name = "ID_USER"),
-            inverseJoinColumns = @JoinColumn(name = "ID_DISTRIBUTOR")
-    )
-    private Set<CDistributors> distributors;
 
     @Column(name = "ID_ACCESS_LEVEL")
     private Integer idAccessLevel;
@@ -245,14 +236,6 @@ public class Users implements Serializable, AccessLevelFilterable {
 
     public void setUsersRoleList(List<UsersRole> usersRoleList) {
         this.usersRoleList = usersRoleList;
-    }
-
-    public Set<CDistributors> getDistributors() {
-        return distributors;
-    }
-
-    public void setDistributors(Set<CDistributors> distributors) {
-        this.distributors = distributors;
     }
 
     public Integer getIdAccessLevel() {

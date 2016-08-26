@@ -25,6 +25,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Type;
 
 
 /**
@@ -34,7 +35,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "BUDGETS")
-
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Budgets implements Serializable {
         
@@ -47,35 +47,47 @@ public class Budgets implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idBudget;
     
-    @Column(name = "ID_DW_ENTERPRISE_BUDGET", insertable = false, updatable = false)
+    @Column(name = "ID_COST_CENTER", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idDwEnterpriseBudget;
+    private Integer idCostCenter;
     
     @Column(name = "ID_ACCOUNTING_ACCOUNT", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idAccountingAccount;
+
+    @Column(name = "ID_BUDGET_TYPE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idBudgetType;
+
+    @Column(name = "ID_BUDGET_NATURE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idBudgetNature;
 
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
-    
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ISENTRY")
-    @JsonView(JsonViews.Root.class)
-    private int isentry;
-        
-    @JoinColumn(name = "ID_DW_ENTERPRISE_BUDGET", referencedColumnName = "ID_DW_ENTERPRISE_BUDGET")
+
+    @JoinColumn(name = "ID_COST_CENTER", referencedColumnName = "ID_COST_CENTER")
     @ManyToOne
     @JsonView({JsonViews.Embedded.class})
-    private DwEnterprisesCBudgets dwEnterpriseCBudget;
+    private CCostCenter costCenter;
     
     @JoinColumn(name = "ID_ACCOUNTING_ACCOUNT", referencedColumnName = "ID_ACCOUNTING_ACCOUNT")
     @ManyToOne
     @JsonView({JsonViews.Embedded.class})
     private AccountingAccounts accountingAccount;
+
+    @JoinColumn(name = "ID_BUDGET_TYPE", referencedColumnName = "ID_BUDGET_TYPE")
+    @ManyToOne
+    @JsonView({JsonViews.Embedded.class})
+    private CBudgetTypes budgetType;
+
+    @JoinColumn(name = "ID_BUDGET_NATURE", referencedColumnName = "ID_BUDGET_NATURE")
+    @ManyToOne
+    @JsonView({JsonViews.Embedded.class})
+    private CBudgetNature budgetNature;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "budget")
     @JsonView(JsonViews.Embedded.class)
@@ -88,9 +100,12 @@ public class Budgets implements Serializable {
         this.idBudget = idBudget;
     }
 
-    public Budgets(DwEnterprisesCBudgets dwEnterpriseCBudget, AccountingAccounts accountingAccount) {
-        this.dwEnterpriseCBudget = dwEnterpriseCBudget;
+    public Budgets(int idAccessLevel, CCostCenter costCenter, AccountingAccounts accountingAccount, CBudgetTypes budgetType, CBudgetNature budgetNature) {
+        this.idAccessLevel = idAccessLevel;
+        this.costCenter = costCenter;
         this.accountingAccount = accountingAccount;
+        this.budgetType = budgetType;
+        this.budgetNature = budgetNature;
     }
 
     public Integer getIdBudget() {
@@ -101,20 +116,12 @@ public class Budgets implements Serializable {
         this.idBudget = idBudget;
     }
 
-    public int getIdAccessLevel() {
-        return idAccessLevel;
+    public Integer getIdCostCenter() {
+        return idCostCenter;
     }
 
-    public void setIdAccessLevel(int idAccessLevel) {
-        this.idAccessLevel = idAccessLevel;
-    }
-
-    public List<BudgetMonthBranch> getBudgetMonthBranchList() {
-        return budgetMonthBranchList;
-    }
-
-    public void setBudgetMonthBranchList(List<BudgetMonthBranch> budgetMonthBranchList) {
-        this.budgetMonthBranchList = budgetMonthBranchList;
+    public void setIdCostCenter(Integer idCostCenter) {
+        this.idCostCenter = idCostCenter;
     }
 
     public Integer getIdAccountingAccount() {
@@ -125,6 +132,38 @@ public class Budgets implements Serializable {
         this.idAccountingAccount = idAccountingAccount;
     }
 
+    public Integer getIdBudgetType() {
+        return idBudgetType;
+    }
+
+    public void setIdBudgetType(Integer idBudgetType) {
+        this.idBudgetType = idBudgetType;
+    }
+
+    public Integer getIdBudgetNature() {
+        return idBudgetNature;
+    }
+
+    public void setIdBudgetNature(Integer idBudgetNature) {
+        this.idBudgetNature = idBudgetNature;
+    }
+
+    public int getIdAccessLevel() {
+        return idAccessLevel;
+    }
+
+    public void setIdAccessLevel(int idAccessLevel) {
+        this.idAccessLevel = idAccessLevel;
+    }
+
+    public CCostCenter getCostCenter() {
+        return costCenter;
+    }
+
+    public void setCostCenter(CCostCenter costCenter) {
+        this.costCenter = costCenter;
+    }
+
     public AccountingAccounts getAccountingAccount() {
         return accountingAccount;
     }
@@ -133,53 +172,74 @@ public class Budgets implements Serializable {
         this.accountingAccount = accountingAccount;
     }
 
-    public int getIsentry() {
-        return isentry;
+    public CBudgetTypes getBudgetType() {
+        return budgetType;
     }
 
-    public void setIsentry(int isentry) {
-        this.isentry = isentry;
+    public void setBudgetType(CBudgetTypes budgetType) {
+        this.budgetType = budgetType;
     }
 
-    public Integer getIdDwEnterpriseBudget() {
-        return idDwEnterpriseBudget;
+    public CBudgetNature getBudgetNature() {
+        return budgetNature;
     }
 
-    public void setIdDwEnterpriseBudget(Integer idDwEnterpriseBudget) {
-        this.idDwEnterpriseBudget = idDwEnterpriseBudget;
+    public void setBudgetNature(CBudgetNature budgetNature) {
+        this.budgetNature = budgetNature;
     }
 
-    public DwEnterprisesCBudgets getDwEnterpriseCBudget() {
-        return dwEnterpriseCBudget;
+    public List<BudgetMonthBranch> getBudgetMonthBranchList() {
+        return budgetMonthBranchList;
     }
 
-    public void setDwEnterpriseCBudget(DwEnterprisesCBudgets dwEnterpriseCBudget) {
-        this.dwEnterpriseCBudget = dwEnterpriseCBudget;
+    public void setBudgetMonthBranchList(List<BudgetMonthBranch> budgetMonthBranchList) {
+        this.budgetMonthBranchList = budgetMonthBranchList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Budgets budgets = (Budgets) o;
+
+        if (idAccessLevel != budgets.idAccessLevel) return false;
+        if (idBudget != null ? !idBudget.equals(budgets.idBudget) : budgets.idBudget != null) return false;
+        if (idCostCenter != null ? !idCostCenter.equals(budgets.idCostCenter) : budgets.idCostCenter != null)
+            return false;
+        if (idAccountingAccount != null ? !idAccountingAccount.equals(budgets.idAccountingAccount) : budgets.idAccountingAccount != null)
+            return false;
+        if (idBudgetType != null ? !idBudgetType.equals(budgets.idBudgetType) : budgets.idBudgetType != null)
+            return false;
+        return idBudgetNature != null ? idBudgetNature.equals(budgets.idBudgetNature) : budgets.idBudgetNature == null;
+
     }
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (idBudget != null ? idBudget.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Budgets)) {
-            return false;
-        }
-        Budgets other = (Budgets) object;
-        if ((this.idBudget == null && other.idBudget != null) || (this.idBudget != null && !this.idBudget.equals(other.idBudget))) {
-            return false;
-        }
-        return true;
+        int result = idBudget != null ? idBudget.hashCode() : 0;
+        result = 31 * result + (idCostCenter != null ? idCostCenter.hashCode() : 0);
+        result = 31 * result + (idAccountingAccount != null ? idAccountingAccount.hashCode() : 0);
+        result = 31 * result + (idBudgetType != null ? idBudgetType.hashCode() : 0);
+        result = 31 * result + (idBudgetNature != null ? idBudgetNature.hashCode() : 0);
+        result = 31 * result + idAccessLevel;
+        return result;
     }
 
     @Override
     public String toString() {
-        return "mx.bidg.model.Budgets[ idBudget=" + idBudget + " ]";
+        return "Budgets{" +
+                "idBudget=" + idBudget +
+                ", idCostCenter=" + idCostCenter +
+                ", idAccountingAccount=" + idAccountingAccount +
+                ", idBudgetType=" + idBudgetType +
+                ", idBudgetNature=" + idBudgetNature +
+                ", idAccessLevel=" + idAccessLevel +
+                ", costCenter=" + costCenter +
+                ", accountingAccount=" + accountingAccount +
+                ", budgetType=" + budgetType +
+                ", budgetNature=" + budgetNature +
+                ", budgetMonthBranchList=" + budgetMonthBranchList +
+                '}';
     }
-    
 }

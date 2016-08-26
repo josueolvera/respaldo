@@ -5,8 +5,8 @@ import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * Created by gerardo8 on 24/08/16.
@@ -20,12 +20,10 @@ public class CBudgets implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "ID_BUDGET")
+    @Column(name = "ID_CBUDGET")
     @JsonView(JsonViews.Root.class)
     private Integer idCBudget;
 
-//    @Size(max = 100)
     @Column(name = "NAME")
     @JsonView(JsonViews.Root.class)
     private String name;

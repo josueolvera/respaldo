@@ -75,7 +75,7 @@ public class BudgetMonthBranchController {
             budgetMonth.setYear(toYear);
             budgetMonth.setBudget(new Budgets(bmb.getIdBudget()));
             budgetMonth.setMonth(new CMonths(bmb.getIdMonth()));
-            budgetMonth.setDwEnterprise(new DwEnterprises(bmb.getIdDwEnterprise()));
+//            budgetMonth.setDwEnterprise(new DwEnterprises(bmb.getIdDwEnterprise()));
             budgetMonth.setCurrency(new CCurrencies(bmb.getIdCurrency()));
             budgetMonth.setIdAccessLevel(1);
             budgetMonth.setIsAuthorized(0);

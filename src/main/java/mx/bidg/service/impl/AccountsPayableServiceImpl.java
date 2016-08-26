@@ -307,10 +307,10 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
                 //RequestTypesProduct requestTypesProduct = requests.getRequestTypeProduct();
                 //CProductTypes productType = requestTypesProduct.getProductType();
                 BudgetMonthBranch budgetMonthBranch = requests.getBudgetMonthBranch();
-                DwEnterprises dwEnterprise = budgetMonthBranch.getDwEnterprise();
-                CDistributors cDistributors = dwEnterprise.getDistributor();
-                CRegions cRegions = dwEnterprise.getRegion();
-                CBranchs cBranchs = dwEnterprise.getBranch();
+//                DwEnterprises dwEnterprise = budgetMonthBranch.getDwEnterprise();
+//                CDistributors cDistributors = dwEnterprise.getDistributor();
+//                CRegions cRegions = dwEnterprise.getRegion();
+//                CBranchs cBranchs = dwEnterprise.getBranch();
                 Accounts account = priceEstimationsAutorized.getAccount();
                 ProvidersAccounts providersAccounts = providersAccountsService.findByAccountsProvider(account);
                 Providers provider = providersAccounts.getProvider();
@@ -320,9 +320,9 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
                 // Create a cell and put a value in it.
               //  row.createCell(0).setCellValue(productType.getProductType());
                 row.createCell(1).setCellValue(accountsPayable.getAmount().toString());
-                row.createCell(2).setCellValue(cDistributors.getAcronyms());
-                row.createCell(3).setCellValue(cRegions.getRegionName());
-                row.createCell(4).setCellValue(cBranchs.getBranchShort());
+//                row.createCell(2).setCellValue(cDistributors.getAcronyms());
+//                row.createCell(3).setCellValue(cRegions.getRegionName());
+//                row.createCell(4).setCellValue(cBranchs.getBranchShort());
                 row.createCell(5).setCellValue(provider.getProviderName().replace(':', ' '));
                 row.createCell(6).setCellValue(accountsPayable.getDueDateFormats().getDateNumber());
                 row.createCell(7).setCellValue(requests.getUserRequest().getDwEmployee().getEmployee().getFullName());

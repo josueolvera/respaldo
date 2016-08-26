@@ -21,10 +21,12 @@ import mx.bidg.model.CGroups;
 public interface BudgetsService {
     
     Budgets saveBudget(Budgets budgets);
+    Budgets findById(Integer idBudget);
     Budgets findByCombination(Integer idDistributor, Integer idArea, Integer idAccountingAccount);
     ArrayList<Budgets> findByGroupAreaEnterprise(CGroups idGroup, CAreas idArea, Integer idDwEnterprise);
     ArrayList<Budgets> findByGroupArea(CGroups idGroup, CAreas idArea);
     List<Budgets> findByDistributorAndArea(Integer idDistributor, Integer idArea);
+    List<Budgets> getBudgets(Integer idCostCenter, Integer idBudgetType, Integer idBudgetNature);
     List<Budgets> findByDistributorAreaAndEnterprise(Integer idDistributor, Integer idArea, Integer idDwEnterprise);
     List<Budgets> findByDistributor(Integer idDistributor);
 }

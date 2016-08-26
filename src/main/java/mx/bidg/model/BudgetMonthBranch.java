@@ -67,11 +67,6 @@ public class BudgetMonthBranch implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CMonths month;
     
-    @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
-    @ManyToOne(optional = false)
-    @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
-    private DwEnterprises dwEnterprise;
-    
     @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
     @ManyToOne(optional = false)
     @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
@@ -80,10 +75,6 @@ public class BudgetMonthBranch implements Serializable {
     @Column(name = "ID_BUDGET", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idBudget;
-    
-    @Column(name = "ID_DW_ENTERPRISE", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idDwEnterprise;
     
     @Column(name = "ID_MONTH", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -189,28 +180,12 @@ public class BudgetMonthBranch implements Serializable {
         this.month = month;
     }
 
-    public DwEnterprises getDwEnterprise() {
-        return dwEnterprise;
-    }
-
-    public void setDwEnterprise(DwEnterprises dwEnterprise) {
-        this.dwEnterprise = dwEnterprise;
-    }
-
     public Integer getIdBudget() {
         return idBudget;
     }
 
     public void setIdBudget(Integer idBudget) {
         this.idBudget = idBudget;
-    }
-
-    public Integer getIdDwEnterprise() {
-        return idDwEnterprise;
-    }
-
-    public void setIdDwEnterprise(Integer idDwEnterprise) {
-        this.idDwEnterprise = idDwEnterprise;
     }
 
     public Integer getIdMonth() {

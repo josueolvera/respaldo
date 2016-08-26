@@ -30,42 +30,52 @@ import org.springframework.transaction.annotation.Transactional;
 public class BudgetsServiceImpl implements BudgetsService {
 
     @Autowired
-    BudgetsDao dao;
+    BudgetsDao budgetsDao;
 
     @Override
     public Budgets saveBudget(Budgets budgets) {
-        return dao.save(budgets);
+        return budgetsDao.save(budgets);
+    }
+
+    @Override
+    public Budgets findById(Integer idBudget) {
+        return budgetsDao.findById(idBudget);
     }
 
     @Override
     public Budgets findByCombination(Integer idDistributor, Integer idArea, Integer idAccountingAccount) {
-        return dao.findByCombination(new CDistributors(idDistributor), new CAreas(idArea), 
+        return budgetsDao.findByCombination(new CDistributors(idDistributor), new CAreas(idArea), 
                 new AccountingAccounts(idAccountingAccount));
     }
 
     @Override
     public ArrayList<Budgets> findByGroupArea(CGroups idGroup, CAreas idArea) {
-        return dao.findByGroupArea(idGroup, idArea);
+        return budgetsDao.findByGroupArea(idGroup, idArea);
     }
 
     @Override
     public List<Budgets> findByDistributorAndArea(Integer idDistributor, Integer idArea) {
-        return dao.findByDistributorAndArea(idDistributor, idArea);
+        return budgetsDao.findByDistributorAndArea(idDistributor, idArea);
+    }
+
+    @Override
+    public List<Budgets> getBudgets(Integer idCostCenter, Integer idBudgetType, Integer idBudgetNature) {
+        return budgetsDao.getBudgets(idCostCenter, idBudgetType, idBudgetNature);
     }
 
     @Override
     public List<Budgets> findByDistributorAreaAndEnterprise(Integer idDistributor, Integer idArea, Integer idDwEnterprise) {
-        return dao.findByDistributorAreaAndEnterprise(idDistributor, idArea, idDwEnterprise);
+        return budgetsDao.findByDistributorAreaAndEnterprise(idDistributor, idArea, idDwEnterprise);
     }
 
     @Override
     public List<Budgets> findByDistributor(Integer idDistributor) {
-        return dao.findByDistributor(idDistributor);
+        return budgetsDao.findByDistributor(idDistributor);
     }
 
     @Override
     public ArrayList<Budgets> findByGroupAreaEnterprise(CGroups idGroup, CAreas idArea, Integer idDwEnterprise) {
-        return dao.findByGroupAreaEnterprise(idGroup, idArea, idDwEnterprise);
+        return budgetsDao.findByGroupAreaEnterprise(idGroup, idArea, idDwEnterprise);
     }
     
 }

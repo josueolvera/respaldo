@@ -109,10 +109,6 @@ public class DwEnterprises implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "dwEnterprise")
     @JsonView(JsonViews.Embedded.class)
-    private List<BudgetMonthBranch> budgetMonthBranchList;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "dwEnterprise")
-    @JsonView(JsonViews.Embedded.class)
     private List<DwEmployees> dwEmployeesList;
 
     @Basic(optional = false)
@@ -242,14 +238,6 @@ public class DwEnterprises implements Serializable {
         this.area = area;
     }
 
-    public List<BudgetMonthBranch> getBudgetMonthBranchList() {
-        return budgetMonthBranchList;
-    }
-
-    public void setBudgetMonthBranchList(List<BudgetMonthBranch> budgetMonthBranchList) {
-        this.budgetMonthBranchList = budgetMonthBranchList;
-    }
-
     public List<DwEmployees> getDwEmployeesList() {
         return dwEmployeesList;
     }
@@ -319,7 +307,6 @@ public class DwEnterprises implements Serializable {
                 ", region=" + region +
                 ", branch=" + branch +
                 ", area=" + area +
-                ", budgetMonthBranchList=" + budgetMonthBranchList +
                 ", dwEmployeesList=" + dwEmployeesList +
                 ", status=" + status +
                 ", zona=" + zona +

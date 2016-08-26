@@ -29,10 +29,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -107,7 +104,7 @@ public class CBudgetConceptsController {
                         
                         conceptMonthPojoList.add(conceptMonthPojo);
                         totalMonthPojoList.add(totalMonthPojo);
-                        conceptPojo.setDwEnterprise(budgetMonthBranch.getDwEnterprise().getIdDwEnterprise());
+//                        conceptPojo.setDwEnterprise(budgetMonthBranch.getDwEnterprise().getIdDwEnterprise());
                         conceptPojo.setYear(budgetMonthBranch.getYear());
                         budgetPojo.setYear(budgetMonthBranch.getYear());
                         budgetPojo.setIsAuthorized(budgetMonthBranch.getIsAuthorized());
@@ -147,6 +144,80 @@ public class CBudgetConceptsController {
             return new ResponseEntity<>("Hubo un problema al eliminar el concepto", HttpStatus.CONFLICT);
         }
         
+    }
+
+    @RequestMapping(value = "/budget/{idBudget}/year/{year}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody ResponseEntity<String> getByBudgetAndArea(@PathVariable Integer idBudget, @PathVariable int year) throws Exception {
+
+        List<BudgetPojo> list = new ArrayList<>();
+        List<ConceptMonthPojo> conceptMonthPojoList;
+        List<TotalMonthPojo> totalMonthPojoList;
+        List<ConceptPojo> conceptPojoList;
+        BudgetPojo budgetPojo;
+        ConceptPojo conceptPojo;
+        ConceptMonthPojo conceptMonthPojo;
+        TotalMonthPojo totalMonthPojo;
+        CMonths cMonth;
+        Budgets budget =  budgetsService.findById(idBudget);
+
+        List<CBudgetConcepts> conceptsList = budgetConceptsService.findByBudget(budget, year);
+        if(!conceptsList.isEmpty()) {
+
+            conceptPojoList = new ArrayList<>();
+            totalMonthPojoList = new ArrayList<>();
+            budgetPojo = new BudgetPojo();
+
+            for(CBudgetConcepts budgetConcept : conceptsList) {
+
+                conceptMonthPojoList = new ArrayList<>();
+                totalMonthPojoList = new ArrayList<>();
+                List<BudgetMonthConcepts> budgetMonthConceptList = budgetConcept.getBudgetMonthConceptsList();
+                conceptPojo = new ConceptPojo();
+                conceptPojo.setIdConcept(budgetConcept.getIdBudgetConcept());
+                conceptPojo.setIdBudget(budget.getIdBudget());
+                conceptPojo.setConceptName(budgetConcept.getBudgetConcept());
+                conceptPojo.setTotal(BigDecimal.ZERO);
+                conceptPojo.setEquals(false);
+
+                for(BudgetMonthConcepts budgetMonthConcept : budgetMonthConceptList) {
+
+                    BudgetMonthBranch budgetMonthBranch = budgetMonthConcept.getBudgetMonthBranch();
+                    cMonth = monthsService.findById(budgetMonthBranch.getIdMonth());
+
+                    conceptMonthPojo = new ConceptMonthPojo(
+                            cMonth.getIdMonth(),
+                            cMonth.getMonth(),
+                            budgetMonthConcept.getAmount()
+                    );
+
+                    totalMonthPojo = new TotalMonthPojo(
+                            cMonth.getIdMonth(),
+                            budgetMonthBranch.getAmount());
+
+                    conceptMonthPojoList.add(conceptMonthPojo);
+                    totalMonthPojoList.add(totalMonthPojo);
+                    conceptPojo.setYear(budgetMonthBranch.getYear());
+                    budgetPojo.setYear(budgetMonthBranch.getYear());
+                    budgetPojo.setIsAuthorized(budgetMonthBranch.getIsAuthorized());
+                }
+
+                conceptPojo.setConceptMonth(conceptMonthPojoList);
+                conceptPojoList.add(conceptPojo);
+
+            }
+
+            budgetPojo.setIdBudget(budget.getIdBudget());
+            budgetPojo.setIdBudgetCategory(budget.getAccountingAccount().getIdBudgetCategory());
+            budgetPojo.setIdBudgetSubcategory(budget.getAccountingAccount().getIdBudgetSubcategory());
+            budgetPojo.setConceptos(conceptPojoList);
+            budgetPojo.setTotalMonth(totalMonthPojoList);
+            budgetPojo.setGranTotal(BigDecimal.ZERO);
+
+            list.add(budgetPojo);
+        }
+
+        return ResponseEntity.ok(mapper.writeValueAsString(list));
+
     }
     
 }
