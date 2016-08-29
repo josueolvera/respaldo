@@ -68,14 +68,14 @@ public class CBudgetConceptsController {
         
         for(Budgets budget: budgetList) {
 
-            List<CBudgetConcepts> conceptsList = budgetConceptsService.findByBudgetEnterprise(budget, year, idDwEnterprise);
-            if(!conceptsList.isEmpty()) {
+            List<CBudgetConcepts> budgetConcepts = budgetConceptsService.findByBudgetEnterprise(budget, year, idDwEnterprise);
+            if(!budgetConcepts.isEmpty()) {
                 
                 conceptPojoList = new ArrayList<>();
                 totalMonthPojoList = new ArrayList<>();
                 budgetPojo = new BudgetPojo();
                 
-                for(CBudgetConcepts budgetConcept : conceptsList) {
+                for(CBudgetConcepts budgetConcept : budgetConcepts) {
 
                     conceptMonthPojoList = new ArrayList<>();
                     totalMonthPojoList = new ArrayList<>();
@@ -107,7 +107,7 @@ public class CBudgetConceptsController {
 //                        conceptPojo.setDwEnterprise(budgetMonthBranch.getDwEnterprise().getIdDwEnterprise());
                         conceptPojo.setYear(budgetMonthBranch.getYear());
                         budgetPojo.setYear(budgetMonthBranch.getYear());
-                        budgetPojo.setIsAuthorized(budgetMonthBranch.getIsAuthorized());
+                        budgetPojo.setAuthorized(budgetMonthBranch.getAuthorized());
                     }
                     
                     conceptPojo.setConceptMonth(conceptMonthPojoList);
@@ -146,8 +146,8 @@ public class CBudgetConceptsController {
         
     }
 
-    @RequestMapping(value = "/budget/{idBudget}/year/{year}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public @ResponseBody ResponseEntity<String> getByBudgetAndArea(@PathVariable Integer idBudget, @PathVariable int year) throws Exception {
+    @RequestMapping(value = "/cost-center/{idCostCenter}/budget-type/{idBudgetType}/budget-nature/{idBudgetNature}/year/{year}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getByBudgetAndArea(@PathVariable Integer idCostCenter, @PathVariable Integer idBudgetType, @PathVariable Integer idBudgetNature, @PathVariable int year) throws Exception {
 
         List<BudgetPojo> list = new ArrayList<>();
         List<ConceptMonthPojo> conceptMonthPojoList;
@@ -158,16 +158,17 @@ public class CBudgetConceptsController {
         ConceptMonthPojo conceptMonthPojo;
         TotalMonthPojo totalMonthPojo;
         CMonths cMonth;
-        Budgets budget =  budgetsService.findById(idBudget);
 
-        List<CBudgetConcepts> conceptsList = budgetConceptsService.findByBudget(budget, year);
-        if(!conceptsList.isEmpty()) {
+        List<Budgets> budgets = budgetsService.getBudgets(idCostCenter, idBudgetType, idBudgetNature);
+
+        for(Budgets budget : budgets) {
+            List<CBudgetConcepts> budgetConcepts = budgetConceptsService.findByBudget(budget, year);
 
             conceptPojoList = new ArrayList<>();
             totalMonthPojoList = new ArrayList<>();
             budgetPojo = new BudgetPojo();
 
-            for(CBudgetConcepts budgetConcept : conceptsList) {
+            for(CBudgetConcepts budgetConcept : budgetConcepts) {
 
                 conceptMonthPojoList = new ArrayList<>();
                 totalMonthPojoList = new ArrayList<>();
@@ -198,7 +199,7 @@ public class CBudgetConceptsController {
                     totalMonthPojoList.add(totalMonthPojo);
                     conceptPojo.setYear(budgetMonthBranch.getYear());
                     budgetPojo.setYear(budgetMonthBranch.getYear());
-                    budgetPojo.setIsAuthorized(budgetMonthBranch.getIsAuthorized());
+                    budgetPojo.setAuthorized(budgetMonthBranch.getAuthorized());
                 }
 
                 conceptPojo.setConceptMonth(conceptMonthPojoList);
@@ -208,7 +209,12 @@ public class CBudgetConceptsController {
 
             budgetPojo.setIdBudget(budget.getIdBudget());
             budgetPojo.setIdBudgetCategory(budget.getAccountingAccount().getIdBudgetCategory());
+            budgetPojo.setBudgetCategory(budget.getAccountingAccount().getBudgetCategory());
             budgetPojo.setIdBudgetSubcategory(budget.getAccountingAccount().getIdBudgetSubcategory());
+            budgetPojo.setBudgetSubcategory(budget.getAccountingAccount().getBudgetSubcategory());
+            budgetPojo.setIdCostCenter(budget.getIdCostCenter());
+            budgetPojo.setIdBudgetType(budget.getIdBudgetType());
+            budgetPojo.setIdBudgetNature(budget.getIdBudgetNature());
             budgetPojo.setConceptos(conceptPojoList);
             budgetPojo.setTotalMonth(totalMonthPojoList);
             budgetPojo.setGranTotal(BigDecimal.ZERO);

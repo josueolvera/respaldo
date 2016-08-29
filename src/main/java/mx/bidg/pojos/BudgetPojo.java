@@ -17,15 +17,16 @@ import java.util.List;
  */
 public class BudgetPojo {
     
-    private int idBudget;
-    private int idDistributor;
-    private int idArea;
-    private int idBudgetCategory;
-    private int idBudgetSubcategory;
+    private Integer idBudget;
+    private Integer idBudgetCategory;
+    private Integer idBudgetSubcategory;
+    private Integer idCostCenter;
+    private Integer idBudgetType;
+    private Integer idBudgetNature;
     private CBudgetCategories budgetCategory;
     private CBudgetSubcategories budgetSubcategory;
-    private int year;
-    private int isAuthorized;
+    private Integer year;
+    private Boolean isAuthorized;
     private BigDecimal granTotal;
     private List<ConceptPojo> conceptos;
     private List<TotalMonthPojo> totalMonth;
@@ -33,57 +34,65 @@ public class BudgetPojo {
     public BudgetPojo() {
     }
 
-    public BudgetPojo(int idBudget, int idDistributor, int idArea, int idBudgetCategory, int idBudgetSubcategory, int year, int isAuthorized, BigDecimal granTotal, List<ConceptPojo> conceptos, List<TotalMonthPojo> totalMonth) {
+    public BudgetPojo(Integer idBudget, Integer idBudgetCategory, Integer idBudgetSubcategory, Integer idCostCenter, Integer idBudgetType, Integer idBudgetNature, CBudgetCategories budgetCategory, CBudgetSubcategories budgetSubcategory, Integer year, Boolean isAuthorized) {
         this.idBudget = idBudget;
-        this.idDistributor = idDistributor;
-        this.idArea = idArea;
         this.idBudgetCategory = idBudgetCategory;
         this.idBudgetSubcategory = idBudgetSubcategory;
+        this.idCostCenter = idCostCenter;
+        this.idBudgetType = idBudgetType;
+        this.idBudgetNature = idBudgetNature;
+        this.budgetCategory = budgetCategory;
+        this.budgetSubcategory = budgetSubcategory;
         this.year = year;
         this.isAuthorized = isAuthorized;
-        this.granTotal = granTotal;
-        this.conceptos = conceptos;
-        this.totalMonth = totalMonth;
     }
 
-    public int getIdBudget() {
+    public Integer getIdBudget() {
         return idBudget;
     }
 
-    public void setIdBudget(int idBudget) {
+    public void setIdBudget(Integer idBudget) {
         this.idBudget = idBudget;
     }
 
-    public int getIdDistributor() {
-        return idDistributor;
-    }
-
-    public void setIdDistributor(int idDistributor) {
-        this.idDistributor = idDistributor;
-    }
-
-    public int getIdArea() {
-        return idArea;
-    }
-
-    public void setIdArea(int idArea) {
-        this.idArea = idArea;
-    }
-
-    public int getIdBudgetCategory() {
+    public Integer getIdBudgetCategory() {
         return idBudgetCategory;
     }
 
-    public void setIdBudgetCategory(int idBudgetCategory) {
+    public void setIdBudgetCategory(Integer idBudgetCategory) {
         this.idBudgetCategory = idBudgetCategory;
     }
 
-    public int getIdBudgetSubcategory() {
+    public Integer getIdBudgetSubcategory() {
         return idBudgetSubcategory;
     }
 
-    public void setIdBudgetSubcategory(int idBudgetSubcategory) {
+    public void setIdBudgetSubcategory(Integer idBudgetSubcategory) {
         this.idBudgetSubcategory = idBudgetSubcategory;
+    }
+
+    public Integer getIdCostCenter() {
+        return idCostCenter;
+    }
+
+    public void setIdCostCenter(Integer idCostCenter) {
+        this.idCostCenter = idCostCenter;
+    }
+
+    public Integer getIdBudgetType() {
+        return idBudgetType;
+    }
+
+    public void setIdBudgetType(Integer idBudgetType) {
+        this.idBudgetType = idBudgetType;
+    }
+
+    public Integer getIdBudgetNature() {
+        return idBudgetNature;
+    }
+
+    public void setIdBudgetNature(Integer idBudgetNature) {
+        this.idBudgetNature = idBudgetNature;
     }
 
     public CBudgetCategories getBudgetCategory() {
@@ -100,6 +109,22 @@ public class BudgetPojo {
 
     public void setBudgetSubcategory(CBudgetSubcategories budgetSubcategory) {
         this.budgetSubcategory = budgetSubcategory;
+    }
+
+    public Integer getYear() {
+        return year;
+    }
+
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public Boolean getAuthorized() {
+        return isAuthorized;
+    }
+
+    public void setAuthorized(Boolean authorized) {
+        isAuthorized = authorized;
     }
 
     public BigDecimal getGranTotal() {
@@ -125,21 +150,4 @@ public class BudgetPojo {
     public void setTotalMonth(List<TotalMonthPojo> totalMonth) {
         this.totalMonth = totalMonth;
     }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    public int getIsAuthorized() {
-        return isAuthorized;
-    }
-
-    public void setIsAuthorized(int isAuthorized) {
-        this.isAuthorized = isAuthorized;
-    }
-    
 }

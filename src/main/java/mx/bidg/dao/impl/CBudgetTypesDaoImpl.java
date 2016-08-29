@@ -18,6 +18,7 @@ import org.springframework.stereotype.Repository;
  * @author sistemask
  */
 @Repository
+@SuppressWarnings("unchecked")
 public class CBudgetTypesDaoImpl extends AbstractDao<Integer, CBudgetTypes> implements CBudgetTypesDao {
 
     @Override
@@ -32,9 +33,7 @@ public class CBudgetTypesDaoImpl extends AbstractDao<Integer, CBudgetTypes> impl
 
     @Override
     public List<CBudgetTypes> findAll() {
-        Criteria criteria = createEntityCriteria().
-                setFetchMode("table", FetchMode.JOIN);
-        return (List<CBudgetTypes>) criteria.list();
+        return createEntityCriteria().list();
     }
 
     @Override

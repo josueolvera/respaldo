@@ -22,16 +22,16 @@ import org.springframework.transaction.annotation.Transactional;
 public class CBudgetTypesServiceImpl implements CBudgetTypesService {
     
     @Autowired
-    CBudgetTypesDao dao;
+    CBudgetTypesDao cBudgetTypesDao;
 
     @Override
     public List<CBudgetTypes> findAll() {
-        return dao.findAll();
+        return cBudgetTypesDao.findAll();
     }
 
     @Override
-    public CBudgetTypes findById(int id) {
-        return dao.findById(id);
+    public CBudgetTypes findById(Integer id) {
+        return cBudgetTypesDao.findById(id);
     }
     
 }

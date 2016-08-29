@@ -15,6 +15,7 @@ import mx.bidg.model.CMonths;
 import mx.bidg.model.DwEnterprises;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Repository;
  * @author sistemask
  */
 @Repository
+@SuppressWarnings("unchecked")
 public class BudgetMonthBranchDaoImpl extends AbstractDao<Integer, BudgetMonthBranch> implements BudgetMonthBranchDao{
 
     @Override
@@ -63,6 +65,30 @@ public class BudgetMonthBranchDaoImpl extends AbstractDao<Integer, BudgetMonthBr
         
         BudgetMonthBranch budgetMonthBranch = (BudgetMonthBranch) createEntityCriteria().add(Restrictions.allEq(map)).uniqueResult();
         return budgetMonthBranch;
+    }
+
+    @Override
+    public BudgetMonthBranch findByCombination(Budgets budget, CMonths month, Integer year) {
+        return (BudgetMonthBranch) createEntityCriteria()
+                .add(Restrictions.eq("budget",budget))
+                .add(Restrictions.eq("month",month))
+                .add(Restrictions.eq("year",year))
+                .uniqueResult();
+    }
+
+    @Override
+    public List<BudgetMonthBranch> findByBudgetsAndYear(List<Budgets> budgets, Integer year) {
+        Disjunction disjunction = Restrictions.disjunction();
+        Criteria criteria = createEntityCriteria();
+
+        for (Budgets budget : budgets) {
+            disjunction.add(Restrictions.eq("idBudget", budget.getIdBudget()));
+        }
+
+        criteria.add(Restrictions.eq("year",year))
+                .add(disjunction);
+
+        return criteria.list();
     }
 
     @Override

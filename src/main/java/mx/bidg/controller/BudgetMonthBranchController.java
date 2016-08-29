@@ -78,7 +78,7 @@ public class BudgetMonthBranchController {
 //            budgetMonth.setDwEnterprise(new DwEnterprises(bmb.getIdDwEnterprise()));
             budgetMonth.setCurrency(new CCurrencies(bmb.getIdCurrency()));
             budgetMonth.setIdAccessLevel(1);
-            budgetMonth.setIsAuthorized(0);
+            budgetMonth.setAuthorized(false);
             BudgetMonthBranch bmb1= budgetMonthBranchService.saveBudgetMonthBranch(budgetMonth);
             
             for (BudgetMonthConcepts bmc : bmb.getBudgetMonthConceptsList()) {

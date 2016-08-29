@@ -5,6 +5,7 @@
  */
 package mx.bidg.service.impl;
 
+import mx.bidg.dao.BudgetsDao;
 import mx.bidg.service.CBudgetConceptsService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,6 +44,9 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
 
     @Autowired
     BudgetsService budgetsService;
+
+    @Autowired
+    BudgetsDao budgetsDao;
 
     @Autowired
     DwEnterprisesService dwEnterprisesService;
@@ -174,13 +178,17 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
     public String authorizeBudget(String data) throws Exception {
         
         JsonNode json = mapper.readTree(data);
-        int idDistributor = json.get("idDistributor").asInt();
-        int idArea = json.get("idArea").asInt();
-        int year = json.get("year").asInt();
+        Integer idCostCenter = json.get("idCostCenter").asInt();
+        Integer idBudgetType = json.get("idBudgetType").asInt();
+        Integer idBudgetNature = json.get("idBudgetNature").asInt();
+        Integer year = json.get("year").asInt();
 
-        if(!budgetMonthBranchDao.authorizeBudget(idDistributor, idArea, year)) {
-            throw new ValidationException("No se han actualizado registros en la autorizacion del Presupuesto", 
-               "No se ha podido autorizar el Presupuesto. Intente nuevamente", HttpStatus.OK);
+        List<Budgets> budgets = budgetsDao.getBudgets(idCostCenter, idBudgetType, idBudgetNature);
+        List<BudgetMonthBranch> budgetMonthBranchList = budgetMonthBranchDao.findByBudgetsAndYear(budgets, year);
+
+        for (BudgetMonthBranch budgetMonthBranch : budgetMonthBranchList) {
+            budgetMonthBranch.setAuthorized(true);
+            budgetMonthBranchDao.update(budgetMonthBranch);
         }
         
         return "Presupuesto autorizado";

@@ -114,8 +114,6 @@ public class BudgetController {
 
         for (Budgets budget : budgets) {
             BudgetPojo budgetPojo = new BudgetPojo();
-//            budgetPojo.setIdDistributor(budget.getIdDistributor());
-//            budgetPojo.setIdArea(budget.getIdArea());
             budgetPojo.setIdBudgetCategory(budget.getAccountingAccount().getIdBudgetCategory());
             budgetPojo.setIdBudgetSubcategory(budget.getAccountingAccount().getIdBudgetSubcategory());
             budgetPojo.setIdBudget(budget.getIdBudget());
@@ -128,10 +126,24 @@ public class BudgetController {
     }
 
     @RequestMapping(value = "/cost-center/{idCostCenter}/budget-type/{idBudgetType}/budget-nature/{idBudgetNature}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public @ResponseBody ResponseEntity<String> getBudgets(@PathVariable Integer idCostCenter, @PathVariable Integer idBudgetType, @PathVariable Integer idBudgetNature) throws Exception {
+    public ResponseEntity<String> getBudgets(@PathVariable Integer idCostCenter, @PathVariable Integer idBudgetType, @PathVariable Integer idBudgetNature) throws Exception {
         List<Budgets> budgets = budgetsService.getBudgets(idCostCenter, idBudgetType, idBudgetNature);
+        List<BudgetPojo> budgetPojos = new ArrayList<>();
 
-        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(budgets));
+        for (Budgets budget : budgets) {
+            BudgetPojo budgetPojo = new BudgetPojo();
+            budgetPojo.setIdBudgetCategory(budget.getAccountingAccount().getIdBudgetCategory());
+            budgetPojo.setIdBudgetSubcategory(budget.getAccountingAccount().getIdBudgetSubcategory());
+            budgetPojo.setIdCostCenter(budget.getIdCostCenter());
+            budgetPojo.setIdBudgetType(budget.getIdBudgetType());
+            budgetPojo.setIdBudgetNature(budget.getIdBudgetNature());
+            budgetPojo.setIdBudget(budget.getIdBudget());
+            budgetPojo.setBudgetCategory(budget.getAccountingAccount().getBudgetCategory());
+            budgetPojo.setBudgetSubcategory(budget.getAccountingAccount().getBudgetSubcategory());
+            budgetPojos.add(budgetPojo);
+        }
+
+        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(budgetPojos));
     }
-    
+
 }

@@ -17,6 +17,7 @@ import javax.validation.constraints.NotNull;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Type;
 
 
 /**
@@ -86,9 +87,10 @@ public class BudgetMonthBranch implements Serializable {
     
     @Basic(optional = false)
     @NotNull
-    @Column(name = "IS_AUTHORIZED")
+    @Column(name = "IS_AUTHORIZED", columnDefinition = "TINYINT", nullable = false)
+    @Type(type = "org.hibernate.type.NumericBooleanType")
     @JsonView(JsonViews.Root.class)
-    private Integer isAuthorized;
+    private Boolean isAuthorized;
 
     @Column(name = "USERNAME")
     @JsonView(JsonViews.Root.class)
@@ -220,12 +222,12 @@ public class BudgetMonthBranch implements Serializable {
         this.creationDate = creationDate;
     }
 
-    public Integer getIsAuthorized() {
+    public Boolean getAuthorized() {
         return isAuthorized;
     }
 
-    public void setIsAuthorized(Integer isAuthorized) {
-        this.isAuthorized = isAuthorized;
+    public void setAuthorized(Boolean authorized) {
+        isAuthorized = authorized;
     }
 
     public CCurrencies getCurrency() {

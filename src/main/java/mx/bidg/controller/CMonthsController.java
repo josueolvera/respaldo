@@ -11,6 +11,8 @@ import mx.bidg.config.JsonViews;
 import mx.bidg.model.CMonths;
 import mx.bidg.service.CMonthsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,10 +31,10 @@ public class CMonthsController {
     @Autowired
     private ObjectMapper mapper;
     
-    @RequestMapping(produces = "application/json;charset=UTF-8")
-    public @ResponseBody String getCMonths() throws Exception {
+    @RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getCMonths() throws Exception {
         List<CMonths> list = cMonthsService.findAll();
-        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(list);
+        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(list));
     }
     
 }

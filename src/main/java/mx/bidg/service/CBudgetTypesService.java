@@ -14,7 +14,7 @@ import mx.bidg.model.CBudgetTypes;
  */
 public interface CBudgetTypesService {
     
-    public List<CBudgetTypes> findAll();
-    public CBudgetTypes findById(int id);
+    List<CBudgetTypes> findAll();
+    CBudgetTypes findById(Integer id);
     
 }

@@ -63,7 +63,6 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
             int idConcept = jsonRequest.get("idConcept").asInt();
             String conceptName = jsonRequest.get("conceptName").asText();
             Budgets budget = new Budgets(jsonRequest.get("idBudget").asInt());
-            DwEnterprises dwEnterprise = new DwEnterprises(jsonRequest.get("dwEnterprise").asInt());
             Integer year = jsonRequest.get("year").asInt();
             BudgetMonthBranch budgetMonthBranch;
             BigDecimal amountConcept;
@@ -86,14 +85,12 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
 
                         budgetMonthBranch = budgetMonthConcepts.getBudgetMonthBranch();
                         
-                        if(budgetMonthBranch.getIsAuthorized().equals(1))
+                        if(budgetMonthBranch.getAuthorized())
                             throw new ValidationException("El presupuesto ya esta autorizado!", 
                                     "No puede modificarse un presupuesto ya autorizado");
                         
                         if(budgetMonthBranch.getBudget().getIdBudget().equals(budget.getIdBudget()) && 
                                 budgetMonthBranch.getMonth().getIdMonth().equals(month.getIdMonth()) && 
-//                                budgetMonthBranch.getDwEnterprise().getIdDwEnterprise().equals(
-//                                dwEnterprise.getIdDwEnterprise()) &&
                                 budgetMonthBranch.getYear() == year) {
                             
                             BigDecimal amountConceptActual = budgetMonthConcepts.getAmount();
@@ -105,7 +102,7 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
                     }
                     
                 }
-                concept = cBudgetConceptsService.update(concept);
+                cBudgetConceptsService.update(concept);
 
             } else {
 
@@ -119,8 +116,7 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
                     amountConcept = MoneyConverter.obtainNumber(conceptMonth.get("amountConcept").asText());
                     month = new CMonths(conceptMonth.get("month").asInt());
 
-                    budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget, month,
-                            dwEnterprise, year);
+                    budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget, month, year);
 
                     if (budgetMonthBranch == null) {
 
@@ -130,15 +126,14 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
                         budgetMonthBranch.setIdAccessLevel(1);
                         budgetMonthBranch.setCurrency(new CCurrencies(1));
                         budgetMonthBranch.setBudget(budget);
-//                        budgetMonthBranch.setDwEnterprise(dwEnterprise);
                         budgetMonthBranch.setMonth(month);
                         budgetMonthBranch.setYear(year);
-                        budgetMonthBranch.setIsAuthorized(0);
+                        budgetMonthBranch.setAuthorized(false);
                         budgetMonthBranch = budgetMonthBranchDao.save(budgetMonthBranch);
 
                     } else {
                         
-                        if(budgetMonthBranch.getIsAuthorized().equals(1))
+                        if(budgetMonthBranch.getAuthorized())
                             throw new ValidationException("El presupuesto ya esta autorizado!", 
                                     "No puede modificarse un presupuesto ya autorizado");
 

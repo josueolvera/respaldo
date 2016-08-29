@@ -45,10 +45,10 @@ public class BudgetMonthConceptsController {
     }
     
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public @ResponseBody ResponseEntity<String> saveBudgetMonthConceptsList(@RequestBody String data) throws Exception {
+    public ResponseEntity<String> saveBudgetMonthConceptsList(@RequestBody String data) throws Exception {
         
         List<BudgetMonthConcepts> list = budgetMonthConceptsService.saveList(data);
-        return new ResponseEntity<>("Concepto(s) guardado(s) con éxito", HttpStatus.OK);
+        return ResponseEntity.ok("Concepto(s) guardado(s) con éxito");
     }
     
 }
