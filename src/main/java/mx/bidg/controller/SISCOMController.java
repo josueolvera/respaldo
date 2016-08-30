@@ -48,4 +48,11 @@ public class SISCOMController {
         model.setViewName("textQuerys");
         return model;
     }
+
+    @RequestMapping(value = "/groups-agreements", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ModelAndView groupsAgreements() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("groupsAgreements");
+        return model;
+    }
 }
