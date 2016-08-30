@@ -18,6 +18,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -49,6 +50,12 @@ public class CAgreementsGroups implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String agreementGroupName;
 
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "STATUS")
+    @JsonView(JsonViews.Root.class)
+    private int status;
+
     public CAgreementsGroups() {
     }
 
@@ -70,6 +77,14 @@ public class CAgreementsGroups implements Serializable {
 
     public void setAgreementGroupName(String agreementGroupName) {
         this.agreementGroupName = agreementGroupName;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     @Override
