@@ -68,4 +68,9 @@ public class CAgreementsServiceImpl implements CAgreementsService {
         agreement.setStatus(0);
         cAgreementsDao.update(agreement);
     }
+
+    @Override
+    public List<CAgreements> findActives() {
+        return cAgreementsDao.findAgreementsActives();
+    }
 }

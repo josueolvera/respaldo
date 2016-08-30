@@ -1,5 +1,6 @@
 package mx.bidg.service;
 
+import antlr.collections.impl.LList;
 import mx.bidg.model.CAgreements;
 
 import java.util.List;
@@ -15,4 +16,5 @@ public interface CAgreementsService {
     boolean delete (CAgreements cAgreements);
     boolean diferentAgreement(String agreementName);
     void lowDate (Integer idAgreement);
+    List<CAgreements> findActives ();
 }
