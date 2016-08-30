@@ -13,6 +13,7 @@ import mx.bidg.model.CAgreements;
 import mx.bidg.model.GroupsAgreements;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -60,5 +61,11 @@ public class GroupsAgreementsDaoImpl extends AbstractDao<Integer, GroupsAgreemen
         }
 
         return (List<GroupsAgreements>) criteria.list();
+    }
+
+    @Override
+    public List<GroupsAgreements> findGroupsAgreementsByAg(Integer idAg) {
+        return (List<GroupsAgreements>) createEntityCriteria().add(Restrictions.eq("idAg", idAg))
+                .addOrder(Order.asc("idAgreement")).list();
     }
 }
