@@ -21,6 +21,7 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Type;
 
 /**
  *
@@ -44,6 +45,10 @@ public class GroupsAgreements implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
+
+    @Column(name = "HAS_AGREEMENT", columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    private boolean hasAgreement;
     
     @Column(name = "ID_AG", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -117,8 +122,14 @@ public class GroupsAgreements implements Serializable {
     public void setAgreement(CAgreements agreement) {
         this.agreement = agreement;
     }
-    
-        
+
+    public boolean isHasAgreement() {
+        return hasAgreement;
+    }
+
+    public void setHasAgreement(boolean hasAgreement) {
+        this.hasAgreement = hasAgreement;
+    }
 
     @Override
     public int hashCode() {
