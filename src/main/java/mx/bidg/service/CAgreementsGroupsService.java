@@ -19,5 +19,6 @@ public interface CAgreementsGroupsService {
     boolean delete(CAgreementsGroups agreementsGroups);
     CAgreementsGroups findById (Integer idAG);
     List<CAgreementsGroups> findAll();
+    CAgreementsGroups lowGroup (Integer idAG);
     
 }
