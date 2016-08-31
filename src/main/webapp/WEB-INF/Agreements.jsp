@@ -74,14 +74,13 @@
                 },
                 ready: function () {
                     this.obtainGroups();
-                    this.obtainAgreementsGroups();
+                    this.obtainAgreements();
                 },
                 data: {
-                    groupsAgreements: [],
+                    agreements: [],
                     groups: [],
-                    agreementsGroups: {
-                        agreementName: "",
-                        idAg: ""
+                    agreementsObject: {
+                        agreementName: ""
                     },
                     modalEliminar: {
                         agreement: {
@@ -92,9 +91,9 @@
                     name: ''
                 },
                 methods: {
-                    obtainAgreementsGroups: function () {
-                        this.$http.get(ROOT_URL + "/groups-agreements").success(function (data) {
-                            this.groupsAgreements = data;
+                    obtainAgreements: function () {
+                        this.$http.get(ROOT_URL + "/agreements").success(function (data) {
+                            this.agreements = data;
                         });
                     },
                     obtainGroups: function () {
@@ -104,15 +103,14 @@
                         });
                     },
                     saveAgreement: function () {
-                        if(this.agreementsGroups.idAg.length == 0 && this.agreementsGroups.agreementName.length == 0){
-                            showAlert("Es necesario llenar los campos: Nombre del convenio y Grupo de convenio", {type: 3});
+                        if(this.agreementsObject.agreementName.length == 0){
+                            showAlert("Es necesario llenar el campo: Nombre del convenio", {type: 3});
                         } else {
-                            this.$http.post(ROOT_URL + "/groups-agreements/new", JSON.stringify(this.agreementsGroups)).success(function (data) {
+                            this.$http.post(ROOT_URL + "/agreements/new", JSON.stringify(this.agreementsObject)).success(function (data) {
                                 showAlert("Registro de convenio exitoso");
                                 $('#modalAlta').modal('hide');
-                                this.agreementsGroups.idAg = '';
-                                this.agreementsGroups.agreementName = '';
-                                this.obtainAgreementsGroups();
+                                this.agreementsObject.agreementName = '';
+                                this.obtainAgreements();
 
                             }).error(function () {
                                 showAlert("Hubo un error al generar la solicitud intente de nuevo", {type: 3});
@@ -120,8 +118,7 @@
                         }
                     },
                     cancelar: function () {
-                        this.agreementsGroups.idAg = '';
-                        this.agreementsGroups.agreementName = '';
+                        this.agreementsObject.agreementName = '';
                       $('#modalAlta').modal('hide');
                     },
                     question: function (agreement) {
@@ -155,7 +152,7 @@
                     },
                     buildReport: function () {
                         if(this.name.length > 0) {
-                            window.location = ROOT_URL + "/groups-agreements/report-agreements?file_name=" + this.name;
+                            window.location = ROOT_URL + "/agreements/report-agreements?file_name=" + this.name;
                             $('#modalNombre').modal('hide');
                             this.name = '';
                         } else {
@@ -178,13 +175,13 @@
             <div>
                 <div class="row">
                     <div class="col-xs-6 text-header">
-                        <h2>Gestión de convenios</h2>
+                        <h2>Registro de convenios</h2>
                     </div>
 
                     <div class="col-xs-6 text-right" style="padding: 0px">
                         <div class="col-xs-7 text-left" style="padding: 0px">
                             <label>Buscar Convenio</label>
-                            <input class="form-control" maxlength="13" v-model="search">
+                            <input class="form-control" v-model="search">
                         </div>
                         <div class="col-xs-3">
                             <button type="button" class="btn btn-default" name="button"
@@ -206,28 +203,14 @@
                     <div class="row table-header">
                         <div class="col-xs-1"><b>Id</b></div>
                         <div class="col-xs-5"><b>Convenio</b></div>
-                        <div class="col-xs-3"><b>Grupo</b></div>
-                        <div class="col-xs-1"><b>Reasignar</b></div>
-                        <div class="col-xs-1"><b>Eliminar</b></div>
                     </div>
                 </div>
             </div>
             <br>
             <div class="table-body flex-row flex-content">
-                <div class="row table-row" v-for="agreementGroup in groupsAgreements | filterBy search in 'agreement.agreementName'" v-if="agreementGroup.agreement.status == 1">
-                    <div class="col-xs-1">{{agreementGroup.agreement.idAgreement}}</div>
-                    <div class="col-xs-5">{{agreementGroup.agreement.agreementName}}</div>
-                    <div class="col-xs-3">{{agreementGroup.agreementGroup.agreementGroupName}}</div>
-                    <div class="col-xs-1" style="margin-left: 30px" >
-                        <button type="button" class="btn btn-default" name="button" data-toggle="tooltip"
-                                data-placement="bottom" title="Reasignar"
-                                @click="modifyAgreements(agreementGroup.idGa)"><span class="glyphicon glyphicon-refresh"></span></button>
-                    </div>
-                    <div class="col-xs-1">
-                        <button type="button" class="btn btn-danger" name="button" data-toggle="tooltip"
-                                data-placement="bottom" title="Eliminar"
-                                @click="question(agreementGroup.agreement)"><span class="glyphicon glyphicon-trash"></span></button>
-                    </div>
+                <div class="row table-row" v-for="agreement in agreements | filterBy search in 'agreementName'" v-if="agreement.status == 1">
+                    <div class="col-xs-1">{{agreement.idAgreement}}</div>
+                    <div class="col-xs-5">{{agreement.agreementName}}</div>
                 </div>
             </div>
             <!-- container-fluid -->
@@ -242,19 +225,10 @@
                             <div class="row" >
                                 <div class="col-xs-5">
                                     <label>Nombre del convenio</label>
-                                    <input class="form-control" name="name" v-model="agreementsGroups.agreementName">
-                                </div>
-                                <div class="col-xs-3">
-                                    <label>Grupo del convenio</label>
-                                    <select class="form-control" name="" v-model="agreementsGroups.idAg">
-                                        <option></option>
-                                        <option v-for="group in groups" :value="group.idAg">
-                                            {{group.agreementGroupName}}
-                                        </option>
-                                    </select>
+                                    <input class="form-control" name="name" v-model="agreementsObject.agreementName">
                                 </div>
                             </div>
-                            </div>
+                        </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" @click="cancelar">Cancelar</button>
                             <button type="button" class="btn btn-success" @click="saveAgreement">
