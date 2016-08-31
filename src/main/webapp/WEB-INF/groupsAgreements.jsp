@@ -78,7 +78,8 @@
                     idAg: '',
                     group: {
                         agreementGroupName: ''
-                    }
+                    },
+                    allCheck: false
                 },
                 methods: {
                     obtainGroups: function () {
@@ -89,13 +90,13 @@
                     },
                     changedGroup: function (group) {
                         this.idAg = group.idAg;
+                        this.allCheck = false;
                         this.$http.get(ROOT_URL + "/groups-agreements/groups/"+group.idAg).success(function (data) {
                             this.groupsAgreements = data;
                         });
                     },
                     assignAgreementsToGroup: function (groupAgreement) {
                         this.$http.post(ROOT_URL + "/groups-agreements/has-agreement", JSON.stringify(groupAgreement)).success(function (data) {
-                            showAlert("Asignaciòn satisfactorìa");
                         }).error(function () {
                            showAlert("Hubo un error en la solicitud", {type: 3});
                         });
@@ -110,7 +111,7 @@
                         }else {
                             this.$http.post(ROOT_URL + "/c-agreements-groups/new", JSON.stringify(this.group)).success(function (data) {
                                 showAlert("Grupo dado de alta correctamente");
-                                $('#modalAlta').modal('hide');
+                                this.cancelar();
                                 this.obtainGroups();
                             }).error(function () {
                                 showAlert("Error en la solicitud", {type: 3});
@@ -130,6 +131,20 @@
                                 }).error(function (data) {
                            showAlert("Error en la solicitud",{type: 3});
                         });
+                    },
+                    all: function () {
+                        var self = this;
+                        if (this.allCheck == true){
+                            this.groupsAgreements.forEach(function (agreement) {
+                                agreement.hasAgreement = true;
+                                self.assignAgreementsToGroup(agreement);
+                            })
+                        }else{
+                            this.groupsAgreements.forEach(function (agreement) {
+                                agreement.hasAgreement = false;
+                                self.assignAgreementsToGroup(agreement);
+                            })
+                        }
                     }
                 },
                 filters: {
@@ -168,14 +183,14 @@
             <div>
                 <div class="row">
                     <div class="col-xs-6 text-header">
-                        <h2>Grupo de convenios</h2>
+                        <h2>Agrupaciòn de convenios</h2>
                     </div>
                     <div class="col-xs-4">
                         
                     </div>
-                    <div class="col-xs-2">
+                    <div class="col-xs-2" style="margin-left: 398px">
                         <button type="button" class="btn btn-default" name="button"
-                                style="margin-top: 25px" data-toggle="modal" data-target="#modalAlta">
+                                style="margin-left: 70px; margin-top: 25px" data-toggle="modal" data-target="#modalAlta">
                             Nuevo grupo
                         </button>
                     </div>
@@ -189,7 +204,7 @@
                         <!-- Table -->
                         <div class="flex-box container-fluid">
                             <div class="row table-header active">
-                                <div class="col-xs-12"><b>Selecciona un grupo</b></div>
+                                <div class="col-xs-12" style="font-size: 18px"><b>Selecciona un grupo</b></div>
                             </div>
                             <br>
                             <div class="table-body flex-row flex-content">
@@ -214,14 +229,18 @@
                         <!-- Table -->
                         <div class="flex-box container-fluid">
                             <div class="row table-header active">
-                                <div class="col-xs-12"><b>Selecciona el o los convenios</b></div>
+                                <div class="col-xs-12" style="font-size: 18px"><b>Selecciona los convenios para asignarlos al grupo</b></div>
+                                <div class="col-xs-12" style="font-size: 14px">
+                                    <input type="checkbox" v-model="allCheck" @change="all()">
+                                    <label>Seleccionar todos</label>
+                                </div>
                             </div>
                             <br>
                             <div class="table-body flex-row flex-content">
                                 <div class="row table-row" v-for="agreement in groupsAgreements">
                                     <div class="col-xs-12">
                                         <input type="checkbox" :value="agreement" v-model="agreement.hasAgreement" @change="assignAgreementsToGroup(agreement)">
-                                        <label>{{agreement.agreement.idAgreement}} {{agreement.agreement.agreementName}}</label>
+                                        <label>{{agreement.agreement.idAgreement}} - {{agreement.agreement.agreementName}}</label>
                                     </div>
                                 </div>
                             </div>
@@ -232,15 +251,15 @@
 
             <!-- container-fluid -->
             <div class="modal fade" id="modalAlta" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
+                <div class="modal-dialog modal-sm">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">Alta de grupo</h4>
+                            <h4 class="modal-title">Registro</h4>
                         </div>
                         <div class="modal-body">
                             <div class="row" >
-                                <div class="col-xs-5">
+                                <div class="col-xs-12">
                                     <label>Nombre del grupo</label>
                                     <input class="form-control" name="name" v-model="group.agreementGroupName">
                                 </div>
@@ -262,7 +281,7 @@
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                             <h4 class="modal-title">
-                                Confirmaciòn de baja de grupo
+                                Confirmaciòn
                             </h4>
                         </div>
                         <div class="modal-body">
