@@ -7,10 +7,13 @@ package mx.bidg.dao;
 
 import mx.bidg.model.CAgreementsGroups;
 
+import java.util.List;
+
 /**
  *
  * @author josueolvera
  */
 public interface CAgreementsGroupsDao extends InterfaceDao<CAgreementsGroups>{
+    List<CAgreementsGroups> findGruoupActives ();
     
 }
