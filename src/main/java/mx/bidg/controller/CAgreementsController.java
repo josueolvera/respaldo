@@ -5,20 +5,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.CAgreements;
+import mx.bidg.model.CAgreementsGroups;
 import mx.bidg.model.DwEnterprises;
+import mx.bidg.model.GroupsAgreements;
+import mx.bidg.service.CAgreementsGroupsService;
 import mx.bidg.service.CAgreementsService;
+import mx.bidg.service.GroupsAgreementsService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,6 +34,12 @@ public class CAgreementsController {
 
     @Autowired
     CAgreementsService cAgreementsService;
+
+    @Autowired
+    CAgreementsGroupsService cAgreementsGroupsService;
+
+    @Autowired
+    GroupsAgreementsService groupsAgreementsService;
 
     @Autowired
     private ObjectMapper mapper;
@@ -48,12 +57,24 @@ public class CAgreementsController {
         String agreementNameClean= clearAgreementName.replaceAll("\\W", "").toUpperCase();
         if(!cAgreementsService.diferentAgreement(agreementNameClean)){
             CAgreements cAgreements = new CAgreements();
-            cAgreements.setAgreementName(node.get("agreementName").asText());
+            cAgreements.setAgreementName(node.get("agreementName").asText().toUpperCase());
             cAgreements.setUploadedDate(LocalDateTime.now());
             cAgreements.setAgreementNameClean(agreementNameClean);
             cAgreements.setStatus(1);
             cAgreements.setIdAccessLevel(1);
-            cAgreementsService.save(cAgreements);
+            cAgreements = cAgreementsService.save(cAgreements);
+
+            List<CAgreementsGroups> agreementsGroups = cAgreementsGroupsService.findGroupsActives();
+
+            for (CAgreementsGroups agreementGroup : agreementsGroups){
+                GroupsAgreements groupsAgreements = new GroupsAgreements();
+                groupsAgreements.setAgreement(cAgreements);
+                groupsAgreements.setAgreementGroup(agreementGroup);
+                groupsAgreements.setIdAccessLevel(1);
+                groupsAgreements.setHasAgreement(false);
+                groupsAgreementsService.save(groupsAgreements);
+            }
+
             return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(cAgreements),HttpStatus.OK);
         }else {
             return new ResponseEntity<>("El nombre ya existe", HttpStatus.BAD_REQUEST);
@@ -66,5 +87,18 @@ public class CAgreementsController {
         cAgreementsService.lowDate(idAgreement);
 
         return new ResponseEntity<>("Convenio Eliminado",HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/report-agreements", method = RequestMethod.GET)
+    public ResponseEntity<String> report(@RequestParam(required = true, name = "file_name") String fileName, HttpServletResponse response) throws IOException{
+
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment; filename=\""+ fileName +".xls\"");
+
+        OutputStream outputStream = response.getOutputStream();
+        cAgreementsService.agreementsReport(outputStream);
+        outputStream.flush();
+        outputStream.close();
+        return new ResponseEntity<>("Reporte", HttpStatus.OK);
     }
 }
