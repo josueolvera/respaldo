@@ -20,5 +20,6 @@ public interface CAgreementsGroupsService {
     CAgreementsGroups findById (Integer idAG);
     List<CAgreementsGroups> findAll();
     CAgreementsGroups lowGroup (Integer idAG);
+    List<CAgreementsGroups> findGroupsActives();
     
 }

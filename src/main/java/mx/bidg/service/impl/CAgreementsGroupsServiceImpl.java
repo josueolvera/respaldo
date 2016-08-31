@@ -53,4 +53,9 @@ public class CAgreementsGroupsServiceImpl implements CAgreementsGroupsService {
         return agreementsGroupsDao.update(agreementsGroups);
     }
 
+    @Override
+    public List<CAgreementsGroups> findGroupsActives() {
+        return agreementsGroupsDao.findGruoupActives();
+    }
+
 }
