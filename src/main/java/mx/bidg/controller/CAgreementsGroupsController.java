@@ -59,7 +59,8 @@ public class CAgreementsGroupsController {
         JsonNode node = mapper.readTree(data);
 
         CAgreementsGroups agreementsGroups = new CAgreementsGroups();
-        agreementsGroups.setAgreementGroupName(node.get("agreementGroupName").asText());
+        agreementsGroups.setAgreementGroupName(node.get("agreementGroupName").asText().toUpperCase());
+        agreementsGroups.setStatus(1);
         agreementsGroups = cAgreementsGroupsService.save(agreementsGroups);
 
         List<CAgreements> agreementsList = agreementsService.findActives();
