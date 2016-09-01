@@ -21,5 +21,6 @@ public interface GroupsAgreementsService {
     List<GroupsAgreements> findAll();
     boolean delete (GroupsAgreements groupsAgreements);
     void GroupAgreementsReport(OutputStream stream) throws IOException;
+    List<GroupsAgreements> findGroupsAgreementByAg(Integer idAg);
     
 }

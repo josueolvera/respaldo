@@ -45,5 +45,17 @@ public class CAgreementsGroupsServiceImpl implements CAgreementsGroupsService {
     public List<CAgreementsGroups> findAll() {
         return agreementsGroupsDao.findAll();
     }
-    
+
+    @Override
+    public CAgreementsGroups lowGroup(Integer idAG) {
+        CAgreementsGroups agreementsGroups = agreementsGroupsDao.findById(idAG);
+        agreementsGroups.setStatus(0);
+        return agreementsGroupsDao.update(agreementsGroups);
+    }
+
+    @Override
+    public List<CAgreementsGroups> findGroupsActives() {
+        return agreementsGroupsDao.findGruoupActives();
+    }
+
 }

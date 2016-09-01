@@ -16,5 +16,6 @@ import java.util.List;
  */
 public interface GroupsAgreementsDao extends InterfaceDao<GroupsAgreements>{
     List<GroupsAgreements> findGroupsAgreementsActives(List<CAgreements> agreementsList);
+    List<GroupsAgreements> findGroupsAgreementsByAg(Integer idAg);
     
 }

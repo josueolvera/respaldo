@@ -138,4 +138,9 @@ public class GroupsAgreementsServiceImpl implements GroupsAgreementsService {
 
     }
 
+    @Override
+    public List<GroupsAgreements> findGroupsAgreementByAg(Integer idAg) {
+        return groupsAgreementsDao.findGroupsAgreementsByAg(idAg);
+    }
+
 }

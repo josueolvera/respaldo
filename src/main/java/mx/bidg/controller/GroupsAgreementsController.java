@@ -23,6 +23,7 @@ import mx.bidg.service.CAgreementsService;
 import mx.bidg.service.GroupsAgreementsService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.protocol.HTTP;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -111,5 +112,23 @@ public class GroupsAgreementsController {
         outputStream.flush();
         outputStream.close();
         return new ResponseEntity<>("Reporte", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/groups/{idAg}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findGroupsAgreements(@PathVariable Integer idAg) throws IOException{
+        List<GroupsAgreements> groupsAgreementsList = groupsAgreementsService.findGroupsAgreementByAg(idAg);
+        return  new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(groupsAgreementsList), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/has-agreement", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> changeStatus(@RequestBody String data) throws IOException{
+
+        JsonNode node = mapper.readTree(data);
+
+        GroupsAgreements gAgreements  = groupsAgreementsService.findById(node.get("idGa").asInt());
+        gAgreements.setHasAgreement(node.get("hasAgreement").asBoolean());
+        gAgreements = groupsAgreementsService.update(gAgreements);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(gAgreements), HttpStatus.OK);
     }
 }

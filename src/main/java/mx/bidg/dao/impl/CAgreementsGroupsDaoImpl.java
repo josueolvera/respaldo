@@ -9,6 +9,7 @@ import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CAgreementsGroupsDao;
 import mx.bidg.model.CAgreementsGroups;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -41,5 +42,9 @@ public class CAgreementsGroupsDaoImpl extends AbstractDao<Integer, CAgreementsGr
         remove(entity);
         return true;
     }
-    
+
+    @Override
+    public List<CAgreementsGroups> findGruoupActives() {
+        return createEntityCriteria().add(Restrictions.eq("status",1)).list();
+    }
 }
