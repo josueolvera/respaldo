@@ -147,7 +147,7 @@ public class CBudgetConceptsController {
     }
 
     @RequestMapping(value = "/cost-center/{idCostCenter}/budget-type/{idBudgetType}/budget-nature/{idBudgetNature}/year/{year}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> getByBudgetAndArea(@PathVariable Integer idCostCenter, @PathVariable Integer idBudgetType, @PathVariable Integer idBudgetNature, @PathVariable int year) throws Exception {
+    public ResponseEntity<String> getBudgetConceptsByBudgetType(@PathVariable Integer idCostCenter, @PathVariable Integer idBudgetType, @PathVariable Integer idBudgetNature, @PathVariable int year) throws Exception {
 
         List<BudgetPojo> list = new ArrayList<>();
         List<ConceptMonthPojo> conceptMonthPojoList;

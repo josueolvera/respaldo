@@ -68,11 +68,16 @@
                     budgetTypes: [],
                     user:{},
                     selected : {
-                        roleCostCenter:{},
+                        budgetNature:{},
                         budgetType: {},
-                        year: null
+                        costCenter: {},
+                        year: null,
+                        yearFromCopy: null,
+                        yearToCopy: null
                     },
+                    searching: false,
                     rolesCostCenter:[],
+                    costCenterList:[],
                     budgetCategories: [],
                     datosPresupuesto: [],
                     contenido: [],
@@ -80,14 +85,17 @@
                         budgetCategory:'TODOS',
                         idBudgetCategory:0
                     },
-                    isAutorized: false
+                    isAutorized: false,
+                    role:null,
+                    errorMessage: ''
                 },
                 methods: {
                     getUserInSession: function () {
                         this.$http.get(ROOT_URL + "/user")
                                 .success(function (data) {
                                     this.user = data;
-                                    this.getRolesCostCenter(this.user.dwEmployee.idRole);
+                                    this.role = this.user.dwEmployee.idRole;
+                                    this.getRolesCostCenter(this.role);
                                 })
                                 .error(function (data) {
                                     showAlert("Ha habido un error al obtener al usuario en sesion", {type: 3});
@@ -96,7 +104,18 @@
                     getRolesCostCenter: function (idRole) {
                         this.$http.get(ROOT_URL + '/roles-cost-center/role/' + idRole)
                                 .success(function (data) {
+                                    var self = this;
+                                    var index;
                                     this.rolesCostCenter = data;
+
+                                    if (data.length < 2) {
+                                        this.selected.budgetNature = data[0].budgetNature;
+                                    }
+
+                                    data.forEach(function (item) {
+                                        index = self.arrayObjectIndexOf(self.costCenterList, item.costCenter.idCostCenter, 'idCostCenter');
+                                        if (index == -1) self.costCenterList.push(item.costCenter);
+                                    });
                                 })
                                 .error(function (data) {
 
@@ -106,18 +125,12 @@
                         this.$http.get(ROOT_URL + '/budget-types')
                                 .success(function (data) {
                                     this.budgetTypes = data;
-                                })
-                                .error(function (data) {
-
                                 });
                     },
                     getMonths: function () {
                         this.$http.get(ROOT_URL + '/months')
                                 .success(function (data) {
                                     this.months = data;
-                                })
-                                .error(function (data) {
-
                                 });
                     },
                     setYears: function () {
@@ -130,19 +143,19 @@
                         }
                     },
                     searchBudget: function () {
+                        this.searching = true;
                         this.contenido = [];
                         this.getBudgets();
                     },
                     getBudgets: function () {
                         this.$http.get(
                                 ROOT_URL +
-                                '/budgets/cost-center/' + this.selected.roleCostCenter.costCenter.idCostCenter +
+                                '/budgets/cost-center/' + this.selected.costCenter.idCostCenter +
                                 '/budget-type/' + this.selected.budgetType.idBudgetType +
-                                '/budget-nature/' + this.selected.roleCostCenter.budgetNature.idBudgetNature)
+                                '/budget-nature/' + this.selected.budgetNature.idBudgetNature)
                                 .success(function (data) {
                                     var self = this;
                                     this.budgetCategories = [];
-                                    this.contenido = data;
                                     this.budgets = data;
                                     this.getConcepts();
                                     var index;
@@ -160,9 +173,9 @@
                     getConcepts:function () {
                         this.$http.get(
                                 ROOT_URL +
-                                '/budget-concepts/cost-center/' + this.selected.roleCostCenter.costCenter.idCostCenter +
+                                '/budget-concepts/cost-center/' + this.selected.costCenter.idCostCenter +
                                 '/budget-type/' + this.selected.budgetType.idBudgetType +
-                                '/budget-nature/' + this.selected.roleCostCenter.budgetNature.idBudgetNature +
+                                '/budget-nature/' + this.selected.budgetNature.idBudgetNature +
                                 '/year/' + this.selected.year)
                                 .success(function (data) {
                                     var self = this;
@@ -201,6 +214,8 @@
                     },
                     getContenido: function () {
                         var self = this;
+                        console.log('P');
+                        this.searching = false;
                         this.contenido = [];
                         if (this.selected.budgetCategory.idBudgetCategory === 0) {
                             this.contenido = this.budgets;
@@ -378,14 +393,53 @@
                         autorizacion.idBudgetNature = this.budgets[0].idBudgetNature;
                         autorizacion.year = this.budgets[0].year;
 
-                        this.$http.post(ROOT_URL + "/budget-month-branch/authorize", JSON.stringify(autorizacion))
+                        this.$http.post(ROOT_URL + '/budget-month-branch/authorize', JSON.stringify(autorizacion))
                                 .success(function(data) {
                                     this.getBudgets();
                                     showAlert('Presupuesto autorizado');
                                 })
                                 .error(function(data){
-                                    showAlert('Ha habido un error con la solicitud, intente nuevamente');
+                                    showAlert('Ha habido un error con la solicitud, intente nuevamente', {type:3});
                                 });
+                    },
+                    copyBudget: function (overwrite) {
+                        var url = '/budgets/copy-budget?cost_center=' + this.budgets[0].idCostCenter +
+                                '&nature=' + this.budgets[0].idBudgetNature +
+                                '&year_from_copy=' + this.selected.yearFromCopy +
+                                '&year_to_copy=' + this.selected.yearToCopy;
+                        if (overwrite) {
+                            url += '&overwrite=' + overwrite;
+                        }
+                        this.$http.post(ROOT_URL + url,{})
+                                .success(function(data) {
+                                    this.getBudgets();
+                                    this.closeCopyBudgetModal();
+                                    this.closeOverwriteModal();
+                                    showAlert('Presupuesto copiado');
+                                })
+                                .error(function(data){
+                                    this.errorMessage = data.error.message;
+                                    this.closeCopyBudgetModal();
+                                    this.showOverwriteModal();
+                                });
+                    },
+                    onClickAcept : function () {
+                        this.copyBudget(false);
+                    },
+                    onClickOverwrite : function () {
+                        this.copyBudget(true);
+                    },
+                    showCopyBudgetModal: function () {
+                        $("#copyBudgetModal").modal("show");
+                    },
+                    closeCopyBudgetModal: function () {
+                        $("#copyBudgetModal").modal("hide");
+                    },
+                    showOverwriteModal: function () {
+                        $("#overwriteModal").modal("show");
+                    },
+                    closeOverwriteModal: function () {
+                        $("#overwriteModal").modal("hide");
                     }
                 },
                 filters: {
@@ -403,14 +457,20 @@
         <div id="contenidos">
             <div class="container-fluid">
                 <br>
-                <h2>Presupuesto</h2>
+                <h2>Captura de presupuesto</h2>
                 <br>
                 <div class="row">
                     <form v-on:submit.prevent="searchBudget">
                         <div class="col-md-2">
                             <label>Centro de costos</label>
-                            <select v-model="selected.roleCostCenter" class="form-control" required>
-                                <option v-for="roleCostCenter in rolesCostCenter" :value="roleCostCenter">{{roleCostCenter.costCenter.name}}</option>
+                            <select v-model="selected.costCenter" class="form-control" required>
+                                <option v-for="costCenter in costCenterList" :value="costCenter">{{costCenter.name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Tipo de gasto</label>
+                            <select v-model="selected.budgetNature" class="form-control" required>
+                                <option v-for="roleCostCenter in rolesCostCenter" :value="roleCostCenter.budgetNature">{{roleCostCenter.budgetNature.budgetNature}}</option>
                             </select>
                         </div>
                         <div class="col-md-2">
@@ -430,99 +490,167 @@
                             </select>
                         </div>
                         <div class="col-md-1">
-                            <label style="visibility: hidden">search</label>
-                            <button class="btn btn-info">Buscar</button>
+                            <button style="margin-top: 25px" class="btn btn-info">Buscar</button>
+                        </div>
+                        <div class="col-md-2" v-if="budgets.length > 0 && !searching">
+                            <button type="button" style="margin-top: 25px"
+                                    class="btn btn-default" @click="showCopyBudgetModal">
+                                Copiar presupuesto
+                            </button>
+                        </div>
+                        <div class="col-md-4" v-if="budgetCategories.length > 0">
+                            <label>Rubro</label>
+                            <select v-model="selected.budgetCategory" class="form-control" @change="getContenido">
+                                <option selected :value="budgetAllOption">{{budgetAllOption.budgetCategory}}</option>
+                                <option v-for="budgetCategory in budgetCategories" :value="budgetCategory">{{budgetCategory.budgetCategory}}</option>
+                            </select>
                         </div>
                     </form>
                 </div>
-                <div class="row">
-                    <div class="col-md-2" v-if="budgetCategories.length > 0">
-                        <label>Rubro</label>
-                        <select v-model="selected.budgetCategory" class="form-control" @change="getContenido">
-                            <option selected :value="budgetAllOption">{{budgetAllOption.budgetCategory}}</option>
-                            <option v-for="budgetCategory in budgetCategories" :value="budgetCategory">{{budgetCategory.budgetCategory}}</option>
-                        </select>
-                    </div>
+                <br>
+                <div v-if="searching" class="col-xs-12"
+                     style="height: 6rem; padding: 2rem 0;">
+                    <div class="loader">Cargando...</div>
                 </div>
-                <div class="row" v-for="cont in contenido"  style="margin-left: 0px; margin-right: 0px">
-                    <div class="bs-callout bs-callout-default">
-                        <h4>{{cont[0].budgetCategory.budgetCategory}}</h4>
-                        <div class="row" v-for="conte in cont" style="margin-left: 0px; margin-right: 0px">
-                            <div class="row" style="margin-left: 0px; margin-right: 0px">
-                                <div class="col-xs-4">
-                                    <h5>{{conte.budgetSubcategory.budgetSubcategory}}</h5>
-                                    <div class="input-group">
-                                        <span class="input-group-addon">$</span>
-                                        <input type="text" class="form-control" placeholder="" disabled="true" v-model=conte.granTotal>
+                <div v-if="!searching">
+                    <div class="row" v-for="cont in contenido"  style="margin-left: 0px; margin-right: 0px">
+                        <div class="bs-callout bs-callout-default">
+                            <h4>{{cont[0].budgetCategory.budgetCategory}}</h4>
+                            <div class="row" v-for="conte in cont" style="margin-left: 0px; margin-right: 0px">
+                                <div class="row" style="margin-left: 0px; margin-right: 0px">
+                                    <div class="col-xs-4">
+                                        <h5>{{conte.budgetSubcategory.budgetSubcategory}}</h5>
+                                        <div class="input-group">
+                                            <span class="input-group-addon">$</span>
+                                            <input type="text" class="form-control" placeholder="" disabled="true" v-model=conte.granTotal>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-xs-1 text-left">
-                                    <button type="button" class="btn btn-default" :disabled="isAutorized"
-                                            style="margin-top: 40px" @click="seteoInfo(conte, $event)">
-                                        <span class="glyphicon glyphicon-plus"></span>
-                                    </button>
-                                </div>
-                                <div class="col-xs-6 text left" v-if="conte.conceptos.length > 0">
-                                    <button type="button" class="btn btn-default" :disabled="isAutorized"
-                                            style="margin-top: 40px" @click="saveBudget(conte.conceptos)">
-                                        <span class="glyphicon glyphicon-floppy-disk"></span>
-                                    </button>
-                                </div>
-                            </div>
-                            <br>
-                            <div v-for="concepto in conte.conceptos">
-                                <div class="row">
-                                    <div class="col-xs-2">
-                                        <label>Concepto</label>
-                                        <input type="text" name="name" class="form-control input-sm"
-                                               v-model="concepto.conceptName" :disabled="isAutorized">
-
-                                    </div>
-                                    <div class="col-xs-1" v-if="!isAutorized">
-                                        <button style="margin-top: 27px" type="button" class="btn btn-default"
-                                                @click="deleteObject(conte, concepto)">
-                                            <span class="glyphicon glyphicon-trash"></span>
+                                    <div class="col-xs-1 text-left">
+                                        <button type="button" class="btn btn-default" :disabled="isAutorized"
+                                                style="margin-top: 40px" @click="seteoInfo(conte, $event)">
+                                            <span class="glyphicon glyphicon-plus"></span>
                                         </button>
                                     </div>
-                                    <div class="col-xs-2" v-if="!isAutorized">
-                                        <label style="visibility: hidden">checkbox</label>
-                                        <div class="checkbox">
+                                    <div class="col-xs-6 text left" v-if="conte.conceptos.length > 0">
+                                        <button type="button" class="btn btn-default" :disabled="isAutorized"
+                                                style="margin-top: 40px" @click="saveBudget(conte.conceptos)">
+                                            <span class="glyphicon glyphicon-floppy-disk"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <br>
+                                <div v-for="concepto in conte.conceptos">
+                                    <div class="row">
+                                        <div class="col-xs-2">
+                                            <label>Concepto</label>
+                                            <input type="text" name="name" class="form-control input-sm"
+                                                   v-model="concepto.conceptName" :disabled="isAutorized">
+
+                                        </div>
+                                        <div class="col-xs-1" v-if="!isAutorized">
+                                            <button style="margin-top: 27px" type="button" class="btn btn-default"
+                                                    @click="deleteObject(conte, concepto)">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                        </div>
+                                        <div class="col-xs-2" v-if="!isAutorized">
+                                            <label style="visibility: hidden">checkbox</label>
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" v-model="concepto.equals"
+                                                           @change="equalsImport(concepto, conte)"> Copiar monto
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="row" style="margin-left: 0px" v-if="conte.conceptos.length > 0">
+                                        <div class="col-xs-1" v-for="month in months"
+                                             style="padding-left: 0px; padding-right: 1px">
                                             <label>
-                                                <input type="checkbox" v-model="concepto.equals"
-                                                       @change="equalsImport(concepto, conte)"> Copiar monto
+                                                {{month.month}}
                                             </label>
                                         </div>
                                     </div>
-                                </div>
-                                <br>
-                                <div class="row" style="margin-left: 0px" v-if="conte.conceptos.length > 0">
-                                    <div class="col-xs-1" v-for="month in months"
-                                         style="padding-left: 0px; padding-right: 1px">
-                                        <label>
-                                            {{month.month}}
-                                        </label>
-                                    </div>
-                                </div>
 
-                                <div class="row" style="margin-left: 0px">
-                                    <div class="col-xs-1" v-for="mess in concepto.conceptMonth"
-                                         style="padding-left: 0px; padding-right: 1px">
-                                        <input type="text" class="form-control input-sm" v-model="mess.amountConcept"
-                                               @change="moneyFormat(mess, concepto, conte)"  :disabled="isAutorized"
-                                               style="font-size: 10px" onkeypress="return validateFloatKeyPress(this,event)">
+                                    <div class="row" style="margin-left: 0px">
+                                        <div class="col-xs-1" v-for="mess in concepto.conceptMonth"
+                                             style="padding-left: 0px; padding-right: 1px">
+                                            <input type="text" class="form-control input-sm" v-model="mess.amountConcept"
+                                                   @change="moneyFormat(mess, concepto, conte)"  :disabled="isAutorized"
+                                                   style="font-size: 10px" onkeypress="return validateFloatKeyPress(this,event)">
+                                        </div>
+                                    </div>
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" v-if="contenido.length > 0 && role == 36">
+                        <div class="col-xs-12 text-center">
+                            <button class="btn btn-success" @click="autorizar">Autorizar</button>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="modal fade" id="copyBudgetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <form v-on:submit.prevent="onClickAcept">
+                                <div class="modal-header">
+                                    <button type="button" class="close" aria-label="Close" @click="closeCopyBudgetModal"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="copyBudgetModalLabel">Copiar presupuesto</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-xs-1">
+                                            <p>De</p>
+                                        </div>
+                                        <div class="col-xs-5">
+                                            <select v-model="selected.yearFromCopy" class="form-control" required>
+                                                <option v-for="year in years" :value="year">
+                                                    {{year}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-1">
+                                            <p>a</p>
+                                        </div>
+                                        <div class="col-xs-5">
+                                            <select v-model="selected.yearToCopy" class="form-control" required>
+                                                <option v-for="year in years" :value="year">
+                                                    {{year}}
+                                                </option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-                                <br>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" @click="closeCopyBudgetModal">Cancelar</button>
+                                    <button class="btn btn-success">Aceptar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="overwriteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" aria-label="Close" @click="closeOverwriteModal"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="overwriteModalLabel">Aviso</h4>
+                            </div>
+                            <div class="modal-body">
+                                {{errorMessage}}
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" @click="closeOverwriteModal">Cancelar</button>
+                                <button type="button" class="btn btn-success" @click="onClickOverwrite">Aceptar</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="row" v-if="contenido.length > 0">
-                    <div class="col-xs-12 text-center">
-                        <button class="btn btn-success" @click="autorizar">Autorizar</button>
-                    </div>
-                </div>
-                <br>
             </div>
         </div> <!-- #contenidos -->
     </jsp:body>

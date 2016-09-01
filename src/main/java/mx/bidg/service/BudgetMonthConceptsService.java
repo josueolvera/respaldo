@@ -6,8 +6,11 @@
 package mx.bidg.service;
 
 import java.util.List;
+
+import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.BudgetMonthConcepts;
 import mx.bidg.model.CBudgetConcepts;
+import mx.bidg.model.Users;
 
 /**
  *
@@ -15,9 +18,10 @@ import mx.bidg.model.CBudgetConcepts;
  */
 public interface BudgetMonthConceptsService {
 
-    List<BudgetMonthConcepts> saveList(String data) throws Exception;
+    List<BudgetMonthConcepts> saveList(String data, Users user) throws Exception;
     boolean delete(BudgetMonthConcepts budgetMonthConcepts);
     List<BudgetMonthConcepts> findByConcept(CBudgetConcepts budgetConcept);
     List<BudgetMonthConcepts> findByConcept(Integer idBudgetConcept);
     BudgetMonthConcepts saveBudgetMonthConcepts (BudgetMonthConcepts bmc);
+    List<BudgetMonthConcepts> findByBudgetMonthBranch(Integer idBudgetMonthBranch);
 }

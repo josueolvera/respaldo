@@ -27,7 +27,6 @@ import org.hibernate.annotations.Type;
 @Entity
 @DynamicUpdate
 @Table(name = "BUDGET_MONTH_BRANCH")
-
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class BudgetMonthBranch implements Serializable {
     
@@ -109,7 +108,7 @@ public class BudgetMonthBranch implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private List<Requests> requestsList;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "budgetMonthBranch")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "budgetMonthBranch", orphanRemoval = true)
     @JsonView(JsonViews.Embedded.class)
     private List<BudgetMonthConcepts> budgetMonthConceptsList;
 
@@ -284,7 +283,7 @@ public class BudgetMonthBranch implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.BudgetMonthBranch[ idBudgetMonthBranch=" + idBudgetMonthBranch + " ]";
+        return "mx.bidg.model.BudgetMonth[ idBudgetMonthBranch=" + idBudgetMonthBranch + " ]";
     }
     
 }

@@ -5,6 +5,7 @@
  */
 package mx.bidg.service.impl;
 
+import mx.bidg.model.*;
 import mx.bidg.service.CBudgetConceptsService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,13 +16,6 @@ import mx.bidg.dao.BudgetMonthBranchDao;
 import mx.bidg.dao.BudgetMonthConceptsDao;
 import mx.bidg.dao.BudgetsDao;
 import mx.bidg.exceptions.ValidationException;
-import mx.bidg.model.BudgetMonthBranch;
-import mx.bidg.model.BudgetMonthConcepts;
-import mx.bidg.model.Budgets;
-import mx.bidg.model.CBudgetConcepts;
-import mx.bidg.model.CCurrencies;
-import mx.bidg.model.CMonths;
-import mx.bidg.model.DwEnterprises;
 import mx.bidg.service.BudgetMonthConceptsService;
 import mx.bidg.service.DwEnterprisesService;
 import mx.bidg.utils.MoneyConverter;
@@ -52,7 +46,7 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
     private ObjectMapper mapper;
 
     @Override
-    public List<BudgetMonthConcepts> saveList(String data) throws Exception {
+    public List<BudgetMonthConcepts> saveList(String data, Users user) throws Exception {
 
         List<BudgetMonthConcepts> list = new ArrayList<>();
         CBudgetConcepts concept;
@@ -89,7 +83,7 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
                             throw new ValidationException("El presupuesto ya esta autorizado!", 
                                     "No puede modificarse un presupuesto ya autorizado");
                         
-                        if(budgetMonthBranch.getBudget().getIdBudget().equals(budget.getIdBudget()) && 
+                        if(budgetMonthBranch.getBudget().getIdBudget().equals(budget.getIdBudget()) &&
                                 budgetMonthBranch.getMonth().getIdMonth().equals(month.getIdMonth()) && 
                                 budgetMonthBranch.getYear() == year) {
                             
@@ -97,6 +91,7 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
                             BigDecimal amountActual = budgetMonthBranch.getAmount();
                             budgetMonthBranch.setAmount(amountActual.subtract(amountConceptActual).add(amountConcept));
                             budgetMonthConcepts.setAmount(amountConcept);
+                            budgetMonthBranch.setUsername(user.getUsername());
                         }
 
                     }
@@ -129,6 +124,7 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
                         budgetMonthBranch.setMonth(month);
                         budgetMonthBranch.setYear(year);
                         budgetMonthBranch.setAuthorized(false);
+                        budgetMonthBranch.setUsername(user.getUsername());
                         budgetMonthBranch = budgetMonthBranchDao.save(budgetMonthBranch);
 
                     } else {
@@ -139,6 +135,7 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
 
                         amount = budgetMonthBranch.getAmount();
                         budgetMonthBranch.setAmount(amount.add(amountConcept));
+                        budgetMonthBranch.setUsername(user.getUsername());
                         budgetMonthBranch = budgetMonthBranchDao.update(budgetMonthBranch);
 
                     }
@@ -180,4 +177,10 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
     public BudgetMonthConcepts saveBudgetMonthConcepts(BudgetMonthConcepts bmc) {
         return budgetMonthConceptsDao.save(bmc);
     }
+
+    @Override
+    public List<BudgetMonthConcepts> findByBudgetMonthBranch(Integer idBudgetMonthBranch) {
+        return budgetMonthConceptsDao.findByBudgetMonthBranch(idBudgetMonthBranch);
+    }
+
 }

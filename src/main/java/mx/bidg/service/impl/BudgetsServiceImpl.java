@@ -64,6 +64,11 @@ public class BudgetsServiceImpl implements BudgetsService {
     }
 
     @Override
+    public List<Budgets> getBudgets(Integer idCostCenter, Integer idBudgetCategory) {
+        return budgetsDao.getBudgets(idCostCenter, idBudgetCategory);
+    }
+
+    @Override
     public List<Budgets> findByDistributorAreaAndEnterprise(Integer idDistributor, Integer idArea, Integer idDwEnterprise) {
         return budgetsDao.findByDistributorAreaAndEnterprise(idDistributor, idArea, idDwEnterprise);
     }

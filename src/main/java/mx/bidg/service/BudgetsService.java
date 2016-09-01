@@ -27,6 +27,7 @@ public interface BudgetsService {
     ArrayList<Budgets> findByGroupArea(CGroups idGroup, CAreas idArea);
     List<Budgets> findByDistributorAndArea(Integer idDistributor, Integer idArea);
     List<Budgets> getBudgets(Integer idCostCenter, Integer idBudgetType, Integer idBudgetNature);
+    List<Budgets> getBudgets(Integer idCostCenter, Integer idBudgetCategory);
     List<Budgets> findByDistributorAreaAndEnterprise(Integer idDistributor, Integer idArea, Integer idDwEnterprise);
     List<Budgets> findByDistributor(Integer idDistributor);
 }

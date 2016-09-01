@@ -8,12 +8,22 @@ package mx.bidg.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import mx.bidg.config.JsonViews;
+import mx.bidg.dao.BudgetMonthBranchDao;
+import mx.bidg.dao.BudgetMonthConceptsDao;
+import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
+import mx.bidg.pojos.Budget;
+import mx.bidg.pojos.BudgetCategory;
 import mx.bidg.pojos.BudgetPojo;
+import mx.bidg.pojos.BudgetSubcategory;
+import mx.bidg.service.BudgetMonthBranchService;
+import mx.bidg.service.BudgetMonthConceptsService;
 import mx.bidg.service.BudgetsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +31,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -32,6 +45,12 @@ public class BudgetController {
     
     @Autowired
     BudgetsService budgetsService;
+
+    @Autowired
+    BudgetMonthBranchService budgetMonthBranchService;
+
+    @Autowired
+    BudgetMonthConceptsService budgetMonthConceptsService;
 
     @Autowired
     private ObjectMapper mapper;
@@ -146,4 +165,125 @@ public class BudgetController {
         return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(budgetPojos));
     }
 
+    @RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method = RequestMethod.GET)
+    public ResponseEntity<String> getBudgetByCategory(
+            @RequestParam("cost_center") Integer idCostCenter,
+            @RequestParam("year") Integer year,
+            @RequestParam(name = "category", required = false) Integer idBudgetCategory,
+            @RequestParam(name = "create_report", required = false, defaultValue = "false") Boolean createReport,
+            HttpServletResponse response
+    ) throws Exception {
+
+        List<Budgets> budgets = budgetsService.getBudgets(idCostCenter, idBudgetCategory);
+        List<Budget> budgetList = new ArrayList<>();
+
+        for (Budgets budget : budgets) {
+
+            Budget budgetPojo = new Budget();
+            BudgetCategory budgetCategory = new BudgetCategory();
+
+            budgetCategory.setIdBudgetCategory(budget.getAccountingAccount().getIdBudgetCategory());
+            budgetCategory.setName(budget.getAccountingAccount().getBudgetCategory().getBudgetCategory());
+
+            budgetPojo.setIdBudget(budget.getIdBudget());
+            budgetPojo.setIdBudgetCategory(budget.getAccountingAccount().getIdBudgetCategory());
+            budgetPojo.setBudgetNature(budget.getBudgetNature());
+            budgetPojo.setCostCenter(budget.getCostCenter());
+            budgetPojo.setBudgetType(budget.getBudgetType());
+            budgetPojo.setBudgetCategory(budgetCategory);
+
+            BudgetSubcategory budgetSubcategory = new BudgetSubcategory();
+            List<BudgetMonthBranch> budgetMonthBranchList = budgetMonthBranchService.findByBudgetAndYear(budget.getIdBudget(), year);
+
+            budgetSubcategory.setName(budget.getAccountingAccount().getBudgetSubcategory().getBudgetSubcategory());
+            budgetSubcategory.setIdBudgetSubcategory(budget.getAccountingAccount().getIdBudgetSubcategory());
+
+            for (BudgetMonthBranch budgetMonthBranch : budgetMonthBranchList) {
+                budgetMonthBranch.setBudgetMonthConceptsList(budgetMonthConceptsService.findByBudgetMonthBranch(budgetMonthBranch.getIdBudgetMonthBranch()));
+            }
+
+            budgetSubcategory.setBudgetMonthBranchList(budgetMonthBranchList);
+
+            if (!budgetList.contains(budgetPojo)) {
+                List<BudgetSubcategory> budgetSubcategories = new ArrayList<>();
+                budgetSubcategories.add(budgetSubcategory);
+                budgetCategory.setBudgetSubcategories(budgetSubcategories);
+                budgetList.add(budgetPojo);
+            } else {
+                Budget oldBudget = budgetList.get(budgetList.indexOf(budgetPojo));
+                List<BudgetSubcategory> oldBudgetSubcategories = oldBudget.getBudgetCategory().getBudgetSubcategories();
+                oldBudgetSubcategories.add(budgetSubcategory);
+                oldBudget.getBudgetCategory().setBudgetSubcategories(oldBudgetSubcategories);
+                budgetList.set(budgetList.indexOf(budgetPojo), oldBudget);
+            }
+
+        }
+
+        if (createReport) {
+//        response.setContentType("application/octet-stream");
+//        response.setHeader("Content-Disposition", "attachment; filename=\"" + reportFileName + "_" + dateTime.format(formatter) + ".xlsx"+ "\"");
+//        OutputStream outputStream = response.getOutputStream();
+//        dwEmployeesService.createReport(dwEmployees, outputStream);
+//        outputStream.flush();
+//        outputStream.close();
+        }
+
+        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(budgetList));
+    }
+
+    @RequestMapping(value = "/copy-budget", produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method = RequestMethod.POST)
+    public ResponseEntity<String> copyBudget(
+            @RequestParam("cost_center") Integer idCostCenter,
+            @RequestParam("year_from_copy") Integer yearFromCopy,
+            @RequestParam("year_to_copy") Integer yearToCopy,
+            @RequestParam(name = "overwrite", required = false, defaultValue = "false") Boolean overwrite,
+            @RequestParam("nature") Integer idBudgetNature,
+            HttpSession httpSession
+    ) throws Exception {
+        Users users = (Users) httpSession.getAttribute("user");
+        List<Budgets> budgets = budgetsService.getBudgets(idCostCenter, null, idBudgetNature);
+        List<BudgetMonthBranch> budgetMonthBranchYearToCopyList = budgetMonthBranchService.findByBudgetsAndYear(budgets, yearToCopy);
+
+        if (!budgetMonthBranchYearToCopyList.isEmpty() && !overwrite) {
+            throw new ValidationException(
+                    "Presupuesto asignado",
+                    "Ya hay presupuesto asignado para el año " + yearToCopy + ". ¿Desea sobreescribir los datos?"
+            );
+        } else {
+            LocalDateTime now = LocalDateTime.now();
+            List<BudgetMonthBranch> budgetMonthBranchYearFromCopyList = budgetMonthBranchService.findByBudgetsAndYear(budgets, yearFromCopy);
+
+            for (BudgetMonthBranch budgetMonthBranchToCopy : budgetMonthBranchYearToCopyList) {
+                budgetMonthBranchService.delete(budgetMonthBranchToCopy);
+            }
+
+            for (BudgetMonthBranch budgetMonthBranch : budgetMonthBranchYearFromCopyList) {
+                BudgetMonthBranch newBudgetMonthBranch = new BudgetMonthBranch();
+                newBudgetMonthBranch.setBudget(budgetMonthBranch.getBudget());
+                newBudgetMonthBranch.setAmount(budgetMonthBranch.getAmount());
+                newBudgetMonthBranch.setCreationDate(now);
+                newBudgetMonthBranch.setCurrency(budgetMonthBranch.getCurrency());
+                newBudgetMonthBranch.setExpendedAmount(budgetMonthBranch.getExpendedAmount());
+                newBudgetMonthBranch.setAmount(budgetMonthBranch.getAmount());
+                newBudgetMonthBranch.setUsername(users.getUsername());
+                newBudgetMonthBranch.setMonth(budgetMonthBranch.getMonth());
+                newBudgetMonthBranch.setYear(yearToCopy);
+                newBudgetMonthBranch.setIdAccessLevel(1);
+                newBudgetMonthBranch.setAuthorized(false);
+                budgetMonthBranchService.saveBudgetMonthBranch(newBudgetMonthBranch);
+                List<BudgetMonthConcepts> budgetMonthConceptList = budgetMonthConceptsService.findByBudgetMonthBranch(budgetMonthBranch.getIdBudgetMonthBranch());
+                for (BudgetMonthConcepts budgetMonthConcept : budgetMonthConceptList) {
+                    BudgetMonthConcepts newBudgetMonthConcept = new BudgetMonthConcepts();
+                    newBudgetMonthConcept.setBudgetMonthBranch(newBudgetMonthBranch);
+                    newBudgetMonthConcept.setAmount(budgetMonthConcept.getAmount());
+                    newBudgetMonthConcept.setCurrency(budgetMonthConcept.getCurrency());
+                    newBudgetMonthConcept.setIdAccessLevel(1);
+                    newBudgetMonthConcept.setBudgetConcept(budgetMonthConcept.getBudgetConcept());
+                    budgetMonthConceptsService.saveBudgetMonthConcepts(newBudgetMonthConcept);
+                }
+            }
+        }
+
+        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString("OK"));
+    }
 }

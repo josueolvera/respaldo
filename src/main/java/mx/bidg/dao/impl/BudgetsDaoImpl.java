@@ -86,11 +86,36 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
 
     @Override
     public List<Budgets> getBudgets(Integer idCostCenter, Integer idBudgetType, Integer idBudgetNature) {
-        return createEntityCriteria()
-                .add(Restrictions.eq("idCostCenter", idCostCenter))
-                .add(Restrictions.eq("idBudgetType", idBudgetType))
-                .add(Restrictions.eq("idBudgetNature", idBudgetNature))
-                .list();
+        Criteria criteria = createEntityCriteria();
+
+        if (idCostCenter != null) {
+            criteria.add(Restrictions.eq("idCostCenter", idCostCenter));
+        }
+
+        if (idBudgetType != null) {
+            criteria.add(Restrictions.eq("idBudgetType", idBudgetType));
+        }
+
+        if (idBudgetNature != null) {
+            criteria.add(Restrictions.eq("idBudgetNature", idBudgetNature));
+        }
+
+        return criteria.list();
+    }
+
+    @Override
+    public List<Budgets> getBudgets(Integer idCostCenter, Integer idBudgetCategory) {
+
+        Criteria criteria = createEntityCriteria();
+
+        if (idBudgetCategory != null) {
+            criteria.createCriteria("accountingAccount")
+                    .add(Restrictions.eq("idBudgetCategory", idBudgetCategory));
+        }
+
+        criteria.add(Restrictions.eq("idCostCenter", idCostCenter));
+
+        return criteria.list();
     }
 
     @Override

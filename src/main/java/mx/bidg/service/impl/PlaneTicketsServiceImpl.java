@@ -89,7 +89,7 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
         CProductTypes productType = CProductTypes.NACIONALES;
 
         if (budget != null) {
-            BudgetMonthBranch budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget,cMonth,dwEnterprise,year);
+            BudgetMonth budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget,cMonth,dwEnterprise,year);
 
             if (budgetMonthBranch != null) {
 

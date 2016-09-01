@@ -95,7 +95,7 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
 
                 budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget, new CMonths(idMonth),
                         dwEnterprise, year);
-//                System.out.println("Valor de BudgetMonthBranch findByCombination: " + budgetMonthBranch.toString());
+//                System.out.println("Valor de BudgetMonth findByCombination: " + budgetMonthBranch.toString());
 
                 if (budgetMonthBranch == null) {
 
@@ -175,6 +175,16 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
     }
 
     @Override
+    public List<BudgetMonthBranch> findByBudgetsAndYear(List<Budgets> budgets, Integer year) {
+        return budgetMonthBranchDao.findByBudgetsAndYear(budgets, year);
+    }
+
+    @Override
+    public List<BudgetMonthBranch> findByBudgetAndYear(Integer idBudget, Integer year) {
+        return budgetMonthBranchDao.findByBudgetAndYear(idBudget, year);
+    }
+
+    @Override
     public String authorizeBudget(String data) throws Exception {
         
         JsonNode json = mapper.readTree(data);
@@ -202,6 +212,11 @@ public class BudgetMonthBranchServiceImpl implements BudgetMonthBranchService {
     @Override
     public BudgetMonthBranch saveBudgetMonthBranch(BudgetMonthBranch bmb){
         return budgetMonthBranchDao.save(bmb);
+    }
+
+    @Override
+    public Boolean delete(BudgetMonthBranch budgetMonthBranch) {
+        return budgetMonthBranchDao.delete(budgetMonthBranch);
     }
 
 }

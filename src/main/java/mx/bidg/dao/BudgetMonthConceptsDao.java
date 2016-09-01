@@ -6,6 +6,8 @@
 package mx.bidg.dao;
 
 import java.util.List;
+
+import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.BudgetMonthConcepts;
 import mx.bidg.model.CBudgetConcepts;
 
@@ -17,5 +19,6 @@ public interface BudgetMonthConceptsDao extends InterfaceDao<BudgetMonthConcepts
     
     List<BudgetMonthConcepts> findByConcept(CBudgetConcepts budgetConcept);
     List<BudgetMonthConcepts> findByConcept(Integer idBudgetConcept);
-    
+    List<BudgetMonthConcepts> findByBudgetMonthBranch(Integer idBudgetMonthBranch);
+
 }

@@ -91,7 +91,7 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
                 
         
         if (budget != null) {
-            BudgetMonthBranch budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget,cMonth,dwEnterprise,year);
+            BudgetMonth budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget,cMonth,dwEnterprise,year);
 
             if (budgetMonthBranch != null) {
                 Float total = 0f;

@@ -673,10 +673,6 @@
                         })
                     },
                     onSaveAssignmentsModal : function (article) {
-//                        if (this.selectedOptions.area == null) {
-//                            showAlert('Distribudor, sucursal y area son requeridos', {type:3});
-//                            return;
-//                        }
 
                         var form = document.getElementById('attachments-form');
                         var formData = new FormData(form);

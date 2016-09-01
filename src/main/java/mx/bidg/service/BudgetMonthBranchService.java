@@ -7,7 +7,7 @@ package mx.bidg.service;
 
 import java.util.List;
 import mx.bidg.model.BudgetMonthBranch;
-import mx.bidg.model.CRequestTypes;
+import mx.bidg.model.Budgets;
 
 /**
  *
@@ -15,18 +15,24 @@ import mx.bidg.model.CRequestTypes;
  */
 public interface BudgetMonthBranchService {
     
-    public List<BudgetMonthBranch> saveList(String data) throws Exception;
+    List<BudgetMonthBranch> saveList(String data) throws Exception;
     
-    public BudgetMonthBranch findByCombination(Integer budget, Integer month, Integer dwEnterprise, Integer year);
+    BudgetMonthBranch findByCombination(Integer budget, Integer month, Integer dwEnterprise, Integer year);
     
-    public BudgetMonthBranch findFromRequest(String data) throws Exception;
+    BudgetMonthBranch findFromRequest(String data) throws Exception;
     
-    public BudgetMonthBranch update(BudgetMonthBranch budgetMonthBranch);
+    BudgetMonthBranch update(BudgetMonthBranch budgetMonthBranch);
+
+    List<BudgetMonthBranch> findByBudgetsAndYear(List<Budgets> budgets, Integer year);
+
+    List<BudgetMonthBranch> findByBudgetAndYear(Integer idBudget, Integer year);
     
-    public String authorizeBudget(String data) throws Exception;
+    String authorizeBudget(String data) throws Exception;
     
-    public List<BudgetMonthBranch> findByDWEnterpriseAndYear(Integer dwEnterprise, Integer year) throws Exception;
+    List<BudgetMonthBranch> findByDWEnterpriseAndYear(Integer dwEnterprise, Integer year) throws Exception;
     
-    public BudgetMonthBranch saveBudgetMonthBranch(BudgetMonthBranch bmb);
-    
+    BudgetMonthBranch saveBudgetMonthBranch(BudgetMonthBranch bmb);
+
+    Boolean delete(BudgetMonthBranch budgetMonthBranch);
+
 }

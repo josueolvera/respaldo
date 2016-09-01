@@ -51,7 +51,8 @@ public class BudgetMonthBranchDaoImpl extends AbstractDao<Integer, BudgetMonthBr
 
     @Override
     public boolean delete(BudgetMonthBranch entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        remove(entity);
+        return true;
     }
 
     @Override
@@ -89,6 +90,14 @@ public class BudgetMonthBranchDaoImpl extends AbstractDao<Integer, BudgetMonthBr
                 .add(disjunction);
 
         return criteria.list();
+    }
+
+    @Override
+    public List<BudgetMonthBranch> findByBudgetAndYear(Integer idBudget, Integer year) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idBudget", idBudget))
+                .add(Restrictions.eq("year", year))
+                .list();
     }
 
     @Override

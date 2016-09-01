@@ -32,7 +32,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "BUDGET_MONTH_CONCEPTS")
-
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class BudgetMonthConcepts implements Serializable {
     
@@ -73,7 +72,7 @@ public class BudgetMonthConcepts implements Serializable {
     private BudgetMonthBranch budgetMonthBranch;
     
     @JoinColumn(name = "ID_BUDGET_CONCEPT", referencedColumnName = "ID_BUDGET_CONCEPT")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
     private CBudgetConcepts budgetConcept;
     
