@@ -5,6 +5,7 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -16,4 +17,9 @@ public interface SapSaleService {
     List<SapSale> saveFromExcel(MultipartFile file) throws IOException, InvalidFormatException;
     List<SapSale> updateFromExcel(MultipartFile file) throws IOException, InvalidFormatException;
     Boolean existsSales(MultipartFile file) throws IOException, InvalidFormatException;
+    List findByAgreementGroup(Integer idAg, LocalDateTime fromDate, LocalDateTime toDate);
+    List findByBranchGroup(Integer idAg, LocalDateTime fromDate, LocalDateTime toDate);
+    List findByZonaGroup(Integer idAg, LocalDateTime fromDate, LocalDateTime toDate);
+    List findByRegionGroup(Integer idAg, LocalDateTime fromDate, LocalDateTime toDate);
+    List findByDistributorGroup(Integer idAg, LocalDateTime fromDate, LocalDateTime toDate);
 }

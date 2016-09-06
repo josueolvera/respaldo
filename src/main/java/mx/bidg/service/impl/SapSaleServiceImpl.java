@@ -605,4 +605,34 @@ public class SapSaleServiceImpl implements SapSaleService {
         }
         return existsSale;
     }
+
+    @Override
+    public List findByAgreementGroup(Integer idAg, LocalDateTime fromDate, LocalDateTime toDate) {
+        List<GroupsAgreements> groupsAgreementsList = groupsAgreementsDao.findGroupsAgreementsSelectedByAg(idAg);
+        return sapSaleDao.findByAgreementGroup(groupsAgreementsList,fromDate,toDate);
+    }
+
+    @Override
+    public List findByBranchGroup(Integer idAg, LocalDateTime fromDate, LocalDateTime toDate) {
+        List<GroupsAgreements> groupsAgreementsList = groupsAgreementsDao.findGroupsAgreementsSelectedByAg(idAg);
+        return sapSaleDao.findByBranchGroup(groupsAgreementsList,fromDate,toDate);
+    }
+
+    @Override
+    public List findByZonaGroup(Integer idAg, LocalDateTime fromDate, LocalDateTime toDate) {
+        List<GroupsAgreements> groupsAgreementsList = groupsAgreementsDao.findGroupsAgreementsSelectedByAg(idAg);
+        return sapSaleDao.findByZonaGroup(groupsAgreementsList,fromDate,toDate);
+    }
+
+    @Override
+    public List findByRegionGroup(Integer idAg, LocalDateTime fromDate, LocalDateTime toDate) {
+        List<GroupsAgreements> groupsAgreementsList = groupsAgreementsDao.findGroupsAgreementsSelectedByAg(idAg);
+        return sapSaleDao.findByRegionGroup(groupsAgreementsList,fromDate,toDate);
+    }
+
+    @Override
+    public List findByDistributorGroup(Integer idAg, LocalDateTime fromDate, LocalDateTime toDate) {
+        List<GroupsAgreements> groupsAgreementsList = groupsAgreementsDao.findGroupsAgreementsSelectedByAg(idAg);
+        return sapSaleDao.findByDistributorGroup(groupsAgreementsList,fromDate,toDate);
+    }
 }
