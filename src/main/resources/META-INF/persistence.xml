@@ -29,6 +29,18 @@
     <class>mx.bidg.model.DitributorsEmployeeDocuments</class>
     <class>mx.bidg.model.GroupsAgreements</class>
     <class>mx.bidg.model.CAgreementsGroups</class>
+    <class>mx.bidg.model.CalculationRoles</class>
+    <class>mx.bidg.model.GroupAgreementsGoalPercentage</class>
+    <class>mx.bidg.model.RolesGroupAgreements</class>
+    <class>mx.bidg.model.COperations</class>
+    <class>mx.bidg.model.FixedOperations</class>
+    <class>mx.bidg.model.GroupsAgreementsCalculation</class>
+    <class>mx.bidg.model.CDivsCalculation</class>
+    <class>mx.bidg.model.RulesCalculation</class>
+    <class>mx.bidg.model.GroupsAgreementsGoal</class>
+    <class>mx.bidg.model.FixedOperationRole</class>
+    <class>mx.bidg.model.AgreementsGroupCondition</class>
+    <class>mx.bidg.model.CommissionAmountGroup</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties/>
   </persistence-unit>
