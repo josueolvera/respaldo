@@ -68,4 +68,11 @@ public class GroupsAgreementsDaoImpl extends AbstractDao<Integer, GroupsAgreemen
         return (List<GroupsAgreements>) createEntityCriteria().add(Restrictions.eq("idAg", idAg))
                 .addOrder(Order.asc("idAgreement")).list();
     }
+
+    @Override
+    public List<GroupsAgreements> findGroupsAgreementsSelectedByAg(Integer idAg) {
+        return (List<GroupsAgreements>) createEntityCriteria()
+                .add(Restrictions.eq("idAg", idAg)).add(Restrictions.eq("hasAgreement",true))
+                .addOrder(Order.asc("idAgreement")).list();
+    }
 }
