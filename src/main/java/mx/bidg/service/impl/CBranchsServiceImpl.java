@@ -19,6 +19,7 @@ import mx.bidg.dao.DwEnterprisesDao;
 import mx.bidg.dao.EmployeesDao;
 import mx.bidg.model.*;
 import mx.bidg.service.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,6 +89,9 @@ public class CBranchsServiceImpl implements CBranchsService {
         cBranchs.setUploadedDate(LocalDateTime.now());
         cBranchs.setBranchName(cBranchs.getBranchName().toUpperCase());
         cBranchs.setBranchShort(cBranchs.getBranchShort().toUpperCase());
+        String clearBranchName = StringUtils.stripAccents(cBranchs.getBranchName());
+        String branchNameClean= clearBranchName.replaceAll("\\W", "").toUpperCase();
+        cBranchs.setBranchNameClean(branchNameClean);
         cBranchs.setStatus(true);
         cBranchs.setSaemFlag(1);
         cBranchs = cBranchsDao.save(cBranchs);
