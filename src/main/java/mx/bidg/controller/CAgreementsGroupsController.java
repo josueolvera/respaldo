@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.io.IOError;
 import java.io.IOException;
 import java.util.List;
 
@@ -81,6 +82,12 @@ public class CAgreementsGroupsController {
     public ResponseEntity<String> lowGroup(@PathVariable Integer idAg) throws IOException{
         CAgreementsGroups agreementsGroups = cAgreementsGroupsService.lowGroup(idAg);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(agreementsGroups),HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/actives", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> groupsActives() throws IOException{
+        List<CAgreementsGroups> groupsList = cAgreementsGroupsService.findGroupsActives();
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(groupsList), HttpStatus.OK);
     }
     
 }
