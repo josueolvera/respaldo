@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Type;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
@@ -51,6 +52,10 @@ public class RolesGroupAgreements implements Serializable {
     @Column(name = "ID_AG", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idAg;
+
+    @Column(name = "HAS_GROUP", columnDefinition = "TINYINT")
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    private boolean hasGroup;
 
     @JoinColumn(name = "ID_CALCULATION_ROLE", referencedColumnName = "ID_CALCULATION_ROLE")
     @ManyToOne
@@ -103,6 +108,14 @@ public class RolesGroupAgreements implements Serializable {
 
     public void setaG(CAgreementsGroups aG) {
         this.aG = aG;
+    }
+
+    public boolean isHasGroup() {
+        return hasGroup;
+    }
+
+    public void setHasGroup(boolean hasGroup) {
+        this.hasGroup = hasGroup;
     }
 
     @Override
