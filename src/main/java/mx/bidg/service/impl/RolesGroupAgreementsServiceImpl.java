@@ -1,7 +1,11 @@
 package mx.bidg.service.impl;
 
+import mx.bidg.dao.CAgreementsGroupsDao;
 import mx.bidg.dao.RolesGroupAgreementsDao;
+import mx.bidg.model.CAgreementsGroups;
+import mx.bidg.model.GroupsAgreements;
 import mx.bidg.model.RolesGroupAgreements;
+import mx.bidg.service.CAgreementsGroupsService;
 import mx.bidg.service.RolesGroupAgreementsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +22,9 @@ public class RolesGroupAgreementsServiceImpl implements RolesGroupAgreementsServ
 
     @Autowired
     RolesGroupAgreementsDao rolesGroupAgreementsDao;
+
+    @Autowired
+    CAgreementsGroupsDao cAgreementsGroupsDao;
 
     @Override
     public RolesGroupAgreements save(RolesGroupAgreements rolesGroupAgreements) {
@@ -47,6 +54,7 @@ public class RolesGroupAgreementsServiceImpl implements RolesGroupAgreementsServ
 
     @Override
     public List<RolesGroupAgreements> findByRole(Integer idRole) {
-        return rolesGroupAgreementsDao.findByRole(idRole);
+        List<CAgreementsGroups> agreementsGroupsList = cAgreementsGroupsDao.findGruoupActives();
+        return rolesGroupAgreementsDao.findByRole(idRole, agreementsGroupsList);
     }
 }
