@@ -2,7 +2,11 @@ package mx.bidg.dao.impl;
 
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.RolesGroupAgreementsDao;
+import mx.bidg.model.CAgreementsGroups;
 import mx.bidg.model.RolesGroupAgreements;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -43,7 +47,24 @@ public class RolesGroupAgreementsDaoImpl extends AbstractDao<Integer, RolesGroup
     }
 
     @Override
-    public List<RolesGroupAgreements> findByRole(Integer idRole) {
-        return createEntityCriteria().add(Restrictions.eq("idCalculationRole",idRole)).list();
+    public List<RolesGroupAgreements> findByRole(Integer idRole, List<CAgreementsGroups> cAgreementsGroupsList) {
+        Criteria criteria = createEntityCriteria();
+        Disjunction groupDisjunction =  Restrictions.disjunction();
+
+        for (CAgreementsGroups agreementsGroups : cAgreementsGroupsList){
+            groupDisjunction.add(Restrictions.eq("idAg", agreementsGroups.getIdAg()));
+        }
+
+        criteria.add(groupDisjunction);
+
+        return criteria.add(Restrictions.eq("idCalculationRole",idRole))
+                .add(Restrictions.eq("hasGroup",true))
+                .addOrder(Order.asc("idAg"))
+                .list();
+    }
+
+    @Override
+    public List<RolesGroupAgreements> findByGroup(Integer idAg) {
+        return createEntityCriteria().add(Restrictions.eq("idAg", idAg)).list();
     }
 }
