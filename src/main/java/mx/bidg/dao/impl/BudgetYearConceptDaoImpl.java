@@ -8,8 +8,8 @@ package mx.bidg.dao.impl;
 import java.util.HashMap;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
-import mx.bidg.dao.BudgetMonthBranchDao;
-import mx.bidg.model.BudgetMonthBranch;
+import mx.bidg.dao.BudgetYearConceptDao;
+import mx.bidg.model.BudgetYearConcept;
 import mx.bidg.model.Budgets;
 import mx.bidg.model.CMonths;
 import mx.bidg.model.DwEnterprises;
@@ -25,38 +25,38 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @SuppressWarnings("unchecked")
-public class BudgetMonthBranchDaoImpl extends AbstractDao<Integer, BudgetMonthBranch> implements BudgetMonthBranchDao{
+public class BudgetYearConceptDaoImpl extends AbstractDao<Integer, BudgetYearConcept> implements BudgetYearConceptDao {
 
     @Override
-    public BudgetMonthBranch save(BudgetMonthBranch entity) {
+    public BudgetYearConcept save(BudgetYearConcept entity) {
         persist(entity);
         return entity;
     }
 
     @Override
-    public BudgetMonthBranch findById(int id) {
+    public BudgetYearConcept findById(int id) {
         return getByKey(id);
     }
 
     @Override
-    public List<BudgetMonthBranch> findAll() {
+    public List<BudgetYearConcept> findAll() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public BudgetMonthBranch update(BudgetMonthBranch entity) {
+    public BudgetYearConcept update(BudgetYearConcept entity) {
         modify(entity);
         return entity;
     }
 
     @Override
-    public boolean delete(BudgetMonthBranch entity) {
+    public boolean delete(BudgetYearConcept entity) {
         remove(entity);
         return true;
     }
 
     @Override
-    public BudgetMonthBranch findByCombination(Budgets budget, CMonths month, DwEnterprises dwEnterprise, Integer year) {
+    public BudgetYearConcept findByCombination(Budgets budget, CMonths month, DwEnterprises dwEnterprise, Integer year) {
         
         HashMap<String,Object> map = new HashMap<>();
         map.put("budget", budget);
@@ -64,13 +64,13 @@ public class BudgetMonthBranchDaoImpl extends AbstractDao<Integer, BudgetMonthBr
         map.put("dwEnterprise", dwEnterprise);
         map.put("year", year);
         
-        BudgetMonthBranch budgetMonthBranch = (BudgetMonthBranch) createEntityCriteria().add(Restrictions.allEq(map)).uniqueResult();
-        return budgetMonthBranch;
+        BudgetYearConcept budgetYearConcept = (BudgetYearConcept) createEntityCriteria().add(Restrictions.allEq(map)).uniqueResult();
+        return budgetYearConcept;
     }
 
     @Override
-    public BudgetMonthBranch findByCombination(Budgets budget, CMonths month, Integer year) {
-        return (BudgetMonthBranch) createEntityCriteria()
+    public BudgetYearConcept findByCombination(Budgets budget, CMonths month, Integer year) {
+        return (BudgetYearConcept) createEntityCriteria()
                 .add(Restrictions.eq("budget",budget))
                 .add(Restrictions.eq("month",month))
                 .add(Restrictions.eq("year",year))
@@ -78,7 +78,7 @@ public class BudgetMonthBranchDaoImpl extends AbstractDao<Integer, BudgetMonthBr
     }
 
     @Override
-    public List<BudgetMonthBranch> findByBudgetsAndYear(List<Budgets> budgets, Integer year) {
+    public List<BudgetYearConcept> findByBudgetsAndYear(List<Budgets> budgets, Integer year) {
         Disjunction disjunction = Restrictions.disjunction();
         Criteria criteria = createEntityCriteria();
 
@@ -93,22 +93,39 @@ public class BudgetMonthBranchDaoImpl extends AbstractDao<Integer, BudgetMonthBr
     }
 
     @Override
-    public List<BudgetMonthBranch> findByBudgetAndYear(Integer idBudget, Integer year) {
-        return createEntityCriteria()
-                .add(Restrictions.eq("idBudget", idBudget))
-                .add(Restrictions.eq("year", year))
-                .list();
+    public List<BudgetYearConcept> findByBudgetAndYear(Integer idBudget, Integer year) {
+
+        Criteria criteria = createEntityCriteria();
+
+        if (idBudget != null) {
+            criteria.add(Restrictions.eq("idBudget", idBudget));
+        }
+
+        if (year != null) {
+            criteria.add(Restrictions.eq("year", year));
+        }
+
+        return criteria.list();
     }
 
     @Override
-    public List<BudgetMonthBranch> findByBudget(Budgets budget) {
+    public BudgetYearConcept findByBudgetMonthAndYear(Integer idBudget, Integer idMonth, Integer year) {
+        return (BudgetYearConcept) createEntityCriteria()
+                .add(Restrictions.eq("idBudget", idBudget))
+                .add(Restrictions.eq("idMonth", idMonth))
+                .add(Restrictions.eq("year", year))
+                .uniqueResult();
+    }
+
+    @Override
+    public List<BudgetYearConcept> findByBudget(Budgets budget) {
         Criteria criteria = createEntityCriteria().add(Restrictions.eq("budget", budget));
-        return (List<BudgetMonthBranch>) criteria.list();
+        return (List<BudgetYearConcept>) criteria.list();
     }
 
     @Override
     public boolean authorizeBudget(int idDistributor, int idArea, int year) {
-        globalTracer("UPDATE", new BudgetMonthBranch());
+        globalTracer("UPDATE", new BudgetYearConcept());
         String query = "update BUDGET_MONTH_BRANCH bmb "
                 + "inner join BUDGETS b on bmb.ID_BUDGET = b.ID_BUDGET set IS_AUTHORIZED = 1 "
                 + "where bmb.YEAR = :year and b.ID_DISTRIBUTOR = :idDistributor and b.ID_AREA = :idArea";
@@ -122,12 +139,12 @@ public class BudgetMonthBranchDaoImpl extends AbstractDao<Integer, BudgetMonthBr
     }
 
     @Override
-    public List<BudgetMonthBranch> findByDWEnterpriseAndYear(int dwEnterprise, int year) {
+    public List<BudgetYearConcept> findByDWEnterpriseAndYear(int dwEnterprise, int year) {
         Criteria criteria = createEntityCriteria()
                 .add(Restrictions.eq("dwEnterprise", new DwEnterprises(dwEnterprise)))
                 .add(Restrictions.eq("year", year))
                 .setFetchMode("budgetMonthConceptsList", FetchMode.JOIN);
-        return (List<BudgetMonthBranch>) criteria.list();
+        return (List<BudgetYearConcept>) criteria.list();
     }
     
 }
