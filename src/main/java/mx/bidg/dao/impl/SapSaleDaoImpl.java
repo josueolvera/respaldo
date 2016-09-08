@@ -2,11 +2,16 @@ package mx.bidg.dao.impl;
 
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.SapSaleDao;
+import mx.bidg.model.GroupsAgreements;
 import mx.bidg.model.SapSale;
+import mx.bidg.pojos.PojoSiscom;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -49,6 +54,117 @@ public class SapSaleDaoImpl extends AbstractDao<Integer, SapSale> implements Sap
                 .add(Restrictions.eq("idSale", idSale))
                 .add(Restrictions.eq("status", 0))
                 .uniqueResult();
+    }
+
+    @Override
+    public List findByAgreementGroup(List<GroupsAgreements> groupsAgreementsList, LocalDateTime fromDate, LocalDateTime toDate) {
+        Date from = Date.from(fromDate.atZone(ZoneId.systemDefault()).toInstant());
+        Date to = Date.from(toDate.atZone(ZoneId.systemDefault()).toInstant());
+
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjuntionAgreement = Restrictions.disjunction();
+        ProjectionList projList = Projections.projectionList();
+
+        projList.add(Projections.distinct(Projections.groupProperty("claveSap")));
+        projList.add(Projections.count("idSale"));
+        projList.add(Projections.sum("comissionableAmount"));
+        
+        for (GroupsAgreements groupsAgreements : groupsAgreementsList){
+            disjuntionAgreement.add(Restrictions.eq("idAgreement", groupsAgreements.getIdAgreement()));
+        }
+        criteria.setProjection(projList);
+        criteria.add(Restrictions.disjunction(disjuntionAgreement));
+        criteria.add(Restrictions.between("purchaseDate",from,to));
+
+        return criteria.list();
+    }
+
+    @Override
+    public List findByBranchGroup(List<GroupsAgreements> groupsAgreementsList, LocalDateTime fromDate, LocalDateTime toDate) {
+        Date from = Date.from(fromDate.atZone(ZoneId.systemDefault()).toInstant());
+        Date to = Date.from(toDate.atZone(ZoneId.systemDefault()).toInstant());
+
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjuntionAgreement = Restrictions.disjunction();
+        ProjectionList projList = Projections.projectionList();
+
+        projList.add(Projections.distinct(Projections.groupProperty("idBranch")));
+        projList.add(Projections.sum("comissionableAmount"));
+
+        for (GroupsAgreements groupsAgreements : groupsAgreementsList){
+            disjuntionAgreement.add(Restrictions.eq("idAgreement", groupsAgreements.getIdAgreement()));
+        }
+        criteria.setProjection(projList);
+        criteria.add(Restrictions.disjunction(disjuntionAgreement));
+        criteria.add(Restrictions.between("purchaseDate",from,to));
+
+        return criteria.list();
+    }
+
+    @Override
+    public List findByZonaGroup(List<GroupsAgreements> groupsAgreementsList, LocalDateTime fromDate, LocalDateTime toDate) {
+        Date from = Date.from(fromDate.atZone(ZoneId.systemDefault()).toInstant());
+        Date to = Date.from(toDate.atZone(ZoneId.systemDefault()).toInstant());
+
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjuntionAgreement = Restrictions.disjunction();
+        ProjectionList projList = Projections.projectionList();
+
+        projList.add(Projections.distinct(Projections.groupProperty("idZonas")));
+        projList.add(Projections.sum("comissionableAmount"));
+
+        for (GroupsAgreements groupsAgreements : groupsAgreementsList){
+            disjuntionAgreement.add(Restrictions.eq("idAgreement", groupsAgreements.getIdAgreement()));
+        }
+        criteria.setProjection(projList);
+        criteria.add(Restrictions.disjunction(disjuntionAgreement));
+        criteria.add(Restrictions.between("purchaseDate",from,to));
+
+        return criteria.list();
+    }
+
+    @Override
+    public List findByRegionGroup(List<GroupsAgreements> groupsAgreementsList, LocalDateTime fromDate, LocalDateTime toDate) {
+        Date from = Date.from(fromDate.atZone(ZoneId.systemDefault()).toInstant());
+        Date to = Date.from(toDate.atZone(ZoneId.systemDefault()).toInstant());
+
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjuntionAgreement = Restrictions.disjunction();
+        ProjectionList projList = Projections.projectionList();
+
+        projList.add(Projections.distinct(Projections.groupProperty("idRegion")));
+        projList.add(Projections.sum("comissionableAmount"));
+
+        for (GroupsAgreements groupsAgreements : groupsAgreementsList){
+            disjuntionAgreement.add(Restrictions.eq("idAgreement", groupsAgreements.getIdAgreement()));
+        }
+        criteria.setProjection(projList);
+        criteria.add(Restrictions.disjunction(disjuntionAgreement));
+        criteria.add(Restrictions.between("purchaseDate",from,to));
+
+        return criteria.list();
+    }
+
+    @Override
+    public List findByDistributorGroup(List<GroupsAgreements> groupsAgreementsList, LocalDateTime fromDate, LocalDateTime toDate) {
+        Date from = Date.from(fromDate.atZone(ZoneId.systemDefault()).toInstant());
+        Date to = Date.from(toDate.atZone(ZoneId.systemDefault()).toInstant());
+
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjuntionAgreement = Restrictions.disjunction();
+        ProjectionList projList = Projections.projectionList();
+
+        projList.add(Projections.distinct(Projections.groupProperty("idDistributor")));
+        projList.add(Projections.sum("comissionableAmount"));
+
+        for (GroupsAgreements groupsAgreements : groupsAgreementsList){
+            disjuntionAgreement.add(Restrictions.eq("idAgreement", groupsAgreements.getIdAgreement()));
+        }
+        criteria.setProjection(projList);
+        criteria.add(Restrictions.disjunction(disjuntionAgreement));
+        criteria.add(Restrictions.between("purchaseDate",from,to));
+
+        return criteria.list();
     }
 
     @Override

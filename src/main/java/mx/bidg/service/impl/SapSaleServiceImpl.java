@@ -116,6 +116,7 @@ public class SapSaleServiceImpl implements SapSaleService {
                     if (dwEnterprises != null) {
                         sapSale.setDistributor(dwEnterprises.getDistributor());
                         sapSale.setRegion(dwEnterprises.getRegion());
+                        sapSale.setZona(dwEnterprises.getZona());
                         sapSale.setDwEnterprise(dwEnterprises);
                         sapSale.setBranch(branch);
 
@@ -138,12 +139,16 @@ public class SapSaleServiceImpl implements SapSaleService {
 
                                 newAgreement = cAgreementsDao.save(newAgreement);
 
-                                GroupsAgreements groupAgreement = new GroupsAgreements();
+                                List<CAgreementsGroups> agreementsGroups = cAgreementsGroupsDao.findGruoupActives();
 
-                                groupAgreement.setAgreement(newAgreement);
-                                groupAgreement.setAgreementGroup(cAgreementsGroupsDao.findById(6));
-
-                                groupsAgreementsDao.save(groupAgreement);
+                                for (CAgreementsGroups agreementGroup : agreementsGroups){
+                                    GroupsAgreements groupsAgreements = new GroupsAgreements();
+                                    groupsAgreements.setAgreement(newAgreement);
+                                    groupsAgreements.setAgreementGroup(agreementGroup);
+                                    groupsAgreements.setIdAccessLevel(1);
+                                    groupsAgreements.setHasAgreement(false);
+                                    groupsAgreementsDao.save(groupsAgreements);
+                                }
 
                                 sapSale.setAgreement(newAgreement);
                             }
@@ -313,6 +318,7 @@ public class SapSaleServiceImpl implements SapSaleService {
                             if (dwEnterprises != null) {
                                 sapSale.setDistributor(dwEnterprises.getDistributor());
                                 sapSale.setRegion(dwEnterprises.getRegion());
+                                sapSale.setZona(dwEnterprises.getZona());
                                 sapSale.setDwEnterprise(dwEnterprises);
                                 sapSale.setBranch(branch);
 
@@ -335,12 +341,16 @@ public class SapSaleServiceImpl implements SapSaleService {
 
                                         newAgreement = cAgreementsDao.save(newAgreement);
 
-                                        GroupsAgreements groupAgreement = new GroupsAgreements();
+                                        List<CAgreementsGroups> agreementsGroups = cAgreementsGroupsDao.findGruoupActives();
 
-                                        groupAgreement.setAgreement(newAgreement);
-                                        groupAgreement.setAgreementGroup(cAgreementsGroupsDao.findById(6));
-
-                                        groupsAgreementsDao.save(groupAgreement);
+                                        for (CAgreementsGroups agreementGroup : agreementsGroups){
+                                            GroupsAgreements groupsAgreements = new GroupsAgreements();
+                                            groupsAgreements.setAgreement(newAgreement);
+                                            groupsAgreements.setAgreementGroup(agreementGroup);
+                                            groupsAgreements.setIdAccessLevel(1);
+                                            groupsAgreements.setHasAgreement(false);
+                                            groupsAgreementsDao.save(groupsAgreements);
+                                        }
 
                                         sapSale.setAgreement(newAgreement);
                                     }
@@ -444,6 +454,7 @@ public class SapSaleServiceImpl implements SapSaleService {
 
                             if (dwEnterprises != null) {
                                 sapSale.setDistributor(dwEnterprises.getDistributor());
+                                sapSale.setZona(dwEnterprises.getZona());
                                 sapSale.setRegion(dwEnterprises.getRegion());
                                 sapSale.setDwEnterprise(dwEnterprises);
                                 sapSale.setBranch(branch);
@@ -467,12 +478,16 @@ public class SapSaleServiceImpl implements SapSaleService {
 
                                         newAgreement = cAgreementsDao.save(newAgreement);
 
-                                        GroupsAgreements groupAgreement = new GroupsAgreements();
+                                        List<CAgreementsGroups> agreementsGroups = cAgreementsGroupsDao.findGruoupActives();
 
-                                        groupAgreement.setAgreement(newAgreement);
-                                        groupAgreement.setAgreementGroup(cAgreementsGroupsDao.findById(6));
-
-                                        groupsAgreementsDao.save(groupAgreement);
+                                        for (CAgreementsGroups agreementGroup : agreementsGroups){
+                                            GroupsAgreements groupsAgreements = new GroupsAgreements();
+                                            groupsAgreements.setAgreement(newAgreement);
+                                            groupsAgreements.setAgreementGroup(agreementGroup);
+                                            groupsAgreements.setIdAccessLevel(1);
+                                            groupsAgreements.setHasAgreement(false);
+                                            groupsAgreementsDao.save(groupsAgreements);
+                                        }
 
                                         sapSale.setAgreement(newAgreement);
                                     }
@@ -604,5 +619,35 @@ public class SapSaleServiceImpl implements SapSaleService {
             }
         }
         return existsSale;
+    }
+
+    @Override
+    public List findByAgreementGroup(Integer idAg, LocalDateTime fromDate, LocalDateTime toDate) {
+        List<GroupsAgreements> groupsAgreementsList = groupsAgreementsDao.findGroupsAgreementsSelectedByAg(idAg);
+        return sapSaleDao.findByAgreementGroup(groupsAgreementsList,fromDate,toDate);
+    }
+
+    @Override
+    public List findByBranchGroup(Integer idAg, LocalDateTime fromDate, LocalDateTime toDate) {
+        List<GroupsAgreements> groupsAgreementsList = groupsAgreementsDao.findGroupsAgreementsSelectedByAg(idAg);
+        return sapSaleDao.findByBranchGroup(groupsAgreementsList,fromDate,toDate);
+    }
+
+    @Override
+    public List findByZonaGroup(Integer idAg, LocalDateTime fromDate, LocalDateTime toDate) {
+        List<GroupsAgreements> groupsAgreementsList = groupsAgreementsDao.findGroupsAgreementsSelectedByAg(idAg);
+        return sapSaleDao.findByZonaGroup(groupsAgreementsList,fromDate,toDate);
+    }
+
+    @Override
+    public List findByRegionGroup(Integer idAg, LocalDateTime fromDate, LocalDateTime toDate) {
+        List<GroupsAgreements> groupsAgreementsList = groupsAgreementsDao.findGroupsAgreementsSelectedByAg(idAg);
+        return sapSaleDao.findByRegionGroup(groupsAgreementsList,fromDate,toDate);
+    }
+
+    @Override
+    public List findByDistributorGroup(Integer idAg, LocalDateTime fromDate, LocalDateTime toDate) {
+        List<GroupsAgreements> groupsAgreementsList = groupsAgreementsDao.findGroupsAgreementsSelectedByAg(idAg);
+        return sapSaleDao.findByDistributorGroup(groupsAgreementsList,fromDate,toDate);
     }
 }

@@ -84,7 +84,10 @@ public class CBrachsController {
         CBranchs cBranchs = cBranchsService.findById(idBranch);
 
         if(flag == 1){
-            cBranchs.setBranchName(branchName);
+            cBranchs.setBranchName(branchName.toUpperCase());
+            String clearBranchName = StringUtils.stripAccents(branchName);
+            String branchNameClean= clearBranchName.replaceAll("\\W", "").toUpperCase();
+            cBranchs.setBranchNameClean(branchNameClean);
             cBranchs = cBranchsService.update(cBranchs);
             DwEnterprises currentDwEnterprises =
                     dwEnterprisesService.findById(idDwEnterprise);
@@ -113,7 +116,10 @@ public class CBrachsController {
             dwEnterprises.setStatus(false);
             dwEnterprisesService.save(dwEnterprises);
         }else {
-            cBranchs.setBranchName(branchName);
+            cBranchs.setBranchName(branchName.toUpperCase());
+            String clearBranchName = StringUtils.stripAccents(branchName);
+            String branchNameClean= clearBranchName.replaceAll("\\W", "").toUpperCase();
+            cBranchs.setBranchNameClean(branchNameClean);
             cBranchs = cBranchsService.update(cBranchs);
         }
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(cBranchs);

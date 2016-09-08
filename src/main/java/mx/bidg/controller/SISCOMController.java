@@ -55,4 +55,11 @@ public class SISCOMController {
         model.setViewName("groupsAgreements");
         return model;
     }
+
+    @RequestMapping(value = "/rol-group-agreement", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ModelAndView rolgroupsAgreements() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("rolAgreementGroup");
+        return model;
+    }
 }

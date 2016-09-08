@@ -8,12 +8,8 @@ package mx.bidg.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.config.JsonViews;
-import mx.bidg.model.CAgreements;
-import mx.bidg.model.CAgreementsGroups;
-import mx.bidg.model.GroupsAgreements;
-import mx.bidg.service.CAgreementsGroupsService;
-import mx.bidg.service.CAgreementsService;
-import mx.bidg.service.GroupsAgreementsService;
+import mx.bidg.model.*;
+import mx.bidg.service.*;
 import org.hibernate.annotations.AnyMetaDef;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.io.IOError;
 import java.io.IOException;
 import java.util.List;
 
@@ -44,6 +41,12 @@ public class CAgreementsGroupsController {
 
     @Autowired
     GroupsAgreementsService groupsAgreementsService;
+
+    @Autowired
+    CalculationRolesService calculationRolesService;
+
+    @Autowired
+    RolesGroupAgreementsService rolesGroupAgreementsService;
 
     @Autowired
     private ObjectMapper mapper;
@@ -74,6 +77,17 @@ public class CAgreementsGroupsController {
             groupsAgreementsService.save(groupsAgreement);
         }
 
+        List<CalculationRoles> calculationRolesList =  calculationRolesService.findAll();
+
+        for (CalculationRoles role : calculationRolesList){
+            RolesGroupAgreements rolesGroupAgreement = new RolesGroupAgreements();
+            rolesGroupAgreement.setHasGroup(false);
+            rolesGroupAgreement.setaG(agreementsGroups);
+            rolesGroupAgreement.setCalculationRole(role);
+            rolesGroupAgreementsService.save(rolesGroupAgreement);
+
+        }
+
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(agreementsGroups), HttpStatus.OK);
     }
 
@@ -81,6 +95,12 @@ public class CAgreementsGroupsController {
     public ResponseEntity<String> lowGroup(@PathVariable Integer idAg) throws IOException{
         CAgreementsGroups agreementsGroups = cAgreementsGroupsService.lowGroup(idAg);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(agreementsGroups),HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/actives", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> groupsActives() throws IOException{
+        List<CAgreementsGroups> groupsList = cAgreementsGroupsService.findGroupsActives();
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(groupsList), HttpStatus.OK);
     }
     
 }
