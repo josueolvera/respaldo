@@ -461,11 +461,6 @@
                     }
                 },
                 filters: {
-                    shortName: function(nombre) {
-                        var name;
-                        name = nombre.substring(0, 3);
-                        return name;
-                    },
                     currencyDisplay : {
                         read: function(val) {
                             return '$'+val.toFixed(2);
