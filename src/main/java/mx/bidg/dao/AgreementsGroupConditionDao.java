@@ -11,4 +11,6 @@ import java.util.List;
 public interface AgreementsGroupConditionDao extends InterfaceDao<AgreementsGroupCondition> {
     List<AgreementsGroupCondition> conditionList (Integer idAg);
     AgreementsGroupCondition getTabulator(Integer orden, AgreementsGroupCondition aGC);
+    List<AgreementsGroupCondition> listByAgreementGroup(Integer idAg);
+    AgreementsGroupCondition updateStatus(Integer idGroupCondition, boolean statusBoolean);
 }

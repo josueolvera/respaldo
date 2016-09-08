@@ -16,4 +16,6 @@ public interface AgreementsGroupConditionService {
     List<AgreementsGroupCondition> findAll();
     List<CommissionAmountGroup> setTabulator (List <AgreementsGroupCondition> agreementsGroupConditionList);
     List<AgreementsGroupCondition> conditions(Integer idAg);
+    List<AgreementsGroupCondition> findByGroupCondition(Integer idAg);
+    AgreementsGroupCondition updateStatus(Integer idGroupCondition, boolean statusBoolean);
 }

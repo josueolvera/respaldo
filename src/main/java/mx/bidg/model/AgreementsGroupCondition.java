@@ -73,6 +73,10 @@ public class AgreementsGroupCondition implements Serializable {
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private CAgreementsGroups agreementsGroups;
+    
+    @Column(name = "STATUS", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private boolean statusBoolean;
 
     public AgreementsGroupCondition() {
     }
@@ -144,6 +148,24 @@ public class AgreementsGroupCondition implements Serializable {
     public void setStatus(int status) {
         this.status = status;
     }
+    
+    public boolean isStatusBoolean() {
+        if (this.status == 0) 
+        {
+         statusBoolean = false;   
+        }
+        else {
+         statusBoolean = true;
+        }
+        return statusBoolean;
+    }
+
+    public void setStatusBoolean(boolean statusBoolean) {
+        this.statusBoolean = statusBoolean;
+    }
+    
+    
+    
 
     @Override
     public int hashCode() {

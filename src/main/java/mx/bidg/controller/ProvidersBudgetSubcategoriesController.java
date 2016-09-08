@@ -16,6 +16,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
+import mx.bidg.model.AccountingAccounts;
+import mx.bidg.model.ProvidersAccounts;
+import mx.bidg.service.AccountingAccountsService;
+import mx.bidg.service.ProvidersAccountsService;
 
 /**
  * Created by jolvera on 30/05/16.
@@ -32,6 +37,12 @@ public class ProvidersBudgetSubcategoriesController {
 
     @Autowired
     private ObjectMapper mapper;
+    
+    @Autowired
+    private AccountingAccountsService accountingAccountsService;
+    
+    @Autowired
+    private ProvidersBudgetSubcategoriesService budgetSubcategoriesService;
 
     @RequestMapping(value = "/provider/{idProvider}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -59,5 +70,20 @@ public class ProvidersBudgetSubcategoriesController {
         String response = mapper.writerWithView(JsonViews.Root.class).writeValueAsString(providersBudgetSubcategoriesService
                 .findByProvider(new Providers(idProvider)));
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    
+    @RequestMapping(value = "/providers/{idAccountingAccount}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findByProductType(@PathVariable int idAccountingAccount) throws IOException {
+        
+        AccountingAccounts accountingAccounts = accountingAccountsService.findById(idAccountingAccount);
+        List<ProvidersBudgetSubcategories> providers = budgetSubcategoriesService.findByBudgetSubcategorie(accountingAccounts.getBudgetSubcategory());
+        for(ProvidersBudgetSubcategories pbs : providers){
+            pbs.setProviders(providersService.findById(pbs.getIdProvider()));
+        }
+        
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(providers),
+                HttpStatus.OK
+        );
     }
 }

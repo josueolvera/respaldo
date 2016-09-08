@@ -8,7 +8,7 @@ package mx.bidg.dao.impl;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.ProvidersDao;
-import mx.bidg.model.CProductTypes;
+import mx.bidg.model.CBudgetSubcategories;
 import mx.bidg.model.Providers;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
@@ -56,10 +56,9 @@ public class ProvidersDaoImpl extends AbstractDao<Integer, Providers> implements
     }
 
     @Override
-    public List<Providers> findByProductType(CProductTypes cProductTypes) {
+    public List<Providers> findByBudgetSubtegorie(CBudgetSubcategories budgetSubcategories) {
         return createEntityCriteria()
-                .createCriteria("providersProductsTypes", JoinType.INNER_JOIN)
-                    .add(Restrictions.eq("idProductType", cProductTypes.getIdProductType()))
+                .add(Restrictions.eq("idBudgetSubcategorie", budgetSubcategories.getIdBudgetSubcategory()))
                 .list();
     }
 }

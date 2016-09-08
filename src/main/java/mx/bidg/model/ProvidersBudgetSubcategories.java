@@ -42,14 +42,18 @@ public class ProvidersBudgetSubcategories implements Serializable {
     private Integer idProvider;
 
     @JoinColumn(name = "ID_BUDGET_SUBCATEGORY", referencedColumnName = "ID_BUDGET_SUBCATEGORY")
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private CBudgetSubcategories budgetSubcategory;
 
     @JoinColumn(name = "ID_PROVIDER", referencedColumnName = "ID_PROVIDER")
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private Providers provider;
+    
+    @Transient
+    @JsonView(JsonViews.Embedded.class)
+    private Providers providers;
 
     public ProvidersBudgetSubcategories() {
     }
@@ -103,6 +107,13 @@ public class ProvidersBudgetSubcategories implements Serializable {
         this.budgetSubcategory = budgetSubcategory;
     }
 
+    public Providers getProviders() {
+        return providers;
+    }
+
+    public void setProviders(Providers providers) {
+        this.providers = providers;
+    }    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

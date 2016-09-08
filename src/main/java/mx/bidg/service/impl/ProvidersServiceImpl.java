@@ -6,10 +6,9 @@
 package mx.bidg.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import mx.bidg.dao.ProvidersDao;
-import mx.bidg.model.CProductTypes;
+import mx.bidg.model.CBudgetSubcategories;
 import mx.bidg.model.Providers;
 import mx.bidg.service.ProvidersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +57,7 @@ public class ProvidersServiceImpl implements ProvidersService {
     }
 
     @Override
-    public List<Providers> findByProductType(CProductTypes cProductTypes) {
-        return dao.findByProductType(cProductTypes);
+    public List<Providers> findByBudgetSubtegorie(CBudgetSubcategories budgetSubcategories) {
+        return dao.findByBudgetSubtegorie(budgetSubcategories);
     }
 }

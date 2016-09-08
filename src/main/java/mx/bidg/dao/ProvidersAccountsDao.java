@@ -7,6 +7,7 @@ package mx.bidg.dao;
 
 import java.util.List;
 import mx.bidg.model.Accounts;
+import mx.bidg.model.CBudgetSubcategories;
 import mx.bidg.model.Providers;
 import mx.bidg.model.ProvidersAccounts;
 
