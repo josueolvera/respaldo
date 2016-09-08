@@ -42,6 +42,13 @@ public class SISCOMController {
         return model;
     }
 
+    @RequestMapping(value = "/calculation-generator", method = RequestMethod.GET, produces = MediaType.TEXT_HTML_VALUE)
+    public ModelAndView calculationGenerator() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("CalculationGenerator");
+        return model;
+    }
+
     @RequestMapping(value = "/sql-querys", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ModelAndView textQuerys() {
         ModelAndView model = new ModelAndView();
