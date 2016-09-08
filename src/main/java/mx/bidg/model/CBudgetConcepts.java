@@ -25,7 +25,6 @@ import java.util.List;
 @Entity
 @DynamicUpdate
 @Table(name = "C_BUDGET_CONCEPTS")
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CBudgetConcepts implements Serializable {
     
     private static final long serialVersionUID = 1L;
@@ -49,7 +48,7 @@ public class CBudgetConcepts implements Serializable {
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "budgetConcept")
     @JsonView(JsonViews.Embedded.class)
-    private List<BudgetMonthConcepts> budgetMonthConceptsList;
+    private List<BudgetYearConcept> budgetMonthConceptsList;
 
     public CBudgetConcepts() {
     }
@@ -66,14 +65,14 @@ public class CBudgetConcepts implements Serializable {
         this.idBudgetConcept = idBudgetConcept;
     }
 
-    public List<BudgetMonthConcepts> getBudgetMonthConceptsList() {
+    public List<BudgetYearConcept> getBudgetMonthConceptsList() {
         return budgetMonthConceptsList;
     }
 
-    public void setBudgetMonthConceptsList(List<BudgetMonthConcepts> budgetMonthConceptsList) {
+    public void setBudgetMonthConceptsList(List<BudgetYearConcept> budgetMonthConceptsList) {
         this.budgetMonthConceptsList = budgetMonthConceptsList;
     }
-    
+
     public String getBudgetConcept() {
         return budgetConcept;
     }
@@ -90,24 +89,21 @@ public class CBudgetConcepts implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
+    //No cambiar este metodo
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idBudgetConcept != null ? idBudgetConcept.hashCode() : 0);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CBudgetConcepts that = (CBudgetConcepts) o;
+
+        return idBudgetConcept != null ? idBudgetConcept.equals(that.idBudgetConcept) : that.idBudgetConcept == null;
+
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CBudgetConcepts)) {
-            return false;
-        }
-        CBudgetConcepts other = (CBudgetConcepts) object;
-        if ((this.idBudgetConcept == null && other.idBudgetConcept != null) || (this.idBudgetConcept != null && !this.idBudgetConcept.equals(other.idBudgetConcept))) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        return idBudgetConcept != null ? idBudgetConcept.hashCode() : 0;
     }
 
     @Override
