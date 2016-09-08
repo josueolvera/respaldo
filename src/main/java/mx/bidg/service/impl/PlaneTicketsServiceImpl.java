@@ -1,26 +1,15 @@
 package mx.bidg.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.dao.*;
-import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
-import mx.bidg.pojos.FilePojo;
 import mx.bidg.service.FoliosService;
 import mx.bidg.service.PlaneTicketsService;
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -43,7 +32,7 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
     BudgetsDao budgetsDao;
 
     @Autowired
-    BudgetMonthBranchDao budgetMonthBranchDao;
+    BudgetYearConceptDao budgetYearConceptDao;
 
     @Autowired
     RequestTypesProductDao requestTypesProductDao;
@@ -89,7 +78,7 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
         CProductTypes productType = CProductTypes.NACIONALES;
 
         if (budget != null) {
-            BudgetMonth budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget,cMonth,dwEnterprise,year);
+            BudgetMonth budgetMonthBranch = budgetYearConceptDao.findByCombination(budget,cMonth,dwEnterprise,year);
 
             if (budgetMonthBranch != null) {
 
@@ -107,7 +96,7 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
                 request.setUserRequest(user);
                 request.setCreationDate(now);
                 request.setRequestStatus(CRequestStatus.PENDIENTE);
-                request.setBudgetMonthBranch(budgetMonthBranch);
+                request.setBudgetYearConcept(budgetMonthBranch);
                 request.setIdAccessLevel(1);
 
                 request = requestsDao.save(request);
