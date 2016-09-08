@@ -42,7 +42,7 @@ public class RequestsServiceImpl implements RequestsService {
     BudgetsDao budgetsDao;
     
     @Autowired
-    BudgetMonthBranchDao budgetMonthBranchDao;
+    BudgetYearConceptDao budgetYearConceptDao;
     
     @Autowired
     CMonthsDao cMonthsDao;
@@ -110,13 +110,13 @@ public class RequestsServiceImpl implements RequestsService {
         }
         
         hashMap.put("requestTypesProduct", requestTypesProduct);
-        BudgetMonthBranch budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget, month, dwEnterprise, year);
+        BudgetYearConcept budgetYearConcept = budgetYearConceptDao.findByCombination(budget, month, dwEnterprise, year);
         
-        if(budgetMonthBranch == null) {
+        if(budgetYearConcept == null) {
             throw new ValidationException("No existe Presupuesto para la fecha solicitada", "No existe Presupuesto para la fecha solicitada");
         }
         
-        hashMap.put("budgetMonthBranch", budgetMonthBranch);
+        hashMap.put("budgetYearConcept", budgetYearConcept);
           
         return hashMap;
     }
@@ -130,7 +130,7 @@ public class RequestsServiceImpl implements RequestsService {
         request.setDescription(jsonRequest.get("request").get("description").asText());
         request.setPurpose(jsonRequest.get("request").get("purpose").asText());
         request.setRequestTypeProduct(new RequestTypesProduct(jsonRequest.get("request").get("idRequestTypesProduct").asInt()));
-        request.setBudgetMonthBranch(new BudgetMonthBranch(jsonRequest.get("request").get("idBudgetMonthBranch").asInt()));
+//        request.setBudgetYearConcept(new BudgetYearConcept(jsonRequest.get("request").get("idBudgetMonthBranch").asInt()));
         //51 es el id de Requests en CTables
         request.setFolio(foliosService.createNew(new CTables(51)));
         request.setUserRequest(user);
