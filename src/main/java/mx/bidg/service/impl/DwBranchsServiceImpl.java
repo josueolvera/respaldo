@@ -65,24 +65,49 @@ public class DwBranchsServiceImpl implements DwBranchsService {
             if (idBranch != null) {
                 DwBranchs dwBranchs = dwBranchsDao.findById((int) idBranch.getNumericCellValue());
 
-                if (indexReprocessing != null) {
-                    BigDecimal bdIndexReprocessing = new BigDecimal(indexReprocessing.getNumericCellValue());
-                    dwBranchs.setIndexReprocessing(bdIndexReprocessing);
-                }
-                if (productivity != null) {
-                    BigDecimal bdproductivity = new BigDecimal(productivity.getNumericCellValue());
-                    dwBranchs.setProductivity(bdproductivity);
-                }
-                if (pttoPromVta != null) {
-                    dwBranchs.setPttoPromVta((int) pttoPromVta.getNumericCellValue());
-                }
-                if (pttoPromReal != null) {
-                    dwBranchs.setPttoPromReal((int) pttoPromReal.getNumericCellValue());
-                }
+                if (dwBranchs != null) {
 
-                dwBranchs.setUploadedDate(LocalDateTime.now());
+                    if (indexReprocessing != null) {
+                        BigDecimal bdIndexReprocessing = new BigDecimal(indexReprocessing.getNumericCellValue());
+                        dwBranchs.setIndexReprocessing(bdIndexReprocessing);
+                    }
+                    if (productivity != null) {
+                        BigDecimal bdproductivity = new BigDecimal(productivity.getNumericCellValue());
+                        dwBranchs.setProductivity(bdproductivity);
+                    }
+                    if (pttoPromVta != null) {
+                        dwBranchs.setPttoPromVta((int) pttoPromVta.getNumericCellValue());
+                    }
+                    if (pttoPromReal != null) {
+                        dwBranchs.setPttoPromReal((int) pttoPromReal.getNumericCellValue());
+                    }
 
-                dwBranchsDao.update(dwBranchs);
+                    dwBranchs.setUploadedDate(LocalDateTime.now());
+
+                    dwBranchsDao.update(dwBranchs);
+                } else {
+                    
+                    DwBranchs newDwBranchs = new DwBranchs();
+
+                    if (indexReprocessing != null) {
+                        BigDecimal bdIndexReprocessing = new BigDecimal(indexReprocessing.getNumericCellValue());
+                        newDwBranchs.setIndexReprocessing(bdIndexReprocessing);
+                    }
+                    if (productivity != null) {
+                        BigDecimal bdproductivity = new BigDecimal(productivity.getNumericCellValue());
+                        newDwBranchs.setProductivity(bdproductivity);
+                    }
+                    if (pttoPromVta != null) {
+                        newDwBranchs.setPttoPromVta((int) pttoPromVta.getNumericCellValue());
+                    }
+                    if (pttoPromReal != null) {
+                        newDwBranchs.setPttoPromReal((int) pttoPromReal.getNumericCellValue());
+                    }
+
+                    newDwBranchs.setUploadedDate(LocalDateTime.now());
+
+                    dwBranchsDao.save(newDwBranchs);
+                }
             }
         }
 
