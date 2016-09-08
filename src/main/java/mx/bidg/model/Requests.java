@@ -28,7 +28,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
 import mx.bidg.pojos.DateFormatsPojo;
-import mx.bidg.service.impl.TravelExpensesServiceImpl;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -96,9 +95,9 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idUserResponsible;
     
-    @Column(name = "ID_BUDGET_MONTH_BRANCH", insertable = false, updatable = false)
+    @Column(name = "ID_BUDGET_YEAR_CONCEPT", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idBudgetMonthBranch;
+    private Integer idBudgetYearConcept;
     
     @Column(name = "ID_REQUEST_TYPE_PRODUCT", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -118,10 +117,10 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private Users userResponsible;
     
-    @JoinColumn(name = "ID_BUDGET_MONTH_BRANCH", referencedColumnName = "ID_BUDGET_MONTH_BRANCH")
+    @JoinColumn(name = "ID_BUDGET_YEAR_CONCEPT", referencedColumnName = "ID_BUDGET_YEAR_CONCEPT")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private BudgetMonthBranch budgetMonthBranch;
+    private BudgetYearConcept budgetYearConcept;
     
     @JoinColumn(name = "ID_REQUEST_TYPE_PRODUCT", referencedColumnName = "ID_REQUEST_TYPE_PRODUCT")
     @ManyToOne(optional = false)
@@ -235,12 +234,12 @@ public class Requests implements Serializable {
         this.idUserResponsible = idUserResponsable;
     }
 
-    public Integer getIdBudgetMonthBranch() {
-        return idBudgetMonthBranch;
+    public Integer getIdBudgetYearConcept() {
+        return idBudgetYearConcept;
     }
 
-    public void setIdBudgetMonthBranch(Integer idBudgetMonthBranch) {
-        this.idBudgetMonthBranch = idBudgetMonthBranch;
+    public void setIdBudgetYearConcept(Integer idBudgetYearConcept) {
+        this.idBudgetYearConcept = idBudgetYearConcept;
     }
 
     public Integer getIdRequestTypeProduct() {
@@ -275,12 +274,12 @@ public class Requests implements Serializable {
         this.userResponsible = userResponsable;
     }
 
-    public BudgetMonthBranch getBudgetMonthBranch() {
-        return budgetMonthBranch;
+    public BudgetYearConcept getBudgetYearConcept() {
+        return budgetYearConcept;
     }
 
-    public void setBudgetMonthBranch(BudgetMonthBranch budgetMonthBranch) {
-        this.budgetMonthBranch = budgetMonthBranch;
+    public void setBudgetYearConcept(BudgetYearConcept budgetYearConcept) {
+        this.budgetYearConcept = budgetYearConcept;
     }
 
     public RequestTypesProduct getRequestTypeProduct() {
