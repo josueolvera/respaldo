@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @RequestMapping("/siad")
 public class SIADController {
 
-    @RequestMapping(value = "/budgets", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    @RequestMapping(value = "/budget", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public ModelAndView budgetsView() {
         ModelAndView model = new ModelAndView();
         model.addObject("now", LocalDateTime.now());
@@ -28,11 +28,11 @@ public class SIADController {
         return model;
     }
 
-    @RequestMapping(value = "/individual-budget", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    @RequestMapping(value = "/budget-report", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public ModelAndView individualBudget() {
         ModelAndView model = new ModelAndView();
         model.addObject("now", LocalDateTime.now());
-        model.setViewName("Budgets");
+        model.setViewName("BudgetReport");
         return model;
     }
 
