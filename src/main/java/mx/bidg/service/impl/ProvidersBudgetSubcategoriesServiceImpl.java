@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import mx.bidg.model.CBudgetSubcategories;
 
 /**
  * Created by jolvera on 30/05/16.
@@ -49,5 +50,10 @@ public class ProvidersBudgetSubcategoriesServiceImpl implements ProvidersBudgetS
     @Override
     public List<ProvidersBudgetSubcategories> findByProvider(Providers provider) {
         return providersBudgetSubcategoriesDao.findByProvider(provider);
+    }
+
+    @Override
+    public List<ProvidersBudgetSubcategories> findByBudgetSubcategorie(CBudgetSubcategories budgetSubcategories) {
+        return providersBudgetSubcategoriesDao.findByBudgetSubcategorie(budgetSubcategories);
     }
 }

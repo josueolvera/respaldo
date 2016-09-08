@@ -24,6 +24,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 import mx.bidg.model.EmailTemplates;
+import mx.bidg.service.AccountingAccountsService;
 import mx.bidg.service.EmailTemplatesService;
 
 /**
@@ -51,6 +52,9 @@ public class RequestsController {
 
     @Autowired
     private ObjectMapper mapper;
+    
+    @Autowired
+    private AccountingAccountsService accountingAccountsService;
     
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"})
     public @ResponseBody ResponseEntity<String> saveRequest(@RequestBody String data, HttpSession session) 
@@ -92,6 +96,7 @@ public class RequestsController {
             produces = "application/json;charset=UTF-8")
     public @ResponseBody String findRequestByID(@PathVariable int idRequest) throws Exception {
         Requests request = requestsService.findById(idRequest);
+        request.getRequestTypeProduct().setAccountingAccountInfo(accountingAccountsService.findById(request.getRequestTypeProduct().getIdAccountingAccount()));
         return mapper.writeValueAsString(request);
     }
 

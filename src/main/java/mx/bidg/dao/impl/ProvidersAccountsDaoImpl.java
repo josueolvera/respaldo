@@ -9,6 +9,7 @@ import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.ProvidersAccountsDao;
 import mx.bidg.model.Accounts;
+import mx.bidg.model.CBudgetSubcategories;
 import mx.bidg.model.Providers;
 import mx.bidg.model.ProvidersAccounts;
 import org.hibernate.Criteria;

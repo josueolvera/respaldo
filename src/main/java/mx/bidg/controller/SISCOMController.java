@@ -69,4 +69,11 @@ public class SISCOMController {
         model.setViewName("rolAgreementGroup");
         return model;
     }
+    
+    @RequestMapping(value = "/tab-group", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ModelAndView tabGroupView() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("AgreementTabsGroup");
+        return model;
+    }
 }

@@ -58,4 +58,29 @@ public class AgreementsGroupConditionDaoImpl extends AbstractDao<Integer, Agreem
                 .add(Restrictions.eq("idAg",aGC.getIdAg())).add(Restrictions.eq("status",1))
                 .uniqueResult();
     }
+
+    @Override
+    public List<AgreementsGroupCondition> listByAgreementGroup(Integer idAg) {
+        Criteria criteria = createEntityCriteria();
+        return (List<AgreementsGroupCondition>) criteria
+                .add(Restrictions.eq("idAg",idAg))
+                .list();
+    }
+
+    @Override
+    public AgreementsGroupCondition updateStatus(Integer idGroupCondition, boolean statusBoolean) {
+        Criteria criteria = createEntityCriteria();
+        AgreementsGroupCondition agc = (AgreementsGroupCondition) criteria
+                .add(Restrictions.eq("idGroupCondition", idGroupCondition))
+                .uniqueResult();
+        if (statusBoolean) 
+        {
+            agc.setStatus(1);
+        }
+        else{
+            agc.setStatus(0);
+        }
+        modify(agc);
+        return agc;
+    }
 }

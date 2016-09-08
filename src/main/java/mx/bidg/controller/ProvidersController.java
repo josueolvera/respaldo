@@ -44,15 +44,20 @@ public class ProvidersController {
     @Autowired
     private ObjectMapper mapper;
     
+    @Autowired
+    private AccountingAccountsService accountingAccountsService;
+    
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> getProvidersList() throws Exception {
         String response = mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(providersService.findAll());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/product-type/{idProductType}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findByProductType(@PathVariable int idProductType) throws IOException {
-        List<Providers> providers = providersService.findByProductType(new CProductTypes(idProductType));
+    @RequestMapping(value = "/product-type/{idAccountingAccount}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findByProductType(@PathVariable int idAccountingAccount) throws IOException {
+        
+        AccountingAccounts accountingAccounts = accountingAccountsService.findById(idAccountingAccount);
+        List<Providers> providers = providersService.findByBudgetSubtegorie(accountingAccounts.getBudgetSubcategory());
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(providers),
                 HttpStatus.OK

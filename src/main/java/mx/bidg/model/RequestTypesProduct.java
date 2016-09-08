@@ -21,6 +21,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
@@ -79,6 +80,10 @@ public class RequestTypesProduct implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "requestTypeProduct")
     @JsonView(JsonViews.Embedded.class)
     private List<Requests> requestsList;
+    
+    @Transient
+    @JsonView(JsonViews.Embedded.class)
+    private AccountingAccounts accountingAccountInfo;
 
     public RequestTypesProduct() {
     }
@@ -152,6 +157,14 @@ public class RequestTypesProduct implements Serializable {
         this.accountingAccounts = accountingAccounts;
     }
 
+    public AccountingAccounts getAccountingAccountInfo() {
+        return accountingAccountInfo;
+    }
+
+    public void setAccountingAccountInfo(AccountingAccounts accountingAccountInfo) {
+        this.accountingAccountInfo = accountingAccountInfo;
+    }
+    
     
     @Override
     public int hashCode() {

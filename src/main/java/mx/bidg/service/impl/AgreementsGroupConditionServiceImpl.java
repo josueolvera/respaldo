@@ -76,4 +76,14 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
     public List<AgreementsGroupCondition> conditions(Integer idAg) {
         return agreementsGroupConditionDao.conditionList(idAg);
     }
+
+    @Override
+    public List<AgreementsGroupCondition> findByGroupCondition(Integer idAg) {
+        return agreementsGroupConditionDao.listByAgreementGroup(idAg);
+    }
+
+    @Override
+    public AgreementsGroupCondition updateStatus(Integer idGroupCondition, boolean statusBoolean) {
+        return agreementsGroupConditionDao.updateStatus(idGroupCondition, statusBoolean);
+    }
 }

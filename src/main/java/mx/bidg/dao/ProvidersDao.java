@@ -5,15 +5,15 @@
  */
 package mx.bidg.dao;
 
-import mx.bidg.model.CProductTypes;
 import mx.bidg.model.Providers;
 
 import java.util.List;
+import mx.bidg.model.CBudgetSubcategories;
 
 /**
  *
  * @author sistemask
  */
 public interface ProvidersDao extends InterfaceDao<Providers> {
-    List<Providers> findByProductType(CProductTypes cProductTypes);
+    List<Providers> findByBudgetSubtegorie(CBudgetSubcategories budgetSubcategories);
 }

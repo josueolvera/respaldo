@@ -7,6 +7,7 @@ import mx.bidg.dao.ProvidersAccountsDao;
 import mx.bidg.model.Accounts;
 import mx.bidg.model.CAccountsTypes;
 import mx.bidg.model.CBanks;
+import mx.bidg.model.CBudgetSubcategories;
 import mx.bidg.model.Providers;
 import mx.bidg.model.ProvidersAccounts;
 import mx.bidg.service.ProvidersAccountsService;
@@ -75,4 +76,5 @@ public class ProvidersAccountsServiceImpl implements ProvidersAccountsService {
         dao.save(providersAccounts);
         return providersAccounts;
     }
+
 }

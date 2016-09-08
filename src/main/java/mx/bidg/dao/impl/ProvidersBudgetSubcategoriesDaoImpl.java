@@ -9,6 +9,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import mx.bidg.model.CBudgetSubcategories;
 
 /**
  * Created by jolvera on 30/05/16.
@@ -49,5 +50,12 @@ public class ProvidersBudgetSubcategoriesDaoImpl extends AbstractDao <Integer,Pr
     public List<ProvidersBudgetSubcategories> findByProvider(Providers p) {
         Criteria criteria = createEntityCriteria();
         return criteria.add(Restrictions.eq("provider",p)).list();
+    }
+
+    @Override
+    public List<ProvidersBudgetSubcategories> findByBudgetSubcategorie(CBudgetSubcategories budgetSubcategories) {
+        Criteria criteria = createEntityCriteria()
+                .add(Restrictions.eq("budgetSubcategory", budgetSubcategories));
+        return criteria.list();
     }
 }

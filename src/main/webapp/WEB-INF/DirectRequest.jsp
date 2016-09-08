@@ -4,7 +4,7 @@
 <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users" />
 
 
-<t:template pageTitle="BID Group: Presupuestos">
+<t:template pageTitle="BID Group: Pago a proveedores">
     <jsp:attribute name="scripts">
         <script type="text/javascript">
         function validateFloatKeyPress(el, evt) {
@@ -740,7 +740,7 @@
             <form v-on:submit.prevent="saveAllInformationRequest">
             <div class="row">
               <div class="col-xs-4">
-              <h1>Solicitud Directa</h1>
+              <h1>Pago a proveedores</h1>
               </div>
               <div class="col-xs-4 col-xs-offset-4">
                 <label>
