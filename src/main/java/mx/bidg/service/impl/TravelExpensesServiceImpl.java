@@ -1,10 +1,7 @@
 package mx.bidg.service.impl;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.dao.*;
-import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
 import mx.bidg.service.FoliosService;
 import mx.bidg.service.TravelExpensesService;
@@ -13,8 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -46,7 +41,7 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
     RequestTypesProductDao requestTypesProductDao;
 
     @Autowired
-    BudgetMonthBranchDao budgetMonthBranchDao;
+    BudgetYearConceptDao budgetYearConceptDao;
 
     @Autowired
     private ObjectMapper mapper;
@@ -91,7 +86,7 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
                 
         
         if (budget != null) {
-            BudgetMonth budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget,cMonth,dwEnterprise,year);
+            BudgetMonth budgetMonthBranch = budgetYearConceptDao.findByCombination(budget,cMonth,dwEnterprise,year);
 
             if (budgetMonthBranch != null) {
                 Float total = 0f;
@@ -120,7 +115,7 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
                     request.setRequestTypeProduct(requestTypesProduct);
                     request.setUserRequest(user);
                     request.setCreationDate(now);
-                    request.setBudgetMonthBranch(budgetMonthBranch);
+                    request.setBudgetYearConcept(budgetMonthBranch);
                     request.setIdAccessLevel(1);
 
                     request = requestsDao.save(request);
