@@ -56,7 +56,7 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
         for(Object data : list) {
             CommissionAmountGroup commissionAmountGroup = new CommissionAmountGroup();
             Object[] projection = (Object[]) data;
-            Long numRequest = (Long) projection[1];
+            BigDecimal numRequest = new BigDecimal(projection[1].toString());
             String claveSap = (String) projection[0];
             BigDecimal amount = (BigDecimal) projection[2];
 
@@ -151,5 +151,10 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
         }
 
         return commissionAmountGroupDao.findAll();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findByOnlyClaveSap() {
+        return commissionAmountGroupDao.findOnlyByClaveSap();
     }
 }

@@ -65,6 +65,10 @@ public class AgreementsGroupCondition implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int status;
 
+    @Column(name = "TYPE_OPERATION")
+    @JsonView(JsonViews.Root.class)
+    private int typeOperation;
+
     @Column(name = "ID_AG", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idAg;
@@ -163,9 +167,15 @@ public class AgreementsGroupCondition implements Serializable {
     public void setStatusBoolean(boolean statusBoolean) {
         this.statusBoolean = statusBoolean;
     }
-    
-    
-    
+
+
+    public int getTypeOperation() {
+        return typeOperation;
+    }
+
+    public void setTypeOperation(int typeOperation) {
+        this.typeOperation = typeOperation;
+    }
 
     @Override
     public int hashCode() {

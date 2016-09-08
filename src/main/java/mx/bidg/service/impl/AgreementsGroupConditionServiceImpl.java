@@ -58,6 +58,8 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
         for (AgreementsGroupCondition aGC: agreementsGroupConditionList){
                 AgreementsGroupCondition groupCondition = agreementsGroupConditionDao.getTabulator(aGC.getOrder(),aGC);
 
+            if (groupCondition.getTypeOperation() == 1){
+                //1 significa que calcule la comision del monto comisionable
                 List<CommissionAmountGroup> amountGroups = commissionAmountGroupDao.getComissionsByConditon(groupCondition);
 
                 for (CommissionAmountGroup cAGroup :  amountGroups){
@@ -67,6 +69,17 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
                     cAGroup.setCommission(cAGroup.getAmount().multiply(comission));
                     commissionAmountGroupDao.update(cAGroup);
                 }
+            } else {
+                //1 significa que calcule la comision del monto comisionable
+                List<CommissionAmountGroup> requestGroups = commissionAmountGroupDao.getBonusByConditon(groupCondition);
+
+                for (CommissionAmountGroup cAGroup :  requestGroups){
+                    cAGroup.setTabulator(groupCondition.getAmountMin());
+                    BigDecimal comission = groupCondition.getTabulator();
+                    cAGroup.setCommission(comission);
+                    commissionAmountGroupDao.update(cAGroup);
+                }
+            }
         }
 
         return commissionAmountGroupDao.findAll();

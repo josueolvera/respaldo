@@ -57,7 +57,7 @@ public class CommissionAmountGroup implements Serializable {
 
     @Column(name = "APPLICATIONS_NUMBER")
     @JsonView(JsonViews.Root.class)
-    private Long applicationsNumber;
+    private BigDecimal applicationsNumber;
 
     @Column(name = "AMOUNT")
     @JsonView(JsonViews.Root.class)
@@ -126,11 +126,11 @@ public class CommissionAmountGroup implements Serializable {
         this.groupName = groupName;
     }
 
-    public Long getApplicationsNumber() {
+    public BigDecimal getApplicationsNumber() {
         return applicationsNumber;
     }
 
-    public void setApplicationsNumber(Long applicationsNumber) {
+    public void setApplicationsNumber(BigDecimal applicationsNumber) {
         this.applicationsNumber = applicationsNumber;
     }
 

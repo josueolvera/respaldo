@@ -53,4 +53,19 @@ public class CommissionAmountGroupDaoImpl extends AbstractDao<Integer, Commissio
                         agreementsGroupCondition.getAmountMax()))
                 .list();
     }
+
+    @Override
+    public List<CommissionAmountGroup> getBonusByConditon(AgreementsGroupCondition agreementsGroupCondition) {
+        Criteria criteria = createEntityCriteria();
+
+        return criteria.add(Restrictions.eq("idAg",agreementsGroupCondition.getIdAg()))
+                .add(Restrictions.between("applicationsNumber",agreementsGroupCondition.getAmountMin(),
+                        agreementsGroupCondition.getAmountMax()))
+                .list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findOnlyByClaveSap() {
+        return createEntityCriteria().add(Restrictions.isNotNull("claveSap")).list();
+    }
 }
