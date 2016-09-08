@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface CommissionAmountGroupDao extends InterfaceDao<CommissionAmountGroup> {
     List<CommissionAmountGroup> getComissionsByConditon (AgreementsGroupCondition agreementsGroupCondition);
+    List<CommissionAmountGroup> getBonusByConditon (AgreementsGroupCondition agreementsGroupCondition);
 }
