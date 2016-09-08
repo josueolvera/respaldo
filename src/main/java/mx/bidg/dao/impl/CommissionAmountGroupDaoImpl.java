@@ -63,4 +63,9 @@ public class CommissionAmountGroupDaoImpl extends AbstractDao<Integer, Commissio
                         agreementsGroupCondition.getAmountMax()))
                 .list();
     }
+
+    @Override
+    public List<CommissionAmountGroup> findOnlyByClaveSap() {
+        return createEntityCriteria().add(Restrictions.isNotNull("claveSap")).list();
+    }
 }

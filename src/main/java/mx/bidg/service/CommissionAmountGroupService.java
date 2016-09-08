@@ -19,4 +19,5 @@ public interface CommissionAmountGroupService {
     List<CommissionAmountGroup> obtainAmountsbyZona(List list, CAgreementsGroups agreementsGroups);
     List<CommissionAmountGroup> obtainAmountsbyRegion(List list, CAgreementsGroups agreementsGroups);
     List<CommissionAmountGroup> obtainAmountsbyDistributor(List list, CAgreementsGroups agreementsGroups);
+    List<CommissionAmountGroup> findByOnlyClaveSap ();
 }

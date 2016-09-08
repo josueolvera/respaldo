@@ -152,4 +152,9 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
 
         return commissionAmountGroupDao.findAll();
     }
+
+    @Override
+    public List<CommissionAmountGroup> findByOnlyClaveSap() {
+        return commissionAmountGroupDao.findOnlyByClaveSap();
+    }
 }
