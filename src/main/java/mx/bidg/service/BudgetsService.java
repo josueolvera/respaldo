@@ -8,11 +8,7 @@ package mx.bidg.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import mx.bidg.model.Budgets;
-import mx.bidg.model.CAreas;
-import mx.bidg.model.CBudgetCategories;
-import mx.bidg.model.CBudgetSubcategories;
-import mx.bidg.model.CGroups;
+import mx.bidg.model.*;
 
 /**
  *
@@ -26,8 +22,7 @@ public interface BudgetsService {
     ArrayList<Budgets> findByGroupAreaEnterprise(CGroups idGroup, CAreas idArea, Integer idDwEnterprise);
     ArrayList<Budgets> findByGroupArea(CGroups idGroup, CAreas idArea);
     List<Budgets> findByDistributorAndArea(Integer idDistributor, Integer idArea);
-    List<Budgets> getBudgets(Integer idCostCenter, Integer idBudgetType, Integer idBudgetNature);
-    List<Budgets> getBudgets(Integer idCostCenter, Integer idBudgetCategory);
+    List<Budgets> getBudgets(Integer idCostCenter, Integer idBudgetType, Integer idBudgetNature, Integer idBudgetCategory);
     List<Budgets> findByDistributorAreaAndEnterprise(Integer idDistributor, Integer idArea, Integer idDwEnterprise);
     List<Budgets> findByDistributor(Integer idDistributor);
 }
