@@ -1,11 +1,10 @@
 package mx.bidg.service.impl;
 
 import mx.bidg.dao.CBudgetConceptsDao;
-import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.BudgetMonthConcepts;
 import mx.bidg.model.Budgets;
 import mx.bidg.model.CBudgetConcepts;
-import mx.bidg.service.BudgetMonthBranchService;
+import mx.bidg.service.BudgetYearConceptService;
 import mx.bidg.service.BudgetMonthConceptsService;
 import mx.bidg.service.CBudgetConceptsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +25,11 @@ public class CBudgetConceptsServiceImpl implements CBudgetConceptsService {
     BudgetMonthConceptsService budgetMonthConceptsService;
     
     @Autowired
-    BudgetMonthBranchService budgetMonthBranchService;
+    BudgetYearConceptService budgetYearConceptService;
 
     @Override
     public CBudgetConcepts save(CBudgetConcepts cBudgetConcept) {
+        cBudgetConcept.setIdAccessLevel(1);
         return budgetConceptsDao.save(cBudgetConcept);
     }
 
@@ -49,6 +49,11 @@ public class CBudgetConceptsServiceImpl implements CBudgetConceptsService {
     }
 
     @Override
+    public List<CBudgetConcepts> findAll() {
+        return budgetConceptsDao.findAll();
+    }
+
+    @Override
     public List<CBudgetConcepts> findByBudgetEnterprise(Budgets budget, int year, Integer idDwEnterprise) {
         return budgetConceptsDao.findByBudgetEnterprise(budget, year, idDwEnterprise);
     }
@@ -61,9 +66,9 @@ public class CBudgetConceptsServiceImpl implements CBudgetConceptsService {
         for(BudgetMonthConcepts budgetMonthConcept : budgetMonthConceptsList) {
             
             BigDecimal amount = budgetMonthConcept.getAmount();
-            BudgetMonthBranch budgetMonthBranch = budgetMonthConcept.getBudgetMonthBranch();
-            budgetMonthBranch.setAmount(budgetMonthBranch.getAmount().subtract(amount));
-            budgetMonthBranchService.update(budgetMonthBranch);
+//            BudgetYearConcept budgetYearConcept = budgetMonthConcept.getBudgetYearConcept();
+//            budgetYearConcept.setAmount(budgetYearConcept.getAmount().subtract(amount));
+//            budgetYearConceptService.update(budgetYearConcept);
             budgetMonthConceptsService.delete(budgetMonthConcept);
             
         }
