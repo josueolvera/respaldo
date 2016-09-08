@@ -56,21 +56,22 @@
                 ready : function () {
                     this.getUserInSession();
                     this.getBudgetTypes();
-                    this.getMonths();
+                    this.getBudgetCategories();
                 },
                 data: {
                     now: "${now}",
                     minYear:null,
                     maxYear:null,
                     years: [],
-                    months: [],
                     budgets: [],
+                    concepts: [],
                     budgetTypes: [],
                     user:{},
                     selected : {
                         budgetNature:{},
                         budgetType: {},
                         costCenter: {},
+                        budgetCategory: {},
                         year: null,
                         yearFromCopy: null,
                         yearToCopy: null
@@ -78,14 +79,13 @@
                     searching: false,
                     rolesCostCenter:[],
                     costCenterList:[],
+                    budgetNatureList:[],
                     budgetCategories: [],
                     datosPresupuesto: [],
-                    contenido: [],
                     budgetAllOption: {
                         budgetCategory:'TODOS',
                         idBudgetCategory:0
                     },
-                    isAutorized: false,
                     role:null,
                     errorMessage: ''
                 },
@@ -116,6 +116,11 @@
                                         index = self.arrayObjectIndexOf(self.costCenterList, item.costCenter.idCostCenter, 'idCostCenter');
                                         if (index == -1) self.costCenterList.push(item.costCenter);
                                     });
+
+                                    data.forEach(function (item) {
+                                        index = self.arrayObjectIndexOf(self.budgetNatureList, item.budgetNature.idBudgetNature, 'idBudgetNature');
+                                        if (index == -1) self.budgetNatureList.push(item.budgetNature);
+                                    });
                                 })
                                 .error(function (data) {
 
@@ -127,11 +132,54 @@
                                     this.budgetTypes = data;
                                 });
                     },
-                    getMonths: function () {
-                        this.$http.get(ROOT_URL + '/months')
+                    getConcepts : function (self) {
+                        this.$http.get(ROOT_URL + '/budget-concepts')
                                 .success(function (data) {
-                                    this.months = data;
+                                    self.concepts = data;
+                                    self.budgets.forEach(function (budget, indexOfBudget) {
+                                        budget.budgetSubcategories.forEach(function (budgetSubcategory, indexOfBudgetSubcategory) {
+                                            budgetSubcategory.budgetYearConceptList.forEach(function (budgetYearConcept, indexOfBudgetYearConcept) {
+                                                if ('selectConcepts' in budgetYearConcept) {
+                                                    budgetYearConcept.selectConcepts[0].selectize.destroy();
+                                                    delete budgetYearConcept.selectConcepts;
+                                                }
+                                                budgetYearConcept.selectConcepts = self.createSelectForConcept(indexOfBudget, indexOfBudgetSubcategory, indexOfBudgetYearConcept, data);
+                                                budgetYearConcept.selectConcepts[0].selectize.setValue(budgetYearConcept.budgetConcept.idBudgetConcept);
+                                            });
+                                        });
+                                    });
+                                })
+                                .error(function (data) {
+
                                 });
+                    },
+                    createSelectForConcept : function (indexOfBudget, indexOfBudgetSubcategory, indexOfBudgetYearConcept, concepts) {
+                        var self = this;
+                        return $('#select-concepts-' + indexOfBudget + '-' + indexOfBudgetSubcategory + '-' + indexOfBudgetYearConcept).selectize({
+                            maxItems: 1,
+                            valueField: 'idBudgetConcept',
+                            labelField: 'budgetConcept',
+                            searchField: 'budgetConcept',
+                            options: concepts,
+                            create: function (input, callback) {
+                                self.$http.post(ROOT_URL + '/budget-concepts', {
+                                    budgetConcept: input
+                                }).success(function (data){
+                                    showAlert('Concepto guardado');
+                                    self.getConcepts(self);
+                                    callback(data);
+                                }).error(function (){
+                                    callback();
+                                });
+                            },
+                            render: {
+                                option_create: function(data, escape) {
+                                    return '<div data-selectable class="create">' +
+                                            'Agregar <strong>' + escape(data.input) + '</strong>' +
+                                            '</div>'
+                                }
+                            }
+                        });
                     },
                     setYears: function () {
                         var now = new Date(this.now);
@@ -144,53 +192,32 @@
                     },
                     searchBudget: function () {
                         this.searching = true;
-                        this.contenido = [];
                         this.getBudgets();
                     },
                     getBudgets: function () {
-                        this.$http.get(
-                                ROOT_URL +
-                                '/budgets/cost-center/' + this.selected.costCenter.idCostCenter +
-                                '/budget-type/' + this.selected.budgetType.idBudgetType +
-                                '/budget-nature/' + this.selected.budgetNature.idBudgetNature)
+                        var url = ROOT_URL +
+                                '/budgets?cost_center=' + this.selected.costCenter.idCostCenter +
+                                '&year=' + this.selected.year +
+                                '&budget_type=' + this.selected.budgetType.idBudgetType +
+                                '&budget_nature=' + this.selected.budgetNature.idBudgetNature;
+                        if (this.selected.budgetCategory.idBudgetCategory != 0) {
+                            url += '&category=' + this.selected.budgetCategory.idBudgetCategory;
+                        }
+                        this.$http.get(url)
                                 .success(function (data) {
                                     var self = this;
-                                    this.budgetCategories = [];
                                     this.budgets = data;
-                                    this.getConcepts();
-                                    var index;
-                                    data.forEach(function (budget) {
-                                        index = self.arrayObjectIndexOf(self.budgetCategories,budget.idBudgetCategory,'idBudgetCategory');
-                                        if (index == -1) {
-                                            self.budgetCategories.push(budget.budgetCategory)
-                                        }
-                                    });
+                                    this.searching = false;
+                                    this.getConcepts(self);
                                 })
                                 .error(function (data) {
 
                                 });
                     },
-                    getConcepts:function () {
-                        this.$http.get(
-                                ROOT_URL +
-                                '/budget-concepts/cost-center/' + this.selected.costCenter.idCostCenter +
-                                '/budget-type/' + this.selected.budgetType.idBudgetType +
-                                '/budget-nature/' + this.selected.budgetNature.idBudgetNature +
-                                '/year/' + this.selected.year)
+                    getBudgetCategories : function () {
+                        this.$http.get(ROOT_URL + '/budget-categories')
                                 .success(function (data) {
-                                    var self = this;
-                                    this.datosPresupuesto = data;
-                                    this.datosPresupuesto.forEach(function (item) {
-                                        if (item.authorized) {
-                                            self.isAutorized = true;
-                                        }
-                                        item.conceptos.forEach(function (concepto) {
-                                            concepto.conceptMonth.forEach(function (elem) {
-                                                self.moneyFormat(elem, concepto, item);
-                                            });
-                                        });
-                                    });
-                                    this.getContenido();
+                                    this.budgetCategories = data;
                                 })
                                 .error(function (data) {
 
@@ -202,198 +229,146 @@
                         }
                         return -1;
                     },
-                    saveBudget: function (eventoconcepto) {
-                        this.$http.post(ROOT_URL + "/budget-month-concepts", JSON.stringify(eventoconcepto))
-                                .success(function (data) {
-                                    showAlert(data);
-                                    this.getBudgets();
-                                })
-                                .error(function (data) {
-                                    showAlert("Ha habido un error con la solicitud, intente nuevamente");
-                                });
-                    },
-                    getContenido: function () {
-                        var self = this;
-                        console.log('P');
-                        this.searching = false;
-                        this.contenido = [];
-                        if (this.selected.budgetCategory.idBudgetCategory === 0) {
-                            this.contenido = this.budgets;
-                            this.mixedArrays();
-                        } else {
-                            this.budgets.forEach(function (budget) {
-                                if (budget.idBudgetCategory === self.selected.budgetCategory.idBudgetCategory) {
-                                    self.contenido.push(budget);
-                                }
+                    saveBudget: function (budgetYearConceptList, idBudget) {
+
+                        var budgetYearConceptListToSave = budgetYearConceptList;
+
+                        var isValid = false;
+
+                        budgetYearConceptListToSave.every(function (budgetYearConcept, index, _ary) {
+                            budgetYearConcept.budgetConcept = {};
+
+                            if (budgetYearConcept.selectConcepts[0].selectize.getValue() != '') {
+                                budgetYearConcept.budgetConcept.idBudgetConcept = budgetYearConcept.selectConcepts[0].selectize.getValue();
+                                budgetYearConcept.budgetConcept.budgetConcept = budgetYearConcept.selectConcepts[0].selectize.getOption(budgetYearConcept.budgetConcept.idBudgetConcept).text();
+                                isValid = true;
+
+                            } else {
+                                showAlert('Selecciona un concepto', {type:3});
+                                budgetYearConcept.selectConcepts[0].selectize.focus();
+                                isValid = false;
+                            }
+
+                            return budgetYearConcept.selectConcepts[0].selectize.getValue() != '';
+
+                        });
+
+                        if (isValid) {
+
+                            budgetYearConceptListToSave.forEach(function (budgetYearConcept) {
+                                delete budgetYearConcept.selectConcepts;
                             });
-                            this.mixedArrays();
+
+                            this.$http.post(ROOT_URL + '/budget-year-concept/' + idBudget, JSON.stringify(budgetYearConceptListToSave))
+                                    .success(function (data) {
+                                        showAlert('Presupuesto guardado');
+                                        this.getBudgets();
+                                    })
+                                    .error(function (data) {
+                                        showAlert('Ha habido un error con la solicitud, intente nuevamente');
+                                    });
                         }
                     },
-                    mixedArrays: function() {
-                        var self = this;
-                        $.each(this.datosPresupuesto, function(index, el)
-                        {
-                            var BudgetTem = el;
-                            $.each(self.contenido, function(indexs, ele) {
-                                if (BudgetTem.idBudget == ele.idBudget)
-                                {
-                                    self.contenido.$remove(ele);
-                                    self.contenido.push(BudgetTem);
-                                }
-                            });
-                        });
-                        self.groupArray();
-                    },
-                    groupArray: function() {
-                        this.contenido = this.groupBy(this.contenido, function (item) {
-                            return item.idBudgetCategory;
-                        });
-                    },
-                    groupBy: function (array, filter) {
-                        var groups = {};
-                        array.forEach(function (element) {
-                            var group = JSON.stringify(filter(element));
-                            groups[group] = groups[group] || [];
-                            groups[group].push(element);
-                        });
-                        return Object.keys(groups).map(function (group) {
-                            return groups[group];
-                        });
-                    },
-                    moneyFormat: function(mes, concepto, budget) {
-                        var total= accounting.formatMoney(mes.amountConcept);
-                        mes.amountConcept= total;
-                        this.obtainTotalConcept(concepto, budget);
-                    },
-                    equalsImport: function(concepto, budget) {
-                        if (concepto.equals) {
-                            if (concepto.conceptMonth[0].amountConcept) {
+                    equalsImport: function(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept) {
+                        if (budgetYearConcept.equals) {
+                            if (budgetYearConcept.januaryAmount != '') {
+                                budgetYearConcept.februaryAmount = budgetYearConcept.januaryAmount;
+                                budgetYearConcept.marchAmount = budgetYearConcept.januaryAmount;
+                                budgetYearConcept.aprilAmount = budgetYearConcept.januaryAmount;
+                                budgetYearConcept.mayAmount = budgetYearConcept.januaryAmount;
+                                budgetYearConcept.juneAmount = budgetYearConcept.januaryAmount;
+                                budgetYearConcept.julyAmount = budgetYearConcept.januaryAmount;
+                                budgetYearConcept.augustAmount = budgetYearConcept.januaryAmount;
+                                budgetYearConcept.septemberAmount = budgetYearConcept.januaryAmount;
+                                budgetYearConcept.octoberAmount = budgetYearConcept.januaryAmount;
+                                budgetYearConcept.novemberAmount = budgetYearConcept.januaryAmount;
+                                budgetYearConcept.decemberAmount = budgetYearConcept.januaryAmount;
 
-                                $.each(concepto.conceptMonth, function(index, el) {
-                                    el.amountConcept= concepto.conceptMonth[0].amountConcept;
+                                this.getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept);
 
-                                });
                             } else {
-                                alert("Debes ingresar un monto en el primer mes para esta acción");
-                                concepto.equals= false;
+                                showAlert('Debes ingresar un monto en el primer mes para esta acción', {type:2});
+                                budgetYearConcept.equals = false;
                             }
                         } else {
-                            $.each(concepto.conceptMonth, function(index, el) {
-                                if (el.month> 1) {
-                                    el.amountConcept= '';
-                                } else {
-                                    concepto.total= accounting.unformat(el.amountConcept);
-                                }
-                            });
+                            budgetYearConcept.februaryAmount = 0;
+                            budgetYearConcept.marchAmount = 0;
+                            budgetYearConcept.aprilAmount = 0;
+                            budgetYearConcept.mayAmount = 0;
+                            budgetYearConcept.juneAmount = 0;
+                            budgetYearConcept.julyAmount = 0;
+                            budgetYearConcept.augustAmount = 0;
+                            budgetYearConcept.septemberAmount = 0;
+                            budgetYearConcept.octoberAmount = 0;
+                            budgetYearConcept.novemberAmount = 0;
+                            budgetYearConcept.decemberAmount = 0;
+
+                            this.getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept);
                         }
-                        this.obtainTotalConcept(concepto, budget);
                     },
-                    deleteObject: function(budget, concepto) {
-                        if (concepto.idConcept> 0) {
-                            this.$http.delete(ROOT_URL + "/budget-concepts/" + concepto.idConcept)
+                    addConcept: function(indexOfBudget, indexOfBudgetSubcategory, budgetSubcategory, concepts) {
+                        var self = this;
+                        var budgetYearConcept = this.createNewConcept();
+                        budgetSubcategory.budgetYearConceptList.push(budgetYearConcept);
+                        var indexOfBudgetYearConcept = budgetSubcategory.budgetYearConceptList.length - 1;
+                        setTimeout(
+                                function() {
+                                    self.budgets[indexOfBudget]
+                                            .budgetSubcategories[indexOfBudgetSubcategory]
+                                            .budgetYearConceptList[indexOfBudgetYearConcept]
+                                            .selectConcepts = self.createSelectForConcept(indexOfBudget, indexOfBudgetSubcategory, indexOfBudgetYearConcept, concepts);
+                                },
+                                100,
+                                indexOfBudget,
+                                indexOfBudgetSubcategory,
+                                indexOfBudgetYearConcept,
+                                concepts
+                        );
+                    },
+                    removeConcept: function(budgetSubcategory, concept) {
+
+                        if ('idBudgetYearConcept' in concept) {
+                            this.$http.delete(ROOT_URL + "/budget-year-concept/" + concept.idBudgetYearConcept)
                                     .success(function (data) {
-                                        showAlert(data);
+                                        showAlert('Concepto eliminado');
                                         this.getBudgets();
                                     });
                         } else {
-                            budget.conceptos.$remove(concepto);
-                            this.obtainTotalConcept(concepto, budget);
+                            budgetSubcategory.budgetYearConceptList.$remove(concept);
                         }
                     },
-                    obtainTotalConcept: function(concepto, budget) {
-                        concepto.total= 0;
-                        budget.granTotal= 0;
-
-                        $.each(budget.totalMonth, function(index, elemento)
-                        {
-                            elemento.montoConcept='';
-                            var totalMes=0;
-                            var key= index;
-                            $.each(budget.conceptos, function(index, element)
-                            {
-                                totalMes+=accounting.unformat(element.conceptMonth[key].amountConcept);
-                            });
-                            elemento.montoConcept= accounting.formatMoney(totalMes);
-                        });
-
-                        $.each(concepto.conceptMonth, function(index, el)
-                        {
-                            var totals= accounting.unformat(el.amountConcept);
-                            concepto.total+= parseFloat(totals);
-                        });
-
-                        concepto.total= accounting.formatMoney(concepto.total);
-
-                        $.each(budget.conceptos, function(index, el)
-                        {
-                            var total= accounting.unformat(el.total);
-                            budget.granTotal += total;
-                        });
-
-                        budget.granTotal= accounting.formatMoney(budget.granTotal);
-
-                    },
-                    seteoInfo: function(budget, event) {
-                        event.preventDefault();
-                        var concepto = this.createConcept();
-                        var totalMeses = this.createTotalMonths();
-                        concepto.idBudget= budget.idBudget;
-                        concepto.year= this.selected.year;
-                        if (! budget.conceptos) {
-                            Vue.set(budget,"conceptos", []);
-                            Vue.set(budget,"granTotal", '');
-                            Vue.set(budget,"totalMonth", totalMeses);
-                        }
-                        budget.conceptos.push(concepto);
-                    },
-                    createConcept: function () {
+                    createNewConcept : function () {
                         return {
-                            idConcept: 0,
-                            idBudget: 0,
-                            year: 0,
-                            conceptName: '',
-                            conceptMonth: [
-                                {name: 'Enero', month: 1, amountConcept: ''},
-                                {name: 'Febrero', month: 2 , amountConcept: ''},
-                                {name: 'Marzo', month: 3, amountConcept: ''},
-                                {name: 'Abril', month: 4, amountConcept: ''},
-                                {name: 'Mayo', month: 5, amountConcept: ''},
-                                {name: 'Junio', month: 6, amountConcept: ''},
-                                {name: 'Julio', month: 7, amountConcept: ''},
-                                {name: 'Agosto', month: 8 , amountConcept: ''},
-                                {name: 'Septiembre', month: 9, amountConcept: ''},
-                                {name: 'Octubre', month: 10, amountConcept: ''},
-                                {name: 'Noviembre', month: 11, amountConcept: ''},
-                                {name: 'Diciembre', month: 12, amountConcept: ''}
-                            ],
-                            total: 0,
+                            januaryAmount: 0,
+                            februaryAmount: 0,
+                            marchAmount: 0,
+                            aprilAmount: 0,
+                            mayAmount: 0,
+                            juneAmount: 0,
+                            julyAmount: 0,
+                            augustAmount: 0,
+                            septemberAmount: 0,
+                            octoberAmount: 0,
+                            novemberAmount: 0,
+                            decemberAmount: 0,
+                            totalAmount: 0,
+                            budgetConcept: {},
+                            year: this.selected.year,
                             equals: false
                         };
                     },
-                    createTotalMonths: function() {
-                        return [
-                            {month: 1, montoConcept: ''},
-                            {month: 2 ,montoConcept: ''},
-                            {month: 3, montoConcept: ''},
-                            {month: 4, montoConcept: ''},
-                            {month: 5, montoConcept: ''},
-                            {month: 6, montoConcept: ''},
-                            {month: 7, montoConcept: ''},
-                            {month: 8 ,montoConcept: ''},
-                            {month: 9, montoConcept: ''},
-                            {month: 10,montoConcept: ''},
-                            {month: 11,montoConcept: ''},
-                            {month: 12,montoConcept: ''}
-                        ];
-                    },
-                    autorizar: function() {
+                    authorize: function() {
                         var autorizacion = {};
-                        autorizacion.idCostCenter = this.budgets[0].idCostCenter;
-                        autorizacion.idBudgetType = this.budgets[0].idBudgetType;
-                        autorizacion.idBudgetNature = this.budgets[0].idBudgetNature;
-                        autorizacion.year = this.budgets[0].year;
+                        autorizacion.idCostCenter = this.budgets[0].budgetSubcategories[0].costCenter.idCostCenter;
+                        autorizacion.idBudgetType = this.budgets[0].budgetSubcategories[0].budgetType.idBudgetType;
+                        autorizacion.idBudgetNature = this.budgets[0].budgetSubcategories[0].budgetNature.idBudgetNature;
+                        autorizacion.year = this.selected.year;
 
-                        this.$http.post(ROOT_URL + '/budget-month-branch/authorize', JSON.stringify(autorizacion))
+                        if (this.selected.budgetCategory.idBudgetCategory != 0) {
+                            autorizacion.idBudgetCategory = this.selected.budgetCategory.idBudgetCategory;
+                        }
+
+                        this.$http.post(ROOT_URL + '/budget-year-concept/authorize', JSON.stringify(autorizacion))
                                 .success(function(data) {
                                     this.getBudgets();
                                     showAlert('Presupuesto autorizado');
@@ -403,13 +378,20 @@
                                 });
                     },
                     copyBudget: function (overwrite) {
-                        var url = '/budgets/copy-budget?cost_center=' + this.budgets[0].idCostCenter +
-                                '&nature=' + this.budgets[0].idBudgetNature +
+                        var url = '/budget-year-concept/copy-budget?cost_center=' + this.budgets[0].budgetSubcategories[0].costCenter.idCostCenter +
+                                '&nature=' + this.budgets[0].budgetSubcategories[0].budgetNature.idBudgetNature +
+                                '&budget_type=' + this.budgets[0].budgetSubcategories[0].budgetType.idBudgetType +
                                 '&year_from_copy=' + this.selected.yearFromCopy +
                                 '&year_to_copy=' + this.selected.yearToCopy;
+
+                        if (this.selected.budgetCategory.idBudgetCategory != 0) {
+                            url += '&category=' + this.selected.budgetCategory.idBudgetCategory;
+                        }
+
                         if (overwrite) {
                             url += '&overwrite=' + overwrite;
                         }
+
                         this.$http.post(ROOT_URL + url,{})
                                 .success(function(data) {
                                     this.getBudgets();
@@ -430,16 +412,52 @@
                         this.copyBudget(true);
                     },
                     showCopyBudgetModal: function () {
-                        $("#copyBudgetModal").modal("show");
+                        $('#copyBudgetModal').modal('show');
                     },
                     closeCopyBudgetModal: function () {
-                        $("#copyBudgetModal").modal("hide");
+                        $('#copyBudgetModal').modal('hide');
                     },
                     showOverwriteModal: function () {
-                        $("#overwriteModal").modal("show");
+                        $('#overwriteModal').modal('show');
                     },
                     closeOverwriteModal: function () {
-                        $("#overwriteModal").modal("hide");
+                        $('#overwriteModal').modal('hide');
+                    },
+                    getBudgetYearConcept : function (indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept) {
+
+                        console.log(budgetYearConcept);
+
+                        budgetYearConcept.totalAmount = 0;
+                        
+                        budgetYearConcept.totalAmount +=  budgetYearConcept.januaryAmount;
+                        budgetYearConcept.totalAmount +=  budgetYearConcept.februaryAmount;
+                        budgetYearConcept.totalAmount +=  budgetYearConcept.marchAmount;
+                        budgetYearConcept.totalAmount +=  budgetYearConcept.aprilAmount;
+                        budgetYearConcept.totalAmount +=  budgetYearConcept.mayAmount;
+                        budgetYearConcept.totalAmount +=  budgetYearConcept.juneAmount;
+                        budgetYearConcept.totalAmount +=  budgetYearConcept.julyAmount;
+                        budgetYearConcept.totalAmount +=  budgetYearConcept.augustAmount;
+                        budgetYearConcept.totalAmount +=  budgetYearConcept.septemberAmount;
+                        budgetYearConcept.totalAmount +=  budgetYearConcept.octoberAmount;
+                        budgetYearConcept.totalAmount +=  budgetYearConcept.novemberAmount;
+                        budgetYearConcept.totalAmount +=  budgetYearConcept.decemberAmount;
+
+                        this.getTotalSubRubro(indexOfBudget, indexOfBudgetSubcategory);
+
+                    },
+                    getTotalSubRubro : function (indexOfBudget, indexOfBudgetSubcategory) {
+                        var self = this;
+
+                        this.budgets[indexOfBudget].budgetSubcategories[indexOfBudgetSubcategory].totalSubcategoryAmount = 0;
+
+                        this.budgets[indexOfBudget]
+                                .budgetSubcategories[indexOfBudgetSubcategory]
+                                .budgetYearConceptList.forEach(function (budgetYearConcept) {
+                                    self.budgets[indexOfBudget].budgetSubcategories[indexOfBudgetSubcategory].totalSubcategoryAmount += budgetYearConcept.totalAmount;
+                                });
+                    },
+                    onChangeFilter : function () {
+                        this.budgets = [];
                     }
                 },
                 filters: {
@@ -447,6 +465,15 @@
                         var name;
                         name = nombre.substring(0, 3);
                         return name;
+                    },
+                    currencyDisplay : {
+                        read: function(val) {
+                            return '$'+val.toFixed(2);
+                        },
+                        write: function(val, oldVal) {
+                            var number = +val.replace(/[^\d.]/g, '');
+                            return isNaN(number) ? 0 : parseFloat(number.toFixed(2));
+                        }
                     }
                 }
             });
@@ -461,134 +488,191 @@
                 <br>
                 <div class="row">
                     <form v-on:submit.prevent="searchBudget">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <label>Centro de costos</label>
+                                <select v-model="selected.costCenter" class="form-control" @change="onChangeFilter" required>
+                                    <option v-for="costCenter in costCenterList" :value="costCenter">{{costCenter.name}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label>Tipo de gasto</label>
+                                <select v-model="selected.budgetNature" class="form-control" @change="onChangeFilter" required>
+                                    <option v-for="budgetNature in budgetNatureList" :value="budgetNature">{{budgetNature.budgetNature}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label>Tipo</label>
+                                <select v-model="selected.budgetType" class="form-control" @change="onChangeFilter" required>
+                                    <option v-for="budgetType in budgetTypes" :value="budgetType">
+                                        {{budgetType.budgetType}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label>Año</label>
+                                <select v-model="selected.year" class="form-control" @change="onChangeFilter" required>
+                                    <option v-for="year in years" :value="year">
+                                        {{year}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <label>Rubro</label>
+                                <select v-model="selected.budgetCategory" class="form-control" @change="onChangeFilter" required>
+                                    <option selected :value="budgetAllOption">{{budgetAllOption.budgetCategory}}</option>
+                                    <option v-for="budgetCategory in budgetCategories" :value="budgetCategory">{{budgetCategory.budgetCategory}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <button style="margin-top: 25px" class="btn btn-info">Buscar</button>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="row" v-if="budgets.length > 0 && !searching">
                         <div class="col-md-2">
-                            <label>Centro de costos</label>
-                            <select v-model="selected.costCenter" class="form-control" required>
-                                <option v-for="costCenter in costCenterList" :value="costCenter">{{costCenter.name}}</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label>Tipo de gasto</label>
-                            <select v-model="selected.budgetNature" class="form-control" required>
-                                <option v-for="roleCostCenter in rolesCostCenter" :value="roleCostCenter.budgetNature">{{roleCostCenter.budgetNature.budgetNature}}</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label>Tipo</label>
-                            <select v-model="selected.budgetType" class="form-control" required>
-                                <option v-for="budgetType in budgetTypes" :value="budgetType">
-                                    {{budgetType.budgetType}}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label>Año</label>
-                            <select v-model="selected.year" class="form-control" required>
-                                <option v-for="year in years" :value="year">
-                                    {{year}}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-md-1">
-                            <button style="margin-top: 25px" class="btn btn-info">Buscar</button>
-                        </div>
-                        <div class="col-md-2" v-if="budgets.length > 0 && !searching">
-                            <button type="button" style="margin-top: 25px"
+                            <button type="button" style="margin-top: 15px"
                                     class="btn btn-default" @click="showCopyBudgetModal">
                                 Copiar presupuesto
                             </button>
                         </div>
-                        <div class="col-md-4" v-if="budgetCategories.length > 0">
-                            <label>Rubro</label>
-                            <select v-model="selected.budgetCategory" class="form-control" @change="getContenido">
-                                <option selected :value="budgetAllOption">{{budgetAllOption.budgetCategory}}</option>
-                                <option v-for="budgetCategory in budgetCategories" :value="budgetCategory">{{budgetCategory.budgetCategory}}</option>
-                            </select>
+                        <div class="col-md-2" v-if="budgets.length > 0 && role == 19">
+                            <button type="button" style="margin-top: 15px"
+                                    class="btn btn-success" @click="authorize">
+                                Autorizar
+                            </button>
                         </div>
-                    </form>
+                    </div>
                 </div>
                 <br>
                 <div v-if="searching" class="col-xs-12"
                      style="height: 6rem; padding: 2rem 0;">
                     <div class="loader">Cargando...</div>
                 </div>
-                <div v-if="!searching">
-                    <div class="row" v-for="cont in contenido"  style="margin-left: 0px; margin-right: 0px">
+                <div v-else="!searching">
+                    <div class="row" v-for="(indexOfBudget, budget) in budgets"  style="margin-left: 0px; margin-right: 0px">
                         <div class="bs-callout bs-callout-default">
-                            <h4>{{cont[0].budgetCategory.budgetCategory}}</h4>
-                            <div class="row" v-for="conte in cont" style="margin-left: 0px; margin-right: 0px">
-                                <div class="row" style="margin-left: 0px; margin-right: 0px">
-                                    <div class="col-xs-4">
-                                        <h5>{{conte.budgetSubcategory.budgetSubcategory}}</h5>
-                                        <div class="input-group">
-                                            <span class="input-group-addon">$</span>
-                                            <input type="text" class="form-control" placeholder="" disabled="true" v-model=conte.granTotal>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-1 text-left">
-                                        <button type="button" class="btn btn-default" :disabled="isAutorized"
-                                                style="margin-top: 40px" @click="seteoInfo(conte, $event)">
-                                            <span class="glyphicon glyphicon-plus"></span>
-                                        </button>
-                                    </div>
-                                    <div class="col-xs-6 text left" v-if="conte.conceptos.length > 0">
-                                        <button type="button" class="btn btn-default" :disabled="isAutorized"
-                                                style="margin-top: 40px" @click="saveBudget(conte.conceptos)">
-                                            <span class="glyphicon glyphicon-floppy-disk"></span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <br>
-                                <div v-for="concepto in conte.conceptos">
-                                    <div class="row">
-                                        <div class="col-xs-2">
-                                            <label>Concepto</label>
-                                            <input type="text" name="name" class="form-control input-sm"
-                                                   v-model="concepto.conceptName" :disabled="isAutorized">
-
-                                        </div>
-                                        <div class="col-xs-1" v-if="!isAutorized">
-                                            <button style="margin-top: 27px" type="button" class="btn btn-default"
-                                                    @click="deleteObject(conte, concepto)">
-                                                <span class="glyphicon glyphicon-trash"></span>
-                                            </button>
-                                        </div>
-                                        <div class="col-xs-2" v-if="!isAutorized">
-                                            <label style="visibility: hidden">checkbox</label>
-                                            <div class="checkbox">
-                                                <label>
-                                                    <input type="checkbox" v-model="concepto.equals"
-                                                           @change="equalsImport(concepto, conte)"> Copiar monto
-                                                </label>
+                            <h3><b>{{budget.name}}</b></h3>
+                            <div class="row" v-for="(indexOfBudgetSubcategory, budgetSubcategory) in budget.budgetSubcategories" style="margin-left: 0px; margin-right: 0px">
+                                <div class="well">
+                                    <form v-on:submit.prevent="saveBudget(budgetSubcategory.budgetYearConceptList, budgetSubcategory.idBudget)">
+                                        <div class="row" style="margin-left: 0px; margin-right: 0px">
+                                            <div class="col-xs-4">
+                                                <h4>{{budgetSubcategory.name}}</h4>
                                             </div>
                                         </div>
-                                    </div>
-                                    <br>
-                                    <div class="row" style="margin-left: 0px" v-if="conte.conceptos.length > 0">
-                                        <div class="col-xs-1" v-for="month in months"
-                                             style="padding-left: 0px; padding-right: 1px">
-                                            <label>
-                                                {{month.month}}
-                                            </label>
+                                        <br>
+                                        <div class="row" style="margin-left: 0px; margin-right: 0px">
+                                            <div class="col-xs-2">
+                                                <h4>Total:&nbsp;&nbsp;&nbsp;<b class="text-primary">{{budgetSubcategory.totalSubcategoryAmount | currency}}</b></h4>
+                                            </div>
+                                            <div class="col-xs-1 text-left">
+                                                <button type="button" class="btn btn-default" :disabled="budgetYearConcept.authorized"
+                                                        @click="addConcept(indexOfBudget, indexOfBudgetSubcategory, budgetSubcategory, concepts)">
+                                                    <span class="glyphicon glyphicon-plus"></span>
+                                                </button>
+                                            </div>
+                                            <div class="col-xs-1 text left" v-if="budgetSubcategory.budgetYearConceptList.length > 0">
+                                                <button type="submit" class="btn btn-default" :disabled="budgetYearConcept.authorized">
+                                                    <span class="glyphicon glyphicon-floppy-disk"></span>
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
+                                        <br>
+                                        <div v-for="(indexOfBudgetYearConcept, budgetYearConcept) in budgetSubcategory.budgetYearConceptList">
+                                            <div class="row">
+                                                <div class="col-xs-3">
+                                                    <label>Concepto</label>
+                                                    <select id="select-concepts-{{indexOfBudget}}-{{indexOfBudgetSubcategory}}-{{indexOfBudgetYearConcept}}"
+                                                            class="form-control" :disabled="budgetYearConcept.authorized">
+                                                    </select>
 
-                                    <div class="row" style="margin-left: 0px">
-                                        <div class="col-xs-1" v-for="mess in concepto.conceptMonth"
-                                             style="padding-left: 0px; padding-right: 1px">
-                                            <input type="text" class="form-control input-sm" v-model="mess.amountConcept"
-                                                   @change="moneyFormat(mess, concepto, conte)"  :disabled="isAutorized"
-                                                   style="font-size: 10px" onkeypress="return validateFloatKeyPress(this,event)">
+                                                </div>
+                                                <div class="col-xs-1" v-if="!budgetYearConcept.authorized">
+                                                    <button style="margin-top: 27px" type="button" class="btn btn-default"
+                                                            @click="removeConcept(budgetSubcategory, budgetYearConcept)">
+                                                        <span class="glyphicon glyphicon-trash"></span>
+                                                    </button>
+                                                </div>
+                                                <div class="col-xs-2" v-if="!budgetYearConcept.authorized">
+                                                    <div class="checkbox">
+                                                        <label style="margin-top: 27px">
+                                                            <input type="checkbox" v-model="budgetYearConcept.equals" @change="equalsImport(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)"> Copiar monto
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-4" style="margin-top: 27px">
+                                                    <h5>Total concepto:&nbsp;&nbsp;&nbsp;<b class="text-primary">{{budgetYearConcept.totalAmount | currency}}</b></h5>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="row" style="margin-left: 0px">
+                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
+                                                    <label>Ene</label>
+                                                    <input type="text" class="form-control" v-model="budgetYearConcept.januaryAmount | currencyDisplay" required
+                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                                </div>
+                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
+                                                    <label>Feb</label>
+                                                    <input type="text" class="form-control" v-model="budgetYearConcept.februaryAmount | currencyDisplay" required
+                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                                </div>
+                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
+                                                    <label>Mar</label>
+                                                    <input type="text" class="form-control" v-model="budgetYearConcept.marchAmount | currencyDisplay" required
+                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                                </div>
+                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
+                                                    <label>Abr</label>
+                                                    <input type="text" class="form-control" v-model="budgetYearConcept.aprilAmount | currencyDisplay" required
+                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                                </div>
+                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
+                                                    <label>May</label>
+                                                    <input type="text" class="form-control" v-model="budgetYearConcept.mayAmount | currencyDisplay" required
+                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                                </div>
+                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
+                                                    <label>Jun</label>
+                                                    <input type="text" class="form-control" v-model="budgetYearConcept.juneAmount | currencyDisplay" required
+                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                                </div>
+                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
+                                                    <label>Jul</label>
+                                                    <input type="text" class="form-control" v-model="budgetYearConcept.julyAmount | currencyDisplay" required
+                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                                </div>
+                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
+                                                    <label>Ago</label>
+                                                    <input type="text" class="form-control" v-model="budgetYearConcept.augustAmount | currencyDisplay" required
+                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                                </div>
+                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
+                                                    <label>Sep</label>
+                                                    <input type="text" class="form-control" v-model="budgetYearConcept.septemberAmount | currencyDisplay" required
+                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                                </div>
+                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
+                                                    <label>Oct</label>
+                                                    <input type="text" class="form-control" v-model="budgetYearConcept.octoberAmount | currencyDisplay" required
+                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                                </div>
+                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
+                                                    <label>Nov</label>
+                                                    <input type="text" class="form-control" v-model="budgetYearConcept.novemberAmount | currencyDisplay" required
+                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                                </div>
+                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
+                                                    <label>Dic</label>
+                                                    <input type="text" class="form-control" v-model="budgetYearConcept.decemberAmount | currencyDisplay" required
+                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                                </div>
+                                            </div>
+                                            <hr style="border: 1px solid #ccc">
                                         </div>
-                                    </div>
-                                    <br>
+                                    </form>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row" v-if="contenido.length > 0 && role == 36">
-                        <div class="col-xs-12 text-center">
-                            <button class="btn btn-success" @click="autorizar">Autorizar</button>
                         </div>
                     </div>
                 </div>
