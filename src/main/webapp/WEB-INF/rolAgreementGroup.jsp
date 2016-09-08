@@ -55,94 +55,44 @@
 
                 },
                 ready: function () {
-                    this.obtainGroups();
+                    this.obtainRoles();
                 },
                 data: {
-                    groupsAgreements: [],
-                    agreementsGroups: {
-                        agreementName: "",
-                        idAg: ""
-                    },
-                    modalEliminar: {
-                        group: {
-                            agreementGroupName: ""
-                        }
-                    },
-                    groupAgreement: {},
-                    name: '',
-                    groupSelected: {},
-                    groups: [],
-                    arrayAgreement: {
-                        agreements: []
-                    },
-                    idAg: '',
-                    group: {
-                        agreementGroupName: ''
-                    },
+                    rolesGroupsAgreements: [],
+                    roleSelected: {},
+                    roles: [],
                     allCheck: false
                 },
                 methods: {
-                    obtainGroups: function () {
-                        this.groups = [];
-                        this.$http.get(ROOT_URL + "/c-agreements-groups").success(function (data) {
-                            this.groups = data;
+                    obtainRoles: function () {
+                        this.roles = [];
+                        this.$http.get(ROOT_URL + "/calculation-roles").success(function (data) {
+                            this.roles = data;
                         });
                     },
-                    changedGroup: function (group) {
-                        this.idAg = group.idAg;
+                    changedGroup: function (role) {
                         this.allCheck = false;
-                        this.$http.get(ROOT_URL + "/groups-agreements/groups/"+group.idAg).success(function (data) {
-                            this.groupsAgreements = data;
+                        this.$http.get(ROOT_URL + "/roles-group-agreements/role/"+role.idCalculationRole).success(function (data) {
+                            this.rolesGroupsAgreements = data;
                         });
                     },
-                    assignAgreementsToGroup: function (groupAgreement) {
-                        this.$http.post(ROOT_URL + "/groups-agreements/has-agreement", JSON.stringify(groupAgreement)).success(function (data) {
+                    assignGroupToRole: function (group) {
+                        this.$http.post(ROOT_URL + "/roles-group-agreements/change-status", JSON.stringify(group)).success(function (data) {
                         }).error(function () {
                             showAlert("Hubo un error en la solicitud", {type: 3});
-                        });
-                    },
-                    cancelar: function () {
-                        this.group.agreementGroupName = '';
-                        $('#modalAlta').modal('hide');
-                    },
-                    saveAgreementGroup: function () {
-                        if(this.group.agreementGroupName == ''){
-                            showAlert("Debes ingresar un nombre al grupo", {type: 3});
-                        }else {
-                            this.$http.post(ROOT_URL + "/c-agreements-groups/new", JSON.stringify(this.group)).success(function (data) {
-                                showAlert("Grupo dado de alta correctamente");
-                                this.cancelar();
-                                this.obtainGroups();
-                            }).error(function () {
-                                showAlert("Error en la solicitud", {type: 3});
-                            });
-                        }
-                    },
-                    question: function (group) {
-                        this.modalEliminar.group = group;
-                        $('#modalEliminar').modal('show');
-                    },
-                    deleteGroup: function () {
-                        this.$http.post(ROOT_URL + "/c-agreements-groups/low-group/" + this.modalEliminar.group.idAg)
-                                .success(function (data) {
-                                    this.obtainGroups();
-                                    $('#modalEliminar').modal('hide');
-                                    showAlert("Grupo eliminado");
-                                }).error(function (data) {
-                            showAlert("Error en la solicitud",{type: 3});
                         });
                     },
                     all: function () {
                         var self = this;
                         if (this.allCheck == true){
-                            this.groupsAgreements.forEach(function (agreement) {
-                                agreement.hasAgreement = true;
-                                self.assignAgreementsToGroup(agreement);
+                            this.rolesGroupsAgreements.forEach(function (group) {
+                                group.hasGroup = true;
+                                self.assignGroupToRole(group);
                             })
                         }else{
-                            this.groupsAgreements.forEach(function (agreement) {
-                                agreement.hasAgreement = false;
-                                self.assignAgreementsToGroup(agreement);
+                            this.rolesGroupsAgreements.forEach(function (group) {
+                                group.hasGroup = false;
+                                self.assignGroupToRole(group);
                             })
                         }
                     }
@@ -183,16 +133,10 @@
             <div>
                 <div class="row">
                     <div class="col-xs-6 text-header">
-                        <h2>Agrupaciòn de convenios</h2>
+                        <h2>Asignaciòn de grupos por rol</h2>
                     </div>
                     <div class="col-xs-4">
 
-                    </div>
-                    <div class="col-xs-2" style="margin-left: 398px">
-                        <button type="button" class="btn btn-default" name="button"
-                                style="margin-left: 70px; margin-top: 25px" data-toggle="modal" data-target="#modalAlta">
-                            Nuevo grupo
-                        </button>
                     </div>
                 </div>
             </div>
@@ -204,32 +148,27 @@
                         <!-- Table -->
                         <div class="flex-box container-fluid">
                             <div class="row table-header active">
-                                <div class="col-xs-12" style="font-size: 18px"><b>Selecciona un grupo</b></div>
+                                <div class="col-xs-12" style="font-size: 18px"><b>Selecciona un rol</b></div>
                             </div>
                             <br>
                             <div class="table-body flex-row flex-content">
-                                <div class="row table-row" v-for="group in groups" v-if="group.status == 1">
+                                <div class="row table-row" v-for="role in roles">
                                     <div class="col-xs-10">
-                                        <input type="radio" :value="group" v-model="groupSelected" @change="changedGroup(groupSelected)">
-                                        <label>{{group.agreementGroupName}}</label>
-                                    </div>
-                                    <div class="col-xs-2">
-                                        <button type="button" class="btn btn-danger" name="button" data-toggle="tooltip"
-                                                data-placement="bottom" title="Eliminar"
-                                                @click="question(group)"><span class="glyphicon glyphicon-trash"></span></button>
+                                        <input type="radio" :value="role" v-model="roleSelected" @change="changedGroup(roleSelected)">
+                                        <label>{{role.description}}</label>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-6" v-if="groupsAgreements.length > 0">
+                <div class="col-xs-6" v-if="rolesGroupsAgreements.length > 0">
                     <div style="background: #ddd" class="panel panel-default">
                         <!-- Default panel contents -->
                         <!-- Table -->
                         <div class="flex-box container-fluid">
                             <div class="row table-header active">
-                                <div class="col-xs-12" style="font-size: 18px"><b>Selecciona los convenios para asignarlos al grupo</b></div>
+                                <div class="col-xs-12" style="font-size: 18px"><b>Selecciona los grupos para asignarlos al rol</b></div>
                                 <div class="col-xs-12" style="font-size: 14px">
                                     <input type="checkbox" v-model="allCheck" @change="all()">
                                     <label>Seleccionar todos</label>
@@ -237,62 +176,13 @@
                             </div>
                             <br>
                             <div class="table-body flex-row flex-content">
-                                <div class="row table-row" v-for="agreement in groupsAgreements">
+                                <div class="row table-row" v-for="group in rolesGroupsAgreements">
                                     <div class="col-xs-12">
-                                        <input type="checkbox" :value="agreement" v-model="agreement.hasAgreement" @change="assignAgreementsToGroup(agreement)">
-                                        <label>{{agreement.agreement.idAgreement}} - {{agreement.agreement.agreementName}}</label>
+                                        <input type="checkbox" :value="group" v-model="group.hasGroup" @change="assignGroupToRole(group)">
+                                        <label>{{group.aG.agreementGroupName}}</label>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- container-fluid -->
-            <div class="modal fade" id="modalAlta" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-                <div class="modal-dialog modal-sm">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">Registro</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row" >
-                                <div class="col-xs-12">
-                                    <label>Nombre del grupo</label>
-                                    <input class="form-control" name="name" v-model="group.agreementGroupName">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" @click="cancelar">Cancelar</button>
-                            <button type="button" class="btn btn-success" @click="saveAgreementGroup">
-                                Guardar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal fade" id="modalEliminar" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-                <div class="modal-dialog ">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">
-                                Confirmaciòn
-                            </h4>
-                        </div>
-                        <div class="modal-body">
-                            <p>El grupo <label>{{modalEliminar.group.agreementGroupName}}</label> será
-                                dado de baja</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                            <button id="btnFlag" type="button" class="btn btn-danger" @click="deleteGroup">
-                                Aceptar
-                            </button>
                         </div>
                     </div>
                 </div>

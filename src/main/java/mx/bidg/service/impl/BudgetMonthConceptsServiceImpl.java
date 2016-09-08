@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import mx.bidg.dao.BudgetMonthBranchDao;
+import mx.bidg.dao.BudgetYearConceptDao;
 import mx.bidg.dao.BudgetMonthConceptsDao;
 import mx.bidg.dao.BudgetsDao;
 import mx.bidg.exceptions.ValidationException;
@@ -37,7 +37,7 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
     private CBudgetConceptsService cBudgetConceptsService;
 
     @Autowired
-    private BudgetMonthBranchDao budgetMonthBranchDao;
+    private BudgetYearConceptDao budgetYearConceptDao;
     
     @Autowired
     private BudgetsDao budgetsDao;
@@ -58,7 +58,7 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
             String conceptName = jsonRequest.get("conceptName").asText();
             Budgets budget = new Budgets(jsonRequest.get("idBudget").asInt());
             Integer year = jsonRequest.get("year").asInt();
-            BudgetMonthBranch budgetMonthBranch;
+            BudgetYearConcept budgetYearConcept;
             BigDecimal amountConcept;
             BigDecimal amount;
             CMonths month;
@@ -77,22 +77,22 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
                     
                     for(BudgetMonthConcepts budgetMonthConcepts : list) {
 
-                        budgetMonthBranch = budgetMonthConcepts.getBudgetMonthBranch();
+//                        budgetYearConcept = budgetMonthConcepts.getBudgetYearConcept();
                         
-                        if(budgetMonthBranch.getAuthorized())
-                            throw new ValidationException("El presupuesto ya esta autorizado!", 
-                                    "No puede modificarse un presupuesto ya autorizado");
+//                        if(budgetYearConcept.getAuthorized())
+//                            throw new ValidationException("El presupuesto ya esta autorizado!",
+//                                    "No puede modificarse un presupuesto ya autorizado");
                         
-                        if(budgetMonthBranch.getBudget().getIdBudget().equals(budget.getIdBudget()) &&
-                                budgetMonthBranch.getMonth().getIdMonth().equals(month.getIdMonth()) && 
-                                budgetMonthBranch.getYear() == year) {
+//                        if(budgetYearConcept.getBudget().getIdBudget().equals(budget.getIdBudget()) &&
+//                                budgetYearConcept.getMonth().getIdMonth().equals(month.getIdMonth()) &&
+//                                budgetYearConcept.getYear() == year) {
                             
-                            BigDecimal amountConceptActual = budgetMonthConcepts.getAmount();
-                            BigDecimal amountActual = budgetMonthBranch.getAmount();
-                            budgetMonthBranch.setAmount(amountActual.subtract(amountConceptActual).add(amountConcept));
-                            budgetMonthConcepts.setAmount(amountConcept);
-                            budgetMonthBranch.setUsername(user.getUsername());
-                        }
+//                            BigDecimal amountConceptActual = budgetMonthConcepts.getAmount();
+//                            BigDecimal amountActual = budgetYearConcept.getAmount();
+//                            budgetYearConcept.setAmount(amountActual.subtract(amountConceptActual).add(amountConcept));
+//                            budgetMonthConcepts.setAmount(amountConcept);
+//                            budgetYearConcept.setUsername(user.getUsername());
+//                        }
 
                     }
                     
@@ -111,37 +111,37 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
                     amountConcept = MoneyConverter.obtainNumber(conceptMonth.get("amountConcept").asText());
                     month = new CMonths(conceptMonth.get("month").asInt());
 
-                    budgetMonthBranch = budgetMonthBranchDao.findByCombination(budget, month, year);
+                    budgetYearConcept = budgetYearConceptDao.findByCombination(budget, month, year);
 
-                    if (budgetMonthBranch == null) {
+                    if (budgetYearConcept == null) {
 
-                        budgetMonthBranch = new BudgetMonthBranch();
-                        budgetMonthBranch.setAmount(amountConcept);
-                        budgetMonthBranch.setExpendedAmount(new BigDecimal(0));
-                        budgetMonthBranch.setIdAccessLevel(1);
-                        budgetMonthBranch.setCurrency(new CCurrencies(1));
-                        budgetMonthBranch.setBudget(budget);
-                        budgetMonthBranch.setMonth(month);
-                        budgetMonthBranch.setYear(year);
-                        budgetMonthBranch.setAuthorized(false);
-                        budgetMonthBranch.setUsername(user.getUsername());
-                        budgetMonthBranch = budgetMonthBranchDao.save(budgetMonthBranch);
+                        budgetYearConcept = new BudgetYearConcept();
+//                        budgetYearConcept.setAmount(amountConcept);
+//                        budgetYearConcept.setExpendedAmount(new BigDecimal(0));
+                        budgetYearConcept.setIdAccessLevel(1);
+                        budgetYearConcept.setCurrency(new CCurrencies(1));
+                        budgetYearConcept.setBudget(budget);
+//                        budgetYearConcept.setMonth(month);
+                        budgetYearConcept.setYear(year);
+                        budgetYearConcept.setAuthorized(false);
+                        budgetYearConcept.setUsername(user.getUsername());
+                        budgetYearConcept = budgetYearConceptDao.save(budgetYearConcept);
 
                     } else {
                         
-                        if(budgetMonthBranch.getAuthorized())
+                        if(budgetYearConcept.getAuthorized())
                             throw new ValidationException("El presupuesto ya esta autorizado!", 
                                     "No puede modificarse un presupuesto ya autorizado");
 
-                        amount = budgetMonthBranch.getAmount();
-                        budgetMonthBranch.setAmount(amount.add(amountConcept));
-                        budgetMonthBranch.setUsername(user.getUsername());
-                        budgetMonthBranch = budgetMonthBranchDao.update(budgetMonthBranch);
+//                        amount = budgetYearConcept.getAmount();
+//                        budgetYearConcept.setAmount(amount.add(amountConcept));
+                        budgetYearConcept.setUsername(user.getUsername());
+                        budgetYearConcept = budgetYearConceptDao.update(budgetYearConcept);
 
                     }
 
                     concept = cBudgetConceptsService.save(concept);
-                    budgetMonthConcepts.setBudgetMonthBranch(budgetMonthBranch);
+//                    budgetMonthConcepts.setBudgetYearConcept(budgetYearConcept);
                     budgetMonthConcepts.setBudgetConcept(concept);
                     budgetMonthConcepts.setIdAccessLevel(1);
                     budgetMonthConcepts.setCurrency(new CCurrencies(1));

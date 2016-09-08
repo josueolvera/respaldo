@@ -3,7 +3,6 @@ package mx.bidg.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,9 +51,9 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
         Integer idRequest = json.get("idRequest").asInt();
         Requests request = requestsDao.findByIdFetchBudgetMonthBranch(idRequest);
-        BigDecimal budgetAmount = request.getBudgetMonthBranch().getAmount();
-        BigDecimal expendedAmount = request.getBudgetMonthBranch().getExpendedAmount();
-        BigDecimal residualAmount = budgetAmount.subtract(expendedAmount);
+//        BigDecimal budgetAmount = request.getBudgetYearConcept().getAmount();
+//        BigDecimal expendedAmount = request.getBudgetYearConcept().getExpendedAmount();
+//        BigDecimal residualAmount = budgetAmount.subtract(expendedAmount);
         Accounts account = accountsDao.findById(json.get("idAccount").asInt());
         int idCurrency = json.get("idCurrency").asInt();
         BigDecimal rate = ((json.get("rate").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("rate").decimalValue() : BigDecimal.ONE;
@@ -78,7 +77,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             estimation.setEstimationStatus(new CEstimationStatus(CEstimationStatus.PENDIENTE));
         }
         //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
-        estimation.setOutOfBudget((residualAmount.compareTo(tempAmount) == -1)? 1 : 0);
+//        estimation.setOutOfBudget((residualAmount.compareTo(tempAmount) == -1)? 1 : 0);
         estimation = priceEstimationsDao.save(estimation);
 
         request.setRequestStatus(CRequestStatus.COTIZADA);
@@ -99,9 +98,9 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         JsonNode json = mapper.readTree(data);
         if(estimation.getEstimationStatus().getIdEstimationStatus().equals(CEstimationStatus.PENDIENTE)) {
             Requests request = requestsDao.findByIdFetchBudgetMonthBranch(estimation.getIdRequest());
-            BigDecimal budgetAmount = request.getBudgetMonthBranch().getAmount();
-            BigDecimal expendedAmount = request.getBudgetMonthBranch().getExpendedAmount();
-            BigDecimal residualAmount = budgetAmount.subtract(expendedAmount);
+//            BigDecimal budgetAmount = request.getBudgetYearConcept().getAmount();
+//            BigDecimal expendedAmount = request.getBudgetYearConcept().getExpendedAmount();
+//            BigDecimal residualAmount = budgetAmount.subtract(expendedAmount);
             BigDecimal rate = ((json.get("rate").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("rate").decimalValue() : BigDecimal.ONE;
             BigDecimal amount = ((json.get("amount").decimalValue().compareTo(BigDecimal.ZERO)) == 1)?
                     json.get("amount").decimalValue() : BigDecimal.ZERO;
@@ -113,7 +112,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             estimation.setRate(rate);
             estimation.setUserEstimation(user);
             //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
-            estimation.setOutOfBudget((residualAmount.compareTo(tempAmount) == -1)? 1 : 0);
+//            estimation.setOutOfBudget((residualAmount.compareTo(tempAmount) == -1)? 1 : 0);
             
             return estimation;
         } else {

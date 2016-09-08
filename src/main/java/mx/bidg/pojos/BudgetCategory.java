@@ -49,17 +49,13 @@ public class BudgetCategory {
 
         BudgetCategory that = (BudgetCategory) o;
 
-        if (idBudgetCategory != null ? !idBudgetCategory.equals(that.idBudgetCategory) : that.idBudgetCategory != null)
-            return false;
-        return name != null ? name.equals(that.name) : that.name == null;
+        return idBudgetCategory != null ? idBudgetCategory.equals(that.idBudgetCategory) : that.idBudgetCategory == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = idBudgetCategory != null ? idBudgetCategory.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
+        return idBudgetCategory != null ? idBudgetCategory.hashCode() : 0;
     }
 
     @Override

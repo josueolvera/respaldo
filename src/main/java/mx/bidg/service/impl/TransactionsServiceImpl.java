@@ -15,12 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -252,8 +250,8 @@ public class TransactionsServiceImpl implements TransactionsService {
                 }
                 RequestTypesProduct requestTypesProduct = requests.getRequestTypeProduct();
 //                CProductTypes productType = requestTypesProduct.getProductType();
-                BudgetMonthBranch budgetMonthBranch = requests.getBudgetMonthBranch();
-//                DwEnterprises dwEnterprise = budgetMonthBranch.getDwEnterprise();
+                BudgetYearConcept budgetYearConcept = requests.getBudgetYearConcept();
+//                DwEnterprises dwEnterprise = budgetYearConcept.getDwEnterprise();
 //                CDistributors cDistributors = dwEnterprise.getDistributor();
 //                CRegions cRegions = dwEnterprise.getRegion();
 //                CBranchs cBranchs = dwEnterprise.getBranch();

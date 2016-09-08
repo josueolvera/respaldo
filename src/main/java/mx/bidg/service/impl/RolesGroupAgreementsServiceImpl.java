@@ -57,4 +57,10 @@ public class RolesGroupAgreementsServiceImpl implements RolesGroupAgreementsServ
         List<CAgreementsGroups> agreementsGroupsList = cAgreementsGroupsDao.findGruoupActives();
         return rolesGroupAgreementsDao.findByRole(idRole, agreementsGroupsList);
     }
+
+    @Override
+    public List<RolesGroupAgreements> findByRoles(Integer idRole) {
+        List<CAgreementsGroups> agreementsGroupsList = cAgreementsGroupsDao.findGruoupActives();
+        return rolesGroupAgreementsDao.findByRoles(idRole, agreementsGroupsList);
+    }
 }

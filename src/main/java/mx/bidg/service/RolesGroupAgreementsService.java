@@ -14,4 +14,5 @@ public interface RolesGroupAgreementsService {
     boolean delete(RolesGroupAgreements rolesGroupAgreements);
     List<RolesGroupAgreements> findAll();
     List<RolesGroupAgreements> findByRole(Integer idRole);
+    List<RolesGroupAgreements> findByRoles(Integer idRole);
 }

@@ -85,8 +85,13 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
     }
 
     @Override
-    public List<Budgets> getBudgets(Integer idCostCenter, Integer idBudgetType, Integer idBudgetNature) {
+    public List<Budgets> getBudgets(Integer idCostCenter, Integer idBudgetType, Integer idBudgetNature, Integer idBudgetCategory) {
         Criteria criteria = createEntityCriteria();
+
+        if (idBudgetCategory != null) {
+            criteria.createCriteria("accountingAccount")
+                    .add(Restrictions.eq("idBudgetCategory", idBudgetCategory));
+        }
 
         if (idCostCenter != null) {
             criteria.add(Restrictions.eq("idCostCenter", idCostCenter));
@@ -99,21 +104,6 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
         if (idBudgetNature != null) {
             criteria.add(Restrictions.eq("idBudgetNature", idBudgetNature));
         }
-
-        return criteria.list();
-    }
-
-    @Override
-    public List<Budgets> getBudgets(Integer idCostCenter, Integer idBudgetCategory) {
-
-        Criteria criteria = createEntityCriteria();
-
-        if (idBudgetCategory != null) {
-            criteria.createCriteria("accountingAccount")
-                    .add(Restrictions.eq("idBudgetCategory", idBudgetCategory));
-        }
-
-        criteria.add(Restrictions.eq("idCostCenter", idCostCenter));
 
         return criteria.list();
     }

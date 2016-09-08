@@ -25,7 +25,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.Type;
 
 
 /**
@@ -91,7 +90,7 @@ public class Budgets implements Serializable {
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "budget")
     @JsonView(JsonViews.Embedded.class)
-    private List<BudgetMonthBranch> budgetMonthBranchList;
+    private List<BudgetYearConcept> budgetYearConceptList;
 
     public Budgets() {
     }
@@ -188,12 +187,12 @@ public class Budgets implements Serializable {
         this.budgetNature = budgetNature;
     }
 
-    public List<BudgetMonthBranch> getBudgetMonthBranchList() {
-        return budgetMonthBranchList;
+    public List<BudgetYearConcept> getBudgetYearConceptList() {
+        return budgetYearConceptList;
     }
 
-    public void setBudgetMonthBranchList(List<BudgetMonthBranch> budgetMonthBranchList) {
-        this.budgetMonthBranchList = budgetMonthBranchList;
+    public void setBudgetYearConceptList(List<BudgetYearConcept> budgetYearConceptList) {
+        this.budgetYearConceptList = budgetYearConceptList;
     }
 
     @Override
@@ -239,7 +238,7 @@ public class Budgets implements Serializable {
                 ", accountingAccount=" + accountingAccount +
                 ", budgetType=" + budgetType +
                 ", budgetNature=" + budgetNature +
-                ", budgetMonthBranchList=" + budgetMonthBranchList +
+                ", budgetYearConceptList=" + budgetYearConceptList +
                 '}';
     }
 }

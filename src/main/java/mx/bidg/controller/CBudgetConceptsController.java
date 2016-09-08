@@ -6,16 +6,16 @@
 package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import mx.bidg.model.BudgetMonthBranch;
+
+import mx.bidg.config.JsonViews;
+import mx.bidg.model.BudgetYearConcept;
 import mx.bidg.model.BudgetMonthConcepts;
 import mx.bidg.model.Budgets;
-import mx.bidg.model.CAreas;
 import mx.bidg.model.CBudgetConcepts;
-import mx.bidg.model.CGroups;
 import mx.bidg.model.CMonths;
 import mx.bidg.pojos.BudgetPojo;
 import mx.bidg.pojos.ConceptMonthPojo;
@@ -79,7 +79,7 @@ public class CBudgetConceptsController {
 
                     conceptMonthPojoList = new ArrayList<>();
                     totalMonthPojoList = new ArrayList<>();
-                    List<BudgetMonthConcepts> budgetMonthConceptList = budgetConcept.getBudgetMonthConceptsList();
+//                    List<BudgetMonthConcepts> budgetMonthConceptList = budgetConcept.getBudgetMonthConceptsList();
                     conceptPojo = new ConceptPojo();
                     conceptPojo.setIdConcept(budgetConcept.getIdBudgetConcept());
                     conceptPojo.setIdBudget(budget.getIdBudget());
@@ -87,28 +87,28 @@ public class CBudgetConceptsController {
                     conceptPojo.setTotal(BigDecimal.ZERO);
                     conceptPojo.setEquals(false);
                     
-                    for(BudgetMonthConcepts budgetMonthConcept : budgetMonthConceptList) {
+//                    for(BudgetMonthConcepts budgetMonthConcept : budgetMonthConceptList) {
 
-                        BudgetMonthBranch budgetMonthBranch = budgetMonthConcept.getBudgetMonthBranch();
-                        cMonth = monthsService.findById(budgetMonthBranch.getIdMonth());
+//                        BudgetYearConcept budgetYearConcept = budgetMonthConcept.getBudgetYearConcept();
+//                        cMonth = monthsService.findById(budgetYearConcept.getIdMonth());
                         
-                        conceptMonthPojo = new ConceptMonthPojo(
-                                cMonth.getIdMonth(),
-                                cMonth.getMonth(),
-                                budgetMonthConcept.getAmount()
-                        );
+//                        conceptMonthPojo = new ConceptMonthPojo(
+//                                cMonth.getIdMonth(),
+//                                cMonth.getMonth(),
+//                                budgetMonthConcept.getAmount()
+//                        );
                         
-                        totalMonthPojo = new TotalMonthPojo(
-                                cMonth.getIdMonth(), 
-                                budgetMonthBranch.getAmount());
+//                        totalMonthPojo = new TotalMonthPojo(
+//                                cMonth.getIdMonth(),
+//                                budgetYearConcept.getAmount());
                         
-                        conceptMonthPojoList.add(conceptMonthPojo);
-                        totalMonthPojoList.add(totalMonthPojo);
-//                        conceptPojo.setDwEnterprise(budgetMonthBranch.getDwEnterprise().getIdDwEnterprise());
-                        conceptPojo.setYear(budgetMonthBranch.getYear());
-                        budgetPojo.setYear(budgetMonthBranch.getYear());
-                        budgetPojo.setAuthorized(budgetMonthBranch.getAuthorized());
-                    }
+//                        conceptMonthPojoList.add(conceptMonthPojo);
+//                        totalMonthPojoList.add(totalMonthPojo);
+//                        conceptPojo.setDwEnterprise(budgetYearConcept.getDwEnterprise().getIdDwEnterprise());
+//                        conceptPojo.setYear(budgetYearConcept.getYear());
+//                        budgetPojo.setYear(budgetYearConcept.getYear());
+//                        budgetPojo.setAuthorized(budgetYearConcept.getAuthorized());
+//                    }
                     
                     conceptPojo.setConceptMonth(conceptMonthPojoList);
                     conceptPojoList.add(conceptPojo);
@@ -146,84 +146,14 @@ public class CBudgetConceptsController {
         
     }
 
-    @RequestMapping(value = "/cost-center/{idCostCenter}/budget-type/{idBudgetType}/budget-nature/{idBudgetNature}/year/{year}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> getBudgetConceptsByBudgetType(@PathVariable Integer idCostCenter, @PathVariable Integer idBudgetType, @PathVariable Integer idBudgetNature, @PathVariable int year) throws Exception {
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findAll() throws Exception {
+        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(budgetConceptsService.findAll()));
+    }
 
-        List<BudgetPojo> list = new ArrayList<>();
-        List<ConceptMonthPojo> conceptMonthPojoList;
-        List<TotalMonthPojo> totalMonthPojoList;
-        List<ConceptPojo> conceptPojoList;
-        BudgetPojo budgetPojo;
-        ConceptPojo conceptPojo;
-        ConceptMonthPojo conceptMonthPojo;
-        TotalMonthPojo totalMonthPojo;
-        CMonths cMonth;
-
-        List<Budgets> budgets = budgetsService.getBudgets(idCostCenter, idBudgetType, idBudgetNature);
-
-        for(Budgets budget : budgets) {
-            List<CBudgetConcepts> budgetConcepts = budgetConceptsService.findByBudget(budget, year);
-
-            conceptPojoList = new ArrayList<>();
-            totalMonthPojoList = new ArrayList<>();
-            budgetPojo = new BudgetPojo();
-
-            for(CBudgetConcepts budgetConcept : budgetConcepts) {
-
-                conceptMonthPojoList = new ArrayList<>();
-                totalMonthPojoList = new ArrayList<>();
-                List<BudgetMonthConcepts> budgetMonthConceptList = budgetConcept.getBudgetMonthConceptsList();
-                conceptPojo = new ConceptPojo();
-                conceptPojo.setIdConcept(budgetConcept.getIdBudgetConcept());
-                conceptPojo.setIdBudget(budget.getIdBudget());
-                conceptPojo.setConceptName(budgetConcept.getBudgetConcept());
-                conceptPojo.setTotal(BigDecimal.ZERO);
-                conceptPojo.setEquals(false);
-
-                for(BudgetMonthConcepts budgetMonthConcept : budgetMonthConceptList) {
-
-                    BudgetMonthBranch budgetMonthBranch = budgetMonthConcept.getBudgetMonthBranch();
-                    cMonth = monthsService.findById(budgetMonthBranch.getIdMonth());
-
-                    conceptMonthPojo = new ConceptMonthPojo(
-                            cMonth.getIdMonth(),
-                            cMonth.getMonth(),
-                            budgetMonthConcept.getAmount()
-                    );
-
-                    totalMonthPojo = new TotalMonthPojo(
-                            cMonth.getIdMonth(),
-                            budgetMonthBranch.getAmount());
-
-                    conceptMonthPojoList.add(conceptMonthPojo);
-                    totalMonthPojoList.add(totalMonthPojo);
-                    conceptPojo.setYear(budgetMonthBranch.getYear());
-                    budgetPojo.setYear(budgetMonthBranch.getYear());
-                    budgetPojo.setAuthorized(budgetMonthBranch.getAuthorized());
-                }
-
-                conceptPojo.setConceptMonth(conceptMonthPojoList);
-                conceptPojoList.add(conceptPojo);
-
-            }
-
-            budgetPojo.setIdBudget(budget.getIdBudget());
-            budgetPojo.setIdBudgetCategory(budget.getAccountingAccount().getIdBudgetCategory());
-            budgetPojo.setBudgetCategory(budget.getAccountingAccount().getBudgetCategory());
-            budgetPojo.setIdBudgetSubcategory(budget.getAccountingAccount().getIdBudgetSubcategory());
-            budgetPojo.setBudgetSubcategory(budget.getAccountingAccount().getBudgetSubcategory());
-            budgetPojo.setIdCostCenter(budget.getIdCostCenter());
-            budgetPojo.setIdBudgetType(budget.getIdBudgetType());
-            budgetPojo.setIdBudgetNature(budget.getIdBudgetNature());
-            budgetPojo.setConceptos(conceptPojoList);
-            budgetPojo.setTotalMonth(totalMonthPojoList);
-            budgetPojo.setGranTotal(BigDecimal.ZERO);
-
-            list.add(budgetPojo);
-        }
-
-        return ResponseEntity.ok(mapper.writeValueAsString(list));
-
+    @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> save(@RequestBody CBudgetConcepts budgetConcept) throws Exception {
+        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(budgetConceptsService.save(budgetConcept)));
     }
     
 }

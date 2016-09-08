@@ -22,6 +22,7 @@ import org.springframework.stereotype.Repository;
  * @author sistemask
  */
 @Repository
+@SuppressWarnings("unchecked")
 public class CBudgetConceptsDaoImpl extends AbstractDao<Integer, CBudgetConcepts> implements CBudgetConceptsDao {
 
     @Override
@@ -40,7 +41,7 @@ public class CBudgetConceptsDaoImpl extends AbstractDao<Integer, CBudgetConcepts
     @Override
     public List<CBudgetConcepts> findAll() {
         Criteria criteria = createEntityCriteria();
-        return (List<CBudgetConcepts>) criteria.list();
+        return criteria.list();
     }
 
     @Override

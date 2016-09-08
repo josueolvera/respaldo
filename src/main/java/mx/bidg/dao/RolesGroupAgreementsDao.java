@@ -12,4 +12,5 @@ import java.util.List;
 public interface RolesGroupAgreementsDao extends InterfaceDao<RolesGroupAgreements> {
     List<RolesGroupAgreements> findByRole(Integer idRole, List<CAgreementsGroups> groupsList);
     List<RolesGroupAgreements> findByGroup(Integer idAg);
+    List<RolesGroupAgreements> findByRoles(Integer idRole, List<CAgreementsGroups> groupsList);
 }

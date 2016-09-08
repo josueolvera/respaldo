@@ -67,4 +67,20 @@ public class RolesGroupAgreementsDaoImpl extends AbstractDao<Integer, RolesGroup
     public List<RolesGroupAgreements> findByGroup(Integer idAg) {
         return createEntityCriteria().add(Restrictions.eq("idAg", idAg)).list();
     }
+
+    @Override
+    public List<RolesGroupAgreements> findByRoles(Integer idRole, List<CAgreementsGroups> groupsList) {
+        Criteria criteria = createEntityCriteria();
+        Disjunction groupDisjunction =  Restrictions.disjunction();
+
+        for (CAgreementsGroups agreementsGroups : groupsList){
+            groupDisjunction.add(Restrictions.eq("idAg", agreementsGroups.getIdAg()));
+        }
+
+        criteria.add(groupDisjunction);
+
+        return criteria.add(Restrictions.eq("idCalculationRole",idRole))
+                .addOrder(Order.asc("idAg"))
+                .list();
+    }
 }

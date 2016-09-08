@@ -5,11 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.RolesGroupAgreements;
 import mx.bidg.service.RolesGroupAgreementsService;
+import org.codehaus.groovy.runtime.powerassert.SourceText;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.SocketUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,7 +41,7 @@ public class RolesGroupAgreementsController {
 
     @RequestMapping(value="/role/{idRole}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findByGroupAgreement(@PathVariable Integer idRole)throws IOException{
-        List<RolesGroupAgreements> rolesGroupAgreementsList = rolesGroupAgreementsService.findByRole(idRole);
+        List<RolesGroupAgreements> rolesGroupAgreementsList = rolesGroupAgreementsService.findByRoles(idRole);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(rolesGroupAgreementsList),HttpStatus.OK);
     }
 
@@ -48,7 +50,7 @@ public class RolesGroupAgreementsController {
 
         JsonNode node = mapper.readTree(data);
 
-        RolesGroupAgreements rolesGroupAgreements  = rolesGroupAgreementsService.findById(node.get("idRole").asInt());
+        RolesGroupAgreements rolesGroupAgreements  = rolesGroupAgreementsService.findById(node.get("idRoleGroupAgreement").asInt());
         rolesGroupAgreements.setHasGroup(node.get("hasGroup").asBoolean());
         rolesGroupAgreements = rolesGroupAgreementsService.update(rolesGroupAgreements);
 

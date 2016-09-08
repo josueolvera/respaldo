@@ -8,12 +8,10 @@ package mx.bidg.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
@@ -29,7 +27,6 @@ import mx.bidg.service.ProvidersAccountsService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellUtil;
-import org.codehaus.groovy.runtime.powerassert.SourceText;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -52,7 +49,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
     private CPeriodsDao periodsDao;
 
     @Autowired
-    private BudgetMonthBranchDao budgetMonthBranchDao;
+    private BudgetYearConceptDao budgetYearConceptDao;
 
     @Autowired
     private BalancesDao balancesDao;
@@ -215,10 +212,10 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
 
         Requests requests = requestsDao.findByFolio(accountsPayable.getFolio());
 
-        BudgetMonthBranch budgetMonthBranch = requests.getBudgetMonthBranch();
-        BigDecimal addAmountTransaction = budgetMonthBranch.getExpendedAmount().add(transactions.getAmount());
-        budgetMonthBranch.setExpendedAmount(addAmountTransaction);
-        budgetMonthBranchDao.update(budgetMonthBranch);
+        BudgetYearConcept budgetYearConcept = requests.getBudgetYearConcept();
+//        BigDecimal addAmountTransaction = budgetYearConcept.getExpendedAmount().add(transactions.getAmount());
+//        budgetYearConcept.setExpendedAmount(addAmountTransaction);
+        budgetYearConceptDao.update(budgetYearConcept);
 
 
         BigDecimal substractAmountTransaction = balances.getCurrentAmount().subtract(transactions.getAmount());
@@ -306,8 +303,8 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
                 }
                 //RequestTypesProduct requestTypesProduct = requests.getRequestTypeProduct();
                 //CProductTypes productType = requestTypesProduct.getProductType();
-                BudgetMonthBranch budgetMonthBranch = requests.getBudgetMonthBranch();
-//                DwEnterprises dwEnterprise = budgetMonthBranch.getDwEnterprise();
+                BudgetYearConcept budgetYearConcept = requests.getBudgetYearConcept();
+//                DwEnterprises dwEnterprise = budgetYearConcept.getDwEnterprise();
 //                CDistributors cDistributors = dwEnterprise.getDistributor();
 //                CRegions cRegions = dwEnterprise.getRegion();
 //                CBranchs cBranchs = dwEnterprise.getBranch();

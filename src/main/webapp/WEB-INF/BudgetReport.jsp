@@ -99,15 +99,6 @@
 
                                 });
                     },
-                    getMonths: function () {
-                        this.$http.get(ROOT_URL + '/months')
-                                .success(function (data) {
-                                    this.months = data;
-                                })
-                                .error(function (data) {
-
-                                });
-                    },
                     setYears: function () {
                         var now = new Date(this.now);
                         this.selected.year = now.getFullYear();

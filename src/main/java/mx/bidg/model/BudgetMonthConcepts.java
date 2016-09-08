@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -58,18 +57,18 @@ public class BudgetMonthConcepts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetMonthBranch;
     
-    @Column(name = "ID_BUDGET_CONCEPT", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idBudgetConcept;
+//    @Column(name = "ID_BUDGET_CONCEPT", insertable = false, updatable = false)
+//    @JsonView(JsonViews.Root.class)
+//    private Integer idBudgetConcept;
     
     @Column(name = "ID_CURRENCY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idCurrency;
     
-    @JoinColumn(name = "ID_BUDGET_MONTH_BRANCH", referencedColumnName = "ID_BUDGET_MONTH_BRANCH")
-    @ManyToOne(optional = false)
-    @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
-    private BudgetMonthBranch budgetMonthBranch;
+//    @JoinColumn(name = "ID_BUDGET_MONTH_BRANCH", referencedColumnName = "ID_BUDGET_MONTH_BRANCH")
+//    @ManyToOne(optional = false)
+//    @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
+//    private BudgetYearConcept budgetYearConcept;
     
     @JoinColumn(name = "ID_BUDGET_CONCEPT", referencedColumnName = "ID_BUDGET_CONCEPT")
     @ManyToOne(optional = false)
@@ -120,13 +119,13 @@ public class BudgetMonthConcepts implements Serializable {
         this.idBudgetMonthBranch = idBudgetMonthBranch;
     }
 
-    public Integer getIdBudgetConcept() {
-        return idBudgetConcept;
-    }
+//    public Integer getIdBudgetConcept() {
+//        return idBudgetConcept;
+//    }
 
-    public void setIdBudgetConcept(Integer idBudgetConcept) {
-        this.idBudgetConcept = idBudgetConcept;
-    }
+//    public void setIdBudgetConcept(Integer idBudgetConcept) {
+//        this.idBudgetConcept = idBudgetConcept;
+//    }
 
     public Integer getIdCurrency() {
         return idCurrency;
@@ -136,13 +135,13 @@ public class BudgetMonthConcepts implements Serializable {
         this.idCurrency = idCurrency;
     }
 
-    public BudgetMonthBranch getBudgetMonthBranch() {
-        return budgetMonthBranch;
-    }
+//    public BudgetYearConcept getBudgetYearConcept() {
+//        return budgetYearConcept;
+//    }
 
-    public void setBudgetMonthBranch(BudgetMonthBranch budgetMonthBranch) {
-        this.budgetMonthBranch = budgetMonthBranch;
-    }
+//    public void setBudgetYearConcept(BudgetYearConcept budgetYearConcept) {
+//        this.budgetYearConcept = budgetYearConcept;
+//    }
 
     public CBudgetConcepts getBudgetConcept() {
         return budgetConcept;

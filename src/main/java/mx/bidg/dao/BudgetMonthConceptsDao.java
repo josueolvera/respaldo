@@ -7,7 +7,6 @@ package mx.bidg.dao;
 
 import java.util.List;
 
-import mx.bidg.model.BudgetMonthBranch;
 import mx.bidg.model.BudgetMonthConcepts;
 import mx.bidg.model.CBudgetConcepts;
 

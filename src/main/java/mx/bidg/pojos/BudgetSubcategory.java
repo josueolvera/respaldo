@@ -1,23 +1,69 @@
 package mx.bidg.pojos;
 
-import mx.bidg.model.BudgetMonthBranch;
+import mx.bidg.model.BudgetYearConcept;
+import mx.bidg.model.CBudgetNature;
+import mx.bidg.model.CBudgetTypes;
+import mx.bidg.model.CCostCenter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
  * Created by gerardo8 on 30/08/16.
  */
 public class BudgetSubcategory {
+
+    private Integer idBudget;
+    private CCostCenter costCenter;
+    private CBudgetTypes budgetType;
+    private CBudgetNature budgetNature;
     private Integer idBudgetSubcategory;
     private String name;
-    private List<BudgetMonthBranch> budgetMonthBranchList;
+    private BigDecimal totalSubcategoryAmount;
+    private List<BudgetYearConcept> budgetYearConceptList;
 
     public BudgetSubcategory() {
     }
 
-    public BudgetSubcategory(Integer idBudgetSubcategory, String name) {
+    public BudgetSubcategory(Integer idBudget, CCostCenter costCenter, CBudgetTypes budgetType, CBudgetNature budgetNature, Integer idBudgetSubcategory, String name) {
+        this.idBudget = idBudget;
+        this.costCenter = costCenter;
+        this.budgetType = budgetType;
+        this.budgetNature = budgetNature;
         this.idBudgetSubcategory = idBudgetSubcategory;
         this.name = name;
+    }
+
+    public Integer getIdBudget() {
+        return idBudget;
+    }
+
+    public void setIdBudget(Integer idBudget) {
+        this.idBudget = idBudget;
+    }
+
+    public CCostCenter getCostCenter() {
+        return costCenter;
+    }
+
+    public void setCostCenter(CCostCenter costCenter) {
+        this.costCenter = costCenter;
+    }
+
+    public CBudgetTypes getBudgetType() {
+        return budgetType;
+    }
+
+    public void setBudgetType(CBudgetTypes budgetType) {
+        this.budgetType = budgetType;
+    }
+
+    public CBudgetNature getBudgetNature() {
+        return budgetNature;
+    }
+
+    public void setBudgetNature(CBudgetNature budgetNature) {
+        this.budgetNature = budgetNature;
     }
 
     public Integer getIdBudgetSubcategory() {
@@ -36,12 +82,25 @@ public class BudgetSubcategory {
         this.name = name;
     }
 
-    public List<BudgetMonthBranch> getBudgetMonthBranchList() {
-        return budgetMonthBranchList;
+    public List<BudgetYearConcept> getBudgetYearConceptList() {
+        return budgetYearConceptList;
     }
 
-    public void setBudgetMonthBranchList(List<BudgetMonthBranch> budgetMonthBranchList) {
-        this.budgetMonthBranchList = budgetMonthBranchList;
+    public void setBudgetYearConceptList(List<BudgetYearConcept> budgetYearConceptList) {
+        this.budgetYearConceptList = budgetYearConceptList;
+    }
+
+    public BigDecimal getTotalSubcategoryAmount() {
+        double zero = 0;
+        for (BudgetYearConcept budgetYearConcept : getBudgetYearConceptList()) {
+            zero += budgetYearConcept.getTotalAmount().doubleValue();
+        }
+        this.totalSubcategoryAmount = new BigDecimal(zero);
+        return totalSubcategoryAmount;
+    }
+
+    public void setTotalSubcategoryAmount(BigDecimal totalSubcategoryAmount) {
+        this.totalSubcategoryAmount = totalSubcategoryAmount;
     }
 
     @Override
@@ -51,25 +110,25 @@ public class BudgetSubcategory {
 
         BudgetSubcategory that = (BudgetSubcategory) o;
 
-        if (idBudgetSubcategory != null ? !idBudgetSubcategory.equals(that.idBudgetSubcategory) : that.idBudgetSubcategory != null)
-            return false;
-        return name != null ? name.equals(that.name) : that.name == null;
+        return idBudget != null ? idBudget.equals(that.idBudget) : that.idBudget == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = idBudgetSubcategory != null ? idBudgetSubcategory.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
+        return idBudget != null ? idBudget.hashCode() : 0;
     }
 
     @Override
     public String toString() {
         return "BudgetSubcategory{" +
-                "idBudgetSubcategory=" + idBudgetSubcategory +
+                "idBudget=" + idBudget +
+                ", costCenter=" + costCenter +
+                ", budgetType=" + budgetType +
+                ", budgetNature=" + budgetNature +
+                ", idBudgetSubcategory=" + idBudgetSubcategory +
                 ", name='" + name + '\'' +
-                ", budgetMonthBranchList=" + budgetMonthBranchList +
+                ", budgetYearConceptList=" + budgetYearConceptList +
                 '}';
     }
 }
