@@ -18,4 +18,5 @@ public interface AgreementsGroupConditionService {
     List<AgreementsGroupCondition> conditions(Integer idAg);
     List<AgreementsGroupCondition> findByGroupCondition(Integer idAg);
     AgreementsGroupCondition updateStatus(Integer idGroupCondition, boolean statusBoolean);
+    AgreementsGroupCondition getFinalOrder(Integer idAg);
 }

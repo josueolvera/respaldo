@@ -45,7 +45,7 @@ public class AgreementsGroupCondition implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idGroupCondition;
 
-    @Column(name = "ORDER")
+    @Column(name = "ORDERS")
     @JsonView(JsonViews.Root.class)
     private Integer order;
 
