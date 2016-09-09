@@ -5,6 +5,8 @@ import mx.bidg.dao.CommissionAmountGroupDao;
 import mx.bidg.model.AgreementsGroupCondition;
 import mx.bidg.model.CommissionAmountGroup;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -65,7 +67,35 @@ public class CommissionAmountGroupDaoImpl extends AbstractDao<Integer, Commissio
     }
 
     @Override
-    public List<CommissionAmountGroup> findOnlyByClaveSap() {
+    public List findOnlyByClaveSap() {
+        ProjectionList projList = Projections.projectionList();
+
+        projList.add(Projections.distinct(Projections.groupProperty("claveSap")));
+        return createEntityCriteria().setProjection(projList).add(Restrictions.isNotNull("claveSap")).list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findAllByClaveSap() {
         return createEntityCriteria().add(Restrictions.isNotNull("claveSap")).list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findByGroupAuxiliarAndBranch() {
+        return createEntityCriteria().add(Restrictions.eq("idAg",18)).add(Restrictions.isNotNull("idBranch")).list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findByGroupZonalAndZona() {
+        return createEntityCriteria().add(Restrictions.eq("idAg",23)).add(Restrictions.isNotNull("idZona")).list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findByGroupRegionslAndRegion() {
+        return createEntityCriteria().add(Restrictions.eq("idAg",24)).add(Restrictions.isNotNull("idRegion")).list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findByGroupComercialAndDistributor() {
+        return createEntityCriteria().add(Restrictions.eq("idAg",25)).add(Restrictions.isNotNull("idDistributor")).list();
     }
 }

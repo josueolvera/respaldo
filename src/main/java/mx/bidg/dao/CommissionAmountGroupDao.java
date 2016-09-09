@@ -11,5 +11,10 @@ import java.util.List;
 public interface CommissionAmountGroupDao extends InterfaceDao<CommissionAmountGroup> {
     List<CommissionAmountGroup> getComissionsByConditon (AgreementsGroupCondition agreementsGroupCondition);
     List<CommissionAmountGroup> getBonusByConditon (AgreementsGroupCondition agreementsGroupCondition);
-    List<CommissionAmountGroup> findOnlyByClaveSap ();
+    List findOnlyByClaveSap ();
+    List<CommissionAmountGroup> findAllByClaveSap();
+    List<CommissionAmountGroup> findByGroupAuxiliarAndBranch();
+    List<CommissionAmountGroup> findByGroupZonalAndZona();
+    List<CommissionAmountGroup> findByGroupRegionslAndRegion();
+    List<CommissionAmountGroup> findByGroupComercialAndDistributor();
 }
