@@ -99,4 +99,10 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
     public AgreementsGroupCondition updateStatus(Integer idGroupCondition, boolean statusBoolean) {
         return agreementsGroupConditionDao.updateStatus(idGroupCondition, statusBoolean);
     }
+
+    @Override
+    public AgreementsGroupCondition getFinalOrder(Integer idAg) {
+        return agreementsGroupConditionDao.getFinalOrder(idAg);
+    }
+    
 }

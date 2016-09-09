@@ -60,7 +60,11 @@
                 data: {
                     agreementGroups: {},
                     idAgreementGroup: 0,
-                    tabsOfGroup: {}
+                    tabsOfGroup: {},
+                    montoMinimo: 0,
+                    montoMaximo: 0,
+                    tabulator: 0,
+                    ruleType: 0
                 },
                 methods: {
                     getAgreementGroups: function(){
@@ -71,6 +75,7 @@
                           });
                     },
                     getTabsOfGroup: function(){
+                        this.tabsOfGroup= {};
                         this.$http.get(ROOT_URL+"/agreement-condition/"+this.idAgreementGroup)
                           .success(function (data)
                           {
@@ -78,7 +83,59 @@
                           });
                     },
                     updateTab: function(tab){
-                        console.log(tab);
+                        this.$http.post(ROOT_URL+"/agreement-condition", JSON.stringify(tab))
+                          .success(function (data)
+                          {
+                            showAlert("Actualización exitosa");
+                          });
+                    },
+                    saveTab: function(ruleType){
+
+                        var newTab= {
+                            idGroupCondition: 0,
+                            idAg: 0,
+                            order: 0,
+                            tabulator: 0,
+                            amountMin: 0,
+                            amountMax: 0,
+                            status: 0,
+                            typeOperation: 0
+                        }
+
+                        newTab.idAg = this.idAgreementGroup;
+
+                        if (ruleType == 1)
+                        {
+                            newTab.amountMin = this.montoMinimo;
+                            newTab.amountMax = this.montoMaximo;
+
+                            if (this.montoMaximo < this.montoMinimo) {
+                                showAlert("El monto maximo no puede ser menor al minimo");
+                                newTab.amountMax = '' ;
+                                this.montoMaximo = '' ;
+                            }
+                        }
+                        if (ruleType == 2)
+                        {
+                            newTab.amountMin = this.montoMaximo;
+                            newTab.amountMax = this.montoMaximo;
+                        }
+
+                        newTab.tabulator = this.tabulator;
+                        newTab.typeOperation = this.ruleType;
+
+                        if ( this.montoMaximo !== ''  &&  this.montoMinimo !== '' && this.tabulador !== '') {
+                            this.$http.post(ROOT_URL+"/agreement-condition/save", JSON.stringify(newTab))
+                              .success(function (data)
+                              {
+                                showAlert("Registro Exitoso");
+                                newTab.idGroupCondition = data.idGroupCondition;
+                                this.tabsOfGroup.push(newTab);
+                              });
+                        }
+                        else {
+                            showAlert("Favor de llenar todos los campos");
+                        }
                     }
                 },
                 filters: {
@@ -112,17 +169,27 @@
                     </option>
                 </select>
               </div>
+              <div class="col-xs-3 text-left" v-show="idAgreementGroup> 0">
+                <label>
+                    Tipo de regla
+                </label>
+                <select class="form-control" v-model="ruleType">
+                    <option value=""></option>
+                    <option value="1">Monto comisionable</option>
+                    <option value="2">Bono por solicitudes</option>
+                </select>
+              </div>
             </div>
             <br>
 
-            <div class="row" v-if="idAgreementGroup > 0">
+            <div class="row" v-if="ruleType == 1">
               <div class="col-xs-3">
                 <label>
                 Monto minimo
                 </label>
                 <div class="input-group">
                   <span class="input-group-addon">$</span>
-                  <input type="text" class="form-control" placeholder="">
+                  <input type="text" class="form-control" v-model="montoMinimo">
                 </div>
               </div>
 
@@ -132,7 +199,7 @@
                 </label>
                 <div class="input-group">
                   <span class="input-group-addon">$</span>
-                  <input type="text" class="form-control" placeholder="">
+                  <input type="text" class="form-control" v-model="montoMaximo">
                 </div>
               </div>
 
@@ -142,12 +209,41 @@
                 </label>
                 <div class="input-group">
                   <span class="input-group-addon">%</span>
-                  <input type="text" class="form-control" placeholder="">
+                  <input type="text" class="form-control" v-model="tabulator">
                 </div>
               </div>
 
               <div class="col-xs-3 text-left" style="margin-top: 25px">
-                  <button class="btn btn-default">
+                  <button class="btn btn-default" @click="saveTab(ruleType)">
+                      <span class="glyphicon glyphicon-plus"></span>
+                  </button>
+              </div>
+            </div>
+
+            <div class="row" v-if="ruleType == 2">
+
+              <div class="col-xs-3">
+                <label>
+                Numero de solicitudes
+                </label>
+                <div class="input-group">
+                  <span class="input-group-addon">$</span>
+                  <input type="text" class="form-control" v-model="montoMaximo">
+                </div>
+              </div>
+
+              <div class="col-xs-3">
+                <label>
+                Tabulador
+                </label>
+                <div class="input-group">
+                  <span class="input-group-addon">%</span>
+                  <input type="text" class="form-control" v-model="tabulator">
+                </div>
+              </div>
+
+              <div class="col-xs-3 text-left" style="margin-top: 25px">
+                  <button class="btn btn-default" @click="saveTab(ruleType)">
                       <span class="glyphicon glyphicon-plus"></span>
                   </button>
               </div>
@@ -178,6 +274,9 @@
                           <th>
                               Estatus
                           </th>
+                          <th>
+                              Tipo de Regla
+                          </th>
                       </thead>
                       <tbody>
                           <tr v-for="tab in tabsOfGroup">
@@ -195,6 +294,14 @@
                               </td>
                               <td>
                                   <input type="checkbox" :value="tab" v-model="tab.statusBoolean" @change="updateTab(tab)">
+                              </td>
+                              <td>
+                                  <label v-if="tab.typeOperation == 1">
+                                      Monto comisionable
+                                  </label>
+                                  <label v-if="tab.typeOperation == 2">
+                                      Bono por Solicitudes
+                                  </label>
                               </td>
                           </tr>
                       </tbody>

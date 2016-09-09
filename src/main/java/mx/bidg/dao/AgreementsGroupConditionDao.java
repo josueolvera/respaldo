@@ -13,4 +13,6 @@ public interface AgreementsGroupConditionDao extends InterfaceDao<AgreementsGrou
     AgreementsGroupCondition getTabulator(Integer orden, AgreementsGroupCondition aGC);
     List<AgreementsGroupCondition> listByAgreementGroup(Integer idAg);
     AgreementsGroupCondition updateStatus(Integer idGroupCondition, boolean statusBoolean);
+    AgreementsGroupCondition save(AgreementsGroupCondition agreementsGroupCondition);
+    AgreementsGroupCondition getFinalOrder(Integer idAg);
 }

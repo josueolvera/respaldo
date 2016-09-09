@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import org.hibernate.criterion.Order;
 
 /**
  * Created by josueolvera on 2/09/16.
@@ -81,6 +82,17 @@ public class AgreementsGroupConditionDaoImpl extends AbstractDao<Integer, Agreem
             agc.setStatus(0);
         }
         modify(agc);
+        return agc;
+    }
+
+    @Override
+    public AgreementsGroupCondition getFinalOrder(Integer idAg) {
+        Criteria criteria = createEntityCriteria();
+        AgreementsGroupCondition agc = (AgreementsGroupCondition) criteria
+                .add(Restrictions.eq("idAg", idAg))
+                .addOrder(Order.desc("order"))
+                .setMaxResults(1)
+                .uniqueResult();
         return agc;
     }
 }
