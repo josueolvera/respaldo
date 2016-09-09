@@ -8,7 +8,9 @@ package mx.bidg.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.OutputStream;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +21,7 @@ import mx.bidg.pojos.*;
 import mx.bidg.service.BudgetYearConceptService;
 import mx.bidg.service.BudgetMonthConceptsService;
 import mx.bidg.service.BudgetsService;
+import mx.bidg.service.CCostCenterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,6 +42,9 @@ public class BudgetController {
     
     @Autowired
     BudgetsService budgetsService;
+
+    @Autowired
+    CCostCenterService cCostCenterService;
 
     @Autowired
     BudgetYearConceptService budgetYearConceptService;
@@ -166,7 +172,7 @@ public class BudgetController {
             @RequestParam(name = "category", required = false) Integer idBudgetCategory,
             @RequestParam(name = "budget_type", required = false) Integer idBudgetType,
             @RequestParam(name = "budget_nature", required = false) Integer idBudgetNature,
-            @RequestParam(name = "create_report", required = false, defaultValue = "false") Boolean createReport,
+            @RequestParam(name = "download", required = false, defaultValue = "false") Boolean download,
             HttpServletResponse response
     ) throws Exception {
 
@@ -202,14 +208,32 @@ public class BudgetController {
 
         }
 
-//        if (createReport) {
-//        response.setContentType("application/octet-stream");
-//        response.setHeader("Content-Disposition", "attachment; filename=\"" + reportFileName + "_" + dateTime.format(formatter) + ".xlsx"+ "\"");
-//        OutputStream outputStream = response.getOutputStream();
-//        dwEmployeesService.createReport(dwEmployees, outputStream);
-//        outputStream.flush();
-//        outputStream.close();
-//        }
+        if (download) {
+
+            String fileName = "Presupuesto";
+            CCostCenter costCenter = null;
+
+            if (idCostCenter != null) {
+                costCenter = cCostCenterService.findById(idCostCenter);
+                fileName += "_" + costCenter.getAcronym();
+            }
+
+            if (year != null) {
+                fileName += "_" + year;
+            }
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDateTime now = LocalDateTime.now();
+
+            fileName += "_" + now.format(formatter) + ".xlsx";
+
+            response.setContentType("application/octet-stream");
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
+            OutputStream outputStream = response.getOutputStream();
+            budgetsService.createReport(budgetCategories, costCenter, year, outputStream);
+            outputStream.flush();
+            outputStream.close();
+        }
 
         return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(budgetCategories));
     }
