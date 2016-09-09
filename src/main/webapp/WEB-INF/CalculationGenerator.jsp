@@ -13,7 +13,6 @@
                 el: '#content',
                 ready : function () {
                     this.activateDateTimePickerStartDate();
-                    this.activateDateTimePickerEndDate();
                 },
                 data: {
                     search : {
@@ -21,7 +20,9 @@
                         endDate: ''
                     },
                     dateTimePickerStartDate : null,
-                    dateTimePickerEndDate : null
+                    dateTimePickerEndDate : null,
+                    fromDate: '',
+                    ofDate: ''
                 },
                 methods: {
                     activateDateTimePickerStartDate: function () {
@@ -34,22 +35,27 @@
                             useCurrent: false
                         }).data();
                     },
-                    activateDateTimePickerEndDate: function () {
+                    activateDateTimePickerEndDate: function (fechaFinal) {
 
                         var currentDate = new Date();
+
+                        var fecha= moment(fechaFinal, 'DD-MM-YYYY').format('YYYY-MM-DD');
 
                         this.dateTimePickerEndDate = $('#endDate').datetimepicker({
                             locale: 'es',
                             format: 'DD-MM-YYYY',
                             useCurrent: false,
-                            minDate: currentDate
+                            minDate: fecha
                         }).data();
                     },
                     searchCalculation : function () {
 
                     },
                     generateCalculation : function () {
-                        showAlert('No es posible generar debido a que no existen empleados asignados', {type:2});
+                        this.fromDate = this.dateTimePickerStartDate.DateTimePicker.date().toISOString().slice(0, -1);
+                        this.ofDate = this.dateTimePickerEndDate.DateTimePicker.date().toISOString().slice(0, -1);
+                        window.location = ROOT_URL + "/sap-sale/prueba?fromDate="+this.fromDate+"&toDate="+this.ofDate;
+//                        showAlert('No es posible generar debido a que no existen empleados asignados', {type:2});
                     }
                 }
             });
@@ -79,7 +85,7 @@
                             <div class="form-group">
                                 <div class="input-group date" id="endDate">
                                     <input type="text" class="form-control" v-model="search.endDate" required>
-                                    <span class="input-group-addon">
+                                    <span class="input-group-addon" @click="activateDateTimePickerEndDate(search.startDate)">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
                                 </div>
