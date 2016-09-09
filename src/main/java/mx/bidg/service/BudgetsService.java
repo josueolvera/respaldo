@@ -5,10 +5,13 @@
  */
 package mx.bidg.service;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import mx.bidg.model.*;
+import mx.bidg.pojos.BudgetCategory;
 
 /**
  *
@@ -25,4 +28,6 @@ public interface BudgetsService {
     List<Budgets> getBudgets(Integer idCostCenter, Integer idBudgetType, Integer idBudgetNature, Integer idBudgetCategory);
     List<Budgets> findByDistributorAreaAndEnterprise(Integer idDistributor, Integer idArea, Integer idDwEnterprise);
     List<Budgets> findByDistributor(Integer idDistributor);
+
+    void createReport(List<BudgetCategory> budgetCategories, CCostCenter costCenter, Integer year, OutputStream outputStream) throws IOException;
 }
