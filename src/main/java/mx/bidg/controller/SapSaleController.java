@@ -2,6 +2,8 @@ package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
+import com.sun.org.apache.xpath.internal.SourceTree;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.*;
 import mx.bidg.service.*;
@@ -14,10 +16,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Created by gerardo8 on 29/04/16.
@@ -80,7 +86,7 @@ public class SapSaleController {
     }
 
     @RequestMapping(value = "/prueba", method = RequestMethod.GET)
-    public ResponseEntity<String> prueba(@RequestParam(name= "fromDate", required=true) String fromDate, @RequestParam(name="toDate", required=true) String toDate ) throws IOException {
+    public ResponseEntity<String> prueba(@RequestParam(name= "fromDate", required=true) String fromDate, @RequestParam(name="toDate", required=true) String toDate ,HttpServletResponse response) throws IOException {
 
         List<CommissionAmountGroup> all =commissionAmountGroupService.findAll();
 
@@ -185,6 +191,14 @@ public class SapSaleController {
                 }
             }
         }
+
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" +"Reporte de calculo de comisiones de "+ofDate+" a "+toDate+".xls"+ "\"");
+        OutputStream outputStream = response.getOutputStream();
+        commissionAmountGroupService.comissionByReport(outputStream);
+        outputStream.flush();
+        outputStream.close();
+
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(commissionAmountGroupService.findAll()), HttpStatus.OK);
     }
 
