@@ -10,46 +10,8 @@
 
         <script type="text/javascript">
 
-            function validateFloatKeyPress(el, evt) {
-                var charCode = (evt.which) ? evt.which : event.keyCode;
-                var number = el.value.split('.');
-                if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
-                    return false;
-                }
-                //just one dot
-                if(number.length>1 && charCode == 46){
-                    return false;
-                }
-                //get the carat position
-                var caratPos = getSelectionStart(el);
-                var dotPos = el.value.indexOf(".");
-                if( caratPos > dotPos && dotPos>-1 && (number[1].length > 1)){
-                    return false;
-                }
-                return true;
-            }
-
-            function getSelectionStart(o) {
-                if (o.createTextRange) {
-                    var r = document.selection.createRange().duplicate();
-                    r.moveEnd('character', o.value.length);
-                    if (r.text == '') return o.value.length;
-                    return o.value.lastIndexOf(r.text)
-                } else return o.selectionStart
-            }
-            function isNumberKey(evt)
-            {
-                var charCode = (evt.which) ? evt.which : event.keyCode;
-                if (charCode > 31 && (charCode < 48 || charCode > 57))
-                    return false;
-                return true;
-            }
-        </script>
-
-        <script type="text/javascript">
-
             var vm = new Vue({
-                el: '#contenidos',
+                el: '#content',
                 created: function(){
                     this.setYears();
                 },
@@ -58,45 +20,31 @@
                     this.getMonths();
                 },
                 data: {
-                    now: '${now}',
+                    now: "${now}",
                     minYear:null,
                     maxYear:null,
                     years: [],
-                    months: [],
-                    budgets: [],
-                    user:{},
+                    months:[],
                     selected : {
-                        roleCostCenter:{},
-                        budgetType: {},
+                        costCenter: {},
                         year: null
                     },
+                    budgets: [],
+                    user:{},
+                    searching: false,
                     rolesCostCenter:[],
-                    budgetCategories: [],
-                    budgetAllOption: {
-                        budgetCategory:'TODOS',
-                        idBudgetCategory:0
-                    },
-                    role:null
+                    role: null
                 },
                 methods: {
                     getUserInSession: function () {
-                        this.$http.get(ROOT_URL + '/user')
+                        this.$http.get(ROOT_URL + "/user")
                                 .success(function (data) {
                                     this.user = data;
                                     this.role = this.user.dwEmployee.idRole;
                                     this.getRolesCostCenter(this.role);
                                 })
                                 .error(function (data) {
-                                    showAlert('Ha habido un error al obtener al usuario en sesion', {type: 3});
-                                });
-                    },
-                    getRolesCostCenter: function (idRole) {
-                        this.$http.get(ROOT_URL + '/roles-cost-center/role/' + idRole)
-                                .success(function (data) {
-                                    this.rolesCostCenter = data;
-                                })
-                                .error(function (data) {
-
+                                    showAlert("Ha habido un error al obtener al usuario en sesion", {type: 3});
                                 });
                     },
                     setYears: function () {
@@ -108,65 +56,52 @@
                             this.years.push(i)
                         }
                     },
+                    getRolesCostCenter: function (idRole) {
+                        this.$http.get(ROOT_URL + '/roles-cost-center/role/' + idRole)
+                                .success(function (data) {
+                                    var self = this;
+                                    var index;
+                                    this.rolesCostCenter = data;
+                                })
+                                .error(function (data) {
+
+                                });
+                    },
+                    getMonths: function () {
+                        this.$http.get(ROOT_URL + '/months')
+                                .success(function (data) {
+                                    this.months = data;
+                                })
+                                .error(function (data) {
+
+                                });
+                    },
                     searchBudget: function () {
-                        this.contenido = [];
+                        this.searching = true;
                         this.getBudgets();
                     },
                     getBudgets: function () {
-                        this.$http.get(
-                                ROOT_URL +
-                                '/budgets/cost-center/' + this.selected.roleCostCenter.costCenter.idCostCenter +
-                                '/budget-type/' + this.selected.budgetType.idBudgetType +
-                                '/budget-nature/' + this.selected.roleCostCenter.budgetNature.idBudgetNature)
+                        var url = ROOT_URL +
+                                '/budgets?cost_center=' + this.selected.costCenter.idCostCenter +
+                                '&year=' + this.selected.year;
+                        this.$http.get(url)
                                 .success(function (data) {
                                     var self = this;
-                                    this.budgetCategories = [];
-                                    this.contenido = data;
                                     this.budgets = data;
-                                    this.getConcepts();
-                                    var index;
-                                    data.forEach(function (budget) {
-                                        index = self.arrayObjectIndexOf(self.budgetCategories,budget.idBudgetCategory,'idBudgetCategory');
-                                        if (index == -1) {
-                                            self.budgetCategories.push(budget.budgetCategory)
-                                        }
-                                    });
+                                    this.searching = false;
+                                    this.getConcepts(self);
                                 })
                                 .error(function (data) {
 
                                 });
-                    },
-                    getConcepts:function () {
-                        this.$http.get(
-                                ROOT_URL +
-                                '/budget-concepts/cost-center/' + this.selected.roleCostCenter.costCenter.idCostCenter +
-                                '/budget-type/' + this.selected.budgetType.idBudgetType +
-                                '/budget-nature/' + this.selected.roleCostCenter.budgetNature.idBudgetNature +
-                                '/year/' + this.selected.year)
-                                .success(function (data) {
-                                    var self = this;
-                                    this.datosPresupuesto = data;
-                                    this.datosPresupuesto.forEach(function (item) {
-                                        if (item.authorized) {
-                                            self.isAutorized = true;
-                                        }
-                                        item.conceptos.forEach(function (concepto) {
-                                            concepto.conceptMonth.forEach(function (elem) {
-                                                self.moneyFormat(elem, concepto, item);
-                                            });
-                                        });
-                                    });
-                                    this.getContenido();
-                                })
-                                .error(function (data) {
-
-                                });
-                    },
-                    arrayObjectIndexOf: function (myArray, searchTerm, property) {
-                        for (var i = 0, len = myArray.length; i < len; i++) {
-                            if (myArray[i][property] === searchTerm) return i;
-                        }
-                        return -1;
+                    }
+                },
+                filters: {
+                    shortName: function(nombre)
+                    {
+                        var name;
+                        name = nombre.substring(0, 3);
+                        return name;
                     }
                 }
             });
@@ -174,11 +109,107 @@
     </jsp:attribute>
 
     <jsp:body>
-        <div id="contenidos">
+        <div id="content">
             <div class="container-fluid">
-                <br>
                 <h2>Reporte de presupuesto</h2>
                 <br>
-        </div> <!-- #contenidos -->
+                <div class="row">
+                    <form v-on:submit.prevent="searchBudget">
+                        <div class="col-md-2">
+                            <label>Centro de costos</label>
+                            <select v-model="selected.costCenter" class="form-control" @change="onChangeFilter" required>
+                                <option v-for="roleCostCenter in rolesCostCenter" :value="roleCostCenter.costCenter">{{roleCostCenter.costCenter.name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Año</label>
+                            <select v-model="selected.year" class="form-control" @change="onChangeFilter" required>
+                                <option v-for="year in years" :value="year">
+                                    {{year}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <button style="margin-top: 25px" class="btn btn-info">Buscar</button>
+                        </div>
+                    </form>
+                </div>
+                <br>
+                <div class="panel panel-default" v-if="budgets.length > 0">
+                    <div class="panel-heading">
+                        <div class="row">
+                            <div class="col-md-3 text-center">
+                                <b>{{selected.costCenter.name}}</b>
+                            </div>
+                            <div class="col-md-8 text-center">
+                                <div class="col-md-1" v-for="month in months">
+                                    <b>{{month.month | shortName}}</b>
+                                </div>
+                            </div>
+                            <div class="col-md-1 text-center">
+                                <b>Acumulado</b>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body" style="background-color: #e5e5e5;max-height: 430px;overflow-y: scroll;">
+                        <div class="row" v-for="(indexOfBudget, budget) in budgets" style="background-color: #e5e5e5">
+                            <h5>&nbsp;&nbsp;<b>{{budget.name}}</b></h5>
+                            <div class="col-md-12">
+                                <div class="row" v-for="(indexOfBudgetSubcategory, budgetSubcategory) in budget.budgetSubcategories" style="background-color: #f5f5f5">
+                                    <b class="text-primary">&nbsp;&nbsp;&nbsp;&nbsp;{{budgetSubcategory.name}}</b>
+                                    <div class="col-md-12">
+                                        <div class="row" v-for="(indexOfBudgetYearConcept, budgetYearConcept) in budgetSubcategory.budgetYearConceptList"  style="background-color: #ffffff">
+                                            <div class="col-md-3">
+                                                <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{budgetYearConcept.budgetConcept.budgetConcept}}</p>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="col-md-1">
+                                                    <p>{{budgetYearConcept.januaryAmount | currency}}</p>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <p>{{budgetYearConcept.februaryAmount | currency}}</p>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <p>{{budgetYearConcept.marchAmount | currency}}</p>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <p>{{budgetYearConcept.aprilAmount | currency}}</p>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <p>{{budgetYearConcept.mayAmount | currency}}</p>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <p>{{budgetYearConcept.juneAmount | currency}}</p>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <p>{{budgetYearConcept.julyAmount | currency}}</p>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <p>{{budgetYearConcept.augustAmount | currency}}</p>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <p>{{budgetYearConcept.septemberAmount | currency}}</p>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <p>{{budgetYearConcept.octoberAmount | currency}}</p>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <p>{{budgetYearConcept.novemberAmount | currency}}</p>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <p>{{budgetYearConcept.decemberAmount | currency}}</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1 text-center">
+                                                <b class="text-primary">{{budgetYearConcept.totalAmount | currency}}</b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
     </jsp:body>
 </t:template>

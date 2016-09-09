@@ -49,7 +49,7 @@
         <script type="text/javascript">
 
             var vm = new Vue({
-                el: '#contenidos',
+                el: '#content',
                 created: function(){
                     this.setYears();
                 },
@@ -81,7 +81,6 @@
                     costCenterList:[],
                     budgetNatureList:[],
                     budgetCategories: [],
-                    datosPresupuesto: [],
                     budgetAllOption: {
                         budgetCategory:'TODOS',
                         idBudgetCategory:0
@@ -476,67 +475,65 @@
     </jsp:attribute>
 
     <jsp:body>
-        <div id="contenidos">
+        <div id="content">
             <div class="container-fluid">
                 <br>
                 <h2>Captura de presupuesto</h2>
                 <br>
                 <div class="row">
                     <form v-on:submit.prevent="searchBudget">
-                        <div class="row">
-                            <div class="col-md-2">
-                                <label>Centro de costos</label>
-                                <select v-model="selected.costCenter" class="form-control" @change="onChangeFilter" required>
-                                    <option v-for="costCenter in costCenterList" :value="costCenter">{{costCenter.name}}</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label>Tipo de gasto</label>
-                                <select v-model="selected.budgetNature" class="form-control" @change="onChangeFilter" required>
-                                    <option v-for="budgetNature in budgetNatureList" :value="budgetNature">{{budgetNature.budgetNature}}</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label>Tipo</label>
-                                <select v-model="selected.budgetType" class="form-control" @change="onChangeFilter" required>
-                                    <option v-for="budgetType in budgetTypes" :value="budgetType">
-                                        {{budgetType.budgetType}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label>Año</label>
-                                <select v-model="selected.year" class="form-control" @change="onChangeFilter" required>
-                                    <option v-for="year in years" :value="year">
-                                        {{year}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label>Rubro</label>
-                                <select v-model="selected.budgetCategory" class="form-control" @change="onChangeFilter" required>
-                                    <option selected :value="budgetAllOption">{{budgetAllOption.budgetCategory}}</option>
-                                    <option v-for="budgetCategory in budgetCategories" :value="budgetCategory">{{budgetCategory.budgetCategory}}</option>
-                                </select>
-                            </div>
-                            <div class="col-md-1">
-                                <button style="margin-top: 25px" class="btn btn-info">Buscar</button>
-                            </div>
+                        <div class="col-md-2">
+                            <label>Centro de costos</label>
+                            <select v-model="selected.costCenter" class="form-control" @change="onChangeFilter" required>
+                                <option v-for="costCenter in costCenterList" :value="costCenter">{{costCenter.name}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Tipo de gasto</label>
+                            <select v-model="selected.budgetNature" class="form-control" @change="onChangeFilter" required>
+                                <option v-for="budgetNature in budgetNatureList" :value="budgetNature">{{budgetNature.budgetNature}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Tipo</label>
+                            <select v-model="selected.budgetType" class="form-control" @change="onChangeFilter" required>
+                                <option v-for="budgetType in budgetTypes" :value="budgetType">
+                                    {{budgetType.budgetType}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Año</label>
+                            <select v-model="selected.year" class="form-control" @change="onChangeFilter" required>
+                                <option v-for="year in years" :value="year">
+                                    {{year}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Rubro</label>
+                            <select v-model="selected.budgetCategory" class="form-control" @change="onChangeFilter" required>
+                                <option selected :value="budgetAllOption">{{budgetAllOption.budgetCategory}}</option>
+                                <option v-for="budgetCategory in budgetCategories" :value="budgetCategory">{{budgetCategory.budgetCategory}}</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <button style="margin-top: 25px" class="btn btn-info">Buscar</button>
                         </div>
                     </form>
-                    <div class="row" v-if="budgets.length > 0 && !searching">
-                        <div class="col-md-2">
-                            <button type="button" style="margin-top: 15px"
-                                    class="btn btn-default" @click="showCopyBudgetModal">
-                                Copiar presupuesto
-                            </button>
-                        </div>
-                        <div class="col-md-2" v-if="budgets.length > 0 && role == 19">
-                            <button type="button" style="margin-top: 15px"
-                                    class="btn btn-success" @click="authorize">
-                                Autorizar
-                            </button>
-                        </div>
+                </div>
+                <div class="row" v-if="budgets.length > 0 && !searching">
+                    <div class="col-md-2">
+                        <button type="button" style="margin-top: 15px"
+                                class="btn btn-default" @click="showCopyBudgetModal">
+                            Copiar presupuesto
+                        </button>
+                    </div>
+                    <div class="col-md-2" v-if="budgets.length > 0 && role == 19">
+                        <button type="button" style="margin-top: 15px"
+                                class="btn btn-success" @click="authorize">
+                            Autorizar
+                        </button>
                     </div>
                 </div>
                 <br>
@@ -731,6 +728,6 @@
                     </div>
                 </div>
             </div>
-        </div> <!-- #contenidos -->
+        </div>
     </jsp:body>
 </t:template>
