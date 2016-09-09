@@ -164,7 +164,7 @@
                         }
                         Vue.set(ticket, "show", true );
                         $("#ticket-" + ticket.idTicket).collapse('show');
-                    },
+                    }
                 }
             });
         </script>
