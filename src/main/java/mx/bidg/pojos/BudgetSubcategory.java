@@ -19,6 +19,18 @@ public class BudgetSubcategory {
     private CBudgetNature budgetNature;
     private Integer idBudgetSubcategory;
     private String name;
+    private BigDecimal januarySubcategoryAmount;
+    private BigDecimal februarySubcategoryAmount;
+    private BigDecimal marchSubcategoryAmount;
+    private BigDecimal aprilSubcategoryAmount;
+    private BigDecimal maySubcategoryAmount;
+    private BigDecimal juneSubcategoryAmount;
+    private BigDecimal julySubcategoryAmount;
+    private BigDecimal augustSubcategoryAmount;
+    private BigDecimal septemberSubcategoryAmount;
+    private BigDecimal octoberSubcategoryAmount;
+    private BigDecimal novemberSubcategoryAmount;
+    private BigDecimal decemberSubcategoryAmount;
     private BigDecimal totalSubcategoryAmount;
     private List<BudgetYearConcept> budgetYearConceptList;
 
@@ -82,12 +94,160 @@ public class BudgetSubcategory {
         this.name = name;
     }
 
-    public List<BudgetYearConcept> getBudgetYearConceptList() {
-        return budgetYearConceptList;
+    public BigDecimal getJanuarySubcategoryAmount() {
+        double zero = 0;
+        for (BudgetYearConcept budgetYearConcept : getBudgetYearConceptList()) {
+            zero += budgetYearConcept.getJanuaryAmount().doubleValue();
+        }
+        this.januarySubcategoryAmount = new BigDecimal(zero);
+        return januarySubcategoryAmount;
     }
 
-    public void setBudgetYearConceptList(List<BudgetYearConcept> budgetYearConceptList) {
-        this.budgetYearConceptList = budgetYearConceptList;
+    public void setJanuarySubcategoryAmount(BigDecimal januarySubcategoryAmount) {
+        this.januarySubcategoryAmount = januarySubcategoryAmount;
+    }
+
+    public BigDecimal getFebruarySubcategoryAmount() {
+        double zero = 0;
+        for (BudgetYearConcept budgetYearConcept : getBudgetYearConceptList()) {
+            zero += budgetYearConcept.getFebruaryAmount().doubleValue();
+        }
+        this.februarySubcategoryAmount = new BigDecimal(zero);
+        return februarySubcategoryAmount;
+    }
+
+    public void setFebruarySubcategoryAmount(BigDecimal februarySubcategoryAmount) {
+        this.februarySubcategoryAmount = februarySubcategoryAmount;
+    }
+
+    public BigDecimal getMarchSubcategoryAmount() {
+        double zero = 0;
+        for (BudgetYearConcept budgetYearConcept : getBudgetYearConceptList()) {
+            zero += budgetYearConcept.getMarchAmount().doubleValue();
+        }
+        this.marchSubcategoryAmount = new BigDecimal(zero);
+        return marchSubcategoryAmount;
+    }
+
+    public void setMarchSubcategoryAmount(BigDecimal marchSubcategoryAmount) {
+        this.marchSubcategoryAmount = marchSubcategoryAmount;
+    }
+
+    public BigDecimal getAprilSubcategoryAmount() {
+        double zero = 0;
+        for (BudgetYearConcept budgetYearConcept : getBudgetYearConceptList()) {
+            zero += budgetYearConcept.getAprilAmount().doubleValue();
+        }
+        this.aprilSubcategoryAmount = new BigDecimal(zero);
+        return aprilSubcategoryAmount;
+    }
+
+    public void setAprilSubcategoryAmount(BigDecimal aprilSubcategoryAmount) {
+        this.aprilSubcategoryAmount = aprilSubcategoryAmount;
+    }
+
+    public BigDecimal getMaySubcategoryAmount() {
+        double zero = 0;
+        for (BudgetYearConcept budgetYearConcept : getBudgetYearConceptList()) {
+            zero += budgetYearConcept.getMayAmount().doubleValue();
+        }
+        this.maySubcategoryAmount = new BigDecimal(zero);
+        return maySubcategoryAmount;
+    }
+
+    public void setMaySubcategoryAmount(BigDecimal maySubcategoryAmount) {
+        this.maySubcategoryAmount = maySubcategoryAmount;
+    }
+
+    public BigDecimal getJuneSubcategoryAmount() {
+        double zero = 0;
+        for (BudgetYearConcept budgetYearConcept : getBudgetYearConceptList()) {
+            zero += budgetYearConcept.getJuneAmount().doubleValue();
+        }
+        this.juneSubcategoryAmount = new BigDecimal(zero);
+        return juneSubcategoryAmount;
+    }
+
+    public void setJuneSubcategoryAmount(BigDecimal juneSubcategoryAmount) {
+        this.juneSubcategoryAmount = juneSubcategoryAmount;
+    }
+
+    public BigDecimal getJulySubcategoryAmount() {
+        double zero = 0;
+        for (BudgetYearConcept budgetYearConcept : getBudgetYearConceptList()) {
+            zero += budgetYearConcept.getJulyAmount().doubleValue();
+        }
+        this.julySubcategoryAmount = new BigDecimal(zero);
+        return julySubcategoryAmount;
+    }
+
+    public void setJulySubcategoryAmount(BigDecimal julySubcategoryAmount) {
+        this.julySubcategoryAmount = julySubcategoryAmount;
+    }
+
+    public BigDecimal getAugustSubcategoryAmount() {
+        double zero = 0;
+        for (BudgetYearConcept budgetYearConcept : getBudgetYearConceptList()) {
+            zero += budgetYearConcept.getAugustAmount().doubleValue();
+        }
+        this.augustSubcategoryAmount = new BigDecimal(zero);
+        return augustSubcategoryAmount;
+    }
+
+    public void setAugustSubcategoryAmount(BigDecimal augustSubcategoryAmount) {
+        this.augustSubcategoryAmount = augustSubcategoryAmount;
+    }
+
+    public BigDecimal getSeptemberSubcategoryAmount() {
+        double zero = 0;
+        for (BudgetYearConcept budgetYearConcept : getBudgetYearConceptList()) {
+            zero += budgetYearConcept.getSeptemberAmount().doubleValue();
+        }
+        this.septemberSubcategoryAmount = new BigDecimal(zero);
+        return septemberSubcategoryAmount;
+    }
+
+    public void setSeptemberSubcategoryAmount(BigDecimal septemberSubcategoryAmount) {
+        this.septemberSubcategoryAmount = septemberSubcategoryAmount;
+    }
+
+    public BigDecimal getOctoberSubcategoryAmount() {
+        double zero = 0;
+        for (BudgetYearConcept budgetYearConcept : getBudgetYearConceptList()) {
+            zero += budgetYearConcept.getOctoberAmount().doubleValue();
+        }
+        this.octoberSubcategoryAmount = new BigDecimal(zero);
+        return octoberSubcategoryAmount;
+    }
+
+    public void setOctoberSubcategoryAmount(BigDecimal octoberSubcategoryAmount) {
+        this.octoberSubcategoryAmount = octoberSubcategoryAmount;
+    }
+
+    public BigDecimal getNovemberSubcategoryAmount() {
+        double zero = 0;
+        for (BudgetYearConcept budgetYearConcept : getBudgetYearConceptList()) {
+            zero += budgetYearConcept.getNovemberAmount().doubleValue();
+        }
+        this.novemberSubcategoryAmount = new BigDecimal(zero);
+        return novemberSubcategoryAmount;
+    }
+
+    public void setNovemberSubcategoryAmount(BigDecimal novemberSubcategoryAmount) {
+        this.novemberSubcategoryAmount = novemberSubcategoryAmount;
+    }
+
+    public BigDecimal getDecemberSubcategoryAmount() {
+        double zero = 0;
+        for (BudgetYearConcept budgetYearConcept : getBudgetYearConceptList()) {
+            zero += budgetYearConcept.getDecemberAmount().doubleValue();
+        }
+        this.decemberSubcategoryAmount = new BigDecimal(zero);
+        return decemberSubcategoryAmount;
+    }
+
+    public void setDecemberSubcategoryAmount(BigDecimal decemberSubcategoryAmount) {
+        this.decemberSubcategoryAmount = decemberSubcategoryAmount;
     }
 
     public BigDecimal getTotalSubcategoryAmount() {
@@ -101,6 +261,14 @@ public class BudgetSubcategory {
 
     public void setTotalSubcategoryAmount(BigDecimal totalSubcategoryAmount) {
         this.totalSubcategoryAmount = totalSubcategoryAmount;
+    }
+
+    public List<BudgetYearConcept> getBudgetYearConceptList() {
+        return budgetYearConceptList;
+    }
+
+    public void setBudgetYearConceptList(List<BudgetYearConcept> budgetYearConceptList) {
+        this.budgetYearConceptList = budgetYearConceptList;
     }
 
     @Override
