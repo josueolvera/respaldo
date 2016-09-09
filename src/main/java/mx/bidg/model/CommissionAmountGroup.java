@@ -212,7 +212,19 @@ public class CommissionAmountGroup implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.CommissionAmountGroup[ idComissionAmountGroup=" + idComissionAmountGroup + " ]";
+        return "CommissionAmountGroup{" +
+                "idComissionAmountGroup=" + idComissionAmountGroup +
+                ", claveSap='" + claveSap + '\'' +
+                ", idAg=" + idAg +
+                ", groupName='" + groupName + '\'' +
+                ", applicationsNumber=" + applicationsNumber +
+                ", amount=" + amount +
+                ", tabulator=" + tabulator +
+                ", commission=" + commission +
+                ", idBranch=" + idBranch +
+                ", idRegion=" + idRegion +
+                ", idZona=" + idZona +
+                ", idDistributor=" + idDistributor +
+                '}';
     }
-    
 }
