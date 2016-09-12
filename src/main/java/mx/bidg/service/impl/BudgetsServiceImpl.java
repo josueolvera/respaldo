@@ -133,7 +133,7 @@ public class BudgetsServiceImpl implements BudgetsService {
 
         Row row = sheet.createRow(0);
 
-        row.createCell(0).setCellValue(costCenter.getAcronym());
+        row.createCell(0).setCellValue(costCenter.getName());
         row.createCell(1).setCellValue("ENERO");
         row.createCell(2).setCellValue("FEBRERO");
         row.createCell(3).setCellValue("MARZO");
