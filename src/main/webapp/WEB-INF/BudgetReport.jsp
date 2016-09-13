@@ -106,8 +106,7 @@
                     }
                 },
                 filters: {
-                    shortName: function(nombre)
-                    {
+                    shortName: function(nombre) {
                         var name;
                         name = nombre.substring(0, 3);
                         return name;
@@ -138,12 +137,12 @@
                                 </option>
                             </select>
                         </div>
-                        <div class="col-md-2">
-                            <button style="margin-top: 25px" class="btn btn-info form-control" >Buscar</button>
+                        <div class="col-md-1">
+                            <button style="margin-top: 25px" class="btn btn-info" >Buscar</button>
                         </div>
                         <div class="col-md-2" v-if="budgets.length > 0">
                             <a style="margin-top: 25px" :href="downloadReportUrl"
-                                    class="btn btn-success form-control">
+                                    class="btn btn-success">
                                 Descargar reporte
                             </a>
                         </div>
