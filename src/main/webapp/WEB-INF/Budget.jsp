@@ -217,6 +217,11 @@
                                     var self = this;
                                     this.budgets = data;
                                     this.searching = false;
+
+                                    if (data.length <= 0) {
+                                        showAlert('Sin presupuesto');
+                                    }
+
                                     this.getConcepts(self);
                                 })
                                 .error(function (data) {
