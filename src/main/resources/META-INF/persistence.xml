@@ -41,6 +41,7 @@
     <class>mx.bidg.model.FixedOperationRole</class>
     <class>mx.bidg.model.AgreementsGroupCondition</class>
     <class>mx.bidg.model.CommissionAmountGroup</class>
+    <class>mx.bidg.model.BranchsGoals</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties/>
   </persistence-unit>
