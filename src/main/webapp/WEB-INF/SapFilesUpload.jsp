@@ -74,6 +74,9 @@
                         if (this.typeFile.idSapFile == 9) {
                             this.checkExistingOutsourcing();
                         }
+                        if (this.typeFile.idSapFile == 10) {
+                            this.checkExistingGoal();
+                        }
                     },
                     getFileFormData:function () {
                         var formElement = document.getElementById("fileForm");
@@ -173,6 +176,16 @@
                     },
                     updateDwBranchs:function () {
                         this.$http.post(ROOT_URL + '/dw-branchs/update-excel', this.getFileFormData())
+                                .success(function (data) {
+                                    this.updateTypeFile();
+                                })
+                                .error(function (data) {
+                                    this.errorData = data;
+                                    $('#errorModal').modal('show');
+                                });
+                    },
+                    checkExistingGoal: function () {
+                        this.$http.post(ROOT_URL + '/branchs-goals/update-excel', this.getFileFormData())
                                 .success(function (data) {
                                     this.updateTypeFile();
                                 })
