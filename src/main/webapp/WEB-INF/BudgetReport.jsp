@@ -33,6 +33,7 @@
                     user:{},
                     searching: false,
                     rolesCostCenter:[],
+                    costCenterList:[],
                     role: null,
                     searchUrl: ROOT_URL,
                     downloadReportUrl: ROOT_URL + '/budgets?download=true'
@@ -64,10 +65,21 @@
                                     var self = this;
                                     var index;
                                     this.rolesCostCenter = data;
+
+                                    data.forEach(function (item) {
+                                        index = self.arrayObjectIndexOf(self.costCenterList, item.costCenter.idCostCenter, 'idCostCenter');
+                                        if (index == -1) self.costCenterList.push(item.costCenter);
+                                    });
                                 })
                                 .error(function (data) {
 
                                 });
+                    },
+                    arrayObjectIndexOf: function (myArray, searchTerm, property) {
+                        for (var i = 0, len = myArray.length; i < len; i++) {
+                            if (myArray[i][property] === searchTerm) return i;
+                        }
+                        return -1;
                     },
                     getMonths: function () {
                         this.$http.get(ROOT_URL + '/months')
@@ -126,7 +138,7 @@
                         <div class="col-md-2">
                             <label>Centro de costos</label>
                             <select v-model="selected.costCenter" class="form-control" @change="onChangeCriteria" required>
-                                <option v-for="roleCostCenter in rolesCostCenter" :value="roleCostCenter.costCenter">{{roleCostCenter.costCenter.name}}</option>
+                                <option v-for="costCenter in costCenterList" :value="costCenter">{{costCenter.name}}</option>
                             </select>
                         </div>
                         <div class="col-md-2">
