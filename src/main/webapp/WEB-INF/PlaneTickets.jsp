@@ -366,7 +366,10 @@
                                         <h3 class="panel-title"><strong>Pasajeros {{requestBody.passengers.length}}</strong></h3>
                                     </div>
                                     <div class="col-md-4 text-right">
-                                        <button type="button" class="btn btn-default" @click="addPassenger">Agregar</button>
+                                        <button type="button" class="btn btn-default
+                                         btn-sm" @click="addPassenger" :disabled="requestBody.passengers.length >= 100">
+                                            Agregar
+                                        </button>
                                     </div>
                                 </div>
                             </div>
