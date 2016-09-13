@@ -262,6 +262,7 @@
     <jsp:body>
         <div class="col-md-12" id="content">
             <h2>Boletos de avión</h2>
+
             <div class="row">
                 <div class="col-md-3">
                     <h4>Nueva solicitud</h4>
@@ -283,177 +284,177 @@
                 </div>
             </div>
 
-            <form v-on:submit.prevent="savePlaneTicket">
-                <div class="row" v-if="requestBody.planeTicketType !== null">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h3 class="panel-title"><strong>Informacón de solicitud</strong></h3>
-                                </div>
-                                <div v-if="requestBody.planeTicketType.planeTicketName === 'VARIAS CIUDADES'">
-                                    <div class="col-md-6 text-right">
-                                        <button type="button" class="btn btn-default btn-sm" @click="addFlight">Agregar vuelo</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel-body">
-                            <div class="row" v-for="flight in requestBody.flights">
-                                <div class="col-md-3">
-                                    <label>Origen</label>
-                                    <div class="form-group">
-                                        <select class="form-control" v-model="flight.cityOrigin" required>
-                                            <option :value="travelCity" v-for="travelCity in travelCities">{{travelCity.cityName}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <label>Destino</label>
-                                    <div class="form-group">
-                                        <select class="form-control" v-model="flight.cityDestination" required>
-                                            <option :value="travelCity" v-for="travelCity in travelCities">{{travelCity.cityName}}</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <label>Fecha de salida</label>
-                                    <div class="form-group">
-                                        <div class="input-group date" id="departureDate{{$index}}" @click="activateDateTimePickerDepartureDate($index)">
-                                            <input type="text" class="form-control" v-model="flight.departureDate" required>
-                                   <span class="input-group-addon">
-                                       <span class="glyphicon glyphicon-calendar"></span>
-                                   </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div v-if="requestBody.planeTicketType.planeTicketName === 'IDA Y VUELTA'">
-                                    <div class="col-md-3">
-                                        <label>Fecha de regreso</label>
-                                        <div class="form-group">
-                                            <div class="input-group date" id="returnDate" @click="activateDateTimePickerReturnDate">
-                                                <input type="text" class="form-control" v-model="flight.returnDate" required>
-                                   <span class="input-group-addon">
-                                       <span class="glyphicon glyphicon-calendar"></span>
-                                   </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div v-if="requestBody.planeTicketType.planeTicketName === 'VARIAS CIUDADES' && requestBody.flights.length > 1">
-                                    <div class="col-md-3">
-                                        <label style="visibility: hidden">delete</label>
-                                        <div class="form-group">
-                                            <button class="btn btn-default" @click="removeFlight(flight)"
-                                                    data-toggle="modal" data-placement="top" title="Eliminar">
-                                                <span class="glyphicon glyphicon-trash"></span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-10">
-                        </div>
-                        <div class="col-md-2">
-                            <label>Pasajeros</label>
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <input v-model="requestBody.passengers.length" type="text" class="form-control" disabled>
-                                </div>
-                                <div class="col-md-6">
-                                    <button type="button" class="btn btn-default" @click="addPassenger">Agregar</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <br>
-
-                    <div v-for="passenger in requestBody.passengers">
+            <div class="col-md-12">
+                <form v-on:submit.prevent="savePlaneTicket">
+                    <div class="row" v-if="requestBody.planeTicketType !== null">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <h3 class="panel-title"><strong>Información de pasejero</strong></h3>
+                                    <div class="col-md-6">
+                                        <h3 class="panel-title"><strong>Informacón de solicitud</strong></h3>
                                     </div>
-                                    <div class="col-md-4 text-center">
-                                        Pasajero número {{$index + 1}}
-                                    </div>
-                                    <div class="col-md-4" v-if="requestBody.passengers.length > 1">
-                                        <button class="close" @click="removePassenger(passenger)"><span aria-hidden="true">&times;</span>
-                                        </button>
+                                    <div v-if="requestBody.planeTicketType.idPlaneTicketType == 3">
+                                        <div class="col-md-6 text-right">
+                                            <button type="button" class="btn btn-default btn-sm" @click="addFlight">Agregar vuelo</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="panel-body">
-                                <div class="col-md-offset-1">
-                                    <div class="row">
-                                        <div class="col-md-2">
-                                            <label>Nombre completo</label>
-                                            <input v-model="passenger.fullName" type="text" class="form-control" required>
+                                <div class="row" v-for="flight in requestBody.flights">
+                                    <div class="col-md-3">
+                                        <label>Origen</label>
+                                        <div class="form-group">
+                                            <select class="form-control" v-model="flight.cityOrigin" required>
+                                                <option :value="travelCity" v-for="travelCity in travelCities">{{travelCity.cityName}}</option>
+                                            </select>
                                         </div>
-                                        <div class="col-md-2">
-                                            <label>Puesto</label>
-                                            <input v-model="passenger.job" type="text" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Destino</label>
+                                        <div class="form-group">
+                                            <select class="form-control" v-model="flight.cityDestination" required>
+                                                <option :value="travelCity" v-for="travelCity in travelCities">{{travelCity.cityName}}</option>
+                                            </select>
                                         </div>
-                                        <div class="col-md-2">
-                                            <label>Empresa</label>
-                                            <input v-model="passenger.company" type="text" class="form-control" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Fecha de salida</label>
+                                        <div class="form-group">
+                                            <div class="input-group date" id="departureDate{{$index}}" @click="activateDateTimePickerDepartureDate($index)">
+                                                <input type="text" class="form-control" v-model="flight.departureDate" required>
+                                                <span class="input-group-addon">
+                                       <span class="glyphicon glyphicon-calendar"></span>
+                                   </span>
+                                            </div>
                                         </div>
-                                        <div class="col-md-2">
-                                            <label>Numero telefonico</label>
-                                            <input v-model="passenger.phoneNumber" type="text" class="form-control" required>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label>Fecha de nacimiento</label>
+                                    </div>
+                                    <div v-if="requestBody.planeTicketType.idPlaneTicketType == 2">
+                                        <div class="col-md-3">
+                                            <label>Fecha de regreso</label>
                                             <div class="form-group">
-                                                <div class="input-group date" id="birthdate{{$index}}" @click="activateDateTimePickerBirthdate($index)">
-                                                    <input type="text" class="form-control" v-model="passenger.birthdate" required>
-                                               <span class="input-group-addon">
-                                                   <span class="glyphicon glyphicon-calendar"></span>
-                                               </span>
+                                                <div class="input-group date" id="returnDate" @click="activateDateTimePickerReturnDate">
+                                                    <input type="text" class="form-control" v-model="flight.returnDate" required>
+                                                    <span class="input-group-addon">
+                                       <span class="glyphicon glyphicon-calendar"></span>
+                                   </span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-2">
-                                            <label>Asiento</label>
-                                            <br>
-                                            <label class="radio-inline" v-for="planeSeatType in planeSeatsTypes">
-                                                <input type="radio" name="travel{{$parent.$index}}" v-model="passenger.planeSeatType"
-                                                       :value="planeSeatType" required>{{planeSeatType.planeSeatType}}
-                                            </label>
-                                            <h6><strong>* Sujeto a disponibilidad</strong></h6>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Pasaporte</label>
-                                            <input @change="setFile($event,passenger)" type="file" class="form-control"
-                                                   accept="application/pdf,
-                                                         image/png,image/jpg,image/jpeg," required>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label>Socio frecuente</label>
-                                            <input v-model="passenger.frequentPartner" type="text" class="form-control">
+                                    <div v-if="requestBody.planeTicketType.idPlaneTicketType == 3 && requestBody.flights.length > 1">
+                                        <div class="col-md-3">
+                                            <label style="visibility: hidden">delete</label>
+                                            <div class="form-group">
+                                                <button class="btn btn-default" @click="removeFlight(flight)"
+                                                        data-toggle="modal" data-placement="top" title="Eliminar">
+                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-md-offset-10 col-md-2 text-right">
-                            <button class="btn btn-success form-control" type="submit">Solicitar</button>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                    </div>
+                                    <div class="col-md-4 text-center">
+                                        <h3 class="panel-title"><strong>Pasajeros {{requestBody.passengers.length}}</strong></h3>
+                                    </div>
+                                    <div class="col-md-4 text-right">
+                                        <button type="button" class="btn btn-default" @click="addPassenger">Agregar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <div v-for="passenger in requestBody.passengers">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <h3 class="panel-title"><strong>Información de pasejero</strong></h3>
+                                                </div>
+                                                <div class="col-md-4 text-center">
+                                                    Pasajero número {{$index + 1}}
+                                                </div>
+                                                <div class="col-md-4" v-if="requestBody.passengers.length > 1">
+                                                    <button class="close" @click="removePassenger(passenger)"><span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="col-md-12">
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <label>Nombre completo</label>
+                                                        <input v-model="passenger.fullName" type="text" class="form-control" required>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label>Puesto</label>
+                                                        <input v-model="passenger.job" type="text" class="form-control" required>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label>Empresa</label>
+                                                        <input v-model="passenger.company" type="text" class="form-control" required>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label>Fecha de nacimiento</label>
+                                                        <div class="form-group">
+                                                            <div class="input-group date" id="birthdate{{$index}}" @click="activateDateTimePickerBirthdate($index)">
+                                                                <input type="text" class="form-control" v-model="passenger.birthdate" required>
+                                                                <span class="input-group-addon">
+                                                   <span class="glyphicon glyphicon-calendar"></span>
+                                               </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <label>Asiento</label>
+                                                        <br>
+                                                        <label class="radio-inline" v-for="planeSeatType in planeSeatsTypes">
+                                                            <input type="radio" name="travel{{$parent.$index}}" v-model="passenger.planeSeatType"
+                                                                   :value="planeSeatType" required>{{planeSeatType.planeSeatType}}
+                                                        </label>
+                                                        <h6><strong>* Sujeto a disponibilidad</strong></h6>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label>Pasaporte</label>
+                                                        <input @change="setFile($event,passenger)" type="file" class="form-control"
+                                                               accept="application/pdf,
+                                                         image/png,image/jpg,image/jpeg," required>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label>Socio frecuente</label>
+                                                        <input v-model="passenger.frequentPartner" type="text" class="form-control">
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label>Numero telefonico</label>
+                                                        <input v-model="passenger.phoneNumber" type="text" class="form-control" required>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
+                        <div class="row">
+                            <div class="col-md-offset-10 col-md-2 text-right">
+                                <button class="btn btn-success form-control" type="submit">Solicitar</button>
+                            </div>
+                        </div>
+                        <br>
                     </div>
-                    <br>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </jsp:body>
 </t:template>
