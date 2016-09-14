@@ -248,7 +248,7 @@ public class TransactionsServiceImpl implements TransactionsService {
                         priceEstimationsAutorized = priceEstimation;
                     }
                 }
-                RequestTypesProduct requestTypesProduct = requests.getRequestTypeProduct();
+//                RequestTypesProduct requestTypesProduct = requests.getRequestTypeProduct();
 //                CProductTypes productType = requestTypesProduct.getProductType();
                 BudgetYearConcept budgetYearConcept = requests.getBudgetYearConcept();
 //                DwEnterprises dwEnterprise = budgetYearConcept.getDwEnterprise();

@@ -56,7 +56,6 @@
                 ready : function () {
                     this.getUserInSession();
                     this.getBudgetTypes();
-                    this.getBudgetCategories();
                 },
                 data: {
                     now: "${now}",
@@ -68,10 +67,10 @@
                     budgetTypes: [],
                     user:{},
                     selected : {
-                        budgetNature:{},
-                        budgetType: {},
-                        costCenter: {},
-                        budgetCategory: {},
+                        budgetNature: null,
+                        budgetType: null,
+                        costCenter: null,
+                        budgetCategory: null,
                         year: null,
                         yearFromCopy: null,
                         yearToCopy: null
@@ -82,7 +81,7 @@
                     budgetNatureList:[],
                     budgetCategories: [],
                     budgetAllOption: {
-                        budgetCategory:'TODOS',
+                        name:'TODOS',
                         idBudgetCategory:0
                     },
                     role:null,
@@ -189,34 +188,41 @@
                             this.years.push(i)
                         }
                     },
-                    searchBudget: function () {
+                    searchBudget: function (year, budgetType, budgetNature, budgetCategory) {
                         this.searching = true;
-                        this.getBudgets();
+                        this.getBudgets(year, budgetType, budgetNature, budgetCategory);
                     },
-                    getBudgets: function () {
+                    getBudgets: function (year, budgetType, budgetNature, budgetCategory) {
                         var url = ROOT_URL +
-                                '/budgets?cost_center=' + this.selected.costCenter.idCostCenter +
-                                '&year=' + this.selected.year +
-                                '&budget_type=' + this.selected.budgetType.idBudgetType +
-                                '&budget_nature=' + this.selected.budgetNature.idBudgetNature;
-                        if (this.selected.budgetCategory.idBudgetCategory != 0) {
-                            url += '&category=' + this.selected.budgetCategory.idBudgetCategory;
+                                '/budgets?cost_center=' + this.selected.costCenter.idCostCenter;
+
+                        if (year != null) {
+                            url += '&year=' + this.selected.year;
                         }
+
+                        if (budgetType != null) {
+                            url += '&budget_type=' + this.selected.budgetType.idBudgetType;
+                        }
+
+                        if (budgetNature != null) {
+                            url += '&budget_nature=' + this.selected.budgetNature.idBudgetNature;
+                        }
+
+                        if (budgetCategory.idBudgetCategory != 0) {
+                            url += '&category=' + budgetCategory.idBudgetCategory;
+                        }
+
                         this.$http.get(url)
                                 .success(function (data) {
                                     var self = this;
                                     this.budgets = data;
                                     this.searching = false;
-                                    this.getConcepts(self);
-                                })
-                                .error(function (data) {
 
-                                });
-                    },
-                    getBudgetCategories : function () {
-                        this.$http.get(ROOT_URL + '/budget-categories')
-                                .success(function (data) {
-                                    this.budgetCategories = data;
+                                    if (data.length <= 0) {
+                                        showAlert('Sin presupuesto');
+                                    }
+
+                                    this.getConcepts(self);
                                 })
                                 .error(function (data) {
 
@@ -261,7 +267,7 @@
                             this.$http.post(ROOT_URL + '/budget-year-concept/' + idBudget, JSON.stringify(budgetYearConceptListToSave))
                                     .success(function (data) {
                                         showAlert('Presupuesto guardado');
-                                        this.getBudgets();
+                                        this.getBudgets(this.selected.year, this.selected.budgetType, this.selected.budgetNature, this.selected.budgetCategory);
                                     })
                                     .error(function (data) {
                                         showAlert('Ha habido un error con la solicitud, intente nuevamente');
@@ -330,7 +336,7 @@
                             this.$http.delete(ROOT_URL + "/budget-year-concept/" + concept.idBudgetYearConcept)
                                     .success(function (data) {
                                         showAlert('Concepto eliminado');
-                                        this.getBudgets();
+                                        this.getBudgets(this.selected.year, this.selected.budgetType, this.selected.budgetNature, this.selected.budgetCategory);
                                     });
                         } else {
                             budgetSubcategory.budgetYearConceptList.$remove(concept);
@@ -369,7 +375,7 @@
 
                         this.$http.post(ROOT_URL + '/budget-year-concept/authorize', JSON.stringify(autorizacion))
                                 .success(function(data) {
-                                    this.getBudgets();
+                                    this.getBudgets(this.selected.year, this.selected.budgetType, this.selected.budgetNature, this.selected.budgetCategory);
                                     showAlert('Presupuesto autorizado');
                                 })
                                 .error(function(data){
@@ -393,7 +399,7 @@
 
                         this.$http.post(ROOT_URL + url,{})
                                 .success(function(data) {
-                                    this.getBudgets();
+                                    this.getBudgets(this.selected.year, this.selected.budgetType, this.selected.budgetNature, this.selected.budgetCategory);
                                     this.closeCopyBudgetModal();
                                     this.closeOverwriteModal();
                                     showAlert('Presupuesto copiado');
@@ -457,6 +463,16 @@
                     },
                     onChangeFilter : function () {
                         this.budgets = [];
+                    },
+                    onChangeCostCenter : function () {
+                        this.budgets = [];
+                        this.getBudgetCategories();
+                    },
+                    getBudgetCategories : function () {
+                        this.$http.get(ROOT_URL + '/budgets?cost_center=' + this.selected.costCenter.idCostCenter)
+                                .success(function (data) {
+                                    this.budgetCategories = data;
+                                });
                     }
                 },
                 filters: {
@@ -481,10 +497,10 @@
                 <h2>Captura de presupuesto</h2>
                 <br>
                 <div class="row">
-                    <form v-on:submit.prevent="searchBudget">
+                    <form v-on:submit.prevent="searchBudget(selected.year, selected.budgetType, selected.budgetNature, selected.budgetCategory)">
                         <div class="col-md-2">
                             <label>Centro de costos</label>
-                            <select v-model="selected.costCenter" class="form-control" @change="onChangeFilter" required>
+                            <select v-model="selected.costCenter" class="form-control" @change="onChangeCostCenter" required>
                                 <option v-for="costCenter in costCenterList" :value="costCenter">{{costCenter.name}}</option>
                             </select>
                         </div>
@@ -510,11 +526,11 @@
                                 </option>
                             </select>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2" v-if="budgetCategories.length > 0">
                             <label>Rubro</label>
                             <select v-model="selected.budgetCategory" class="form-control" @change="onChangeFilter" required>
-                                <option selected :value="budgetAllOption">{{budgetAllOption.budgetCategory}}</option>
-                                <option v-for="budgetCategory in budgetCategories" :value="budgetCategory">{{budgetCategory.budgetCategory}}</option>
+                                <option selected :value="budgetAllOption">{{budgetAllOption.name}}</option>
+                                <option v-for="budgetCategory in budgetCategories" :value="budgetCategory">{{budgetCategory.name}}</option>
                             </select>
                         </div>
                         <div class="col-md-1">

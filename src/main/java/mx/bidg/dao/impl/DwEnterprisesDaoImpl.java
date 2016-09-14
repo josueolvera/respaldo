@@ -74,16 +74,18 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
 
         return createEntityCriteria()
                 .add(Restrictions.eq("idDistributor", idDistributor))
-                .add(Restrictions.eq("status",true))
+                .add(Restrictions.ne("idRegion", 0))
+                .add(Restrictions.eq("status", true))
                 .list();
     }
 
     @Override
     public List<DwEnterprises> findByDistributorAndArea(Integer idDistributor, Integer idArea) {
         return createEntityCriteria()
-                .add(Restrictions.eq("idDistributor",idDistributor))
-                .add(Restrictions.eq("idArea",idArea))
-                .add(Restrictions.eq("status",true))
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idArea", idArea))
+                .add(Restrictions.ne("idRegion", 0))
+                .add(Restrictions.eq("status", true))
                 .list();
     }
 

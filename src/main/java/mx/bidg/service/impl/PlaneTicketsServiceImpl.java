@@ -1,7 +1,9 @@
 package mx.bidg.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.dao.*;
+import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
 import mx.bidg.service.FoliosService;
 import mx.bidg.service.PlaneTicketsService;
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -38,6 +42,9 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
     RequestTypesProductDao requestTypesProductDao;
 
     @Autowired
+    AccountingAccountsDao accountingAccountsDao;
+
+    @Autowired
     private ObjectMapper mapper;
 
     @Override
@@ -53,70 +60,70 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
     @Override
     public PlaneTickets save(String data, Users user) throws IOException {
 
-        /*DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
         LocalDateTime now = LocalDateTime.now();
 
-        int month = now.getMonthValue();
-        int year = now.getYear();
-
-        CMonths cMonth = new CMonths(month);
+        Integer month = now.getMonthValue();
+        Integer year = now.getYear();
 
         JsonNode node = mapper.readTree(data);
 
         CPlaneTicketsTypes planeTicketType = mapper.treeToValue(node.get("planeTicketType"),CPlaneTicketsTypes.class);
         String startDate = node.get("startDate").asText();
 
+        AccountingAccounts accountingAccount = accountingAccountsDao.findByCategoryAndSubcategory(CBudgetCategories.GASTOS_DE_VIAJE.getIdBudgetCategory(), CBudgetSubcategories.NACIONALES.getIdBudgetSubcategory());
+
         DwEnterprises dwEnterprise = user.getDwEmployee().getDwEnterprise();
 
-        Budgets budget = budgetsDao.findByCombination(
-                dwEnterprise.getDistributor(),
-                dwEnterprise.getArea(),
-                CBudgetCategories.GASTOS_DE_VIAJE,
-                CBudgetSubcategories.NACIONALES
-        );
-
-        CProductTypes productType = CProductTypes.NACIONALES;
-
-        if (budget != null) {
-            BudgetMonth budgetMonthBranch = budgetYearConceptDao.findByCombination(budget,cMonth,dwEnterprise,year);
-
-            if (budgetMonthBranch != null) {
-
-                CRequestsCategories requestsCategory = new CRequestsCategories(CRequestsCategories.BOLETOS_DE_AVION);
-                RequestTypesProduct requestTypesProduct =
-                        requestTypesProductDao.findByCombination(
-                                requestsCategory,
-                                CRequestTypes.GASTOS_DE_VIAJE,
-                                productType
-                        );
-
-                Requests request = new Requests();
-                request.setFolio(foliosService.createNew(new CTables(51)));
-                request.setRequestTypeProduct(requestTypesProduct);
-                request.setUserRequest(user);
-                request.setCreationDate(now);
-                request.setRequestStatus(CRequestStatus.PENDIENTE);
-                request.setBudgetYearConcept(budgetMonthBranch);
-                request.setIdAccessLevel(1);
-
-                request = requestsDao.save(request);
-
-                PlaneTickets planeTicket = new PlaneTickets();
-
-                planeTicket.setPlaneTicketType(planeTicketType);
-                planeTicket.setCreationDate(now);
-                planeTicket.setRequest(request);
-                planeTicket.setStartDate(LocalDateTime.parse(startDate + " 00:00",formatter));
-                planeTicket = planeTicketsDao.save(planeTicket);
-
-                return planeTicket;
-
-            } else {
-                throw new ValidationException("Sin presupuesto","No tiene presupuesto asignado para este tipo de solicitud");
-            }
-        } else {
-            throw new ValidationException("Sin presupuesto","No tiene presupuesto asignado para este tipo de solicitud");
-        }*/
+//        Budgets budget = budgetsDao.findByCombination(
+//                dwEnterprise.getDistributor(),
+//                dwEnterprise.getArea(),
+//                CBudgetCategories.GASTOS_DE_VIAJE,
+//                CBudgetSubcategories.NACIONALES
+//        );
+//
+//        CProductTypes productType = CProductTypes.NACIONALES;
+//
+//        if (budget != null) {
+//            BudgetMonth budgetMonthBranch = budgetYearConceptDao.findByCombination(budget,cMonth,dwEnterprise,year);
+//
+//            if (budgetMonthBranch != null) {
+//
+//                CRequestsCategories requestsCategory = new CRequestsCategories(CRequestsCategories.BOLETOS_DE_AVION);
+//                RequestTypesProduct requestTypesProduct =
+//                        requestTypesProductDao.findByCombination(
+//                                requestsCategory,
+//                                CRequestTypes.GASTOS_DE_VIAJE,
+//                                productType
+//                        );
+//
+//                Requests request = new Requests();
+//                request.setFolio(foliosService.createNew(new CTables(51)));
+//                request.setRequestTypeProduct(requestTypesProduct);
+//                request.setUserRequest(user);
+//                request.setCreationDate(now);
+//                request.setRequestStatus(CRequestStatus.PENDIENTE);
+//                request.setBudgetYearConcept(budgetMonthBranch);
+//                request.setIdAccessLevel(1);
+//
+//                request = requestsDao.save(request);
+//
+//                PlaneTickets planeTicket = new PlaneTickets();
+//
+//                planeTicket.setPlaneTicketType(planeTicketType);
+//                planeTicket.setCreationDate(now);
+//                planeTicket.setRequest(request);
+//                planeTicket.setStartDate(LocalDateTime.parse(startDate + " 00:00",formatter));
+//                planeTicket = planeTicketsDao.save(planeTicket);
+//
+//                return planeTicket;
+//
+//            } else {
+//                throw new ValidationException("Sin presupuesto","No tiene presupuesto asignado para este tipo de solicitud");
+//            }
+//        } else {
+//            throw new ValidationException("Sin presupuesto","No tiene presupuesto asignado para este tipo de solicitud");
+//        }
         PlaneTickets planeTickets = null;
         return planeTickets;
     }

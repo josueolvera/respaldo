@@ -104,4 +104,12 @@ public class AccountingAccountsDaoImpl extends AbstractDao<Integer, AccountingAc
                 .add(Restrictions.eq("idBudgetCategory",idBudgetCategory))
                 .list();
     }
+
+    @Override
+    public AccountingAccounts findByCategoryAndSubcategory(Integer idBudgetCategory, Integer idBudgetSubcategory) {
+        return (AccountingAccounts) createEntityCriteria()
+                .add(Restrictions.eq("idBudgetCategory", idBudgetCategory))
+                .add(Restrictions.eq("idBudgetSubcategory", idBudgetSubcategory))
+                .uniqueResult();
+    }
 }

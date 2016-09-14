@@ -165,7 +165,7 @@ public class NotificationsServiceImpl implements NotificationsService {
     private Notifications build(Requests request, Users user) {
         Notifications notification = new Notifications();
         notification.setIdResource(request.getIdRequest());
-        notification.setResourcesTasks(request.getRequestTypeProduct().getRequestCategory().getResourcesTasks());
+//        notification.setResourcesTasks(request.getRequestTypeProduct().getRequestCategory().getResourcesTasks());
        // notification.setTitle("Solicitud: " + request.getRequestTypeProduct().getRequestType().getRequestType());
        // notification.setSubtitle(request.getRequestTypeProduct().getProductType().getProductType());
         notification.setText(request.getDescription());
