@@ -861,6 +861,14 @@
                         }else{
                             this.haveImss = false;
                         }
+                    },
+                    onChangeEmployeeType : function () {
+                        this.employee.sistarh = '';
+                        this.employee.imss = '';
+                        this.employee.infonavitNumber = '';
+                    },
+                    clearContractTypeData: function () {
+                        
                     }
                 },
                 filters: {}
@@ -1058,22 +1066,22 @@
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <label>Nombre</label>
-                                        <input class="form-control" name="name" v-model="employee.firstName"
+                                        <input class="form-control" v-model="employee.firstName"
                                                onkeypress="return isLetterKey(event)" required>
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Segundo nombre</label>
-                                        <input class="form-control" name="name" v-model="employee.middleName"
+                                        <input class="form-control" v-model="employee.middleName"
                                                onkeypress="return isLetterKey(event)">
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Apellido paterno</label>
-                                        <input class="form-control" name="name" v-model="employee.parentalLast"
+                                        <input class="form-control" v-model="employee.parentalLast"
                                                onkeypress="return isLetterKey(event)" required>
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Apellido materno</label>
-                                        <input class="form-control" name="name" v-model="employee.motherLast"
+                                        <input class="form-control" v-model="employee.motherLast"
                                                onkeypress="return isLetterKey(event)" required>
                                     </div>
                                 </div>
@@ -1081,8 +1089,7 @@
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <label>Genero</label>
-                                        <select class="form-control" name="" v-model="employee.gender" required>
-                                            <option></option>
+                                        <select class="form-control" v-model="employee.gender" required>
                                             <option v-for="gender in genders" :value="gender.idGender">
                                                 {{gender.genderName}}
                                             </option>
@@ -1099,8 +1106,7 @@
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Lugar de Nacimiento</label>
-                                        <select class="form-control" name="" v-model="employee.birthPlace" required>
-                                            <option></option>
+                                        <select class="form-control" v-model="employee.birthPlace" required>
                                             <option v-for="estado in estados"
                                                     value="{{estado.nombreEstado}}">
                                                 {{estado.nombreEstado}}
@@ -1109,7 +1115,7 @@
                                     </div>
                                     <div class="col-xs-3">
                                         <label>CURP</label>
-                                        <input class="form-control" name="name" v-model="employee.curp" maxlength="18"
+                                        <input class="form-control" v-model="employee.curp" maxlength="18"
                                                @change="validateCurp(employee.curp)" required>
                                     </div>
                                 </div>
@@ -1117,7 +1123,7 @@
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <label>Código postal</label>
-                                        <input class="form-control" name="name" maxlength="5"
+                                        <input class="form-control" maxlength="5"
                                                v-model="employee.postcode"
                                                @input="obtainAsentamientos"
                                                onkeypress="return isNumberKey(event)" required>
@@ -1134,8 +1140,7 @@
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Colonia</label>
-                                        <select class="form-control" name="" v-model="employee.colonia" required>
-                                            <option></option>
+                                        <select class="form-control" v-model="employee.colonia" required>
                                             <option v-for="set in asentamiento" value="{{set.nombreAsentamiento}}">
                                                 {{set.nombreAsentamiento}}
                                             </option>
@@ -1146,16 +1151,16 @@
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <label>Calle</label>
-                                        <input class="form-control" name="name" v-model="employee.street" required>
+                                        <input class="form-control" v-model="employee.street" required>
                                     </div>
                                     <div class="col-xs-2">
                                         <label>Número Exterior</label>
-                                        <input class="form-control" name="name" maxlength="5"
+                                        <input class="form-control" maxlength="5"
                                                v-model="employee.exteriorNumber" required>
                                     </div>
                                     <div class="col-xs-2">
                                         <label>Número Interior</label>
-                                        <input class="form-control" name="name" maxlength="5"
+                                        <input class="form-control" maxlength="5"
                                                v-model="employee.interiorNumber">
                                     </div>
                                 </div>
@@ -1163,19 +1168,18 @@
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <label>Nombre del padre</label>
-                                        <input class="form-control" name="name" v-model="employee.fatherName"
+                                        <input class="form-control" v-model="employee.fatherName"
                                                onkeypress="return isLetterKey(event)" :required="haveImss == true">
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Nombre de la madre</label>
-                                        <input class="form-control" name="name" v-model="employee.motherName"
+                                        <input class="form-control" v-model="employee.motherName"
                                                onkeypress="return isLetterKey(event)" :required="haveImss == true">
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Estado civil</label>
-                                        <select class="form-control" name="" v-model="employee.idStatusMarital"
+                                        <select class="form-control" v-model="employee.idStatusMarital"
                                                 required>
-                                            <option></option>
                                             <option v-for="status in statusMarital" value="{{status.idStatusMarital}}">
                                                 {{status.maritalName}}
                                             </option>
@@ -1183,8 +1187,7 @@
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Escolaridad</label>
-                                        <select class="form-control" name="" v-model="employee.idEducation" required>
-                                            <option></option>
+                                        <select class="form-control" v-model="employee.idEducation" required>
                                             <option v-for="edu in education" value="{{edu.idEducation}}">
                                                 {{edu.educationName}}
                                             </option>
@@ -1203,17 +1206,17 @@
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Número de talla</label>
-                                        <input class="form-control" name="name" v-model="employee.sizeNumber"
+                                        <input class="form-control" v-model="employee.sizeNumber"
                                                maxlength="2" onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Télefono de casa</label>
-                                        <input class="form-control" name="name" v-model="employee.homePhone"
+                                        <input class="form-control" v-model="employee.homePhone"
                                                maxlength="10" onkeypress="return isNumberKey(event)" required>
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Móvil</label>
-                                        <input class="form-control" name="name" v-model="employee.cellPhone"
+                                        <input class="form-control" v-model="employee.cellPhone"
                                                maxlength="10" onkeypress="return isNumberKey(event)" required>
                                     </div>
                                 </div>
@@ -1221,17 +1224,17 @@
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <label>Email</label>
-                                        <input class="form-control" name="name" v-model="employee.mail"
+                                        <input class="form-control" v-model="employee.mail"
                                                @change="validateEmail(employee.mail)" required>
                                     </div>
                                     <div class="col-xs-3" v-if="selectedOptions.distributor.saemFlag == true">
                                         <label>Clave SAP</label>
-                                        <input class="form-control" name="name" v-model="employee.claveSap"
+                                        <input class="form-control" v-model="employee.claveSap"
                                                maxlength="15">
                                     </div>
                                     <div class="col-xs-3">
                                         <label>RFC</label>
-                                        <input class="form-control" name="name" v-model="employee.rfc" maxlength="13"
+                                        <input class="form-control" v-model="employee.rfc" maxlength="13"
                                                @change="validateRfc(employee.rfc)" required>
                                     </div>
                                     <div class="col-xs-3">
@@ -1256,8 +1259,7 @@
                                 <div class="row">
                                     <div class="col-xs-2">
                                         <label>Tipo de empleado</label>
-                                        <select class="form-control" name="" v-model="employee.employeeType" required>
-                                            <option></option>
+                                        <select class="form-control" v-model="employee.employeeType" @change="onChangeEmployeeType" required>
                                             <option v-for="type in employeeTypes" :value="type.idEmployeeType">
                                                 {{type.employeeTypeName}}
                                             </option>
@@ -1265,8 +1267,7 @@
                                     </div>
                                     <div class="col-xs-2">
                                         <label>Tipo de contrato</label>
-                                        <select class="form-control" name="" v-model="employee.contractType" required>
-                                            <option></option>
+                                        <select class="form-control" v-model="employee.contractType" required>
                                             <option v-for="contract in contractTypes" :value="contract.idContractType">
                                                 {{contract.contractTypeName}}
                                             </option>
@@ -1278,17 +1279,17 @@
                                     <div class="col-xs-3"
                                          v-if="selectedOptions.distributor.idDistributor == 2 && selectedOptions.role.idRole == 63">
                                         <label>SISTARH</label>
-                                        <input class="form-control" maxlength="2" name="name" v-model="employee.sistarh"
+                                        <input class="form-control" maxlength="2" v-model="employee.sistarh"
                                                onkeypress="return isNumberKey(event)">
                                     </div>
                                     <div class="col-xs-3" v-if="employee.employeeType == 1">
                                         <label>IMSS</label>
-                                        <input class="form-control" name="name" v-model="employee.imss" maxlength="18"
+                                        <input class="form-control" v-model="employee.imss" maxlength="18"
                                                onkeypress="return isNumberKey(event)" required @change="validateImss">
                                     </div>
                                     <div class="col-xs-3" v-if="employee.employeeType == 1">
                                         <label>Infonavit</label>
-                                        <input class="form-control" name="name" v-model="employee.infonavitNumber"
+                                        <input class="form-control" v-model="employee.infonavitNumber"
                                                maxlength="15">
                                     </div>
                                 </div>
@@ -1304,8 +1305,7 @@
                                 <div class="row">
                                     <div class="col-xs-3">
                                         <label>Banco</label>
-                                        <select class="form-control" name="" v-model="cuenta.idBank" required>
-                                            <option></option>
+                                        <select class="form-control" v-model="cuenta.idBank" required>
                                             <option v-for="bank in banks" value="{{bank.idBank}}">{{bank.acronyms}}
                                             </option>
                                         </select>

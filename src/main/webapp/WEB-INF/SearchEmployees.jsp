@@ -1404,7 +1404,6 @@
                                     <label>Distribuidor/Empresa</label>
                                     <select v-model="selectedOptions.distributor" class="form-control"
                                             @change="distributorChanged" :disabled="checkLastAssign == true">
-                                        <option></option>
                                         <option v-for="distributor in distributors"
                                                 :value="distributor">
                                             {{ distributor.distributorName }}

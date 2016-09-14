@@ -769,13 +769,13 @@
     <jsp:body>
         <div id="content">
             <div class="row">
-                <div class="col-xs-8 text-header" style="margin-top: 15px">
+                <div class="col-xs-8 text-header">
                     <h2>Modificación de empleados</h2>
                 </div>
-                <div class="col-xs-3">
+                <div class="col-xs-2">
                 </div>
-                <div class="col-xs-1" style="margin-left: 300px">
-                    <button class="btn btn-default" style="margin-top: 35px" @click="exit">Regresar
+                <div class="col-xs-2 text-right" style="margin-top: 25px">
+                    <button class="btn btn-default" @click="exit">Regresar
                     </button>
                 </div>
             </div>
