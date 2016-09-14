@@ -65,7 +65,7 @@
     <jsp:body>
         <div id="content">
             <div class="container-fluid">
-                <h2>Generador de calculo de comisiones</h2>
+                <h2>Generador de cálculo de comisiones</h2>
                 <br>
                 <div class="row">
                     <form v-on:submit.prevent="searchCalculation">
@@ -99,7 +99,7 @@
                         <div class="col-md-2">
                             <button type="button" class="btn btn-success form-control"
                                     @click="generateCalculation" style="margin-top: 27px">
-                                Generar calculo
+                                Generar cálculo
                             </button>
                         </div>
                     </form>

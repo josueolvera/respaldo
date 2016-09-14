@@ -133,7 +133,7 @@
             <div>
                 <div class="row">
                     <div class="col-xs-6 text-header">
-                        <h2>Asignaciòn de grupos por rol</h2>
+                        <h2>Asignación de grupos por rol</h2>
                     </div>
                     <div class="col-xs-4">
 

@@ -336,7 +336,7 @@
                                         ID SUCURSAL
                                     </th>
                                     <th>
-                                        NOMBRE
+                                        NOMBRE SAP
                                     </th>
                                     <th>
                                         NOMBRE CORTO
@@ -370,9 +370,9 @@
                                     </td>
                                     <td>
                                         <div class="form-group">
-                                            <label class="sr-only">Nombre</label>
+                                            <label class="sr-only">Nombre SAP</label>
                                             <input v-model="newBranchForm.data.branch.branchName"
-                                                   type="text" class="form-control"  placeholder="Nombre">
+                                                   type="text" class="form-control"  placeholder="Nombre SAP">
                                         </div>
                                     </td>
                                     <td>
@@ -475,9 +475,9 @@
                             <h4 class="modal-title" id="deleteModalLabel">Confirmación</h4>
                         </div>
                         <div class="modal-body">
-                            La sucursal <b>{{selectedBranch.branchName}}</b> sera dada de baja.
+                            La sucursal <b>{{selectedBranch.branchName}}</b> será dada de baja.
                             <br>
-                            (Los empleados asignados a esta sucursal seran dados de baja).
+                            (Los empleados asignados a esta sucursal serán dados de baja).
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -500,7 +500,7 @@
 
                                 <div class="row">
                                     <div class="col-md-8">
-                                        <label>Nombre</label>
+                                        <label>Nombre SAP</label>
                                         <input class="form-control" name="name" v-model="branchName">
                                     </div>
                                     <div class="col-md-4">
@@ -580,4 +580,3 @@
         </div>
     </jsp:body>
 </t:template>
-

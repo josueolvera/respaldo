@@ -8,9 +8,18 @@
 
     <jsp:attribute name="scripts">
         <script type="text/javascript">
-            function isNumberKey(evt) {
-                var charCode = (evt.which) ? evt.which : event.keyCode
+            function isNumberKey(evt, obj) {
+                /*var charCode = (evt.which) ? evt.which : event.keyCode
                 if (charCode > 31 && (charCode < 48 || charCode > 57))
+                    return false;
+                return true;*/
+                var charCode = (evt.which) ? evt.which : event.keyCode
+                var value = obj.value;
+                var dotcontains = value.indexOf(".") != -1;
+                if (dotcontains)
+                if (charCode == 46) return false;
+                if (charCode == 46) return true;
+                    if (charCode > 31 && (charCode < 48 || charCode > 57))
                     return false;
                 return true;
             }
@@ -56,15 +65,17 @@
                 },
                 ready: function () {
                     this.getAgreementGroups();
+                    this.getRulesType();
                 },
                 data: {
                     agreementGroups: {},
                     idAgreementGroup: 0,
                     tabsOfGroup: {},
-                    montoMinimo: 0,
-                    montoMaximo: 0,
-                    tabulator: 0,
-                    ruleType: 0
+                    montoMinimo: '',
+                    montoMaximo: '',
+                    tabulator: '',
+                    ruleType: 0,
+                    rulesTypes: {}
                 },
                 methods: {
                     getAgreementGroups: function(){
@@ -104,7 +115,7 @@
 
                         newTab.idAg = this.idAgreementGroup;
 
-                        if (ruleType == 1)
+                        if (ruleType == 1 || ruleType == 3)
                         {
                             newTab.amountMin = this.montoMinimo;
                             newTab.amountMax = this.montoMaximo;
@@ -131,11 +142,25 @@
                                 showAlert("Registro Exitoso");
                                 newTab.idGroupCondition = data.idGroupCondition;
                                 this.tabsOfGroup.push(newTab);
+                                this.clearFields();
                               });
                         }
                         else {
                             showAlert("Favor de llenar todos los campos");
                         }
+                    },
+                    getRulesType: function(){
+
+                        this.$http.get(ROOT_URL+"/c-type-operation")
+                          .success(function (data)
+                          {
+                             this.rulesTypes= data;
+                          });
+                    },
+                    clearFields: function(){
+                        this.montoMinimo= '';
+                        this.montoMaximo= '';
+                        this.tabulator= '';
                     }
                 },
                 filters: {
@@ -152,7 +177,7 @@
 
             <div class="row">
               <div class="col-xs-12 text-center">
-                <h1>Gestión de Tabuladores de Grupos</h1>
+                <h1>Gestión de tabuladores de grupos</h1>
               </div>
             </div>
 
@@ -173,10 +198,11 @@
                 <label>
                     Tipo de regla
                 </label>
-                <select class="form-control" v-model="ruleType">
+                <select class="form-control" v-model="ruleType" @change="clearFields">
                     <option value=""></option>
-                    <option value="1">Monto comisionable</option>
-                    <option value="2">Bono por solicitudes</option>
+                    <option v-for="rules in rulesTypes" value="{{rules.typeOperation}}">
+                        {{rules.description}}
+                    </option>
                 </select>
               </div>
             </div>
@@ -185,11 +211,11 @@
             <div class="row" v-if="ruleType == 1">
               <div class="col-xs-3">
                 <label>
-                Monto minimo
+                Monto mínimo
                 </label>
                 <div class="input-group">
                   <span class="input-group-addon">$</span>
-                  <input type="text" class="form-control" v-model="montoMinimo">
+                  <input number type="text" class="form-control" v-model="montoMinimo" onkeypress="return isNumberKey(event,this)">
                 </div>
               </div>
 
@@ -199,7 +225,7 @@
                 </label>
                 <div class="input-group">
                   <span class="input-group-addon">$</span>
-                  <input type="text" class="form-control" v-model="montoMaximo">
+                  <input number type="text" class="form-control" v-model="montoMaximo" onkeypress="return isNumberKey(event,this)">
                 </div>
               </div>
 
@@ -209,12 +235,12 @@
                 </label>
                 <div class="input-group">
                   <span class="input-group-addon">%</span>
-                  <input type="text" class="form-control" v-model="tabulator">
+                  <input number type="text" class="form-control" v-model="tabulator" onkeypress="return isNumberKey(event,this)">
                 </div>
               </div>
 
               <div class="col-xs-3 text-left" style="margin-top: 25px">
-                  <button class="btn btn-default" @click="saveTab(ruleType)">
+                  <button class="btn btn-default" @click="saveTab(ruleType)" title="Almacenar regla">
                       <span class="glyphicon glyphicon-plus"></span>
                   </button>
               </div>
@@ -227,8 +253,46 @@
                 Numero de solicitudes
                 </label>
                 <div class="input-group">
+                  <span class="input-group-addon">#</span>
+                  <input number type="text" class="form-control" v-model="montoMaximo" onkeypress="return isNumberKey(event,this)">
+                </div>
+              </div>
+
+              <div class="col-xs-3">
+                <label>
+                Tabulador
+                </label>
+                <div class="input-group">
                   <span class="input-group-addon">$</span>
-                  <input type="text" class="form-control" v-model="montoMaximo">
+                  <input number type="text" class="form-control" v-model="tabulator" onkeypress="return isNumberKey(event,this)">
+                </div>
+              </div>
+
+              <div class="col-xs-3 text-left" style="margin-top: 25px">
+                  <button class="btn btn-default" @click="saveTab(ruleType)" title="Almacenar regla">
+                      <span class="glyphicon glyphicon-plus"></span>
+                  </button>
+              </div>
+            </div>
+
+            <div class="row" v-if="ruleType == 3">
+              <div class="col-xs-3">
+                <label>
+                Alcance mínimo
+                </label>
+                <div class="input-group">
+                  <span class="input-group-addon">%</span>
+                  <input number type="text" class="form-control" v-model="montoMinimo" onkeypress="return isNumberKey(event,this)">
+                </div>
+              </div>
+
+              <div class="col-xs-3">
+                <label>
+                Alcance máximo
+                </label>
+                <div class="input-group">
+                  <span class="input-group-addon">%</span>
+                  <input number type="text" class="form-control" v-model="montoMaximo" onkeypress="return isNumberKey(event,this)">
                 </div>
               </div>
 
@@ -238,12 +302,12 @@
                 </label>
                 <div class="input-group">
                   <span class="input-group-addon">%</span>
-                  <input type="text" class="form-control" v-model="tabulator">
+                  <input number type="text" class="form-control" v-model="tabulator" onkeypress="return isNumberKey(event,this)">
                 </div>
               </div>
 
               <div class="col-xs-3 text-left" style="margin-top: 25px">
-                  <button class="btn btn-default" @click="saveTab(ruleType)">
+                  <button class="btn btn-default" @click="saveTab(ruleType)" title="Almacenar regla">
                       <span class="glyphicon glyphicon-plus"></span>
                   </button>
               </div>
@@ -300,7 +364,10 @@
                                       Monto comisionable
                                   </label>
                                   <label v-if="tab.typeOperation == 2">
-                                      Bono por Solicitudes
+                                      Bono por solicitudes
+                                  </label>
+                                  <label v-if="tab.typeOperation == 3">
+                                      Alcance de meta
                                   </label>
                               </td>
                           </tr>
