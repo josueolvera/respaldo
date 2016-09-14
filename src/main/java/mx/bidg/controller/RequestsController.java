@@ -96,7 +96,7 @@ public class RequestsController {
             produces = "application/json;charset=UTF-8")
     public @ResponseBody String findRequestByID(@PathVariable int idRequest) throws Exception {
         Requests request = requestsService.findById(idRequest);
-        request.getRequestTypeProduct().setAccountingAccountInfo(accountingAccountsService.findById(request.getRequestTypeProduct().getIdAccountingAccount()));
+//        request.getRequestTypeProduct().setAccountingAccountInfo(accountingAccountsService.findById(request.getRequestTypeProduct().getIdAccountingAccount()));
         return mapper.writeValueAsString(request);
     }
 

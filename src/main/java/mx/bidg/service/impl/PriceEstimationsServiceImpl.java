@@ -71,11 +71,11 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         estimation.setCreationDate(LocalDateTime.now());
         estimation.setUserEstimation(user);
         estimation.setIdAccessLevel(1);
-        if (request.getRequestTypeProduct().getIdRequestCategory() == CRequestsCategories.DIRECTA) {
-            estimation.setEstimationStatus(new CEstimationStatus(CEstimationStatus.APROBADA));
-        } else {
-            estimation.setEstimationStatus(new CEstimationStatus(CEstimationStatus.PENDIENTE));
-        }
+//        if (request.getRequestTypeProduct().getIdRequestCategory() == CRequestsCategories.DIRECTA) {
+//            estimation.setEstimationStatus(new CEstimationStatus(CEstimationStatus.APROBADA));
+//        } else {
+//            estimation.setEstimationStatus(new CEstimationStatus(CEstimationStatus.PENDIENTE));
+//        }
         //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
 //        estimation.setOutOfBudget((residualAmount.compareTo(tempAmount) == -1)? 1 : 0);
         estimation = priceEstimationsDao.save(estimation);
@@ -202,8 +202,8 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     }
 
     @Override
-    public PriceEstimations findAuthorized(Requests request) {
-        PriceEstimations estimation = priceEstimationsDao.findAuthorized(request);
+    public PriceEstimations findAuthorized(Integer idRequest) {
+        PriceEstimations estimation = priceEstimationsDao.findAuthorized(idRequest);
         ProvidersAccounts providersAccounts = providersAcountsdao.findByAccount(estimation.getAccount());
         ArrayList<ProvidersAccounts> providers = new ArrayList<>();
         providers.add(providersAccounts);

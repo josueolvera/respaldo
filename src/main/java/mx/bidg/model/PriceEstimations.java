@@ -85,11 +85,11 @@ public class PriceEstimations implements Serializable {
     
     @Column(name = "ID_REQUEST", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private int idRequest;
+    private Integer idRequest;
     
     @Column(name = "ID_ESTIMATION_STATUS", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private int idEstimationStatus;
+    private Integer idEstimationStatus;
     
     @Column(name = "ID_ACCOUNT", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -224,19 +224,19 @@ public class PriceEstimations implements Serializable {
         this.outOfBudget = outOfBudget;
     }
 
-    public int getIdRequest() {
+    public Integer getIdRequest() {
         return idRequest;
     }
 
-    public void setIdRequest(int idRequest) {
+    public void setIdRequest(Integer idRequest) {
         this.idRequest = idRequest;
     }
 
-    public int getIdEstimationStatus() {
+    public Integer getIdEstimationStatus() {
         return idEstimationStatus;
     }
 
-    public void setIdEstimationStatus(int idEstimationStatus) {
+    public void setIdEstimationStatus(Integer idEstimationStatus) {
         this.idEstimationStatus = idEstimationStatus;
     }
 

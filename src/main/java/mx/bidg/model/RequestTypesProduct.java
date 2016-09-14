@@ -77,10 +77,6 @@ public class RequestTypesProduct implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private Integer idAccessLevel;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "requestTypeProduct")
-    @JsonView(JsonViews.Embedded.class)
-    private List<Requests> requestsList;
-    
     @Transient
     @JsonView(JsonViews.Embedded.class)
     private AccountingAccounts accountingAccountInfo;
@@ -139,14 +135,6 @@ public class RequestTypesProduct implements Serializable {
 
     public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
-    }
-
-    public List<Requests> getRequestsList() {
-        return requestsList;
-    }
-
-    public void setRequestsList(List<Requests> requestsList) {
-        this.requestsList = requestsList;
     }
     
     public AccountingAccounts getAccountingAccounts() {

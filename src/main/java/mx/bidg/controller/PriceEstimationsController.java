@@ -176,7 +176,7 @@ public class PriceEstimationsController {
     
     @RequestMapping(value = "/request/{idRequest}/authorized", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> findEstimationAuthorized(@PathVariable int idRequest) throws Exception {
-        PriceEstimations estimation = estimationsService.findAuthorized(new Requests(idRequest));
+        PriceEstimations estimation = estimationsService.findAuthorized(idRequest);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(estimation), HttpStatus.OK);
     }  
     

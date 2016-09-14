@@ -129,7 +129,7 @@ public class RequestsServiceImpl implements RequestsService {
         Requests request = new Requests();
         request.setDescription(jsonRequest.get("request").get("description").asText());
         request.setPurpose(jsonRequest.get("request").get("purpose").asText());
-        request.setRequestTypeProduct(new RequestTypesProduct(jsonRequest.get("request").get("idRequestTypesProduct").asInt()));
+//        request.setRequestTypeProduct(new RequestTypesProduct(jsonRequest.get("request").get("idRequestTypesProduct").asInt()));
 //        request.setBudgetYearConcept(new BudgetYearConcept(jsonRequest.get("request").get("idBudgetMonthBranch").asInt()));
         //51 es el id de Requests en CTables
         request.setFolio(foliosService.createNew(new CTables(51)));
@@ -191,12 +191,12 @@ public class RequestsServiceImpl implements RequestsService {
         PeriodicsPayments periodicsPayment = periodicPaymentsDao.findByFolio(request.getFolio());
         List<AccountsPayable> accountslist = accountsPayableDao.findByFolio(request.getFolio());
 
-        if((request.getRequestTypeProduct().getIdRequestCategory() == CRequestsCategories.PERIODICA && periodicsPayment == null) ||
-                (request.getRequestTypeProduct().getIdRequestCategory() == CRequestsCategories.COTIZABLE && accountslist.isEmpty()) ||
-                (request.getRequestTypeProduct().getIdRequestCategory() == CRequestsCategories.DIRECTA && accountslist.isEmpty())) {
-            throw new ValidationException("No hay CXP referentes a esta solicitud", "Necesita agregar informacion de pago para esta " +
-                    "solicitud", HttpStatus.CONFLICT);
-        }
+//        if((request.getRequestTypeProduct().getIdRequestCategory() == CRequestsCategories.PERIODICA && periodicsPayment == null) ||
+//                (request.getRequestTypeProduct().getIdRequestCategory() == CRequestsCategories.COTIZABLE && accountslist.isEmpty()) ||
+//                (request.getRequestTypeProduct().getIdRequestCategory() == CRequestsCategories.DIRECTA && accountslist.isEmpty())) {
+//            throw new ValidationException("No hay CXP referentes a esta solicitud", "Necesita agregar informacion de pago para esta " +
+//                    "solicitud", HttpStatus.CONFLICT);
+//        }
         
         if (accountslist.size() > 0) {
             for ( AccountsPayable accountPayable : accountslist) {
@@ -226,10 +226,10 @@ public class RequestsServiceImpl implements RequestsService {
     @Override
     public EmailTemplates sendEmailForNewRequest(Requests request) {
         EmailTemplates emailTemplate = emailTemplatesService.findByName("new_request_notification");
-        String typeRequest = request.getRequestTypeProduct().getRequestCategory().getCategory();
-        String typeRequestMinus = typeRequest.toLowerCase();
+//        String typeRequest = request.getRequestTypeProduct().getRequestCategory().getCategory();
+//        String typeRequestMinus = typeRequest.toLowerCase();
         emailTemplate.addProperty("request", request);
-        emailTemplate.addProperty("typeRequest", typeRequestMinus);
+//        emailTemplate.addProperty("typeRequest", typeRequestMinus);
         emailTemplate.addRecipient(new EmailRecipients(request.getUserRequest().getMail(), request.getUserRequest().getUsername(), EmailRecipients.TO));
         emailDeliveryService.deliverEmail(emailTemplate);
         return emailTemplate;
@@ -238,10 +238,10 @@ public class RequestsServiceImpl implements RequestsService {
     @Override
     public EmailTemplates sendEmailForNewRequestAuthorization(Requests request, Users user) {
         EmailTemplates emailTemplate = emailTemplatesService.findByName("request_autorization_notification");
-        String typeRequest = request.getRequestTypeProduct().getRequestCategory().getCategory();
-        String typeRequestMinus = typeRequest.toLowerCase();
+//        String typeRequest = request.getRequestTypeProduct().getRequestCategory().getCategory();
+//        String typeRequestMinus = typeRequest.toLowerCase();
         emailTemplate.addProperty("request", request);
-        emailTemplate.addProperty("typeRequest", typeRequestMinus);
+//        emailTemplate.addProperty("typeRequest", typeRequestMinus);
         emailTemplate.addRecipient(new EmailRecipients(user.getMail(), user.getUsername(), EmailRecipients.TO));
         emailDeliveryService.deliverEmail(emailTemplate);
         return emailTemplate;

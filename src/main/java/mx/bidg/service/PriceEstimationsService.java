@@ -31,6 +31,6 @@ public interface PriceEstimationsService {
     boolean delete(Integer idEstimation);
     boolean reject(Integer idEstimation);
     
-    PriceEstimations findAuthorized(Requests request);
+    PriceEstimations findAuthorized(Integer idRequest);
     
 }

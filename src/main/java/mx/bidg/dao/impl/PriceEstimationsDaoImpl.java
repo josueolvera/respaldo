@@ -53,7 +53,7 @@ public class PriceEstimationsDaoImpl extends AbstractDao<Integer, PriceEstimatio
         Criteria criteria = createEntityCriteria()
                 .addOrder(Order.asc("idEstimationStatus"))
                 .addOrder(Order.asc("amount"))
-                .add(Restrictions.eq("request", new Requests(idRequest)))
+                .add(Restrictions.eq("idRequest", idRequest))
                 .setFetchMode("request", FetchMode.JOIN);
         return (List<PriceEstimations>) criteria.list();
     }
@@ -68,9 +68,9 @@ public class PriceEstimationsDaoImpl extends AbstractDao<Integer, PriceEstimatio
     }
 
     @Override
-    public PriceEstimations findAuthorized(Requests request) {
+    public PriceEstimations findAuthorized(Integer idRequest) {
         return (PriceEstimations) createEntityCriteria()
-                .add(Restrictions.eq("idRequest", request.getIdRequest()))
+                .add(Restrictions.eq("idRequest", idRequest))
                 .add(Restrictions.eq("idEstimationStatus", CEstimationStatus.APROBADA))
                 .uniqueResult();
     }

@@ -44,6 +44,7 @@ import org.hibernate.annotations.DynamicUpdate;
 public class Requests implements Serializable {
     
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_REQUEST")
@@ -99,9 +100,9 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetYearConcept;
     
-    @Column(name = "ID_REQUEST_TYPE_PRODUCT", insertable = false, updatable = false)
+    @Column(name = "ID_MONTH", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idRequestTypeProduct;
+    private Integer idMonth;
     
     @Column(name = "ID_REQUEST_STATUS", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -121,11 +122,11 @@ public class Requests implements Serializable {
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private BudgetYearConcept budgetYearConcept;
-    
-    @JoinColumn(name = "ID_REQUEST_TYPE_PRODUCT", referencedColumnName = "ID_REQUEST_TYPE_PRODUCT")
+
+    @JoinColumn(name = "ID_MONTH", referencedColumnName = "ID_MONTH")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private RequestTypesProduct requestTypeProduct;
+    private CMonths month;
     
     @JoinColumn(name = "ID_REQUEST_STATUS", referencedColumnName = "ID_REQUEST_STATUS")
     @ManyToOne(optional = false)
@@ -141,17 +142,6 @@ public class Requests implements Serializable {
     private List<RequestProducts> requestProductsList;
 
     public Requests() {
-    }
-
-    public Requests(Integer idRequest) {
-        this.idRequest = idRequest;
-    }
-
-    public Requests(Integer idRequest, String folio, String description, int idAccessLevel) {
-        this.idRequest = idRequest;
-        this.folio = folio;
-        this.description = description;
-        this.idAccessLevel = idAccessLevel;
     }
 
     public Integer getIdRequest() {
@@ -202,14 +192,6 @@ public class Requests implements Serializable {
         this.applyingDate = applyingDate;
     }
 
-    public DateFormatsPojo getCreationDateFormats() {
-        return new DateFormatsPojo(creationDate);
-    }
-
-    public DateFormatsPojo getApplyingDateFormats() {
-        return (applyingDate == null) ? null : new DateFormatsPojo(applyingDate);
-    }
-
     public int getIdAccessLevel() {
         return idAccessLevel;
     }
@@ -230,8 +212,8 @@ public class Requests implements Serializable {
         return idUserResponsible;
     }
 
-    public void setIdUserResponsible(Integer idUserResponsable) {
-        this.idUserResponsible = idUserResponsable;
+    public void setIdUserResponsible(Integer idUserResponsible) {
+        this.idUserResponsible = idUserResponsible;
     }
 
     public Integer getIdBudgetYearConcept() {
@@ -242,12 +224,12 @@ public class Requests implements Serializable {
         this.idBudgetYearConcept = idBudgetYearConcept;
     }
 
-    public Integer getIdRequestTypeProduct() {
-        return idRequestTypeProduct;
+    public Integer getIdMonth() {
+        return idMonth;
     }
 
-    public void setIdRequestTypeProduct(Integer idRequestTypeProduct) {
-        this.idRequestTypeProduct = idRequestTypeProduct;
+    public void setIdMonth(Integer idMonth) {
+        this.idMonth = idMonth;
     }
 
     public Integer getIdRequestStatus() {
@@ -270,8 +252,8 @@ public class Requests implements Serializable {
         return userResponsible;
     }
 
-    public void setUserResponsible(Users userResponsable) {
-        this.userResponsible = userResponsable;
+    public void setUserResponsible(Users userResponsible) {
+        this.userResponsible = userResponsible;
     }
 
     public BudgetYearConcept getBudgetYearConcept() {
@@ -282,12 +264,12 @@ public class Requests implements Serializable {
         this.budgetYearConcept = budgetYearConcept;
     }
 
-    public RequestTypesProduct getRequestTypeProduct() {
-        return requestTypeProduct;
+    public CMonths getMonth() {
+        return month;
     }
 
-    public void setRequestTypeProduct(RequestTypesProduct requestTypeProduct) {
-        this.requestTypeProduct = requestTypeProduct;
+    public void setMonth(CMonths month) {
+        this.month = month;
     }
 
     public CRequestStatus getRequestStatus() {
@@ -315,28 +297,43 @@ public class Requests implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idRequest != null ? idRequest.hashCode() : 0);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Requests requests = (Requests) o;
+
+        return idRequest != null ? idRequest.equals(requests.idRequest) : requests.idRequest == null;
+
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Requests)) {
-            return false;
-        }
-        Requests other = (Requests) object;
-        if ((this.idRequest == null && other.idRequest != null) || (this.idRequest != null && !this.idRequest.equals(other.idRequest))) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        return idRequest != null ? idRequest.hashCode() : 0;
     }
 
     @Override
     public String toString() {
-        return "mx.bidg.model.Requests[ idRequest=" + idRequest + " ]";
+        return "Requests{" +
+                "idRequest=" + idRequest +
+                ", folio='" + folio + '\'' +
+                ", description='" + description + '\'' +
+                ", purpose='" + purpose + '\'' +
+                ", creationDate=" + creationDate +
+                ", applyingDate=" + applyingDate +
+                ", idAccessLevel=" + idAccessLevel +
+                ", idUserRequest=" + idUserRequest +
+                ", idUserResponsible=" + idUserResponsible +
+                ", idBudgetYearConcept=" + idBudgetYearConcept +
+                ", idMonth=" + idMonth +
+                ", idRequestStatus=" + idRequestStatus +
+                ", userRequest=" + userRequest +
+                ", userResponsible=" + userResponsible +
+                ", budgetYearConcept=" + budgetYearConcept +
+                ", month=" + month +
+                ", requestStatus=" + requestStatus +
+                ", priceEstimationsList=" + priceEstimationsList +
+                ", requestProductsList=" + requestProductsList +
+                '}';
     }
-    
 }
