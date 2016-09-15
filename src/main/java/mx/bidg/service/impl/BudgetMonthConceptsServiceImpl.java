@@ -118,11 +118,10 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
                         budgetYearConcept = new BudgetYearConcept();
 //                        budgetYearConcept.setAmount(amountConcept);
 //                        budgetYearConcept.setExpendedAmount(new BigDecimal(0));
-                        budgetYearConcept.setIdAccessLevel(1);
-                        budgetYearConcept.setCurrency(new CCurrencies(1));
-                        budgetYearConcept.setBudget(budget);
+//                        budgetYearConcept.setCurrency(new CCurrencies(1));
+//                        budgetYearConcept.setBudget(budget);
 //                        budgetYearConcept.setMonth(month);
-                        budgetYearConcept.setYear(year);
+//                        budgetYearConcept.setYear(year);
                         budgetYearConcept.setAuthorized(false);
                         budgetYearConcept.setUsername(user.getUsername());
                         budgetYearConcept = budgetYearConceptDao.save(budgetYearConcept);

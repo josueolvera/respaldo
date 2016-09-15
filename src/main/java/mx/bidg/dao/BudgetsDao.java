@@ -36,5 +36,5 @@ public interface BudgetsDao extends InterfaceDao<Budgets> {
     List<Budgets> findByDistributorAndArea(Integer idDistributor, Integer idArea);
     List<Budgets> findByDistributorAreaAndEnterprise(Integer idDistributor, Integer idArea, Integer idDwEnterprise);
     ArrayList<Budgets> findByGroupAreaEnterprise(CGroups idGroup, CAreas idArea, Integer idDwEnterprise);
-    
+    Budgets findByAccountingAccountAndCostCenter(Integer idAccountingAccount, Integer idCostCenter);
 }

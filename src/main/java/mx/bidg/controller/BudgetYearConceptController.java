@@ -62,16 +62,6 @@ public class BudgetYearConceptController {
         return ResponseEntity.ok(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(budgetYearConceptService.delete(idBudgetYearConcept)));
     }
 
-    @RequestMapping(value = "/{idBudget}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> save(@RequestBody String data, @PathVariable Integer idBudget, HttpSession httpSession) throws Exception {
-
-        Users user = (Users) httpSession.getAttribute("user");
-
-        List<BudgetYearConcept> budgetYearConceptList = budgetYearConceptService.saveList(data, idBudget, user);
-
-        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(budgetYearConceptList));
-    }
-
     @RequestMapping(value = "/authorize", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody String authorize(@RequestBody String data) throws Exception {
         return budgetYearConceptService.authorizeBudget(data);

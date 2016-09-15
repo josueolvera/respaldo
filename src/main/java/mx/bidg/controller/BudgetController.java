@@ -18,10 +18,7 @@ import mx.bidg.config.JsonViews;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
 import mx.bidg.pojos.*;
-import mx.bidg.service.BudgetYearConceptService;
-import mx.bidg.service.BudgetMonthConceptsService;
-import mx.bidg.service.BudgetsService;
-import mx.bidg.service.CCostCenterService;
+import mx.bidg.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -47,7 +44,7 @@ public class BudgetController {
     CCostCenterService cCostCenterService;
 
     @Autowired
-    BudgetYearConceptService budgetYearConceptService;
+    BudgetYearService budgetYearService;
 
     @Autowired
     BudgetMonthConceptsService budgetMonthConceptsService;
@@ -85,18 +82,16 @@ public class BudgetController {
             }
 
 //            budgetYearConcept.setBudgetMonthConceptsList(budgetMonthConceptsList);
-            budgetYearConcept.setBudget(new Budgets(jsonRequest.get("budget").asInt()));
+//            budgetYearConcept.setBudget(new Budgets(jsonRequest.get("budget").asInt()));
 //            budgetYearConcept.setMonth(new CMonths(jsonRequest.get("month").asInt()));
 //            budgetYearConcept.setDwEnterprise(new DwEnterprises(jsonRequest.get("dwEnterprise").asInt()));
 //            budgetYearConcept.setAmount(jsonRequest.get("amountMonth").decimalValue());
 //            budgetYearConcept.setExpendedAmount(jsonRequest.get("expendedAmount").decimalValue());
-            budgetYearConcept.setYear(jsonRequest.get("year").asInt());
-            budgetYearConcept.setIdAccessLevel(1);
-            
+//            budgetYearConcept.setYear(jsonRequest.get("year").asInt());
+
         }
         
-        budget.setIdAccessLevel(1);
-        budget.setBudgetYearConceptList(budgetYearConceptList);
+//        budget.setBudgetYearConceptList(budgetYearConceptList);
         budgetsService.saveBudget(budget);
         
         return new ResponseEntity<>("Presupuesto guardado con éxito", HttpStatus.OK);
@@ -184,7 +179,7 @@ public class BudgetController {
             budgetCategory.setName(budget.getAccountingAccount().getBudgetCategory().getBudgetCategory());
             budgetCategory.setIdBudgetCategory(budget.getAccountingAccount().getIdBudgetCategory());
 
-            List<BudgetYearConcept> budgetYearConceptList = budgetYearConceptService.findByBudgetAndYear(budget.getIdBudget(), year);
+            BudgetYear budgetYear = budgetYearService.findByBudgetAndYear(budget.getIdBudget(), year);
 
             BudgetSubcategory budgetSubcategory = new BudgetSubcategory();
             budgetSubcategory.setName(budget.getAccountingAccount().getBudgetSubcategory().getBudgetSubcategory());
@@ -193,7 +188,12 @@ public class BudgetController {
             budgetSubcategory.setBudgetNature(budget.getBudgetNature());
             budgetSubcategory.setCostCenter(budget.getCostCenter());
             budgetSubcategory.setBudgetType(budget.getBudgetType());
-            budgetSubcategory.setBudgetYearConceptList(budgetYearConceptList);
+
+            if (budgetYear != null) {
+                budgetSubcategory.setBudgetYear(budgetYear);
+            } else {
+                budgetSubcategory.setBudgetYear(new BudgetYear(year, budget));
+            }
 
             if (!budgetCategories.contains(budgetCategory)) {
                 List<BudgetSubcategory> budgetSubcategories = new ArrayList<>();
