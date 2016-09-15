@@ -74,7 +74,7 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
 
         return createEntityCriteria()
                 .add(Restrictions.eq("idDistributor", idDistributor))
-                .add(Restrictions.ne("idRegion", 0))
+                //.add(Restrictions.ne("idRegion", 0))
                 .add(Restrictions.eq("status", true))
                 .list();
     }
@@ -84,7 +84,7 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
         return createEntityCriteria()
                 .add(Restrictions.eq("idDistributor", idDistributor))
                 .add(Restrictions.eq("idArea", idArea))
-                .add(Restrictions.ne("idRegion", 0))
+                //.add(Restrictions.ne("idRegion", 0))
                 .add(Restrictions.eq("status", true))
                 .list();
     }
