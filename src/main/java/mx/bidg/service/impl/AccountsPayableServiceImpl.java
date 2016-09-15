@@ -212,10 +212,10 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
 
         Requests requests = requestsDao.findByFolio(accountsPayable.getFolio());
 
-//        BudgetYearConcept budgetYearConcept = requests.getBudgetYearConcept();
+        BudgetYearConcept budgetYearConcept = requests.getBudgetYearConcept();
 //        BigDecimal addAmountTransaction = budgetYearConcept.getExpendedAmount().add(transactions.getAmount());
 //        budgetYearConcept.setExpendedAmount(addAmountTransaction);
-//        budgetYearConceptDao.update(budgetYearConcept);
+        budgetYearConceptDao.update(budgetYearConcept);
 
 
         BigDecimal substractAmountTransaction = balances.getCurrentAmount().subtract(transactions.getAmount());
@@ -303,7 +303,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
                 }
                 //RequestTypesProduct requestTypesProduct = requests.getRequestTypeProduct();
                 //CProductTypes productType = requestTypesProduct.getProductType();
-//                BudgetYearConcept budgetYearConcept = requests.getBudgetYearConcept();
+                BudgetYearConcept budgetYearConcept = requests.getBudgetYearConcept();
 //                DwEnterprises dwEnterprise = budgetYearConcept.getDwEnterprise();
 //                CDistributors cDistributors = dwEnterprise.getDistributor();
 //                CRegions cRegions = dwEnterprise.getRegion();

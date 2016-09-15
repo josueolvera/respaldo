@@ -144,13 +144,5 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
                 .list();
         return list;
     }
-
-    @Override
-    public Budgets findByAccountingAccountAndCostCenter(Integer idAccountingAccount, Integer idCostCenter) {
-        return (Budgets) createEntityCriteria()
-                .add(Restrictions.eq("idAccountingAccount", idAccountingAccount))
-                .add(Restrictions.eq("idCostCenter", idCostCenter))
-                .uniqueResult();
-    }
-
+    
 }

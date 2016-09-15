@@ -48,7 +48,7 @@ public class CBudgetConcepts implements Serializable {
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "budgetConcept")
     @JsonView(JsonViews.Embedded.class)
-    private List<BudgetYearConcept> budgetYearConceptList;
+    private List<BudgetYearConcept> budgetMonthConceptsList;
 
     public CBudgetConcepts() {
     }
@@ -65,12 +65,12 @@ public class CBudgetConcepts implements Serializable {
         this.idBudgetConcept = idBudgetConcept;
     }
 
-    public List<BudgetYearConcept> getBudgetYearConceptList() {
-        return budgetYearConceptList;
+    public List<BudgetYearConcept> getBudgetMonthConceptsList() {
+        return budgetMonthConceptsList;
     }
 
-    public void setBudgetYearConceptList(List<BudgetYearConcept> budgetYearConceptList) {
-        this.budgetYearConceptList = budgetYearConceptList;
+    public void setBudgetMonthConceptsList(List<BudgetYearConcept> budgetMonthConceptsList) {
+        this.budgetMonthConceptsList = budgetMonthConceptsList;
     }
 
     public String getBudgetConcept() {

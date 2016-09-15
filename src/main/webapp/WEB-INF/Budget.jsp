@@ -136,7 +136,7 @@
                                     self.concepts = data;
                                     self.budgets.forEach(function (budget, indexOfBudget) {
                                         budget.budgetSubcategories.forEach(function (budgetSubcategory, indexOfBudgetSubcategory) {
-                                            budgetSubcategory.budgetYear.budgetYearConceptList.forEach(function (budgetYearConcept, indexOfBudgetYearConcept) {
+                                            budgetSubcategory.budgetYearConceptList.forEach(function (budgetYearConcept, indexOfBudgetYearConcept) {
                                                 if ('selectConcepts' in budgetYearConcept) {
                                                     budgetYearConcept.selectConcepts[0].selectize.destroy();
                                                     delete budgetYearConcept.selectConcepts;
@@ -234,13 +234,13 @@
                         }
                         return -1;
                     },
-                    saveBudget: function (budgetYear) {
+                    saveBudget: function (budgetYearConceptList, idBudget) {
 
-                        var budgetYearToSave = budgetYear;
+                        var budgetYearConceptListToSave = budgetYearConceptList;
 
                         var isValid = false;
 
-                        budgetYearToSave.budgetYearConceptList.every(function (budgetYearConcept, index, _ary) {
+                        budgetYearConceptListToSave.every(function (budgetYearConcept, index, _ary) {
                             budgetYearConcept.budgetConcept = {};
 
                             if (budgetYearConcept.selectConcepts[0].selectize.getValue() != '') {
@@ -260,11 +260,11 @@
 
                         if (isValid) {
 
-                            budgetYearToSave.budgetYearConceptList.forEach(function (budgetYearConcept) {
+                            budgetYearConceptListToSave.forEach(function (budgetYearConcept) {
                                 delete budgetYearConcept.selectConcepts;
                             });
 
-                            this.$http.post(ROOT_URL + '/budget-year', JSON.stringify(budgetYearToSave))
+                            this.$http.post(ROOT_URL + '/budget-year-concept/' + idBudget, JSON.stringify(budgetYearConceptListToSave))
                                     .success(function (data) {
                                         showAlert('Presupuesto guardado');
                                         this.getBudgets(this.selected.year, this.selected.budgetType, this.selected.budgetNature, this.selected.budgetCategory);
@@ -314,13 +314,13 @@
                     addConcept: function(indexOfBudget, indexOfBudgetSubcategory, budgetSubcategory, concepts) {
                         var self = this;
                         var budgetYearConcept = this.createNewConcept();
-                        budgetSubcategory.budgetYear.budgetYearConceptList.push(budgetYearConcept);
-                        var indexOfBudgetYearConcept = budgetSubcategory.budgetYear.budgetYearConceptList.length - 1;
+                        budgetSubcategory.budgetYearConceptList.push(budgetYearConcept);
+                        var indexOfBudgetYearConcept = budgetSubcategory.budgetYearConceptList.length - 1;
                         setTimeout(
                                 function() {
                                     self.budgets[indexOfBudget]
                                             .budgetSubcategories[indexOfBudgetSubcategory]
-                                            .budgetYear.budgetYearConceptList[indexOfBudgetYearConcept]
+                                            .budgetYearConceptList[indexOfBudgetYearConcept]
                                             .selectConcepts = self.createSelectForConcept(indexOfBudget, indexOfBudgetSubcategory, indexOfBudgetYearConcept, concepts);
                                 },
                                 100,
@@ -339,7 +339,7 @@
                                         this.getBudgets(this.selected.year, this.selected.budgetType, this.selected.budgetNature, this.selected.budgetCategory);
                                     });
                         } else {
-                            budgetSubcategory.budgetYear.budgetYearConceptList.$remove(concept);
+                            budgetSubcategory.budgetYearConceptList.$remove(concept);
                         }
                     },
                     createNewConcept : function () {
@@ -430,6 +430,8 @@
                     },
                     getBudgetYearConcept : function (indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept) {
 
+                        console.log(budgetYearConcept);
+
                         budgetYearConcept.totalAmount = 0;
                         
                         budgetYearConcept.totalAmount +=  budgetYearConcept.januaryAmount;
@@ -451,12 +453,12 @@
                     getTotalSubRubro : function (indexOfBudget, indexOfBudgetSubcategory) {
                         var self = this;
 
-                        this.budgets[indexOfBudget].budgetSubcategories[indexOfBudgetSubcategory].budgetYear.totalAmount = 0;
+                        this.budgets[indexOfBudget].budgetSubcategories[indexOfBudgetSubcategory].totalSubcategoryAmount = 0;
 
                         this.budgets[indexOfBudget]
                                 .budgetSubcategories[indexOfBudgetSubcategory]
-                                .budgetYear.budgetYearConceptList.forEach(function (budgetYearConcept) {
-                                    self.budgets[indexOfBudget].budgetSubcategories[indexOfBudgetSubcategory].budgetYear.totalAmount += budgetYearConcept.totalAmount;
+                                .budgetYearConceptList.forEach(function (budgetYearConcept) {
+                                    self.budgets[indexOfBudget].budgetSubcategories[indexOfBudgetSubcategory].totalSubcategoryAmount += budgetYearConcept.totalAmount;
                                 });
                     },
                     onChangeFilter : function () {
@@ -561,7 +563,7 @@
                             <h3><b>{{budget.name}}</b></h3>
                             <div class="row" v-for="(indexOfBudgetSubcategory, budgetSubcategory) in budget.budgetSubcategories" style="margin-left: 0px; margin-right: 0px">
                                 <div class="well">
-                                    <form v-on:submit.prevent="saveBudget(budgetSubcategory.budgetYear)">
+                                    <form v-on:submit.prevent="saveBudget(budgetSubcategory.budgetYearConceptList, budgetSubcategory.idBudget)">
                                         <div class="row" style="margin-left: 0px; margin-right: 0px">
                                             <div class="col-xs-4">
                                                 <h4>{{budgetSubcategory.name}}</h4>
@@ -570,7 +572,7 @@
                                         <br>
                                         <div class="row" style="margin-left: 0px; margin-right: 0px">
                                             <div class="col-xs-2">
-                                                <h4>Total:&nbsp;&nbsp;&nbsp;<b class="text-primary">{{budgetSubcategory.budgetYear.totalAmount | currency}}</b></h4>
+                                                <h4>Total:&nbsp;&nbsp;&nbsp;<b class="text-primary">{{budgetSubcategory.totalSubcategoryAmount | currency}}</b></h4>
                                             </div>
                                             <div class="col-xs-1 text-left">
                                                 <button type="button" class="btn btn-default" :disabled="budgetYearConcept.authorized"
@@ -578,14 +580,14 @@
                                                     <span class="glyphicon glyphicon-plus"></span>
                                                 </button>
                                             </div>
-                                            <div class="col-xs-1 text left" v-if="budgetSubcategory.budgetYear.budgetYearConceptList.length > 0">
+                                            <div class="col-xs-1 text left" v-if="budgetSubcategory.budgetYearConceptList.length > 0">
                                                 <button type="submit" class="btn btn-default" :disabled="budgetYearConcept.authorized">
                                                     <span class="glyphicon glyphicon-floppy-disk"></span>
                                                 </button>
                                             </div>
                                         </div>
                                         <br>
-                                        <div v-for="(indexOfBudgetYearConcept, budgetYearConcept) in budgetSubcategory.budgetYear.budgetYearConceptList">
+                                        <div v-for="(indexOfBudgetYearConcept, budgetYearConcept) in budgetSubcategory.budgetYearConceptList">
                                             <div class="row">
                                                 <div class="col-xs-3">
                                                     <label>Concepto</label>

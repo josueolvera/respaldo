@@ -16,15 +16,13 @@ import mx.bidg.model.Users;
  */
 public interface BudgetYearConceptService {
     
+    List<BudgetYearConcept> saveList(String data, Integer idBudget, Users user) throws Exception;
+    
     BudgetYearConcept findByCombination(Integer budget, Integer month, Integer dwEnterprise, Integer year);
     
     BudgetYearConcept findFromRequest(String data) throws Exception;
     
     BudgetYearConcept update(BudgetYearConcept budgetYearConcept);
-
-    BudgetYearConcept save(BudgetYearConcept budgetYearConcept);
-
-    BudgetYearConcept findById(Integer idBudgetYearConcept);
 
     List<BudgetYearConcept> findByBudgetsAndYear(List<Budgets> budgets, Integer year);
 

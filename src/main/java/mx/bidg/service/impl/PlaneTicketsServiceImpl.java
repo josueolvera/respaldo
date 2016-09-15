@@ -14,9 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by gerardo8 on 13/07/16.
@@ -47,9 +45,6 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
     AccountingAccountsDao accountingAccountsDao;
 
     @Autowired
-    RolesCostCenterDao rolesCostCenterDao;
-
-    @Autowired
     private ObjectMapper mapper;
 
     @Override
@@ -77,17 +72,22 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
         String startDate = node.get("startDate").asText();
 
         AccountingAccounts accountingAccount = accountingAccountsDao.findByCategoryAndSubcategory(CBudgetCategories.GASTOS_DE_VIAJE.getIdBudgetCategory(), CBudgetSubcategories.NACIONALES.getIdBudgetSubcategory());
-        List<RolesCostCenter> rolesCostCenterList = rolesCostCenterDao.findByRole(user.getDwEmployee().getIdRole());
 
-        CCostCenter costCenter = rolesCostCenterList.get(0).getCostCenter();
+        DwEnterprises dwEnterprise = user.getDwEmployee().getDwEnterprise();
 
-        Budgets budget = budgetsDao.findByAccountingAccountAndCostCenter(accountingAccount.getIdAccountingAccount(), costCenter.getIdCostCenter());
-
+//        Budgets budget = budgetsDao.findByCombination(
+//                dwEnterprise.getDistributor(),
+//                dwEnterprise.getArea(),
+//                CBudgetCategories.GASTOS_DE_VIAJE,
+//                CBudgetSubcategories.NACIONALES
+//        );
+//
+//        CProductTypes productType = CProductTypes.NACIONALES;
+//
 //        if (budget != null) {
+//            BudgetMonth budgetMonthBranch = budgetYearConceptDao.findByCombination(budget,cMonth,dwEnterprise,year);
 //
-//            BudgetYearConcept budgetYearConcept = budgetYearConceptDao.findByBudgetAndYear(budget.getIdBudget(), year);
-//
-//            if (budgetYearConcept != null) {
+//            if (budgetMonthBranch != null) {
 //
 //                CRequestsCategories requestsCategory = new CRequestsCategories(CRequestsCategories.BOLETOS_DE_AVION);
 //                RequestTypesProduct requestTypesProduct =

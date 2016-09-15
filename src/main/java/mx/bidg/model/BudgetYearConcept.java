@@ -167,28 +167,39 @@ public class BudgetYearConcept implements Serializable {
     @Column(name = "TOTAL_EXPENDED_AMOUNT")
     @JsonView(JsonViews.Root.class)
     private BigDecimal totalExpendedAmount;
-
-    @Column(name = "USERNAME")
+    
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "YEAR")
     @JsonView(JsonViews.Root.class)
-    private String username;
+    private int year;
 
-    @JoinColumn(name = "ID_BUDGET_YEAR", referencedColumnName = "ID_BUDGET")
+    @JoinColumn(name = "ID_BUDGET", referencedColumnName = "ID_BUDGET")
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
+    private Budgets budget;
+    
+    @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
     @ManyToOne(optional = false)
     @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
-    private BudgetYear budgetYear;
+    private CCurrencies currency;
 
     @JoinColumn(name = "ID_BUDGET_CONCEPT", referencedColumnName = "ID_BUDGET_CONCEPT")
     @ManyToOne(optional = false)
     @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
     private CBudgetConcepts budgetConcept;
     
-    @Column(name = "ID_BUDGET_YEAR", insertable = false, updatable = false)
+    @Column(name = "ID_BUDGET", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idBudgetYear;
+    private Integer idBudget;
 
     @Column(name = "ID_BUDGET_CONCEPT", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetConcept;
+
+    @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
+    private Integer idAccessLevel;
     
     @Basic(optional = false)
     @NotNull
@@ -197,18 +208,22 @@ public class BudgetYearConcept implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Boolean isAuthorized;
 
+    @Column(name = "USERNAME")
+    @JsonView(JsonViews.Root.class)
+    private String username;
+
     @Column(name = "CREATION_DATE")
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
-
-    public BudgetYearConcept() {
-    }
-
-    public BudgetYearConcept(BudgetYear budgetYear, CBudgetConcepts budgetConcept) {
-        this.budgetYear = budgetYear;
-        this.budgetConcept = budgetConcept;
-    }
+    
+    @Column(name = "ID_CURRENCY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idCurrency;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "budgetYearConcept")
+    @JsonView(JsonViews.Embedded.class)
+    private List<Requests> requestsList;
 
     public Integer getIdBudgetYearConcept() {
         return idBudgetYearConcept;
@@ -314,14 +329,6 @@ public class BudgetYearConcept implements Serializable {
         this.decemberAmount = decemberAmount;
     }
 
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
     public BigDecimal getJanuaryExpendedAmount() {
         return januaryExpendedAmount;
     }
@@ -418,6 +425,14 @@ public class BudgetYearConcept implements Serializable {
         this.decemberExpendedAmount = decemberExpendedAmount;
     }
 
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
     public BigDecimal getTotalExpendedAmount() {
         return totalExpendedAmount;
     }
@@ -426,20 +441,28 @@ public class BudgetYearConcept implements Serializable {
         this.totalExpendedAmount = totalExpendedAmount;
     }
 
-    public String getUsername() {
-        return username;
+    public int getYear() {
+        return year;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setYear(int year) {
+        this.year = year;
     }
 
-    public BudgetYear getBudgetYear() {
-        return budgetYear;
+    public Budgets getBudget() {
+        return budget;
     }
 
-    public void setBudgetYear(BudgetYear budgetYear) {
-        this.budgetYear = budgetYear;
+    public void setBudget(Budgets budget) {
+        this.budget = budget;
+    }
+
+    public CCurrencies getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(CCurrencies currency) {
+        this.currency = currency;
     }
 
     public CBudgetConcepts getBudgetConcept() {
@@ -450,12 +473,12 @@ public class BudgetYearConcept implements Serializable {
         this.budgetConcept = budgetConcept;
     }
 
-    public Integer getIdBudgetYear() {
-        return idBudgetYear;
+    public Integer getIdBudget() {
+        return idBudget;
     }
 
-    public void setIdBudgetYear(Integer idBudgetYear) {
-        this.idBudgetYear = idBudgetYear;
+    public void setIdBudget(Integer idBudget) {
+        this.idBudget = idBudget;
     }
 
     public Integer getIdBudgetConcept() {
@@ -466,12 +489,28 @@ public class BudgetYearConcept implements Serializable {
         this.idBudgetConcept = idBudgetConcept;
     }
 
+    public Integer getIdAccessLevel() {
+        return idAccessLevel;
+    }
+
+    public void setIdAccessLevel(Integer idAccessLevel) {
+        this.idAccessLevel = idAccessLevel;
+    }
+
     public Boolean getAuthorized() {
         return isAuthorized;
     }
 
     public void setAuthorized(Boolean authorized) {
         isAuthorized = authorized;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public LocalDateTime getCreationDate() {
@@ -482,6 +521,22 @@ public class BudgetYearConcept implements Serializable {
         this.creationDate = creationDate;
     }
 
+    public Integer getIdCurrency() {
+        return idCurrency;
+    }
+
+    public void setIdCurrency(Integer idCurrency) {
+        this.idCurrency = idCurrency;
+    }
+
+    public List<Requests> getRequestsList() {
+        return requestsList;
+    }
+
+    public void setRequestsList(List<Requests> requestsList) {
+        this.requestsList = requestsList;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -489,15 +544,20 @@ public class BudgetYearConcept implements Serializable {
 
         BudgetYearConcept that = (BudgetYearConcept) o;
 
-        if (idBudgetYear != null ? !idBudgetYear.equals(that.idBudgetYear) : that.idBudgetYear != null) return false;
-        return idBudgetConcept != null ? idBudgetConcept.equals(that.idBudgetConcept) : that.idBudgetConcept == null;
+        if (year != that.year) return false;
+        if (idBudget != null ? !idBudget.equals(that.idBudget) : that.idBudget != null) return false;
+        if (idBudgetConcept != null ? !idBudgetConcept.equals(that.idBudgetConcept) : that.idBudgetConcept != null)
+            return false;
+        return idCurrency != null ? idCurrency.equals(that.idCurrency) : that.idCurrency == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = idBudgetYear != null ? idBudgetYear.hashCode() : 0;
+        int result = year;
+        result = 31 * result + (idBudget != null ? idBudget.hashCode() : 0);
         result = 31 * result + (idBudgetConcept != null ? idBudgetConcept.hashCode() : 0);
+        result = 31 * result + (idCurrency != null ? idCurrency.hashCode() : 0);
         return result;
     }
 
@@ -517,7 +577,6 @@ public class BudgetYearConcept implements Serializable {
                 ", octoberAmount=" + octoberAmount +
                 ", novemberAmount=" + novemberAmount +
                 ", decemberAmount=" + decemberAmount +
-                ", totalAmount=" + totalAmount +
                 ", januaryExpendedAmount=" + januaryExpendedAmount +
                 ", februaryExpendedAmount=" + februaryExpendedAmount +
                 ", marchExpendedAmount=" + marchExpendedAmount +
@@ -530,14 +589,20 @@ public class BudgetYearConcept implements Serializable {
                 ", octoberExpendedAmount=" + octoberExpendedAmount +
                 ", novemberExpendedAmount=" + novemberExpendedAmount +
                 ", decemberExpendedAmount=" + decemberExpendedAmount +
+                ", totalAmount=" + totalAmount +
                 ", totalExpendedAmount=" + totalExpendedAmount +
-                ", username='" + username + '\'' +
-                ", budgetYear=" + budgetYear +
+                ", year=" + year +
+                ", budget=" + budget +
+                ", currency=" + currency +
                 ", budgetConcept=" + budgetConcept +
-                ", idBudgetYear=" + idBudgetYear +
+                ", idBudget=" + idBudget +
                 ", idBudgetConcept=" + idBudgetConcept +
+                ", idAccessLevel=" + idAccessLevel +
                 ", isAuthorized=" + isAuthorized +
+                ", username='" + username + '\'' +
                 ", creationDate=" + creationDate +
+                ", idCurrency=" + idCurrency +
+                ", requestsList=" + requestsList +
                 '}';
     }
 }

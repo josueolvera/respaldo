@@ -53,6 +53,67 @@ public class BudgetYearConceptServiceImpl implements BudgetYearConceptService {
     private ObjectMapper mapper;
 
     @Override
+    public List<BudgetYearConcept> saveList(String data, Integer idBudget, Users user) throws Exception {
+        JsonNode budgetYearConceptListNode = mapper.readTree(data);
+        LocalDateTime now = LocalDateTime.now();
+
+        List<BudgetYearConcept> budgetYearConceptList = new ArrayList<>();
+
+        for (JsonNode budgetYearConceptNode : budgetYearConceptListNode) {
+
+            if (budgetYearConceptNode.has("idBudgetYearConcept")) {
+                BudgetYearConcept budgetYearConcept = budgetYearConceptDao.findById(budgetYearConceptNode.get("idBudgetYearConcept").asInt());
+                budgetYearConcept.setUsername(user.getUsername());
+                budgetYearConcept.setBudgetConcept(mapper.treeToValue(budgetYearConceptNode.get("budgetConcept"), CBudgetConcepts.class));
+                budgetYearConcept.setJanuaryAmount(mapper.treeToValue(budgetYearConceptNode.get("januaryAmount"), BigDecimal.class));
+                budgetYearConcept.setFebruaryAmount(mapper.treeToValue(budgetYearConceptNode.get("februaryAmount"), BigDecimal.class));
+                budgetYearConcept.setMarchAmount(mapper.treeToValue(budgetYearConceptNode.get("marchAmount"), BigDecimal.class));
+                budgetYearConcept.setAprilAmount(mapper.treeToValue(budgetYearConceptNode.get("aprilAmount"), BigDecimal.class));
+                budgetYearConcept.setMayAmount(mapper.treeToValue(budgetYearConceptNode.get("mayAmount"), BigDecimal.class));
+                budgetYearConcept.setJuneAmount(mapper.treeToValue(budgetYearConceptNode.get("juneAmount"), BigDecimal.class));
+                budgetYearConcept.setJulyAmount(mapper.treeToValue(budgetYearConceptNode.get("julyAmount"), BigDecimal.class));
+                budgetYearConcept.setAugustAmount(mapper.treeToValue(budgetYearConceptNode.get("augustAmount"), BigDecimal.class));
+                budgetYearConcept.setSeptemberAmount(mapper.treeToValue(budgetYearConceptNode.get("septemberAmount"), BigDecimal.class));
+                budgetYearConcept.setOctoberAmount(mapper.treeToValue(budgetYearConceptNode.get("octoberAmount"), BigDecimal.class));
+                budgetYearConcept.setNovemberAmount(mapper.treeToValue(budgetYearConceptNode.get("novemberAmount"), BigDecimal.class));
+                budgetYearConcept.setDecemberAmount(mapper.treeToValue(budgetYearConceptNode.get("decemberAmount"), BigDecimal.class));
+                budgetYearConcept.setTotalAmount(mapper.treeToValue(budgetYearConceptNode.get("totalAmount"), BigDecimal.class));
+
+                budgetYearConceptList.add(budgetYearConcept);
+                budgetYearConceptDao.update(budgetYearConcept);
+            } else {
+                BudgetYearConcept budgetYearConcept = new BudgetYearConcept();
+                budgetYearConcept.setUsername(user.getUsername());
+                budgetYearConcept.setBudget(budgetsDao.findById(idBudget));
+                budgetYearConcept.setAuthorized(false);
+                budgetYearConcept.setCreationDate(now);
+                budgetYearConcept.setCurrency(CCurrencies.MXN);
+                budgetYearConcept.setIdAccessLevel(1);
+                budgetYearConcept.setYear(budgetYearConceptNode.get("year").asInt());
+                budgetYearConcept.setBudgetConcept(mapper.treeToValue(budgetYearConceptNode.get("budgetConcept"), CBudgetConcepts.class));
+                budgetYearConcept.setJanuaryAmount(mapper.treeToValue(budgetYearConceptNode.get("januaryAmount"), BigDecimal.class));
+                budgetYearConcept.setFebruaryAmount(mapper.treeToValue(budgetYearConceptNode.get("februaryAmount"), BigDecimal.class));
+                budgetYearConcept.setMarchAmount(mapper.treeToValue(budgetYearConceptNode.get("marchAmount"), BigDecimal.class));
+                budgetYearConcept.setAprilAmount(mapper.treeToValue(budgetYearConceptNode.get("aprilAmount"), BigDecimal.class));
+                budgetYearConcept.setMayAmount(mapper.treeToValue(budgetYearConceptNode.get("mayAmount"), BigDecimal.class));
+                budgetYearConcept.setJuneAmount(mapper.treeToValue(budgetYearConceptNode.get("juneAmount"), BigDecimal.class));
+                budgetYearConcept.setJulyAmount(mapper.treeToValue(budgetYearConceptNode.get("julyAmount"), BigDecimal.class));
+                budgetYearConcept.setAugustAmount(mapper.treeToValue(budgetYearConceptNode.get("augustAmount"), BigDecimal.class));
+                budgetYearConcept.setSeptemberAmount(mapper.treeToValue(budgetYearConceptNode.get("septemberAmount"), BigDecimal.class));
+                budgetYearConcept.setOctoberAmount(mapper.treeToValue(budgetYearConceptNode.get("octoberAmount"), BigDecimal.class));
+                budgetYearConcept.setNovemberAmount(mapper.treeToValue(budgetYearConceptNode.get("novemberAmount"), BigDecimal.class));
+                budgetYearConcept.setDecemberAmount(mapper.treeToValue(budgetYearConceptNode.get("decemberAmount"), BigDecimal.class));
+                budgetYearConcept.setTotalAmount(mapper.treeToValue(budgetYearConceptNode.get("totalAmount"), BigDecimal.class));
+
+                budgetYearConceptList.add(budgetYearConcept);
+                budgetYearConceptDao.save(budgetYearConcept);
+            }
+        }
+
+        return budgetYearConceptList;
+    }
+
+    @Override
     public BudgetYearConcept findByCombination(Integer budget, Integer month, Integer dwEnterprise, Integer year) {
         return budgetYearConceptDao.findByCombination(new Budgets(budget),
                 new CMonths(month), new DwEnterprises(dwEnterprise), year);
@@ -90,16 +151,6 @@ public class BudgetYearConceptServiceImpl implements BudgetYearConceptService {
     @Override
     public BudgetYearConcept update(BudgetYearConcept budgetYearConcept) {
         return budgetYearConceptDao.update(budgetYearConcept);
-    }
-
-    @Override
-    public BudgetYearConcept save(BudgetYearConcept budgetYearConcept) {
-        return budgetYearConceptDao.save(budgetYearConcept);
-    }
-
-    @Override
-    public BudgetYearConcept findById(Integer idBudgetYearConcept) {
-        return budgetYearConceptDao.findById(idBudgetYearConcept);
     }
 
     @Override
@@ -183,12 +234,13 @@ public class BudgetYearConceptServiceImpl implements BudgetYearConceptService {
 
             for (BudgetYearConcept budgetYearConcept : budgetYearConceptYearFromCopyList) {
                 BudgetYearConcept newBudgetYearConcept = new BudgetYearConcept();
-//                newBudgetYearConcept.setBudget(budgetYearConcept.getBudget());
+                newBudgetYearConcept.setBudget(budgetYearConcept.getBudget());
                 newBudgetYearConcept.setCreationDate(now);
-//                newBudgetYearConcept.setCurrency(budgetYearConcept.getCurrency());
+                newBudgetYearConcept.setCurrency(budgetYearConcept.getCurrency());
                 newBudgetYearConcept.setBudgetConcept(budgetYearConcept.getBudgetConcept());
                 newBudgetYearConcept.setUsername(user.getUsername());
-//                newBudgetYearConcept.setYear(yearToCopy);
+                newBudgetYearConcept.setYear(yearToCopy);
+                newBudgetYearConcept.setIdAccessLevel(1);
                 newBudgetYearConcept.setAuthorized(false);
                 newBudgetYearConcept.setJanuaryAmount(budgetYearConcept.getJanuaryAmount());
                 newBudgetYearConcept.setFebruaryAmount(budgetYearConcept.getFebruaryAmount());
