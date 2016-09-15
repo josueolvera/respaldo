@@ -96,9 +96,9 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idUserResponsible;
     
-    @Column(name = "ID_BUDGET_YEAR", insertable = false, updatable = false)
+    @Column(name = "ID_BUDGET_YEAR_CONCEPT", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idBudgetYear;
+    private Integer idBudgetYearConcept;
     
     @Column(name = "ID_MONTH", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -118,10 +118,10 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private Users userResponsible;
     
-    @JoinColumn(name = "ID_BUDGET_YEAR", referencedColumnName = "ID_BUDGET_YEAR")
+    @JoinColumn(name = "ID_BUDGET_YEAR_CONCEPT", referencedColumnName = "ID_BUDGET_YEAR_CONCEPT")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private BudgetYear budgetYear;
+    private BudgetYearConcept budgetYearConcept;
 
     @JoinColumn(name = "ID_MONTH", referencedColumnName = "ID_MONTH")
     @ManyToOne(optional = false)
@@ -216,12 +216,12 @@ public class Requests implements Serializable {
         this.idUserResponsible = idUserResponsible;
     }
 
-    public Integer getIdBudgetYear() {
-        return idBudgetYear;
+    public Integer getIdBudgetYearConcept() {
+        return idBudgetYearConcept;
     }
 
-    public void setIdBudgetYear(Integer idBudgetYear) {
-        this.idBudgetYear = idBudgetYear;
+    public void setIdBudgetYearConcept(Integer idBudgetYearConcept) {
+        this.idBudgetYearConcept = idBudgetYearConcept;
     }
 
     public Integer getIdMonth() {
@@ -256,12 +256,12 @@ public class Requests implements Serializable {
         this.userResponsible = userResponsible;
     }
 
-    public BudgetYear getBudgetYear() {
-        return budgetYear;
+    public BudgetYearConcept getBudgetYearConcept() {
+        return budgetYearConcept;
     }
 
-    public void setBudgetYear(BudgetYear budgetYear) {
-        this.budgetYear = budgetYear;
+    public void setBudgetYearConcept(BudgetYearConcept budgetYearConcept) {
+        this.budgetYearConcept = budgetYearConcept;
     }
 
     public CMonths getMonth() {
@@ -324,12 +324,12 @@ public class Requests implements Serializable {
                 ", idAccessLevel=" + idAccessLevel +
                 ", idUserRequest=" + idUserRequest +
                 ", idUserResponsible=" + idUserResponsible +
-                ", idBudgetYear=" + idBudgetYear +
+                ", idBudgetYearConcept=" + idBudgetYearConcept +
                 ", idMonth=" + idMonth +
                 ", idRequestStatus=" + idRequestStatus +
                 ", userRequest=" + userRequest +
                 ", userResponsible=" + userResponsible +
-                ", budgetYear=" + budgetYear +
+                ", budgetYearConcept=" + budgetYearConcept +
                 ", month=" + month +
                 ", requestStatus=" + requestStatus +
                 ", priceEstimationsList=" + priceEstimationsList +
