@@ -53,9 +53,7 @@ public class BudgetCategory {
     public BigDecimal getJanuaryCategoryAmount() {
         double zero = 0;
         for (BudgetSubcategory budgetSubcategory : getBudgetSubcategories()) {
-            if (budgetSubcategory.getBudgetYear() != null) {
-                zero += budgetSubcategory.getBudgetYear().getJanuaryAmount().doubleValue();
-            }
+            zero += budgetSubcategory.getJanuarySubcategoryAmount().doubleValue();
         }
         this.januaryCategoryAmount = new BigDecimal(zero);
         return januaryCategoryAmount;
@@ -68,9 +66,7 @@ public class BudgetCategory {
     public BigDecimal getFebruaryCategoryAmount() {
         double zero = 0;
         for (BudgetSubcategory budgetSubcategory : getBudgetSubcategories()) {
-            if (budgetSubcategory.getBudgetYear() != null) {
-                zero += budgetSubcategory.getBudgetYear().getFebruaryAmount().doubleValue();
-            }
+            zero += budgetSubcategory.getFebruarySubcategoryAmount().doubleValue();
         }
         this.februaryCategoryAmount = new BigDecimal(zero);
         return februaryCategoryAmount;
@@ -83,9 +79,7 @@ public class BudgetCategory {
     public BigDecimal getMarchCategoryAmount() {
         double zero = 0;
         for (BudgetSubcategory budgetSubcategory : getBudgetSubcategories()) {
-            if (budgetSubcategory.getBudgetYear() != null) {
-                zero += budgetSubcategory.getBudgetYear().getMarchAmount().doubleValue();
-            }
+            zero += budgetSubcategory.getMarchSubcategoryAmount().doubleValue();
         }
         this.marchCategoryAmount = new BigDecimal(zero);
         return marchCategoryAmount;
@@ -98,9 +92,7 @@ public class BudgetCategory {
     public BigDecimal getAprilCategoryAmount() {
         double zero = 0;
         for (BudgetSubcategory budgetSubcategory : getBudgetSubcategories()) {
-            if (budgetSubcategory.getBudgetYear() != null) {
-                zero += budgetSubcategory.getBudgetYear().getAprilAmount().doubleValue();
-            }
+            zero += budgetSubcategory.getAprilSubcategoryAmount().doubleValue();
         }
         this.aprilCategoryAmount = new BigDecimal(zero);
         return aprilCategoryAmount;
@@ -113,9 +105,7 @@ public class BudgetCategory {
     public BigDecimal getMayCategoryAmount() {
         double zero = 0;
         for (BudgetSubcategory budgetSubcategory : getBudgetSubcategories()) {
-            if (budgetSubcategory.getBudgetYear() != null) {
-                zero += budgetSubcategory.getBudgetYear().getMayAmount().doubleValue();
-            }
+            zero += budgetSubcategory.getMaySubcategoryAmount().doubleValue();
         }
         this.mayCategoryAmount = new BigDecimal(zero);
         return mayCategoryAmount;
@@ -128,9 +118,7 @@ public class BudgetCategory {
     public BigDecimal getJuneCategoryAmount() {
         double zero = 0;
         for (BudgetSubcategory budgetSubcategory : getBudgetSubcategories()) {
-            if (budgetSubcategory.getBudgetYear() != null) {
-                zero += budgetSubcategory.getBudgetYear().getJuneAmount().doubleValue();
-            }
+            zero += budgetSubcategory.getJuneSubcategoryAmount().doubleValue();
         }
         this.juneCategoryAmount = new BigDecimal(zero);
         return juneCategoryAmount;
@@ -143,9 +131,7 @@ public class BudgetCategory {
     public BigDecimal getJulyCategoryAmount() {
         double zero = 0;
         for (BudgetSubcategory budgetSubcategory : getBudgetSubcategories()) {
-            if (budgetSubcategory.getBudgetYear() != null) {
-                zero += budgetSubcategory.getBudgetYear().getJulyAmount().doubleValue();
-            }
+            zero += budgetSubcategory.getJulySubcategoryAmount().doubleValue();
         }
         this.julyCategoryAmount = new BigDecimal(zero);
         return julyCategoryAmount;
@@ -158,9 +144,7 @@ public class BudgetCategory {
     public BigDecimal getAugustCategoryAmount() {
         double zero = 0;
         for (BudgetSubcategory budgetSubcategory : getBudgetSubcategories()) {
-            if (budgetSubcategory.getBudgetYear() != null) {
-                zero += budgetSubcategory.getBudgetYear().getAugustAmount().doubleValue();
-            }
+            zero += budgetSubcategory.getAugustSubcategoryAmount().doubleValue();
         }
         this.augustCategoryAmount = new BigDecimal(zero);
         return augustCategoryAmount;
@@ -173,9 +157,7 @@ public class BudgetCategory {
     public BigDecimal getSeptemberCategoryAmount() {
         double zero = 0;
         for (BudgetSubcategory budgetSubcategory : getBudgetSubcategories()) {
-            if (budgetSubcategory.getBudgetYear() != null) {
-                zero += budgetSubcategory.getBudgetYear().getSeptemberAmount().doubleValue();
-            }
+            zero += budgetSubcategory.getSeptemberSubcategoryAmount().doubleValue();
         }
         this.septemberCategoryAmount = new BigDecimal(zero);
         return septemberCategoryAmount;
@@ -188,9 +170,7 @@ public class BudgetCategory {
     public BigDecimal getOctoberCategoryAmount() {
         double zero = 0;
         for (BudgetSubcategory budgetSubcategory : getBudgetSubcategories()) {
-            if (budgetSubcategory.getBudgetYear() != null) {
-                zero += budgetSubcategory.getBudgetYear().getOctoberAmount().doubleValue();
-            }
+            zero += budgetSubcategory.getOctoberSubcategoryAmount().doubleValue();
         }
         this.octoberCategoryAmount = new BigDecimal(zero);
         return octoberCategoryAmount;
@@ -203,9 +183,7 @@ public class BudgetCategory {
     public BigDecimal getNovemberCategoryAmount() {
         double zero = 0;
         for (BudgetSubcategory budgetSubcategory : getBudgetSubcategories()) {
-            if (budgetSubcategory.getBudgetYear() != null) {
-                zero += budgetSubcategory.getBudgetYear().getNovemberAmount().doubleValue();
-            }
+            zero += budgetSubcategory.getNovemberSubcategoryAmount().doubleValue();
         }
         this.novemberCategoryAmount = new BigDecimal(zero);
         return novemberCategoryAmount;
@@ -218,9 +196,7 @@ public class BudgetCategory {
     public BigDecimal getDecemberCategoryAmount() {
         double zero = 0;
         for (BudgetSubcategory budgetSubcategory : getBudgetSubcategories()) {
-            if (budgetSubcategory.getBudgetYear() != null) {
-                zero += budgetSubcategory.getBudgetYear().getDecemberAmount().doubleValue();
-            }
+            zero += budgetSubcategory.getDecemberSubcategoryAmount().doubleValue();
         }
         this.decemberCategoryAmount = new BigDecimal(zero);
         return decemberCategoryAmount;
@@ -233,9 +209,7 @@ public class BudgetCategory {
     public BigDecimal getTotalCategoryAmount() {
         double zero = 0;
         for (BudgetSubcategory budgetSubcategory : getBudgetSubcategories()) {
-            if (budgetSubcategory.getBudgetYear() != null) {
-                zero += budgetSubcategory.getBudgetYear().getTotalAmount().doubleValue();
-            }
+            zero += budgetSubcategory.getTotalSubcategoryAmount().doubleValue();
         }
         this.totalCategoryAmount = new BigDecimal(zero);
         return totalCategoryAmount;

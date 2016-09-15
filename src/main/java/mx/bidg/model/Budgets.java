@@ -62,6 +62,12 @@ public class Budgets implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetNature;
 
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
+    private int idAccessLevel;
+
     @JoinColumn(name = "ID_COST_CENTER", referencedColumnName = "ID_COST_CENTER")
     @ManyToOne
     @JsonView({JsonViews.Embedded.class})
@@ -84,7 +90,7 @@ public class Budgets implements Serializable {
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "budget")
     @JsonView(JsonViews.Embedded.class)
-    private List<BudgetYear> budgetYearList;
+    private List<BudgetYearConcept> budgetYearConceptList;
 
     public Budgets() {
     }
@@ -93,7 +99,8 @@ public class Budgets implements Serializable {
         this.idBudget = idBudget;
     }
 
-    public Budgets(CCostCenter costCenter, AccountingAccounts accountingAccount, CBudgetTypes budgetType, CBudgetNature budgetNature) {
+    public Budgets(int idAccessLevel, CCostCenter costCenter, AccountingAccounts accountingAccount, CBudgetTypes budgetType, CBudgetNature budgetNature) {
+        this.idAccessLevel = idAccessLevel;
         this.costCenter = costCenter;
         this.accountingAccount = accountingAccount;
         this.budgetType = budgetType;
@@ -140,6 +147,14 @@ public class Budgets implements Serializable {
         this.idBudgetNature = idBudgetNature;
     }
 
+    public int getIdAccessLevel() {
+        return idAccessLevel;
+    }
+
+    public void setIdAccessLevel(int idAccessLevel) {
+        this.idAccessLevel = idAccessLevel;
+    }
+
     public CCostCenter getCostCenter() {
         return costCenter;
     }
@@ -172,29 +187,41 @@ public class Budgets implements Serializable {
         this.budgetNature = budgetNature;
     }
 
+    public List<BudgetYearConcept> getBudgetYearConceptList() {
+        return budgetYearConceptList;
+    }
+
+    public void setBudgetYearConceptList(List<BudgetYearConcept> budgetYearConceptList) {
+        this.budgetYearConceptList = budgetYearConceptList;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Budgets budgets1 = (Budgets) o;
+        Budgets budgets = (Budgets) o;
 
-        if (idCostCenter != null ? !idCostCenter.equals(budgets1.idCostCenter) : budgets1.idCostCenter != null)
+        if (idAccessLevel != budgets.idAccessLevel) return false;
+        if (idBudget != null ? !idBudget.equals(budgets.idBudget) : budgets.idBudget != null) return false;
+        if (idCostCenter != null ? !idCostCenter.equals(budgets.idCostCenter) : budgets.idCostCenter != null)
             return false;
-        if (idAccountingAccount != null ? !idAccountingAccount.equals(budgets1.idAccountingAccount) : budgets1.idAccountingAccount != null)
+        if (idAccountingAccount != null ? !idAccountingAccount.equals(budgets.idAccountingAccount) : budgets.idAccountingAccount != null)
             return false;
-        if (idBudgetType != null ? !idBudgetType.equals(budgets1.idBudgetType) : budgets1.idBudgetType != null)
+        if (idBudgetType != null ? !idBudgetType.equals(budgets.idBudgetType) : budgets.idBudgetType != null)
             return false;
-        return idBudgetNature != null ? idBudgetNature.equals(budgets1.idBudgetNature) : budgets1.idBudgetNature == null;
+        return idBudgetNature != null ? idBudgetNature.equals(budgets.idBudgetNature) : budgets.idBudgetNature == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = idCostCenter != null ? idCostCenter.hashCode() : 0;
+        int result = idBudget != null ? idBudget.hashCode() : 0;
+        result = 31 * result + (idCostCenter != null ? idCostCenter.hashCode() : 0);
         result = 31 * result + (idAccountingAccount != null ? idAccountingAccount.hashCode() : 0);
         result = 31 * result + (idBudgetType != null ? idBudgetType.hashCode() : 0);
         result = 31 * result + (idBudgetNature != null ? idBudgetNature.hashCode() : 0);
+        result = 31 * result + idAccessLevel;
         return result;
     }
 
@@ -206,11 +233,12 @@ public class Budgets implements Serializable {
                 ", idAccountingAccount=" + idAccountingAccount +
                 ", idBudgetType=" + idBudgetType +
                 ", idBudgetNature=" + idBudgetNature +
+                ", idAccessLevel=" + idAccessLevel +
                 ", costCenter=" + costCenter +
                 ", accountingAccount=" + accountingAccount +
                 ", budgetType=" + budgetType +
                 ", budgetNature=" + budgetNature +
-                ", budgetYearList=" + budgetYearList +
+                ", budgetYearConceptList=" + budgetYearConceptList +
                 '}';
     }
 }

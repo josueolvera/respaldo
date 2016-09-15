@@ -250,7 +250,7 @@ public class TransactionsServiceImpl implements TransactionsService {
                 }
 //                RequestTypesProduct requestTypesProduct = requests.getRequestTypeProduct();
 //                CProductTypes productType = requestTypesProduct.getProductType();
-//                BudgetYearConcept budgetYearConcept = requests.getBudgetYearConcept();
+                BudgetYearConcept budgetYearConcept = requests.getBudgetYearConcept();
 //                DwEnterprises dwEnterprise = budgetYearConcept.getDwEnterprise();
 //                CDistributors cDistributors = dwEnterprise.getDistributor();
 //                CRegions cRegions = dwEnterprise.getRegion();

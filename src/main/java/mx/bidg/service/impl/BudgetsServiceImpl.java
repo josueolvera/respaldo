@@ -185,19 +185,19 @@ public class BudgetsServiceImpl implements BudgetsService {
                 Row row2 = sheet.createRow(aux);
 
                 row2.createCell(0).setCellValue("       " + budgetSubcategory.getName());
-                row2.createCell(1).setCellValue(budgetSubcategory.getBudgetYear().getJanuaryAmount().doubleValue());
-                row2.createCell(2).setCellValue(budgetSubcategory.getBudgetYear().getFebruaryAmount().doubleValue());
-                row2.createCell(3).setCellValue(budgetSubcategory.getBudgetYear().getMarchAmount().doubleValue());
-                row2.createCell(4).setCellValue(budgetSubcategory.getBudgetYear().getAprilAmount().doubleValue());
-                row2.createCell(5).setCellValue(budgetSubcategory.getBudgetYear().getMayAmount().doubleValue());
-                row2.createCell(6).setCellValue(budgetSubcategory.getBudgetYear().getJuneAmount().doubleValue());
-                row2.createCell(7).setCellValue(budgetSubcategory.getBudgetYear().getJulyAmount().doubleValue());
-                row2.createCell(8).setCellValue(budgetSubcategory.getBudgetYear().getAugustAmount().doubleValue());
-                row2.createCell(9).setCellValue(budgetSubcategory.getBudgetYear().getSeptemberAmount().doubleValue());
-                row2.createCell(10).setCellValue(budgetSubcategory.getBudgetYear().getOctoberAmount().doubleValue());
-                row2.createCell(11).setCellValue(budgetSubcategory.getBudgetYear().getNovemberAmount().doubleValue());
-                row2.createCell(12).setCellValue(budgetSubcategory.getBudgetYear().getDecemberAmount().doubleValue());
-                row2.createCell(13).setCellValue(budgetSubcategory.getBudgetYear().getTotalAmount().doubleValue());
+                row2.createCell(1).setCellValue(budgetSubcategory.getJanuarySubcategoryAmount().doubleValue());
+                row2.createCell(2).setCellValue(budgetSubcategory.getFebruarySubcategoryAmount().doubleValue());
+                row2.createCell(3).setCellValue(budgetSubcategory.getMarchSubcategoryAmount().doubleValue());
+                row2.createCell(4).setCellValue(budgetSubcategory.getAprilSubcategoryAmount().doubleValue());
+                row2.createCell(5).setCellValue(budgetSubcategory.getMaySubcategoryAmount().doubleValue());
+                row2.createCell(6).setCellValue(budgetSubcategory.getJuneSubcategoryAmount().doubleValue());
+                row2.createCell(7).setCellValue(budgetSubcategory.getJulySubcategoryAmount().doubleValue());
+                row2.createCell(8).setCellValue(budgetSubcategory.getAugustSubcategoryAmount().doubleValue());
+                row2.createCell(9).setCellValue(budgetSubcategory.getSeptemberSubcategoryAmount().doubleValue());
+                row2.createCell(10).setCellValue(budgetSubcategory.getOctoberSubcategoryAmount().doubleValue());
+                row2.createCell(11).setCellValue(budgetSubcategory.getNovemberSubcategoryAmount().doubleValue());
+                row2.createCell(12).setCellValue(budgetSubcategory.getDecemberSubcategoryAmount().doubleValue());
+                row2.createCell(13).setCellValue(budgetSubcategory.getTotalSubcategoryAmount().doubleValue());
 
                 for (Cell celda : row2) {
                     celda.setCellStyle(style3);
@@ -205,7 +205,7 @@ public class BudgetsServiceImpl implements BudgetsService {
 
                 aux++;
                 
-                for (BudgetYearConcept budgetYearConcept : budgetSubcategory.getBudgetYear().getBudgetYearConceptList()) {
+                for (BudgetYearConcept budgetYearConcept : budgetSubcategory.getBudgetYearConceptList()) {
 
                     Row row3 = sheet.createRow(aux);
 
