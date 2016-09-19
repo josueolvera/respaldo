@@ -67,6 +67,16 @@ public class CommissionAmountGroupDaoImpl extends AbstractDao<Integer, Commissio
     }
 
     @Override
+    public List<CommissionAmountGroup> getScopeByConditon(AgreementsGroupCondition agreementsGroupCondition) {
+        Criteria criteria = createEntityCriteria();
+
+        return criteria.add(Restrictions.eq("idAg",agreementsGroupCondition.getIdAg()))
+                .add(Restrictions.between("scope",agreementsGroupCondition.getAmountMin(),
+                        agreementsGroupCondition.getAmountMax()))
+                .list();
+    }
+
+    @Override
     public List findOnlyByClaveSap() {
         ProjectionList projList = Projections.projectionList();
 
@@ -80,22 +90,45 @@ public class CommissionAmountGroupDaoImpl extends AbstractDao<Integer, Commissio
     }
 
     @Override
+    public List findOnlyByIdBranch() {
+        ProjectionList projList = Projections.projectionList();
+
+        projList.add(Projections.distinct(Projections.groupProperty("idBranch")));
+        return createEntityCriteria().setProjection(projList)
+                .add(Restrictions.isNotNull("idBranch"))
+                .add(Restrictions.ne("idAg",18))
+                .list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findAllByBranchs() {
+        return createEntityCriteria().add(Restrictions.ne("idAg",18)).add(Restrictions.isNotNull("idBranch")).list();
+    }
+
+    @Override
     public List<CommissionAmountGroup> findByGroupAuxiliarAndBranch() {
         return createEntityCriteria().add(Restrictions.eq("idAg",18)).add(Restrictions.isNotNull("idBranch")).list();
     }
 
     @Override
+    public List<CommissionAmountGroup> findByGroupBranchAndBranch() {
+        return createEntityCriteria().add(Restrictions.ne("idAg",18)).add(Restrictions.ne("idAg",21))
+                .add(Restrictions.isNotNull("idBranch"))
+                .list();
+    }
+
+    @Override
     public List<CommissionAmountGroup> findByGroupZonalAndZona() {
-        return createEntityCriteria().add(Restrictions.eq("idAg",23)).add(Restrictions.isNotNull("idZona")).list();
+        return createEntityCriteria().add(Restrictions.isNotNull("idZona")).list();
     }
 
     @Override
     public List<CommissionAmountGroup> findByGroupRegionslAndRegion() {
-        return createEntityCriteria().add(Restrictions.eq("idAg",24)).add(Restrictions.isNotNull("idRegion")).list();
+        return createEntityCriteria().add(Restrictions.isNotNull("idRegion")).list();
     }
 
     @Override
     public List<CommissionAmountGroup> findByGroupComercialAndDistributor() {
-        return createEntityCriteria().add(Restrictions.eq("idAg",25)).add(Restrictions.isNotNull("idDistributor")).list();
+        return createEntityCriteria().add(Restrictions.isNotNull("idDistributor")).list();
     }
 }

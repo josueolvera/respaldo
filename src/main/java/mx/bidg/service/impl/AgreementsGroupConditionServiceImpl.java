@@ -5,6 +5,7 @@ import mx.bidg.dao.CommissionAmountGroupDao;
 import mx.bidg.model.AgreementsGroupCondition;
 import mx.bidg.model.CommissionAmountGroup;
 import mx.bidg.service.AgreementsGroupConditionService;
+import org.exolab.castor.xml.descriptors.ListClassDescriptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,8 +70,8 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
                     cAGroup.setCommission(cAGroup.getAmount().multiply(comission));
                     commissionAmountGroupDao.update(cAGroup);
                 }
-            } else {
-                //1 significa que calcule la comision del monto comisionable
+            } else if(groupCondition.getTypeOperation() == 2){
+                //2 significa que calcule bono cumplimiento
                 List<CommissionAmountGroup> requestGroups = commissionAmountGroupDao.getBonusByConditon(groupCondition);
 
                 for (CommissionAmountGroup cAGroup :  requestGroups){
@@ -78,6 +79,17 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
                     BigDecimal comission = groupCondition.getTabulator();
                     cAGroup.setCommission(comission);
                     commissionAmountGroupDao.update(cAGroup);
+                }
+            } else if (groupCondition.getTypeOperation() == 3){
+                //3 signifique que calcule el alcance de la sucursal
+                List<CommissionAmountGroup> scopeGroups = commissionAmountGroupDao.getScopeByConditon(groupCondition);
+
+                for(CommissionAmountGroup commissionAmountGroup : scopeGroups){
+                    commissionAmountGroup.setTabulator(groupCondition.getTabulator());
+                    BigDecimal divide = new BigDecimal(100);
+                    BigDecimal comission = groupCondition.getTabulator().divide(divide);
+                    commissionAmountGroup.setCommission(commissionAmountGroup.getAmount().multiply(comission));
+                    commissionAmountGroupDao.update(commissionAmountGroup);
                 }
             }
         }

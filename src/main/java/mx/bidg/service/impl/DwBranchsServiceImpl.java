@@ -44,7 +44,8 @@ public class DwBranchsServiceImpl implements DwBranchsService {
         Row headerRow = sheet.getRow(0);
         String[] headersToSkip = {
                 "ID SUCURSAL SISCOM", "INDICE REPROCESO","PRODUCTIVIDAD",
-                "PROMOTORES CON VENTA","PROMOTORES CON VENTA REAL"
+                "PROMOTORES CON VENTA","PROMOTORES CON VENTA REAL",
+                "META"
         };
 
         for (int i = 0 ; i < 5 ;i++) {
@@ -61,6 +62,7 @@ public class DwBranchsServiceImpl implements DwBranchsService {
             Cell productivity = currentRow.getCell(2);
             Cell pttoPromVta = currentRow.getCell(3);
             Cell pttoPromReal = currentRow.getCell(4);
+            Cell goalBranch = currentRow.getCell(5);
 
             if (idBranch != null) {
                 DwBranchs dwBranchs = dwBranchsDao.findById((int) idBranch.getNumericCellValue());
@@ -80,6 +82,10 @@ public class DwBranchsServiceImpl implements DwBranchsService {
                     }
                     if (pttoPromReal != null) {
                         dwBranchs.setPttoPromReal((int) pttoPromReal.getNumericCellValue());
+                    }
+                    if (goalBranch != null) {
+                        BigDecimal goal = new BigDecimal(goalBranch.getNumericCellValue());
+                        dwBranchs.setProductivity(goal);
                     }
 
                     dwBranchs.setUploadedDate(LocalDateTime.now());
@@ -102,6 +108,11 @@ public class DwBranchsServiceImpl implements DwBranchsService {
                     }
                     if (pttoPromReal != null) {
                         newDwBranchs.setPttoPromReal((int) pttoPromReal.getNumericCellValue());
+                    }
+
+                    if (goalBranch != null) {
+                        BigDecimal goal = new BigDecimal(goalBranch.getNumericCellValue());
+                        newDwBranchs.setProductivity(goal);
                     }
 
                     newDwBranchs.setUploadedDate(LocalDateTime.now());

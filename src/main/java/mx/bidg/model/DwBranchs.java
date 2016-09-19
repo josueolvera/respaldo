@@ -28,7 +28,7 @@ public class DwBranchs implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_BRANCH")
     @JsonView(JsonViews.Root.class)
@@ -63,6 +63,10 @@ public class DwBranchs implements Serializable {
     @Column(name = "STATUS")
     @JsonView(JsonViews.Root.class)
     private int status;
+
+    @Column(name = "BRANCH_GOAL")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal branchGoal;
 
     public DwBranchs() {
     }
@@ -125,6 +129,14 @@ public class DwBranchs implements Serializable {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public BigDecimal getBranchGoal() {
+        return branchGoal;
+    }
+
+    public void setBranchGoal(BigDecimal branchGoal) {
+        this.branchGoal = branchGoal;
     }
 
     @Override
