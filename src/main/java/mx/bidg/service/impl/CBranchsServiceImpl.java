@@ -13,10 +13,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
-import mx.bidg.dao.CBranchsDao;
-import mx.bidg.dao.DwEmployeesDao;
-import mx.bidg.dao.DwEnterprisesDao;
-import mx.bidg.dao.EmployeesDao;
+import mx.bidg.dao.*;
 import mx.bidg.model.*;
 import mx.bidg.service.*;
 import org.apache.commons.lang3.StringUtils;
@@ -64,6 +61,9 @@ public class CBranchsServiceImpl implements CBranchsService {
     @Autowired
     DwEnterprisesService dwEnterprisesService;
 
+    @Autowired
+    DwBranchsDao dwBranchsDao;
+
     @Override
     public List<CBranchs> findAll() {
         return cBranchsDao.findAll();
@@ -105,6 +105,11 @@ public class CBranchsServiceImpl implements CBranchsService {
         dwEnterprises.setBudgetable(1);
         dwEnterprises.setStatus(true);
         dwEnterprisesDao.save(dwEnterprises);
+        DwBranchs dwBranchs = new DwBranchs();
+        dwBranchs.setIdBranch(cBranchs.getIdBranch());
+        dwBranchs.setStatus(0);
+        dwBranchs.setUploadedDate(LocalDateTime.now());
+        dwBranchsDao.save(dwBranchs);
 
         return cBranchs;
     }
