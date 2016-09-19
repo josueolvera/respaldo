@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -67,7 +68,7 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
     }
 
     @Override
-    public List<CommissionAmountGroup> obtainAmountsbyGroup(List list, CAgreementsGroups agreementsGroups) {
+    public List<CommissionAmountGroup> obtainAmountsbyGroup(List list, CAgreementsGroups agreementsGroups, LocalDateTime fromDate, LocalDateTime toDate) {
 
         for(Object data : list) {
             CommissionAmountGroup commissionAmountGroup = new CommissionAmountGroup();
@@ -83,6 +84,8 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
             commissionAmountGroup.setGroupName(agreementsGroups.getAgreementGroupName());
             commissionAmountGroup.setCommission(BigDecimal.valueOf(0));
             commissionAmountGroup.setTabulator(BigDecimal.valueOf(0));
+            commissionAmountGroup.setFromDate(fromDate);
+            commissionAmountGroup.setToDate(toDate);
             commissionAmountGroupDao.save(commissionAmountGroup);
         }
 
@@ -90,12 +93,13 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
     }
 
     @Override
-    public List<CommissionAmountGroup> obtainAmountsbyBranch(List list, CAgreementsGroups agreementsGroups) {
+    public List<CommissionAmountGroup> obtainAmountsbyBranch(List list, CAgreementsGroups agreementsGroups, LocalDateTime fromDate, LocalDateTime toDate) {
         for(Object data : list) {
             CommissionAmountGroup commissionAmountGroup = new CommissionAmountGroup();
             Object[] projection = (Object[]) data;
             Integer idBranch = (Integer) projection[0];
             BigDecimal amount = (BigDecimal) projection[1];
+            BigDecimal numRequest = new BigDecimal(projection[2].toString());
 
             commissionAmountGroup.setAmount(amount);
             commissionAmountGroup.setIdBranch(idBranch);
@@ -103,6 +107,9 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
             commissionAmountGroup.setGroupName(agreementsGroups.getAgreementGroupName());
             commissionAmountGroup.setCommission(BigDecimal.valueOf(0));
             commissionAmountGroup.setTabulator(BigDecimal.valueOf(0));
+            commissionAmountGroup.setApplicationsNumber(numRequest);
+            commissionAmountGroup.setFromDate(fromDate);
+            commissionAmountGroup.setToDate(toDate);
             commissionAmountGroupDao.save(commissionAmountGroup);
         }
 
@@ -110,12 +117,13 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
     }
 
     @Override
-    public List<CommissionAmountGroup> obtainAmountsbyZona(List list, CAgreementsGroups agreementsGroups) {
+    public List<CommissionAmountGroup> obtainAmountsbyZona(List list, CAgreementsGroups agreementsGroups, LocalDateTime fromDate, LocalDateTime toDate) {
         for(Object data : list) {
             CommissionAmountGroup commissionAmountGroup = new CommissionAmountGroup();
             Object[] projection = (Object[]) data;
             Integer idZonas = (Integer) projection[0];
             BigDecimal amount = (BigDecimal) projection[1];
+            BigDecimal numRequest = new BigDecimal(projection[2].toString());
 
             commissionAmountGroup.setAmount(amount);
             commissionAmountGroup.setIdZona(idZonas);
@@ -123,6 +131,9 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
             commissionAmountGroup.setGroupName(agreementsGroups.getAgreementGroupName());
             commissionAmountGroup.setCommission(BigDecimal.valueOf(0));
             commissionAmountGroup.setTabulator(BigDecimal.valueOf(0));
+            commissionAmountGroup.setApplicationsNumber(numRequest);
+            commissionAmountGroup.setFromDate(fromDate);
+            commissionAmountGroup.setToDate(toDate);
             commissionAmountGroupDao.save(commissionAmountGroup);
         }
 
@@ -130,12 +141,13 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
     }
 
     @Override
-    public List<CommissionAmountGroup> obtainAmountsbyRegion(List list, CAgreementsGroups agreementsGroups) {
+    public List<CommissionAmountGroup> obtainAmountsbyRegion(List list, CAgreementsGroups agreementsGroups, LocalDateTime fromDate, LocalDateTime toDate) {
         for(Object data : list) {
             CommissionAmountGroup commissionAmountGroup = new CommissionAmountGroup();
             Object[] projection = (Object[]) data;
             Integer idRegion = (Integer) projection[0];
             BigDecimal amount = (BigDecimal) projection[1];
+            BigDecimal numRequest = new BigDecimal(projection[2].toString());
 
             commissionAmountGroup.setAmount(amount);
             commissionAmountGroup.setIdRegion(idRegion);
@@ -143,6 +155,9 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
             commissionAmountGroup.setGroupName(agreementsGroups.getAgreementGroupName());
             commissionAmountGroup.setCommission(BigDecimal.valueOf(0));
             commissionAmountGroup.setTabulator(BigDecimal.valueOf(0));
+            commissionAmountGroup.setApplicationsNumber(numRequest);
+            commissionAmountGroup.setFromDate(fromDate);
+            commissionAmountGroup.setToDate(toDate);
             commissionAmountGroupDao.save(commissionAmountGroup);
         }
 
@@ -150,12 +165,13 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
     }
 
     @Override
-    public List<CommissionAmountGroup> obtainAmountsbyDistributor(List list, CAgreementsGroups agreementsGroups) {
+    public List<CommissionAmountGroup> obtainAmountsbyDistributor(List list, CAgreementsGroups agreementsGroups, LocalDateTime fromDate, LocalDateTime toDate) {
         for(Object data : list) {
             CommissionAmountGroup commissionAmountGroup = new CommissionAmountGroup();
             Object[] projection = (Object[]) data;
             Integer idDistributor = (Integer) projection[0];
             BigDecimal amount = (BigDecimal) projection[1];
+            BigDecimal numRequest = new BigDecimal(projection[2].toString());
 
             commissionAmountGroup.setAmount(amount);
             commissionAmountGroup.setIdDistributor(idDistributor);
@@ -163,6 +179,9 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
             commissionAmountGroup.setGroupName(agreementsGroups.getAgreementGroupName());
             commissionAmountGroup.setCommission(BigDecimal.valueOf(0));
             commissionAmountGroup.setTabulator(BigDecimal.valueOf(0));
+            commissionAmountGroup.setApplicationsNumber(numRequest);
+            commissionAmountGroup.setFromDate(fromDate);
+            commissionAmountGroup.setToDate(toDate);
             commissionAmountGroupDao.save(commissionAmountGroup);
         }
 
@@ -261,48 +280,48 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                 row.createCell(0).setCellValue(commissionAmountGroup.getClaveSap());
 
                 if(commissionAmountGroup.getIdAg() == 13){
-                    row.createCell(1).setCellValue(commissionAmountGroup.getApplicationsNumber().toString());
-                    row.createCell(2).setCellValue(commissionAmountGroup.getAmount().toString());
-                    row.createCell(3).setCellValue(commissionAmountGroup.getCommission().toString());
+                    row.createCell(1).setCellValue(commissionAmountGroup.getApplicationsNumber().doubleValue());
+                    row.createCell(2).setCellValue(commissionAmountGroup.getAmount().doubleValue());
+                    row.createCell(3).setCellValue(commissionAmountGroup.getCommission().doubleValue());
                     totalComission = totalComission.add(commissionAmountGroup.getCommission());
                 }
 
                 if(commissionAmountGroup.getIdAg() == 14){
-                    row.createCell(4).setCellValue(commissionAmountGroup.getApplicationsNumber().toString());
-                    row.createCell(5).setCellValue(commissionAmountGroup.getAmount().toString());
-                    row.createCell(6).setCellValue(commissionAmountGroup.getCommission().toString());
+                    row.createCell(4).setCellValue(commissionAmountGroup.getApplicationsNumber().doubleValue());
+                    row.createCell(5).setCellValue(commissionAmountGroup.getAmount().doubleValue());
+                    row.createCell(6).setCellValue(commissionAmountGroup.getCommission().doubleValue());
                     totalComission = totalComission.add(commissionAmountGroup.getCommission());
                 }
 
                 if(commissionAmountGroup.getIdAg() == 15){
-                    row.createCell(7).setCellValue(commissionAmountGroup.getApplicationsNumber().toString());
-                    row.createCell(8).setCellValue(commissionAmountGroup.getAmount().toString());
-                    row.createCell(9).setCellValue(commissionAmountGroup.getCommission().toString());
+                    row.createCell(7).setCellValue(commissionAmountGroup.getApplicationsNumber().doubleValue());
+                    row.createCell(8).setCellValue(commissionAmountGroup.getAmount().doubleValue());
+                    row.createCell(9).setCellValue(commissionAmountGroup.getCommission().doubleValue());
                     totalComission = totalComission.add(commissionAmountGroup.getCommission());
                 }
 
                 if(commissionAmountGroup.getIdAg() == 16){
-                    row.createCell(10).setCellValue(commissionAmountGroup.getApplicationsNumber().toString());
-                    row.createCell(11).setCellValue(commissionAmountGroup.getAmount().toString());
-                    row.createCell(12).setCellValue(commissionAmountGroup.getCommission().toString());
+                    row.createCell(10).setCellValue(commissionAmountGroup.getApplicationsNumber().doubleValue());
+                    row.createCell(11).setCellValue(commissionAmountGroup.getAmount().doubleValue());
+                    row.createCell(12).setCellValue(commissionAmountGroup.getCommission().doubleValue());
                     totalComission = totalComission.add(commissionAmountGroup.getCommission());
                 }
 
                 if(commissionAmountGroup.getIdAg() == 17){
-                    row.createCell(13).setCellValue(commissionAmountGroup.getApplicationsNumber().toString());
-                    row.createCell(14).setCellValue(commissionAmountGroup.getAmount().toString());
-                    row.createCell(15).setCellValue(commissionAmountGroup.getCommission().toString());
+                    row.createCell(13).setCellValue(commissionAmountGroup.getApplicationsNumber().doubleValue());
+                    row.createCell(14).setCellValue(commissionAmountGroup.getAmount().doubleValue());
+                    row.createCell(15).setCellValue(commissionAmountGroup.getCommission().doubleValue());
                     totalComission = totalComission.add(commissionAmountGroup.getCommission());
                 }
 
                 if(commissionAmountGroup.getIdAg() == 19){
-                    row.createCell(16).setCellValue(commissionAmountGroup.getApplicationsNumber().toString());
-                    row.createCell(17).setCellValue(commissionAmountGroup.getAmount().toString());
-                    row.createCell(18).setCellValue(commissionAmountGroup.getCommission().toString());
+                    row.createCell(16).setCellValue(commissionAmountGroup.getApplicationsNumber().doubleValue());
+                    row.createCell(17).setCellValue(commissionAmountGroup.getAmount().doubleValue());
+                    row.createCell(18).setCellValue(commissionAmountGroup.getCommission().doubleValue());
                     totalComission = totalComission.add(commissionAmountGroup.getCommission());
                 }
 
-                row.createCell(19).setCellValue(totalComission.toString());
+                row.createCell(19).setCellValue(totalComission.doubleValue());
             }
             aux++;
         }
@@ -334,10 +353,98 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                 row2.createCell(0).setCellValue(branchs.getBranchShort());
             }
 
-            row2.createCell(1).setCellValue(auxiliar.getAmount().toString());
-            row2.createCell(2).setCellValue(auxiliar.getCommission().toString());
+            row2.createCell(1).setCellValue(auxiliar.getAmount().doubleValue());
+            row2.createCell(2).setCellValue(auxiliar.getCommission().doubleValue());
 
             aux1++;
+        }
+
+        List<CommissionAmountGroup> commissionAmountBranchGroupList = commissionAmountGroupDao.findAllByBranchs();
+
+        List<List<CommissionAmountGroup>> commissionAmountBranchGroupStreamList = new ArrayList<>();
+
+        List<Integer> idBranchList = commissionAmountGroupDao.findOnlyByIdBranch();
+
+
+        for (Integer idBranch : idBranchList) {
+            List<CommissionAmountGroup> commissionAmountGroupStream =
+                    commissionAmountBranchGroupList.stream()
+                            .filter(commissionAmountGroup -> commissionAmountGroup.getIdBranch().equals(idBranch))
+                            .collect(Collectors.toList());
+
+            commissionAmountBranchGroupStreamList.add(commissionAmountGroupStream);
+        }
+
+        Sheet hoja6 = wb.createSheet("Gerente de sucursal");
+
+        //Se crea la fila que contiene la cabecera
+        Row row6 = hoja6.createRow(0);
+
+        row6.createCell(0).setCellValue("ID SUCURSAL");
+        row6.createCell(1).setCellValue("NOMBRE SUCURSAL");
+        row6.createCell(2).setCellValue("META");
+        row6.createCell(3).setCellValue("MONTO");
+        row6.createCell(4).setCellValue("ALCANCE");
+        row6.createCell(5).setCellValue("TABULADOR");
+        row6.createCell(6).setCellValue("COMISION GERENTE");
+        row6.createCell(7).setCellValue("MONTO PEMEX");
+        row6.createCell(8).setCellValue("COMISION PEMEX");
+        row6.createCell(9).setCellValue("MONTO MENOS PEMEX");
+        row6.createCell(10).setCellValue("TAB OTORGADO");
+
+        //Implementacion del estilo
+        for (Cell celda : row6) {
+            celda.setCellStyle(style);
+        }
+
+        int aux6 = 1;
+
+        for (List listGeneric : commissionAmountBranchGroupStreamList){
+            row6 = hoja6.createRow(aux6);
+
+            for (Object object: listGeneric){
+                CommissionAmountGroup commissionAmountGroup = (CommissionAmountGroup) object;
+
+                row6.createCell(0).setCellValue(commissionAmountGroup.getIdBranch());
+
+                if(commissionAmountGroup.getIdBranch() != null){
+                    CBranchs branchs = cBranchsDao.findById(commissionAmountGroup.getIdBranch());
+
+                    if (branchs != null){
+                        row6.createCell(1).setCellValue(branchs.getBranchName());
+                    }
+                }
+
+                if(commissionAmountGroup.getIdAg() == 20){
+                    row6.createCell(2).setCellValue(commissionAmountGroup.getGoal().doubleValue());
+                    row6.createCell(3).setCellValue(commissionAmountGroup.getAmount().doubleValue());
+                    row6.createCell(4).setCellValue(commissionAmountGroup.getScope().doubleValue());
+                    row6.createCell(5).setCellValue(commissionAmountGroup.getTabulator().doubleValue());
+                    row6.createCell(6).setCellValue(commissionAmountGroup.getCommission().doubleValue());
+                }
+
+                if(commissionAmountGroup.getIdAg() == 21){
+                    row6.createCell(7).setCellValue(commissionAmountGroup.getAmount().doubleValue());
+                    row6.createCell(8).setCellValue(commissionAmountGroup.getCommission().doubleValue());
+                    if (row6.getCell(3) != null){
+                        BigDecimal TotalAmount = new BigDecimal(row6.getCell(3).getNumericCellValue());
+                        if (commissionAmountGroup.getAmount().equals(TotalAmount)){
+                            row6.getCell(6).setCellValue(commissionAmountGroup.getCommission().doubleValue());
+                        }else{
+                            BigDecimal amountNotPemex = TotalAmount.subtract(commissionAmountGroup.getAmount());
+                            row6.createCell(9).setCellValue(amountNotPemex.doubleValue());
+                            BigDecimal tabulador = new BigDecimal(row6.getCell(5).getNumericCellValue());
+                            BigDecimal divisor = new BigDecimal(100);
+                            BigDecimal tabuladorNotPemex = tabulador.divide(divisor);
+                            BigDecimal commisionNotPemex = amountNotPemex.multiply(tabuladorNotPemex);
+                            row6.createCell(10).setCellValue(commisionNotPemex.doubleValue());
+                            BigDecimal commissionTotal = commisionNotPemex.add(commissionAmountGroup.getCommission());
+                            row6.getCell(6).setCellValue(commissionTotal.doubleValue());
+                        }
+                    }
+                }
+            }
+            aux6++;
         }
 
         Sheet hoja3 = wb.createSheet("Gerente Zonal");
@@ -367,8 +474,8 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                 row3.createCell(0).setCellValue(zonas.getName());
             }
 
-            row3.createCell(1).setCellValue(zonal.getAmount().toString());
-            row3.createCell(2).setCellValue(zonal.getCommission().toString());
+            row3.createCell(1).setCellValue(zonal.getAmount().doubleValue());
+            row3.createCell(2).setCellValue(zonal.getCommission().doubleValue());
 
             aux2++;
         }
@@ -400,8 +507,8 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                 row4.createCell(0).setCellValue(regions.getRegionName());
             }
 
-            row4.createCell(1).setCellValue(region.getAmount().toString());
-            row4.createCell(2).setCellValue(region.getCommission().toString());
+            row4.createCell(1).setCellValue(region.getAmount().doubleValue());
+            row4.createCell(2).setCellValue(region.getCommission().doubleValue());
 
             aux3++;
         }
@@ -433,8 +540,8 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                 row5.createCell(0).setCellValue(distributor.getDistributorName());
             }
 
-            row5.createCell(1).setCellValue(comercial.getAmount().toString());
-            row5.createCell(2).setCellValue(comercial.getCommission().toString());
+            row5.createCell(1).setCellValue(comercial.getAmount().doubleValue());
+            row5.createCell(2).setCellValue(comercial.getCommission().doubleValue());
 
             aux4++;
         }
@@ -471,7 +578,23 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
         hoja5.autoSizeColumn(0);
         hoja5.autoSizeColumn(1);
         hoja5.autoSizeColumn(2);
+        hoja6.autoSizeColumn(0);
+        hoja6.autoSizeColumn(1);
+        hoja6.autoSizeColumn(2);
+        hoja6.autoSizeColumn(3);
+        hoja6.autoSizeColumn(4);
+        hoja6.autoSizeColumn(5);
+        hoja6.autoSizeColumn(6);
+        hoja6.autoSizeColumn(7);
+        hoja6.autoSizeColumn(8);
+        hoja6.autoSizeColumn(9);
+        hoja6.autoSizeColumn(10);
 
         wb.write(stream);
+    }
+
+    @Override
+    public List<CommissionAmountGroup> obtainBranchManager() {
+        return commissionAmountGroupDao.findByGroupBranchAndBranch();
     }
 }
