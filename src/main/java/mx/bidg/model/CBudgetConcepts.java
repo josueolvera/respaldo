@@ -45,6 +45,15 @@ public class CBudgetConcepts implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
+
+    @Column(name = "ID_REQUEST_CATEGORY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRequestCategory;
+
+    @JoinColumn(name = "ID_REQUEST_CATEGORY", referencedColumnName = "ID_REQUEST_CATEGORY")
+    @ManyToOne
+    @JsonView(JsonViews.EmbeddedRequestCategory.class)
+    private CRequestsCategories requestsCategory;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "budgetConcept")
     @JsonView(JsonViews.Embedded.class)
@@ -65,14 +74,6 @@ public class CBudgetConcepts implements Serializable {
         this.idBudgetConcept = idBudgetConcept;
     }
 
-    public List<BudgetYearConcept> getBudgetMonthConceptsList() {
-        return budgetMonthConceptsList;
-    }
-
-    public void setBudgetMonthConceptsList(List<BudgetYearConcept> budgetMonthConceptsList) {
-        this.budgetMonthConceptsList = budgetMonthConceptsList;
-    }
-
     public String getBudgetConcept() {
         return budgetConcept;
     }
@@ -87,6 +88,30 @@ public class CBudgetConcepts implements Serializable {
 
     public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
+    }
+
+    public Integer getIdRequestCategory() {
+        return idRequestCategory;
+    }
+
+    public void setIdRequestCategory(Integer idRequestCategory) {
+        this.idRequestCategory = idRequestCategory;
+    }
+
+    public CRequestsCategories getRequestsCategory() {
+        return requestsCategory;
+    }
+
+    public void setRequestsCategory(CRequestsCategories requestsCategory) {
+        this.requestsCategory = requestsCategory;
+    }
+
+    public List<BudgetYearConcept> getBudgetMonthConceptsList() {
+        return budgetMonthConceptsList;
+    }
+
+    public void setBudgetMonthConceptsList(List<BudgetYearConcept> budgetMonthConceptsList) {
+        this.budgetMonthConceptsList = budgetMonthConceptsList;
     }
 
     //No cambiar este metodo

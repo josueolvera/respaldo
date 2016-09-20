@@ -54,15 +54,6 @@ public class RequestConcept implements Serializable {
     @JsonView(JsonViews.Root.class)
     private LocalDateTime creationDate;
 
-    @Column(name = "ID_TRAVEL_EXPENSE_CONCEPT", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idTravelExpenseConcept;
-
-    @JoinColumn(name = "ID_TRAVEL_EXPENSE_CONCEPT", referencedColumnName = "ID_TRAVEL_EXPENSE_CONCEPT")
-    @ManyToOne
-    @JsonView(JsonViews.Embedded.class)
-    private CTravelExpensesConcepts travelExpenseConcept;
-
     @Column(name = "ID_REQUEST", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idRequest;
@@ -80,6 +71,15 @@ public class RequestConcept implements Serializable {
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private CCurrencies currency;
+
+    @Column(name = "ID_BUDGET_CONCEPT", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idBudgetConcept;
+
+    @JoinColumn(name = "ID_BUDGET_CONCEPT", referencedColumnName = "ID_BUDGET_CONCEPT")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CBudgetConcepts budgetConcept;
 
     @Transient
     @JsonView(JsonViews.Embedded.class)
@@ -122,22 +122,6 @@ public class RequestConcept implements Serializable {
         this.creationDate = creationDate;
     }
 
-    public Integer getIdTravelExpenseConcept() {
-        return idTravelExpenseConcept;
-    }
-
-    public void setIdTravelExpenseConcept(Integer idTravelExpenseConcept) {
-        this.idTravelExpenseConcept = idTravelExpenseConcept;
-    }
-
-    public CTravelExpensesConcepts getTravelExpenseConcept() {
-        return travelExpenseConcept;
-    }
-
-    public void setTravelExpenseConcept(CTravelExpensesConcepts travelExpenseConcept) {
-        this.travelExpenseConcept = travelExpenseConcept;
-    }
-
     public Integer getIdCurrency() {
         return idCurrency;
     }
@@ -168,6 +152,22 @@ public class RequestConcept implements Serializable {
 
     public void setRequest(Requests request) {
         this.request = request;
+    }
+
+    public Integer getIdBudgetConcept() {
+        return idBudgetConcept;
+    }
+
+    public void setIdBudgetConcept(Integer idBudgetConcept) {
+        this.idBudgetConcept = idBudgetConcept;
+    }
+
+    public CBudgetConcepts getBudgetConcept() {
+        return budgetConcept;
+    }
+
+    public void setBudgetConcept(CBudgetConcepts budgetConcept) {
+        this.budgetConcept = budgetConcept;
     }
 
     public DateFormatsPojo getCreationDateFormats() {

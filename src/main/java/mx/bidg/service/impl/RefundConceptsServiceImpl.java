@@ -3,7 +3,6 @@ package mx.bidg.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.dao.RefundConceptsDao;
-import mx.bidg.model.CTravelExpensesConcepts;
 import mx.bidg.model.CVoucherTypes;
 import mx.bidg.model.RefundConcepts;
 import mx.bidg.model.Refunds;
@@ -59,20 +58,21 @@ public class RefundConceptsServiceImpl implements RefundConceptsService {
 
         Refunds refund = refundsService.findById(idRefund);
 
-        JsonNode jsonNode = mapper.readTree(data);
-        CTravelExpensesConcepts travelExpensesConcept = mapper.treeToValue(jsonNode.get("travelExpenseConcept"),CTravelExpensesConcepts.class);
-        CVoucherTypes voucherType = mapper.treeToValue(jsonNode.get("voucherType"),CVoucherTypes.class);
+//        JsonNode jsonNode = mapper.readTree(data);
+//        CTravelExpensesConcepts travelExpensesConcept = mapper.treeToValue(jsonNode.get("travelExpenseConcept"),CTravelExpensesConcepts.class);
+//        CVoucherTypes voucherType = mapper.treeToValue(jsonNode.get("voucherType"),CVoucherTypes.class);
+//
+//        RefundConcepts refundConcept = new RefundConcepts();
+//        refundConcept.setRefund(refund);
+//        refundConcept.setTravelExpenseConcept(travelExpensesConcept);
+//        refundConcept.setVoucherType(voucherType);
+//        refundConcept.setVoucherFolio(jsonNode.get("voucherFolio").asText());
+//        refundConcept.setVoucherTotal(jsonNode.get("voucherTotal").floatValue());
+//        refundConcept.setVoucherTaxTotal(jsonNode.get("voucherTaxTotal").floatValue());
 
-        RefundConcepts refundConcept = new RefundConcepts();
-        refundConcept.setRefund(refund);
-        refundConcept.setTravelExpenseConcept(travelExpensesConcept);
-        refundConcept.setVoucherType(voucherType);
-        refundConcept.setVoucherFolio(jsonNode.get("voucherFolio").asText());
-        refundConcept.setVoucherTotal(jsonNode.get("voucherTotal").floatValue());
-        refundConcept.setVoucherTaxTotal(jsonNode.get("voucherTaxTotal").floatValue());
+//        refundConceptsDao.save(refundConcept);
 
-        refundConceptsDao.save(refundConcept);
-
-        return refundConcept;
+//        return refundConcept;
+        return null;
     }
 }

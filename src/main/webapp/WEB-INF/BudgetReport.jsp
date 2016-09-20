@@ -128,6 +128,11 @@
         </script>
     </jsp:attribute>
 
+    <jsp:attribute name="styles">
+        <style>
+        </style>
+    </jsp:attribute>
+
     <jsp:body>
         <div id="content">
             <div class="container-fluid">
@@ -135,13 +140,13 @@
                 <br>
                 <div class="row">
                     <form v-on:submit.prevent="searchBudget">
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label>Centro de costos</label>
                             <select v-model="selected.costCenter" class="form-control" @change="onChangeCriteria" required>
                                 <option v-for="costCenter in costCenterList" :value="costCenter">{{costCenter.name}}</option>
                             </select>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label>Año</label>
                             <select v-model="selected.year" class="form-control" @change="onChangeCriteria" required>
                                 <option v-for="year in years" :value="year">
@@ -161,16 +166,16 @@
                     </form>
                 </div>
                 <br>
-                <div class="panel panel-default" v-if="budgets.length > 0">
+                <div class="panel panel-default" v-if="budgets.length > 0" style="width: 160%">
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="col-md-3 text-center">
+                                <div class="col-md-2 text-center">
                                     <b class="text-primary">{{selected.costCenter.name}}</b>
                                 </div>
-                                <div class="col-md-8 text-center">
+                                <div class="col-md-9 text-center">
                                     <div class="col-md-1" v-for="month in months">
-                                        <b>{{month.month | shortName}}</b>
+                                        <b>{{month.month}}</b>
                                     </div>
                                 </div>
                                 <div class="col-md-1">
@@ -179,13 +184,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12" style="background-color: #e5e5e5;max-height:68%;overflow:auto;">
+                    <div class="col-md-12" style="background-color: #e5e5e5;height:68%;overflow-y: auto">
                         <div class="row" v-for="(indexOfBudget, budget) in budgets" style="background-color: #e5e5e5">
                             <div class="col-md-12">
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <h5><b>{{budget.name}}</b></h5>
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-9 text-center">
                                     <div class="col-md-1">
                                         <b>{{budget.januaryCategoryAmount | currency}}</b>
                                     </div>
@@ -230,10 +235,10 @@
                             <div class="col-md-12">
                                 <div class="row" v-for="(indexOfBudgetSubcategory, budgetSubcategory) in budget.budgetSubcategories" style="background-color: #f5f5f5">
                                     <div class="col-md-12">
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <b class="text-muted">&nbsp;&nbsp;{{budgetSubcategory.name}}</b>
                                         </div>
-                                        <div class="col-md-8">
+                                        <div class="col-md-9 text-center">
                                             <div class="col-md-1">
                                                 <p class="text-muted">{{budgetSubcategory.januarySubcategoryAmount | currency}}</p>
                                             </div>
@@ -278,10 +283,10 @@
                                     <div class="col-md-12">
                                         <div class="row" v-for="(indexOfBudgetYearConcept, budgetYearConcept) in budgetSubcategory.budgetYearConceptList"  style="background-color: #ffffff">
                                             <div class="col-md-12">
-                                                <div class="col-md-3">
+                                                <div class="col-md-2">
                                                     <p>&nbsp;&nbsp;&nbsp;&nbsp;{{budgetYearConcept.budgetConcept.budgetConcept}}</p>
                                                 </div>
-                                                <div class="col-md-8">
+                                                <div class="col-md-9 text-center">
                                                     <div class="col-md-1">
                                                         <p>{{budgetYearConcept.januaryAmount | currency}}</p>
                                                     </div>
@@ -330,6 +335,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
         </div>
     </jsp:body>
 </t:template>
