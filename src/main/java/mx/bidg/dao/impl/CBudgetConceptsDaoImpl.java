@@ -83,4 +83,16 @@ public class CBudgetConceptsDaoImpl extends AbstractDao<Integer, CBudgetConcepts
         return (List<CBudgetConcepts>) criteria.list();
     }
 
+    @Override
+    public List<CBudgetConcepts> getConcepts(Integer idRequestCategory) {
+
+        Criteria criteria = createEntityCriteria();
+
+        if (idRequestCategory != null) {
+            criteria.add(Restrictions.eq("idRequestCategory", idRequestCategory));
+        }
+
+        return criteria.list();
+    }
+
 }

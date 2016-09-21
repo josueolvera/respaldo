@@ -47,9 +47,6 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
     BudgetHelper budgetHelper;
 
     @Autowired
-    RequestTypesProductDao requestTypesProductDao;
-
-    @Autowired
     AccountingAccountsDao accountingAccountsDao;
 
     @Autowired

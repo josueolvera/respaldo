@@ -26,7 +26,7 @@
                 ready: function () {
                     this.getUserInSession();
                     this.activateDateTimePickerStart();
-                    this.getAllConcepts();
+                    this.getConcepts();
                 },
                 data: {
                     errorData:{},
@@ -127,8 +127,8 @@
                     }
                 },
                 methods: {
-                    getAllConcepts : function () {
-                        this.$http.get(ROOT_URL + '/travel-expenses-concepts')
+                    getConcepts : function () {
+                        this.$http.get(ROOT_URL + '/budget-concepts?category=3')
                                 .success(function (data) {
                                     this.concepts = data;
                                 })
@@ -164,7 +164,7 @@
 
                                 });
                     },
-                    getConcepts : function () {
+                    getRoleConcepts : function () {
                         this.$http.get(ROOT_URL + "/role-concept/role/" + this.userIdRole + "/travel-type/" + this.selected.travelType.idTravelType)
                                 .success(function (data) {
                                     var self = this;
@@ -173,13 +173,13 @@
                                         this.roleConceptList = data;
                                         this.requestBody.currency = this.roleConceptList[0].currency;
                                         this.roleConceptList.forEach(function (roleConcept) {
-                                            if (roleConcept.idTravelExpenceConcept == 1) {
+                                            if (roleConcept.idBudgetConcept == 1) {
                                                 self.authorizedAmount.hospedaje = roleConcept.authorizedAmount;
                                             }
-                                            if (roleConcept.idTravelExpenceConcept == 2) {
+                                            if (roleConcept.idBudgetConcept == 2) {
                                                 self.authorizedAmount.alimentos = roleConcept.authorizedAmount;
                                             }
-                                            if (roleConcept.idTravelExpenceConcept == 3) {
+                                            if (roleConcept.idBudgetConcept == 3) {
                                                 self.authorizedAmount.transporte = roleConcept.authorizedAmount;
                                             }
                                         });
@@ -275,12 +275,12 @@
 
                         this.$http.post(ROOT_URL + '/travel-expenses',this.requestBody)
                                 .success(function (data) {
-                                    this.clearRequestValues()
+                                    this.clearRequestValues();
                                     showAlert("Se ha guardado la solicitud");
                                 })
                                 .error(function (data) {
                                     this.errorData = data;
-                                    this.clearRequestValues()
+                                    this.clearRequestValues();
                                     showAlert(this.errorData.error.message,{type:3});
                                 });
                     },
@@ -335,7 +335,7 @@
                                 amount:0
                             };
 
-                            switch (concept.conceptName) {
+                            switch (concept.budgetConcept) {
                                 case 'HOSPEDAJE':
                                         if (self.dateDifference > 1 || self.dateDifference === 0) {
                                             requestConcept.amount = self.hospedajeAmount;
@@ -421,7 +421,7 @@
                                     <label>Viaje</label>
                                     <br>
                                     <label class="radio-inline" v-for="roleTravelType in roleTravelTypeList">
-                                        <input v-model="selected.travelType" type="radio" @change="getConcepts"
+                                        <input v-model="selected.travelType" type="radio" @change="getRoleConcepts"
                                                :value="roleTravelType.travelType">{{roleTravelType.travelType.typeName}}
                                     </label>
                                 </div>
