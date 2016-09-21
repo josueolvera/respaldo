@@ -9,17 +9,14 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.time.LocalDateTime;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 
 /**
@@ -86,6 +83,36 @@ public class CommissionAmountGroup implements Serializable {
     @Column(name = "ID_DISTRIBUTOR")
     @JsonView(JsonViews.Root.class)
     private Integer idDistributor;
+
+    @Column(name = "INDEX_REPROCESSING")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal indexReprocessing;
+
+    @Column(name = "GOAL")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal goal;
+
+    @Column(name = "SCOPE")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal scope;
+
+    @Column(name = "PTTO_PROM_VTA")
+    @JsonView(JsonViews.Root.class)
+    private Integer pttoPromVta;
+
+    @Column(name = "PTTO_PROM_REAL")
+    @JsonView(JsonViews.Root.class)
+    private Integer pttoPromReal;
+
+    @Column(name = "FROM_DATE")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime fromDate;
+
+    @Column(name = "TO_DATE")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime toDate;
 
     public CommissionAmountGroup() {
     }
@@ -188,6 +215,76 @@ public class CommissionAmountGroup implements Serializable {
 
     public void setIdDistributor(Integer idDistributor) {
         this.idDistributor = idDistributor;
+    }
+
+    public BigDecimal getIndexReprocessing() {
+        return indexReprocessing;
+    }
+
+    public void setIndexReprocessing(BigDecimal indexReprocessing) {
+        this.indexReprocessing = indexReprocessing;
+    }
+
+    public Integer getPttoPromVta() {
+        return pttoPromVta;
+    }
+
+    public void setPttoPromVta(Integer pttoPromVta) {
+        this.pttoPromVta = pttoPromVta;
+    }
+
+    public Integer getPttoPromReal() {
+        return pttoPromReal;
+    }
+
+    public void setPttoPromReal(Integer pttoPromReal) {
+        this.pttoPromReal = pttoPromReal;
+    }
+
+    public LocalDateTime getFromDate() {
+        return fromDate;
+    }
+
+    public void setFromDate(LocalDateTime fromDate) {
+        this.fromDate = fromDate;
+    }
+
+    public LocalDateTime getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(LocalDateTime toDate) {
+        this.toDate = toDate;
+    }
+
+    public BigDecimal getGoal() {
+        return goal;
+    }
+
+    public void setGoal(BigDecimal goal) {
+        this.goal = goal;
+    }
+
+    public BigDecimal getScope() {
+        return scope;
+    }
+
+    public void setScope(BigDecimal scope) {
+        this.scope = scope;
+    }
+
+    public DateFormatsPojo getFromDateFormats() {
+        if (fromDate == null) {
+            return null;
+        }
+        return new DateFormatsPojo(fromDate);
+    }
+
+    public DateFormatsPojo getToDateFormats() {
+        if (toDate == null) {
+            return null;
+        }
+        return new DateFormatsPojo(toDate);
     }
 
     @Override

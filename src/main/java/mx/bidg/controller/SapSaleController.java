@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -48,6 +49,9 @@ public class SapSaleController {
 
     @Autowired
     private  RolesGroupAgreementsService rolesGroupAgreementsService;
+
+    @Autowired
+    private  DwBranchsService dwBranchsService;
 
     @Autowired
     private ObjectMapper mapper;
@@ -113,7 +117,7 @@ public class SapSaleController {
 
                     CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
 
-                    commissionAmountGroupService.obtainAmountsbyGroup(sapSales, agreementsGroups);
+                    commissionAmountGroupService.obtainAmountsbyGroup(sapSales, agreementsGroups, ofDate, untilDate);
 
                     List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg());
 
@@ -127,7 +131,7 @@ public class SapSaleController {
 
                     CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
 
-                    commissionAmountGroupService.obtainAmountsbyBranch(sapSales, agreementsGroups);
+                    commissionAmountGroupService.obtainAmountsbyBranch(sapSales, agreementsGroups , ofDate, untilDate);
 
                     List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg());
 
@@ -141,7 +145,21 @@ public class SapSaleController {
 
                     CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
 
-                    commissionAmountGroupService.obtainAmountsbyBranch(sapSales, agreementsGroups);
+                    commissionAmountGroupService.obtainAmountsbyBranch(sapSales, agreementsGroups, ofDate, untilDate);
+
+                    List<CommissionAmountGroup> commissionAmountGroupList = commissionAmountGroupService.obtainBranchManager();
+
+                    for(CommissionAmountGroup commissionAmountGroup : commissionAmountGroupList){
+                        DwBranchs dwBranchs = dwBranchsService.findById(commissionAmountGroup.getIdBranch());
+                        commissionAmountGroup.setGoal(dwBranchs.getBranchGoal());
+                        commissionAmountGroup.setIndexReprocessing(dwBranchs.getIndexReprocessing());
+                        commissionAmountGroup.setPttoPromReal(dwBranchs.getPttoPromReal());
+                        commissionAmountGroup.setPttoPromVta(dwBranchs.getPttoPromVta());
+                        BigDecimal scope = commissionAmountGroup.getAmount().divide(dwBranchs.getBranchGoal(), 2, BigDecimal.ROUND_HALF_UP);
+                        BigDecimal multipica = new BigDecimal(100);
+                        commissionAmountGroup.setScope(scope.multiply(multipica));
+                        commissionAmountGroupService.update(commissionAmountGroup);
+                    }
 
                     List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg());
 
@@ -155,7 +173,7 @@ public class SapSaleController {
 
                     CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
 
-                    commissionAmountGroupService.obtainAmountsbyZona(sapSales, agreementsGroups);
+                    commissionAmountGroupService.obtainAmountsbyZona(sapSales, agreementsGroups, ofDate, untilDate);
 
                     List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg());
 
@@ -169,7 +187,7 @@ public class SapSaleController {
 
                     CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
 
-                    commissionAmountGroupService.obtainAmountsbyRegion(sapSales, agreementsGroups);
+                    commissionAmountGroupService.obtainAmountsbyRegion(sapSales, agreementsGroups, ofDate, untilDate);
 
                     List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg());
 
@@ -183,7 +201,7 @@ public class SapSaleController {
 
                     CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
 
-                    commissionAmountGroupService.obtainAmountsbyDistributor(sapSales, agreementsGroups);
+                    commissionAmountGroupService.obtainAmountsbyDistributor(sapSales, agreementsGroups, ofDate, untilDate);
 
                     List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg());
 
