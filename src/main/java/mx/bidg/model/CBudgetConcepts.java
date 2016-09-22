@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -46,18 +47,13 @@ public class CBudgetConcepts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
 
-    @Column(name = "ID_REQUEST_CATEGORY", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idRequestCategory;
-
-    @JoinColumn(name = "ID_REQUEST_CATEGORY", referencedColumnName = "ID_REQUEST_CATEGORY")
-    @ManyToOne
-    @JsonView(JsonViews.EmbeddedRequestCategory.class)
-    private CRequestsCategories requestsCategory;
+    @ManyToMany(mappedBy = "budgetConceptList")
+    @JsonView(JsonViews.Embedded.class)
+    private Set<CRequestsCategories> requestsCategories;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "budgetConcept")
     @JsonView(JsonViews.Embedded.class)
-    private List<BudgetYearConcept> budgetMonthConceptsList;
+    private List<BudgetYearConcept> budgetYearConceptList;
 
     public CBudgetConcepts() {
     }
@@ -90,28 +86,20 @@ public class CBudgetConcepts implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public Integer getIdRequestCategory() {
-        return idRequestCategory;
+    public Set<CRequestsCategories> getRequestsCategories() {
+        return requestsCategories;
     }
 
-    public void setIdRequestCategory(Integer idRequestCategory) {
-        this.idRequestCategory = idRequestCategory;
+    public void setRequestsCategories(Set<CRequestsCategories> requestsCategories) {
+        this.requestsCategories = requestsCategories;
     }
 
-    public CRequestsCategories getRequestsCategory() {
-        return requestsCategory;
+    public List<BudgetYearConcept> getBudgetYearConceptList() {
+        return budgetYearConceptList;
     }
 
-    public void setRequestsCategory(CRequestsCategories requestsCategory) {
-        this.requestsCategory = requestsCategory;
-    }
-
-    public List<BudgetYearConcept> getBudgetMonthConceptsList() {
-        return budgetMonthConceptsList;
-    }
-
-    public void setBudgetMonthConceptsList(List<BudgetYearConcept> budgetMonthConceptsList) {
-        this.budgetMonthConceptsList = budgetMonthConceptsList;
+    public void setBudgetYearConceptList(List<BudgetYearConcept> budgetYearConceptList) {
+        this.budgetYearConceptList = budgetYearConceptList;
     }
 
     //No cambiar este metodo

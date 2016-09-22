@@ -36,9 +36,9 @@ public class TravelExpenses implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID_TRAVEL_EXPENCE")
+    @Column(name = "ID_TRAVEL_EXPENSE")
     @JsonView(JsonViews.Root.class)
-    private Integer idTravelExpence;
+    private Integer idTravelExpense;
 
     @Basic(optional = false)
     @NotNull
@@ -107,12 +107,12 @@ public class TravelExpenses implements Serializable {
     public TravelExpenses() {
     }
 
-    public TravelExpenses(Integer idTravelExpence) {
-        this.idTravelExpence = idTravelExpence;
+    public TravelExpenses(Integer idTravelExpense) {
+        this.idTravelExpense = idTravelExpense;
     }
 
-    public TravelExpenses(Integer idTravelExpence, String destination, LocalDateTime endDate, int estimatedKm, LocalDateTime startDate, LocalDateTime creationDate) {
-        this.idTravelExpence = idTravelExpence;
+    public TravelExpenses(Integer idTravelExpense, String destination, LocalDateTime endDate, int estimatedKm, LocalDateTime startDate, LocalDateTime creationDate) {
+        this.idTravelExpense = idTravelExpense;
         this.destination = destination;
         this.endDate = endDate;
         this.estimatedKm = estimatedKm;
@@ -120,12 +120,12 @@ public class TravelExpenses implements Serializable {
         this.creationDate = creationDate;
     }
 
-    public Integer getIdTravelExpence() {
-        return idTravelExpence;
+    public Integer getIdTravelExpense() {
+        return idTravelExpense;
     }
 
-    public void setIdTravelExpence(Integer idTravelExpence) {
-        this.idTravelExpence = idTravelExpence;
+    public void setIdTravelExpense(Integer idTravelExpense) {
+        this.idTravelExpense = idTravelExpense;
     }
 
     public String getDestination() {
@@ -229,7 +229,7 @@ public class TravelExpenses implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (idTravelExpence != null ? idTravelExpence.hashCode() : 0);
+        hash += (idTravelExpense != null ? idTravelExpense.hashCode() : 0);
         return hash;
     }
 
@@ -240,7 +240,7 @@ public class TravelExpenses implements Serializable {
             return false;
         }
         TravelExpenses other = (TravelExpenses) object;
-        if ((this.idTravelExpence == null && other.idTravelExpence != null) || (this.idTravelExpence != null && !this.idTravelExpence.equals(other.idTravelExpence))) {
+        if ((this.idTravelExpense == null && other.idTravelExpense != null) || (this.idTravelExpense != null && !this.idTravelExpense.equals(other.idTravelExpense))) {
             return false;
         }
         return true;
@@ -248,7 +248,7 @@ public class TravelExpenses implements Serializable {
 
     @Override
     public String toString() {
-        return "mx.bidg.model.TravelExpenses[ idTravelExpence=" + idTravelExpence + " ]";
+        return "mx.bidg.model.TravelExpenses[ idTravelExpense=" + idTravelExpense + " ]";
     }
     
 }

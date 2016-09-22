@@ -9,15 +9,8 @@ import com.fasterxml.jackson.annotation.JsonView;
 import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import java.util.Set;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -32,18 +25,17 @@ public class CRequestsCategories implements Serializable {
     
     private static final long serialVersionUID = 1L;
     
-    public static final int COTIZABLE = 1;
-    public static final int DIRECTA = 2;
-    public static final int PERIODICA = 3;
-    public static final int VIATICOS = 4;
-    public static final int BOLETOS_DE_AVION = 5;
-    public static final int REEMBOLSOS = 6;
+    public static final CRequestsCategories SOLICITUD = new CRequestsCategories(1);
+    public static final CRequestsCategories PAGO_PROVEEDORES = new CRequestsCategories(2);
+    public static final CRequestsCategories VIATICOS = new CRequestsCategories(4);
+    public static final CRequestsCategories BOLETOS_DE_AVION = new CRequestsCategories(5);
+    public static final CRequestsCategories REEMBOLSOS = new CRequestsCategories(6);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_REQUEST_CATEGORY")
     @JsonView(JsonViews.Root.class)
-    private Integer idRequestCategorie;
+    private Integer idRequestCategory;
 
     @Size(max = 100)
     @Column(name = "CATEGORY")
@@ -81,19 +73,28 @@ public class CRequestsCategories implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private ResourcesTasks resourcesTasks;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "BUDGET_CONCEPT_REQUEST_CATEGORY",
+            joinColumns = @JoinColumn(name = "ID_REQUEST_CATEGORY"),
+            inverseJoinColumns = @JoinColumn(name = "ID_BUDGET_CONCEPT")
+    )
+    @JsonView(JsonViews.Embedded.class)
+    private Set<CBudgetConcepts> budgetConceptList;
+
     public CRequestsCategories() {
     }
 
-    public CRequestsCategories(Integer idRequestCategorie) {
-        this.idRequestCategorie = idRequestCategorie;
+    public CRequestsCategories(Integer idRequestCategory) {
+        this.idRequestCategory = idRequestCategory;
     }
 
-    public Integer getIdRequestCategorie() {
-        return idRequestCategorie;
+    public Integer getIdRequestCategory() {
+        return idRequestCategory;
     }
 
-    public void setIdRequestCategorie(Integer idRequestCategorie) {
-        this.idRequestCategorie = idRequestCategorie;
+    public void setIdRequestCategory(Integer idRequestCategory) {
+        this.idRequestCategory = idRequestCategory;
     }
 
     public String getCategory() {
@@ -152,31 +153,6 @@ public class CRequestsCategories implements Serializable {
         this.resourcesTasks = resourcesTasks;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idRequestCategorie != null ? idRequestCategorie.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CRequestsCategories)) {
-            return false;
-        }
-        CRequestsCategories other = (CRequestsCategories) object;
-        if ((this.idRequestCategorie == null && other.idRequestCategorie != null) || (this.idRequestCategorie != null && !this.idRequestCategorie.equals(other.idRequestCategorie))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "mx.bidg.model.CRequestsCategories[ idRequestCategorie=" + idRequestCategorie + " ]";
-    }
-
     public String getInformation() {
         return information;
     }
@@ -184,5 +160,43 @@ public class CRequestsCategories implements Serializable {
     public void setInformation(String information) {
         this.information = information;
     }
-    
+
+    public Set<CBudgetConcepts> getBudgetConceptList() {
+        return budgetConceptList;
+    }
+
+    public void setBudgetConceptList(Set<CBudgetConcepts> budgetConceptList) {
+        this.budgetConceptList = budgetConceptList;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CRequestsCategories that = (CRequestsCategories) o;
+
+        return idRequestCategory != null ? idRequestCategory.equals(that.idRequestCategory) : that.idRequestCategory == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return idRequestCategory != null ? idRequestCategory.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "CRequestsCategories{" +
+                "idRequestCategory=" + idRequestCategory +
+                ", category='" + category + '\'' +
+                ", periodic=" + periodic +
+                ", information='" + information + '\'' +
+                ", idView=" + idView +
+                ", idResourceTask=" + idResourceTask +
+                ", idAccessLevel=" + idAccessLevel +
+                ", view=" + view +
+                ", resourcesTasks=" + resourcesTasks +
+                '}';
+    }
 }
