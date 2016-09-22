@@ -148,7 +148,6 @@
                     education: [],
                     statusMarital: [],
                     newEmployeeDocuments: [],
-                    estadosMunicipios: {},
                     asentamiento: [],
                     cuenta: {
                         accountNumber: '',
@@ -232,6 +231,7 @@
                     zonas: [],
                     branchch: [],
                     selectedArea: {},
+                    isSaving: false,
                     haveImss: false
                 },
                 methods: {
@@ -318,6 +318,7 @@
                     },
                     saveEmployee: function () {
                         var self = this;
+                        this.isSaving = true;
                         this.employee.employeeAccountList.push(this.cuenta);
                         this.employee.city = this.estadosMunicipios.nombreMunicipios;
                         this.employee.state = this.estadosMunicipios.estado.nombreEstado;
@@ -334,11 +335,13 @@
                         }
                         this.$http.post(ROOT_URL + "/employees/save", JSON.stringify(this.employee)).success(function (data) {
                             this.working = data;
+                            this.isSaving = false;
                             showAlert("Registro de empleado exitoso");
                             this.newEmployeeDocuments.forEach(function (document) {
                                 self.uploadFilesEmployee(document, data.idEmployee)
                             });
                         }).error(function () {
+                            this.isSaving = false;
                             this.employee.employeeAccountList = [];
                             showAlert("Ha habido un error con la solicitud, intente nuevamente", {type: 3});
                         });
