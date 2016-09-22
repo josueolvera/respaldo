@@ -189,7 +189,7 @@
                                 <h5><b>Acumulado {{selected.year}}</b></h5>
                             </div>
                         </div>
-                        <div class="col-md-12" style="height:80%;overflow-y: auto;">
+                        <div class="col-md-12" style="height:70%;overflow-y: auto;">
                             <div class="row" v-for="(indexOfBudget, budget) in budgets" style="background-color: #dfdfdf">
                                 <div class="col-md-12">
                                     <div class="col-md-2">
@@ -341,6 +341,8 @@
                         </div>
                     </div>
                 </div>
+                <br>
+                <br>
             </div>
         </div>
     </jsp:body>
