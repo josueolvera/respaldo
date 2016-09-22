@@ -135,7 +135,7 @@
                     overflow-x: auto;
                 }
                 .container-scroll > .row {
-                    width: 170%; /* = 100% * 4/3 */
+                    width: 170%;
                 }
             }
         </style>
@@ -175,7 +175,7 @@
                 </div>
                 <br>
                 <div class="container-fluid container-scroll" v-if="budgets.length > 0">
-                    <div class="row" style="background-color: #f5f5f5">
+                    <div class="row" style="background-color: #cfcfcf">
                         <div class="col-md-12">
                             <div class="col-md-2 text-center">
                                 <h5><b class="text-primary">{{selected.costCenter.name}}</b></h5>
@@ -189,8 +189,8 @@
                                 <h5><b>Acumulado {{selected.year}}</b></h5>
                             </div>
                         </div>
-                        <div class="col-md-12" style="background-color: #e5e5e5;height:80%;overflow-y: auto;">
-                            <div class="row" v-for="(indexOfBudget, budget) in budgets" style="background-color: #e5e5e5">
+                        <div class="col-md-12" style="height:80%;overflow-y: auto;">
+                            <div class="row" v-for="(indexOfBudget, budget) in budgets" style="background-color: #dfdfdf">
                                 <div class="col-md-12">
                                     <div class="col-md-2">
                                         <h5><b>{{budget.name}}</b></h5>
@@ -238,7 +238,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12">
-                                    <div class="row" v-for="(indexOfBudgetSubcategory, budgetSubcategory) in budget.budgetSubcategories" style="background-color: #f5f5f5">
+                                    <div class="row" v-for="(indexOfBudgetSubcategory, budgetSubcategory) in budget.budgetSubcategories" style="background-color: #efefef">
                                         <div class="col-md-12">
                                             <div class="col-md-2">
                                                 <b class="text-muted">&nbsp;&nbsp;{{budgetSubcategory.name}}</b>
