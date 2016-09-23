@@ -124,9 +124,11 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
             Integer idZonas = (Integer) projection[0];
             BigDecimal amount = (BigDecimal) projection[1];
             BigDecimal numRequest = new BigDecimal(projection[2].toString());
+            Integer idDistributor = (Integer) projection[3];
 
             commissionAmountGroup.setAmount(amount);
             commissionAmountGroup.setIdZona(idZonas);
+            commissionAmountGroup.setIdDistributor(idDistributor);
             commissionAmountGroup.setIdAg(agreementsGroups.getIdAg());
             commissionAmountGroup.setGroupName(agreementsGroups.getAgreementGroupName());
             commissionAmountGroup.setCommission(BigDecimal.valueOf(0));
@@ -148,9 +150,11 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
             Integer idRegion = (Integer) projection[0];
             BigDecimal amount = (BigDecimal) projection[1];
             BigDecimal numRequest = new BigDecimal(projection[2].toString());
+            Integer idDistributor = (Integer) projection[3];
 
             commissionAmountGroup.setAmount(amount);
             commissionAmountGroup.setIdRegion(idRegion);
+            commissionAmountGroup.setIdDistributor(idDistributor);
             commissionAmountGroup.setIdAg(agreementsGroups.getIdAg());
             commissionAmountGroup.setGroupName(agreementsGroups.getAgreementGroupName());
             commissionAmountGroup.setCommission(BigDecimal.valueOf(0));
@@ -258,10 +262,13 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
         row.createCell(13).setCellValue("No. SOL. SALUD-CI");
         row.createCell(14).setCellValue("MONTO SALUD-CI");
         row.createCell(15).setCellValue("COMISION SALUD-CI");
-        row.createCell(16).setCellValue("No. SOL. TOTAL");
-        row.createCell(17).setCellValue("MONTO TOTAL");
-        row.createCell(18).setCellValue("BONO CUMPLIMIENTO");
-        row.createCell(19).setCellValue("COMISION TOTAL");
+        row.createCell(16).setCellValue("No. SOL. IEEPO");
+        row.createCell(17).setCellValue("MONTO IEEPO");
+        row.createCell(18).setCellValue("COMISION IEEPO");
+        row.createCell(19).setCellValue("No. SOL. TOTAL");
+        row.createCell(20).setCellValue("MONTO TOTAL");
+        row.createCell(21).setCellValue("BONO CUMPLIMIENTO");
+        row.createCell(22).setCellValue("COMISION TOTAL");
 
         //Implementacion del estilo
         for (Cell celda : row) {
@@ -314,14 +321,21 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                     totalComission = totalComission.add(commissionAmountGroup.getCommission());
                 }
 
-                if(commissionAmountGroup.getIdAg() == 19){
+                if(commissionAmountGroup.getIdAg() == 29){
                     row.createCell(16).setCellValue(commissionAmountGroup.getApplicationsNumber().doubleValue());
                     row.createCell(17).setCellValue(commissionAmountGroup.getAmount().doubleValue());
                     row.createCell(18).setCellValue(commissionAmountGroup.getCommission().doubleValue());
                     totalComission = totalComission.add(commissionAmountGroup.getCommission());
                 }
 
-                row.createCell(19).setCellValue(totalComission.doubleValue());
+                if(commissionAmountGroup.getIdAg() == 19){
+                    row.createCell(19).setCellValue(commissionAmountGroup.getApplicationsNumber().doubleValue());
+                    row.createCell(20).setCellValue(commissionAmountGroup.getAmount().doubleValue());
+                    row.createCell(21).setCellValue(commissionAmountGroup.getCommission().doubleValue());
+                    totalComission = totalComission.add(commissionAmountGroup.getCommission());
+                }
+
+                row.createCell(22).setCellValue(totalComission.doubleValue());
             }
             aux++;
         }
@@ -418,7 +432,9 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                 if(commissionAmountGroup.getIdAg() == 20){
                     row6.createCell(2).setCellValue(commissionAmountGroup.getGoal().doubleValue());
                     row6.createCell(3).setCellValue(commissionAmountGroup.getAmount().doubleValue());
-                    row6.createCell(4).setCellValue(commissionAmountGroup.getScope().doubleValue());
+                    BigDecimal divisor = new BigDecimal(100);
+                    BigDecimal scope = commissionAmountGroup.getScope().divide(divisor);
+                    row6.createCell(4).setCellValue(scope.doubleValue());
                     row6.createCell(5).setCellValue(commissionAmountGroup.getTabulator().doubleValue());
                     row6.createCell(6).setCellValue(commissionAmountGroup.getCommission().doubleValue());
                 }
@@ -452,9 +468,11 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
         //Se crea la fila que contiene la cabecera
         Row row3 = hoja3.createRow(0);
 
-        row3.createCell(0).setCellValue("ZONA");
-        row3.createCell(1).setCellValue("MONTO");
-        row3.createCell(2).setCellValue("COMISION");
+        row3.createCell(0).setCellValue("DISTRIBUIDOR");
+        row3.createCell(1).setCellValue("ZONA");
+        row3.createCell(2).setCellValue("MONTO");
+        row3.createCell(3).setCellValue("TABULADOR");
+        row3.createCell(4).setCellValue("COMISION");
 
         //Implementacion del estilo
         for (Cell celda : row3) {
@@ -468,14 +486,21 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
         for (CommissionAmountGroup zonal: zonalList){
             row3 = hoja3.createRow(aux2);
 
+            CDistributors distributors = cDistributorsDao.findById(zonal.getIdDistributor());
+
+            if (distributors != null){
+                row3.createCell(0).setCellValue(distributors.getDistributorName());
+            }
+
             CZonas zonas = cZonaDao.findById(zonal.getIdZona());
 
             if (zonas != null){
-                row3.createCell(0).setCellValue(zonas.getName());
+                row3.createCell(1).setCellValue(zonas.getName());
             }
 
-            row3.createCell(1).setCellValue(zonal.getAmount().doubleValue());
-            row3.createCell(2).setCellValue(zonal.getCommission().doubleValue());
+            row3.createCell(2).setCellValue(zonal.getAmount().doubleValue());
+            row3.createCell(3).setCellValue(zonal.getTabulator().doubleValue());
+            row3.createCell(4).setCellValue(zonal.getCommission().doubleValue());
 
             aux2++;
         }
@@ -485,9 +510,11 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
         //Se crea la fila que contiene la cabecera
         Row row4 = hoja4.createRow(0);
 
-        row4.createCell(0).setCellValue("REGION");
-        row4.createCell(1).setCellValue("MONTO");
-        row4.createCell(2).setCellValue("COMISION");
+        row4.createCell(0).setCellValue("DISTRIBUCION");
+        row4.createCell(1).setCellValue("REGION");
+        row4.createCell(2).setCellValue("MONTO");
+        row4.createCell(3).setCellValue("TABULADOR");
+        row4.createCell(4).setCellValue("COMISION");
 
         //Implementacion del estilo
         for (Cell celda : row4) {
@@ -501,14 +528,21 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
         for (CommissionAmountGroup region : regionList){
             row4 = hoja4.createRow(aux3);
 
+            CDistributors distributor = cDistributorsDao.findById(region.getIdDistributor());
+
+            if (distributor != null){
+                row4.createCell(0).setCellValue(distributor.getDistributorName());
+            }
+
             CRegions regions = cRegionsDao.findById(region.getIdRegion());
 
             if (regions != null){
-                row4.createCell(0).setCellValue(regions.getRegionName());
+                row4.createCell(1).setCellValue(regions.getRegionName());
             }
 
-            row4.createCell(1).setCellValue(region.getAmount().doubleValue());
-            row4.createCell(2).setCellValue(region.getCommission().doubleValue());
+            row4.createCell(2).setCellValue(region.getAmount().doubleValue());
+            row4.createCell(3).setCellValue(region.getTabulator().doubleValue());
+            row4.createCell(4).setCellValue(region.getCommission().doubleValue());
 
             aux3++;
         }
