@@ -1445,7 +1445,7 @@
                             </div>
                             <br>
                             <div class="row"
-                                 v-if="selectedOptions.role.idRole == 80 || selectedOptions.role.idRole == 81 || selectedOptions.role.idRole == 64">
+                                 v-if="selectedOptions.role.idRole == 80 || selectedOptions.role.idRole == 81 || selectedOptions.role.idRole == 64 || selectedOptions.role.idRole == 82">
                                 <div class="col-xs-4">
                                     <label>Región</label>
                                     <select v-model="selectedOptions.region" class="form-control"
