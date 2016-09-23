@@ -10,6 +10,7 @@ import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.GroupsAgreementsDao;
 import mx.bidg.model.CAgreements;
+import mx.bidg.model.CAgreementsGroups;
 import mx.bidg.model.GroupsAgreements;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Disjunction;
@@ -49,9 +50,10 @@ public class GroupsAgreementsDaoImpl extends AbstractDao<Integer, GroupsAgreemen
     }
 
     @Override
-    public List<GroupsAgreements> findGroupsAgreementsActives(List<CAgreements> agreementsList) {
+    public List<GroupsAgreements> findGroupsAgreementsActives(List<CAgreementsGroups> groupsList, List<CAgreements> agreementsList) {
         Criteria criteria = createEntityCriteria();
         Disjunction disjunctionAgreements = Restrictions.disjunction();
+        Disjunction disjunctionGroups = Restrictions.disjunction();
 
         if (!agreementsList.isEmpty()){
             for (CAgreements agreement : agreementsList){
@@ -60,7 +62,14 @@ public class GroupsAgreementsDaoImpl extends AbstractDao<Integer, GroupsAgreemen
             criteria.add(disjunctionAgreements);
         }
 
-        return (List<GroupsAgreements>) criteria.list();
+        if (!groupsList.isEmpty()){
+            for (CAgreementsGroups group : groupsList){
+                disjunctionGroups.add(Restrictions.eq("idAg", group.getIdAg()));
+            }
+            criteria.add(disjunctionGroups);
+        }
+
+        return (List<GroupsAgreements>) criteria.add(Restrictions.eq("hasAgreement",true)).list();
     }
 
     @Override
