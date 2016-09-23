@@ -1,9 +1,12 @@
 package mx.bidg.service.impl;
 
+import mx.bidg.dao.CBranchsDao;
 import mx.bidg.dao.DwBranchsDao;
 import mx.bidg.exceptions.ValidationException;
+import mx.bidg.model.CBranchs;
 import mx.bidg.model.DwBranchs;
 import mx.bidg.service.DwBranchsService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,9 @@ public class DwBranchsServiceImpl implements DwBranchsService {
 
     @Autowired
     private DwBranchsDao dwBranchsDao;
+
+    @Autowired
+    private CBranchsDao branchsDao;
 
     @Override
     public List<DwBranchs> findAll() {
@@ -57,15 +63,23 @@ public class DwBranchsServiceImpl implements DwBranchsService {
 
         for (int i=1;i<=sheet.getLastRowNum();i++) {
             Row currentRow = sheet.getRow(i);
-            Cell idBranch = currentRow.getCell(0);
+            Cell branchName = currentRow.getCell(0);
             Cell indexReprocessing = currentRow.getCell(1);
             Cell productivity = currentRow.getCell(2);
             Cell pttoPromVta = currentRow.getCell(3);
             Cell pttoPromReal = currentRow.getCell(4);
             Cell goalBranch = currentRow.getCell(5);
 
-            if (idBranch != null) {
-                DwBranchs dwBranchs = dwBranchsDao.findById((int) idBranch.getNumericCellValue());
+            if (branchName != null) {
+                    String clearBranchName = StringUtils.stripAccents(branchName.getStringCellValue());
+                    String branchNameClean= clearBranchName.replaceAll("\\W", "").toUpperCase();
+                    CBranchs branchs = branchsDao.findByName(branchNameClean);
+
+                DwBranchs dwBranchs = null;
+
+                if(branchs != null){
+                    dwBranchs = dwBranchsDao.findById(branchs.getIdBranch());
+                }
 
                 if (dwBranchs != null) {
 
@@ -85,7 +99,7 @@ public class DwBranchsServiceImpl implements DwBranchsService {
                     }
                     if (goalBranch != null) {
                         BigDecimal goal = new BigDecimal(goalBranch.getNumericCellValue());
-                        dwBranchs.setProductivity(goal);
+                        dwBranchs.setBranchGoal(goal);
                     }
 
                     dwBranchs.setUploadedDate(LocalDateTime.now());
@@ -94,6 +108,16 @@ public class DwBranchsServiceImpl implements DwBranchsService {
                 } else {
                     
                     DwBranchs newDwBranchs = new DwBranchs();
+
+                    if (branchName != null) {
+                        clearBranchName = StringUtils.stripAccents(branchName.getStringCellValue());
+                        branchNameClean = clearBranchName.replaceAll("\\W", "").toUpperCase();
+                        CBranchs branch = branchsDao.findByName(branchNameClean);
+
+                        if (branch != null) {
+                            newDwBranchs.setIdBranch(branch.getIdBranch());
+                        }
+                    }
 
                     if (indexReprocessing != null) {
                         BigDecimal bdIndexReprocessing = new BigDecimal(indexReprocessing.getNumericCellValue());
@@ -112,7 +136,7 @@ public class DwBranchsServiceImpl implements DwBranchsService {
 
                     if (goalBranch != null) {
                         BigDecimal goal = new BigDecimal(goalBranch.getNumericCellValue());
-                        newDwBranchs.setProductivity(goal);
+                        newDwBranchs.setBranchGoal(goal);
                     }
 
                     newDwBranchs.setUploadedDate(LocalDateTime.now());
