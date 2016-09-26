@@ -727,7 +727,14 @@ public class EmployeesHistory implements Serializable {
             return null;
         }
         return new DateFormatsPojo(joinDate);
-    }   
+    }
+
+    public DateFormatsPojo getCrationDateDateFormats() {
+        if (creationDate == null) {
+            return null;
+        }
+        return new DateFormatsPojo(creationDate);
+    }
 
     public void setFullName(String fullName) {
         this.fullName = fullName;

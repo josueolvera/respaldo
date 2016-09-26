@@ -22,7 +22,9 @@
                     dateTimePickerStartDate : null,
                     dateTimePickerEndDate : null,
                     fromDate: '',
-                    ofDate: ''
+                    ofDate: '',
+                    commission: [],
+                    btn : false
                 },
                 methods: {
                     activateDateTimePickerStartDate: function () {
@@ -48,13 +50,21 @@
                             minDate: fecha
                         }).data();
                     },
-                    searchCalculation : function () {
-
+                    saveCalculation : function () {
+                        this.$http.get(ROOT_URL + "/backup-commission/save").success(function (data) {
+                            this.commission = data;
+                            showAlert("Calculo guardado con exito");
+                            this.btn = true;
+                        }).error(function () {
+                            showAlert("Error al generar la solicitud", {type:3});
+                            this.btn = false;
+                        });
                     },
                     generateCalculation : function () {
                         this.fromDate = this.dateTimePickerStartDate.DateTimePicker.date().toISOString().slice(0, -1);
                         this.ofDate = this.dateTimePickerEndDate.DateTimePicker.date().toISOString().slice(0, -1);
                         window.location = ROOT_URL + "/sap-sale/prueba?fromDate="+this.fromDate+"&toDate="+this.ofDate;
+                        this.btn = true;
 //                        showAlert('No es posible generar debido a que no existen empleados asignados', {type:2});
                     }
                 }
@@ -91,15 +101,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-1" v-if="false">
-                            <button type="submit" class="btn btn-info form-control" style="margin-top: 27px">
-                                Buscar
-                            </button>
-                        </div>
                         <div class="col-md-2">
                             <button type="button" class="btn btn-success form-control"
                                     @click="generateCalculation" style="margin-top: 27px">
                                 Generar cálculo
+                            </button>
+                        </div>
+                        <div class="col-md-2" v-if="btn">
+                            <button type="button" @click="saveCalculation" class="btn btn-info form-control" style="margin-top: 27px">
+                                Guardar calculo
                             </button>
                         </div>
                     </form>

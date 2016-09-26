@@ -129,6 +129,9 @@ public class CommissionAmountGroupDaoImpl extends AbstractDao<Integer, Commissio
 
     @Override
     public List<CommissionAmountGroup> findByGroupComercialAndDistributor() {
-        return createEntityCriteria().add(Restrictions.isNotNull("idDistributor")).list();
+        return createEntityCriteria().add(Restrictions.isNotNull("idDistributor"))
+                .add(Restrictions.isNull("idZona"))
+                .add(Restrictions.isNull("idRegion"))
+                .list();
     }
 }

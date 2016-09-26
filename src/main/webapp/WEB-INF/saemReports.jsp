@@ -1155,7 +1155,8 @@
                             <div class="col-md-2"><b>Sucursal</b></div>
                             <div class="col-md-1"><b>Puesto</b></div>
                             <div class="col-md-1"><b>Fecha de ingreso</b></div>
-                            <div class="col-md-2"><b>Estatus del Empleado</b></div>
+                            <div class="col-md-1"><b>Fecha de ultima modificaciòn</b></div>
+                            <div class="col-md-1"><b>Estatus del empleado</b></div>
                         </div>
                         <br>
                         <div class="table-body flex-row flex-content">
@@ -1168,7 +1169,10 @@
                                 <div class="col-md-1">
                                     <center>{{dwEmployee.joinDateFormats.simpleDate}}</center>
                                 </div>
-                                <div class="col-md-2"><center>{{dwEmployee.actionTypesR.actionType}}</center></div>
+                                <div class="col-md-1">
+                                    <center>{{dwEmployee.crationDateDateFormats.simpleDate}}</center>
+                                </div>
+                                <div class="col-md-1"><center>{{dwEmployee.actionTypesR.actionType}}</center></div>
                             </div>
                         </div>
                     </div>
