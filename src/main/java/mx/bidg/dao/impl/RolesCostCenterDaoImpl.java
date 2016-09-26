@@ -3,6 +3,7 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.RolesCostCenterDao;
 import mx.bidg.model.RolesCostCenter;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -47,7 +48,8 @@ public class RolesCostCenterDaoImpl extends AbstractDao<Integer, RolesCostCenter
     public List<RolesCostCenter> findByRole(Integer idRole) {
         return createEntityCriteria()
                 .add(Restrictions.eq("idRole", idRole))
-                .add(Restrictions.eq("isBudget", true))
+                .createCriteria("costCenter")
+                .addOrder( Order.asc("name"))
                 .list();
     }
 }
