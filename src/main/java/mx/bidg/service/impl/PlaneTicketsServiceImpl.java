@@ -7,11 +7,13 @@ import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
 import mx.bidg.service.FoliosService;
 import mx.bidg.service.PlaneTicketsService;
+import mx.bidg.utils.BudgetHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -39,7 +41,10 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
     BudgetYearConceptDao budgetYearConceptDao;
 
     @Autowired
-    RequestTypesProductDao requestTypesProductDao;
+    RolesCostCenterDao rolesCostCenterDao;
+
+    @Autowired
+    BudgetHelper budgetHelper;
 
     @Autowired
     AccountingAccountsDao accountingAccountsDao;
@@ -72,60 +77,47 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
         String startDate = node.get("startDate").asText();
 
         AccountingAccounts accountingAccount = accountingAccountsDao.findByCategoryAndSubcategory(CBudgetCategories.GASTOS_DE_VIAJE.getIdBudgetCategory(), CBudgetSubcategories.NACIONALES.getIdBudgetSubcategory());
+        List<RolesCostCenter> rolesCostCenterList = rolesCostCenterDao.findByRole(user.getDwEmployee().getIdRole());
+        Budgets budget = budgetsDao.findByAccountingAccountAndCostCenter(accountingAccount.getIdAccountingAccount(), rolesCostCenterList.get(0).getCostCenter().getIdCostCenter());
 
-        DwEnterprises dwEnterprise = user.getDwEmployee().getDwEnterprise();
+        if (budget != null) {
 
-//        Budgets budget = budgetsDao.findByCombination(
-//                dwEnterprise.getDistributor(),
-//                dwEnterprise.getArea(),
-//                CBudgetCategories.GASTOS_DE_VIAJE,
-//                CBudgetSubcategories.NACIONALES
-//        );
-//
-//        CProductTypes productType = CProductTypes.NACIONALES;
-//
-//        if (budget != null) {
-//            BudgetMonth budgetMonthBranch = budgetYearConceptDao.findByCombination(budget,cMonth,dwEnterprise,year);
-//
-//            if (budgetMonthBranch != null) {
-//
-//                CRequestsCategories requestsCategory = new CRequestsCategories(CRequestsCategories.BOLETOS_DE_AVION);
-//                RequestTypesProduct requestTypesProduct =
-//                        requestTypesProductDao.findByCombination(
-//                                requestsCategory,
-//                                CRequestTypes.GASTOS_DE_VIAJE,
-//                                productType
-//                        );
-//
-//                Requests request = new Requests();
-//                request.setFolio(foliosService.createNew(new CTables(51)));
-//                request.setRequestTypeProduct(requestTypesProduct);
-//                request.setUserRequest(user);
-//                request.setCreationDate(now);
-//                request.setRequestStatus(CRequestStatus.PENDIENTE);
-//                request.setBudgetYearConcept(budgetMonthBranch);
-//                request.setIdAccessLevel(1);
-//
-//                request = requestsDao.save(request);
-//
-//                PlaneTickets planeTicket = new PlaneTickets();
-//
-//                planeTicket.setPlaneTicketType(planeTicketType);
-//                planeTicket.setCreationDate(now);
-//                planeTicket.setRequest(request);
-//                planeTicket.setStartDate(LocalDateTime.parse(startDate + " 00:00",formatter));
-//                planeTicket = planeTicketsDao.save(planeTicket);
-//
-//                return planeTicket;
-//
-//            } else {
-//                throw new ValidationException("Sin presupuesto","No tiene presupuesto asignado para este tipo de solicitud");
-//            }
-//        } else {
-//            throw new ValidationException("Sin presupuesto","No tiene presupuesto asignado para este tipo de solicitud");
-//        }
-        PlaneTickets planeTickets = null;
-        return planeTickets;
+            List<BudgetYearConcept> budgetYearConceptList = budgetYearConceptDao.findByBudgetAndYear(budget.getIdBudget(), year);
+
+            if (!budgetYearConceptList.isEmpty()) {
+
+                if (budgetHelper.checkWhetherIsOutOfBudget(budgetYearConceptList, month, 0D)) {
+
+                    Requests request = new Requests();
+                    request.setFolio(foliosService.createNew(new CTables(51)));
+                    request.setUserRequest(user);
+                    request.setCreationDate(now);
+                    request.setRequestStatus(CRequestStatus.PENDIENTE);
+                    request.setBudgetYearConcept(budgetYearConceptList.get(0));
+                    request.setIdAccessLevel(1);
+
+                    request = requestsDao.save(request);
+
+                    PlaneTickets planeTicket = new PlaneTickets();
+
+                    planeTicket.setPlaneTicketType(planeTicketType);
+                    planeTicket.setCreationDate(now);
+                    planeTicket.setRequest(request);
+                    planeTicket.setStartDate(LocalDateTime.parse(startDate + " 00:00",formatter));
+                    planeTicket = planeTicketsDao.save(planeTicket);
+
+                    return planeTicket;
+
+                } else {
+                    throw new ValidationException("Sin presupuesto","No tiene presupuesto asignado para este tipo de solicitud");
+                }
+
+            } else {
+                throw new ValidationException("Sin presupuesto","No tiene presupuesto asignado para este tipo de solicitud");
+            }
+        } else {
+            throw new ValidationException("Sin presupuesto","No tiene presupuesto asignado para este tipo de solicitud");
+        }
     }
 
     @Override

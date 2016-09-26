@@ -79,7 +79,9 @@
                     group: {
                         agreementGroupName: ''
                     },
-                    allCheck: false
+                    allCheck: false,
+                    flagIdentifier: false,
+                    groupLast: {}
                 },
                 methods: {
                     obtainGroups: function () {
@@ -145,6 +147,15 @@
                                 self.assignAgreementsToGroup(agreement);
                             })
                         }
+                    },
+                    buildReport: function () {
+                        if(this.name.length > 0) {
+                            window.location = ROOT_URL + "/groups-agreements/report-agreements?file_name=" + this.name;
+                            $('#modalNombre').modal('hide');
+                            this.name = '';
+                        } else {
+                            showAlert("Ingresa un nombre al reporte", {type: 3})
+                        }
                     }
                 },
                 filters: {
@@ -185,13 +196,19 @@
                     <div class="col-xs-6 text-header">
                         <h2>Agrupaciòn de convenios</h2>
                     </div>
-                    <div class="col-xs-4">
+                    <div class="col-xs-3">
                         
                     </div>
-                    <div class="col-xs-2" style="margin-left: 398px">
+                    <div class="col-xs-2">
                         <button type="button" class="btn btn-default" name="button"
                                 style="margin-left: 70px; margin-top: 25px" data-toggle="modal" data-target="#modalAlta">
                             Nuevo grupo
+                        </button>
+                    </div>
+                    <div class="col-xs-1">
+                        <button type="button" class="btn btn-success" name="button"
+                                style="margin-top: 25px" data-toggle="modal" data-target="#modalNombre">
+                            Exportar
                         </button>
                     </div>
                 </div>
@@ -291,6 +308,31 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                             <button id="btnFlag" type="button" class="btn btn-danger" @click="deleteGroup">
+                                Aceptar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="modalNombre" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                <div class="modal-dialog ">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">
+                                Nombre del archivo
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-xs-6">
+                                <input class="form-control" name="name" v-model="name">
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-success" @click="buildReport">
                                 Aceptar
                             </button>
                         </div>

@@ -49,8 +49,8 @@ public class CBudgetConceptsServiceImpl implements CBudgetConceptsService {
     }
 
     @Override
-    public List<CBudgetConcepts> findAll() {
-        return budgetConceptsDao.findAll();
+    public List<CBudgetConcepts> getConcepts(Integer idRequestCategory) {
+        return budgetConceptsDao.getConcepts(idRequestCategory);
     }
 
     @Override

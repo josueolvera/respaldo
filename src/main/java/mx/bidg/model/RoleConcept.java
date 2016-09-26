@@ -58,19 +58,19 @@ public class RoleConcept implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idTravelType;
 
-    @Column(name = "ID_TRAVEL_EXPENSE_CONCEPT", insertable = false, updatable = false)
+    @Column(name = "ID_BUDGET_CONCEPT", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idTravelExpenseConcept;
+    private Integer idBudgetConcept;
 
     @JoinColumn(name = "ID_TRAVEL_TYPE", referencedColumnName = "ID_TRAVEL_TYPE")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private CTravelTypes travelType;
 
-    @JoinColumn(name = "ID_TRAVEL_EXPENSE_CONCEPT", referencedColumnName = "ID_TRAVEL_EXPENSE_CONCEPT")
+    @JoinColumn(name = "ID_BUDGET_CONCEPT", referencedColumnName = "ID_BUDGET_CONCEPT")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private CTravelExpensesConcepts travelExpenseConcept;
+    private CBudgetConcepts budgetConcept;
 
     @Column(name = "ID_ROLE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -147,20 +147,20 @@ public class RoleConcept implements Serializable {
         this.travelType = travelType;
     }
 
-    public Integer getIdTravelExpenseConcept() {
-        return idTravelExpenseConcept;
+    public Integer getIdBudgetConcept() {
+        return idBudgetConcept;
     }
 
-    public void setIdTravelExpenseConcept(Integer idTravelExpenseConcept) {
-        this.idTravelExpenseConcept = idTravelExpenseConcept;
+    public void setIdBudgetConcept(Integer idBudgetConcept) {
+        this.idBudgetConcept = idBudgetConcept;
     }
 
-    public CTravelExpensesConcepts getTravelExpenseConcept() {
-        return travelExpenseConcept;
+    public CBudgetConcepts getBudgetConcept() {
+        return budgetConcept;
     }
 
-    public void setTravelExpenseConcept(CTravelExpensesConcepts travelExpenseConcept) {
-        this.travelExpenseConcept = travelExpenseConcept;
+    public void setBudgetConcept(CBudgetConcepts budgetConcept) {
+        this.budgetConcept = budgetConcept;
     }
 
     public Integer getIdRole() {

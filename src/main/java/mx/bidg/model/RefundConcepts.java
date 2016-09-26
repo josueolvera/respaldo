@@ -36,17 +36,6 @@ public class RefundConcepts implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private Refunds refund;
 
-    @Column(name = "ID_TRAVEL_EXPENSE_CONCEPT", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idTravelExpenseConcept;
-
-    @Basic(optional = false)
-    @NotNull
-    @JoinColumn(name = "ID_TRAVEL_EXPENSE_CONCEPT", referencedColumnName = "ID_TRAVEL_EXPENSE_CONCEPT")
-    @ManyToOne
-    @JsonView(JsonViews.Embedded.class)
-    private CTravelExpensesConcepts travelExpenseConcept;
-
     @Column(name = "ID_VOUCHER_TYPE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idVoucherType;
@@ -77,6 +66,15 @@ public class RefundConcepts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Float voucherTotal;
 
+    @Column(name = "ID_BUDGET_CONCEPT", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idBudgetConcept;
+
+    @JoinColumn(name = "ID_BUDGET_CONCEPT", referencedColumnName = "ID_BUDGET_CONCEPT")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CBudgetConcepts budgetConcept;
+
     @OneToMany(mappedBy = "refundConcept")
     @JsonView(JsonViews.Embedded.class)
     private List<RefundConceptDocuments> refundConceptDocuments;
@@ -92,18 +90,13 @@ public class RefundConcepts implements Serializable {
         this.idRefundConcept = idRefundConcept;
     }
 
-    public RefundConcepts(Integer idRefund, Refunds refund, Integer idTravelExpenseConcept, CTravelExpensesConcepts travelExpenseConcept, Integer idVoucherType, CVoucherTypes voucherType, String voucherFolio, Float voucherTaxTotal, Float voucherTotal, List<RefundConceptDocuments> refundConceptDocuments, List<RefundConceptAmounts> refundConceptAmounts) {
-        this.idRefund = idRefund;
+    public RefundConcepts(Refunds refund, CVoucherTypes voucherType, String voucherFolio, Float voucherTaxTotal, Float voucherTotal, CBudgetConcepts budgetConcept) {
         this.refund = refund;
-        this.idTravelExpenseConcept = idTravelExpenseConcept;
-        this.travelExpenseConcept = travelExpenseConcept;
-        this.idVoucherType = idVoucherType;
         this.voucherType = voucherType;
         this.voucherFolio = voucherFolio;
         this.voucherTaxTotal = voucherTaxTotal;
         this.voucherTotal = voucherTotal;
-        this.refundConceptDocuments = refundConceptDocuments;
-        this.refundConceptAmounts = refundConceptAmounts;
+        this.budgetConcept = budgetConcept;
     }
 
     public Integer getIdRefundConcept() {
@@ -128,22 +121,6 @@ public class RefundConcepts implements Serializable {
 
     public void setRefund(Refunds refund) {
         this.refund = refund;
-    }
-
-    public Integer getIdTravelExpenseConcept() {
-        return idTravelExpenseConcept;
-    }
-
-    public void setIdTravelExpenseConcept(Integer idTravelExpenseConcept) {
-        this.idTravelExpenseConcept = idTravelExpenseConcept;
-    }
-
-    public CTravelExpensesConcepts getTravelExpenseConcept() {
-        return travelExpenseConcept;
-    }
-
-    public void setTravelExpenseConcept(CTravelExpensesConcepts travelExpenseConcept) {
-        this.travelExpenseConcept = travelExpenseConcept;
     }
 
     public Integer getIdVoucherType() {
@@ -186,6 +163,22 @@ public class RefundConcepts implements Serializable {
         this.voucherTotal = voucherTotal;
     }
 
+    public Integer getIdBudgetConcept() {
+        return idBudgetConcept;
+    }
+
+    public void setIdBudgetConcept(Integer idBudgetConcept) {
+        this.idBudgetConcept = idBudgetConcept;
+    }
+
+    public CBudgetConcepts getBudgetConcept() {
+        return budgetConcept;
+    }
+
+    public void setBudgetConcept(CBudgetConcepts budgetConcept) {
+        this.budgetConcept = budgetConcept;
+    }
+
     public List<RefundConceptDocuments> getRefundConceptDocuments() {
         return refundConceptDocuments;
     }
@@ -213,10 +206,6 @@ public class RefundConcepts implements Serializable {
             return false;
         if (idRefund != null ? !idRefund.equals(that.idRefund) : that.idRefund != null) return false;
         if (refund != null ? !refund.equals(that.refund) : that.refund != null) return false;
-        if (idTravelExpenseConcept != null ? !idTravelExpenseConcept.equals(that.idTravelExpenseConcept) : that.idTravelExpenseConcept != null)
-            return false;
-        if (travelExpenseConcept != null ? !travelExpenseConcept.equals(that.travelExpenseConcept) : that.travelExpenseConcept != null)
-            return false;
         if (idVoucherType != null ? !idVoucherType.equals(that.idVoucherType) : that.idVoucherType != null)
             return false;
         if (voucherType != null ? !voucherType.equals(that.voucherType) : that.voucherType != null) return false;
@@ -235,8 +224,6 @@ public class RefundConcepts implements Serializable {
         int result = idRefundConcept != null ? idRefundConcept.hashCode() : 0;
         result = 31 * result + (idRefund != null ? idRefund.hashCode() : 0);
         result = 31 * result + (refund != null ? refund.hashCode() : 0);
-        result = 31 * result + (idTravelExpenseConcept != null ? idTravelExpenseConcept.hashCode() : 0);
-        result = 31 * result + (travelExpenseConcept != null ? travelExpenseConcept.hashCode() : 0);
         result = 31 * result + (idVoucherType != null ? idVoucherType.hashCode() : 0);
         result = 31 * result + (voucherType != null ? voucherType.hashCode() : 0);
         result = 31 * result + (voucherFolio != null ? voucherFolio.hashCode() : 0);
@@ -253,8 +240,6 @@ public class RefundConcepts implements Serializable {
                 "idRefundConcept=" + idRefundConcept +
                 ", idRefund=" + idRefund +
                 ", refund=" + refund +
-                ", idTravelExpenseConcept=" + idTravelExpenseConcept +
-                ", travelExpenseConcept=" + travelExpenseConcept +
                 ", idVoucherType=" + idVoucherType +
                 ", voucherType=" + voucherType +
                 ", voucherFolio='" + voucherFolio + '\'' +

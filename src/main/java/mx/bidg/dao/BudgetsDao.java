@@ -19,22 +19,20 @@ import mx.bidg.model.CGroups;
  * @author sistemask
  */
 public interface BudgetsDao extends InterfaceDao<Budgets> {
-    
-    /**
-     *
-     * @param cDistributors
-     * @param idArea
-     * @param accountingAccounts
-     * @param idCategory
-     * @param idSubcategory
-     * @return
-     */
+
     Budgets findByCombination(CDistributors cDistributors, CAreas idArea, AccountingAccounts accountingAccounts);
+
     ArrayList<Budgets> findByGroupArea(CGroups idGroup, CAreas idArea);
+
     List<Budgets> findByDistributor(Integer idDistributor);
+
     List<Budgets> getBudgets(Integer idCostCenter, Integer idBudgetType, Integer idBudgetNature, Integer idBudgetCategory);
+
     List<Budgets> findByDistributorAndArea(Integer idDistributor, Integer idArea);
+
     List<Budgets> findByDistributorAreaAndEnterprise(Integer idDistributor, Integer idArea, Integer idDwEnterprise);
+
     ArrayList<Budgets> findByGroupAreaEnterprise(CGroups idGroup, CAreas idArea, Integer idDwEnterprise);
-    
+
+    Budgets findByAccountingAccountAndCostCenter(Integer idAccountingAccount, Integer idCostCenter);
 }

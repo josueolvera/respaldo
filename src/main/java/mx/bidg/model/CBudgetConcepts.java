@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -45,10 +46,14 @@ public class CBudgetConcepts implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
+
+    @ManyToMany(mappedBy = "budgetConceptList")
+    @JsonView(JsonViews.Embedded.class)
+    private Set<CRequestsCategories> requestsCategories;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "budgetConcept")
     @JsonView(JsonViews.Embedded.class)
-    private List<BudgetYearConcept> budgetMonthConceptsList;
+    private List<BudgetYearConcept> budgetYearConceptList;
 
     public CBudgetConcepts() {
     }
@@ -65,14 +70,6 @@ public class CBudgetConcepts implements Serializable {
         this.idBudgetConcept = idBudgetConcept;
     }
 
-    public List<BudgetYearConcept> getBudgetMonthConceptsList() {
-        return budgetMonthConceptsList;
-    }
-
-    public void setBudgetMonthConceptsList(List<BudgetYearConcept> budgetMonthConceptsList) {
-        this.budgetMonthConceptsList = budgetMonthConceptsList;
-    }
-
     public String getBudgetConcept() {
         return budgetConcept;
     }
@@ -87,6 +84,22 @@ public class CBudgetConcepts implements Serializable {
 
     public void setIdAccessLevel(Integer idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
+    }
+
+    public Set<CRequestsCategories> getRequestsCategories() {
+        return requestsCategories;
+    }
+
+    public void setRequestsCategories(Set<CRequestsCategories> requestsCategories) {
+        this.requestsCategories = requestsCategories;
+    }
+
+    public List<BudgetYearConcept> getBudgetYearConceptList() {
+        return budgetYearConceptList;
+    }
+
+    public void setBudgetYearConceptList(List<BudgetYearConcept> budgetYearConceptList) {
+        this.budgetYearConceptList = budgetYearConceptList;
     }
 
     //No cambiar este metodo

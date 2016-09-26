@@ -56,7 +56,7 @@ public class SIADController {
     public ModelAndView directaRequestType() {
         ModelAndView model= new ModelAndView();
         model.addObject("idRequest", 0);
-        model.addObject("cat", CRequestsCategories.DIRECTA);
+        model.addObject("cat", CRequestsCategories.SOLICITUD);
         model.setViewName("DirectRequest");
         return model;
     }
@@ -65,7 +65,7 @@ public class SIADController {
     public ModelAndView cotizableRequestTypeSearch() {
         ModelAndView model= new ModelAndView();
         model.addObject("idRequest", 0);
-        model.addObject("cat", CRequestsCategories.COTIZABLE);
+        model.addObject("cat", CRequestsCategories.PAGO_PROVEEDORES);
         model.setViewName("CotizableRequest");
         return model;
     }
@@ -74,7 +74,6 @@ public class SIADController {
     public ModelAndView periodicRequestTypeSearch() {
         ModelAndView model= new ModelAndView();
         model.addObject("idRequest", 0);
-        model.addObject("cat", CRequestsCategories.PERIODICA);
         model.setViewName("PeriodicRequest");
         return model;
     }
@@ -83,7 +82,7 @@ public class SIADController {
     public ModelAndView directaRequestType(@PathVariable int idRequest) {
         ModelAndView model= new ModelAndView();
         model.addObject("idRequest", idRequest);
-        model.addObject("cat", CRequestsCategories.DIRECTA);
+        model.addObject("cat", CRequestsCategories.SOLICITUD);
         model.setViewName("DirectRequest");
         return model;
     }
@@ -92,7 +91,7 @@ public class SIADController {
     public ModelAndView cotizableRequestTypeSearch(@PathVariable int idRequest) {
         ModelAndView model= new ModelAndView();
         model.addObject("idRequest", idRequest);
-        model.addObject("cat", CRequestsCategories.COTIZABLE);
+        model.addObject("cat", CRequestsCategories.PAGO_PROVEEDORES);
         model.setViewName("CotizableRequest");
         return model;
     }
@@ -102,7 +101,6 @@ public class SIADController {
     {
         ModelAndView model= new ModelAndView();
         model.addObject("idRequest", idRequest);
-        model.addObject("cat", CRequestsCategories.PERIODICA);
         model.setViewName("PeriodicRequest");
         return model;
     }
@@ -115,7 +113,7 @@ public class SIADController {
         @RequestMapping(value = "/suppliers", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public ModelAndView suppliersView( ) 
     {
-        ModelAndView model= new ModelAndView();
+        ModelAndView model = new ModelAndView();
         model.setViewName("Suppliers");
         return model;
     }
@@ -123,7 +121,7 @@ public class SIADController {
     @RequestMapping(value = "/accounts-payables", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public ModelAndView accountsPayablesView( ) 
     {
-        ModelAndView model= new ModelAndView();
+        ModelAndView model = new ModelAndView();
         model.setViewName("accounts-payables");
         return model;
     }
@@ -131,7 +129,7 @@ public class SIADController {
     @RequestMapping(value = "/accounts-payable-info/{idRequest}/{idAccountPayable}", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public ModelAndView accountsPayablesinfoView(@PathVariable int idRequest, @PathVariable int idAccountPayable) 
     {
-        ModelAndView model= new ModelAndView();
+        ModelAndView model = new ModelAndView();
         model.addObject("idRequest", idRequest);
         model.addObject("idAccountPayable", idAccountPayable);
         model.setViewName("accountspayableinfo");
@@ -139,29 +137,37 @@ public class SIADController {
     }
 
     @RequestMapping(value = "/travel-expenses",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public ModelAndView travelExpensesRequestType(@RequestParam(name = "idTravelExpence", required = false) Integer idTravelExpence) {
+    public ModelAndView travelExpensesRequestType(@RequestParam(name = "travel_expense", required = false) Integer idTravelExpence) {
         ModelAndView model = new ModelAndView();
-        model.addObject("idTravelExpence", idTravelExpence);
+        model.addObject("travel_expense", idTravelExpence);
         model.addObject("cat", CRequestsCategories.VIATICOS);
         model.setViewName("TravelExpenses");
         return model;
     }
 
     @RequestMapping(value = "/plane-tickets",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public ModelAndView planeTicketsRequestType(@RequestParam(name = "idPlaneTicket", required = false) Integer idPlaneTicket) {
+    public ModelAndView planeTicketsRequestType(@RequestParam(name = "plane_ticket", required = false) Integer idPlaneTicket) {
         ModelAndView model = new ModelAndView();
-        model.addObject("idPlaneTicket", idPlaneTicket);
+        model.addObject("plane_ticket", idPlaneTicket);
         model.addObject("cat", CRequestsCategories.BOLETOS_DE_AVION);
         model.setViewName("PlaneTickets");
         return model;
     }
 
     @RequestMapping(value = "/refunds",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public ModelAndView refundsRequestType(@RequestParam(name = "idRefund", required = false) Integer idRefund) {
+    public ModelAndView refundsRequestType(@RequestParam(name = "refund", required = false) Integer idRefund) {
         ModelAndView model = new ModelAndView();
-        model.addObject("idRefund", idRefund);
+        model.addObject("refund", idRefund);
         model.addObject("cat", CRequestsCategories.REEMBOLSOS);
         model.setViewName("Refunds");
+        return model;
+    }
+
+    @RequestMapping(value = "/checks",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView checks(@RequestParam(name = "check", required = false) Integer idCheck) {
+        ModelAndView model = new ModelAndView();
+        model.addObject("check", idCheck);
+        model.setViewName("Checks");
         return model;
     }
 

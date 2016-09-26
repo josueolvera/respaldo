@@ -148,7 +148,6 @@
                     education: [],
                     statusMarital: [],
                     newEmployeeDocuments: [],
-                    estadosMunicipios: {},
                     asentamiento: [],
                     cuenta: {
                         accountNumber: '',
@@ -232,6 +231,7 @@
                     zonas: [],
                     branchch: [],
                     selectedArea: {},
+                    isSaving: false,
                     haveImss: false
                 },
                 methods: {
@@ -318,6 +318,7 @@
                     },
                     saveEmployee: function () {
                         var self = this;
+                        this.isSaving = true;
                         this.employee.employeeAccountList.push(this.cuenta);
                         this.employee.city = this.estadosMunicipios.nombreMunicipios;
                         this.employee.state = this.estadosMunicipios.estado.nombreEstado;
@@ -334,11 +335,13 @@
                         }
                         this.$http.post(ROOT_URL + "/employees/save", JSON.stringify(this.employee)).success(function (data) {
                             this.working = data;
+                            this.isSaving = false;
                             showAlert("Registro de empleado exitoso");
                             this.newEmployeeDocuments.forEach(function (document) {
                                 self.uploadFilesEmployee(document, data.idEmployee)
                             });
                         }).error(function () {
+                            this.isSaving = false;
                             this.employee.employeeAccountList = [];
                             showAlert("Ha habido un error con la solicitud, intente nuevamente", {type: 3});
                         });
@@ -346,6 +349,7 @@
                     fetchDocumentTypes: function () {
                         this.selectedOptions.zona = this.defaultZona;
                         this.selectedOptions.branch = this.defaultBranch;
+                        this.documentTypes = [];
                         this.$http.get(ROOT_URL + "/employee-document-types/" + this.selectedOptions.distributor.idDistributor)
                                 .success(function (data) {
                                     this.documentTypes = data;
@@ -1367,12 +1371,12 @@
                                             </td>
                                         </tr>
                                         <tr v-for="docType in documentTypes"
-                                            v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType <= 9 && docType.idDistributor !== 2">
-                                            <td v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType <= 9 && docType.idDistributor !== 2">
+                                            v-show="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType <= 9 && docType.idDistributor !== 2">
+                                            <td v-show="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType <= 9 && docType.idDistributor !== 2">
                                                 {{ docType.documentType.documentName }}
                                             </td>
                                             <td>
-                                                <input v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType <= 9 && docType.idDistributor !== 2"
+                                                <input v-show="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType <= 9 && docType.idDistributor !== 2"
                                                        @change="setFile($event, docType)" type="file"
                                                        class="form-control"
                                                        :disabled="isSaving"
@@ -1382,12 +1386,12 @@
                                             </td>
                                         </tr>
                                         <tr v-for="docType in documentTypes"
-                                            v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType <= 9 && docType.idDistributor == 2  && selectedOptions.role.idRole !== 63">
-                                            <td v-if="docType.documentType.field == 0 && docType.documentType.required == 0  && docType.documentType.idDocumentType <= 9 && docType.idDistributor == 2  && selectedOptions.role.idRole !== 63">
+                                            v-show="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType <= 9 && docType.idDistributor == 2  && selectedOptions.role.idRole !== 63">
+                                            <td v-show="docType.documentType.field == 0 && docType.documentType.required == 0  && docType.documentType.idDocumentType <= 9 && docType.idDistributor == 2  && selectedOptions.role.idRole !== 63">
                                                 {{ docType.documentType.documentName }}
                                             </td>
                                             <td>
-                                                <input v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType <= 9 && docType.idDistributor == 2  && selectedOptions.role.idRole !== 63"
+                                                <input v-show="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType <= 9 && docType.idDistributor == 2  && selectedOptions.role.idRole !== 63"
                                                        @change="setFile($event, docType)" type="file"
                                                        class="form-control"
                                                        :disabled="isSaving"
@@ -1397,12 +1401,12 @@
                                             </td>
                                         </tr>
                                         <tr v-for="docType in documentTypes"
-                                            v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType == 8  && docType.idDistributor == 2 && selectedOptions.role.idRole == 63">
-                                            <td v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType == 8  && docType.idDistributor == 2 && selectedOptions.role.idRole == 63">
+                                            v-show="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType == 8  && docType.idDistributor == 2 && selectedOptions.role.idRole == 63">
+                                            <td v-show="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType == 8  && docType.idDistributor == 2 && selectedOptions.role.idRole == 63">
                                                 {{ docType.documentType.documentName }}
                                             </td>
                                             <td>
-                                                <input v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType == 8  && docType.idDistributor == 2 && selectedOptions.role.idRole == 63"
+                                                <input v-show="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType == 8  && docType.idDistributor == 2 && selectedOptions.role.idRole == 63"
                                                        @change="setFile($event, docType)" type="file"
                                                        class="form-control"
                                                        :disabled="isSaving"
@@ -1412,18 +1416,18 @@
                                             </td>
                                         </tr>
                                         <tr v-for="docType in documentTypes"
-                                            v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType == 9  && docType.idDistributor == 2 && selectedOptions.role.idRole == 63">
-                                            <td v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType == 9  && docType.idDistributor == 2 && selectedOptions.role.idRole == 63">
+                                            v-show="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType == 9  && docType.idDistributor == 2 && selectedOptions.role.idRole == 63">
+                                            <td v-show="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType == 9  && docType.idDistributor == 2 && selectedOptions.role.idRole == 63">
                                                 {{ docType.documentType.documentName }}
                                             </td>
                                             <td>
-                                                <input v-if="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType == 9  && docType.idDistributor == 2 && selectedOptions.role.idRole == 63"
+                                                <input v-show="docType.documentType.field == 0 && docType.documentType.required == 0 && docType.documentType.idDocumentType == 9  && docType.idDistributor == 2 && selectedOptions.role.idRole == 63"
                                                        @change="setFile($event, docType)" type="file"
                                                        class="form-control"
                                                        :disabled="isSaving"
                                                        :name="'file-type-' + docType.documentType.idDocumentType"
                                                        accept="application/pdf,
-                                                         image/png,image/jpg,image/jpeg," required>
+                                                         image/png,image/jpg,image/jpeg," >
                                             </td>
                                         </tr>
                                         <tr v-for="docType in documentTypes"

@@ -22,6 +22,7 @@ import mx.bidg.service.BudgetYearConceptService;
 import mx.bidg.service.BudgetMonthConceptsService;
 import mx.bidg.service.BudgetsService;
 import mx.bidg.service.CCostCenterService;
+import mx.bidg.utils.BudgetHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -51,6 +52,9 @@ public class BudgetController {
 
     @Autowired
     BudgetMonthConceptsService budgetMonthConceptsService;
+
+    @Autowired
+    private BudgetHelper budgetHelper;
 
     @Autowired
     private ObjectMapper mapper;
@@ -176,37 +180,7 @@ public class BudgetController {
             HttpServletResponse response
     ) throws Exception {
 
-        List<Budgets> budgets = budgetsService.getBudgets(idCostCenter, idBudgetType, idBudgetNature, idBudgetCategory);
-        List<BudgetCategory> budgetCategories = new ArrayList<>();
-
-        for (Budgets budget : budgets) {
-            BudgetCategory budgetCategory = new BudgetCategory();
-            budgetCategory.setName(budget.getAccountingAccount().getBudgetCategory().getBudgetCategory());
-            budgetCategory.setIdBudgetCategory(budget.getAccountingAccount().getIdBudgetCategory());
-
-            List<BudgetYearConcept> budgetYearConceptList = budgetYearConceptService.findByBudgetAndYear(budget.getIdBudget(), year);
-
-            BudgetSubcategory budgetSubcategory = new BudgetSubcategory();
-            budgetSubcategory.setName(budget.getAccountingAccount().getBudgetSubcategory().getBudgetSubcategory());
-            budgetSubcategory.setIdBudgetSubcategory(budget.getAccountingAccount().getIdBudgetSubcategory());
-            budgetSubcategory.setIdBudget(budget.getIdBudget());
-            budgetSubcategory.setBudgetNature(budget.getBudgetNature());
-            budgetSubcategory.setCostCenter(budget.getCostCenter());
-            budgetSubcategory.setBudgetType(budget.getBudgetType());
-            budgetSubcategory.setBudgetYearConceptList(budgetYearConceptList);
-
-            if (!budgetCategories.contains(budgetCategory)) {
-                List<BudgetSubcategory> budgetSubcategories = new ArrayList<>();
-                budgetSubcategories.add(budgetSubcategory);
-                budgetCategory.setBudgetSubcategories(budgetSubcategories);
-                budgetCategories.add(budgetCategory);
-            } else {
-                BudgetCategory oldBudgetCategory = budgetCategories.get(budgetCategories.indexOf(budgetCategory));
-                oldBudgetCategory.getBudgetSubcategories().add(budgetSubcategory);
-                budgetCategories.set(budgetCategories.indexOf(oldBudgetCategory), oldBudgetCategory);
-            }
-
-        }
+        List<BudgetCategory> budgetCategories = budgetHelper.getOrderedBudget(idCostCenter, idBudgetType, idBudgetNature, idBudgetCategory, year);
 
         if (download) {
 

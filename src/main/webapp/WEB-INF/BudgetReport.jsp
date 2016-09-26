@@ -128,6 +128,19 @@
         </script>
     </jsp:attribute>
 
+    <jsp:attribute name="styles">
+        <style>
+            @media (min-width: 992px) {
+                .container-scroll {
+                    overflow-x: auto;
+                }
+                .container-scroll > .row {
+                    width: 170%;
+                }
+            }
+        </style>
+    </jsp:attribute>
+
     <jsp:body>
         <div id="content">
             <div class="container-fluid">
@@ -135,13 +148,13 @@
                 <br>
                 <div class="row">
                     <form v-on:submit.prevent="searchBudget">
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label>Centro de costos</label>
                             <select v-model="selected.costCenter" class="form-control" @change="onChangeCriteria" required>
                                 <option v-for="costCenter in costCenterList" :value="costCenter">{{costCenter.name}}</option>
                             </select>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-3">
                             <label>Año</label>
                             <select v-model="selected.year" class="form-control" @change="onChangeCriteria" required>
                                 <option v-for="year in years" :value="year">
@@ -161,166 +174,164 @@
                     </form>
                 </div>
                 <br>
-                <div class="panel panel-default" v-if="budgets.length > 0">
-                    <div class="panel-heading">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="col-md-3 text-center">
-                                    <b class="text-primary">{{selected.costCenter.name}}</b>
+                <div class="container-fluid container-scroll" v-if="budgets.length > 0">
+                    <div class="row" style="background-color: #cfcfcf">
+                        <div class="col-md-12">
+                            <div class="col-md-2 text-center">
+                                <h5><b class="text-primary">{{selected.costCenter.name}}</b></h5>
+                            </div>
+                            <div class="col-md-9 text-center">
+                                <div class="col-md-1" v-for="month in months">
+                                    <h5><b>{{month.month}}</b></h5>
                                 </div>
-                                <div class="col-md-8 text-center">
-                                    <div class="col-md-1" v-for="month in months">
-                                        <b>{{month.month | shortName}}</b>
-                                    </div>
-                                </div>
-                                <div class="col-md-1">
-                                    <b>Acumulado</b>
-                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <h5><b>Acumulado {{selected.year}}</b></h5>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-12" style="background-color: #e5e5e5;max-height:68%;overflow:auto;">
-                        <div class="row" v-for="(indexOfBudget, budget) in budgets" style="background-color: #e5e5e5">
-                            <div class="col-md-12">
-                                <div class="col-md-3">
-                                    <h5><b>{{budget.name}}</b></h5>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="col-md-1">
-                                        <b>{{budget.januaryCategoryAmount | currency}}</b>
+                        <div class="col-md-12" style="height:70%;overflow-y: auto;">
+                            <div class="row" v-for="(indexOfBudget, budget) in budgets" style="background-color: #dfdfdf">
+                                <div class="col-md-12">
+                                    <div class="col-md-2">
+                                        <h5><b>{{budget.name}}</b></h5>
                                     </div>
-                                    <div class="col-md-1">
-                                        <b>{{budget.februaryCategoryAmount | currency}}</b>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <b>{{budget.marchCategoryAmount | currency}}</b>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <b>{{budget.aprilCategoryAmount | currency}}</b>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <b>{{budget.mayCategoryAmount | currency}}</b>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <b>{{budget.juneCategoryAmount | currency}}</b>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <b>{{budget.julyCategoryAmount | currency}}</b>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <b>{{budget.augustCategoryAmount | currency}}</b>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <b>{{budget.septemberCategoryAmount | currency}}</b>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <b>{{budget.octoberCategoryAmount | currency}}</b>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <b>{{budget.novemberCategoryAmount | currency}}</b>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <b>{{budget.decemberCategoryAmount | currency}}</b>
-                                    </div>
-                                </div>
-                                <div class="col-md-1 text-center">
-                                    <b class="text-primary">{{budget.totalCategoryAmount | currency}}</b>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="row" v-for="(indexOfBudgetSubcategory, budgetSubcategory) in budget.budgetSubcategories" style="background-color: #f5f5f5">
-                                    <div class="col-md-12">
-                                        <div class="col-md-3">
-                                            <b class="text-muted">&nbsp;&nbsp;{{budgetSubcategory.name}}</b>
+                                    <div class="col-md-9 text-center">
+                                        <div class="col-md-1">
+                                            <b>{{budget.januaryCategoryAmount | currency}}</b>
                                         </div>
-                                        <div class="col-md-8">
-                                            <div class="col-md-1">
-                                                <p class="text-muted">{{budgetSubcategory.januarySubcategoryAmount | currency}}</p>
-                                            </div>
-                                            <div class="col-md-1">
-                                                <p class="text-muted">{{budgetSubcategory.februarySubcategoryAmount | currency}}</p>
-                                            </div>
-                                            <div class="col-md-1">
-                                                <p class="text-muted">{{budgetSubcategory.marchSubcategoryAmount | currency}}</p>
-                                            </div>
-                                            <div class="col-md-1">
-                                                <p class="text-muted">{{budgetSubcategory.aprilSubcategoryAmount | currency}}</p>
-                                            </div>
-                                            <div class="col-md-1">
-                                                <p class="text-muted">{{budgetSubcategory.maySubcategoryAmount | currency}}</p>
-                                            </div>
-                                            <div class="col-md-1">
-                                                <p class="text-muted">{{budgetSubcategory.juneSubcategoryAmount | currency}}</p>
-                                            </div>
-                                            <div class="col-md-1">
-                                                <p class="text-muted">{{budgetSubcategory.julySubcategoryAmount | currency}}</p>
-                                            </div>
-                                            <div class="col-md-1">
-                                                <p class="text-muted">{{budgetSubcategory.augustSubcategoryAmount | currency}}</p>
-                                            </div>
-                                            <div class="col-md-1">
-                                                <p class="text-muted">{{budgetSubcategory.septemberSubcategoryAmount | currency}}</p>
-                                            </div>
-                                            <div class="col-md-1">
-                                                <p class="text-muted">{{budgetSubcategory.octoberSubcategoryAmount | currency}}</p>
-                                            </div>
-                                            <div class="col-md-1">
-                                                <p class="text-muted">{{budgetSubcategory.novemberSubcategoryAmount | currency}}</p>
-                                            </div>
-                                            <div class="col-md-1">
-                                                <p class="text-muted">{{budgetSubcategory.decemberSubcategoryAmount | currency}}</p>
-                                            </div>
+                                        <div class="col-md-1">
+                                            <b>{{budget.februaryCategoryAmount | currency}}</b>
                                         </div>
-                                        <div class="col-md-1 text-center">
-                                            <b class="text-info">{{budgetSubcategory.totalSubcategoryAmount | currency}}</b>
+                                        <div class="col-md-1">
+                                            <b>{{budget.marchCategoryAmount | currency}}</b>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <b>{{budget.aprilCategoryAmount | currency}}</b>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <b>{{budget.mayCategoryAmount | currency}}</b>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <b>{{budget.juneCategoryAmount | currency}}</b>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <b>{{budget.julyCategoryAmount | currency}}</b>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <b>{{budget.augustCategoryAmount | currency}}</b>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <b>{{budget.septemberCategoryAmount | currency}}</b>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <b>{{budget.octoberCategoryAmount | currency}}</b>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <b>{{budget.novemberCategoryAmount | currency}}</b>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <b>{{budget.decemberCategoryAmount | currency}}</b>
                                         </div>
                                     </div>
-                                    <div class="col-md-12">
-                                        <div class="row" v-for="(indexOfBudgetYearConcept, budgetYearConcept) in budgetSubcategory.budgetYearConceptList"  style="background-color: #ffffff">
-                                            <div class="col-md-12">
-                                                <div class="col-md-3">
-                                                    <p>&nbsp;&nbsp;&nbsp;&nbsp;{{budgetYearConcept.budgetConcept.budgetConcept}}</p>
+                                    <div class="col-md-1 text-center">
+                                        <b class="text-primary">{{budget.totalCategoryAmount | currency}}</b>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="row" v-for="(indexOfBudgetSubcategory, budgetSubcategory) in budget.budgetSubcategories" style="background-color: #efefef">
+                                        <div class="col-md-12">
+                                            <div class="col-md-2">
+                                                <b class="text-muted">&nbsp;&nbsp;{{budgetSubcategory.name}}</b>
+                                            </div>
+                                            <div class="col-md-9 text-center">
+                                                <div class="col-md-1">
+                                                    <p class="text-muted">{{budgetSubcategory.januarySubcategoryAmount | currency}}</p>
                                                 </div>
-                                                <div class="col-md-8">
-                                                    <div class="col-md-1">
-                                                        <p>{{budgetYearConcept.januaryAmount | currency}}</p>
-                                                    </div>
-                                                    <div class="col-md-1">
-                                                        <p>{{budgetYearConcept.februaryAmount | currency}}</p>
-                                                    </div>
-                                                    <div class="col-md-1">
-                                                        <p>{{budgetYearConcept.marchAmount | currency}}</p>
-                                                    </div>
-                                                    <div class="col-md-1">
-                                                        <p>{{budgetYearConcept.aprilAmount | currency}}</p>
-                                                    </div>
-                                                    <div class="col-md-1">
-                                                        <p>{{budgetYearConcept.mayAmount | currency}}</p>
-                                                    </div>
-                                                    <div class="col-md-1">
-                                                        <p>{{budgetYearConcept.juneAmount | currency}}</p>
-                                                    </div>
-                                                    <div class="col-md-1">
-                                                        <p>{{budgetYearConcept.julyAmount | currency}}</p>
-                                                    </div>
-                                                    <div class="col-md-1">
-                                                        <p>{{budgetYearConcept.augustAmount | currency}}</p>
-                                                    </div>
-                                                    <div class="col-md-1">
-                                                        <p>{{budgetYearConcept.septemberAmount | currency}}</p>
-                                                    </div>
-                                                    <div class="col-md-1">
-                                                        <p>{{budgetYearConcept.octoberAmount | currency}}</p>
-                                                    </div>
-                                                    <div class="col-md-1">
-                                                        <p>{{budgetYearConcept.novemberAmount | currency}}</p>
-                                                    </div>
-                                                    <div class="col-md-1">
-                                                        <p>{{budgetYearConcept.decemberAmount | currency}}</p>
-                                                    </div>
+                                                <div class="col-md-1">
+                                                    <p class="text-muted">{{budgetSubcategory.februarySubcategoryAmount | currency}}</p>
                                                 </div>
-                                                <div class="col-md-1 text-center">
-                                                    <b class="text-muted">{{budgetYearConcept.totalAmount | currency}}</b>
+                                                <div class="col-md-1">
+                                                    <p class="text-muted">{{budgetSubcategory.marchSubcategoryAmount | currency}}</p>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <p class="text-muted">{{budgetSubcategory.aprilSubcategoryAmount | currency}}</p>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <p class="text-muted">{{budgetSubcategory.maySubcategoryAmount | currency}}</p>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <p class="text-muted">{{budgetSubcategory.juneSubcategoryAmount | currency}}</p>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <p class="text-muted">{{budgetSubcategory.julySubcategoryAmount | currency}}</p>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <p class="text-muted">{{budgetSubcategory.augustSubcategoryAmount | currency}}</p>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <p class="text-muted">{{budgetSubcategory.septemberSubcategoryAmount | currency}}</p>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <p class="text-muted">{{budgetSubcategory.octoberSubcategoryAmount | currency}}</p>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <p class="text-muted">{{budgetSubcategory.novemberSubcategoryAmount | currency}}</p>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <p class="text-muted">{{budgetSubcategory.decemberSubcategoryAmount | currency}}</p>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1 text-center">
+                                                <b class="text-info">{{budgetSubcategory.totalSubcategoryAmount | currency}}</b>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row" v-for="(indexOfBudgetYearConcept, budgetYearConcept) in budgetSubcategory.budgetYearConceptList"  style="background-color: #ffffff">
+                                                <div class="col-md-12">
+                                                    <div class="col-md-2">
+                                                        <p>&nbsp;&nbsp;&nbsp;&nbsp;{{budgetYearConcept.budgetConcept.budgetConcept}}</p>
+                                                    </div>
+                                                    <div class="col-md-9 text-center">
+                                                        <div class="col-md-1">
+                                                            <p>{{budgetYearConcept.januaryAmount | currency}}</p>
+                                                        </div>
+                                                        <div class="col-md-1">
+                                                            <p>{{budgetYearConcept.februaryAmount | currency}}</p>
+                                                        </div>
+                                                        <div class="col-md-1">
+                                                            <p>{{budgetYearConcept.marchAmount | currency}}</p>
+                                                        </div>
+                                                        <div class="col-md-1">
+                                                            <p>{{budgetYearConcept.aprilAmount | currency}}</p>
+                                                        </div>
+                                                        <div class="col-md-1">
+                                                            <p>{{budgetYearConcept.mayAmount | currency}}</p>
+                                                        </div>
+                                                        <div class="col-md-1">
+                                                            <p>{{budgetYearConcept.juneAmount | currency}}</p>
+                                                        </div>
+                                                        <div class="col-md-1">
+                                                            <p>{{budgetYearConcept.julyAmount | currency}}</p>
+                                                        </div>
+                                                        <div class="col-md-1">
+                                                            <p>{{budgetYearConcept.augustAmount | currency}}</p>
+                                                        </div>
+                                                        <div class="col-md-1">
+                                                            <p>{{budgetYearConcept.septemberAmount | currency}}</p>
+                                                        </div>
+                                                        <div class="col-md-1">
+                                                            <p>{{budgetYearConcept.octoberAmount | currency}}</p>
+                                                        </div>
+                                                        <div class="col-md-1">
+                                                            <p>{{budgetYearConcept.novemberAmount | currency}}</p>
+                                                        </div>
+                                                        <div class="col-md-1">
+                                                            <p>{{budgetYearConcept.decemberAmount | currency}}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1 text-center">
+                                                        <b class="text-muted">{{budgetYearConcept.totalAmount | currency}}</b>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -330,6 +341,9 @@
                         </div>
                     </div>
                 </div>
+                <br>
+                <br>
+            </div>
         </div>
     </jsp:body>
 </t:template>

@@ -225,6 +225,35 @@ public class BudgetYearConcept implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private List<Requests> requestsList;
 
+    public BudgetYearConcept() {
+        this.januaryAmount = BigDecimal.ZERO;
+        this.februaryAmount = BigDecimal.ZERO;
+        this.marchAmount = BigDecimal.ZERO;
+        this.aprilAmount = BigDecimal.ZERO;
+        this.mayAmount = BigDecimal.ZERO;
+        this.juneAmount = BigDecimal.ZERO;
+        this.julyAmount = BigDecimal.ZERO;
+        this.augustAmount = BigDecimal.ZERO;
+        this.septemberAmount = BigDecimal.ZERO;
+        this.octoberAmount = BigDecimal.ZERO;
+        this.novemberAmount = BigDecimal.ZERO;
+        this.decemberAmount = BigDecimal.ZERO;
+        this.totalAmount = BigDecimal.ZERO;
+        this.januaryExpendedAmount = BigDecimal.ZERO;
+        this.februaryExpendedAmount = BigDecimal.ZERO;
+        this.marchExpendedAmount = BigDecimal.ZERO;
+        this.aprilExpendedAmount = BigDecimal.ZERO;
+        this.mayExpendedAmount = BigDecimal.ZERO;
+        this.juneExpendedAmount = BigDecimal.ZERO;
+        this.julyExpendedAmount = BigDecimal.ZERO;
+        this.augustExpendedAmount = BigDecimal.ZERO;
+        this.septemberExpendedAmount = BigDecimal.ZERO;
+        this.octoberExpendedAmount = BigDecimal.ZERO;
+        this.novemberExpendedAmount = BigDecimal.ZERO;
+        this.decemberExpendedAmount = BigDecimal.ZERO;
+        this.totalExpendedAmount = BigDecimal.ZERO;
+    }
+
     public Integer getIdBudgetYearConcept() {
         return idBudgetYearConcept;
     }

@@ -79,14 +79,15 @@ public class RequestTypesProductDaoImpl extends AbstractDao<Integer, RequestType
 
     @Override
     public List<RequestTypesProduct> findByRequestType(CRequestTypes requestTypes) {
-        return (List<RequestTypesProduct>)createEntityCriteria()
-                .add(
-                    Restrictions.disjunction()
-                        .add(Restrictions.eq("idRequestCategory", CRequestsCategories.COTIZABLE))
-                        .add(Restrictions.eq("idRequestCategory", CRequestsCategories.DIRECTA))
-                        .add(Restrictions.eq("idRequestCategory", CRequestsCategories.PERIODICA))
-                )
-                .add(Restrictions.eq("requestType",requestTypes)).list();
+//        return (List<RequestTypesProduct>)createEntityCriteria()
+//                .add(
+//                    Restrictions.disjunction()
+//                        .add(Restrictions.eq("idRequestCategory", CRequestsCategories.COTIZABLE))
+//                        .add(Restrictions.eq("idRequestCategory", CRequestsCategories.DIRECTA))
+//                        .add(Restrictions.eq("idRequestCategory", CRequestsCategories.PERIODICA))
+//                )
+//                .add(Restrictions.eq("requestType",requestTypes)).list();
+        return null;
     }
 
     @Override

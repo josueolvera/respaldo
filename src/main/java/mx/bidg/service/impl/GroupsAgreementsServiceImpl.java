@@ -13,6 +13,7 @@ import mx.bidg.dao.CAgreementsDao;
 import mx.bidg.dao.CAgreementsGroupsDao;
 import mx.bidg.dao.GroupsAgreementsDao;
 import mx.bidg.model.CAgreements;
+import mx.bidg.model.CAgreementsGroups;
 import mx.bidg.model.GroupsAgreements;
 import mx.bidg.service.GroupsAgreementsService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -66,7 +67,9 @@ public class GroupsAgreementsServiceImpl implements GroupsAgreementsService {
 
         List<CAgreements> agreementsList = cAgreementsDao.findAgreementsActives();
 
-        List<GroupsAgreements> groupsAgreementsList = groupsAgreementsDao.findGroupsAgreementsActives(agreementsList);
+        List<CAgreementsGroups> groupsList = cAgreementsGroupsDao.findGruoupActives();
+
+        List<GroupsAgreements> groupsAgreementsList = groupsAgreementsDao.findGroupsAgreementsActives(groupsList, agreementsList);
 
         Workbook wb = new HSSFWorkbook();
         //Definicion del estilo de la cabecera
@@ -126,7 +129,7 @@ public class GroupsAgreementsServiceImpl implements GroupsAgreementsService {
         }else{
             Row row = hoja.createRow(0);
 
-            row.createCell(0).setCellValue("NO HAY CONVENIOS ACTIVOS");
+            row.createCell(0).setCellValue("NO HAY CONVENIOS NI GRUPOS ACTIVOS");
 
             //Implementacion del estilo
             for (Cell celda : row) {

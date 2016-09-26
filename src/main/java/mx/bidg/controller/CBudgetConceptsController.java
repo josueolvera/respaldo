@@ -147,8 +147,8 @@ public class CBudgetConceptsController {
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findAll() throws Exception {
-        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(budgetConceptsService.findAll()));
+    public ResponseEntity<String> getConcepts(@RequestParam(name = "category", required = false) Integer idRequestCategory) throws Exception {
+        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(budgetConceptsService.getConcepts(idRequestCategory)));
     }
 
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

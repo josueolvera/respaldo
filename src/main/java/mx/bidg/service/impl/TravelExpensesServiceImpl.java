@@ -1,15 +1,20 @@
 package mx.bidg.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.dao.*;
+import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
 import mx.bidg.service.FoliosService;
 import mx.bidg.service.TravelExpensesService;
+import mx.bidg.utils.BudgetHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -44,78 +49,69 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
     BudgetYearConceptDao budgetYearConceptDao;
 
     @Autowired
+    RolesCostCenterDao rolesCostCenterDao;
+
+    @Autowired
+    BudgetHelper budgetHelper;
+
+    @Autowired
+    AccountingAccountsDao accountingAccountsDao;
+
+    @Autowired
     private ObjectMapper mapper;
 
     @Override
     public TravelExpenses save(String data, Users user) throws IOException {
 
-        /*DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
         LocalDateTime now = LocalDateTime.now();
 
         int month = now.getMonthValue();
         int year = now.getYear();
 
-        CMonths cMonth = new CMonths(month);
-
         JsonNode jsonNode = mapper.readTree(data);
-        DwEnterprises dwEnterprise = dwEnterprisesDao.findById(jsonNode.get("idDwEnterprise").asInt());
         JsonNode travelExpenseNode = jsonNode.get("travelExpense");
+        CTravelTypes travelType = mapper.treeToValue(travelExpenseNode.get("travelType"), CTravelTypes.class);
 
-        CTravelTypes travelType = mapper.treeToValue(travelExpenseNode.get("travelType"),CTravelTypes.class);
-
-        Budgets budget = null;
-        CProductTypes productType = null;
+        AccountingAccounts accountingAccount;
 
         if (travelType.equals(CTravelTypes.NACIONALES)) {
-            budget = budgetsDao.findByCombination(
-                    dwEnterprise.getDistributor(),
-                    dwEnterprise.getArea(),
-                    CBudgetCategories.GASTOS_DE_VIAJE,
-                    CBudgetSubcategories.NACIONALES
-            );
-            productType = CProductTypes.NACIONALES;
-        } else if (travelType.equals(CTravelTypes.INTERNACIONALES)){
-            budget = budgetsDao.findByCombination(
-                    dwEnterprise.getDistributor(),
-                    dwEnterprise.getArea(),
-                    CBudgetCategories.GASTOS_DE_VIAJE,
-                    CBudgetSubcategories.INTERNACIONALES
-            );
-            productType = CProductTypes.INTERNACIONALES;
-        } 
-                
-        
-        if (budget != null) {
-            BudgetMonth budgetMonthBranch = budgetYearConceptDao.findByCombination(budget,cMonth,dwEnterprise,year);
+            accountingAccount = accountingAccountsDao.findByCategoryAndSubcategory(CBudgetCategories.GASTOS_DE_VIAJE.getIdBudgetCategory(), CBudgetSubcategories.NACIONALES.getIdBudgetSubcategory());
+        } else {
+            accountingAccount = accountingAccountsDao.findByCategoryAndSubcategory(CBudgetCategories.GASTOS_DE_VIAJE.getIdBudgetCategory(), CBudgetSubcategories.INTERNACIONALES.getIdBudgetSubcategory());
+        }
 
-            if (budgetMonthBranch != null) {
-                Float total = 0f;
+        List<RolesCostCenter> rolesCostCenterList = rolesCostCenterDao.findByRole(user.getDwEmployee().getIdRole());
+        Budgets budget = budgetsDao.findByAccountingAccountAndCostCenter(accountingAccount.getIdAccountingAccount(), rolesCostCenterList.get(0).getCostCenter().getIdCostCenter());
+
+        if (budget != null) {
+
+            List<BudgetYearConcept> budgetYearConceptList = budgetYearConceptDao.findByBudgetAndYear(budget.getIdBudget(), year);
+
+            if (!budgetYearConceptList.isEmpty()) {
+                Double total = 0D;
                 JsonNode currencyNode = jsonNode.get("currency");
-                CCurrencies currency = mapper.treeToValue(currencyNode,CCurrencies.class);
+                CCurrencies currency = mapper.treeToValue(currencyNode, CCurrencies.class);
                 JsonNode requestConceptListNode = jsonNode.get("requestConceptList");
 
                 for(JsonNode node : requestConceptListNode) {
-                    total += node.get("amount").decimalValue().floatValue();
+                    total += node.get("amount").decimalValue().doubleValue();
                 }
 
                 if (currency.equals(CCurrencies.USD)) {
-                    total *= (currency.getRate().floatValue()/10);
+                    total *= (currency.getRate().doubleValue()/10);
                 }
 
-                if (total < budgetMonthBranch.getAmount().floatValue()) {
-
-                    CRequestsCategories requestsCategory = new CRequestsCategories(CRequestsCategories.VIATICOS);
-                    RequestTypesProduct requestTypesProduct = requestTypesProductDao.findByCombination(requestsCategory, CRequestTypes.GASTOS_DE_VIAJE, productType);
+                if (budgetHelper.checkWhetherIsOutOfBudget(budgetYearConceptList, month, total)) {
 
                     JsonNode requestNode = jsonNode.get("request");
 
                     Requests request = new Requests();
                     request.setPurpose(requestNode.get("purpose").asText());
                     request.setFolio(foliosService.createNew(new CTables(51)));
-                    request.setRequestTypeProduct(requestTypesProduct);
                     request.setUserRequest(user);
                     request.setCreationDate(now);
-                    request.setBudgetYearConcept(budgetMonthBranch);
+                    request.setBudgetYearConcept(budgetYearConceptList.get(0));
                     request.setIdAccessLevel(1);
 
                     request = requestsDao.save(request);
@@ -133,13 +129,13 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
                     travelExpense.setRequest(request);
 
                     for(JsonNode node : requestConceptListNode) {
-                        CTravelExpensesConcepts concept = mapper.treeToValue(node.get("concept"),CTravelExpensesConcepts.class);
+                        CBudgetConcepts concept = mapper.treeToValue(node.get("concept"), CBudgetConcepts.class);
                         RequestConcept requestConcept = new RequestConcept();
                         requestConcept.setCreationDate(now);
                         requestConcept.setRequest(request);
                         requestConcept.setAmount(node.get("amount").decimalValue());
                         requestConcept.setCurrency(currency);
-                        requestConcept.setTravelExpenseConcept(concept);
+                        requestConcept.setBudgetConcept(concept);
                         requestConceptDao.save(requestConcept);
                     }
 
@@ -153,9 +149,7 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
             }
         } else {
             throw new ValidationException("Sin presupuesto","No tiene presupuesto asignado para este tipo de solicitud");
-        }*/
-        TravelExpenses expenses = null;
-        return expenses;
+        }
     }
 
     @Override

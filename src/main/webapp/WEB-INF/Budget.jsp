@@ -61,6 +61,7 @@
                     now: "${now}",
                     minYear:null,
                     maxYear:null,
+                    totalCostCenter:null,
                     years: [],
                     budgets: [],
                     concepts: [],
@@ -146,6 +147,7 @@
                                             });
                                         });
                                     });
+
                                 })
                                 .error(function (data) {
 
@@ -222,6 +224,7 @@
                                         showAlert('Sin presupuesto');
                                     }
 
+                                    this.getTotalCostCenter();
                                     this.getConcepts(self);
                                 })
                                 .error(function (data) {
@@ -430,8 +433,6 @@
                     },
                     getBudgetYearConcept : function (indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept) {
 
-                        console.log(budgetYearConcept);
-
                         budgetYearConcept.totalAmount = 0;
                         
                         budgetYearConcept.totalAmount +=  budgetYearConcept.januaryAmount;
@@ -460,6 +461,29 @@
                                 .budgetYearConceptList.forEach(function (budgetYearConcept) {
                                     self.budgets[indexOfBudget].budgetSubcategories[indexOfBudgetSubcategory].totalSubcategoryAmount += budgetYearConcept.totalAmount;
                                 });
+
+                        this.getTotalCostCenter();
+                    },
+                    getTotalCostCenter: function () {
+
+                        var self = this;
+
+                        this.totalCostCenter = 0;
+                        this.budgets.totalCategoryAmount = 0;
+
+                        this.budgets.forEach(function (budget) {
+                            budget.totalCategoryAmount = 0;
+                        });
+
+                        this.budgets.forEach(function (budget) {
+                            budget.budgetSubcategories.forEach(function (budgetSubcategory) {
+                                budget.totalCategoryAmount += budgetSubcategory.totalSubcategoryAmount;
+                            });
+                        });
+
+                        this.budgets.forEach(function (budget) {
+                            self.totalCostCenter += budget.totalCategoryAmount;
+                        });
                     },
                     onChangeFilter : function () {
                         this.budgets = [];
@@ -493,64 +517,76 @@
     <jsp:body>
         <div id="content">
             <div class="container-fluid">
-                <br>
-                <h2>Captura de presupuesto</h2>
-                <br>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h2>Captura de presupuesto</h2>
+                        <br>
+                    </div>
+                    <div class="col-md-6 text-right" v-if="budgets.length > 0">
+                        <h3>Total centro de costo: <b class="text-primary">{{totalCostCenter | currency}}</b></h3>
+                    </div>
+                </div>
                 <div class="row">
                     <form v-on:submit.prevent="searchBudget(selected.year, selected.budgetType, selected.budgetNature, selected.budgetCategory)">
-                        <div class="col-md-2">
-                            <label>Centro de costos</label>
-                            <select v-model="selected.costCenter" class="form-control" @change="onChangeCostCenter" required>
-                                <option v-for="costCenter in costCenterList" :value="costCenter">{{costCenter.name}}</option>
-                            </select>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Centro de costos</label>
+                                <select v-model="selected.costCenter" class="form-control" @change="onChangeCostCenter" required>
+                                    <option v-for="costCenter in costCenterList" :value="costCenter">{{costCenter.name}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Tipo de gasto</label>
+                                <select v-model="selected.budgetNature" class="form-control" @change="onChangeFilter" required>
+                                    <option v-for="budgetNature in budgetNatureList" :value="budgetNature">{{budgetNature.budgetNature}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Tipo</label>
+                                <select v-model="selected.budgetType" class="form-control" @change="onChangeFilter" required>
+                                    <option v-for="budgetType in budgetTypes" :value="budgetType">
+                                        {{budgetType.budgetType}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Año</label>
+                                <select v-model="selected.year" class="form-control" @change="onChangeFilter" required>
+                                    <option v-for="year in years" :value="year">
+                                        {{year}}
+                                    </option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="col-md-2">
-                            <label>Tipo de gasto</label>
-                            <select v-model="selected.budgetNature" class="form-control" @change="onChangeFilter" required>
-                                <option v-for="budgetNature in budgetNatureList" :value="budgetNature">{{budgetNature.budgetNature}}</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label>Tipo</label>
-                            <select v-model="selected.budgetType" class="form-control" @change="onChangeFilter" required>
-                                <option v-for="budgetType in budgetTypes" :value="budgetType">
-                                    {{budgetType.budgetType}}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label>Año</label>
-                            <select v-model="selected.year" class="form-control" @change="onChangeFilter" required>
-                                <option v-for="year in years" :value="year">
-                                    {{year}}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-md-2" v-if="budgetCategories.length > 0">
-                            <label>Rubro</label>
-                            <select v-model="selected.budgetCategory" class="form-control" @change="onChangeFilter" required>
-                                <option selected :value="budgetAllOption">{{budgetAllOption.name}}</option>
-                                <option v-for="budgetCategory in budgetCategories" :value="budgetCategory">{{budgetCategory.name}}</option>
-                            </select>
-                        </div>
-                        <div class="col-md-1">
-                            <button style="margin-top: 25px" class="btn btn-info">Buscar</button>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label>Rubro</label>
+                                <select v-model="selected.budgetCategory" class="form-control" @change="onChangeFilter"
+                                        :disabled="budgetCategories.length <= 0" required>
+                                    <option selected :value="budgetAllOption">{{budgetAllOption.name}}</option>
+                                    <option v-for="budgetCategory in budgetCategories" :value="budgetCategory">{{budgetCategory.name}}</option>
+                                </select>
+                            </div>
+                            <div class="col-md-1">
+                                <button style="margin-top: 25px" class="btn btn-info">Buscar</button>
+                            </div>
+                            <div v-if="budgets.length > 0 && !searching">
+                                <div class="col-md-2">
+                                    <button type="button" style="margin-top: 25px"
+                                            class="btn btn-default" @click="showCopyBudgetModal">
+                                        Copiar presupuesto
+                                    </button>
+                                </div>
+                                <div class="col-md-1" v-if="role == 36">
+                                    <button type="button" style="margin-top: 25px"
+                                            class="btn btn-success" @click="authorize">
+                                        Autorizar
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </form>
-                </div>
-                <div class="row" v-if="budgets.length > 0 && !searching">
-                    <div class="col-md-2">
-                        <button type="button" style="margin-top: 15px"
-                                class="btn btn-default" @click="showCopyBudgetModal">
-                            Copiar presupuesto
-                        </button>
-                    </div>
-                    <div class="col-md-2" v-if="budgets.length > 0 && role == 19">
-                        <button type="button" style="margin-top: 15px"
-                                class="btn btn-success" @click="authorize">
-                            Autorizar
-                        </button>
-                    </div>
                 </div>
                 <br>
                 <div v-if="searching" class="col-xs-12"
@@ -560,7 +596,14 @@
                 <div v-else="!searching">
                     <div class="row" v-for="(indexOfBudget, budget) in budgets"  style="margin-left: 0px; margin-right: 0px">
                         <div class="bs-callout bs-callout-default">
-                            <h3><b>{{budget.name}}</b></h3>
+                            <div class="row">
+                                <div class="col-md-7">
+                                    <h4><b>{{budget.name}}</b></h4>
+                                </div>
+                                <div class="col-md-5 text-right">
+                                    <h4>Total rubro: <b class="text-primary">{{budget.totalCategoryAmount | currency}}</b></h4>
+                                </div>
+                            </div>
                             <div class="row" v-for="(indexOfBudgetSubcategory, budgetSubcategory) in budget.budgetSubcategories" style="margin-left: 0px; margin-right: 0px">
                                 <div class="well">
                                     <form v-on:submit.prevent="saveBudget(budgetSubcategory.budgetYearConceptList, budgetSubcategory.idBudget)">
@@ -571,17 +614,19 @@
                                         </div>
                                         <br>
                                         <div class="row" style="margin-left: 0px; margin-right: 0px">
-                                            <div class="col-xs-2">
+                                            <div class="col-xs-3">
                                                 <h4>Total:&nbsp;&nbsp;&nbsp;<b class="text-primary">{{budgetSubcategory.totalSubcategoryAmount | currency}}</b></h4>
                                             </div>
                                             <div class="col-xs-1 text-left">
                                                 <button type="button" class="btn btn-default" :disabled="budgetYearConcept.authorized"
+                                                        data-toggle="tooltip" data-placement="top" title="Agregar presupuesto"
                                                         @click="addConcept(indexOfBudget, indexOfBudgetSubcategory, budgetSubcategory, concepts)">
                                                     <span class="glyphicon glyphicon-plus"></span>
                                                 </button>
                                             </div>
                                             <div class="col-xs-1 text left" v-if="budgetSubcategory.budgetYearConceptList.length > 0">
-                                                <button type="submit" class="btn btn-default" :disabled="budgetYearConcept.authorized">
+                                                <button type="submit" class="btn btn-default" :disabled="budgetYearConcept.authorized"
+                                                        data-toggle="tooltip" data-placement="top" title="Guardar presupuesto">
                                                     <span class="glyphicon glyphicon-floppy-disk"></span>
                                                 </button>
                                             </div>
@@ -598,6 +643,7 @@
                                                 </div>
                                                 <div class="col-xs-1" v-if="!budgetYearConcept.authorized">
                                                     <button style="margin-top: 27px" type="button" class="btn btn-default"
+                                                            data-toggle="tooltip" data-placement="top" title="Eliminar presupuesto"
                                                             @click="removeConcept(budgetSubcategory, budgetYearConcept)">
                                                         <span class="glyphicon glyphicon-trash"></span>
                                                     </button>
