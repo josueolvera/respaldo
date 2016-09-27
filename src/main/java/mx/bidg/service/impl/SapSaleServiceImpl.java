@@ -197,13 +197,13 @@ public class SapSaleServiceImpl implements SapSaleService {
                 sapSale.setDepositAmount(bdDepositAmount);
             }
             if (idSale != null) {
-                sapSale.setIdSale(idSale.getStringCellValue());
+                sapSale.setIdSale(idSale.getNumericCellValue()+"");
             }
             if (imssNum != null) {
-                sapSale.setImssNum(imssNum.getStringCellValue());
+                sapSale.setImssNum(imssNum.getNumericCellValue()+"");
             }
             if (interlocCom != null) {
-                sapSale.setInterlocCom(interlocCom.getStringCellValue());
+                sapSale.setInterlocCom(interlocCom.getNumericCellValue()+"");
             }
             if (liquidation != null) {
                 BigDecimal bdLiquidation = new BigDecimal(liquidation.getNumericCellValue());
@@ -287,11 +287,11 @@ public class SapSaleServiceImpl implements SapSaleService {
 
             if (idSale != null) {
 
-                sapSale = sapSaleDao.findByIdSale(idSale.getStringCellValue());
+                sapSale = sapSaleDao.findByIdSale(idSale.getNumericCellValue()+"");
 
                 if (sapSale != null) {
 
-                    sapSale.setIdSale(idSale.getStringCellValue());
+                    sapSale.setIdSale(idSale.getNumericCellValue()+"");
 
                     if (approvalDate != null) {
                         sapSale.setApprovalDate(approvalDate.getDateCellValue());
@@ -394,10 +394,10 @@ public class SapSaleServiceImpl implements SapSaleService {
                         sapSale.setDepositAmount(bdDepositAmount);
                     }
                     if (imssNum != null) {
-                        sapSale.setImssNum(imssNum.getStringCellValue());
+                        sapSale.setImssNum(imssNum.getNumericCellValue()+"");
                     }
                     if (interlocCom != null) {
-                        sapSale.setInterlocCom(interlocCom.getStringCellValue());
+                        sapSale.setInterlocCom(interlocCom.getNumericCellValue()+"");
                     }
                     if (liquidation != null) {
                         BigDecimal bdLiquidation = new BigDecimal(liquidation.getNumericCellValue());
@@ -429,7 +429,7 @@ public class SapSaleServiceImpl implements SapSaleService {
 
                     SapSale newSapSale = new SapSale();
 
-                    newSapSale.setIdSale(idSale.getStringCellValue());
+                    newSapSale.setIdSale(idSale.getNumericCellValue()+"");
 
                     if (approvalDate != null) {
                         newSapSale.setApprovalDate(approvalDate.getDateCellValue());
@@ -531,10 +531,10 @@ public class SapSaleServiceImpl implements SapSaleService {
                         newSapSale.setDepositAmount(bdDepositAmount);
                     }
                     if (imssNum != null) {
-                        newSapSale.setImssNum(imssNum.getStringCellValue());
+                        newSapSale.setImssNum(imssNum.getNumericCellValue()+"");
                     }
                     if (interlocCom != null) {
-                        newSapSale.setInterlocCom(interlocCom.getStringCellValue());
+                        newSapSale.setInterlocCom(interlocCom.getNumericCellValue()+"");
                     }
                     if (liquidation != null) {
                         BigDecimal bdLiquidation = new BigDecimal(liquidation.getNumericCellValue());
@@ -608,7 +608,7 @@ public class SapSaleServiceImpl implements SapSaleService {
             SapSale sapSale = new SapSale();
 
             if (idSale != null) {
-                sapSale.setIdSale(idSale.getStringCellValue());
+                sapSale.setIdSale(idSale.getNumericCellValue()+"");
             }
 
             List<SapSale> sapSales = sapSaleDao.findAllByIdSale(sapSale.getIdSale());
