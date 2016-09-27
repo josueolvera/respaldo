@@ -46,6 +46,20 @@
             }
         </script>
 
+        <script>
+            Number.prototype.formatMoney = function(places, symbol, thousand, decimal) {
+                places = !isNaN(places = Math.abs(places)) ? places : 2;
+                symbol = symbol !== undefined ? symbol : "$";
+                thousand = thousand || ",";
+                decimal = decimal || ".";
+                var number = this,
+                        negative = number < 0 ? "-" : "",
+                        i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + "",
+                        j = (j = i.length) > 3 ? j % 3 : 0;
+                return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
+            };
+        </script>
+
         <script type="text/javascript">
 
             var vm = new Vue({
@@ -505,7 +519,7 @@
                 filters: {
                     currencyDisplay : {
                         read: function(val) {
-                            return '$'+val.toFixed(2);
+                            return val.formatMoney(2, '');
                         },
                         write: function(val, oldVal) {
                             var number = +val.replace(/[^\d.]/g, '');
