@@ -163,11 +163,50 @@ public class SIADController {
         return model;
     }
 
-    @RequestMapping(value = "/checks",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public ModelAndView checks(@RequestParam(name = "check", required = false) Integer idCheck) {
+    @RequestMapping(value = "/check/{idCheck}",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView checks(@PathVariable Integer idCheck) {
         ModelAndView model = new ModelAndView();
         model.addObject("check", idCheck);
         model.setViewName("Checks");
+        return model;
+    }
+
+    @RequestMapping(value = "/requests-management",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView requestsManagement() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("RequestsManagement");
+        return model;
+    }
+
+    @RequestMapping(value = "/requests-management/check/{idCheck}",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView authorizeCheck(@PathVariable Integer idCheck) {
+        ModelAndView model = new ModelAndView();
+        model.addObject("check", idCheck);
+        model.setViewName("RequestsManagementCheck");
+        return model;
+    }
+
+    @RequestMapping(value = "/requests-management/plane-ticket/{idPlaneTicket}",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView authorizePlaneTicket(@PathVariable Integer idPlaneTicket) {
+        ModelAndView model = new ModelAndView();
+        model.addObject("planeTicket", idPlaneTicket);
+        model.setViewName("RequestsManagementPlaneTicket");
+        return model;
+    }
+
+    @RequestMapping(value = "/requests-management/refund/{idRefund}",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView authorizeRefund(@PathVariable Integer idRefund) {
+        ModelAndView model = new ModelAndView();
+        model.addObject("refund", idRefund);
+        model.setViewName("RequestsManagementRefund");
+        return model;
+    }
+
+    @RequestMapping(value = "/requests-management/travel-expense/{idTravelExpense}",method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView authorizeTravelExpense(@PathVariable Integer idTravelExpense) {
+        ModelAndView model = new ModelAndView();
+        model.addObject("travelExpense", idTravelExpense);
+        model.setViewName("RequestsManagementTravelExpense");
         return model;
     }
 
