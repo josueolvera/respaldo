@@ -320,8 +320,8 @@
                     addConcept: function(indexOfBudget, indexOfBudgetSubcategory, budgetSubcategory, concepts) {
                         var self = this;
                         var budgetYearConcept = this.createNewConcept();
-                        budgetSubcategory.budgetYearConceptList.push(budgetYearConcept);
-                        var indexOfBudgetYearConcept = budgetSubcategory.budgetYearConceptList.length - 1;
+                        budgetSubcategory.budgetYearConceptList.splice(0,0,budgetYearConcept);
+                        var indexOfBudgetYearConcept = 0;
                         setTimeout(
                                 function() {
                                     self.budgets[indexOfBudget]
