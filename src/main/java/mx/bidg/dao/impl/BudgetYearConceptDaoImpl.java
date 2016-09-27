@@ -16,6 +16,7 @@ import mx.bidg.model.DwEnterprises;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -104,6 +105,8 @@ public class BudgetYearConceptDaoImpl extends AbstractDao<Integer, BudgetYearCon
         if (year != null) {
             criteria.add(Restrictions.eq("year", year));
         }
+
+        criteria.addOrder(Order.asc("idBudgetYearConcept"));
 
         return criteria.list();
     }
