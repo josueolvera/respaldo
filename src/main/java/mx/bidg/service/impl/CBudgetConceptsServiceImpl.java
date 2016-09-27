@@ -30,6 +30,7 @@ public class CBudgetConceptsServiceImpl implements CBudgetConceptsService {
     @Override
     public CBudgetConcepts save(CBudgetConcepts cBudgetConcept) {
         cBudgetConcept.setIdAccessLevel(1);
+        cBudgetConcept.setBudgetConcept(cBudgetConcept.getBudgetConcept().toUpperCase().trim());
         return budgetConceptsDao.save(cBudgetConcept);
     }
 
