@@ -616,14 +616,13 @@
                                     </div>
                                     <br>
                                     <div class="row" style="margin-left: 0px; margin-right: 0px">
-                                        <div class="col-md-3">
-                                            <h4>Total:&nbsp;&nbsp;&nbsp;<b class="text-primary">{{budgetSubcategory.totalSubcategoryAmount | currency}}</b></h4>
+                                        <div class="col-md-5">
+                                            <h4>Total subrubro:&nbsp;&nbsp;&nbsp;<b class="text-primary">{{budgetSubcategory.totalSubcategoryAmount | currency}}</b></h4>
                                         </div>
-                                        <div class="col-md-1 text-left">
+                                        <div class="col-md-7 text-right">
                                             <button type="button" class="btn btn-default" :disabled="budgetYearConcept.authorized"
-                                                    data-toggle="tooltip" data-placement="top" title="Agregar presupuesto"
                                                     @click="addConcept(indexOfBudget, indexOfBudgetSubcategory, budgetSubcategory, concepts)">
-                                                <span class="glyphicon glyphicon-plus"></span>
+                                                Agregar concepto
                                             </button>
                                         </div>
                                     </div>
@@ -639,16 +638,14 @@
                                             </div>
                                             <div class="col-md-1" v-if="!budgetYearConcept.authorized">
                                                 <button style="margin-top: 27px" type="button" class="btn btn-default"
-                                                        data-toggle="tooltip" data-placement="top" title="Eliminar presupuesto"
                                                         @click="removeConcept(budgetSubcategory, budgetYearConcept)">
-                                                    <span class="glyphicon glyphicon-trash"></span>
+                                                    Eliminar
                                                 </button>
                                             </div>
                                             <div class="col-md-1 text left" v-if="budgetSubcategory.budgetYearConceptList.length > 0">
                                                 <button style="margin-top: 27px" type="button" class="btn btn-default" :disabled="budgetYearConcept.authorized"
-                                                        data-toggle="tooltip" data-placement="top" title="Guardar presupuesto"
                                                         @click="saveBudget(budgetYearConcept, budgetSubcategory.idBudget)">
-                                                    <span class="glyphicon glyphicon-floppy-disk"></span>
+                                                    Guardar
                                                 </button>
                                             </div>
                                             <div class="col-md-2" v-if="!budgetYearConcept.authorized">
