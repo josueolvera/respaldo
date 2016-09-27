@@ -656,20 +656,20 @@
                                                     Eliminar
                                                 </button>
                                             </div>
-                                            <div class="col-md-1 text left" v-if="budgetSubcategory.budgetYearConceptList.length > 0">
+                                            <div class="col-md-1" v-if="budgetSubcategory.budgetYearConceptList.length > 0">
                                                 <button style="margin-top: 27px" type="button" class="btn btn-default" :disabled="budgetYearConcept.authorized"
                                                         @click="saveBudget(budgetYearConcept, budgetSubcategory.idBudget)">
                                                     Guardar
                                                 </button>
                                             </div>
-                                            <div class="col-md-2" v-if="!budgetYearConcept.authorized">
+                                            <div class="col-md-2 text-center" v-if="!budgetYearConcept.authorized">
                                                 <div class="checkbox">
                                                     <label style="margin-top: 27px">
                                                         <input type="checkbox" v-model="budgetYearConcept.equals" @change="equalsImport(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)"> Copiar monto
                                                     </label>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3" style="margin-top: 27px">
+                                            <div class="col-md-3 text-right" style="margin-top: 27px">
                                                 <h5>Total concepto:&nbsp;&nbsp;&nbsp;<b class="text-primary">{{budgetYearConcept.totalAmount | currency}}</b></h5>
                                             </div>
                                         </div>
