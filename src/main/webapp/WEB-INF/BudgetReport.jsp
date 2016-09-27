@@ -29,7 +29,22 @@
                         costCenter: {},
                         year: null
                     },
-                    budgets: [],
+                    costCenter: {
+                        totalJanuaryAmount:0,
+                        totalFebruaryAmount:0,
+                        totalMarchAmount:0,
+                        totalAprilAmount:0,
+                        totalMayAmount:0,
+                        totalJuneAmount:0,
+                        totalJulyAmount:0,
+                        totalAugustAmount:0,
+                        totalSeptemberAmount:0,
+                        totalOctoberAmount:0,
+                        totalNovemberAmount:0,
+                        totalDecemberAmount:0,
+                        totalYearAmount:0,
+                        budgets: []
+                    },
                     user:{},
                     searching: false,
                     rolesCostCenter:[],
@@ -102,19 +117,38 @@
                                 '&year=' + this.selected.year;
                         this.$http.get(this.searchUrl)
                                 .success(function (data) {
-                                    var self = this;
-                                    this.budgets = data;
+                                    this.costCenter.budgets = data;
                                     this.searching = false;
-                                    this.getConcepts(self);
+                                    this.getTotalPerMonth();
                                 })
                                 .error(function (data) {
 
                                 });
                     },
+                    getTotalPerMonth: function () {
+
+                        var self = this;
+
+                        this.costCenter.budgets.forEach(function (budget) {
+                           self.costCenter.totalJanuaryAmount += budget.januaryCategoryAmount;
+                           self.costCenter.totalFebruaryAmount += budget.februaryCategoryAmount;
+                           self.costCenter.totalMarchAmount += budget.marchCategoryAmount;
+                           self.costCenter.totalAprilAmount += budget.aprilCategoryAmount;
+                           self.costCenter.totalMayAmount += budget.mayCategoryAmount;
+                           self.costCenter.totalJuneAmount += budget.juneCategoryAmount;
+                           self.costCenter.totalJulyAmount += budget.julyCategoryAmount;
+                           self.costCenter.totalAugustAmount += budget.augustCategoryAmount;
+                           self.costCenter.totalSeptemberAmount += budget.septemberCategoryAmount;
+                           self.costCenter.totalOctoberAmount += budget.octoberCategoryAmount;
+                           self.costCenter.totalNovemberAmount += budget.novemberCategoryAmount;
+                           self.costCenter.totalDecemberAmount += budget.decemberCategoryAmount;
+                           self.costCenter.totalYearAmount += budget.totalCategoryAmount;
+                        });
+                    },
                     onChangeCriteria : function () {
                         this.searchUrl = ROOT_URL;
                         this.downloadReportUrl = ROOT_URL + '/budgets?download=true';
-                        this.budgets = [];
+                        this.costCenter.budgets = [];
                     }
                 },
                 filters: {
@@ -135,7 +169,7 @@
                     overflow-x: auto;
                 }
                 .container-scroll > .row {
-                    width: 170%;
+                    width: 180%;
                 }
             }
         </style>
@@ -165,32 +199,82 @@
                         <div class="col-md-1">
                             <button style="margin-top: 25px" class="btn btn-info" >Buscar</button>
                         </div>
-                        <div class="col-md-2" v-if="budgets.length > 0">
+                        <div class="col-md-2" v-if="costCenter.budgets.length > 0">
                             <a style="margin-top: 25px" :href="downloadReportUrl"
                                     class="btn btn-success">
-                                Descargar reporte
+                                Descargar
                             </a>
                         </div>
                     </form>
                 </div>
                 <br>
-                <div class="container-fluid container-scroll" v-if="budgets.length > 0">
-                    <div class="row" style="background-color: #cfcfcf">
+                <div class="container-fluid container-scroll" v-if="costCenter.budgets.length > 0">
+                    <div class="row" style="background-color: #bfbfbf">
                         <div class="col-md-12">
-                            <div class="col-md-2 text-center">
-                                <h5><b class="text-primary">{{selected.costCenter.name}}</b></h5>
-                            </div>
-                            <div class="col-md-9 text-center">
-                                <div class="col-md-1" v-for="month in months">
-                                    <h5><b>{{month.month}}</b></h5>
+                            <div class="row">
+                                <div class="col-md-2 text-center">
+                                    <h5><b class="text-primary">{{selected.costCenter.name}}</b></h5>
+                                </div>
+                                <div class="col-md-9 text-center">
+                                    <div class="col-md-1" v-for="month in months">
+                                        <h5><b>{{month.month | uppercase}}</b></h5>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <h5><b>ACUMULADO {{selected.year}}</b></h5>
                                 </div>
                             </div>
-                            <div class="col-md-1">
-                                <h5><b>Acumulado {{selected.year}}</b></h5>
+                            <div class="row" style="background-color: #cfcfcf">
+                                <div class="col-md-12">
+                                    <div class="col-md-2 text-center">
+                                        <h5><b>TOTAL</b></h5>
+                                    </div>
+                                    <div class="col-md-9 text-center">
+                                        <div class="col-md-1">
+                                            <b class="text-primary">{{costCenter.totalJanuaryAmount | currency}}</b>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <b class="text-primary">{{costCenter.totalFebruaryAmount | currency}}</b>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <b class="text-primary">{{costCenter.totalMarchAmount | currency}}</b>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <b class="text-primary">{{costCenter.totalAprilAmount | currency}}</b>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <b class="text-primary">{{costCenter.totalMayAmount | currency}}</b>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <b class="text-primary">{{costCenter.totalJuneAmount | currency}}</b>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <b class="text-primary">{{costCenter.totalJulyAmount | currency}}</b>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <b class="text-primary">{{costCenter.totalAugustAmount | currency}}</b>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <b class="text-primary">{{costCenter.totalSeptemberAmount | currency}}</b>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <b class="text-primary">{{costCenter.totalOctoberAmount | currency}}</b>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <b class="text-primary">{{costCenter.totalNovemberAmount | currency}}</b>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <b class="text-primary">{{costCenter.totalDecemberAmount | currency}}</b>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 text-center">
+                                        <b>{{costCenter.totalYearAmount | currency}}</b>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-12" style="height:70%;overflow-y: auto;">
-                            <div class="row" v-for="(indexOfBudget, budget) in budgets" style="background-color: #dfdfdf">
+                            <div class="row" v-for="(indexOfBudget, budget) in costCenter.budgets" style="background-color: #dfdfdf">
                                 <div class="col-md-12">
                                     <div class="col-md-2">
                                         <h5><b>{{budget.name}}</b></h5>
@@ -241,7 +325,7 @@
                                     <div class="row" v-for="(indexOfBudgetSubcategory, budgetSubcategory) in budget.budgetSubcategories" style="background-color: #efefef">
                                         <div class="col-md-12">
                                             <div class="col-md-2">
-                                                <b class="text-muted">&nbsp;&nbsp;{{budgetSubcategory.name}}</b>
+                                                <b class="text-muted">&nbsp;&nbsp;&nbsp;{{budgetSubcategory.name}}</b>
                                             </div>
                                             <div class="col-md-9 text-center">
                                                 <div class="col-md-1">
@@ -289,7 +373,7 @@
                                             <div class="row" v-for="(indexOfBudgetYearConcept, budgetYearConcept) in budgetSubcategory.budgetYearConceptList"  style="background-color: #ffffff">
                                                 <div class="col-md-12">
                                                     <div class="col-md-2">
-                                                        <p>&nbsp;&nbsp;&nbsp;&nbsp;{{budgetYearConcept.budgetConcept.budgetConcept}}</p>
+                                                        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{budgetYearConcept.budgetConcept.budgetConcept}}</p>
                                                     </div>
                                                     <div class="col-md-9 text-center">
                                                         <div class="col-md-1">
