@@ -38,7 +38,7 @@ public class CBudgetConcepts implements Serializable {
     
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 200)
     @Column(name = "BUDGET_CONCEPT")
     @JsonView(JsonViews.Root.class)
     private String budgetConcept;
