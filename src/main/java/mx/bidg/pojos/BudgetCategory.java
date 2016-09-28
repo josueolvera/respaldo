@@ -1,7 +1,5 @@
 package mx.bidg.pojos;
 
-import mx.bidg.model.BudgetYearConcept;
-
 import java.math.BigDecimal;
 import java.util.List;
 
