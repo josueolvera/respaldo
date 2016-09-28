@@ -169,7 +169,7 @@
                     overflow-x: auto;
                 }
                 .container-scroll > .row {
-                    width: 180%;
+                    width: 2025px;
                 }
             }
         </style>
