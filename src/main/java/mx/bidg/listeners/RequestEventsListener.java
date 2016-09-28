@@ -130,7 +130,7 @@ public class RequestEventsListener {
         // TODO: Notificar a usuario involucrados
         List<Users> users = new ArrayList<>();
         users.add(request.getUserRequest());
-        users.add(request.getUserResponsable());
+        users.add(request.getUserResponsible());
     }
 
     private Integer evalRule(AuthorizationTreeRules rule, Requests request) {

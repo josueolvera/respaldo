@@ -79,9 +79,9 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idUserRequest;
     
-    @Column(name = "USER_RESPONSABLE", insertable = false, updatable = false)
+    @Column(name = "USER_RESPONSIBLE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idUserResponsable;
+    private Integer idUserResponsible;
     
     @Column(name = "ID_BUDGET_YEAR_CONCEPT", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -100,10 +100,10 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private Users userRequest;
     
-    @JoinColumn(name = "USER_RESPONSABLE", referencedColumnName = "ID_USER")
+    @JoinColumn(name = "USER_RESPONSIBLE", referencedColumnName = "ID_USER")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private Users userResponsable;
+    private Users userResponsible;
     
     @JoinColumn(name = "ID_BUDGET_YEAR_CONCEPT", referencedColumnName = "ID_BUDGET_YEAR_CONCEPT")
     @ManyToOne(optional = false)
@@ -199,12 +199,12 @@ public class Requests implements Serializable {
         this.idUserRequest = idUserRequest;
     }
 
-    public Integer getIdUserResponsable() {
-        return idUserResponsable;
+    public Integer getIdUserResponsible() {
+        return idUserResponsible;
     }
 
-    public void setIdUserResponsable(Integer idUserResponsable) {
-        this.idUserResponsable = idUserResponsable;
+    public void setIdUserResponsible(Integer idUserResponsible) {
+        this.idUserResponsible = idUserResponsible;
     }
 
     public Integer getIdBudgetYearConcept() {
@@ -239,12 +239,12 @@ public class Requests implements Serializable {
         this.userRequest = userRequest;
     }
 
-    public Users getUserResponsable() {
-        return userResponsable;
+    public Users getUserResponsible() {
+        return userResponsible;
     }
 
-    public void setUserResponsable(Users userResponsable) {
-        this.userResponsable = userResponsable;
+    public void setUserResponsible(Users userResponsible) {
+        this.userResponsible = userResponsible;
     }
 
     public BudgetYearConcept getBudgetYearConcept() {
@@ -322,12 +322,12 @@ public class Requests implements Serializable {
                 ", applyingDate=" + applyingDate +
                 ", idAccessLevel=" + idAccessLevel +
                 ", idUserRequest=" + idUserRequest +
-                ", idUserResponsable=" + idUserResponsable +
+                ", idUserResponsable=" + idUserResponsible +
                 ", idBudgetYearConcept=" + idBudgetYearConcept +
                 ", idMonth=" + idMonth +
                 ", idRequestStatus=" + idRequestStatus +
                 ", userRequest=" + userRequest +
-                ", userResponsable=" + userResponsable +
+                ", userResponsable=" + userResponsible +
                 ", budgetYearConcept=" + budgetYearConcept +
                 ", month=" + month +
                 ", requestStatus=" + requestStatus +
