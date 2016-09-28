@@ -60,10 +60,6 @@ public class RefundConceptDocuments implements Serializable {
     @JsonView(JsonViews.Root.class)
     private LocalDateTime uploadingDate;
 
-    @Column(name = "CURRENT_DOCUMENT")
-    @JsonView(JsonViews.Root.class)
-    private Integer currentDocument;
-
     public RefundConceptDocuments() {
     }
 
@@ -71,7 +67,7 @@ public class RefundConceptDocuments implements Serializable {
         this.idRefundConceptDocument = idRefundConceptDocument;
     }
 
-    public RefundConceptDocuments(Integer idRefundConcept, RefundConcepts refundConcept, Integer idRefundConceptDocumentType, CRefundConceptDocumentsTypes refundConceptDocumentType, String documentName, String documentUrl, LocalDateTime uploadingDate, Integer currentDocument) {
+    public RefundConceptDocuments(Integer idRefundConcept, RefundConcepts refundConcept, Integer idRefundConceptDocumentType, CRefundConceptDocumentsTypes refundConceptDocumentType, String documentName, String documentUrl, LocalDateTime uploadingDate) {
         this.idRefundConcept = idRefundConcept;
         this.refundConcept = refundConcept;
         this.idRefundConceptDocumentType = idRefundConceptDocumentType;
@@ -79,7 +75,6 @@ public class RefundConceptDocuments implements Serializable {
         this.documentName = documentName;
         this.documentUrl = documentUrl;
         this.uploadingDate = uploadingDate;
-        this.currentDocument = currentDocument;
     }
 
     public Integer getIdRefundConceptDocument() {
@@ -146,14 +141,6 @@ public class RefundConceptDocuments implements Serializable {
         this.uploadingDate = uploadingDate;
     }
 
-    public Integer getCurrentDocument() {
-        return currentDocument;
-    }
-
-    public void setCurrentDocument(Integer currentDocument) {
-        this.currentDocument = currentDocument;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -173,9 +160,7 @@ public class RefundConceptDocuments implements Serializable {
             return false;
         if (documentName != null ? !documentName.equals(that.documentName) : that.documentName != null) return false;
         if (documentUrl != null ? !documentUrl.equals(that.documentUrl) : that.documentUrl != null) return false;
-        if (uploadingDate != null ? !uploadingDate.equals(that.uploadingDate) : that.uploadingDate != null)
-            return false;
-        return currentDocument != null ? currentDocument.equals(that.currentDocument) : that.currentDocument == null;
+        return uploadingDate != null ? uploadingDate.equals(that.uploadingDate) : that.uploadingDate == null;
 
     }
 
@@ -189,7 +174,6 @@ public class RefundConceptDocuments implements Serializable {
         result = 31 * result + (documentName != null ? documentName.hashCode() : 0);
         result = 31 * result + (documentUrl != null ? documentUrl.hashCode() : 0);
         result = 31 * result + (uploadingDate != null ? uploadingDate.hashCode() : 0);
-        result = 31 * result + (currentDocument != null ? currentDocument.hashCode() : 0);
         return result;
     }
 
@@ -204,7 +188,6 @@ public class RefundConceptDocuments implements Serializable {
                 ", documentName='" + documentName + '\'' +
                 ", documentUrl='" + documentUrl + '\'' +
                 ", uploadingDate=" + uploadingDate +
-                ", currentDocument=" + currentDocument +
                 '}';
     }
 }
