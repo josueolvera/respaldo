@@ -631,4 +631,9 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
     public List<CommissionAmountGroup> obtainBranchManager() {
         return commissionAmountGroupDao.findByGroupBranchAndBranch();
     }
+
+    @Override
+    public List<CommissionAmountGroup> obtainAuxiliar() {
+        return commissionAmountGroupDao.findByGroupAuxiliarAndBranch();
+    }
 }
