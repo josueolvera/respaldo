@@ -129,4 +129,9 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
     public Boolean delete(PlaneTickets planeTicket) {
         return planeTicketsDao.delete(planeTicket);
     }
+
+    @Override
+    public List<PlaneTickets> getPlaneTickets(Integer idUser) {
+        return planeTicketsDao.getPlaneTickets(idUser);
+    }
 }
