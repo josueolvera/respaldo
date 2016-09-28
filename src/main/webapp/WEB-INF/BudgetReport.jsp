@@ -211,7 +211,7 @@
                 <div class="container-fluid container-scroll" v-if="costCenter.budgets.length > 0">
                     <div class="row" style="background-color: #bfbfbf">
                         <div class="col-md-12">
-                            <div class="row">
+                            <div class="row" style="height: 50px">
                                 <div class="col-md-2 text-center">
                                     <h5><b class="text-primary">{{selected.costCenter.name}}</b></h5>
                                 </div>
