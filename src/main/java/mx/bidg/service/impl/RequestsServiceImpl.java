@@ -135,7 +135,7 @@ public class RequestsServiceImpl implements RequestsService {
         request.setFolio(foliosService.createNew(new CTables(51)));
         request.setUserRequest(user);
         request.setRequestStatus(CRequestStatus.PENDIENTE);
-        request.setUserResponsible(new Users(jsonRequest.get("request").get("idUserResponsable").asInt()));
+        request.setUserResponsable(new Users(jsonRequest.get("request").get("idUserResponsable").asInt()));
         request.setCreationDate(LocalDateTime.now());
         request.setApplyingDate(LocalDateTime.now());
         request.setIdAccessLevel(1);
