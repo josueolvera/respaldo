@@ -96,7 +96,7 @@ public class Notifications implements Serializable {
     private ResourcesTasks resourcesTasks;
 
     @JoinColumn(name = "ID_USER", referencedColumnName = "ID_USER")
-    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonView(JsonViews.Embedded.class)
     private Users user;
 

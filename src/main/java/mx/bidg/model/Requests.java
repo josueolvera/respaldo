@@ -11,23 +11,10 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
-import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -92,9 +79,9 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idUserRequest;
     
-    @Column(name = "USER_RESPONSIBLE", insertable = false, updatable = false)
+    @Column(name = "USER_RESPONSABLE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idUserResponsible;
+    private Integer idUserResponsable;
     
     @Column(name = "ID_BUDGET_YEAR_CONCEPT", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -113,10 +100,10 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private Users userRequest;
     
-    @JoinColumn(name = "USER_RESPONSIBLE", referencedColumnName = "ID_USER")
+    @JoinColumn(name = "USER_RESPONSABLE", referencedColumnName = "ID_USER")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private Users userResponsible;
+    private Users userResponsable;
     
     @JoinColumn(name = "ID_BUDGET_YEAR_CONCEPT", referencedColumnName = "ID_BUDGET_YEAR_CONCEPT")
     @ManyToOne(optional = false)
@@ -140,6 +127,10 @@ public class Requests implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "request")
     @JsonView(JsonViews.Embedded.class)
     private List<RequestProducts> requestProductsList;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "request")
+    @JsonView(JsonViews.Embedded.class)
+    private List<RequestConcept> requestConceptList;
 
     public Requests() {
     }
@@ -208,12 +199,12 @@ public class Requests implements Serializable {
         this.idUserRequest = idUserRequest;
     }
 
-    public Integer getIdUserResponsible() {
-        return idUserResponsible;
+    public Integer getIdUserResponsable() {
+        return idUserResponsable;
     }
 
-    public void setIdUserResponsible(Integer idUserResponsible) {
-        this.idUserResponsible = idUserResponsible;
+    public void setIdUserResponsable(Integer idUserResponsable) {
+        this.idUserResponsable = idUserResponsable;
     }
 
     public Integer getIdBudgetYearConcept() {
@@ -248,12 +239,12 @@ public class Requests implements Serializable {
         this.userRequest = userRequest;
     }
 
-    public Users getUserResponsible() {
-        return userResponsible;
+    public Users getUserResponsable() {
+        return userResponsable;
     }
 
-    public void setUserResponsible(Users userResponsible) {
-        this.userResponsible = userResponsible;
+    public void setUserResponsable(Users userResponsable) {
+        this.userResponsable = userResponsable;
     }
 
     public BudgetYearConcept getBudgetYearConcept() {
@@ -296,6 +287,14 @@ public class Requests implements Serializable {
         this.requestProductsList = requestProductsList;
     }
 
+    public List<RequestConcept> getRequestConceptList() {
+        return requestConceptList;
+    }
+
+    public void setRequestConceptList(List<RequestConcept> requestConceptList) {
+        this.requestConceptList = requestConceptList;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -323,12 +322,12 @@ public class Requests implements Serializable {
                 ", applyingDate=" + applyingDate +
                 ", idAccessLevel=" + idAccessLevel +
                 ", idUserRequest=" + idUserRequest +
-                ", idUserResponsible=" + idUserResponsible +
+                ", idUserResponsable=" + idUserResponsable +
                 ", idBudgetYearConcept=" + idBudgetYearConcept +
                 ", idMonth=" + idMonth +
                 ", idRequestStatus=" + idRequestStatus +
                 ", userRequest=" + userRequest +
-                ", userResponsible=" + userResponsible +
+                ", userResponsable=" + userResponsable +
                 ", budgetYearConcept=" + budgetYearConcept +
                 ", month=" + month +
                 ", requestStatus=" + requestStatus +

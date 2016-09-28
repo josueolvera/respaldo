@@ -89,7 +89,8 @@ public class CBudgetConceptsDaoImpl extends AbstractDao<Integer, CBudgetConcepts
         Criteria criteria = createEntityCriteria();
 
         if (idRequestCategory != null) {
-            criteria.add(Restrictions.eq("idRequestCategory", idRequestCategory));
+            criteria.createAlias("requestsCategories", "rc");
+            criteria.add(Restrictions.eq("rc.idRequestCategory", idRequestCategory));
         }
 
         return criteria.list();

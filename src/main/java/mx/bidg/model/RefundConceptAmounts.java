@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * Created by gerardo8 on 22/07/16.
@@ -46,7 +47,7 @@ public class RefundConceptAmounts implements Serializable {
     @NotNull
     @Column(name = "AMOUNT")
     @JsonView(JsonViews.Root.class)
-    private Float amount;
+    private BigDecimal amount;
 
     public RefundConceptAmounts() {
     }
@@ -55,7 +56,7 @@ public class RefundConceptAmounts implements Serializable {
         this.idRefundConcept = idVoucherConcept;
     }
 
-    public RefundConceptAmounts(Integer idRefundConcept, RefundConcepts refundConcept, String description, Float amount) {
+    public RefundConceptAmounts(Integer idRefundConcept, RefundConcepts refundConcept, String description, BigDecimal amount) {
         this.idRefundConcept = idRefundConcept;
         this.refundConcept = refundConcept;
         this.description = description;
@@ -94,11 +95,11 @@ public class RefundConceptAmounts implements Serializable {
         this.description = description;
     }
 
-    public Float getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(Float amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 

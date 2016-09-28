@@ -133,6 +133,14 @@ public class SapSaleController {
 
                     commissionAmountGroupService.obtainAmountsbyBranch(sapSales, agreementsGroups , ofDate, untilDate);
 
+                    List<CommissionAmountGroup> commissionAmountAuxiliarGroupList = commissionAmountGroupService.obtainAuxiliar();
+
+                    for(CommissionAmountGroup commissionAmount : commissionAmountAuxiliarGroupList){
+                        DwBranchs dwBranchs = dwBranchsService.findById(commissionAmount.getIdBranch());
+                        commissionAmount.setIndexReprocessing(dwBranchs.getIndexReprocessing());
+                        commissionAmountGroupService.update(commissionAmount);
+                    }
+
                     List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg());
 
                     agreementsGroupConditionService.setTabulator(agreementsGroupConditionList);
@@ -152,7 +160,6 @@ public class SapSaleController {
                     for(CommissionAmountGroup commissionAmountGroup : commissionAmountGroupList){
                         DwBranchs dwBranchs = dwBranchsService.findById(commissionAmountGroup.getIdBranch());
                         commissionAmountGroup.setGoal(dwBranchs.getBranchGoal());
-                        commissionAmountGroup.setIndexReprocessing(dwBranchs.getIndexReprocessing());
                         commissionAmountGroup.setPttoPromReal(dwBranchs.getPttoPromReal());
                         commissionAmountGroup.setPttoPromVta(dwBranchs.getPttoPromVta());
                         BigDecimal scope = commissionAmountGroup.getAmount().divide(dwBranchs.getBranchGoal(), 2, BigDecimal.ROUND_HALF_UP);

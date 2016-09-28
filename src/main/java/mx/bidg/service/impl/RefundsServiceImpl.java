@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * Created by gerardo8 on 25/07/16.
@@ -64,5 +65,10 @@ public class RefundsServiceImpl implements RefundsService {
     @Override
     public Refunds findById(Integer idRefund) {
         return refundsDao.findById(idRefund);
+    }
+
+    @Override
+    public List<Refunds> getRefunds(Integer idUser) {
+        return refundsDao.getRefunds(idUser);
     }
 }

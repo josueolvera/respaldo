@@ -25,4 +25,5 @@ public interface CommissionAmountGroupService {
     List findByOnlyClaveSap ();
     void comissionByReport(OutputStream stream) throws IOException;
     List<CommissionAmountGroup> obtainBranchManager();
+    List<CommissionAmountGroup> obtainAuxiliar();
 }

@@ -40,8 +40,6 @@ public class RefundConcepts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idVoucherType;
 
-    @Basic(optional = false)
-    @NotNull
     @JoinColumn(name = "ID_VOUCHER_TYPE", referencedColumnName = "ID_VOUCHER_TYPE")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)

@@ -1,8 +1,9 @@
-package mx.bidg.service.impl;
+package mx.bidg.dao.impl;
 
 import mx.bidg.dao.AbstractDao;
-import mx.bidg.dao.RefundsDao;
-import mx.bidg.model.Refunds;
+import mx.bidg.dao.ChecksDao;
+import mx.bidg.model.CGroups;
+import mx.bidg.model.Checks;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -10,41 +11,41 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * Created by gerardo8 on 25/07/16.
+ * Created by gerardo8 on 27/09/16.
  */
-@SuppressWarnings("unchecked")
 @Repository
-public class RefundsDaoImpl extends AbstractDao<Integer,Refunds> implements RefundsDao {
+@SuppressWarnings("unchecked")
+public class ChecksDaoImpl extends AbstractDao<Integer, Checks> implements ChecksDao {
     @Override
-    public Refunds save(Refunds entity) {
+    public Checks save(Checks entity) {
         persist(entity);
         return entity;
     }
 
     @Override
-    public Refunds findById(int id) {
+    public Checks findById(int id) {
         return getByKey(id);
     }
 
     @Override
-    public List<Refunds> findAll() {
+    public List<Checks> findAll() {
         return createEntityCriteria().list();
     }
 
     @Override
-    public Refunds update(Refunds entity) {
+    public Checks update(Checks entity) {
         modify(entity);
         return entity;
     }
 
     @Override
-    public boolean delete(Refunds entity) {
+    public boolean delete(Checks entity) {
         remove(entity);
         return true;
     }
 
     @Override
-    public List<Refunds> getRefunds(Integer idUser) {
+    public List<Checks> getChecks(Integer idUser) {
         Criteria criteria = createEntityCriteria();
 
         if (idUser != null) {

@@ -46,6 +46,20 @@
             }
         </script>
 
+        <script>
+            Number.prototype.formatMoney = function(places, symbol, thousand, decimal) {
+                places = !isNaN(places = Math.abs(places)) ? places : 2;
+                symbol = symbol !== undefined ? symbol : "$";
+                thousand = thousand || ",";
+                decimal = decimal || ".";
+                var number = this,
+                        negative = number < 0 ? "-" : "",
+                        i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + "",
+                        j = (j = i.length) > 3 ? j % 3 : 0;
+                return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
+            };
+        </script>
+
         <script type="text/javascript">
 
             var vm = new Vue({
@@ -237,9 +251,12 @@
                         }
                         return -1;
                     },
-                    saveBudget: function (budgetYearConceptList, idBudget) {
+                    saveBudget: function (budgetYearConcept, idBudget) {
 
-                        var budgetYearConceptListToSave = budgetYearConceptList;
+
+                        var budgetYearConceptListToSave = [];
+
+                        budgetYearConceptListToSave.push(budgetYearConcept);
 
                         var isValid = false;
 
@@ -317,8 +334,8 @@
                     addConcept: function(indexOfBudget, indexOfBudgetSubcategory, budgetSubcategory, concepts) {
                         var self = this;
                         var budgetYearConcept = this.createNewConcept();
-                        budgetSubcategory.budgetYearConceptList.push(budgetYearConcept);
-                        var indexOfBudgetYearConcept = budgetSubcategory.budgetYearConceptList.length - 1;
+                        budgetSubcategory.budgetYearConceptList.splice(0,0,budgetYearConcept);
+                        var indexOfBudgetYearConcept = 0;
                         setTimeout(
                                 function() {
                                     self.budgets[indexOfBudget]
@@ -502,7 +519,7 @@
                 filters: {
                     currencyDisplay : {
                         read: function(val) {
-                            return '$'+val.toFixed(2);
+                            return val.formatMoney(2, '');
                         },
                         write: function(val, oldVal) {
                             var number = +val.replace(/[^\d.]/g, '');
@@ -589,7 +606,7 @@
                     </form>
                 </div>
                 <br>
-                <div v-if="searching" class="col-xs-12"
+                <div v-if="searching" class="col-md-12"
                      style="height: 6rem; padding: 2rem 0;">
                     <div class="loader">Cargando...</div>
                 </div>
@@ -606,125 +623,121 @@
                             </div>
                             <div class="row" v-for="(indexOfBudgetSubcategory, budgetSubcategory) in budget.budgetSubcategories" style="margin-left: 0px; margin-right: 0px">
                                 <div class="well">
-                                    <form v-on:submit.prevent="saveBudget(budgetSubcategory.budgetYearConceptList, budgetSubcategory.idBudget)">
-                                        <div class="row" style="margin-left: 0px; margin-right: 0px">
-                                            <div class="col-xs-4">
-                                                <h4>{{budgetSubcategory.name}}</h4>
-                                            </div>
+                                    <div class="row" style="margin-left: 0px; margin-right: 0px">
+                                        <div class="col-md-4">
+                                            <h4>{{budgetSubcategory.name}}</h4>
                                         </div>
-                                        <br>
-                                        <div class="row" style="margin-left: 0px; margin-right: 0px">
-                                            <div class="col-xs-3">
-                                                <h4>Total:&nbsp;&nbsp;&nbsp;<b class="text-primary">{{budgetSubcategory.totalSubcategoryAmount | currency}}</b></h4>
-                                            </div>
-                                            <div class="col-xs-1 text-left">
-                                                <button type="button" class="btn btn-default" :disabled="budgetYearConcept.authorized"
-                                                        data-toggle="tooltip" data-placement="top" title="Agregar presupuesto"
-                                                        @click="addConcept(indexOfBudget, indexOfBudgetSubcategory, budgetSubcategory, concepts)">
-                                                    <span class="glyphicon glyphicon-plus"></span>
-                                                </button>
-                                            </div>
-                                            <div class="col-xs-1 text left" v-if="budgetSubcategory.budgetYearConceptList.length > 0">
-                                                <button type="submit" class="btn btn-default" :disabled="budgetYearConcept.authorized"
-                                                        data-toggle="tooltip" data-placement="top" title="Guardar presupuesto">
-                                                    <span class="glyphicon glyphicon-floppy-disk"></span>
-                                                </button>
-                                            </div>
+                                    </div>
+                                    <br>
+                                    <div class="row" style="margin-left: 0px; margin-right: 0px">
+                                        <div class="col-md-5">
+                                            <h4>Total subrubro:&nbsp;&nbsp;&nbsp;<b class="text-primary">{{budgetSubcategory.totalSubcategoryAmount | currency}}</b></h4>
                                         </div>
-                                        <br>
-                                        <div v-for="(indexOfBudgetYearConcept, budgetYearConcept) in budgetSubcategory.budgetYearConceptList">
-                                            <div class="row">
-                                                <div class="col-xs-3">
-                                                    <label>Concepto</label>
-                                                    <select id="select-concepts-{{indexOfBudget}}-{{indexOfBudgetSubcategory}}-{{indexOfBudgetYearConcept}}"
-                                                            class="form-control" :disabled="budgetYearConcept.authorized">
-                                                    </select>
+                                        <div class="col-md-7 text-right">
+                                            <button type="button" class="btn btn-default" :disabled="budgetYearConcept.authorized"
+                                                    @click="addConcept(indexOfBudget, indexOfBudgetSubcategory, budgetSubcategory, concepts)">
+                                                Agregar concepto
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div v-for="(indexOfBudgetYearConcept, budgetYearConcept) in budgetSubcategory.budgetYearConceptList">
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <label>Concepto</label>
+                                                <select id="select-concepts-{{indexOfBudget}}-{{indexOfBudgetSubcategory}}-{{indexOfBudgetYearConcept}}"
+                                                        class="form-control" :disabled="budgetYearConcept.authorized">
+                                                </select>
 
-                                                </div>
-                                                <div class="col-xs-1" v-if="!budgetYearConcept.authorized">
-                                                    <button style="margin-top: 27px" type="button" class="btn btn-default"
-                                                            data-toggle="tooltip" data-placement="top" title="Eliminar presupuesto"
-                                                            @click="removeConcept(budgetSubcategory, budgetYearConcept)">
-                                                        <span class="glyphicon glyphicon-trash"></span>
-                                                    </button>
-                                                </div>
-                                                <div class="col-xs-2" v-if="!budgetYearConcept.authorized">
-                                                    <div class="checkbox">
-                                                        <label style="margin-top: 27px">
-                                                            <input type="checkbox" v-model="budgetYearConcept.equals" @change="equalsImport(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)"> Copiar monto
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-xs-4" style="margin-top: 27px">
-                                                    <h5>Total concepto:&nbsp;&nbsp;&nbsp;<b class="text-primary">{{budgetYearConcept.totalAmount | currency}}</b></h5>
+                                            </div>
+                                            <div class="col-md-1" v-if="!budgetYearConcept.authorized">
+                                                <button style="margin-top: 27px" type="button" class="btn btn-default"
+                                                        @click="removeConcept(budgetSubcategory, budgetYearConcept)">
+                                                    Eliminar
+                                                </button>
+                                            </div>
+                                            <div class="col-md-1" v-if="budgetSubcategory.budgetYearConceptList.length > 0">
+                                                <button style="margin-top: 27px" type="button" class="btn btn-default" :disabled="budgetYearConcept.authorized"
+                                                        @click="saveBudget(budgetYearConcept, budgetSubcategory.idBudget)">
+                                                    Guardar
+                                                </button>
+                                            </div>
+                                            <div class="col-md-2 text-center" v-if="!budgetYearConcept.authorized">
+                                                <div class="checkbox">
+                                                    <label style="margin-top: 27px">
+                                                        <input type="checkbox" v-model="budgetYearConcept.equals" @change="equalsImport(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)"> Copiar monto
+                                                    </label>
                                                 </div>
                                             </div>
-                                            <br>
-                                            <div class="row" style="margin-left: 0px">
-                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
-                                                    <label>Ene</label>
-                                                    <input type="text" class="form-control" v-model="budgetYearConcept.januaryAmount | currencyDisplay" required
-                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
-                                                </div>
-                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
-                                                    <label>Feb</label>
-                                                    <input type="text" class="form-control" v-model="budgetYearConcept.februaryAmount | currencyDisplay" required
-                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
-                                                </div>
-                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
-                                                    <label>Mar</label>
-                                                    <input type="text" class="form-control" v-model="budgetYearConcept.marchAmount | currencyDisplay" required
-                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
-                                                </div>
-                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
-                                                    <label>Abr</label>
-                                                    <input type="text" class="form-control" v-model="budgetYearConcept.aprilAmount | currencyDisplay" required
-                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
-                                                </div>
-                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
-                                                    <label>May</label>
-                                                    <input type="text" class="form-control" v-model="budgetYearConcept.mayAmount | currencyDisplay" required
-                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
-                                                </div>
-                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
-                                                    <label>Jun</label>
-                                                    <input type="text" class="form-control" v-model="budgetYearConcept.juneAmount | currencyDisplay" required
-                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
-                                                </div>
-                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
-                                                    <label>Jul</label>
-                                                    <input type="text" class="form-control" v-model="budgetYearConcept.julyAmount | currencyDisplay" required
-                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
-                                                </div>
-                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
-                                                    <label>Ago</label>
-                                                    <input type="text" class="form-control" v-model="budgetYearConcept.augustAmount | currencyDisplay" required
-                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
-                                                </div>
-                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
-                                                    <label>Sep</label>
-                                                    <input type="text" class="form-control" v-model="budgetYearConcept.septemberAmount | currencyDisplay" required
-                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
-                                                </div>
-                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
-                                                    <label>Oct</label>
-                                                    <input type="text" class="form-control" v-model="budgetYearConcept.octoberAmount | currencyDisplay" required
-                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
-                                                </div>
-                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
-                                                    <label>Nov</label>
-                                                    <input type="text" class="form-control" v-model="budgetYearConcept.novemberAmount | currencyDisplay" required
-                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
-                                                </div>
-                                                <div class="col-xs-1" style="padding-left: 0px; padding-right: 1px">
-                                                    <label>Dic</label>
-                                                    <input type="text" class="form-control" v-model="budgetYearConcept.decemberAmount | currencyDisplay" required
-                                                           @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
-                                                </div>
+                                            <div class="col-md-3 text-right" style="margin-top: 27px">
+                                                <h5>Total concepto:&nbsp;&nbsp;&nbsp;<b class="text-primary">{{budgetYearConcept.totalAmount | currency}}</b></h5>
                                             </div>
-                                            <hr style="border: 1px solid #ccc">
                                         </div>
-                                    </form>
+                                        <br>
+                                        <div class="row" style="margin-left: 0px">
+                                            <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                <label>Ene</label>
+                                                <input type="text" class="form-control" v-model="budgetYearConcept.januaryAmount | currencyDisplay" required
+                                                       @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                            </div>
+                                            <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                <label>Feb</label>
+                                                <input type="text" class="form-control" v-model="budgetYearConcept.februaryAmount | currencyDisplay" required
+                                                       @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                            </div>
+                                            <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                <label>Mar</label>
+                                                <input type="text" class="form-control" v-model="budgetYearConcept.marchAmount | currencyDisplay" required
+                                                       @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                            </div>
+                                            <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                <label>Abr</label>
+                                                <input type="text" class="form-control" v-model="budgetYearConcept.aprilAmount | currencyDisplay" required
+                                                       @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                            </div>
+                                            <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                <label>May</label>
+                                                <input type="text" class="form-control" v-model="budgetYearConcept.mayAmount | currencyDisplay" required
+                                                       @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                            </div>
+                                            <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                <label>Jun</label>
+                                                <input type="text" class="form-control" v-model="budgetYearConcept.juneAmount | currencyDisplay" required
+                                                       @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                            </div>
+                                            <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                <label>Jul</label>
+                                                <input type="text" class="form-control" v-model="budgetYearConcept.julyAmount | currencyDisplay" required
+                                                       @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                            </div>
+                                            <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                <label>Ago</label>
+                                                <input type="text" class="form-control" v-model="budgetYearConcept.augustAmount | currencyDisplay" required
+                                                       @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                            </div>
+                                            <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                <label>Sep</label>
+                                                <input type="text" class="form-control" v-model="budgetYearConcept.septemberAmount | currencyDisplay" required
+                                                       @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                            </div>
+                                            <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                <label>Oct</label>
+                                                <input type="text" class="form-control" v-model="budgetYearConcept.octoberAmount | currencyDisplay" required
+                                                       @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                            </div>
+                                            <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                <label>Nov</label>
+                                                <input type="text" class="form-control" v-model="budgetYearConcept.novemberAmount | currencyDisplay" required
+                                                       @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                            </div>
+                                            <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                                <label>Dic</label>
+                                                <input type="text" class="form-control" v-model="budgetYearConcept.decemberAmount | currencyDisplay" required
+                                                       @change="getBudgetYearConcept(indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept)" :disabled="budgetYearConcept.authorized" onkeypress="return validateFloatKeyPress(this,event)">
+                                            </div>
+                                        </div>
+                                        <hr style="border: 1px solid #ccc">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -741,20 +754,20 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="row">
-                                        <div class="col-xs-1">
+                                        <div class="col-md-1">
                                             <p>De</p>
                                         </div>
-                                        <div class="col-xs-5">
+                                        <div class="col-md-5">
                                             <select v-model="selected.yearFromCopy" class="form-control" required>
                                                 <option v-for="year in years" :value="year">
                                                     {{year}}
                                                 </option>
                                             </select>
                                         </div>
-                                        <div class="col-xs-1">
+                                        <div class="col-md-1">
                                             <p>a</p>
                                         </div>
-                                        <div class="col-xs-5">
+                                        <div class="col-md-5">
                                             <select v-model="selected.yearToCopy" class="form-control" required>
                                                 <option v-for="year in years" :value="year">
                                                     {{year}}

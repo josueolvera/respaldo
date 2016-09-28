@@ -11,9 +11,16 @@ import java.util.List;
  * Created by gerardo8 on 13/07/16.
  */
 public interface PlaneTicketsService {
+
     List<PlaneTickets> findAll();
+
     PlaneTickets findById(Integer id);
+
     PlaneTickets save(String data, Users user) throws IOException;
+
     PlaneTickets update(PlaneTickets planeTicket);
+
     Boolean delete(PlaneTickets planeTicket);
+
+    List<PlaneTickets> getPlaneTickets(Integer idUser);
 }
