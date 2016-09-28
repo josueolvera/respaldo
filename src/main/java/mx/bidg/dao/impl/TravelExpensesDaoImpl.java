@@ -3,6 +3,10 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.TravelExpensesDao;
 import mx.bidg.model.TravelExpenses;
+import org.codehaus.groovy.control.io.ReaderSource;
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -40,5 +44,17 @@ public class TravelExpensesDaoImpl extends AbstractDao<Integer,TravelExpenses> i
     public boolean delete(TravelExpenses entity) {
         remove(entity);
         return true;
+    }
+
+    @Override
+    public List<TravelExpenses> getTravelExpenses(Integer idUser) {
+        Criteria criteria = createEntityCriteria();
+
+        if (idUser != null) {
+            criteria.createAlias("request", "rq")
+                    .add(Restrictions.eq("rq.idUserRequest", idUser));
+        }
+
+        return criteria.list();
     }
 }
