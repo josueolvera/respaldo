@@ -5,7 +5,10 @@ import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * Created by gerardo8 on 22/09/16.
@@ -32,4 +35,101 @@ public class Checks implements Serializable {
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private TravelExpenses travelExpense;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "AUTHORIZED_AMOUNT")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal authorizedAmount;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "CHECKED_AMOUNT")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal checkedAmount;
+
+    @OneToMany(mappedBy = "check")
+    @JsonView(JsonViews.Embedded.class)
+    private List<ChecksBills> checksBills;
+
+    public Checks() {
+    }
+
+    public Checks(TravelExpenses travelExpense) {
+        this.travelExpense = travelExpense;
+    }
+
+    public Integer getIdCheck() {
+        return idCheck;
+    }
+
+    public void setIdCheck(Integer idCheck) {
+        this.idCheck = idCheck;
+    }
+
+    public Integer getIdTravelExpense() {
+        return idTravelExpense;
+    }
+
+    public void setIdTravelExpense(Integer idTravelExpense) {
+        this.idTravelExpense = idTravelExpense;
+    }
+
+    public TravelExpenses getTravelExpense() {
+        return travelExpense;
+    }
+
+    public void setTravelExpense(TravelExpenses travelExpense) {
+        this.travelExpense = travelExpense;
+    }
+
+    public BigDecimal getAuthorizedAmount() {
+        return authorizedAmount;
+    }
+
+    public void setAuthorizedAmount(BigDecimal authorizedAmount) {
+        this.authorizedAmount = authorizedAmount;
+    }
+
+    public BigDecimal getCheckedAmount() {
+        return checkedAmount;
+    }
+
+    public void setCheckedAmount(BigDecimal checkedAmount) {
+        this.checkedAmount = checkedAmount;
+    }
+
+    public List<ChecksBills> getChecksBills() {
+        return checksBills;
+    }
+
+    public void setChecksBills(List<ChecksBills> checksBills) {
+        this.checksBills = checksBills;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Checks checks = (Checks) o;
+
+        return idCheck != null ? idCheck.equals(checks.idCheck) : checks.idCheck == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return idCheck != null ? idCheck.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Checks{" +
+                "idCheck=" + idCheck +
+                ", idTravelExpense=" + idTravelExpense +
+                ", travelExpense=" + travelExpense +
+                ", checksBills=" + checksBills +
+                '}';
+    }
 }
