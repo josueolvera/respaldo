@@ -72,6 +72,7 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
         JsonNode jsonNode = mapper.readTree(data);
         JsonNode travelExpenseNode = jsonNode.get("travelExpense");
         CTravelTypes travelType = mapper.treeToValue(travelExpenseNode.get("travelType"), CTravelTypes.class);
+        CCostCenter costCenter = mapper.treeToValue(jsonNode.get("costCenter"), CCostCenter.class);
 
         AccountingAccounts accountingAccount;
 
@@ -82,7 +83,7 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
         }
 
         List<RolesCostCenter> rolesCostCenterList = rolesCostCenterDao.findByRole(user.getDwEmployee().getIdRole());
-        Budgets budget = budgetsDao.findByAccountingAccountAndCostCenter(accountingAccount.getIdAccountingAccount(), rolesCostCenterList.get(0).getCostCenter().getIdCostCenter());
+        Budgets budget = budgetsDao.findByAccountingAccountAndCostCenter(accountingAccount.getIdAccountingAccount(), costCenter.getIdCostCenter());
 
         if (budget != null) {
 
@@ -140,6 +141,7 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
                     }
 
                     travelExpensesDao.save(travelExpense);
+
                     return travelExpense;
                 } else {
                     throw new ValidationException("Fuera de presupuesto","Su solicitud esta fuera de presupuesto");
@@ -172,5 +174,10 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
     public Boolean delete(TravelExpenses travelExpenses) {
         travelExpensesDao.delete(travelExpenses);
         return true;
+    }
+
+    @Override
+    public List<TravelExpenses> getTravelExpenses(Integer idUser) {
+        return travelExpensesDao.getTravelExpenses(idUser);
     }
 }
