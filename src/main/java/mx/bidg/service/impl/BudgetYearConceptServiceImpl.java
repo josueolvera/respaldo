@@ -6,6 +6,7 @@
 package mx.bidg.service.impl;
 
 import mx.bidg.dao.BudgetYearConceptDao;
+import mx.bidg.dao.BudgetYearDao;
 import mx.bidg.dao.BudgetsDao;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
@@ -36,6 +37,9 @@ public class BudgetYearConceptServiceImpl implements BudgetYearConceptService {
 
     @Autowired
     BudgetYearConceptDao budgetYearConceptDao;
+
+    @Autowired
+    BudgetYearDao budgetYearDao;
 
     @Autowired
     BudgetsService budgetsService;

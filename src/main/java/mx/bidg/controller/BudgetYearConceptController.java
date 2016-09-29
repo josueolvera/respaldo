@@ -5,6 +5,7 @@
  */
 package mx.bidg.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import mx.bidg.model.*;
 import mx.bidg.model.BudgetYearConcept;
 import mx.bidg.service.BudgetYearConceptService;
 import mx.bidg.service.BudgetMonthConceptsService;
+import mx.bidg.service.BudgetYearService;
 import mx.bidg.service.BudgetsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +37,9 @@ public class BudgetYearConceptController {
     
     @Autowired
     BudgetYearConceptService budgetYearConceptService;
+
+    @Autowired
+    BudgetYearService budgetYearService;
     
     @Autowired
     BudgetMonthConceptsService budgetMonthConceptsService;
@@ -66,8 +71,12 @@ public class BudgetYearConceptController {
     public ResponseEntity<String> save(@RequestBody String data, @PathVariable Integer idBudget, HttpSession httpSession) throws Exception {
 
         Users user = (Users) httpSession.getAttribute("user");
+        JsonNode budgetYearConceptListNode = mapper.readTree(data);
+        Integer year = budgetYearConceptListNode.get(0).get("year").asInt();
 
         List<BudgetYearConcept> budgetYearConceptList = budgetYearConceptService.saveList(data, idBudget, user);
+
+        budgetYearService.saveOrUpdate(idBudget, year);
 
         return ResponseEntity.ok(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(budgetYearConceptList));
     }

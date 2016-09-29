@@ -15,6 +15,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -91,6 +92,10 @@ public class TravelExpenses implements Serializable {
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private Requests request;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "travelExpense")
+    @JsonView(JsonViews.Embedded.class)
+    private List<TravelExpenseConcept> travelExpenseConceptList;
 
     @Transient
     @JsonView(JsonViews.Embedded.class)
@@ -209,6 +214,14 @@ public class TravelExpenses implements Serializable {
 
     public void setRequest(Requests request) {
         this.request = request;
+    }
+
+    public List<TravelExpenseConcept> getTravelExpenseConceptList() {
+        return travelExpenseConceptList;
+    }
+
+    public void setTravelExpenseConceptList(List<TravelExpenseConcept> travelExpenseConceptList) {
+        this.travelExpenseConceptList = travelExpenseConceptList;
     }
 
     public DateFormatsPojo getCreationDateFormats() {
