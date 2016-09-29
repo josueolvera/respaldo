@@ -110,64 +110,10 @@ public class BudgetYearConcept implements Serializable {
     @JsonView(JsonViews.Root.class)
     private BigDecimal decemberAmount;
 
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "TOTAL_AMOUNT")
+    @Transient
     @JsonView(JsonViews.Root.class)
     private BigDecimal totalAmount;
 
-    @Column(name = "JANUARY_EXPENDED_AMOUNT")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal januaryExpendedAmount;
-
-    @Column(name = "FEBRUARY_EXPENDED_AMOUNT")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal februaryExpendedAmount;
-
-    @Column(name = "MARCH_EXPENDED_AMOUNT")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal marchExpendedAmount;
-
-    @Column(name = "APRIL_EXPENDED_AMOUNT")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal aprilExpendedAmount;
-
-    @Column(name = "MAY_EXPENDED_AMOUNT")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal mayExpendedAmount;
-
-    @Column(name = "JUNE_EXPENDED_AMOUNT")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal juneExpendedAmount;
-
-    @Column(name = "JULY_EXPENDED_AMOUNT")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal julyExpendedAmount;
-
-    @Column(name = "AUGUST_EXPENDED_AMOUNT")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal augustExpendedAmount;
-
-    @Column(name = "SEPTEMBER_EXPENDED_AMOUNT")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal septemberExpendedAmount;
-
-    @Column(name = "OCTOBER_EXPENDED_AMOUNT")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal octoberExpendedAmount;
-
-    @Column(name = "NOVEMBER_EXPENDED_AMOUNT")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal novemberExpendedAmount;
-
-    @Column(name = "DECEMBER_EXPENDED_AMOUNT")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal decemberExpendedAmount;
-
-    @Column(name = "TOTAL_EXPENDED_AMOUNT")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal totalExpendedAmount;
-    
     @Basic(optional = false)
     @NotNull
     @Column(name = "YEAR")
@@ -221,9 +167,7 @@ public class BudgetYearConcept implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idCurrency;
     
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "budgetYearConcept")
-    @JsonView(JsonViews.Embedded.class)
-    private List<Requests> requestsList;
+
 
     public BudgetYearConcept() {
         this.januaryAmount = BigDecimal.ZERO;
@@ -239,19 +183,6 @@ public class BudgetYearConcept implements Serializable {
         this.novemberAmount = BigDecimal.ZERO;
         this.decemberAmount = BigDecimal.ZERO;
         this.totalAmount = BigDecimal.ZERO;
-        this.januaryExpendedAmount = BigDecimal.ZERO;
-        this.februaryExpendedAmount = BigDecimal.ZERO;
-        this.marchExpendedAmount = BigDecimal.ZERO;
-        this.aprilExpendedAmount = BigDecimal.ZERO;
-        this.mayExpendedAmount = BigDecimal.ZERO;
-        this.juneExpendedAmount = BigDecimal.ZERO;
-        this.julyExpendedAmount = BigDecimal.ZERO;
-        this.augustExpendedAmount = BigDecimal.ZERO;
-        this.septemberExpendedAmount = BigDecimal.ZERO;
-        this.octoberExpendedAmount = BigDecimal.ZERO;
-        this.novemberExpendedAmount = BigDecimal.ZERO;
-        this.decemberExpendedAmount = BigDecimal.ZERO;
-        this.totalExpendedAmount = BigDecimal.ZERO;
     }
 
     public Integer getIdBudgetYearConcept() {
@@ -358,116 +289,22 @@ public class BudgetYearConcept implements Serializable {
         this.decemberAmount = decemberAmount;
     }
 
-    public BigDecimal getJanuaryExpendedAmount() {
-        return januaryExpendedAmount;
-    }
-
-    public void setJanuaryExpendedAmount(BigDecimal januaryExpendedAmount) {
-        this.januaryExpendedAmount = januaryExpendedAmount;
-    }
-
-    public BigDecimal getFebruaryExpendedAmount() {
-        return februaryExpendedAmount;
-    }
-
-    public void setFebruaryExpendedAmount(BigDecimal februaryExpendedAmount) {
-        this.februaryExpendedAmount = februaryExpendedAmount;
-    }
-
-    public BigDecimal getMarchExpendedAmount() {
-        return marchExpendedAmount;
-    }
-
-    public void setMarchExpendedAmount(BigDecimal marchExpendedAmount) {
-        this.marchExpendedAmount = marchExpendedAmount;
-    }
-
-    public BigDecimal getAprilExpendedAmount() {
-        return aprilExpendedAmount;
-    }
-
-    public void setAprilExpendedAmount(BigDecimal aprilExpendedAmount) {
-        this.aprilExpendedAmount = aprilExpendedAmount;
-    }
-
-    public BigDecimal getMayExpendedAmount() {
-        return mayExpendedAmount;
-    }
-
-    public void setMayExpendedAmount(BigDecimal mayExpendedAmount) {
-        this.mayExpendedAmount = mayExpendedAmount;
-    }
-
-    public BigDecimal getJuneExpendedAmount() {
-        return juneExpendedAmount;
-    }
-
-    public void setJuneExpendedAmount(BigDecimal juneExpendedAmount) {
-        this.juneExpendedAmount = juneExpendedAmount;
-    }
-
-    public BigDecimal getJulyExpendedAmount() {
-        return julyExpendedAmount;
-    }
-
-    public void setJulyExpendedAmount(BigDecimal julyExpendedAmount) {
-        this.julyExpendedAmount = julyExpendedAmount;
-    }
-
-    public BigDecimal getAugustExpendedAmount() {
-        return augustExpendedAmount;
-    }
-
-    public void setAugustExpendedAmount(BigDecimal augustExpendedAmount) {
-        this.augustExpendedAmount = augustExpendedAmount;
-    }
-
-    public BigDecimal getSeptemberExpendedAmount() {
-        return septemberExpendedAmount;
-    }
-
-    public void setSeptemberExpendedAmount(BigDecimal septemberExpendedAmount) {
-        this.septemberExpendedAmount = septemberExpendedAmount;
-    }
-
-    public BigDecimal getOctoberExpendedAmount() {
-        return octoberExpendedAmount;
-    }
-
-    public void setOctoberExpendedAmount(BigDecimal octoberExpendedAmount) {
-        this.octoberExpendedAmount = octoberExpendedAmount;
-    }
-
-    public BigDecimal getNovemberExpendedAmount() {
-        return novemberExpendedAmount;
-    }
-
-    public void setNovemberExpendedAmount(BigDecimal novemberExpendedAmount) {
-        this.novemberExpendedAmount = novemberExpendedAmount;
-    }
-
-    public BigDecimal getDecemberExpendedAmount() {
-        return decemberExpendedAmount;
-    }
-
-    public void setDecemberExpendedAmount(BigDecimal decemberExpendedAmount) {
-        this.decemberExpendedAmount = decemberExpendedAmount;
-    }
-
     public BigDecimal getTotalAmount() {
+        this.totalAmount = BigDecimal.ZERO;
+        this.totalAmount = this.totalAmount
+                .add(this.januaryAmount)
+                .add(this.februaryAmount)
+                .add(this.marchAmount)
+                .add(this.aprilAmount)
+                .add(this.mayAmount)
+                .add(this.juneAmount)
+                .add(this.julyAmount)
+                .add(this.augustAmount)
+                .add(this.septemberAmount)
+                .add(this.octoberAmount)
+                .add(this.novemberAmount)
+                .add(this.decemberAmount);
         return totalAmount;
-    }
-
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-    public BigDecimal getTotalExpendedAmount() {
-        return totalExpendedAmount;
-    }
-
-    public void setTotalExpendedAmount(BigDecimal totalExpendedAmount) {
-        this.totalExpendedAmount = totalExpendedAmount;
     }
 
     public int getYear() {
@@ -558,14 +395,6 @@ public class BudgetYearConcept implements Serializable {
         this.idCurrency = idCurrency;
     }
 
-    public List<Requests> getRequestsList() {
-        return requestsList;
-    }
-
-    public void setRequestsList(List<Requests> requestsList) {
-        this.requestsList = requestsList;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -606,20 +435,6 @@ public class BudgetYearConcept implements Serializable {
                 ", octoberAmount=" + octoberAmount +
                 ", novemberAmount=" + novemberAmount +
                 ", decemberAmount=" + decemberAmount +
-                ", januaryExpendedAmount=" + januaryExpendedAmount +
-                ", februaryExpendedAmount=" + februaryExpendedAmount +
-                ", marchExpendedAmount=" + marchExpendedAmount +
-                ", aprilExpendedAmount=" + aprilExpendedAmount +
-                ", mayExpendedAmount=" + mayExpendedAmount +
-                ", juneExpendedAmount=" + juneExpendedAmount +
-                ", julyExpendedAmount=" + julyExpendedAmount +
-                ", augustExpendedAmount=" + augustExpendedAmount +
-                ", septemberExpendedAmount=" + septemberExpendedAmount +
-                ", octoberExpendedAmount=" + octoberExpendedAmount +
-                ", novemberExpendedAmount=" + novemberExpendedAmount +
-                ", decemberExpendedAmount=" + decemberExpendedAmount +
-                ", totalAmount=" + totalAmount +
-                ", totalExpendedAmount=" + totalExpendedAmount +
                 ", year=" + year +
                 ", budget=" + budget +
                 ", currency=" + currency +
@@ -631,7 +446,6 @@ public class BudgetYearConcept implements Serializable {
                 ", username='" + username + '\'' +
                 ", creationDate=" + creationDate +
                 ", idCurrency=" + idCurrency +
-                ", requestsList=" + requestsList +
                 '}';
     }
 }

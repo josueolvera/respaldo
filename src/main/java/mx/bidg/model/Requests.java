@@ -79,13 +79,13 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idUserRequest;
     
-    @Column(name = "USER_RESPONSABLE", insertable = false, updatable = false)
+    @Column(name = "USER_RESPONSIBLE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idUserResponsable;
+    private Integer idUserResponsible;
     
-    @Column(name = "ID_BUDGET_YEAR_CONCEPT", insertable = false, updatable = false)
+    @Column(name = "ID_BUDGET_YEAR", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idBudgetYearConcept;
+    private Integer idBudgetYear;
     
     @Column(name = "ID_MONTH", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -100,15 +100,15 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private Users userRequest;
     
-    @JoinColumn(name = "USER_RESPONSABLE", referencedColumnName = "ID_USER")
+    @JoinColumn(name = "USER_RESPONSIBLE", referencedColumnName = "ID_USER")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private Users userResponsable;
+    private Users userResponsible;
     
-    @JoinColumn(name = "ID_BUDGET_YEAR_CONCEPT", referencedColumnName = "ID_BUDGET_YEAR_CONCEPT")
+    @JoinColumn(name = "ID_BUDGET_YEAR", referencedColumnName = "ID_BUDGET_YEAR")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private BudgetYearConcept budgetYearConcept;
+    private BudgetYear budgetYear;
 
     @JoinColumn(name = "ID_MONTH", referencedColumnName = "ID_MONTH")
     @ManyToOne(optional = false)
@@ -199,20 +199,20 @@ public class Requests implements Serializable {
         this.idUserRequest = idUserRequest;
     }
 
-    public Integer getIdUserResponsable() {
-        return idUserResponsable;
+    public Integer getIdUserResponsible() {
+        return idUserResponsible;
     }
 
-    public void setIdUserResponsable(Integer idUserResponsable) {
-        this.idUserResponsable = idUserResponsable;
+    public void setIdUserResponsible(Integer idUserResponsible) {
+        this.idUserResponsible = idUserResponsible;
     }
 
-    public Integer getIdBudgetYearConcept() {
-        return idBudgetYearConcept;
+    public Integer getIdBudgetYear() {
+        return idBudgetYear;
     }
 
-    public void setIdBudgetYearConcept(Integer idBudgetYearConcept) {
-        this.idBudgetYearConcept = idBudgetYearConcept;
+    public void setIdBudgetYear(Integer idBudgetYear) {
+        this.idBudgetYear = idBudgetYear;
     }
 
     public Integer getIdMonth() {
@@ -239,20 +239,20 @@ public class Requests implements Serializable {
         this.userRequest = userRequest;
     }
 
-    public Users getUserResponsable() {
-        return userResponsable;
+    public Users getUserResponsible() {
+        return userResponsible;
     }
 
-    public void setUserResponsable(Users userResponsable) {
-        this.userResponsable = userResponsable;
+    public void setUserResponsible(Users userResponsible) {
+        this.userResponsible = userResponsible;
     }
 
-    public BudgetYearConcept getBudgetYearConcept() {
-        return budgetYearConcept;
+    public BudgetYear getBudgetYear() {
+        return budgetYear;
     }
 
-    public void setBudgetYearConcept(BudgetYearConcept budgetYearConcept) {
-        this.budgetYearConcept = budgetYearConcept;
+    public void setBudgetYear(BudgetYear budgetYear) {
+        this.budgetYear = budgetYear;
     }
 
     public CMonths getMonth() {
@@ -322,17 +322,18 @@ public class Requests implements Serializable {
                 ", applyingDate=" + applyingDate +
                 ", idAccessLevel=" + idAccessLevel +
                 ", idUserRequest=" + idUserRequest +
-                ", idUserResponsable=" + idUserResponsable +
-                ", idBudgetYearConcept=" + idBudgetYearConcept +
+                ", idUserResponsible=" + idUserResponsible +
+                ", idBudgetYear=" + idBudgetYear +
                 ", idMonth=" + idMonth +
                 ", idRequestStatus=" + idRequestStatus +
                 ", userRequest=" + userRequest +
-                ", userResponsable=" + userResponsable +
-                ", budgetYearConcept=" + budgetYearConcept +
+                ", userResponsible=" + userResponsible +
+                ", budgetYear=" + budgetYear +
                 ", month=" + month +
                 ", requestStatus=" + requestStatus +
                 ", priceEstimationsList=" + priceEstimationsList +
                 ", requestProductsList=" + requestProductsList +
+                ", requestConceptList=" + requestConceptList +
                 '}';
     }
 }

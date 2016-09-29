@@ -46,7 +46,7 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
     RequestTypesProductDao requestTypesProductDao;
 
     @Autowired
-    BudgetYearConceptDao budgetYearConceptDao;
+    BudgetYearDao budgetYearDao;
 
     @Autowired
     RolesCostCenterDao rolesCostCenterDao;
@@ -87,9 +87,9 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
 
         if (budget != null) {
 
-            List<BudgetYearConcept> budgetYearConceptList = budgetYearConceptDao.findByBudgetAndYear(budget.getIdBudget(), year);
+            BudgetYear budgetYear = budgetYearDao.findByBudgetAndYear(budget.getIdBudget(), year);
 
-            if (!budgetYearConceptList.isEmpty()) {
+            if (budgetYear != null) {
                 Double total = 0D;
                 JsonNode currencyNode = jsonNode.get("currency");
                 CCurrencies currency = mapper.treeToValue(currencyNode, CCurrencies.class);
@@ -103,7 +103,7 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
                     total *= (currency.getRate().doubleValue()/10);
                 }
 
-                if (budgetHelper.checkWhetherIsOutOfBudget(budgetYearConceptList, month, total)) {
+                if (budgetHelper.checkWhetherIsOutOfBudget(budgetYear, month, total)) {
 
                     JsonNode requestNode = jsonNode.get("request");
 
@@ -112,7 +112,8 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
                     request.setFolio(foliosService.createNew(new CTables(51)));
                     request.setUserRequest(user);
                     request.setCreationDate(now);
-                    request.setBudgetYearConcept(budgetYearConceptList.get(0));
+                    request.setRequestStatus(CRequestStatus.PENDIENTE);
+//                    request.setBudget(budget);
                     request.setIdAccessLevel(1);
 
                     request = requestsDao.save(request);
