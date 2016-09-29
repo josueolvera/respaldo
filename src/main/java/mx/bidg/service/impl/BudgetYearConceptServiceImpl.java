@@ -77,7 +77,6 @@ public class BudgetYearConceptServiceImpl implements BudgetYearConceptService {
                 budgetYearConcept.setOctoberAmount(mapper.treeToValue(budgetYearConceptNode.get("octoberAmount"), BigDecimal.class));
                 budgetYearConcept.setNovemberAmount(mapper.treeToValue(budgetYearConceptNode.get("novemberAmount"), BigDecimal.class));
                 budgetYearConcept.setDecemberAmount(mapper.treeToValue(budgetYearConceptNode.get("decemberAmount"), BigDecimal.class));
-                budgetYearConcept.setTotalAmount(mapper.treeToValue(budgetYearConceptNode.get("totalAmount"), BigDecimal.class));
 
                 budgetYearConceptList.add(budgetYearConcept);
                 budgetYearConceptDao.update(budgetYearConcept);
@@ -103,7 +102,6 @@ public class BudgetYearConceptServiceImpl implements BudgetYearConceptService {
                 budgetYearConcept.setOctoberAmount(mapper.treeToValue(budgetYearConceptNode.get("octoberAmount"), BigDecimal.class));
                 budgetYearConcept.setNovemberAmount(mapper.treeToValue(budgetYearConceptNode.get("novemberAmount"), BigDecimal.class));
                 budgetYearConcept.setDecemberAmount(mapper.treeToValue(budgetYearConceptNode.get("decemberAmount"), BigDecimal.class));
-                budgetYearConcept.setTotalAmount(mapper.treeToValue(budgetYearConceptNode.get("totalAmount"), BigDecimal.class));
 
                 budgetYearConceptList.add(budgetYearConcept);
                 budgetYearConceptDao.save(budgetYearConcept);
@@ -254,7 +252,6 @@ public class BudgetYearConceptServiceImpl implements BudgetYearConceptService {
                 newBudgetYearConcept.setOctoberAmount(budgetYearConcept.getOctoberAmount());
                 newBudgetYearConcept.setNovemberAmount(budgetYearConcept.getNovemberAmount());
                 newBudgetYearConcept.setDecemberAmount(budgetYearConcept.getDecemberAmount());
-                newBudgetYearConcept.setTotalAmount(budgetYearConcept.getTotalAmount());
 
                 budgetYearConceptDao.save(newBudgetYearConcept);
             }

@@ -1,5 +1,6 @@
 package mx.bidg.utils;
 
+import mx.bidg.model.BudgetYear;
 import mx.bidg.model.BudgetYearConcept;
 import mx.bidg.model.Budgets;
 import mx.bidg.pojos.BudgetCategory;
@@ -62,83 +63,59 @@ public class BudgetHelper {
         return budgetCategories;
     }
 
-    public Boolean checkWhetherIsOutOfBudget(List<BudgetYearConcept> budgetYearConceptList, Integer month, Double amount) {
+    public Boolean checkWhetherIsOutOfBudget(BudgetYear budgetYear, Integer month, Double amount) {
 
         Double budgetAmount = 0D;
         Double budgetExpendedAmount = 0D;
 
         switch (month) {
             case 1:
-                for (BudgetYearConcept budgetYearConcept : budgetYearConceptList) {
-                    budgetAmount += budgetYearConcept.getJanuaryAmount().doubleValue();
-                    budgetExpendedAmount += budgetYearConcept.getJanuaryExpendedAmount().doubleValue();
-                }
+                budgetAmount += budgetYear.getJanuaryAmount().doubleValue();
+                budgetExpendedAmount += budgetYear.getJanuaryExpendedAmount().doubleValue();
                 break;
             case 2:
-                for (BudgetYearConcept budgetYearConcept : budgetYearConceptList) {
-                    budgetAmount += budgetYearConcept.getFebruaryAmount().doubleValue();
-                    budgetExpendedAmount += budgetYearConcept.getFebruaryExpendedAmount().doubleValue();
-                }
+                budgetAmount += budgetYear.getFebruaryAmount().doubleValue();
+                budgetExpendedAmount += budgetYear.getFebruaryExpendedAmount().doubleValue();
                 break;
             case 3:
-                for (BudgetYearConcept budgetYearConcept : budgetYearConceptList) {
-                    budgetAmount += budgetYearConcept.getMarchAmount().doubleValue();
-                    budgetExpendedAmount += budgetYearConcept.getMarchExpendedAmount().doubleValue();
-                }
+                budgetAmount += budgetYear.getMarchAmount().doubleValue();
+                budgetExpendedAmount += budgetYear.getMarchExpendedAmount().doubleValue();
                 break;
             case 4:
-                for (BudgetYearConcept budgetYearConcept : budgetYearConceptList) {
-                    budgetAmount += budgetYearConcept.getAprilAmount().doubleValue();
-                    budgetExpendedAmount += budgetYearConcept.getAprilExpendedAmount().doubleValue();
-                }
+                budgetAmount += budgetYear.getAprilAmount().doubleValue();
+                budgetExpendedAmount += budgetYear.getAprilExpendedAmount().doubleValue();
                 break;
             case 5:
-                for (BudgetYearConcept budgetYearConcept : budgetYearConceptList) {
-                    budgetAmount += budgetYearConcept.getMayAmount().doubleValue();
-                    budgetExpendedAmount += budgetYearConcept.getMayExpendedAmount().doubleValue();
-                }
+                budgetAmount += budgetYear.getMayAmount().doubleValue();
+                budgetExpendedAmount += budgetYear.getMayExpendedAmount().doubleValue();
                 break;
             case 6:
-                for (BudgetYearConcept budgetYearConcept : budgetYearConceptList) {
-                    budgetAmount += budgetYearConcept.getJuneAmount().doubleValue();
-                    budgetExpendedAmount += budgetYearConcept.getJuneExpendedAmount().doubleValue();
-                }
+                budgetAmount += budgetYear.getJuneAmount().doubleValue();
+                budgetExpendedAmount += budgetYear.getJuneExpendedAmount().doubleValue();
                 break;
             case 7:
-                for (BudgetYearConcept budgetYearConcept : budgetYearConceptList) {
-                    budgetAmount += budgetYearConcept.getJulyAmount().doubleValue();
-                    budgetExpendedAmount += budgetYearConcept.getJulyExpendedAmount().doubleValue();
-                }
+                budgetAmount += budgetYear.getJulyAmount().doubleValue();
+                budgetExpendedAmount += budgetYear.getJulyExpendedAmount().doubleValue();
                 break;
             case 8:
-                for (BudgetYearConcept budgetYearConcept : budgetYearConceptList) {
-                    budgetAmount += budgetYearConcept.getAugustAmount().doubleValue();
-                    budgetExpendedAmount += budgetYearConcept.getAugustExpendedAmount().doubleValue();
-                }
+                budgetAmount += budgetYear.getAugustAmount().doubleValue();
+                budgetExpendedAmount += budgetYear.getAugustExpendedAmount().doubleValue();
                 break;
             case 9:
-                for (BudgetYearConcept budgetYearConcept : budgetYearConceptList) {
-                    budgetAmount += budgetYearConcept.getSeptemberAmount().doubleValue();
-                    budgetExpendedAmount += budgetYearConcept.getSeptemberExpendedAmount().doubleValue();
-                }
+                budgetAmount += budgetYear.getSeptemberAmount().doubleValue();
+                budgetExpendedAmount += budgetYear.getSeptemberExpendedAmount().doubleValue();
                 break;
             case 10:
-                for (BudgetYearConcept budgetYearConcept : budgetYearConceptList) {
-                    budgetAmount += budgetYearConcept.getOctoberAmount().doubleValue();
-                    budgetExpendedAmount += budgetYearConcept.getOctoberExpendedAmount().doubleValue();
-                }
+                budgetAmount += budgetYear.getOctoberAmount().doubleValue();
+                budgetExpendedAmount += budgetYear.getOctoberExpendedAmount().doubleValue();
                 break;
             case 11:
-                for (BudgetYearConcept budgetYearConcept : budgetYearConceptList) {
-                    budgetAmount += budgetYearConcept.getNovemberAmount().doubleValue();
-                    budgetExpendedAmount += budgetYearConcept.getNovemberExpendedAmount().doubleValue();
-                }
+                budgetAmount += budgetYear.getNovemberAmount().doubleValue();
+                budgetExpendedAmount += budgetYear.getNovemberExpendedAmount().doubleValue();
                 break;
             case 12:
-                for (BudgetYearConcept budgetYearConcept : budgetYearConceptList) {
-                    budgetAmount += budgetYearConcept.getDecemberAmount().doubleValue();
-                    budgetExpendedAmount += budgetYearConcept.getDecemberExpendedAmount().doubleValue();
-                }
+                budgetAmount += budgetYear.getDecemberAmount().doubleValue();
+                budgetExpendedAmount += budgetYear.getDecemberExpendedAmount().doubleValue();
         }
 
         return amount <= (budgetAmount - budgetExpendedAmount);

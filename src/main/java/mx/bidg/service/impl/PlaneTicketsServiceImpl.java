@@ -38,7 +38,7 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
     BudgetsDao budgetsDao;
 
     @Autowired
-    BudgetYearConceptDao budgetYearConceptDao;
+    BudgetYearDao budgetYearDao;
 
     @Autowired
     RolesCostCenterDao rolesCostCenterDao;
@@ -82,18 +82,18 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
 
         if (budget != null) {
 
-            List<BudgetYearConcept> budgetYearConceptList = budgetYearConceptDao.findByBudgetAndYear(budget.getIdBudget(), year);
+            BudgetYear budgetYear = budgetYearDao.findByBudgetAndYear(budget.getIdBudget(), year);
 
-            if (!budgetYearConceptList.isEmpty()) {
+            if (budgetYear != null) {
 
-                if (budgetHelper.checkWhetherIsOutOfBudget(budgetYearConceptList, month, 0D)) {
+                if (budgetHelper.checkWhetherIsOutOfBudget(budgetYear, month, 0D)) {
 
                     Requests request = new Requests();
                     request.setFolio(foliosService.createNew(new CTables(51)));
                     request.setUserRequest(user);
                     request.setCreationDate(now);
                     request.setRequestStatus(CRequestStatus.PENDIENTE);
-                    request.setBudgetYearConcept(budgetYearConceptList.get(0));
+                    request.setBudgetYear(budgetYear);
                     request.setIdAccessLevel(1);
 
                     request = requestsDao.save(request);
