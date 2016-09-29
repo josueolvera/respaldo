@@ -1,8 +1,8 @@
 package mx.bidg.dao.impl;
 
 import mx.bidg.dao.AbstractDao;
-import mx.bidg.dao.RequestConceptDao;
-import mx.bidg.model.RequestConcept;
+import mx.bidg.dao.TravelExpenseConceptDao;
+import mx.bidg.model.TravelExpenseConcept;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,32 +11,33 @@ import java.util.List;
  * Created by josueolvera on 13/07/16.
  */
 @Repository
-public class RequestConceptDaoImpl extends AbstractDao<Integer, RequestConcept> implements RequestConceptDao {
+@SuppressWarnings("unchecked")
+public class TravelExpenseConceptDaoImpl extends AbstractDao<Integer, TravelExpenseConcept> implements TravelExpenseConceptDao {
 
     @Override
-    public RequestConcept save(RequestConcept entity) {
+    public TravelExpenseConcept save(TravelExpenseConcept entity) {
         persist(entity);
         return entity;
     }
 
     @Override
-    public RequestConcept findById(int id) {
+    public TravelExpenseConcept findById(int id) {
         return getByKey(id);
     }
 
     @Override
-    public List<RequestConcept> findAll() {
-        return (List<RequestConcept>) createEntityCriteria().list();
+    public List<TravelExpenseConcept> findAll() {
+        return (List<TravelExpenseConcept>) createEntityCriteria().list();
     }
 
     @Override
-    public RequestConcept update(RequestConcept entity) {
+    public TravelExpenseConcept update(TravelExpenseConcept entity) {
         modify(entity);
         return entity;
     }
 
     @Override
-    public boolean delete(RequestConcept entity) {
+    public boolean delete(TravelExpenseConcept entity) {
         remove(entity);
         return true;
     }

@@ -1,8 +1,8 @@
 package mx.bidg.service.impl;
 
-import mx.bidg.dao.RequestConceptDao;
-import mx.bidg.model.RequestConcept;
-import mx.bidg.service.RequestConceptService;
+import mx.bidg.dao.TravelExpenseConceptDao;
+import mx.bidg.model.TravelExpenseConcept;
+import mx.bidg.service.TravelExpenseConceptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,36 +14,36 @@ import java.util.List;
  */
 @Service
 @Transactional
-public class RequestConceptServiceImpl implements RequestConceptService {
+public class TravelExpenseConceptServiceImpl implements TravelExpenseConceptService {
 
     @Autowired
-    RequestConceptDao requestConceptDao;
+    TravelExpenseConceptDao travelExpenseConceptDao;
 
     @Override
-    public RequestConcept save(RequestConcept requestConcept) {
-        requestConceptDao.save(requestConcept);
-        return requestConcept;
+    public TravelExpenseConcept save(TravelExpenseConcept travelExpenseConcept) {
+        travelExpenseConceptDao.save(travelExpenseConcept);
+        return travelExpenseConcept;
     }
 
     @Override
-    public RequestConcept update(RequestConcept requestConcept) {
-        requestConceptDao.update(requestConcept);
-        return requestConcept;
+    public TravelExpenseConcept update(TravelExpenseConcept travelExpenseConcept) {
+        travelExpenseConceptDao.update(travelExpenseConcept);
+        return travelExpenseConcept;
     }
 
     @Override
-    public RequestConcept findById(Integer idRequestConcept) {
-        return requestConceptDao.findById(idRequestConcept);
+    public TravelExpenseConcept findById(Integer idRequestConcept) {
+        return travelExpenseConceptDao.findById(idRequestConcept);
     }
 
     @Override
-    public List<RequestConcept> findAll() {
-        return requestConceptDao.findAll();
+    public List<TravelExpenseConcept> findAll() {
+        return travelExpenseConceptDao.findAll();
     }
 
     @Override
-    public Boolean delete(RequestConcept requestConcept) {
-        requestConceptDao.delete(requestConcept);
+    public Boolean delete(TravelExpenseConcept travelExpenseConcept) {
+        travelExpenseConceptDao.delete(travelExpenseConcept);
         return true;
     }
 }
