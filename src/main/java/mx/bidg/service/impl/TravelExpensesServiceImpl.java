@@ -28,6 +28,9 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
     TravelExpensesDao travelExpensesDao;
 
     @Autowired
+    ChecksDao checksDao;
+
+    @Autowired
     DwEnterprisesDao dwEnterprisesDao;
 
     @Autowired
@@ -113,7 +116,7 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
                     request.setUserRequest(user);
                     request.setCreationDate(now);
                     request.setRequestStatus(CRequestStatus.PENDIENTE);
-//                    request.setBudget(budget);
+                    request.setBudgetYear(budgetYear);
                     request.setIdAccessLevel(1);
 
                     request = requestsDao.save(request);
@@ -142,6 +145,10 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
                     }
 
                     travelExpensesDao.save(travelExpense);
+
+                    Checks check = new Checks(travelExpense);
+
+                    checksDao.save(check);
 
                     return travelExpense;
                 } else {
