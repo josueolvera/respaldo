@@ -28,7 +28,7 @@ public class BudgetYearController {
     @Autowired
     private BudgetYearService budgetYearService;
 
-    @RequestMapping(value = "/updateAll", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/update-all", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody
     ResponseEntity<String> updateAll() throws Exception {
         budgetYearService.updateAll();
