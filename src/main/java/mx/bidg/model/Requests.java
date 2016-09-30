@@ -15,6 +15,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -281,6 +282,10 @@ public class Requests implements Serializable {
 
     public void setRequestProductsList(List<RequestProducts> requestProductsList) {
         this.requestProductsList = requestProductsList;
+    }
+
+    public DateFormatsPojo getApplyingDateFormats() {
+        return (applyingDate == null) ? null : new DateFormatsPojo(applyingDate);
     }
 
     @Override

@@ -34,13 +34,13 @@
                     userIdRole:'',
                     employeeAccount:{},
                     roleTravelTypeList:[],
+                    costCenterList:[],
                     concepts:[],
                     selected:{
                         travelType:null
                     },
                     requestBody:{
-                        request:
-                        {
+                        request: {
                             purpose: ''
                         },
                         travelExpense:{
@@ -50,7 +50,8 @@
                             estimatedKm:'',
                             travelType:null
                         },
-                        requestConceptList:[],
+                        costCenter:{},
+                        travelExpenseConceptList:[],
                         currency:{},
                         idDwEnterprise:''
                     },
@@ -127,6 +128,12 @@
                     }
                 },
                 methods: {
+                    arrayObjectIndexOf: function (myArray, searchTerm, property) {
+                        for (var i = 0, len = myArray.length; i < len; i++) {
+                            if (myArray[i][property] === searchTerm) return i;
+                        }
+                        return -1;
+                    },
                     getConcepts : function () {
                         this.$http.get(ROOT_URL + '/budget-concepts?category=3')
                                 .success(function (data) {
@@ -136,8 +143,7 @@
 
                                 });
                     },
-                    getUserInSession: function()
-                    {
+                    getUserInSession: function() {
                         this.$http.get(ROOT_URL + "/user").
                         success(function (data) {
                             this.userInSession = data;
@@ -145,6 +151,7 @@
                             this.requestBody.request.userRequest = this.userInSession;
                             this.requestBody.idDwEnterprise = this.userInSession.dwEmployee.idDwEnterprise;
                             this.getTravelTypes(this.userIdRole);
+                            this.getRolesCostCenter(this.userIdRole);
 
                             if (this.userInSession.dwEmployee.employee.employeesAccountsList.length > 0) {
                                 this.employeeAccount = this.userInSession.dwEmployee.employee.employeesAccountsList[0];
@@ -154,6 +161,25 @@
                             showAlert("Ha habido un error al obtener al usuario en sesion");
                         });
 
+                    },
+                    getRolesCostCenter: function (idRole) {
+                        this.$http.get(ROOT_URL + '/roles-cost-center/role/' + idRole)
+                                .success(function (data) {
+                                    var self = this;
+                                    var index;
+                                    this.rolesCostCenter = data;
+
+                                    data.forEach(function (item) {
+                                        index = self.arrayObjectIndexOf(self.costCenterList, item.costCenter.idCostCenter, 'idCostCenter');
+                                        if (index == -1) self.costCenterList.push(item.costCenter);
+                                    });
+
+                                    this.requestBody.costCenter = data[0].costCenter;
+
+                                })
+                                .error(function (data) {
+
+                                });
                     },
                     getTravelTypes : function (idRole) {
                         this.$http.get(ROOT_URL + "/role-travel-type/role/" + idRole)
@@ -250,78 +276,37 @@
                         });
                     },
                     clearRequestValues : function () {
+                        this.requestBody.costCenter = this.costCenterList[0];
                         this.requestBody.request.purpose = '';
                         this.requestBody.travelExpense.startDate = '';
                         this.requestBody.travelExpense.endDate = '';
                         this.requestBody.travelExpense.destination = '';
                         this.requestBody.travelExpense.estimatedKm = '';
                         this.requestBody.travelExpense.travelType = null;
-                        this.requestBody.requestConceptList = [];
+                        this.requestBody.travelExpenseConceptList = [];
                         this.requestBody.currency = [];
                         this.casetas = '';
                         this.authorizedAmount.hospedaje = 0;
                         this.authorizedAmount.alimentos = 0;
                         this.authorizedAmount.transporte = 0;
                         this.dateDifference = 0;
-                        this.selected.travelType = null;
                     },
                     saveRequest: function () {
 
                         this.setRequestBody();
 
-                        if (!this.requestValidation()) {
-                            return;
-                        }
-
                         this.$http.post(ROOT_URL + '/travel-expenses',this.requestBody)
                                 .success(function (data) {
                                     this.clearRequestValues();
                                     showAlert("Se ha guardado la solicitud");
+                                    location.reload();
                                 })
                                 .error(function (data) {
                                     this.errorData = data;
                                     this.clearRequestValues();
                                     showAlert(this.errorData.error.message,{type:3});
+                                    location.reload();
                                 });
-                    },
-                    requestValidation:function () {
-
-                        if (this.requestBody.travelExpense.travelType === null) {
-                            showAlert('Seleccione un tipo de viaje', {type:3});
-                            return false;
-                        }
-
-                        if (this.requestBody.request.purpose === '') {
-                            showAlert('El campo "Motivo de viaje" es requerido', {type:3});
-                            return false;
-                        }
-
-                        if (this.requestBody.travelExpense.startDate === '') {
-                            showAlert('Seleccione una fecha de inicial', {type:3});
-                            return false;
-                        }
-
-                        if (this.requestBody.travelExpense.endDate === '') {
-                            showAlert('Seleccione una fecha de final', {type:3});
-                            return false;
-                        }
-
-                        if (this.requestBody.travelExpense.destination === '') {
-                            showAlert('El campo "Destino" es requerido', {type:3});
-                            return false;
-                        }
-
-                        if (this.requestBody.travelExpense.estimatedKm === '') {
-                            showAlert('El campo "KM es estimados" requerido', {type:3});
-                            return false;
-                        }
-
-                        if (this.casetas === '') {
-                            showAlert('El campo "Casetas" es requerido', {type:3});
-                            return false;
-                        }
-
-                        return true;
                     },
                     setRequestBody: function () {
                         
@@ -330,7 +315,7 @@
                         this.requestBody.travelExpense.travelType = this.selected.travelType;
                         this.concepts.forEach(function (concept) {
 
-                            var requestConcept = {
+                            var travelExpenseConcept = {
                                 concept:concept,
                                 amount:0
                             };
@@ -338,26 +323,26 @@
                             switch (concept.budgetConcept) {
                                 case 'HOSPEDAJE':
                                         if (self.dateDifference > 1 || self.dateDifference === 0) {
-                                            requestConcept.amount = self.hospedajeAmount;
-                                            self.requestBody.requestConceptList.push(requestConcept);
+                                            travelExpenseConcept.amount = self.hospedajeAmount;
+                                            self.requestBody.travelExpenseConceptList.push(travelExpenseConcept);
                                         }
 
                                     break;
                                 case 'ALIMENTOS':
-                                    requestConcept.amount = self.alimentosAmount;
-                                    self.requestBody.requestConceptList.push(requestConcept);
+                                    travelExpenseConcept.amount = self.alimentosAmount;
+                                    self.requestBody.travelExpenseConceptList.push(travelExpenseConcept);
                                     break;
                                 case 'TRANSPORTE':
-                                    requestConcept.amount = self.transporteAmount;
-                                    self.requestBody.requestConceptList.push(requestConcept);
+                                    travelExpenseConcept.amount = self.transporteAmount;
+                                    self.requestBody.travelExpenseConceptList.push(travelExpenseConcept);
                                     break;
                                 case 'CASETAS':
-                                    requestConcept.amount = self.casetasAmount;
-                                    self.requestBody.requestConceptList.push(requestConcept);
+                                    travelExpenseConcept.amount = self.casetasAmount;
+                                    self.requestBody.travelExpenseConceptList.push(travelExpenseConcept);
                                     break;
                                 case 'GASOLINA':
-                                    requestConcept.amount = self.gasolinaAmount;
-                                    self.requestBody.requestConceptList.push(requestConcept);
+                                    travelExpenseConcept.amount = self.gasolinaAmount;
+                                    self.requestBody.travelExpenseConceptList.push(travelExpenseConcept);
                             }
                         });
                     }
@@ -397,10 +382,9 @@
         <div id="content">
             <div class="container">
                 <div class="col-md-12">
-                    <h2>Viaticos</h2>
                     <div class="row">
                         <div class="col-md-8">
-                            <h3>Solicitud de Viáticos</h3>
+                            <h2>Solicitud de Viáticos</h2>
                         </div>
                         <div class="col-md-4 text-right">
                             <label>Solicitante</label>
@@ -410,176 +394,193 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Informacón de solicitud</h3>
-                        </div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <label>Viaje</label>
-                                    <br>
-                                    <label class="radio-inline" v-for="roleTravelType in roleTravelTypeList">
-                                        <input v-model="selected.travelType" type="radio" @change="getRoleConcepts"
-                                               :value="roleTravelType.travelType">{{roleTravelType.travelType.typeName}}
-                                    </label>
-                                </div>
-                                <div class="col-md-3">
-                                    <label>
-                                        Fecha inicial
-                                    </label>
-                                    <div class="form-group">
-                                        <div class="input-group date" id="startDate">
-                                            <input type="text" class="form-control"
-                                                   v-model="requestBody.travelExpense.startDate">
-                                       <span class="input-group-addon" @click="destroyDateTimePickerStart">
+                <form v-on:submit.prevent="saveRequest">
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Informacón de solicitud</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>Viaje</label>
+                                        <br>
+                                        <label class="radio-inline" v-for="roleTravelType in roleTravelTypeList">
+                                            <input v-model="selected.travelType" type="radio" @change="getRoleConcepts"
+                                                   :value="roleTravelType.travelType" name="travelType" required>{{roleTravelType.travelType.typeName}}
+                                        </label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Centro de costos</label>
+                                        <select v-model="requestBody.costCenter" class="form-control" required>
+                                            <option v-for="costCenter in costCenterList" :value="costCenter">{{costCenter.name}}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>
+                                            Fecha inicial
+                                        </label>
+                                        <div class="form-group">
+                                            <div class="input-group date" id="startDate">
+                                                <input type="text" class="form-control"
+                                                       v-model="requestBody.travelExpense.startDate" required>
+                                                <span class="input-group-addon" @click="destroyDateTimePickerStart">
                                            <span class="glyphicon glyphicon-calendar"></span>
                                        </span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <label>
-                                        Fecha final
-                                    </label>
-                                    <div class="form-group">
-                                        <div class="input-group date" id="endDate">
-                                            <input type="text" class="form-control"
-                                                   v-model="requestBody.travelExpense.endDate">
-                                   <span class="input-group-addon" @click="activateDateTimePickerEnd(requestBody.travelExpense.startDate)">
+                                    <div class="col-md-3">
+                                        <label>
+                                            Fecha final
+                                        </label>
+                                        <div class="form-group">
+                                            <div class="input-group date" id="endDate">
+                                                <input type="text" class="form-control"
+                                                       v-model="requestBody.travelExpense.endDate" required>
+                                                <span class="input-group-addon" @click="activateDateTimePickerEnd(requestBody.travelExpense.startDate)">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
-                                    <label>Destino</label>
-                                    <input v-model="requestBody.travelExpense.destination" type="text" class="form-control">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-2">
-                                    <label>KMm estimados</label>
-                                    <div class="input-group">
-                                        <input v-model="requestBody.travelExpense.estimatedKm" type="text" maxlength="4"
-                                               class="form-control" onkeypress="return isNumberKey(event)">
-                                        <span class="input-group-addon">KM</span>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>KMm estimados</label>
+                                                <div class="input-group">
+                                                    <input v-model="requestBody.travelExpense.estimatedKm" type="text" maxlength="4"
+                                                           class="form-control" onkeypress="return isNumberKey(event)" required>
+                                                    <span class="input-group-addon">KM</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>Casetas</label>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">$</span>
+                                                    <input v-model="casetas" type="text" maxlength="4"
+                                                           class="form-control" onkeypress="return isNumberKey(event)" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Destino</label>
+                                                <input v-model="requestBody.travelExpense.destination" type="text" class="form-control" required>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <label>Casetas</label>
-                                    <div class="input-group">
-                                        <span class="input-group-addon">$</span>
-                                        <input v-model="casetas" type="text" maxlength="4"
-                                               class="form-control" onkeypress="return isNumberKey(event)">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <label>Motivo de viaje</label>
+                                                <textarea v-model="requestBody.request.purpose" cols="500" rows="4" class="form-control" required></textarea>
+                                            </div>
+                                        </div>
                                     </div>
-
-                                </div>
-                                <div class="col-md-8">
-                                    <label>Motivo de viaje</label>
-                                    <textarea v-model="requestBody.request.purpose" cols="500" rows="1" class="form-control"></textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Comceptos autorizados</h3>
-                        </div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-5">
-                                    <dl class="dl-horizontal">
-                                        <div v-if="dateDifference > 1 || dateDifference === 0">
-                                            <dt>Hospedaje</dt>
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Comceptos autorizados</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <dl class="dl-horizontal">
+                                            <div v-if="dateDifference > 1 || dateDifference === 0">
+                                                <dt>Hospedaje</dt>
+                                                <dd>
+                                                    <p class="underline">
+                                                        {{hospedajeAmount | currency}} {{currency.acronym}}
+                                                    </p>
+                                                </dd>
+                                            </div>
+                                            <dt>Alimentos</dt>
                                             <dd>
                                                 <p class="underline">
-                                                    {{hospedajeAmount | currency}} {{currency.acronym}}
+                                                    {{alimentosAmount | currency}} {{currency.acronym}}
                                                 </p>
                                             </dd>
-                                        </div>
-                                        <dt>Alimentos</dt>
-                                        <dd>
-                                            <p class="underline">
-                                                {{alimentosAmount | currency}} {{currency.acronym}}
-                                            </p>
-                                        </dd>
-                                        <dt>Transporte</dt>
-                                        <dd>
-                                            <p class="underline">
-                                                {{transporteAmount | currency}} {{currency.acronym}}
-                                            </p>
-                                        </dd>
-                                    </dl>
-                                    <dl class="dl-horizontal">
-                                        <dt>Casetas</dt>
-                                        <dd>
-                                            <p class="underline">
-                                                {{casetasAmount | currency}} {{currency.acronym}}
-                                            </p>
-                                        </dd>
-                                        <dt>Gasolina</dt>
-                                        <dd>
-                                            <p class="underline">
-                                                {{gasolinaAmount | currency}} {{currency.acronym}}
-                                            </p>
-                                        </dd>
-                                    </dl>
-                                    <dl class="dl-horizontal">
-                                        <dt>Total</dt>
-                                        <dd>
-                                            <p class="underline">
-                                                {{totalTravelExpenses | currency}} {{currency.acronym}}
-                                            </p>
-                                        </dd>
-                                    </dl>
+                                            <dt>Transporte</dt>
+                                            <dd>
+                                                <p class="underline">
+                                                    {{transporteAmount | currency}} {{currency.acronym}}
+                                                </p>
+                                            </dd>
+                                        </dl>
+                                        <dl class="dl-horizontal">
+                                            <dt>Casetas</dt>
+                                            <dd>
+                                                <p class="underline">
+                                                    {{casetasAmount | currency}} {{currency.acronym}}
+                                                </p>
+                                            </dd>
+                                            <dt>Gasolina</dt>
+                                            <dd>
+                                                <p class="underline">
+                                                    {{gasolinaAmount | currency}} {{currency.acronym}}
+                                                </p>
+                                            </dd>
+                                        </dl>
+                                        <dl class="dl-horizontal">
+                                            <dt>Total</dt>
+                                            <dd>
+                                                <p class="underline">
+                                                    {{totalTravelExpenses | currency}} {{currency.acronym}}
+                                                </p>
+                                            </dd>
+                                        </dl>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Deposito</h3>
-                        </div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <label>Destino</label>
-                                    <p class="underline">{{employeeAccount.account.bank.acronyms}}</p>
-                                </div>
-                                <div class="col-md-3">
-                                    <label>Destino</label>
-                                    <p class="underline">{{employeeAccount.account.accountNumber}}</p>
-                                </div>
-                                <div class="col-md-3">
-                                    <label>Destino</label>
-                                    <p class="underline">{{employeeAccount.account.accountClabe}}</p>
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Deposito</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label>Banco</label>
+                                        <p class="underline">{{employeeAccount.account.bank.acronyms}}</p>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Número de cuenta</label>
+                                        <p class="underline">{{employeeAccount.account.accountNumber}}</p>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>CLABE</label>
+                                        <p class="underline">{{employeeAccount.account.accountClabe}}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="row">
-                        <div class="col-md-offset-8 col-md-4">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <button class="btn btn-success form-control" @click="saveRequest">Enviar</button>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-offset-8 col-md-4">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <button type="submit" class="btn btn-success form-control">Enviar</button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="button" class="btn btn-default form-control" @click="">Salir</button>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <button class="btn btn-default form-control" @click="">Salir</button>
-                                </div>
+                                <br>
+                                <br>
                             </div>
-                            <br>
-                            <br>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </jsp:body>

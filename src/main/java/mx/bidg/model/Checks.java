@@ -2,12 +2,15 @@ package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -31,22 +34,34 @@ public class Checks implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idTravelExpense;
 
-    @JoinColumn(name = "ID_TRAVEL_EXPENSE", referencedColumnName = "ID_TRAVEL_EXPENSE")
-    @ManyToOne
+    @OneToOne()
+    @JoinColumn(name="ID_TRAVEL_EXPENSE")
     @JsonView(JsonViews.Embedded.class)
     private TravelExpenses travelExpense;
 
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "AUTHORIZED_AMOUNT")
     @JsonView(JsonViews.Root.class)
     private BigDecimal authorizedAmount;
 
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "CHECKED_AMOUNT")
     @JsonView(JsonViews.Root.class)
     private BigDecimal checkedAmount;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "EXPIRED_DATE")
+    @Convert(converter = DateTimeConverter.class)
+    @JsonView(JsonViews.Root.class)
+    private LocalDateTime expiredDate;
+
+    @Column(name = "ID_CHECK_STATUS", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idCheckStatus;
+
+    @JoinColumn(name = "ID_CHECK_STATUS", referencedColumnName = "ID_CHECK_STATUS")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private CCheckStatus checkStatus;
 
     @OneToMany(mappedBy = "check")
     @JsonView(JsonViews.Embedded.class)
@@ -55,8 +70,10 @@ public class Checks implements Serializable {
     public Checks() {
     }
 
-    public Checks(TravelExpenses travelExpense) {
+    public Checks(TravelExpenses travelExpense, LocalDateTime expiredDate) {
         this.travelExpense = travelExpense;
+        this.expiredDate = expiredDate;
+        this.checkStatus = CCheckStatus.PENDIENTE;
     }
 
     public Integer getIdCheck() {
@@ -97,6 +114,34 @@ public class Checks implements Serializable {
 
     public void setCheckedAmount(BigDecimal checkedAmount) {
         this.checkedAmount = checkedAmount;
+    }
+
+    public LocalDateTime getExpiredDate() {
+        return expiredDate;
+    }
+
+    public void setExpiredDate(LocalDateTime expiredDate) {
+        this.expiredDate = expiredDate;
+    }
+
+    public DateFormatsPojo getExpiredDateFormats() {
+        return (expiredDate == null) ? null : new DateFormatsPojo(expiredDate);
+    }
+
+    public Integer getIdCheckStatus() {
+        return idCheckStatus;
+    }
+
+    public void setIdCheckStatus(Integer idCheckStatus) {
+        this.idCheckStatus = idCheckStatus;
+    }
+
+    public CCheckStatus getCheckStatus() {
+        return checkStatus;
+    }
+
+    public void setCheckStatus(CCheckStatus checkStatus) {
+        this.checkStatus = checkStatus;
     }
 
     public List<ChecksBills> getChecksBills() {

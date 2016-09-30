@@ -110,10 +110,6 @@ public class BudgetYearConcept implements Serializable {
     @JsonView(JsonViews.Root.class)
     private BigDecimal decemberAmount;
 
-    @Transient
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal totalAmount;
-
     @Basic(optional = false)
     @NotNull
     @Column(name = "YEAR")
@@ -182,7 +178,6 @@ public class BudgetYearConcept implements Serializable {
         this.octoberAmount = BigDecimal.ZERO;
         this.novemberAmount = BigDecimal.ZERO;
         this.decemberAmount = BigDecimal.ZERO;
-        this.totalAmount = BigDecimal.ZERO;
     }
 
     public Integer getIdBudgetYearConcept() {
@@ -290,8 +285,8 @@ public class BudgetYearConcept implements Serializable {
     }
 
     public BigDecimal getTotalAmount() {
-        this.totalAmount = BigDecimal.ZERO;
-        this.totalAmount = this.totalAmount
+        BigDecimal totalAmount = BigDecimal.ZERO;
+        totalAmount = totalAmount
                 .add(this.januaryAmount)
                 .add(this.februaryAmount)
                 .add(this.marchAmount)
@@ -403,14 +398,16 @@ public class BudgetYearConcept implements Serializable {
         BudgetYearConcept that = (BudgetYearConcept) o;
 
         if (!year.equals(that.year)) return false;
-        return idBudget.equals(that.idBudget);
+        if (!budget.equals(that.budget)) return false;
+        return budgetConcept.equals(that.budgetConcept);
 
     }
 
     @Override
     public int hashCode() {
         int result = year.hashCode();
-        result = 31 * result + idBudget.hashCode();
+        result = 31 * result + budget.hashCode();
+        result = 31 * result + budgetConcept.hashCode();
         return result;
     }
 

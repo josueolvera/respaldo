@@ -98,21 +98,9 @@ public class TravelExpenses implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private List<TravelExpenseConcept> travelExpenseConceptList;
 
-    @Transient
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal totalAmount;
-
-    @Transient
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "travelExpense")
     @JsonView(JsonViews.Embedded.class)
-    private DateFormatsPojo creationDateFormats;
-
-    @Transient
-    @JsonView(JsonViews.Embedded.class)
-    private DateFormatsPojo startDateFormats;
-
-    @Transient
-    @JsonView(JsonViews.Embedded.class)
-    private DateFormatsPojo endDateFormats;
+    private Checks check;
 
     public TravelExpenses() {
     }
@@ -230,26 +218,31 @@ public class TravelExpenses implements Serializable {
     }
 
     public BigDecimal getTotalAmount() {
-        this.totalAmount = BigDecimal.ZERO;
+        BigDecimal totalAmount = BigDecimal.ZERO;
         for (TravelExpenseConcept travelExpenseConcept : this.travelExpenseConceptList) {
-            this.totalAmount = this.totalAmount.add(travelExpenseConcept.getAmount());
+            totalAmount = totalAmount.add(travelExpenseConcept.getAmount());
         }
         return totalAmount;
     }
 
     public DateFormatsPojo getCreationDateFormats() {
-        this.creationDateFormats = (creationDate == null) ? null : new DateFormatsPojo(creationDate);
-        return this.creationDateFormats;
+        return (creationDate == null) ? null : new DateFormatsPojo(creationDate);
     }
 
     public DateFormatsPojo getStartDateFormats() {
-        this.startDateFormats = (startDate == null) ? null : new DateFormatsPojo(startDate);
-        return this.startDateFormats;
+        return (startDate == null) ? null : new DateFormatsPojo(startDate);
     }
 
     public DateFormatsPojo getEndDateFormats() {
-        this.endDateFormats = (endDate == null) ? null : new DateFormatsPojo(endDate);
-        return this.endDateFormats;
+        return (endDate == null) ? null : new DateFormatsPojo(endDate);
+    }
+
+    public Checks getCheck() {
+        return check;
+    }
+
+    public void setCheck(Checks check) {
+        this.check = check;
     }
 
     @Override
