@@ -118,7 +118,7 @@ public class BudgetYearConcept implements Serializable {
     @NotNull
     @Column(name = "YEAR")
     @JsonView(JsonViews.Root.class)
-    private int year;
+    private Integer year;
 
     @JoinColumn(name = "ID_BUDGET", referencedColumnName = "ID_BUDGET")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -307,11 +307,11 @@ public class BudgetYearConcept implements Serializable {
         return totalAmount;
     }
 
-    public int getYear() {
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 
@@ -402,20 +402,15 @@ public class BudgetYearConcept implements Serializable {
 
         BudgetYearConcept that = (BudgetYearConcept) o;
 
-        if (year != that.year) return false;
-        if (idBudget != null ? !idBudget.equals(that.idBudget) : that.idBudget != null) return false;
-        if (idBudgetConcept != null ? !idBudgetConcept.equals(that.idBudgetConcept) : that.idBudgetConcept != null)
-            return false;
-        return idCurrency != null ? idCurrency.equals(that.idCurrency) : that.idCurrency == null;
+        if (!year.equals(that.year)) return false;
+        return idBudget.equals(that.idBudget);
 
     }
 
     @Override
     public int hashCode() {
-        int result = year;
-        result = 31 * result + (idBudget != null ? idBudget.hashCode() : 0);
-        result = 31 * result + (idBudgetConcept != null ? idBudgetConcept.hashCode() : 0);
-        result = 31 * result + (idCurrency != null ? idCurrency.hashCode() : 0);
+        int result = year.hashCode();
+        result = 31 * result + idBudget.hashCode();
         return result;
     }
 
