@@ -13,11 +13,15 @@
             function validateFloatKeyPress(el, evt) {
                 var charCode = (evt.which) ? evt.which : event.keyCode;
                 var number = el.value.split('.');
-                if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+                var numberSplited = el.value.split('-');
+                if (charCode != 46 && charCode != 45 && charCode > 31 && (charCode < 48 || charCode > 57)) {
                     return false;
                 }
                 //just one dot
                 if(number.length>1 && charCode == 46){
+                    return false;
+                }
+                if(numberSplited.length>1 && charCode == 45){
                     return false;
                 }
                 //get the carat position
@@ -451,7 +455,7 @@
                     getBudgetYearConcept : function (indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept) {
 
                         budgetYearConcept.totalAmount = 0;
-                        
+
                         budgetYearConcept.totalAmount +=  budgetYearConcept.januaryAmount;
                         budgetYearConcept.totalAmount +=  budgetYearConcept.februaryAmount;
                         budgetYearConcept.totalAmount +=  budgetYearConcept.marchAmount;
@@ -476,8 +480,8 @@
                         this.budgets[indexOfBudget]
                                 .budgetSubcategories[indexOfBudgetSubcategory]
                                 .budgetYearConceptList.forEach(function (budgetYearConcept) {
-                                    self.budgets[indexOfBudget].budgetSubcategories[indexOfBudgetSubcategory].totalSubcategoryAmount += budgetYearConcept.totalAmount;
-                                });
+                            self.budgets[indexOfBudget].budgetSubcategories[indexOfBudgetSubcategory].totalSubcategoryAmount += budgetYearConcept.totalAmount;
+                        });
 
                         this.getTotalCostCenter();
                     },
@@ -522,7 +526,7 @@
                             return val.formatMoney(2, '');
                         },
                         write: function(val, oldVal) {
-                            var number = +val.replace(/[^\d.]/g, '');
+                            var number = +val;
                             return isNaN(number) ? 0 : parseFloat(number.toFixed(2));
                         }
                     }
