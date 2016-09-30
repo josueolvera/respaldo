@@ -200,28 +200,21 @@ public class Budgets implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Budgets budgets = (Budgets) o;
+        Budgets budgets1 = (Budgets) o;
 
-        if (idAccessLevel != budgets.idAccessLevel) return false;
-        if (idBudget != null ? !idBudget.equals(budgets.idBudget) : budgets.idBudget != null) return false;
-        if (idCostCenter != null ? !idCostCenter.equals(budgets.idCostCenter) : budgets.idCostCenter != null)
-            return false;
-        if (idAccountingAccount != null ? !idAccountingAccount.equals(budgets.idAccountingAccount) : budgets.idAccountingAccount != null)
-            return false;
-        if (idBudgetType != null ? !idBudgetType.equals(budgets.idBudgetType) : budgets.idBudgetType != null)
-            return false;
-        return idBudgetNature != null ? idBudgetNature.equals(budgets.idBudgetNature) : budgets.idBudgetNature == null;
+        if (!idCostCenter.equals(budgets1.idCostCenter)) return false;
+        if (!idAccountingAccount.equals(budgets1.idAccountingAccount)) return false;
+        if (!idBudgetType.equals(budgets1.idBudgetType)) return false;
+        return idBudgetNature.equals(budgets1.idBudgetNature);
 
     }
 
     @Override
     public int hashCode() {
-        int result = idBudget != null ? idBudget.hashCode() : 0;
-        result = 31 * result + (idCostCenter != null ? idCostCenter.hashCode() : 0);
-        result = 31 * result + (idAccountingAccount != null ? idAccountingAccount.hashCode() : 0);
-        result = 31 * result + (idBudgetType != null ? idBudgetType.hashCode() : 0);
-        result = 31 * result + (idBudgetNature != null ? idBudgetNature.hashCode() : 0);
-        result = 31 * result + idAccessLevel;
+        int result = idCostCenter.hashCode();
+        result = 31 * result + idAccountingAccount.hashCode();
+        result = 31 * result + idBudgetType.hashCode();
+        result = 31 * result + idBudgetNature.hashCode();
         return result;
     }
 

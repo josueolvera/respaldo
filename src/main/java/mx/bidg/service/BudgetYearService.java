@@ -8,4 +8,5 @@ import mx.bidg.model.BudgetYear;
 public interface BudgetYearService {
     BudgetYear findByBudgetAndYear(Integer idBudget, Integer year);
     BudgetYear saveOrUpdate(Integer idBudget, Integer year);
+    void updateAll();
 }

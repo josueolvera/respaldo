@@ -167,7 +167,7 @@ public class BudgetYear implements Serializable {
     @NotNull
     @Column(name = "YEAR")
     @JsonView(JsonViews.Root.class)
-    private int year;
+    private Integer year;
 
     @JoinColumn(name = "ID_BUDGET", referencedColumnName = "ID_BUDGET")
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -468,11 +468,11 @@ public class BudgetYear implements Serializable {
         this.idCurrency = idCurrency;
     }
 
-    public int getYear() {
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 
@@ -492,6 +492,14 @@ public class BudgetYear implements Serializable {
         this.currency = currency;
     }
 
+    public List<Requests> getRequestsList() {
+        return requestsList;
+    }
+
+    public void setRequestsList(List<Requests> requestsList) {
+        this.requestsList = requestsList;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -499,15 +507,15 @@ public class BudgetYear implements Serializable {
 
         BudgetYear that = (BudgetYear) o;
 
-        if (year != that.year) return false;
-        return budget.equals(that.budget);
+        if (!idBudget.equals(that.idBudget)) return false;
+        return year.equals(that.year);
 
     }
 
     @Override
     public int hashCode() {
-        int result = year;
-        result = 31 * result + budget.hashCode();
+        int result = idBudget.hashCode();
+        result = 31 * result + year.hashCode();
         return result;
     }
 

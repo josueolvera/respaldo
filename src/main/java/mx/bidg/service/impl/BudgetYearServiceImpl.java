@@ -3,6 +3,7 @@ package mx.bidg.service.impl;
 import mx.bidg.dao.BudgetYearConceptDao;
 import mx.bidg.dao.BudgetYearDao;
 import mx.bidg.dao.BudgetsDao;
+import mx.bidg.dao.InterfaceDao;
 import mx.bidg.model.BudgetYear;
 import mx.bidg.model.BudgetYearConcept;
 import mx.bidg.model.Budgets;
@@ -13,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by gerardo8 on 29/09/16.
@@ -85,5 +88,22 @@ public class BudgetYearServiceImpl implements BudgetYearService {
         }
 
         return returnBudgetYear;
+    }
+
+    @Override
+    public void updateAll() {
+        List<BudgetYearConcept> budgetYearConceptList = budgetYearConceptDao.findAll();
+
+        Set<BudgetYear> budgetYearSet = new HashSet<>();
+
+        for (BudgetYearConcept budgetYearConcept : budgetYearConceptList) {
+            BudgetYear budgetYear = new BudgetYear(budgetYearConcept.getYear(), budgetYearConcept.getBudget(), CCurrencies.MXN);
+            budgetYearSet.add(budgetYear);
+        }
+
+        for (BudgetYear budgetYearItem : budgetYearSet) {
+            saveOrUpdate(budgetYearItem.getIdBudget(), budgetYearItem.getYear());
+        }
+
     }
 }
