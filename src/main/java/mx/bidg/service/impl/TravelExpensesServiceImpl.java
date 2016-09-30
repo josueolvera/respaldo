@@ -28,6 +28,9 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
     TravelExpensesDao travelExpensesDao;
 
     @Autowired
+    ChecksDao checksDao;
+
+    @Autowired
     DwEnterprisesDao dwEnterprisesDao;
 
     @Autowired
@@ -40,7 +43,7 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
     RequestsDao requestsDao;
 
     @Autowired
-    RequestConceptDao requestConceptDao;
+    TravelExpenseConceptDao travelExpenseConceptDao;
 
     @Autowired
     RequestTypesProductDao requestTypesProductDao;
@@ -113,7 +116,7 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
                     request.setUserRequest(user);
                     request.setCreationDate(now);
                     request.setRequestStatus(CRequestStatus.PENDIENTE);
-//                    request.setBudget(budget);
+                    request.setBudgetYear(budgetYear);
                     request.setIdAccessLevel(1);
 
                     request = requestsDao.save(request);
@@ -132,16 +135,20 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
 
                     for(JsonNode node : requestConceptListNode) {
                         CBudgetConcepts concept = mapper.treeToValue(node.get("concept"), CBudgetConcepts.class);
-                        RequestConcept requestConcept = new RequestConcept();
-                        requestConcept.setCreationDate(now);
-                        requestConcept.setRequest(request);
-                        requestConcept.setAmount(node.get("amount").decimalValue());
-                        requestConcept.setCurrency(currency);
-                        requestConcept.setBudgetConcept(concept);
-                        requestConceptDao.save(requestConcept);
+                        TravelExpenseConcept travelExpenseConcept = new TravelExpenseConcept();
+                        travelExpenseConcept.setCreationDate(now);
+                        travelExpenseConcept.setTravelExpense(travelExpense);
+                        travelExpenseConcept.setAmount(node.get("amount").decimalValue());
+                        travelExpenseConcept.setCurrency(currency);
+                        travelExpenseConcept.setBudgetConcept(concept);
+                        travelExpenseConceptDao.save(travelExpenseConcept);
                     }
 
                     travelExpensesDao.save(travelExpense);
+
+                    Checks check = new Checks(travelExpense);
+
+                    checksDao.save(check);
 
                     return travelExpense;
                 } else {

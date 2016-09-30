@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * Created by josueolvera on 14/07/16.
  */
 @Controller
-@RequestMapping("request-concept")
-public class RequestConceptController {
+@RequestMapping("travel-expense-concept")
+public class TravelExpenseConceptController {
 
     @Autowired
     private ObjectMapper mapper;

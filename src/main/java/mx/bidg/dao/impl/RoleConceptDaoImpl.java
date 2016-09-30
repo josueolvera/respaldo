@@ -2,8 +2,6 @@ package mx.bidg.dao.impl;
 
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.RoleConceptDao;
-import mx.bidg.model.RequestConcept;
-import mx.bidg.model.ResourcesTasks;
 import mx.bidg.model.RoleConcept;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;

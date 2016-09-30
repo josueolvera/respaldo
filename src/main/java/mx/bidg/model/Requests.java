@@ -128,10 +128,6 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private List<RequestProducts> requestProductsList;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "request")
-    @JsonView(JsonViews.Embedded.class)
-    private List<RequestConcept> requestConceptList;
-
     public Requests() {
     }
 
@@ -287,14 +283,6 @@ public class Requests implements Serializable {
         this.requestProductsList = requestProductsList;
     }
 
-    public List<RequestConcept> getRequestConceptList() {
-        return requestConceptList;
-    }
-
-    public void setRequestConceptList(List<RequestConcept> requestConceptList) {
-        this.requestConceptList = requestConceptList;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -333,7 +321,6 @@ public class Requests implements Serializable {
                 ", requestStatus=" + requestStatus +
                 ", priceEstimationsList=" + priceEstimationsList +
                 ", requestProductsList=" + requestProductsList +
-                ", requestConceptList=" + requestConceptList +
                 '}';
     }
 }

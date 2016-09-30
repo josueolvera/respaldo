@@ -14,7 +14,9 @@ import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -91,6 +93,14 @@ public class TravelExpenses implements Serializable {
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private Requests request;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "travelExpense")
+    @JsonView(JsonViews.Embedded.class)
+    private List<TravelExpenseConcept> travelExpenseConceptList;
+
+    @Transient
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal totalAmount;
 
     @Transient
     @JsonView(JsonViews.Embedded.class)
@@ -209,6 +219,22 @@ public class TravelExpenses implements Serializable {
 
     public void setRequest(Requests request) {
         this.request = request;
+    }
+
+    public List<TravelExpenseConcept> getTravelExpenseConceptList() {
+        return travelExpenseConceptList;
+    }
+
+    public void setTravelExpenseConceptList(List<TravelExpenseConcept> travelExpenseConceptList) {
+        this.travelExpenseConceptList = travelExpenseConceptList;
+    }
+
+    public BigDecimal getTotalAmount() {
+        this.totalAmount = BigDecimal.ZERO;
+        for (TravelExpenseConcept travelExpenseConcept : this.travelExpenseConceptList) {
+            this.totalAmount = this.totalAmount.add(travelExpenseConcept.getAmount());
+        }
+        return totalAmount;
     }
 
     public DateFormatsPojo getCreationDateFormats() {

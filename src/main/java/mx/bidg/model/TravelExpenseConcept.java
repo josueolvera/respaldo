@@ -16,10 +16,8 @@ import org.hibernate.annotations.DynamicUpdate;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -27,18 +25,18 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @DynamicUpdate
-@Table(name = "REQUEST_CONCEPT")
+@Table(name = "TRAVEL_EXPENSE_CONCEPT")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
-public class RequestConcept implements Serializable {
+public class TravelExpenseConcept implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID_REQUEST_CONCEPT")
+    @Column(name = "ID_TRAVEL_EXPENSE_CONCEPT")
     @JsonView(JsonViews.Root.class)
-    private Integer idRequestConcept;
+    private Integer idTravelExpeseConcept;
 
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
@@ -54,14 +52,14 @@ public class RequestConcept implements Serializable {
     @JsonView(JsonViews.Root.class)
     private LocalDateTime creationDate;
 
-    @Column(name = "ID_REQUEST", insertable = false, updatable = false)
+    @Column(name = "ID_TRAVEL_EXPENSE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idRequest;
+    private Integer idTravelExpense;
 
-    @JoinColumn(name = "ID_REQUEST", referencedColumnName = "ID_REQUEST")
+    @JoinColumn(name = "ID_TRAVEL_EXPENSE", referencedColumnName = "ID_TRAVEL_EXPENSE")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private Requests request;
+    private TravelExpenses travelExpense;
 
     @Column(name = "ID_CURRENCY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -85,25 +83,25 @@ public class RequestConcept implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private DateFormatsPojo creationDateFormats;
 
-    public RequestConcept() {
+    public TravelExpenseConcept() {
     }
 
-    public RequestConcept(Integer idRequestConcept) {
-        this.idRequestConcept = idRequestConcept;
+    public TravelExpenseConcept(Integer idTravelExpense) {
+        this.idTravelExpense = idTravelExpense;
     }
 
-    public RequestConcept(Integer idRequestConcept, BigDecimal amount, LocalDateTime creationDate) {
-        this.idRequestConcept = idRequestConcept;
+    public TravelExpenseConcept(Integer idTravelExpense, BigDecimal amount, LocalDateTime creationDate) {
+        this.idTravelExpense = idTravelExpense;
         this.amount = amount;
         this.creationDate = creationDate;
     }
 
-    public Integer getIdRequestConcept() {
-        return idRequestConcept;
+    public Integer getIdTravelExpeseConcept() {
+        return idTravelExpeseConcept;
     }
 
-    public void setIdRequestConcept(Integer idRequestConcept) {
-        this.idRequestConcept = idRequestConcept;
+    public void setIdTravelExpeseConcept(Integer idTravelExpeseConcept) {
+        this.idTravelExpeseConcept = idTravelExpeseConcept;
     }
 
     public BigDecimal getAmount() {
@@ -138,20 +136,20 @@ public class RequestConcept implements Serializable {
         this.currency = currency;
     }
 
-    public Integer getIdRequest() {
-        return idRequest;
+    public Integer getIdTravelExpense() {
+        return idTravelExpense;
     }
 
-    public void setIdRequest(Integer idRequest) {
-        this.idRequest = idRequest;
+    public void setIdTravelExpense(Integer idTravelExpense) {
+        this.idTravelExpense = idTravelExpense;
     }
 
-    public Requests getRequest() {
-        return request;
+    public TravelExpenses getTravelExpense() {
+        return travelExpense;
     }
 
-    public void setRequest(Requests request) {
-        this.request = request;
+    public void setTravelExpense(TravelExpenses travelExpense) {
+        this.travelExpense = travelExpense;
     }
 
     public Integer getIdBudgetConcept() {
@@ -176,28 +174,34 @@ public class RequestConcept implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idRequestConcept != null ? idRequestConcept.hashCode() : 0);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TravelExpenseConcept that = (TravelExpenseConcept) o;
+
+        return idTravelExpeseConcept != null ? idTravelExpeseConcept.equals(that.idTravelExpeseConcept) : that.idTravelExpeseConcept == null;
+
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof RequestConcept)) {
-            return false;
-        }
-        RequestConcept other = (RequestConcept) object;
-        if ((this.idRequestConcept == null && other.idRequestConcept != null) || (this.idRequestConcept != null && !this.idRequestConcept.equals(other.idRequestConcept))) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        return idTravelExpeseConcept != null ? idTravelExpeseConcept.hashCode() : 0;
     }
 
     @Override
     public String toString() {
-        return "mx.bidg.model.RequestConcept[ idRequestConcept=" + idRequestConcept + " ]";
+        return "TravelExpenseConcept{" +
+                "idTravelExpeseConcept=" + idTravelExpeseConcept +
+                ", amount=" + amount +
+                ", creationDate=" + creationDate +
+                ", idTravelExpense=" + idTravelExpense +
+                ", travelExpense=" + travelExpense +
+                ", idCurrency=" + idCurrency +
+                ", currency=" + currency +
+                ", idBudgetConcept=" + idBudgetConcept +
+                ", budgetConcept=" + budgetConcept +
+                ", creationDateFormats=" + creationDateFormats +
+                '}';
     }
-    
 }

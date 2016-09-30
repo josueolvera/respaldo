@@ -451,7 +451,7 @@
                     getBudgetYearConcept : function (indexOfBudget, indexOfBudgetSubcategory, budgetYearConcept) {
 
                         budgetYearConcept.totalAmount = 0;
-                        
+
                         budgetYearConcept.totalAmount +=  budgetYearConcept.januaryAmount;
                         budgetYearConcept.totalAmount +=  budgetYearConcept.februaryAmount;
                         budgetYearConcept.totalAmount +=  budgetYearConcept.marchAmount;
