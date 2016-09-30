@@ -201,6 +201,7 @@ public class BudgetYear implements Serializable {
     public BudgetYear(int year, Budgets budget, CCurrencies currency) {
         this.year = year;
         this.budget = budget;
+        this.idBudget = budget.getIdBudget();
         this.currency = currency;
         this.januaryExpendedAmount = BigDecimal.ZERO;
         this.februaryExpendedAmount = BigDecimal.ZERO;
