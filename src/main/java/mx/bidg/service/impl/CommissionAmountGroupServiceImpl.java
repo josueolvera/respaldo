@@ -332,7 +332,6 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                     row.createCell(19).setCellValue(commissionAmountGroup.getApplicationsNumber().doubleValue());
                     row.createCell(20).setCellValue(commissionAmountGroup.getAmount().doubleValue());
                     row.createCell(21).setCellValue(commissionAmountGroup.getCommission().doubleValue());
-                    totalComission = totalComission.add(commissionAmountGroup.getCommission());
                 }
 
                 row.createCell(22).setCellValue(totalComission.doubleValue());
