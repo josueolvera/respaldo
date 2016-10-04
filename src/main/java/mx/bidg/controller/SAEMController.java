@@ -41,4 +41,25 @@ public class SAEMController {
         model.setViewName("saemReports");
         return model;
     }
+
+    @RequestMapping(value = "/incidences", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView saemIncidences() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("employeeIncidence");
+        return model;
+    }
+
+    @RequestMapping(value = "/distributor-pd", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView saemDistributorPd() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("DistributorPD");
+        return model;
+    }
+
+    @RequestMapping(value = "/pd-by-employee", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView saemPdByEmployee() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("persectionsDeductionsByEmployee");
+        return model;
+    }
 }
