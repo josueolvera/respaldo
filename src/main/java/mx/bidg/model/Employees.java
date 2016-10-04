@@ -18,6 +18,8 @@ import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import java.util.Date;
+import javax.xml.bind.annotation.XmlTransient;
 import mx.bidg.config.JsonViews;
 import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateConverter;
@@ -207,17 +209,6 @@ public class Employees implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idGender;
 
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "JOIN_DATE")
-    @JsonView(JsonViews.Root.class)
-    @Convert(converter = DateTimeConverter.class)
-    private LocalDateTime joinDate;
-
-    @Column(name = "BIRTHDAY")
-    @JsonView(JsonViews.Root.class)
-    @Convert(converter = DateConverter.class)
-    private LocalDate birthday;
 
     @Column(name = "SISTARH")
     @JsonView(JsonViews.Root.class)
@@ -255,6 +246,18 @@ public class Employees implements Serializable {
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private CGenders gender;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "JOIN_DATE")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime joinDate;
+
+    @Column(name = "BIRTHDAY")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateConverter.class)
+    private LocalDate birthday;
 
 
     public Employees() {
@@ -567,13 +570,6 @@ public class Employees implements Serializable {
         this.joinDate = joinDate;
     }
 
-    public LocalDate getBirthday() {
-        return birthday;
-    }
-
-    public void setBirthday(LocalDate birthday) {
-        this.birthday = birthday;
-    }
 
     public Integer getIdEmployeeType() {
         return idEmployeeType;
@@ -654,6 +650,14 @@ public class Employees implements Serializable {
 
     public void setIdSize(Integer idSize) {
         this.idSize = idSize;
+    }
+
+    public LocalDate getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(LocalDate birthday) {
+        this.birthday = birthday;
     }
 
     @Override

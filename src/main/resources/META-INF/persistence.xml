@@ -42,6 +42,11 @@
     <class>mx.bidg.model.AgreementsGroupCondition</class>
     <class>mx.bidg.model.CommissionAmountGroup</class>
     <class>mx.bidg.model.BranchsGoals</class>
+    <class>mx.bidg.model.PerceptionsDeductions</class>
+    <class>mx.bidg.model.CPerceptionsDeductions</class>
+    <class>mx.bidg.model.GroupApportionment</class>
+    <class>mx.bidg.model.ApportionmentRole</class>
+    <class>mx.bidg.model.DistributorPerceptionDeduction</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties/>
   </persistence-unit>
