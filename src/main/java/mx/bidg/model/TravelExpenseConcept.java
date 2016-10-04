@@ -79,10 +79,6 @@ public class TravelExpenseConcept implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CBudgetConcepts budgetConcept;
 
-    @Transient
-    @JsonView(JsonViews.Embedded.class)
-    private DateFormatsPojo creationDateFormats;
-
     public TravelExpenseConcept() {
     }
 
@@ -169,8 +165,7 @@ public class TravelExpenseConcept implements Serializable {
     }
 
     public DateFormatsPojo getCreationDateFormats() {
-        this.creationDateFormats = (creationDate == null) ? null : new DateFormatsPojo(creationDate);
-        return this.creationDateFormats;
+        return (creationDate == null) ? null : new DateFormatsPojo(creationDate);
     }
 
     @Override
@@ -201,7 +196,6 @@ public class TravelExpenseConcept implements Serializable {
                 ", currency=" + currency +
                 ", idBudgetConcept=" + idBudgetConcept +
                 ", budgetConcept=" + budgetConcept +
-                ", creationDateFormats=" + creationDateFormats +
                 '}';
     }
 }

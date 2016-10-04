@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -96,9 +97,9 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
                 Double total = 0D;
                 JsonNode currencyNode = jsonNode.get("currency");
                 CCurrencies currency = mapper.treeToValue(currencyNode, CCurrencies.class);
-                JsonNode requestConceptListNode = jsonNode.get("requestConceptList");
+                JsonNode travelExpenseConceptListNode = jsonNode.get("travelExpenseConceptList");
 
-                for(JsonNode node : requestConceptListNode) {
+                for(JsonNode node : travelExpenseConceptListNode) {
                     total += node.get("amount").decimalValue().doubleValue();
                 }
 
@@ -108,6 +109,9 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
 
                 if (budgetHelper.checkWhetherIsOutOfBudget(budgetYear, month, total)) {
 
+                    LocalDateTime startDate = LocalDateTime.parse(travelExpenseNode.get("startDate").asText() + " 00:00",formatter);
+                    LocalDateTime endDate = LocalDateTime.parse(travelExpenseNode.get("endDate").asText() + " 00:00",formatter);
+
                     JsonNode requestNode = jsonNode.get("request");
 
                     Requests request = new Requests();
@@ -115,14 +119,13 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
                     request.setFolio(foliosService.createNew(new CTables(51)));
                     request.setUserRequest(user);
                     request.setCreationDate(now);
+                    request.setApplyingDate(startDate);
+                    request.setMonth(new CMonths(now.getMonthValue()));
                     request.setRequestStatus(CRequestStatus.PENDIENTE);
                     request.setBudgetYear(budgetYear);
                     request.setIdAccessLevel(1);
 
                     request = requestsDao.save(request);
-
-                    LocalDateTime startDate = LocalDateTime.parse(travelExpenseNode.get("startDate").asText() + " 00:00",formatter);
-                    LocalDateTime endDate = LocalDateTime.parse(travelExpenseNode.get("endDate").asText() + " 00:00",formatter);
 
                     TravelExpenses travelExpense = new TravelExpenses();
                     travelExpense.setCreationDate(now);
@@ -133,7 +136,9 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
                     travelExpense.setTravelType(travelType);
                     travelExpense.setRequest(request);
 
-                    for(JsonNode node : requestConceptListNode) {
+                    List<TravelExpenseConcept> travelExpenseConceptList = new ArrayList<>();
+
+                    for(JsonNode node : travelExpenseConceptListNode) {
                         CBudgetConcepts concept = mapper.treeToValue(node.get("concept"), CBudgetConcepts.class);
                         TravelExpenseConcept travelExpenseConcept = new TravelExpenseConcept();
                         travelExpenseConcept.setCreationDate(now);
@@ -141,14 +146,13 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
                         travelExpenseConcept.setAmount(node.get("amount").decimalValue());
                         travelExpenseConcept.setCurrency(currency);
                         travelExpenseConcept.setBudgetConcept(concept);
-                        travelExpenseConceptDao.save(travelExpenseConcept);
+                        travelExpenseConceptList.add(travelExpenseConcept);
                     }
 
-                    travelExpensesDao.save(travelExpense);
+                    travelExpense.setTravelExpenseConceptList(travelExpenseConceptList);
+                    travelExpense = travelExpensesDao.save(travelExpense);
 
-                    Checks check = new Checks(travelExpense);
-
-                    checksDao.save(check);
+                    checksDao.save(new Checks(travelExpense, travelExpense.getEndDate().plusDays(3)));
 
                     return travelExpense;
                 } else {

@@ -16,7 +16,9 @@
             var vm = new Vue({
                 el: '#content',
                 ready: function () {
-
+                    this.getTravelExpenses();
+                    this.getPlaneTickets();
+                    this.getRefunds();
                 },
                 created: function () {
 
@@ -24,9 +26,12 @@
                 data: {
                     user: {},
                     travelExpenses: [],
-                    checks: [],
                     planeTickets: [],
-                    refunds: []
+                    refunds: [],
+                    travelExpenseUrl: ROOT_URL + '/siad/requests-management/travel-expense/',
+                    checkUrl: ROOT_URL + '/siad/requests-management/plane-ticket/',
+                    planeTicketUrl: ROOT_URL + '/siad/requests-management/refund/',
+                    refundUrl: ROOT_URL + '/siad/requests-management/check/'
                 },
                 methods: {
                     getUserInSession: function () {
@@ -41,13 +46,23 @@
                     getTravelExpenses: function () {
                         this.$http.get(ROOT_URL + "/travel-expenses")
                                 .success(function (data) {
-                                    this.travelExpenses = data;
-                                });
-                    },
-                    getChecks: function () {
-                        this.$http.get(ROOT_URL + "/checks")
-                                .success(function (data) {
-                                    this.checks = data;
+                                    var self = this;
+                                    var jsonObjectIndex = [];
+
+                                    data.forEach(function (travelExpense) {
+                                        if (isNaN(travelExpense)) {
+                                            self.travelExpenses.push(travelExpense);
+                                        }
+                                    });
+
+                                    this.travelExpenses.forEach(function (travelExpense) {
+                                        if (isNaN(travelExpense.request.userRequest)) {
+                                            jsonObjectIndex[ travelExpense.request.userRequest._id] = travelExpense.request.userRequest;
+                                        } else {
+                                            travelExpense.request.userRequest = jsonObjectIndex[ travelExpense.request.userRequest];
+                                        }
+                                    });
+
                                 });
                     },
                     getPlaneTickets: function () {
@@ -61,6 +76,12 @@
                                 .success(function (data) {
                                     this.refunds = data;
                                 });
+                    },
+                    arrayObjectIndexOf: function (myArray, searchTerm, property) {
+                        for (var i = 0, len = myArray.length; i < len; i++) {
+                            if (myArray[i][property] === searchTerm) return i;
+                        }
+                        return -1;
                     }
                 }
             });
@@ -115,34 +136,73 @@
             </div>
             <div class="col-md-12">
                 <div class="row notification" v-for="travelExpense in travelExpenses">
-                    <div class="col-xs-12">
-                        <div class="card card-inline clearfix">
-                            <div class="card-body clearfix">
-                                <div class="card-image">
-                                    <span class="badge">V</span>
-                                </div>
-                                <div class="card-title">
-                                    <p>
-                                        Viáticos
-                                    </p>
-                                </div>
-                                <div class="card-subtitle">
-                                    <p>
-                                        Folio - {{travelExpense.request.folio}}
-                                    </p>
-                                </div>
-                                <div class="card-text">
-                                    <p>
-                                        Aplica -$ {{ accountPayable.amount}}
-                                    </p>
-                                </div>
+                    <div class="card card-inline clearfix">
+                        <div class="card-body clearfix">
+                            <div class="card-image">
+                                <span class="badge">V</span>
                             </div>
-                            <div class="card-actions">
-                                <a href="{{}}"
+                            <div class="card-title">
+                                <p>
+                                    Viáticos
+                                </p>
+                            </div>
+                            <div class="card-subtitle">
+                                <p>
+                                    {{travelExpense.request.userRequest.dwEmployee.employee.fullName}}
+                                </p>
+                            </div>
+                            <div class="card-text">
+                                <p>
+                                    Aplica - {{travelExpense.request.applyingDateFormats.simpleDate}}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <p>
+                                <span class="label" :class="{ 'label-primary': travelExpense.request.requestStatus.idRequestStatus == 1, 'label-success': travelExpense.request.requestStatus.idRequestStatus == 4, 'label-danger': travelExpense.request.requestStatus.idRequestStatus == 3 }">
+                                    {{travelExpense.request.requestStatus.requestStatus}}
+                                </span>
+                                <a :href="travelExpenseUrl + travelExpense.idTravelExpense"
                                    target="_blank" data-toggle="tooltip" data-placement="top" title="Ver solicitud">
                                     <span class="glyphicon glyphicon-new-window"></span>
                                 </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row notification" v-for="travelExpense in travelExpenses">
+                    <div class="card card-inline clearfix">
+                        <div class="card-body clearfix">
+                            <div class="card-image">
+                                <span class="badge">C</span>
                             </div>
+                            <div class="card-title">
+                                <p>
+                                    Comprobaciones
+                                </p>
+                            </div>
+                            <div class="card-subtitle">
+                                <p>
+                                    {{travelExpense.request.userRequest.dwEmployee.employee.fullName}}
+                                </p>
+                            </div>
+                            <div class="card-text">
+                                <p>
+                                    Vence - {{travelExpense.check.expiredDateFormats.simpleDate}}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <p>
+                                <span class="label" :class="{ 'label-primary': travelExpense.check.checkStatus.idCheckStatus == 1, 'label-danger': travelExpense.check.checkStatus.idCheckStatus == 2 }">
+                                    {{travelExpense.check.checkStatus.status}}
+                                </span>
+                                <a :href="checkUrl + travelExpense.check.idCheck"
+                                   target="_blank" data-toggle="tooltip" data-placement="top" title="Ver solicitud">
+                                    <span class="glyphicon glyphicon-new-window"></span>
+                                </a>
+                            </p>
                         </div>
                     </div>
                 </div>

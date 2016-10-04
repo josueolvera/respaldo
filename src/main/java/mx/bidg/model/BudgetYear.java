@@ -507,15 +507,15 @@ public class BudgetYear implements Serializable {
 
         BudgetYear that = (BudgetYear) o;
 
-        if (!idBudget.equals(that.idBudget)) return false;
-        return year.equals(that.year);
+        if (!year.equals(that.year)) return false;
+        return budget.equals(that.budget);
 
     }
 
     @Override
     public int hashCode() {
-        int result = idBudget.hashCode();
-        result = 31 * result + year.hashCode();
+        int result = year.hashCode();
+        result = 31 * result + budget.hashCode();
         return result;
     }
 
