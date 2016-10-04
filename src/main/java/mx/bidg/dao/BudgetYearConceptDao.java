@@ -25,5 +25,5 @@ public interface BudgetYearConceptDao extends InterfaceDao<BudgetYearConcept> {
     List<BudgetYearConcept> findByBudget(Budgets budget);
     boolean authorizeBudget(int idDistributor, int idArea, int year);
     List<BudgetYearConcept> findByDWEnterpriseAndYear(int dwEnterprise, int year);
-    
+    BudgetYearConcept findByAccountingAccountAndCostCenter(int idCostCenter, int idAccountingAccount);
 }

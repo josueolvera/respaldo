@@ -10,6 +10,7 @@ import java.util.List;
 import mx.bidg.dao.*;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
+import mx.bidg.service.BudgetYearService;
 import mx.bidg.service.EmailDeliveryService;
 import mx.bidg.service.EmailTemplatesService;
 import mx.bidg.service.FoliosService;
@@ -71,6 +72,9 @@ public class RequestsServiceImpl implements RequestsService {
     @Autowired
     private ObjectMapper mapper;
     
+    @Autowired
+    private BudgetYearService budgetYearService;
+    
     @Override
     public HashMap<String, Object> getBudgetMonthProductType(String data) throws Exception {
         
@@ -129,12 +133,14 @@ public class RequestsServiceImpl implements RequestsService {
         Requests request = new Requests();
         request.setDescription(jsonRequest.get("request").get("description").asText());
         request.setPurpose(jsonRequest.get("request").get("purpose").asText());
-//        request.setRequestTypeProduct(new RequestTypesProduct(jsonRequest.get("request").get("idRequestTypesProduct").asInt()));
-//        request.setBudgetYearConcept(new BudgetYearConcept(jsonRequest.get("request").get("idBudgetMonthBranch").asInt()));
+        int idBudget = jsonRequest.get("request").get("idBudget").asInt();
+        int year = LocalDateTime.now().getYear();
+        BudgetYear budgetYear = budgetYearService.findByBudgetAndYear(idBudget, year);
         //51 es el id de Requests en CTables
         request.setFolio(foliosService.createNew(new CTables(51)));
         request.setUserRequest(user);
         request.setRequestStatus(CRequestStatus.PENDIENTE);
+        request.setBudgetYear(budgetYear);
         request.setUserResponsible(new Users(jsonRequest.get("request").get("idUserResponsable").asInt()));
         request.setCreationDate(LocalDateTime.now());
         request.setApplyingDate(LocalDateTime.now());

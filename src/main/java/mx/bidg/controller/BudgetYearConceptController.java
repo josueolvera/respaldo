@@ -113,4 +113,10 @@ public class BudgetYearConceptController {
         return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(budgetYearConceptList));
     }
     
+    @RequestMapping(value="/find/{idCostCenter}/{idAccountingAccount}", 
+            method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE )
+    public ResponseEntity<String> getBudgetYearConcept(@PathVariable int idCostCenter, @PathVariable int idAccountingAccount)throws Exception{
+        BudgetYearConcept budgetYearConcept = budgetYearConceptService.findByAccountingAccountAndCostCenter(idCostCenter, idAccountingAccount);
+        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(budgetYearConcept));
+    }
 }

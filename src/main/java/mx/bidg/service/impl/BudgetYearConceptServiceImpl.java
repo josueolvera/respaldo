@@ -264,4 +264,9 @@ public class BudgetYearConceptServiceImpl implements BudgetYearConceptService {
         return budgetYearConceptDao.findByBudgetsAndYear(budgets, yearToCopy);
     }
 
+    @Override
+    public BudgetYearConcept findByAccountingAccountAndCostCenter(int idCostCenter, int idAccountingAccount) {
+        return budgetYearConceptDao.findByAccountingAccountAndCostCenter(idCostCenter, idAccountingAccount);
+    }
+
 }

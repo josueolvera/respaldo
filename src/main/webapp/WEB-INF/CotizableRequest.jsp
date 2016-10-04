@@ -46,7 +46,9 @@
           },
           ready: function ()
           {
-              this.getRequestTypeProducts();
+              this.getUserInSession();
+              this.getCostCenter();
+
 
           },
           data:
@@ -57,44 +59,124 @@
             Productos: [],
             obtainRequestInformation:
             {
-              idRequestCategory: '',
-              idRequestType: '',
+              idBudgetCategory: '',
+              idAccountingAccount: '',
               idProductType: '',
               idUserResponsable: '',
               applyingDate: ''
-          },
-          tipoProducto: {}
+            },
+            tipoProducto: {},
+            userInSession: {},
+            userRequest: '',
+            costCenters: {},
+            costCenter: '',
+            budgetsYearConcept: '',
+            producto: '',
+            productosSeleccionados: [],
+            objectRequest: {
+            request: {
+                idRequest: '',
+                folio: '',
+                description: '',
+                purpose: '',
+                creationDate: '',
+                applyingDate: '',
+                userRequest: '',
+                userResponsible: '',
+                budgetYear: '',
+                month: '',
+                requestStatus: '',
+                idUserResponsable: '',
+                idBudget: ''
+            },
+            products: []
+            }
           },
           methods:
           {
               getRequestTypeProducts: function(){
-                  this.$http.get(ROOT_URL+"/request-type-product/category/"+ this.RequestCategory)
+                  this.$http.get(ROOT_URL+"/budgets/cost-center/"+ this.costCenter)
                     .success(function (data)
                     {
                        this.Rubros= data;
                     });
               },
-              getProductType: function()
-            {
+              getProductType: function(){
                 this.Productos= [];
                 var self = this;
                 this.Rubros.forEach(function(element){
-                    if (element.accountingAccounts.idBudgetCategory == self.obtainRequestInformation.idRequestType ) {
+                    if (element.accountingAccounts.idBudgetCategory == self.obtainRequestInformation.idBudgetCategory ) {
                         self.Productos.push(element);
                     }
                 });
-            },
-            getProducts: function()
-            {
-              this.tipoProducto= {};
-              this.$http.get(ROOT_URL+"/products/product-type/"+this.obtainRequestInformation.idProductType)
+                },
+               getProducts: function(){
+                this.tipoProducto= {};
+                this.$http.get(ROOT_URL+"/products/product-type/"+this.obtainRequestInformation.idAccountingAccount)
+                        .success(function (data)
+                        {
+                           this.tipoProducto= data;
+                        });
+                       //this.obtainSuppliers(this.obtainRequestInformation.idProductType);
+                 },
+                 saveProduct: function(){
+                     var productos = JSON.parse(JSON.stringify(this.producto));
+                     this.productosSeleccionados.push(productos);
+                 },
+                 getUserInSession: function(){
+                     this.$http.get(ROOT_URL + "/user").
+                     success(function (data)
+                     {
+                         this.userInSession = data;
+                         this.userRequest = data.dwEmployee.employee.fullName;
+                         this.getCostCenter();
+
+                     }).error(function(data)
+                     {
+                     showAlert("Ha habido un error al obtener al usuario en sesion");
+                    });
+
+                },
+                getCostCenter: function(){
+
+                    var idRole = this.userInSession.dwEmployee.idRole;
+                    this.$http.get(ROOT_URL + "/roles-cost-center/role/"+ idRole).
+                    success(function (data)
+                    {
+                        this.costCenters = data;
+                    }).error(function(data)
+                    {
+                        showAlert("Ha habido un error los centros de costos asociados a los usuarios");
+                    });
+                },
+                getAmountOfBudget: function(){
+                    this.$http.get(ROOT_URL+"/budget-year-concept/find/"+ this.costCenter+ "/"+ this.obtainRequestInformation.idAccountingAccount)
                       .success(function (data)
                       {
-                         this.tipoProducto= data;
+                          if (data !== null) {
+                              this.budgetsYearConcept = data;
+                              this.getProducts();
+                          }
+                          else{
+                              showAlert("No existe presupuesto para esta solicitud");
+                              this.obtainRequestInformation.idAccountingAccount= '';
+                          }
                       });
-                     //this.obtainSuppliers(this.obtainRequestInformation.idProductType);
-            }
+                },
+                deleteProduct: function(product){
+                    this.productosSeleccionados.$remove(product);
+                },
+                saveRequest: function(){
+                    this.objectRequest.products = this.productosSeleccionados;
+                    this.objectRequest.request.idUserResponsable = this.userInSession.idUser;
+                    this.objectRequest.request.idBudget = this.budgetsYearConcept.idBudget;
 
+                    this.$http.post(ROOT_URL+"/requests", JSON.stringify(this.objectRequest))
+                      .success(function (data)
+                      {
+                          showAlert("Registro de solicitud exitoso");
+                      });
+                }
           },
           filters:
           {
@@ -124,23 +206,37 @@
             </div>
             <br>
             <div class="row">
-              <div class="col-xs-2">
+
+                <div class="col-xs-3">
+                  <label>
+                    Centro de Costos
+                  </label>
+                  <select class="form-control" v-model="costCenter" @change="getRequestTypeProducts" :disabled="productosSeleccionados.length > 0">
+                      <option></option>
+                      <option v-for="costCenter in costCenters" value="{{costCenter.costCenter.idCostCenter}}" >
+                          {{costCenter.costCenter.name}}
+                      </option>
+                  </select>
+
+                </div>
+
+              <div class="col-xs-3">
                <label>
                  Rubro
                </label>
-               <select class="form-control" v-model="obtainRequestInformation.idRequestType" :disabled="desactivarCombos || isUpdate" @change="getProductType" required>
+               <select class="form-control" v-model="obtainRequestInformation.idBudgetCategory" :disabled="productosSeleccionados.length > 0 || isUpdate" @change="getProductType" required>
                  <option v-for="Rubro in Rubros"
                    value="{{Rubro.accountingAccounts.idBudgetCategory}}">{{Rubro.accountingAccounts.budgetCategory.budgetCategory}}
                  </option>
                </select>
               </div>
 
-              <div class="col-xs-2">
+              <div class="col-xs-3">
                 <label>
                   Producto
                 </label>
-                <select class="form-control" v-model="obtainRequestInformation.idProductType" :disabled="desactivarCombos || isUpdate"
-                  @change="getProducts" id="productTypesin" required>
+                <select class="form-control" v-model="obtainRequestInformation.idAccountingAccount" :disabled="productosSeleccionados.length > 0 || isUpdate"
+                  @change="getAmountOfBudget" id="productTypesin" required>
                   <option></option>
                   <option v-for="Producto in Productos" value="{{Producto.idAccountingAccount}}">
                     {{Producto.accountingAccounts.budgetSubcategory.budgetSubcategory}}
@@ -152,9 +248,9 @@
                 <label>
                   Tipo de Producto
                 </label>
-                <select class="form-control" v-model="idProducto" id="selectProducto" :disabled="isUpdate" required>
+                <select class="form-control" v-model="producto" :disabled="isUpdate" required>
                   <option></option>
-                  <option v-for="Product in tipoProducto" value="{{Product.idProduct}}">
+                  <option v-for="Product in tipoProducto" value="{{Product}}">
                     {{Product.product}}
                   </option>
                 </select>
@@ -168,52 +264,36 @@
                   </button>
                 </div>
               </div>
-
-              <%-- <div class="col-xs-5">
-                <label>
-                  Centro de Costos
-                </label>
-                <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
-                @change="obtainRequestInfo" :disabled="isUpdate">
-                  <option value="{{userInSession.idUser}}">
-                    {{ userInSession.dwEmployee.dwEnterprise.branch.branchName }} -
-                    {{ userInSession.dwEmployee.dwEnterprise.area.areaName }}
-                  </option>
-                </select>
-              </div> --%>
-
-              <div class="col-xs-5">
-                <label>
-                  Centro de Costos
-                </label>
-                <br>
-                    <span class="label label-default">
-                        {{ userInSession.dwEmployee.dwEnterprise.branch.branchName }} -
-                        {{ userInSession.dwEmployee.dwEnterprise.area.areaName }}
-                    </span>
-              </div>
             </div>
             <br>
               <div class="row">
-                <div class="col-xs-12">
-                  <label>
-                    Lista de Productos
-                  </label>
-                </div>
-              </div>
-
-              <div class="row" v-for="produc in objectRequest.products">
                 <div class="col-xs-4">
-                  <div class="col-xs-4">
-                    {{produc.descripcion}}
-                  </div>
-                  <div class="col-xs-2 text-left">
-                    <button class="btn btn-default" @click="deleteProduct(produc)" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Quitar Producto">
-                      <span class="glyphicon glyphicon-remove"></span>
-                    </button>
-                  </div>
-                </div>
+                  <label>
+                        Productos Seleccionados
+                  </label>
+                  <table class="table table-striped">
+                      <thead>
+                          <th>
+                              Concepto
+                          </th>
+                          <th>
 
+                          </th>
+                          <tbody>
+                              <tr v-for="product in productosSeleccionados">
+                                  <td>
+                                      {{product.product}}
+                                  </td>
+                                  <td>
+                                      <button type="button" class="btn btn-danger" @click="deleteProduct(product)">
+                                          <span class="glyphicon glyphicon-trash"></span>
+                                      </button>
+                                  </td>
+                              </tr>
+                          </tbody>
+                      </thead>
+                  </table>
+                </div>
               </div>
               <br>
             <div class="row">
@@ -238,8 +318,8 @@
 
             <br>
               <div class="row">
-                <div class="col-md-2 col-md-offset-10 text-right" v-if="desaparecer">
-                  <button class="btn btn-success" :disabled="desactivarGuardar||isSavingNow">Guardar</button>
+                <div class="col-md-2 col-md-offset-10 text-right">
+                  <button class="btn btn-success" :disabled="productosSeleccionados.length < 1 || isSavingNow">Guardar</button>
                 </div>
                 <div class="col-md-4 col-md-offset-8 text-right" v-if="!desaparecer">
                   <button type="button" class="btn btn-default" @click="newCotizacion"
@@ -742,6 +822,9 @@
                 </div>
               </div>
           </div>
+          <pre>
+              {{ $data.objectRequest | json}}
+          </pre>
 
         </div> <!-- container-fluid -->
       </div> <!-- #contenidos -->

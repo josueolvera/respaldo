@@ -235,7 +235,7 @@
                                     this.searching = false;
 
                                     if (data.length <= 0) {
-                                        showAlert('Sin presupuesto');
+                                        showAlert('Sin rubros asignados');
                                     }
 
                                     this.getTotalCostCenter();

@@ -35,4 +35,7 @@ public interface BudgetsDao extends InterfaceDao<Budgets> {
     ArrayList<Budgets> findByGroupAreaEnterprise(CGroups idGroup, CAreas idArea, Integer idDwEnterprise);
 
     Budgets findByAccountingAccountAndCostCenter(Integer idAccountingAccount, Integer idCostCenter);
+    
+    ArrayList<Budgets> findByCostCenter(Integer idCostCenter);
+
 }

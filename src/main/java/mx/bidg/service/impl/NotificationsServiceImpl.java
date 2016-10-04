@@ -163,11 +163,12 @@ public class NotificationsServiceImpl implements NotificationsService {
     }
 
     private Notifications build(Requests request, Users user) {
+
         Notifications notification = new Notifications();
         notification.setIdResource(request.getIdRequest());
-//        notification.setResourcesTasks(request.getRequestTypeProduct().getRequestCategory().getResourcesTasks());
-       // notification.setTitle("Solicitud: " + request.getRequestTypeProduct().getRequestType().getRequestType());
-       // notification.setSubtitle(request.getRequestTypeProduct().getProductType().getProductType());
+        //notification.setResourcesTasks(request.getRequestTypeProduct().getRequestCategory().getResourcesTasks());
+        notification.setTitle("Solicitud: " + request.getBudgetYear().getBudget().getAccountingAccount().getBudgetCategory().getBudgetCategory());
+        notification.setSubtitle(request.getBudgetYear().getBudget().getAccountingAccount().getBudgetSubcategory().getBudgetSubcategory());
         notification.setText(request.getDescription());
         notification.setUser(user);
         notification.setNotificationTypes(new CNotificationTypes(CNotificationTypes.S));

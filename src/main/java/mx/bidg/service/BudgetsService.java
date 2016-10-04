@@ -28,6 +28,6 @@ public interface BudgetsService {
     List<Budgets> getBudgets(Integer idCostCenter, Integer idBudgetType, Integer idBudgetNature, Integer idBudgetCategory);
     List<Budgets> findByDistributorAreaAndEnterprise(Integer idDistributor, Integer idArea, Integer idDwEnterprise);
     List<Budgets> findByDistributor(Integer idDistributor);
-
     void createReport(List<BudgetCategory> budgetCategories, CCostCenter costCenter, Integer year, OutputStream outputStream) throws IOException;
+    ArrayList<Budgets> findByCostCenter(Integer idCostCenter);
 }

@@ -211,4 +211,10 @@ public class BudgetController {
 
         return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(budgetCategories));
     }
+    
+    @RequestMapping(value = "/cost-center/{idCostCenter}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getBudgetsbyCC(@PathVariable Integer idCostCenter) throws Exception {
+        List<Budgets> budgets = budgetsService.findByCostCenter(idCostCenter);
+        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(budgets));
+    }
 }

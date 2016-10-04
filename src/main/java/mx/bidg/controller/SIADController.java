@@ -56,7 +56,7 @@ public class SIADController {
     public ModelAndView directaRequestType() {
         ModelAndView model= new ModelAndView();
         model.addObject("idRequest", 0);
-        model.addObject("cat", CRequestsCategories.SOLICITUD);
+        model.addObject("cat", CRequestsCategories.SOLICITUD.getIdRequestCategory());
         model.setViewName("DirectRequest");
         return model;
     }
@@ -65,7 +65,7 @@ public class SIADController {
     public ModelAndView cotizableRequestTypeSearch() {
         ModelAndView model= new ModelAndView();
         model.addObject("idRequest", 0);
-        model.addObject("cat", CRequestsCategories.PAGO_PROVEEDORES);
+        model.addObject("cat", CRequestsCategories.PAGO_PROVEEDORES.getIdRequestCategory());
         model.setViewName("CotizableRequest");
         return model;
     }
@@ -82,7 +82,7 @@ public class SIADController {
     public ModelAndView directaRequestType(@PathVariable int idRequest) {
         ModelAndView model= new ModelAndView();
         model.addObject("idRequest", idRequest);
-        model.addObject("cat", CRequestsCategories.SOLICITUD);
+        model.addObject("cat", CRequestsCategories.SOLICITUD.getIdRequestCategory());
         model.setViewName("DirectRequest");
         return model;
     }
@@ -91,7 +91,7 @@ public class SIADController {
     public ModelAndView cotizableRequestTypeSearch(@PathVariable int idRequest) {
         ModelAndView model= new ModelAndView();
         model.addObject("idRequest", idRequest);
-        model.addObject("cat", CRequestsCategories.PAGO_PROVEEDORES);
+        model.addObject("cat", CRequestsCategories.PAGO_PROVEEDORES.getIdRequestCategory());
         model.setViewName("CotizableRequest");
         return model;
     }

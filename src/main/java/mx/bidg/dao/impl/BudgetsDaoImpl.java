@@ -13,6 +13,8 @@ import mx.bidg.dao.BudgetsDao;
 import mx.bidg.model.*;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.DistinctRootEntityResultTransformer;
 import org.springframework.stereotype.Repository;
@@ -151,6 +153,21 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
                 .add(Restrictions.eq("idAccountingAccount", idAccountingAccount))
                 .add(Restrictions.eq("idCostCenter", idCostCenter))
                 .uniqueResult();
+    }
+
+    @Override
+    public ArrayList<Budgets> findByCostCenter(Integer idCostCenter) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("idCostCenter", idCostCenter);
+        map.put("idBudgetType", 1);
+        DetachedCriteria accountingOfCostCenter = DetachedCriteria.forClass(Budgets.class);
+        accountingOfCostCenter.setProjection(Property.forName("idAccountingAccount"));
+        accountingOfCostCenter.add(Restrictions.allEq(map));
+        
+        Criteria criteria = getSession().createCriteria(RequestTypesProduct.class);
+        ArrayList<Budgets> list = (ArrayList<Budgets>) criteria.add(Property.forName("idAccountingAccount").in(accountingOfCostCenter))
+                .list();
+        return list;
     }
 
 }

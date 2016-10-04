@@ -15,8 +15,10 @@ import mx.bidg.model.CMonths;
 import mx.bidg.model.DwEnterprises;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -148,6 +150,21 @@ public class BudgetYearConceptDaoImpl extends AbstractDao<Integer, BudgetYearCon
                 .add(Restrictions.eq("year", year))
                 .setFetchMode("budgetMonthConceptsList", FetchMode.JOIN);
         return (List<BudgetYearConcept>) criteria.list();
+    }
+
+    @Override
+    public BudgetYearConcept findByAccountingAccountAndCostCenter(int idCostCenter, int idAccountingAccount) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("idCostCenter", idCostCenter);
+        map.put("idAccountingAccount", idAccountingAccount);
+        DetachedCriteria budgetOfCostCenter = DetachedCriteria.forClass(Budgets.class);
+        budgetOfCostCenter.setProjection(Property.forName("idBudget"));
+        budgetOfCostCenter.add(Restrictions.allEq(map));
+        
+        Criteria criteria = getSession().createCriteria(BudgetYearConcept.class);
+        BudgetYearConcept byc = (BudgetYearConcept) criteria.add(Property.forName("idBudget").in(budgetOfCostCenter))
+                .uniqueResult();
+        return byc;
     }
     
 }

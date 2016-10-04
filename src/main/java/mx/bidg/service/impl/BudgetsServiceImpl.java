@@ -253,5 +253,10 @@ public class BudgetsServiceImpl implements BudgetsService {
     public ArrayList<Budgets> findByGroupAreaEnterprise(CGroups idGroup, CAreas idArea, Integer idDwEnterprise) {
         return budgetsDao.findByGroupAreaEnterprise(idGroup, idArea, idDwEnterprise);
     }
+
+    @Override
+    public ArrayList<Budgets> findByCostCenter(Integer idCostCenter) {
+        return budgetsDao.findByCostCenter(idCostCenter);
+    }
     
 }

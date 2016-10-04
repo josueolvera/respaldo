@@ -39,4 +39,7 @@ public interface BudgetYearConceptService {
     Boolean delete(Integer idBudgetYearConcept);
 
     List<BudgetYearConcept> copyBudget(Integer idCostCenter, Integer idBudgetType, Integer idBudgetCategory, Integer yearFromCopy, Integer yearToCopy, Boolean overwrite, Integer idBudgetNature, Users user);
+    
+    BudgetYearConcept findByAccountingAccountAndCostCenter(int idCostCenter, int idAccountingAccount);
+
 }
