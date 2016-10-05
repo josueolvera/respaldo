@@ -115,7 +115,6 @@
             </c:if>
         </div>
         <script src="/BIDGroupZona/assets/js/jquery-2.1.4.min.js"></script>
-        <script src="/BIDGroupZona/assets/js/jquery-ui.min.js"></script>
         <script src="/BIDGroupZona/assets/js/bootstrap.min.js"></script>
         <script src="/BIDGroupZona/assets/js/moment.min.js"></script>
         <script src="/BIDGroupZona/assets/js/moment-locale-es-mx.js"></script>
@@ -129,7 +128,7 @@
         <script src="/BIDGroupZona/assets/js/messenger-theme-flat.js"></script>
         <script src="/BIDGroupZona/assets/js/alerts.js"></script>
         <script src="/BIDGroupZona/assets/js/accounting.js"></script>
-        <script src="/BIDGroupZona/assets/js/fullcalendar.js"></script>
+        <script src="/BIDGroupZona/assets/js/fullcalendar.min.js"></script>
         <script src="/BIDGroupZona/assets/js/fullcalendar-locale-es.js"></script>
         <script src="/BIDGroupZona/assets/js/gcal.js"></script>
         <script type="text/javascript">
