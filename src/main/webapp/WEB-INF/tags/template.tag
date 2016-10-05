@@ -18,14 +18,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <title>${pageTitle}</title>
-    <link rel="stylesheet" href="/BIDGroupZona/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/BIDGroupZona/assets/css/styles.css">
-    <link rel="stylesheet" href="/BIDGroupZona/assets/css/messenger.css">
-    <link rel="stylesheet" href="/BIDGroupZona/assets/css/messenger-theme-flat.css">
-    <link rel="stylesheet" href="/BIDGroupZona/assets/css/selectize.css">
-    <link rel="stylesheet" href="/BIDGroupZona/assets/css/selectize.bootstrap3.css">
-    <link rel="stylesheet" href="/BIDGroupZona/assets/css/bootstrap-toggle.min.css">
-    <link rel="stylesheet" href="/BIDGroupZona/assets/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="/BIDGroupZona/assets/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/BIDGroupZona/assets/css/styles.css"/>
+    <link rel="stylesheet" href="/BIDGroupZona/assets/css/messenger.css"/>
+    <link rel="stylesheet" href="/BIDGroupZona/assets/css/messenger-theme-flat.css"/>
+    <link rel="stylesheet" href="/BIDGroupZona/assets/css/selectize.css"/>
+    <link rel="stylesheet" href="/BIDGroupZona/assets/css/selectize.bootstrap3.css"/>
+    <link rel="stylesheet" href="/BIDGroupZona/assets/css/bootstrap-toggle.min.css"/>
+    <link rel="stylesheet" href="/BIDGroupZona/assets/css/bootstrap-datetimepicker.min.css"/>
+    <link rel="stylesheet" href="/BIDGroupZona/assets/css/fullcalendar.min.css"/>
+    <link rel="stylesheet" href="/BIDGroupZona/assets/css/fullcalendar.print.css" media="print"/>
     <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users" />
     <jsp:invoke fragment="styles" />
 </head>
@@ -113,6 +115,7 @@
             </c:if>
         </div>
         <script src="/BIDGroupZona/assets/js/jquery-2.1.4.min.js"></script>
+        <script src="/BIDGroupZona/assets/js/jquery-ui.min.js"></script>
         <script src="/BIDGroupZona/assets/js/bootstrap.min.js"></script>
         <script src="/BIDGroupZona/assets/js/moment.min.js"></script>
         <script src="/BIDGroupZona/assets/js/moment-locale-es-mx.js"></script>
@@ -126,6 +129,9 @@
         <script src="/BIDGroupZona/assets/js/messenger-theme-flat.js"></script>
         <script src="/BIDGroupZona/assets/js/alerts.js"></script>
         <script src="/BIDGroupZona/assets/js/accounting.js"></script>
+        <script src="/BIDGroupZona/assets/js/fullcalendar.js"></script>
+        <script src="/BIDGroupZona/assets/js/fullcalendar-locale-es.js"></script>
+        <script src="/BIDGroupZona/assets/js/gcal.js"></script>
         <script type="text/javascript">
             Vue.http.interceptors.push({
                 request: function (request) {
