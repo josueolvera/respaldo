@@ -70,9 +70,10 @@ public class Checks implements Serializable {
     public Checks() {
     }
 
-    public Checks(TravelExpenses travelExpense, LocalDateTime expiredDate) {
+    public Checks(TravelExpenses travelExpense, LocalDateTime expiredDate, BigDecimal authorizedAmount) {
         this.travelExpense = travelExpense;
         this.expiredDate = expiredDate;
+        this.authorizedAmount = authorizedAmount;
         this.checkStatus = CCheckStatus.PENDIENTE;
     }
 
