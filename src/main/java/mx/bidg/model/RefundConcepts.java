@@ -8,6 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -54,15 +55,9 @@ public class RefundConcepts implements Serializable {
 
     @Basic(optional = false)
     @NotNull
-    @Column(name = "VOUCHER_TAX_TOTAL")
-    @JsonView(JsonViews.Root.class)
-    private Float voucherTaxTotal;
-
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "VOUCHER_TOTAL")
     @JsonView(JsonViews.Root.class)
-    private Float voucherTotal;
+    private BigDecimal voucherTotal;
 
     @Column(name = "ID_BUDGET_CONCEPT", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -88,11 +83,10 @@ public class RefundConcepts implements Serializable {
         this.idRefundConcept = idRefundConcept;
     }
 
-    public RefundConcepts(Refunds refund, CVoucherTypes voucherType, String voucherFolio, Float voucherTaxTotal, Float voucherTotal, CBudgetConcepts budgetConcept) {
+    public RefundConcepts(Refunds refund, CVoucherTypes voucherType, String voucherFolio, BigDecimal voucherTotal, CBudgetConcepts budgetConcept) {
         this.refund = refund;
         this.voucherType = voucherType;
         this.voucherFolio = voucherFolio;
-        this.voucherTaxTotal = voucherTaxTotal;
         this.voucherTotal = voucherTotal;
         this.budgetConcept = budgetConcept;
     }
@@ -145,19 +139,16 @@ public class RefundConcepts implements Serializable {
         this.voucherFolio = voucherFolio;
     }
 
-    public Float getVoucherTaxTotal() {
-        return voucherTaxTotal;
+    public BigDecimal getVoucherSubTotal() {
+        return voucherTotal.multiply(BigDecimal.valueOf(0.84D));
     }
 
-    public void setVoucherTaxTotal(Float voucherTaxTotal) {
-        this.voucherTaxTotal = voucherTaxTotal;
-    }
 
-    public Float getVoucherTotal() {
+    public BigDecimal getVoucherTotal() {
         return voucherTotal;
     }
 
-    public void setVoucherTotal(Float voucherTotal) {
+    public void setVoucherTotal(BigDecimal voucherTotal) {
         this.voucherTotal = voucherTotal;
     }
 
@@ -200,36 +191,13 @@ public class RefundConcepts implements Serializable {
 
         RefundConcepts that = (RefundConcepts) o;
 
-        if (idRefundConcept != null ? !idRefundConcept.equals(that.idRefundConcept) : that.idRefundConcept != null)
-            return false;
-        if (idRefund != null ? !idRefund.equals(that.idRefund) : that.idRefund != null) return false;
-        if (refund != null ? !refund.equals(that.refund) : that.refund != null) return false;
-        if (idVoucherType != null ? !idVoucherType.equals(that.idVoucherType) : that.idVoucherType != null)
-            return false;
-        if (voucherType != null ? !voucherType.equals(that.voucherType) : that.voucherType != null) return false;
-        if (voucherFolio != null ? !voucherFolio.equals(that.voucherFolio) : that.voucherFolio != null) return false;
-        if (voucherTaxTotal != null ? !voucherTaxTotal.equals(that.voucherTaxTotal) : that.voucherTaxTotal != null)
-            return false;
-        if (voucherTotal != null ? !voucherTotal.equals(that.voucherTotal) : that.voucherTotal != null) return false;
-        if (refundConceptDocuments != null ? !refundConceptDocuments.equals(that.refundConceptDocuments) : that.refundConceptDocuments != null)
-            return false;
-        return refundConceptAmounts != null ? refundConceptAmounts.equals(that.refundConceptAmounts) : that.refundConceptAmounts == null;
+        return idRefundConcept != null ? idRefundConcept.equals(that.idRefundConcept) : that.idRefundConcept == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = idRefundConcept != null ? idRefundConcept.hashCode() : 0;
-        result = 31 * result + (idRefund != null ? idRefund.hashCode() : 0);
-        result = 31 * result + (refund != null ? refund.hashCode() : 0);
-        result = 31 * result + (idVoucherType != null ? idVoucherType.hashCode() : 0);
-        result = 31 * result + (voucherType != null ? voucherType.hashCode() : 0);
-        result = 31 * result + (voucherFolio != null ? voucherFolio.hashCode() : 0);
-        result = 31 * result + (voucherTaxTotal != null ? voucherTaxTotal.hashCode() : 0);
-        result = 31 * result + (voucherTotal != null ? voucherTotal.hashCode() : 0);
-        result = 31 * result + (refundConceptDocuments != null ? refundConceptDocuments.hashCode() : 0);
-        result = 31 * result + (refundConceptAmounts != null ? refundConceptAmounts.hashCode() : 0);
-        return result;
+        return idRefundConcept != null ? idRefundConcept.hashCode() : 0;
     }
 
     @Override
@@ -241,7 +209,6 @@ public class RefundConcepts implements Serializable {
                 ", idVoucherType=" + idVoucherType +
                 ", voucherType=" + voucherType +
                 ", voucherFolio='" + voucherFolio + '\'' +
-                ", voucherTaxTotal=" + voucherTaxTotal +
                 ", voucherTotal=" + voucherTotal +
                 ", refundConceptDocuments=" + refundConceptDocuments +
                 ", refundConceptAmounts=" + refundConceptAmounts +
