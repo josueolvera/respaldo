@@ -27,6 +27,8 @@ public class CRequestStatus implements Serializable {
     public static final CRequestStatus COTIZADA = new CRequestStatus(2);
     public static final CRequestStatus RECHAZADA = new CRequestStatus(3);
     public static final CRequestStatus APROBADA = new CRequestStatus(4);
+    public static final CRequestStatus SIN_CONFIRMACION = new CRequestStatus(5);
+    public static final CRequestStatus CONFIRMADA = new CRequestStatus(6);
 
     private static final long serialVersionUID = 1L;
 
