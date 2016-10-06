@@ -32,7 +32,7 @@ public class EventsController {
     @Autowired
     private EventsService eventsService;
     
-    @RequestMapping(value = "/event",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getEvents(
             @RequestParam(name = "room", required = false) Integer idRoom,
             @RequestParam(name = "user", required = false) Integer idUser

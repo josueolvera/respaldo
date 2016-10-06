@@ -58,14 +58,12 @@ public class Events implements Serializable{
     @JsonView(JsonViews.Root.class)
     private String title;
     
-    @Size(max = 200)
     @Column(name = "START")
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime start;
     
     
-    @Size(max = 200)
     @Column(name = "END")
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
