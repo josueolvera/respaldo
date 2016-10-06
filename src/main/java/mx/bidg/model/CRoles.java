@@ -45,6 +45,14 @@ public class CRoles implements Serializable {
     @ManyToMany(mappedBy = "roles")
     @JsonView(JsonViews.Embedded.class)
     private Set<CAreas> areas;
+    
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "ROLE_ROOM",
+            joinColumns = @JoinColumn(name = "ID_ROLE"),
+            inverseJoinColumns = @JoinColumn(name = "ID_ROOM")
+    )
+    private Set<CRooms> rooms;
 
     public CRoles() {
     }
@@ -81,6 +89,16 @@ public class CRoles implements Serializable {
     public void setAreas(Set<CAreas> areas) {
         this.areas = areas;
     }
+
+    public Set<CRooms> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(Set<CRooms> rooms) {
+        this.rooms = rooms;
+    }
+    
+    
 
     @Override
     public int hashCode() {

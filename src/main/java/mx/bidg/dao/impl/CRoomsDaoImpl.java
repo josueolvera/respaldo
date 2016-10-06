@@ -5,6 +5,7 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CRoomsDao;
 import mx.bidg.model.CRooms;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -34,6 +35,18 @@ public class CRoomsDaoImpl extends AbstractDao<Integer, CRooms> implements CRoom
     @Override
     public boolean delete(CRooms entity) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public List<CRooms> getRooms(Integer idRole) {
+         Criteria criteria = createEntityCriteria();
+
+        if (idRole != null) {
+            criteria.createAlias("roles", "r");
+            criteria.add(Restrictions.eq("r.idRole", idRole));
+        }
+
+        return criteria.list();
     }
     
 }

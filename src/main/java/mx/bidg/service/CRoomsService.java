@@ -13,4 +13,6 @@ public interface CRoomsService {
     CRooms save(CRooms cRooms);
     CRooms update(CRooms cRooms);
     Boolean delete(CRooms cRooms);
+
+    public List<CRooms> getRooms(Integer idRole);
 }

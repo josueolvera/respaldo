@@ -2,12 +2,14 @@ package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
+import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -36,14 +38,13 @@ public class CRooms implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String name;
     
-    @Column(name = "VIEWFORALL")
-    @JsonView(JsonViews.Root.class)
-    private Integer viewforall;
-    
     @Size(max = 200)
     @Column(name = "IMAGEURL")
     @JsonView(JsonViews.Root.class)
     private String imageurl;
+    
+    @ManyToMany(mappedBy = "rooms")
+    private Set<CRoles> roles;
 
     public CRooms() {
     }
@@ -66,14 +67,6 @@ public class CRooms implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Integer getViewforall() {
-        return viewforall;
-    }
-
-    public void setViewforall(Integer viewforall) {
-        this.viewforall = viewforall;
     }
 
     public String getImageurl() {

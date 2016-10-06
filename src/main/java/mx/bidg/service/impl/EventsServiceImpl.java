@@ -6,48 +6,53 @@
 package mx.bidg.service.impl;
 
 import java.util.List;
-import mx.bidg.dao.CRoomsDao;
-import mx.bidg.model.CRooms;
-import mx.bidg.service.CRoomsService;
+import mx.bidg.dao.EventsDao;
+import mx.bidg.model.Events;
+import mx.bidg.service.EventsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ *
+ * @author rubens
+ */
 @Service
 @Transactional
-public class CRoomsServiceImpl implements CRoomsService {
+public class EventsServiceImpl implements EventsService{
     
     @Autowired
-    CRoomsDao cRoomsDao;
+    private EventsDao eventsDao;
 
     @Override
-    public List<CRooms> findAll() {
-       return cRoomsDao.findAll();
+    public List<Events> findAll() {
+        return eventsDao.findAll();
+        
     }
 
     @Override
-    public CRooms findById(Integer idRoom) {
-        return cRoomsDao.findById(idRoom);
+    public Events findById(Integer idevent) {
+        return eventsDao.findById(idevent);
     }
 
     @Override
-    public CRooms save(CRooms cRooms) {
+    public Events save(Events eVents) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public CRooms update(CRooms cRooms) {
+    public Events update(Events eVents) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Boolean delete(CRooms cRooms) {
+    public Boolean delete(Events eVents) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<CRooms> getRooms(Integer idRole) {
-        return cRoomsDao.getRooms(idRole);
+    public List<Events> getEvents(Integer idRoom, Integer idUser) {
+        return eventsDao.getEvents(idRoom, idUser);
     }
     
 }

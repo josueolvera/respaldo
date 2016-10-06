@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -30,8 +31,8 @@ public class CRoomsController {
     private ObjectMapper mapper;
     
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findAll() throws IOException{
-        List<CRooms> crooms = cRoomsService.findAll();
+    public ResponseEntity<String> findAll(@RequestParam(name = "role", required = false) Integer idRole) throws IOException{
+        List<CRooms> crooms = cRoomsService.getRooms(idRole);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(crooms), HttpStatus.OK);
     }
     

@@ -1,6 +1,9 @@
 /nb-configuration.xml
 /target/
 .idea/
+src/main/webapp/META-INF/context.xml
+src/main/webapp/WEB-INF/sun-web.xml
+src/main/webapp/WEB-INF/glassfish-web.xml
 
 # added by GitSavvy
 BIDGroup.iml
