@@ -50,10 +50,13 @@ public class TravelExpensesDaoImpl extends AbstractDao<Integer,TravelExpenses> i
     public List<TravelExpenses> getTravelExpenses(Integer idUser) {
         Criteria criteria = createEntityCriteria();
 
+        criteria.createAlias("request", "rq");
+
         if (idUser != null) {
-            criteria.createAlias("request", "rq")
-                    .add(Restrictions.eq("rq.idUserRequest", idUser));
+            criteria.add(Restrictions.eq("rq.idUserRequest", idUser));
         }
+
+        criteria.add(Restrictions.eq("rq.active", true));
 
         return criteria.list();
     }

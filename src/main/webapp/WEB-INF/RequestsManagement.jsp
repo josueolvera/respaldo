@@ -16,18 +16,18 @@
             var vm = new Vue({
                 el: '#content',
                 ready: function () {
-                    this.getTravelExpenses();
-                    this.getPlaneTickets();
-                    this.getRefunds();
+                    this.getRequests();
                 },
                 created: function () {
 
                 },
                 data: {
                     user: {},
+                    requestsfilter: '',
                     travelExpenses: [],
                     planeTickets: [],
                     refunds: [],
+                    checks: [],
                     travelExpenseUrl: ROOT_URL + '/siad/requests-management/travel-expense/',
                     checkUrl: ROOT_URL + '/siad/requests-management/plane-ticket/',
                     planeTicketUrl: ROOT_URL + '/siad/requests-management/refund/',
@@ -44,6 +44,7 @@
                                 });
                     },
                     getTravelExpenses: function () {
+                        this.travelExpenses = [];
                         this.$http.get(ROOT_URL + "/travel-expenses")
                                 .success(function (data) {
                                     var self = this;
@@ -66,15 +67,48 @@
                                 });
                     },
                     getPlaneTickets: function () {
+                        this.planeTickets = [];
                         this.$http.get(ROOT_URL + "/plane-tickets")
                                 .success(function (data) {
                                     this.planeTickets = data;
+                                    var jsonObjectIndex = [];
+
+                                    this.planeTickets.forEach(function (planeTicket) {
+                                        if (isNaN(planeTicket.request.userRequest)) {
+                                            jsonObjectIndex[planeTicket.request.userRequest._id] = planeTicket.request.userRequest;
+                                        } else {
+                                            planeTicket.request.userRequest = jsonObjectIndex[planeTicket.request.userRequest];
+                                        }
+                                    });
                                 });
                     },
                     getRefunds: function () {
+                        this.refunds = [];
                         this.$http.get(ROOT_URL + "/refunds")
                                 .success(function (data) {
                                     this.refunds = data;
+                                });
+                    },
+                    getChecks: function () {
+                        this.checks = [];
+                        this.$http.get(ROOT_URL + "/checks")
+                                .success(function (data) {
+                                    var self = this;
+                                    var index;
+                                    var jsonObjectIndex = [];
+
+                                    data.forEach(function (check) {
+                                        index = self.arrayObjectIndexOf(self.checks, check.idCheck, 'idCheck');
+                                        if (index == -1) self.checks.push(check);
+                                    });
+
+                                    this.checks.forEach(function (check) {
+                                        if (isNaN(check.travelExpense.request.userRequest)) {
+                                            jsonObjectIndex[check.travelExpense.request.userRequest._id] = check.travelExpense.request.userRequest;
+                                        } else {
+                                            check.travelExpense.request.userRequest = jsonObjectIndex[check.travelExpense.request.userRequest];
+                                        }
+                                    });
                                 });
                     },
                     arrayObjectIndexOf: function (myArray, searchTerm, property) {
@@ -82,6 +116,21 @@
                             if (myArray[i][property] === searchTerm) return i;
                         }
                         return -1;
+                    },
+                    changeActiveStatus: function (travelExpense) {
+                        this.$http.post(ROOT_URL + '/requests/change-active-status?request=' + travelExpense.idRequest)
+                                .success(function (data) {
+                                    showAlert('Archivada');
+                                    this.getRequests();
+                                }).error(function (data) {
+
+                        });
+                    },
+                    getRequests: function () {
+                        this.getTravelExpenses();
+                        this.getPlaneTickets();
+                        this.getRefunds();
+                        this.getChecks();
                     }
                 }
             });
@@ -130,12 +179,14 @@
                 <div class="col-md-6">
                     <h2>Gastos de viaje</h2>
                 </div>
-                <div class="col-md-6">
-                    <input type="text" class="form-control" v-model="">
+                <div class="col-md-2"></div>
+                <div class="col-md-4" style="margin-top: 20px">
+                    <input type="text" class="form-control" v-model="requestsfilter" placeholder="Buscar por nombre de empleado">
                 </div>
             </div>
+            <br>
             <div class="col-md-12">
-                <div class="row notification" v-for="travelExpense in travelExpenses">
+                <div class="row notification" v-for="travelExpense in travelExpenses | filterBy requestsfilter in 'request.userRequest.dwEmployee.employee.fullName'">
                     <div class="card card-inline clearfix">
                         <div class="card-body clearfix">
                             <div class="card-image">
@@ -158,20 +209,22 @@
                             </div>
                         </div>
                         <div class="card-actions">
-                            <p>
-                                <span class="label" :class="{ 'label-primary': travelExpense.request.requestStatus.idRequestStatus == 1, 'label-success': travelExpense.request.requestStatus.idRequestStatus == 4, 'label-danger': travelExpense.request.requestStatus.idRequestStatus == 3 }">
+                            <span class="label" :class="{ 'label-primary': travelExpense.request.requestStatus.idRequestStatus == 1, 'label-success': travelExpense.request.requestStatus.idRequestStatus == 4, 'label-danger': travelExpense.request.requestStatus.idRequestStatus == 3 }">
                                     {{travelExpense.request.requestStatus.requestStatus}}
                                 </span>
-                                <a :href="travelExpenseUrl + travelExpense.idTravelExpense"
-                                   target="_blank" data-toggle="tooltip" data-placement="top" title="Ver solicitud">
-                                    <span class="glyphicon glyphicon-new-window"></span>
-                                </a>
-                            </p>
+                            <a @click="changeActiveStatus(travelExpense)" v-if="travelExpense.request.requestStatus.idRequestStatus != 1" href="#"
+                               data-toggle="tooltip" data-placement="top" title="Archivar">
+                                <span class="glyphicon glyphicon-folder-open"></span>
+                            </a>
+                            <a href="{{travelExpenseUrl + travelExpense.idTravelExpense}}"
+                               data-toggle="tooltip" data-placement="top" title="Ver solicitud">
+                                <span class="glyphicon glyphicon-new-window"></span>
+                            </a>
                         </div>
                     </div>
                 </div>
                 <br>
-                <div class="row notification" v-for="travelExpense in travelExpenses">
+                <div class="row notification" v-for="check in checks | filterBy requestsfilter in 'travelExpense.request.userRequest.dwEmployee.employee.fullName'">
                     <div class="card card-inline clearfix">
                         <div class="card-body clearfix">
                             <div class="card-image">
@@ -184,25 +237,99 @@
                             </div>
                             <div class="card-subtitle">
                                 <p>
-                                    {{travelExpense.request.userRequest.dwEmployee.employee.fullName}}
+                                    {{check.travelExpense.request.userRequest.dwEmployee.employee.fullName}}
                                 </p>
                             </div>
                             <div class="card-text">
                                 <p>
-                                    Vence - {{travelExpense.check.expiredDateFormats.simpleDate}}
+                                    Vence - {{check.expiredDateFormats.simpleDate}}
                                 </p>
                             </div>
                         </div>
                         <div class="card-actions">
-                            <p>
-                                <span class="label" :class="{ 'label-primary': travelExpense.check.checkStatus.idCheckStatus == 1, 'label-danger': travelExpense.check.checkStatus.idCheckStatus == 2 }">
-                                    {{travelExpense.check.checkStatus.status}}
+                            <span class="label" :class="{ 'label-primary': check.checkStatus.idCheckStatus == 1, 'label-danger': check.checkStatus.idCheckStatus == 2 }">
+                                    {{check.checkStatus.status}}
                                 </span>
-                                <a :href="checkUrl + travelExpense.check.idCheck"
-                                   target="_blank" data-toggle="tooltip" data-placement="top" title="Ver solicitud">
-                                    <span class="glyphicon glyphicon-new-window"></span>
-                                </a>
-                            </p>
+                            <a :href="checkUrl + check.idCheck"
+                               data-toggle="tooltip" data-placement="top" title="Ver solicitud">
+                                <span class="glyphicon glyphicon-new-window"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row notification" v-for="refund in refunds | filterBy requestsfilter in 'request.userRequest.dwEmployee.employee.fullName'">
+                    <div class="card card-inline clearfix">
+                        <div class="card-body clearfix">
+                            <div class="card-image">
+                                <span class="badge">R</span>
+                            </div>
+                            <div class="card-title">
+                                <p>
+                                    Reembolsos
+                                </p>
+                            </div>
+                            <div class="card-subtitle">
+                                <p>
+                                    {{refund.request.userRequest.dwEmployee.employee.fullName}}
+                                </p>
+                            </div>
+                            <div class="card-text">
+                                <p>
+                                    Aplica - {{refund.request.applyingDateFormats.simpleDate}}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <span class="label" :class="{ 'label-primary': refund.request.requestStatus.idRequestStatus == 1, 'label-success': refund.request.requestStatus.idRequestStatus == 4, 'label-danger': refund.request.requestStatus.idRequestStatus == 3 }">
+                                    {{refund.request.requestStatus.requestStatus}}
+                                </span>
+                            <a @click="changeActiveStatus(refund)" v-if="refund.request.requestStatus.idRequestStatus == 6" href="#"
+                               data-toggle="tooltip" data-placement="top" title="Archivar">
+                                <span class="glyphicon glyphicon-folder-open"></span>
+                            </a>
+                            <a href="{{refundUrl + refund.idRefund}}"
+                               data-toggle="tooltip" data-placement="top" title="Ver solicitud">
+                                <span class="glyphicon glyphicon-new-window"></span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="row notification" v-for="planeTicket in planeTickets | filterBy requestsfilter in 'request.userRequest.dwEmployee.employee.fullName'">
+                    <div class="card card-inline clearfix">
+                        <div class="card-body clearfix">
+                            <div class="card-image">
+                                <span class="badge">BA</span>
+                            </div>
+                            <div class="card-title">
+                                <p>
+                                    Boletos de avión
+                                </p>
+                            </div>
+                            <div class="card-subtitle">
+                                <p>
+                                    {{planeTicket.request.userRequest.dwEmployee.employee.fullName}}
+                                </p>
+                            </div>
+                            <div class="card-text">
+                                <p>
+                                    Aplica - {{planeTicket.request.applyingDateFormats.simpleDate}}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <span class="label" :class="{ 'label-primary': planeTicket.request.requestStatus.idRequestStatus == 5, 'label-success': planeTicket.request.requestStatus.idRequestStatus == 6}">
+                                    {{planeTicket.request.requestStatus.requestStatus}}
+                                </span>
+                            <a @click="changeActiveStatus(planeTicket)" v-if="planeTicket.request.requestStatus.idRequestStatus == 6" href="#"
+                               data-toggle="tooltip" data-placement="top" title="Archivar">
+                                <span class="glyphicon glyphicon-folder-open"></span>
+                            </a>
+                            <a href="{{planeTicketUrl + planeTicket.idPlaneTicket}}"
+                               data-toggle="tooltip" data-placement="top" title="Ver solicitud">
+                                <span class="glyphicon glyphicon-new-window"></span>
+                            </a>
                         </div>
                     </div>
                 </div>

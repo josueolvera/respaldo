@@ -9,5 +9,8 @@ import mx.bidg.model.TravelExpenses;
 public interface RequestTravelExpenseEmailNotificationService {
 
     EmailTemplates sendEmailToUser(TravelExpenses travelExpense);
+
     EmailTemplates sendEmailToAdminAux(TravelExpenses travelExpense);
+
+    EmailTemplates sendEmailToUserStatus(TravelExpenses travelExpense);
 }

@@ -54,4 +54,14 @@ public class RequestTravelExpenseEmailNotificationServiceImpl implements Request
         emailDeliveryService.deliverEmail(emailTemplate);
         return emailTemplate;
     }
+
+    @Override
+    public EmailTemplates sendEmailToUserStatus(TravelExpenses travelExpense) {
+        EmailTemplates emailTemplate = emailTemplatesService.findByName("request_travel_expense_user_notification_status");
+        emailTemplate.addProperty("travelExpense", travelExpense);
+        emailTemplate.addRecipient(new EmailRecipients(travelExpense.getRequest().getUserRequest().getMail(), travelExpense.getRequest().getUserRequest().getUsername(), EmailRecipients.TO));
+
+        emailDeliveryService.deliverEmail(emailTemplate);
+        return emailTemplate;
+    }
 }

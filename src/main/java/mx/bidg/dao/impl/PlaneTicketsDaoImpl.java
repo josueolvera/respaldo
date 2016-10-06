@@ -47,10 +47,13 @@ public class PlaneTicketsDaoImpl extends AbstractDao<Integer, PlaneTickets> impl
     public List<PlaneTickets> getPlaneTickets(Integer idUser) {
         Criteria criteria = createEntityCriteria();
 
+        criteria.createAlias("request", "rq");
+
         if (idUser != null) {
-            criteria.createCriteria("request")
-                    .add(Restrictions.eq("idUserRequest", idUser));
+            criteria.add(Restrictions.eq("rq.idUserRequest", idUser));
         }
+
+        criteria.add(Restrictions.eq("rq.active", true));
 
         return criteria.list();
     }

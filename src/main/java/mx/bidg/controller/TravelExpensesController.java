@@ -48,4 +48,21 @@ public class TravelExpensesController {
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(travelExpensesService.getTravelExpenses(idUser)), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/{idTravelExpense}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getTravelExpenseById(@PathVariable Integer idTravelExpense) throws Exception {
+        TravelExpenses travelExpense = travelExpensesService.findById(idTravelExpense);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(travelExpense), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/change-status", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> changeStatus(
+            @RequestParam(name = "travel_expense") Integer idTravelExpense,
+            @RequestBody String data
+    ) throws Exception {
+
+        TravelExpenses travelExpense = travelExpensesService.changeRequestStatus(idTravelExpense, data);
+        requestTravelExpenseEmailNotificationService.sendEmailToUserStatus(travelExpense);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(travelExpense), HttpStatus.OK);
+    }
 }

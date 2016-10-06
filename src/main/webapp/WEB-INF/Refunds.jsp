@@ -33,23 +33,23 @@
                 return true;
             }
 
-            //thanks: http://javascript.nwbox.com/cursor_position/
             function getSelectionStart(o) {
                 if (o.createTextRange) {
-                    var r = document.selection.createRange().duplicate()
-                    r.moveEnd('character', o.value.length)
-                    if (r.text == '') return o.value.length
+                    var r = document.selection.createRange().duplicate();
+                    r.moveEnd('character', o.value.length);
+                    if (r.text == '') return o.value.length;
                     return o.value.lastIndexOf(r.text)
                 } else return o.selectionStart
             }
             function isNumberKey(evt)
             {
-                var charCode = (evt.which) ? evt.which : event.keyCode
+                var charCode = (evt.which) ? evt.which : event.keyCode;
                 if (charCode > 31 && (charCode < 48 || charCode > 57))
                     return false;
                 return true;
             }
         </script>
+
         <script type="text/javascript">
             var vm= new Vue({
                 el: '#content',
@@ -69,9 +69,12 @@
                             purpose:''
                         }
                     },
-                    travelExpenseConcepts:[],
+                    concepts:[],
                     voucherTypes:[],
-                    selected:{},
+                    selected:{
+                        voucherType: null,
+                        concept: null
+                    },
                     currentRefundConcept:{},
                     indexOfCurrentRefundConcept:null
                 },
@@ -88,9 +91,9 @@
                         });
                     },
                     getAllConcepts : function () {
-                        this.$http.get(ROOT_URL + '/travel-expenses-concepts')
+                        this.$http.get(ROOT_URL + '/budget-concepts?category=5')
                                 .success(function (data) {
-                                    this.travelExpenseConcepts = data;
+                                    this.concepts = data;
                                 })
                                 .error(function (data) {});
                     },
@@ -104,17 +107,18 @@
                     getRefunConceptDocumentsTypes: function (refundConcept) {
                         this.$http.get(
                                 ROOT_URL + '/refund-concept-documents-types?idVoucherType=' + refundConcept.voucherType.idVoucherType
-                        )
-                                .success(function (data) {
-                                    refundConcept.voucherType.refundConceptDocumentTypes = data;
-                                    this.requestBody.refund.refundConcepts.push(refundConcept);
-                                })
-                                .error(function (data) {});
+                        ).success(function (data) {
+                            refundConcept.voucherType.refundConceptDocumentTypes = data;
+                            this.requestBody.refund.refundConcepts.push(refundConcept);
+                        }).error(function (data) {});
                     },
                     addRefundConcept:function () {
                         var refundConcept = {};
-                        var refundConceptAmount = {};
-                        refundConcept.travelExpenseConcept = this.selected.travelExpenseConcept;
+                        var refundConceptAmount = {
+                            descripcion: '',
+                            importe: 0
+                        };
+                        refundConcept.concept = this.selected.concept;
                         refundConcept.voucherType = this.selected.voucherType;
 
                         if (refundConcept.voucherType.idVoucherType === 2) {
@@ -123,6 +127,12 @@
                         }
 
                         this.getRefunConceptDocumentsTypes(refundConcept);
+
+                        this.selected.voucherType = null;
+                        this.selected.concept = null;
+                    },
+                    removeRefundConcept: function (refundConcept) {
+                        this.requestBody.refund.refundConcepts.$remove(refundConcept);
                     },
                     showRefundConceptDocumentsModal : function (refundConcept, index) {
                         this.currentRefundConcept = refundConcept;
@@ -209,14 +219,13 @@
                                                 dataUrl:e.target.result
                                             };
                                     }
-                                    
                                     self.requestBody.refund.refundConcepts[self.indexOfCurrentRefundConcept] = self.currentRefundConcept;
                                 };
                             })(file);
                             reader.readAsDataURL(file);
                         }
                     },
-                    uploadvoucherXmlFile:function () {
+                    uploadVoucherXmlFile:function () {
 
                         var refundConcept = this.requestBody.refund.refundConcepts[this.indexOfCurrentRefundConcept];
 
@@ -227,7 +236,8 @@
                                     Vue.set(this.requestBody.refund.refundConcepts[this.indexOfCurrentRefundConcept], 'voucherTaxTotal', data.impuestos.totalImpuestosTrasladados);
                                     Vue.set(this.requestBody.refund.refundConcepts[this.indexOfCurrentRefundConcept], 'voucherTotal', data.total);
                                     this.calculateRefundTotal();
-                                    $("#refundConceptDocumentsModal").modal("hide");
+                                    this.hideRefundConceptDocumentsModal();
+
                                 })
                                 .error(function (data) {});
 
@@ -236,36 +246,83 @@
 
                         switch(this.currentRefundConcept.voucherType.idVoucherType) {
                             case 1:
-                                this.uploadvoucherXmlFile();
+                                this.uploadVoucherXmlFile();
                                 break;
                             case 2:
-                                $("#refundConceptDocumentsModal").modal("hide");
+                                this.hideRefundConceptDocumentsModal();
                         }
+
+                    },
+                    clearFileInputs: function () {
+
+                        var self = this;
+
+                        this.currentRefundConcept
+                                .voucherType
+                                .refundConceptDocumentTypes
+                                .forEach(function (refundConceptDocumentType, i) {
+                                    self.clearFileInput('file-' + i);
+                                });
+                    },
+                    clearFileInput: function (id) {
+                        var oldInput = document.getElementById(id);
+
+                        var newInput = document.createElement("input");
+
+                        newInput.type = "file";
+                        newInput.id = oldInput.id;
+                        newInput.name = oldInput.name;
+                        newInput.className = oldInput.className;
+                        newInput.style.cssText = oldInput.style.cssText;
+
+                        oldInput.parentNode.replaceChild(newInput, oldInput);
                     },
                     saveRefundConcepts:function (idRefund, refundConcept) {
 
-                        this.$http.post(ROOT_URL + '/refund-concepts?idRefund=' + idRefund, refundConcept)
+                        this.$http.post(ROOT_URL + '/refund-concepts/' + idRefund, refundConcept)
                                 .success(function (data) {
 
-                                })
-                                .error(function (data) {});
+                                }).error(function (data) {});
                     },
                     saveRefund: function () {
+                        var self = this;
+                        var save = false;
 
                         var refund = this.requestBody.refund;
                         var refundConcepts = refund.refundConcepts;
 
-                        delete refund.refundConcepts;
+                        refund.refundConcepts.every(function (refundConcept, index) {
+                            if ('refundConceptAmounts' in refundConcept) {
+                                save = true;
+                            } else {
+                                save = false;
+                                showAlert('Selecciona archivos', {type:2});
+                                document.getElementById('uploadFiles-' + index).focus();
+                                return save;
+                            }
+                        });
 
-                        this.$http.post(ROOT_URL + '/refunds', refund)
-                                .success(function (data) {
-                                    var self = this;
+                        if (save) {
+                            delete refund.refundConcepts;
 
-                                    refundConcepts.forEach(function (refundConcept) {
-                                        self.saveRefundConcepts(data, refundConcept);
-                                    });
-                                })
-                                .error(function (data) {});
+                            this.$http.post(ROOT_URL + '/refunds', refund)
+                                    .success(function (data) {
+
+                                        refundConcepts.forEach(function (refundConcept) {
+                                            self.saveRefundConcepts(data, refundConcept);
+                                        });
+                                    }).error(function (data) {});
+                        }
+                    },
+                    hideRefundConceptDocumentsModal : function () {
+                        this.clearFileInputs();
+                        $("#refundConceptDocumentsModal").modal("hide");
+                    },
+                    cancelFileUpload: function () {
+                        this.hideRefundConceptDocumentsModal();
+                        delete this.requestBody.refund.refundConcepts[this.indexOfCurrentRefundConcept].voucherPdfFile;
+                        delete this.requestBody.refund.refundConcepts[this.indexOfCurrentRefundConcept].voucherXmlFile;
+                        delete this.requestBody.refund.refundConcepts[this.indexOfCurrentRefundConcept].otroFile;
                     },
                     calculateRefundTotal: function () {
                         var self = this;
@@ -291,6 +348,17 @@
                         });
                         this.calculateRefundTotal();
                     }
+                },
+                filters: {
+                    currencyDisplay : {
+                        read: function(val) {
+                            return val.formatMoney(2, '');
+                        },
+                        write: function(val, oldVal) {
+                            var number = +val.replace(/[^\d.]/g, '');
+                            return isNaN(number) ? 0 : parseFloat(number.toFixed(2));
+                        }
+                    }
                 }
             });
         </script>
@@ -298,26 +366,66 @@
 
     <jsp:attribute name="styles">
         <style>
-            .table-header {
-                padding: 1rem;
-                margin-top: 2rem;
-            }
-            .table-body .table-row:nth-child(2n+1) {
-                background: #ddd;
-            }
-            .table-row {
-                padding: 1rem;
-            }
-            .flex-content {
-                overflow-x: hidden;
-            }
-
             textarea{
-                resize: vertical;
+                resize: none;
             }
 
             .underline {
                 border-bottom: 1px solid grey;
+            }
+
+            @media (min-width: 992px) {
+                .container-scroll {
+                    overflow-x: auto;
+                    background-color: #f5f5f5;
+                    border: solid 1px #ddd;
+                }
+                .container-scroll > .row {
+                    width: 100%;
+                }
+            }
+
+            .table-header {
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+
+            .table-footer {
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+
+            .table-body {
+                height: 400px;
+                overflow-y: auto;
+                border: solid 1px #ddd;
+                background-color: white;
+            }
+
+            .table-body .table-row:nth-child(2n+1) {
+                background: #efefef;
+            }
+            .table-body > .table-row {
+                padding-top: 8px;
+                padding-bottom: 8px;
+            }
+
+            .col-md-1,
+            .col-md-2,
+            .col-md-3,
+            .col-md-4,
+            .col-md-5,
+            .col-md-6,
+            .col-md-7,
+            .col-md-8,
+            .col-md-9,
+            .col-md-10,
+            .col-md-11,
+            .col-md-12 {
+                float:none;
+                display:inline-block;
+                vertical-align:middle;
+                margin-right:-4px;
             }
 
         </style>
@@ -325,167 +433,161 @@
 
     <jsp:body>
         <div class="col-md-12" id="content">
-            <h2>Reembolsos</h2>
+            <div class="row">
+                <div class="col-md-8">
+                    <h2>Reembolsos</h2>
+                </div>
+                <div class="col-md-4"></div>
+            </div>
+            <br>
             <div class="row">
                 <div class="col-md-6">
                     <form v-on:submit.prevent="addRefundConcept">
-                        <div class="col-md-5">
-                            <label>Por concepto de</label>
-                            <select v-model="selected.travelExpenseConcept" class="form-control" required>
-                                <option v-for="travelExpenseConcept in travelExpenseConcepts" :value="travelExpenseConcept">
-                                    {{travelExpenseConcept.conceptName}}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-md-5">
-                            <label>Tipo de comprobante</label>
-                            <select v-model="selected.voucherType" class="form-control" required>
-                                <option v-for="voucherType in voucherTypes" :value="voucherType">
-                                    {{voucherType.voucherTypeName}}
-                                </option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <label style="visibility: hidden">add</label>
-                            <button class="btn btn-default" data-toggle="tooltip"
-                                    data-placement="top" title="Agreagr concepto">
-                                <span class="glyphicon glyphicon-plus"></span>
-                            </button>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label>Por concepto de</label>
+                                <select v-model="selected.concept" class="form-control" required>
+                                    <option v-for="concept in concepts" :value="concept">
+                                        {{concept.budgetConcept}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-5">
+                                <label>Tipo de comprobante</label>
+                                <select v-model="selected.voucherType" class="form-control" required>
+                                    <option v-for="voucherType in voucherTypes" :value="voucherType">
+                                        {{voucherType.voucherTypeName}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-2" style="margin-top: 25px">
+                                <button class="btn btn-default">
+                                    Agregar
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
-                <div class="col-md-6 text-right">
-                    <label>Solicitante</label>
-                    <p>
-                        <span class="label label-default">{{userInSession.dwEmployee.employee.fullName}}</span>
-                    </p>
+                <div class="col-md-6 text-right" style="margin-top: 30px">
+                    <label>Solicitante: </label>
+                    <span class="label label-default">{{userInSession.dwEmployee.employee.fullName}}</span>
                 </div>
             </div>
             <br>
 
-            <div v-if="requestBody.refund.refundConcepts.length > 0">
-                <form v-on:submit.prevent="saveRefund">
-                    <div class="row">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Conceptos</h3>
+            <form v-on:submit.prevent="saveRefund">
+                <div class="container-fluid container-scroll">
+                    <div class="col-md-12 table-header">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="col-md-6">
+                                    <h5><strong>Concepto</strong></h5>
+                                </div>
+                                <div class="col-md-6"></div>
                             </div>
-                            <div class="panel-body">
-                                <div class="row">
+                            <div class="col-md-7">
+                                <div class="col-md-6">
+                                    <h5><strong>Concepto de factura</strong></h5>
+                                </div>
+                                <div class="col-md-3">
+                                    <h5><strong>Monto</strong></h5>
+                                </div>
+                                <div class="col-md-3">
+                                    <h5><strong>Número de factura</strong></h5>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="col-md-6">
+                                    <h5><strong>Archivos</strong></h5>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 table-body">
+                        <div class="row table-row" v-for="refundConcept in requestBody.refund.refundConcepts">
+                            <div class="col-md-2">
+                                <div class="col-md-6">
+                                    <p class="text-primary">{{refundConcept.concept.budgetConcept}}</p>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="col-md-7" v-if="refundConcept.voucherType.idVoucherType === 1">
+                                <div class="row" v-for="refundConceptAmount in refundConcept.refundConceptAmounts">
+                                    <div class="col-md-6">
+                                        <p class="underline">
+                                            {{refundConceptAmount.descripcion}}
+                                        </p>
+                                    </div>
                                     <div class="col-md-3">
+                                        <p class="underline">
+                                            {{refundConceptAmount.importe | currency}}
+                                        </p>
                                     </div>
-                                    <div class="col-md-9">
-                                        <div class="row">
-                                            <div class="col-md-5">
-                                                <label>Concepto de factura</label>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <label>Monto</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <br>
-                                <div class="row" v-for="refundConcept in requestBody.refund.refundConcepts">
                                     <div class="col-md-3">
-                                        <div class="row">
-                                            <div class="col-md-1">
-                                            </div>
-                                            <div class="col-md-5">
-                                                <h5><strong>{{refundConcept.travelExpenseConcept.conceptName}}</strong></h5>
-                                            </div>
-                                            <div class="col-md-5">
-                                                <button type="button" class="btn btn-default" @click="showRefundConceptDocumentsModal(refundConcept, $index)">Subir archivos</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div v-if="refundConcept.voucherType.idVoucherType === 1">
-                                        <div class="col-md-9">
-                                            <div class="row" v-for="refundConceptAmount in refundConcept.refundConceptAmounts">
-                                                <div class="col-md-5">
-                                                    <p class="underline">
-                                                        {{refundConceptAmount.descripcion}}
-                                                    </p>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <p class="underline">
-                                                        {{refundConceptAmount.importe | currency}}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <br>
-                                                <%--<div class="row">--%>
-                                                <%--<div class="col-md-2">--%>
-                                                <%--<label>Número de factura</label>--%>
-                                                <%--<p class="underline">{{refundConcept.voucherFolio}}</p>--%>
-                                                <%--</div>--%>
-                                                <%--<div class="col-md-3">--%>
-                                                <%--<label>IVA de factura</label>--%>
-                                                <%--<p class="underline">--%>
-                                                <%--{{refundConcept.voucherTaxTotal | currency}}--%>
-                                                <%--</p>--%>
-                                                <%--</div>--%>
-                                                <%--<div class="col-md-3">--%>
-                                                <%--<label>Total de factura</label>--%>
-                                                <%--<p class="underline">--%>
-                                                <%--{{refundConcept.voucherTotal | currency}}--%>
-                                                <%--</p>--%>
-                                                <%--</div>--%>
-                                                <%--</div>--%>
-                                        </div>
-                                    </div>
-                                    <div v-if="refundConcept.voucherType.idVoucherType === 2">
-                                        <div class="col-md-9">
-                                            <div class="row"  v-for="refundConceptAmount in refundConcept.refundConceptAmounts">
-                                                <div class="col-md-5">
-                                                    <input type="text" class="form-control" v-model="refundConceptAmount.descripcion" placeholder="Concepto de factura" required>
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <input type="text" class="form-control" @change="calculateVoucherTotal(refundConcept)" maxlength="10" required
-                                                           v-model="refundConceptAmount.importe" placeholder="Monto" onkeypress="return validateFloatKeyPress(this,event)">
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <input type="text" class="form-control" v-model="refundConcept.voucherFolio" placeholder="Número de factura" required>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <p class="underline">
+                                            {{refundConcept.voucherFolio}}
+                                        </p>
                                     </div>
                                 </div>
-                                <br>
-                                <br>
-                                <div class="col-md-12">
-                                    <div class="col-md-2 col-md-offset-10">
-                                        <div v-if="requestBody.refund.refundTotal != 0">
-                                            <label>Total</label>
-                                            <p class="underline">
-                                                {{requestBody.refund.refundTotal}}
-                                            </p>
-                                        </div>
+                            </div>
+                            <div class="col-md-7" v-if="refundConcept.voucherType.idVoucherType === 2">
+                                <div class="row"  v-for="refundConceptAmount in refundConcept.refundConceptAmounts">
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" v-model="refundConceptAmount.descripcion" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="text" class="form-control" @change="calculateVoucherTotal(refundConcept)" required
+                                               v-model="refundConceptAmount.importe | currencyDisplay" onkeypress="return validateFloatKeyPress(this,event)">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="text" class="form-control" v-model="refundConcept.voucherFolio" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <button type="button" id="uploadFiles-{{$index}}" class="btn btn-default" @click="showRefundConceptDocumentsModal(refundConcept, $index)">Subir archivos</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    <div class="row">
+                                        <button type="button" class="btn btn-danger" @click="removeRefundConcept(refundConcept)">Eliminar</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Justificación de el reembolso</h3>
-                            </div>
-                            <div class="panel-body">
-                                <div class="form-group">
-                                    <textarea v-model="requestBody.refund.purpose" class="form-control" maxlength="65535" rows="2" required></textarea>
-                                </div>
+                    <div class="col-md-12 table-footer">
+                        <div class="row">
+                            <div class="col-md-2 col-md-offset-10">
+                                <label>Total</label>
+                                <p class="underline">
+                                    {{requestBody.refund.refundTotal | currency}}
+                                </p>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-offset-10 col-md-2 text-right">
-                            <button class="btn btn-success form-control" type="submit">Solicitar</button>
+                </div>
+                <br>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Justificación de el reembolso</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <textarea v-model="requestBody.refund.purpose" class="form-control" maxlength="65535" rows="8" required></textarea>
                         </div>
                     </div>
-                </form>
-            </div>
-
+                </div>
+                <div class="row">
+                    <div class="col-md-offset-10 col-md-2 text-right">
+                        <button class="btn btn-success form-control" type="submit">Solicitar</button>
+                    </div>
+                </div>
+            </form>
+            <br>
             <div class="modal fade" id="refundConceptDocumentsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -496,15 +598,15 @@
                             </div>
                             <div class="modal-body">
                                 <div class="form-group" v-for="documentType in currentRefundConcept.voucherType.refundConceptDocumentTypes">
-                                    <label class="col-sm-3 control-label">{{documentType.documentName}}</label>
-                                    <div class="col-sm-8">
-                                        <input @change="setFile($event, documentType)" type="file" class="form-control" required>
+                                    <label class="col-md-3 control-label">{{documentType.documentName}}</label>
+                                    <div class="col-md-8">
+                                        <input @change="setFile($event, documentType)" id="file-{{$index}}" name="file-{{$index}}" type="file" class="form-control" required>
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button class="btn btn-success">Guardar</button>
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-default" @click="cancelFileUpload">Cancelar</button>
                             </div>
                         </form>
                     </div>

@@ -22,6 +22,7 @@ public interface TravelExpensesService {
 
     Boolean delete (TravelExpenses travelExpenses);
 
-
     List<TravelExpenses> getTravelExpenses(Integer idUser);
+
+    TravelExpenses changeRequestStatus(Integer idTravelExpense, String data) throws IOException;
 }

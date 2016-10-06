@@ -109,4 +109,13 @@ public class RequestsController {
                 HttpStatus.OK
         );
     }
+
+    @RequestMapping(value = "/change-active-status", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> changeActiveStatus(@RequestParam(name = "request") Integer idRequest) throws IOException{
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class)
+                        .writeValueAsString(requestsService.changeActiveStatus(idRequest)),
+                HttpStatus.OK
+        );
+    }
 }

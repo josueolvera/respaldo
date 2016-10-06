@@ -26,40 +26,43 @@ import java.util.List;
 public class TravelExpensesServiceImpl implements TravelExpensesService {
 
     @Autowired
-    TravelExpensesDao travelExpensesDao;
+    private TravelExpensesDao travelExpensesDao;
 
     @Autowired
-    ChecksDao checksDao;
+    private ChecksDao checksDao;
 
     @Autowired
-    DwEnterprisesDao dwEnterprisesDao;
+    private DwEnterprisesDao dwEnterprisesDao;
 
     @Autowired
-    FoliosService foliosService;
+    private CRequestStatusDao cRequestStatusDao;
 
     @Autowired
-    BudgetsDao budgetsDao;
+    private FoliosService foliosService;
 
     @Autowired
-    RequestsDao requestsDao;
+    private BudgetsDao budgetsDao;
 
     @Autowired
-    TravelExpenseConceptDao travelExpenseConceptDao;
+    private RequestsDao requestsDao;
 
     @Autowired
-    RequestTypesProductDao requestTypesProductDao;
+    private TravelExpenseConceptDao travelExpenseConceptDao;
 
     @Autowired
-    BudgetYearDao budgetYearDao;
+    private RequestTypesProductDao requestTypesProductDao;
 
     @Autowired
-    RolesCostCenterDao rolesCostCenterDao;
+    private BudgetYearDao budgetYearDao;
 
     @Autowired
-    BudgetHelper budgetHelper;
+    private RolesCostCenterDao rolesCostCenterDao;
 
     @Autowired
-    AccountingAccountsDao accountingAccountsDao;
+    private BudgetHelper budgetHelper;
+
+    @Autowired
+    private AccountingAccountsDao accountingAccountsDao;
 
     @Autowired
     private ObjectMapper mapper;
@@ -152,8 +155,6 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
                     travelExpense.setTravelExpenseConceptList(travelExpenseConceptList);
                     travelExpense = travelExpensesDao.save(travelExpense);
 
-                    checksDao.save(new Checks(travelExpense, travelExpense.getEndDate().plusDays(3)));
-
                     return travelExpense;
                 } else {
                     throw new ValidationException("Fuera de presupuesto","Su solicitud esta fuera de presupuesto");
@@ -191,5 +192,29 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
     @Override
     public List<TravelExpenses> getTravelExpenses(Integer idUser) {
         return travelExpensesDao.getTravelExpenses(idUser);
+    }
+
+    @Override
+    public TravelExpenses changeRequestStatus(Integer idTravelExpense, String data) throws IOException {
+        TravelExpenses travelExpense = travelExpensesDao.findById(idTravelExpense);
+        JsonNode node = mapper.readTree(data);
+
+
+        if(travelExpense != null) {
+            CRequestStatus cRequestStatus = cRequestStatusDao.findById(node.get("status").asInt());
+
+            if (node.hasNonNull("justification")) {
+                travelExpense.getRequest().setJustification(node.get("justification").asText());
+            }
+
+            travelExpense.getRequest().setRequestStatus(cRequestStatus);
+            travelExpense = travelExpensesDao.update(travelExpense);
+
+            if (travelExpense.getRequest().getRequestStatus().equals(CRequestStatus.APROBADA)) {
+                checksDao.save(new Checks(travelExpense, travelExpense.getEndDate().plusDays(3), travelExpense.getTotalAmount()));
+            }
+        }
+
+        return travelExpense;
     }
 }

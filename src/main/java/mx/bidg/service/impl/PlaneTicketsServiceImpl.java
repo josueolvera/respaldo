@@ -32,22 +32,25 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
     private PlaneTicketsDao planeTicketsDao;
 
     @Autowired
-    FoliosService foliosService;
+    private CRequestStatusDao cRequestStatusDao;
 
     @Autowired
-    BudgetsDao budgetsDao;
+    private FoliosService foliosService;
 
     @Autowired
-    BudgetYearDao budgetYearDao;
+    private BudgetsDao budgetsDao;
 
     @Autowired
-    RolesCostCenterDao rolesCostCenterDao;
+    private BudgetYearDao budgetYearDao;
 
     @Autowired
-    BudgetHelper budgetHelper;
+    private RolesCostCenterDao rolesCostCenterDao;
 
     @Autowired
-    AccountingAccountsDao accountingAccountsDao;
+    private BudgetHelper budgetHelper;
+
+    @Autowired
+    private AccountingAccountsDao accountingAccountsDao;
 
     @Autowired
     private ObjectMapper mapper;
@@ -92,7 +95,9 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
                     request.setFolio(foliosService.createNew(new CTables(51)));
                     request.setUserRequest(user);
                     request.setCreationDate(now);
-                    request.setRequestStatus(CRequestStatus.PENDIENTE);
+                    request.setApplyingDate(LocalDateTime.parse(startDate + " 00:00",formatter));
+                    request.setMonth(new CMonths(now.getMonthValue()));
+                    request.setRequestStatus(CRequestStatus.SIN_CONFIRMACION);
                     request.setBudgetYear(budgetYear);
                     request.setIdAccessLevel(1);
 
@@ -103,7 +108,6 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
                     planeTicket.setPlaneTicketType(planeTicketType);
                     planeTicket.setCreationDate(now);
                     planeTicket.setRequest(request);
-                    planeTicket.setStartDate(LocalDateTime.parse(startDate + " 00:00",formatter));
                     planeTicket = planeTicketsDao.save(planeTicket);
 
                     return planeTicket;
@@ -133,5 +137,26 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
     @Override
     public List<PlaneTickets> getPlaneTickets(Integer idUser) {
         return planeTicketsDao.getPlaneTickets(idUser);
+    }
+
+    @Override
+    public PlaneTickets changeRequestStatus(Integer idPlaneTicket, String data) throws IOException {
+        PlaneTickets planeTicket = planeTicketsDao.findById(idPlaneTicket);
+        JsonNode node = mapper.readTree(data);
+
+
+        if(planeTicket != null) {
+            CRequestStatus cRequestStatus = cRequestStatusDao.findById(node.get("status").asInt());
+
+            if (node.hasNonNull("justification")) {
+                planeTicket.getRequest().setJustification(node.get("justification").asText());
+            }
+
+            planeTicket.getRequest().setRequestStatus(cRequestStatus);
+            planeTicket = planeTicketsDao.update(planeTicket);
+
+        }
+
+        return planeTicket;
     }
 }

@@ -252,4 +252,18 @@ public class RequestsServiceImpl implements RequestsService {
         emailDeliveryService.deliverEmail(emailTemplate);
         return emailTemplate;
     }
+
+    @Override
+    public Requests changeActiveStatus(Integer idRequest) {
+
+        Requests request = requestsDao.findById(idRequest);
+
+        if (request != null) {
+            request.setActive(!request.getActive());
+
+            request = requestsDao.update(request);
+        }
+
+        return request;
+    }
 }

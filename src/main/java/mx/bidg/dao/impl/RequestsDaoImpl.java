@@ -29,11 +29,7 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
 
     @Override
     public Requests findById(int id) {
-        return (Requests) createEntityCriteria()
-                .add(Restrictions.idEq(id))
-                .setFetchMode("requestTypeProduct", FetchMode.JOIN)
-                .setFetchMode("requestProductsList", FetchMode.JOIN)
-                .uniqueResult();
+        return getByKey(id);
     }
 
     @Override

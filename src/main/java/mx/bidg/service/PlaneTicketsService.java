@@ -23,4 +23,6 @@ public interface PlaneTicketsService {
     Boolean delete(PlaneTickets planeTicket);
 
     List<PlaneTickets> getPlaneTickets(Integer idUser);
+
+    PlaneTickets changeRequestStatus(Integer idPlaneTicket, String data) throws IOException;
 }

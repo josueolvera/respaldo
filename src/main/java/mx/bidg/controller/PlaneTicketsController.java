@@ -13,10 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -56,6 +53,24 @@ public class PlaneTicketsController {
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getPlaneTickets(@RequestParam(name = "user", required = false) Integer idUser) throws Exception {
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(planeTicketsService.getPlaneTickets(idUser)), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{idPlaneTicket}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getTravelExpenseById(@PathVariable Integer idPlaneTicket) throws Exception {
+        PlaneTickets planeTicket = planeTicketsService.findById(idPlaneTicket);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(planeTicket), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/change-status", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> changeStatus(
+            @RequestParam(name = "travel_expense") Integer idPlaneTicket,
+            @RequestBody String data
+    ) throws Exception {
+
+        PlaneTickets planeTicket = planeTicketsService.changeRequestStatus(idPlaneTicket, data);
+//        requestTravelExpenseEmailNotificationService.sendEmailToUserStatus(travelExpense);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(planeTicket), HttpStatus.OK);
     }
 
 }
