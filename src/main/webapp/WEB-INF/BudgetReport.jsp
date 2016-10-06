@@ -177,11 +177,15 @@
 
     <jsp:body>
         <div id="content">
-            <div class="container-fluid">
-                <h2>Reporte de presupuesto</h2>
-                <br>
+            <div class="container">
                 <div class="row">
-                    <form v-on:submit.prevent="searchBudget">
+                    <div class="col-md-8">
+                        <h2>Reporte de presupuesto</h2>
+                    </div>
+                </div>
+                <br>
+                <form v-on:submit.prevent="searchBudget">
+                    <div class="row">
                         <div class="col-md-3">
                             <label>Centro de costos</label>
                             <select v-model="selected.costCenter" class="form-control" @change="onChangeCriteria" required>
@@ -201,12 +205,12 @@
                         </div>
                         <div class="col-md-2" v-if="costCenter.budgets.length > 0">
                             <a style="margin-top: 25px" :href="downloadReportUrl"
-                                    class="btn btn-success">
+                               class="btn btn-success">
                                 Descargar
                             </a>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
                 <br>
                 <div class="container-fluid container-scroll" v-if="costCenter.budgets.length > 0">
                     <div class="row" style="background-color: #bfbfbf">
