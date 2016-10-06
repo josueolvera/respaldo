@@ -68,10 +68,6 @@ public class PlaneTickets implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private List<Passengers> passengers;
 
-    @Transient
-    @JsonView(JsonViews.Root.class)
-    private LocalDateTime startDate;
-
     public PlaneTickets() {
     }
 
@@ -130,21 +126,13 @@ public class PlaneTickets implements Serializable {
 
     public boolean getIsOutOfDateRequest() {
 
-        if (startDate != null) {
-            long daysBetween = DAYS.between(LocalDateTime.now().toLocalDate(), startDate.toLocalDate());
+        if (request.getApplyingDate() != null) {
+            long daysBetween = DAYS.between(LocalDateTime.now().toLocalDate(), request.getApplyingDate().toLocalDate());
 
             return daysBetween < 5;
         } else {
             return false;
         }
-    }
-
-    public LocalDateTime getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDateTime startDate) {
-        this.startDate = startDate;
     }
 
     public void setRequest(Requests request) {
