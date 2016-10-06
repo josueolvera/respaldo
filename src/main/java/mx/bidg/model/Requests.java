@@ -18,6 +18,7 @@ import mx.bidg.config.JsonViews;
 import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Type;
 
 
 /**
@@ -57,6 +58,12 @@ public class Requests implements Serializable {
     @Column(name = "PURPOSE")
     @JsonView(JsonViews.Root.class)
     private String purpose;
+
+    @Lob
+    @Size(max = 65535)
+    @Column(name = "JUSTIFICATION")
+    @JsonView(JsonViews.Root.class)
+    private String justification;
     
     @Basic(optional = false)
     @NotNull
@@ -102,7 +109,7 @@ public class Requests implements Serializable {
     private Users userRequest;
     
     @JoinColumn(name = "USER_RESPONSIBLE", referencedColumnName = "ID_USER")
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private Users userResponsible;
     
@@ -129,7 +136,13 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private List<RequestProducts> requestProductsList;
 
+    @Column(name = "ACTIVE", columnDefinition = "TINYINT", nullable = false)
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    @JsonView(JsonViews.Root.class)
+    private Boolean active;
+
     public Requests() {
+        this.active = true;
     }
 
     public Integer getIdRequest() {
@@ -286,6 +299,22 @@ public class Requests implements Serializable {
 
     public DateFormatsPojo getApplyingDateFormats() {
         return (applyingDate == null) ? null : new DateFormatsPojo(applyingDate);
+    }
+
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    public String getJustification() {
+        return justification;
+    }
+
+    public void setJustification(String justification) {
+        this.justification = justification;
     }
 
     @Override
