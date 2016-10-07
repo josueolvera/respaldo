@@ -22,12 +22,21 @@
           {
               this.getUser();
               this.createCalendar();
+              this.getRoom();
           },
           data: {
               user:{},
               now: "${now}",
-              room: ${room},
-              calendar:{}
+              idRoom: ${room},
+              room:{},
+              calendar:{},
+              selectedDay:'',
+              startHourTimePicker:'',
+              startHour:'',
+              endHourTimePicker:'',
+              endHour:'',
+              title:''
+              
           },
           methods:
           {
@@ -40,12 +49,26 @@
                       
                   });
               },
+              getRoom: function () {
+                  this.$http.get(ROOT_URL + '/rooms/' + this.idRoom)
+                          .success(function (data) {
+                              this.room = data;
+                  })
+                  .error(function (data) {
+                      
+                  });
+              },
+              addReservation: function () {
+                  console.log(this.startHour);
+                  $('#reservationModal').modal('show');
+              },
               createCalendar: function () {
+                  
+                  var self = this;
+                  
                   this.calendar = $('#calendar').fullCalendar({
                      
-                        defaultDate: this.now,
-                        
-                        
+                        now: this.now,
 			header: {
 				left: 'prev,next today',
 				center: 'title',
@@ -57,11 +80,20 @@
                         nowIndicator:true,
 			navLinks: true, // can click day/week names to navigate views
 			eventLimit: true, // allow "more" link when too many events
-                        dayClick: function(date, jsEvent, view, resourceObj) {
-                             console.log(date);
-                             console.log(jsEvent);
-                             console.log(view);
-                             console.log(resourceObj);
+                        dayClick: function(date, jsEvent, view) {
+                            
+                            self.selectedDay = date.format();
+
+                            //$(this).css('background-color', 'red');
+                            
+                            $('#reservationModal').modal('show');
+                            self.startHourTimePicker = $('#startHour').datetimepicker({
+                                    format: 'LT'
+                                });
+                            self.endHourTimePicker = $('#endHour').datetimepicker({
+                                    format: 'LT'
+                                });
+
                         }
                     });
               }
@@ -90,6 +122,89 @@
               <h2>Sala de Juntas</h2>
               <div id="calendar" style=""></div>
               <br>
+          </div>
+            
+          <div class="modal fade" id="reservationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="myModalLabel">Reservación para el día {{selectedDay}}</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                          <h3 class="panel-title">Sala de juntas {{room.name}}</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                      <tr>
+                                        <th>Email</th>
+                                        <th>Título</th>
+                                        <th>Hora de entrada</th>
+                                        <th>Hora de salida</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr v-fo=''>
+                                        <td>{{users.mail}}</td>
+                                        <td>{{title}}</td>
+                                        <td>{{startHour}} </td>
+                                        <td>{{endHour}}</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                            </div>
+                        </div>
+                      </div>
+                    <label>Email</label>
+                    <br>
+                    <span class="label label-default">{{user.mail}}</span>
+                    <br>
+                    <div class="row">
+                        <div class='col-md-6'>
+                            <div class="form-group">
+                                <br>
+                                <label>Título</label>
+                                <input type='text' class="form-control" v-model="title" />
+                            </div>
+                        </div>
+                        <div class='col-md-3'>
+                            <div class="form-group">
+                                <br>
+                                <label>Hora de entrada</label>
+                                <div class='input-group date' id='startHour'>
+                                    <input type='text' class="form-control" v-model="startHour" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-time"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class='col-md-3'>
+                            <div class="form-group">
+                                <br>
+                                <label>Hora de salida</label>
+                                <div class='input-group date' id='endHour'>
+                                    <input type='text' class="form-control" v-model="endHour" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-time"></span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                  <button type="button" class="btn btn-primary" @click="addReservation">Añadir Reservacion</button>
+                </div>
+              </div>
+            </div>
           </div>
       </div>
         

@@ -51,8 +51,10 @@ public class EventsServiceImpl implements EventsService{
     }
 
     @Override
-    public List<Events> getEvents(Integer idRoom, Integer idUser) {
-        return eventsDao.getEvents(idRoom, idUser);
+    public List<Events> getEvents(Integer idRoom, Integer idUser,String date) {
+        return eventsDao.getEvents(idRoom, idUser, date);
     }
+
+    
     
 }

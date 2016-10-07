@@ -24,7 +24,8 @@ public interface EventsService {
     Events update(Events eVents);
     Boolean delete(Events eVents);
 
-    List<Events> getEvents(Integer idRoom, Integer idUser);
+
+    List<Events> getEvents(Integer idRoom, Integer idUser, String idDate);
    
             
     

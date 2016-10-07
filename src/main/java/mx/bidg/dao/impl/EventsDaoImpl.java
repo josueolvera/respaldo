@@ -51,7 +51,7 @@ public class EventsDaoImpl extends AbstractDao<Integer, Events> implements Event
     }
 
     @Override
-    public List<Events> getEvents(Integer idRoom, Integer idUser) {
+    public List<Events> getEvents(Integer idRoom, Integer idUser, String date) {
         Criteria criteria = createEntityCriteria();
         
         if (idRoom != null) {

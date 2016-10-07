@@ -72,13 +72,13 @@ public class Events implements Serializable{
     @JoinColumn(name = "ID_USER", referencedColumnName = "ID_USER")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private Users users;
+    private Users user;
     
     
     @JoinColumn(name = "ID_ROOM", referencedColumnName = "ID_ROOM")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-    private CRooms crooms;
+    private CRooms room;
     
     @Column(name = "ID_USER", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -88,99 +88,70 @@ public class Events implements Serializable{
     @JsonView(JsonViews.Root.class)
     private Integer idRoom;
 
-    /**
-     * @return the idevent
-     */
     public Integer getIdevent() {
         return idevent;
     }
 
-    /**
-     * @param idevent the idevent to set
-     */
     public void setIdevent(Integer idevent) {
         this.idevent = idevent;
     }
 
-    /**
-     * @return the title
-     */
     public String getTitle() {
         return title;
     }
 
-    /**
-     * @param title the title to set
-     */
     public void setTitle(String title) {
         this.title = title;
     }
 
-    /**
-     * @return the start
-     */
     public LocalDateTime getStart() {
         return start;
     }
 
-    /**
-     * @param start the start to set
-     */
     public void setStart(LocalDateTime start) {
         this.start = start;
     }
 
-    /**
-     * @return the end
-     */
     public LocalDateTime getEnd() {
         return end;
     }
 
-    /**
-     * @param end the end to set
-     */
     public void setEnd(LocalDateTime end) {
         this.end = end;
     }
 
-    /**
-     * @return the users
-     */
-    public Users getUsers() {
-        return users;
+    public Users getUser() {
+        return user;
     }
 
-    /**
-     * @param users the users to set
-     */
-    public void setUsers(Users users) {
-        this.users = users;
+    public void setUser(Users user) {
+        this.user = user;
     }
 
-    /**
-     * @return the crooms
-     */
-    public CRooms getCrooms() {
-        return crooms;
+    public CRooms getRoom() {
+        return room;
     }
 
-    /**
-     * @param crooms the crooms to set
-     */
-    public void setCrooms(CRooms crooms) {
-        this.crooms = crooms;
+    public void setRoom(CRooms room) {
+        this.room = room;
     }
 
-    
+    public Integer getIdUser() {
+        return idUser;
+    }
 
-    
-    
-    
-    
-    
-    
-    
+    public void setIdUser(Integer idUser) {
+        this.idUser = idUser;
+    }
+
+    public Integer getIdRoom() {
+        return idRoom;
+    }
+
+    public void setIdRoom(Integer idRoom) {
+        this.idRoom = idRoom;
+    }
+
     
     
 }

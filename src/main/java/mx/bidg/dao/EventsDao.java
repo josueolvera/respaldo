@@ -14,7 +14,7 @@ import mx.bidg.model.Events;
  */
 public interface EventsDao extends InterfaceDao<Events>{
 
-    List<Events> getEvents(Integer idRoom, Integer idUser);
+    List<Events> getEvents(Integer idRoom, Integer idUser, String date);
         
     
 }
