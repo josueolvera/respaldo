@@ -47,6 +47,7 @@
     <class>mx.bidg.model.GroupApportionment</class>
     <class>mx.bidg.model.ApportionmentRole</class>
     <class>mx.bidg.model.DistributorPerceptionDeduction</class>
+    <class>mx.bidg.model.CDateCalculation</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties/>
   </persistence-unit>
