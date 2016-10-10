@@ -7,6 +7,7 @@
 <t:template pageTitle="BID Group: Presupuestos">
 
     <jsp:attribute name="scripts">
+        
 
         <script type="text/javascript">
 
