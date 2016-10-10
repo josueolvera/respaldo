@@ -89,8 +89,8 @@ public class SapSaleController {
         return ResponseEntity.ok(sapSaleService.existsSales(file));
     }
 
-    @RequestMapping(value = "/prueba", method = RequestMethod.GET)
-    public ResponseEntity<String> prueba(@RequestParam(name= "fromDate", required=true) String fromDate, @RequestParam(name="toDate", required=true) String toDate ,HttpServletResponse response) throws IOException {
+    @RequestMapping(value = "/prueba/{idDateCalculation}", method = RequestMethod.GET)
+    public ResponseEntity<String> prueba(@PathVariable Integer idDateCalculation,@RequestParam(name= "fromDate", required=true) String fromDate, @RequestParam(name="toDate", required=true) String toDate ,HttpServletResponse response) throws IOException {
 
         List<CommissionAmountGroup> all =commissionAmountGroupService.findAll();
 
@@ -108,115 +108,135 @@ public class SapSaleController {
 
         List<CalculationRoles> calculationRolesList = calculationRolesService.findAll();
 
-        for (CalculationRoles role : calculationRolesList){
-            //rol 1 Asesor de credito rol 2 Supervisor
-            if (role.getIdCalculationRole() == 1 || role.getIdCalculationRole() == 2){
-                List<RolesGroupAgreements> rolesGroupAgreementsList = rolesGroupAgreementsService.findByRole(role.getIdCalculationRole());
-                for (RolesGroupAgreements groupAgreements : rolesGroupAgreementsList){
-                    List sapSales = sapSaleService.findByAgreementGroup(groupAgreements.getIdAg(), ofDate, untilDate);
+        if(idDateCalculation == 1){
+            for (CalculationRoles role : calculationRolesList) {
+                //rol 1 Asesor de credito
+                if (role.getIdCalculationRole() == 1) {
+                    List<RolesGroupAgreements> rolesGroupAgreementsList = rolesGroupAgreementsService.findByRole(role.getIdCalculationRole());
+                    for (RolesGroupAgreements groupAgreements : rolesGroupAgreementsList) {
+                        List sapSales = sapSaleService.findByAgreementGroup(groupAgreements.getIdAg(), ofDate, untilDate);
 
-                    CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
+                        CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
 
-                    commissionAmountGroupService.obtainAmountsbyGroup(sapSales, agreementsGroups, ofDate, untilDate);
+                        commissionAmountGroupService.obtainAmountsbyGroup(sapSales, agreementsGroups, ofDate, untilDate);
 
-                    List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg());
+                        List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg(), idDateCalculation);
 
-                    agreementsGroupConditionService.setTabulator(agreementsGroupConditionList);
-                }
-                //rol 3 Auxiliar
-            }else if (role.getIdCalculationRole() == 3){
-                List<RolesGroupAgreements> rolesGroupAgreementsList = rolesGroupAgreementsService.findByRole(role.getIdCalculationRole());
-                for (RolesGroupAgreements groupAgreements : rolesGroupAgreementsList){
-                    List sapSales = sapSaleService.findByBranchGroup(groupAgreements.getIdAg(), ofDate, untilDate);
-
-                    CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
-
-                    commissionAmountGroupService.obtainAmountsbyBranch(sapSales, agreementsGroups , ofDate, untilDate);
-
-                    List<CommissionAmountGroup> commissionAmountAuxiliarGroupList = commissionAmountGroupService.obtainAuxiliar();
-
-                    for(CommissionAmountGroup commissionAmount : commissionAmountAuxiliarGroupList){
-                        DwBranchs dwBranchs = dwBranchsService.findById(commissionAmount.getIdBranch());
-                        commissionAmount.setIndexReprocessing(dwBranchs.getIndexReprocessing());
-                        commissionAmountGroupService.update(commissionAmount);
+                        agreementsGroupConditionService.setTabulator(agreementsGroupConditionList);
                     }
-
-                    List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg());
-
-                    agreementsGroupConditionService.setTabulator(agreementsGroupConditionList);
+                    //rol 3 Auxiliar
                 }
-                //rol 4 Gerente de Sucursal
-            }else if (role.getIdCalculationRole() == 4){
-                List<RolesGroupAgreements> rolesGroupAgreementsList = rolesGroupAgreementsService.findByRole(role.getIdCalculationRole());
-                for (RolesGroupAgreements groupAgreements : rolesGroupAgreementsList){
-                    List sapSales = sapSaleService.findByBranchGroup(groupAgreements.getIdAg(), ofDate, untilDate);
+            }
+        }else if (idDateCalculation == 2){
+            for (CalculationRoles role : calculationRolesList){
+                //rol 1 Asesor de credito rol 2 Supervisor
+                if (role.getIdCalculationRole() == 1 || role.getIdCalculationRole() == 2){
+                    List<RolesGroupAgreements> rolesGroupAgreementsList = rolesGroupAgreementsService.findByRole(role.getIdCalculationRole());
+                    for (RolesGroupAgreements groupAgreements : rolesGroupAgreementsList){
+                        List sapSales = sapSaleService.findByAgreementGroup(groupAgreements.getIdAg(), ofDate, untilDate);
 
-                    CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
+                        CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
 
-                    commissionAmountGroupService.obtainAmountsbyBranch(sapSales, agreementsGroups, ofDate, untilDate);
+                        commissionAmountGroupService.obtainAmountsbyGroup(sapSales, agreementsGroups, ofDate, untilDate);
 
-                    List<CommissionAmountGroup> commissionAmountGroupList = commissionAmountGroupService.obtainBranchManager();
+                        List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg(), idDateCalculation);
 
-                    for(CommissionAmountGroup commissionAmountGroup : commissionAmountGroupList){
-                        DwBranchs dwBranchs = dwBranchsService.findById(commissionAmountGroup.getIdBranch());
-                        commissionAmountGroup.setGoal(dwBranchs.getBranchGoal());
-                        commissionAmountGroup.setPttoPromReal(dwBranchs.getPttoPromReal());
-                        commissionAmountGroup.setPttoPromVta(dwBranchs.getPttoPromVta());
-                        BigDecimal scope = commissionAmountGroup.getAmount().divide(dwBranchs.getBranchGoal(), 2, BigDecimal.ROUND_HALF_UP);
-                        BigDecimal multipica = new BigDecimal(100);
-                        commissionAmountGroup.setScope(scope.multiply(multipica));
-                        commissionAmountGroupService.update(commissionAmountGroup);
+                        agreementsGroupConditionService.setTabulator(agreementsGroupConditionList);
                     }
+                    //rol 3 Auxiliar
+                }else if (role.getIdCalculationRole() == 3){
+                    List<RolesGroupAgreements> rolesGroupAgreementsList = rolesGroupAgreementsService.findByRole(role.getIdCalculationRole());
+                    for (RolesGroupAgreements groupAgreements : rolesGroupAgreementsList){
+                        List sapSales = sapSaleService.findByBranchGroup(groupAgreements.getIdAg(), ofDate, untilDate);
 
-                    List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg());
+                        CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
 
-                    agreementsGroupConditionService.setTabulator(agreementsGroupConditionList);
-                }
-                //rol 5 Gerente de zonal
-            }else if (role.getIdCalculationRole() == 5){
-                List<RolesGroupAgreements> rolesGroupAgreementsList = rolesGroupAgreementsService.findByRole(role.getIdCalculationRole());
-                for (RolesGroupAgreements groupAgreements : rolesGroupAgreementsList){
-                    List sapSales = sapSaleService.findByZonaGroup(groupAgreements.getIdAg(), ofDate, untilDate);
+                        commissionAmountGroupService.obtainAmountsbyBranch(sapSales, agreementsGroups , ofDate, untilDate);
 
-                    CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
+                        List<CommissionAmountGroup> commissionAmountAuxiliarGroupList = commissionAmountGroupService.obtainAuxiliar();
 
-                    commissionAmountGroupService.obtainAmountsbyZona(sapSales, agreementsGroups, ofDate, untilDate);
+                        for(CommissionAmountGroup commissionAmount : commissionAmountAuxiliarGroupList){
+                            DwBranchs dwBranchs = dwBranchsService.findById(commissionAmount.getIdBranch());
+                            commissionAmount.setIndexReprocessing(dwBranchs.getIndexReprocessing());
+                            commissionAmountGroupService.update(commissionAmount);
+                        }
 
-                    List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg());
+                        List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg(), idDateCalculation);
 
-                    agreementsGroupConditionService.setTabulator(agreementsGroupConditionList);
-                }
-                //rol 6 Gerente de regional
-            }else if (role.getIdCalculationRole() == 6){
-                List<RolesGroupAgreements> rolesGroupAgreementsList = rolesGroupAgreementsService.findByRole(role.getIdCalculationRole());
-                for (RolesGroupAgreements groupAgreements : rolesGroupAgreementsList){
-                    List sapSales = sapSaleService.findByRegionGroup(groupAgreements.getIdAg(), ofDate, untilDate);
+                        agreementsGroupConditionService.setTabulator(agreementsGroupConditionList);
+                    }
+                    //rol 4 Gerente de Sucursal
+                }else if (role.getIdCalculationRole() == 4){
+                    List<RolesGroupAgreements> rolesGroupAgreementsList = rolesGroupAgreementsService.findByRole(role.getIdCalculationRole());
+                    for (RolesGroupAgreements groupAgreements : rolesGroupAgreementsList){
+                        List sapSales = sapSaleService.findByBranchGroup(groupAgreements.getIdAg(), ofDate, untilDate);
 
-                    CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
+                        CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
 
-                    commissionAmountGroupService.obtainAmountsbyRegion(sapSales, agreementsGroups, ofDate, untilDate);
+                        commissionAmountGroupService.obtainAmountsbyBranch(sapSales, agreementsGroups, ofDate, untilDate);
 
-                    List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg());
+                        List<CommissionAmountGroup> commissionAmountGroupList = commissionAmountGroupService.obtainBranchManager();
 
-                    agreementsGroupConditionService.setTabulator(agreementsGroupConditionList);
-                }
-                //rol 7 Director Comercial
-            }else if (role.getIdCalculationRole() == 7){
-                List<RolesGroupAgreements> rolesGroupAgreementsList = rolesGroupAgreementsService.findByRole(role.getIdCalculationRole());
-                for (RolesGroupAgreements groupAgreements : rolesGroupAgreementsList){
-                    List sapSales = sapSaleService.findByDistributorGroup(groupAgreements.getIdAg(), ofDate, untilDate);
+                        for(CommissionAmountGroup commissionAmountGroup : commissionAmountGroupList){
+                            DwBranchs dwBranchs = dwBranchsService.findById(commissionAmountGroup.getIdBranch());
+                            commissionAmountGroup.setGoal(dwBranchs.getBranchGoal());
+                            commissionAmountGroup.setPttoPromReal(dwBranchs.getPttoPromReal());
+                            commissionAmountGroup.setPttoPromVta(dwBranchs.getPttoPromVta());
+                            BigDecimal scope = commissionAmountGroup.getAmount().divide(dwBranchs.getBranchGoal(), 2, BigDecimal.ROUND_HALF_UP);
+                            BigDecimal multipica = new BigDecimal(100);
+                            commissionAmountGroup.setScope(scope.multiply(multipica));
+                            commissionAmountGroupService.update(commissionAmountGroup);
+                        }
 
-                    CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
+                        List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg(), idDateCalculation);
 
-                    commissionAmountGroupService.obtainAmountsbyDistributor(sapSales, agreementsGroups, ofDate, untilDate);
+                        agreementsGroupConditionService.setTabulator(agreementsGroupConditionList);
+                    }
+                    //rol 5 Gerente de zonal
+                }else if (role.getIdCalculationRole() == 5){
+                    List<RolesGroupAgreements> rolesGroupAgreementsList = rolesGroupAgreementsService.findByRole(role.getIdCalculationRole());
+                    for (RolesGroupAgreements groupAgreements : rolesGroupAgreementsList){
+                        List sapSales = sapSaleService.findByZonaGroup(groupAgreements.getIdAg(), ofDate, untilDate);
 
-                    List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg());
+                        CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
 
-                    agreementsGroupConditionService.setTabulator(agreementsGroupConditionList);
+                        commissionAmountGroupService.obtainAmountsbyZona(sapSales, agreementsGroups, ofDate, untilDate);
+
+                        List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg(), idDateCalculation);
+
+                        agreementsGroupConditionService.obtainCommissionByGoalBranchToZona(agreementsGroupConditionList);
+                    }
+                    //rol 6 Gerente de regional
+                }else if (role.getIdCalculationRole() == 6){
+                    List<RolesGroupAgreements> rolesGroupAgreementsList = rolesGroupAgreementsService.findByRole(role.getIdCalculationRole());
+                    for (RolesGroupAgreements groupAgreements : rolesGroupAgreementsList){
+                        List sapSales = sapSaleService.findByRegionGroup(groupAgreements.getIdAg(), ofDate, untilDate);
+
+                        CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
+
+                        commissionAmountGroupService.obtainAmountsbyRegion(sapSales, agreementsGroups, ofDate, untilDate);
+
+                        List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg(), idDateCalculation);
+
+                        agreementsGroupConditionService.obtainCommissionByGoalBranchToRegion(agreementsGroupConditionList);
+                    }
+                    //rol 7 Director Comercial
+                }else if (role.getIdCalculationRole() == 7){
+                    List<RolesGroupAgreements> rolesGroupAgreementsList = rolesGroupAgreementsService.findByRole(role.getIdCalculationRole());
+                    for (RolesGroupAgreements groupAgreements : rolesGroupAgreementsList){
+                        List sapSales = sapSaleService.findByDistributorGroup(groupAgreements.getIdAg(), ofDate, untilDate);
+
+                        CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
+
+                        commissionAmountGroupService.obtainAmountsbyDistributor(sapSales, agreementsGroups, ofDate, untilDate);
+
+                        List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg(), idDateCalculation);
+
+                        agreementsGroupConditionService.obtainCommissionByGoalBranchToDistributor(agreementsGroupConditionList);
+                    }
                 }
             }
         }
-
         response.setContentType("application/octet-stream");
         response.setHeader("Content-Disposition", "attachment; filename=\"" +"Reporte de calculo de comisiones de "+ofDate+" a "+toDate+".xls"+ "\"");
         OutputStream outputStream = response.getOutputStream();
