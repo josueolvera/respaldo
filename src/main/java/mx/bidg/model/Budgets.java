@@ -62,6 +62,10 @@ public class Budgets implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetNature;
 
+    @Column(name = "ID_REQUEST_CATEGORY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRequestCategory;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
@@ -87,6 +91,11 @@ public class Budgets implements Serializable {
     @ManyToOne
     @JsonView({JsonViews.Embedded.class})
     private CBudgetNature budgetNature;
+
+    @JoinColumn(name = "ID_REQUEST_CATEGORY", referencedColumnName = "ID_REQUEST_CATEGORY")
+    @ManyToOne
+    @JsonView({JsonViews.Embedded.class})
+    private CRequestsCategories requestsCategory;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "budget")
     @JsonView(JsonViews.Embedded.class)
@@ -193,6 +202,22 @@ public class Budgets implements Serializable {
 
     public void setBudgetYearConceptList(List<BudgetYearConcept> budgetYearConceptList) {
         this.budgetYearConceptList = budgetYearConceptList;
+    }
+
+    public Integer getIdRequestCategory() {
+        return idRequestCategory;
+    }
+
+    public void setIdRequestCategory(Integer idRequestCategory) {
+        this.idRequestCategory = idRequestCategory;
+    }
+
+    public CRequestsCategories getRequestsCategory() {
+        return requestsCategory;
+    }
+
+    public void setRequestsCategory(CRequestsCategories requestsCategory) {
+        this.requestsCategory = requestsCategory;
     }
 
     @Override
