@@ -98,8 +98,8 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
     }
 
     @Override
-    public List<AgreementsGroupCondition> conditions(Integer idAg) {
-        return agreementsGroupConditionDao.conditionList(idAg);
+    public List<AgreementsGroupCondition> conditions(Integer idAg, Integer idDateCalculation) {
+        return agreementsGroupConditionDao.conditionList(idAg, idDateCalculation);
     }
 
     @Override
@@ -116,5 +116,110 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
     public AgreementsGroupCondition getFinalOrder(Integer idAg) {
         return agreementsGroupConditionDao.getFinalOrder(idAg);
     }
-    
+
+    @Override
+    public List<CommissionAmountGroup> obtainCommissionByGoalBranchToZona(List<AgreementsGroupCondition> agreementsGroupConditionList) {
+        for (AgreementsGroupCondition aGC: agreementsGroupConditionList){
+            AgreementsGroupCondition groupCondition = agreementsGroupConditionDao.getTabulator(aGC.getOrder(),aGC);
+
+            List<CommissionAmountGroup> zonasList = commissionAmountGroupDao.findByGroupZonalAndZona();
+
+            for (CommissionAmountGroup commissionAmountGroup : zonasList){
+                List<CommissionAmountGroup> commissionAmountGroupList = commissionAmountGroupDao.obtainBranchByZonaAndCondition(commissionAmountGroup.getIdZona(), groupCondition);
+                if (commissionAmountGroupList.size() > 6){
+                    BigDecimal defaultValue = new BigDecimal(6);
+                    BigDecimal tabulator = groupCondition.getTabulator().multiply(defaultValue);
+                    commissionAmountGroup.setTabulator(tabulator);
+                    BigDecimal divisor = new BigDecimal(100);
+                    BigDecimal percentage = tabulator.divide(divisor);
+                    BigDecimal comission = percentage.multiply(commissionAmountGroup.getAmount());
+                    commissionAmountGroup.setCommission(comission);
+                    commissionAmountGroupDao.update(commissionAmountGroup);
+                }else {
+                    int size = commissionAmountGroupList.size();
+                    BigDecimal value = new BigDecimal(size);
+                    BigDecimal tabulatorBranch = groupCondition.getTabulator().multiply(value);
+                    commissionAmountGroup.setTabulator(tabulatorBranch);
+                    BigDecimal divisor = new BigDecimal(100);
+                    BigDecimal percentage = tabulatorBranch.divide(divisor);
+                    BigDecimal commissionByBranch = percentage.multiply(commissionAmountGroup.getAmount());
+                    commissionAmountGroup.setCommission(commissionByBranch);
+                    commissionAmountGroupDao.update(commissionAmountGroup);
+                }
+            }
+        }
+
+        return commissionAmountGroupDao.findAll();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> obtainCommissionByGoalBranchToRegion(List<AgreementsGroupCondition>  agreementsGroupConditionList) {
+        for (AgreementsGroupCondition aGC: agreementsGroupConditionList){
+            AgreementsGroupCondition groupCondition = agreementsGroupConditionDao.getTabulator(aGC.getOrder(),aGC);
+
+            List<CommissionAmountGroup> regionList = commissionAmountGroupDao.findByGroupRegionslAndRegion();
+
+            for (CommissionAmountGroup commissionAmountGroups : regionList){
+                List<CommissionAmountGroup> branchsList = commissionAmountGroupDao.obtainBranchByRegionAndCondition(commissionAmountGroups.getIdRegion(), groupCondition);
+                if (branchsList.size() > 25){
+                    BigDecimal defaultValue = new BigDecimal(25);
+                    BigDecimal tabulator = groupCondition.getTabulator().multiply(defaultValue);
+                    commissionAmountGroups.setTabulator(tabulator);
+                    BigDecimal divisor = new BigDecimal(100);
+                    BigDecimal percentage = tabulator.divide(divisor);
+                    BigDecimal comission = percentage.multiply(commissionAmountGroups.getAmount());
+                    commissionAmountGroups.setCommission(comission);
+                    commissionAmountGroupDao.update(commissionAmountGroups);
+                }else {
+                    int size = branchsList.size();
+                    BigDecimal value = new BigDecimal(size);
+                    BigDecimal tabulatorBranch = groupCondition.getTabulator().multiply(value);
+                    commissionAmountGroups.setTabulator(tabulatorBranch);
+                    BigDecimal divisor = new BigDecimal(100);
+                    BigDecimal percentage = tabulatorBranch.divide(divisor);
+                    BigDecimal commissionByBranch = percentage.multiply(commissionAmountGroups.getAmount());
+                    commissionAmountGroups.setCommission(commissionByBranch);
+                    commissionAmountGroupDao.update(commissionAmountGroups);
+                }
+            }
+        }
+
+        return commissionAmountGroupDao.findAll();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> obtainCommissionByGoalBranchToDistributor(List<AgreementsGroupCondition> agreementsGroupConditionList) {
+        for (AgreementsGroupCondition aGC: agreementsGroupConditionList){
+            AgreementsGroupCondition groupCondition = agreementsGroupConditionDao.getTabulator(aGC.getOrder(),aGC);
+
+            List<CommissionAmountGroup> distributorList = commissionAmountGroupDao.findByGroupComercialAndDistributor();
+
+            for (CommissionAmountGroup commissionAmountGroups : distributorList){
+                List<CommissionAmountGroup> branchsList = commissionAmountGroupDao.obtainBranchByDistributorAndCondition(commissionAmountGroups.getIdDistributor(), groupCondition);
+                if (branchsList.size() > 40){
+                    BigDecimal defaultValue = new BigDecimal(40);
+                    BigDecimal tabulator = groupCondition.getTabulator().multiply(defaultValue);
+                    commissionAmountGroups.setTabulator(tabulator);
+                    BigDecimal divisor = new BigDecimal(100);
+                    BigDecimal percentage = tabulator.divide(divisor);
+                    BigDecimal comission = percentage.multiply(commissionAmountGroups.getAmount());
+                    commissionAmountGroups.setCommission(comission);
+                    commissionAmountGroupDao.update(commissionAmountGroups);
+                }else {
+                    int size = branchsList.size();
+                    BigDecimal value = new BigDecimal(size);
+                    BigDecimal tabulatorBranch = groupCondition.getTabulator().multiply(value);
+                    commissionAmountGroups.setTabulator(tabulatorBranch);
+                    BigDecimal divisor = new BigDecimal(100);
+                    BigDecimal percentage = tabulatorBranch.divide(divisor);
+                    BigDecimal commissionByBranch = percentage.multiply(commissionAmountGroups.getAmount());
+                    commissionAmountGroups.setCommission(commissionByBranch);
+                    commissionAmountGroupDao.update(commissionAmountGroups);
+                }
+            }
+        }
+
+        return commissionAmountGroupDao.findAll();
+    }
+
 }

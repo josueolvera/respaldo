@@ -15,8 +15,11 @@ public interface AgreementsGroupConditionService {
     boolean delete (AgreementsGroupCondition agreementsGroupCondition);
     List<AgreementsGroupCondition> findAll();
     List<CommissionAmountGroup> setTabulator (List <AgreementsGroupCondition> agreementsGroupConditionList);
-    List<AgreementsGroupCondition> conditions(Integer idAg);
+    List<AgreementsGroupCondition> conditions(Integer idAg, Integer idDateCalculation);
     List<AgreementsGroupCondition> findByGroupCondition(Integer idAg);
     AgreementsGroupCondition updateStatus(Integer idGroupCondition, boolean statusBoolean);
     AgreementsGroupCondition getFinalOrder(Integer idAg);
+    List<CommissionAmountGroup> obtainCommissionByGoalBranchToZona(List <AgreementsGroupCondition> agreementsGroupConditionList);
+    List<CommissionAmountGroup> obtainCommissionByGoalBranchToRegion(List <AgreementsGroupCondition> agreementsGroupConditionList);
+    List<CommissionAmountGroup> obtainCommissionByGoalBranchToDistributor(List <AgreementsGroupCondition> agreementsGroupConditionList);
 }
