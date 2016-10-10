@@ -9,7 +9,7 @@ import java.util.List;
  * Created by josueolvera on 2/09/16.
  */
 public interface AgreementsGroupConditionDao extends InterfaceDao<AgreementsGroupCondition> {
-    List<AgreementsGroupCondition> conditionList (Integer idAg);
+    List<AgreementsGroupCondition> conditionList (Integer idAg, Integer idDateCalculation);
     AgreementsGroupCondition getTabulator(Integer orden, AgreementsGroupCondition aGC);
     List<AgreementsGroupCondition> listByAgreementGroup(Integer idAg);
     AgreementsGroupCondition updateStatus(Integer idGroupCondition, boolean statusBoolean);

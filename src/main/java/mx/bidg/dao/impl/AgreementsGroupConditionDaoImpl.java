@@ -47,8 +47,11 @@ public class AgreementsGroupConditionDaoImpl extends AbstractDao<Integer, Agreem
     }
 
     @Override
-    public List<AgreementsGroupCondition> conditionList(Integer idAg) {
-        return createEntityCriteria().add(Restrictions.eq("idAg",idAg)).add(Restrictions.eq("status",1)).list();
+    public List<AgreementsGroupCondition> conditionList(Integer idAg, Integer idDateCalculation) {
+        return createEntityCriteria().add(Restrictions.eq("idAg",idAg))
+                .add(Restrictions.eq("status",1))
+                .add(Restrictions.eq("idDateCalculation",idDateCalculation))
+                .list();
     }
 
     @Override
@@ -57,6 +60,7 @@ public class AgreementsGroupConditionDaoImpl extends AbstractDao<Integer, Agreem
 
         return (AgreementsGroupCondition) criteria.add(Restrictions.eq("order",orden))
                 .add(Restrictions.eq("idAg",aGC.getIdAg())).add(Restrictions.eq("status",1))
+                .add(Restrictions.eq("idDateCalculation",aGC.getIdDateCalculation()))
                 .uniqueResult();
     }
 
