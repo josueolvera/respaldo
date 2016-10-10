@@ -106,14 +106,4 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 
     }
 
-    @Bean(name = "OBJECT_MAPPER_BEAN")
-    @Qualifier("OBJECT_MAPPER_BEAN")
-    public ObjectMapper jsonObjectMapper() {
-        return Jackson2ObjectMapperBuilder.json()
-                .serializationInclusion(JsonInclude.Include.NON_NULL)
-                .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-                .modules(new JavaTimeModule(), new Hibernate4Module(), new Jdk8Module())
-                .build();
-    }
-
 }
