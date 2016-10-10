@@ -119,12 +119,16 @@ public class CommissionAmountGroupDaoImpl extends AbstractDao<Integer, Commissio
 
     @Override
     public List<CommissionAmountGroup> findByGroupZonalAndZona() {
-        return createEntityCriteria().add(Restrictions.isNotNull("idZona")).list();
+        return createEntityCriteria().add(Restrictions.isNotNull("idZona"))
+                .add(Restrictions.isNull("idBranch"))
+                .list();
     }
 
     @Override
     public List<CommissionAmountGroup> findByGroupRegionslAndRegion() {
-        return createEntityCriteria().add(Restrictions.isNotNull("idRegion")).list();
+        return createEntityCriteria().add(Restrictions.isNotNull("idRegion"))
+                .add(Restrictions.isNull("idBranch"))
+                .list();
     }
 
     @Override
@@ -132,6 +136,39 @@ public class CommissionAmountGroupDaoImpl extends AbstractDao<Integer, Commissio
         return createEntityCriteria().add(Restrictions.isNotNull("idDistributor"))
                 .add(Restrictions.isNull("idZona"))
                 .add(Restrictions.isNull("idRegion"))
+                .list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> obtainBranchByZonaAndCondition(Integer idZona, AgreementsGroupCondition agreementsGroupCondition) {
+        return createEntityCriteria().add(Restrictions.eq("idZona", idZona))
+                .add(Restrictions.isNotNull("idDistributor"))
+                .add(Restrictions.isNotNull("idRegion"))
+                .add(Restrictions.isNotNull("idBranch"))
+                .add(Restrictions.between("scope",agreementsGroupCondition.getAmountMin(),
+                        agreementsGroupCondition.getAmountMax()))
+                .list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> obtainBranchByRegionAndCondition(Integer idRegion, AgreementsGroupCondition agreementsGroupCondition) {
+        return createEntityCriteria().add(Restrictions.eq("idRegion", idRegion))
+                .add(Restrictions.isNotNull("idDistributor"))
+                .add(Restrictions.isNotNull("idZona"))
+                .add(Restrictions.isNotNull("idBranch"))
+                .add(Restrictions.between("scope",agreementsGroupCondition.getAmountMin(),
+                        agreementsGroupCondition.getAmountMax()))
+                .list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> obtainBranchByDistributorAndCondition(Integer idDistributor, AgreementsGroupCondition agreementsGroupCondition) {
+        return createEntityCriteria().add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.isNotNull("idRegion"))
+                .add(Restrictions.isNotNull("idZona"))
+                .add(Restrictions.isNotNull("idBranch"))
+                .add(Restrictions.between("scope",agreementsGroupCondition.getAmountMin(),
+                        agreementsGroupCondition.getAmountMax()))
                 .list();
     }
 }
