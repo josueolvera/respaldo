@@ -91,6 +91,9 @@ public class SapSaleDaoImpl extends AbstractDao<Integer, SapSale> implements Sap
         projList.add(Projections.distinct(Projections.groupProperty("idBranch")));
         projList.add(Projections.sum("comissionableAmount"));
         projList.add(Projections.count("idSale"));
+        projList.add(Projections.groupProperty("idRegion"));
+        projList.add(Projections.groupProperty("idZonas"));
+        projList.add(Projections.groupProperty("idDistributor"));
 
         for (GroupsAgreements groupsAgreements : groupsAgreementsList){
             disjuntionAgreement.add(Restrictions.eq("idAgreement", groupsAgreements.getIdAgreement()));
@@ -114,7 +117,7 @@ public class SapSaleDaoImpl extends AbstractDao<Integer, SapSale> implements Sap
         projList.add(Projections.distinct(Projections.groupProperty("idZonas")));
         projList.add(Projections.sum("comissionableAmount"));
         projList.add(Projections.count("idSale"));
-        projList.add(Projections.groupProperty("idDistributor"));
+//        projList.add(Projections.groupProperty("idDistributor"));
 
         for (GroupsAgreements groupsAgreements : groupsAgreementsList){
             disjuntionAgreement.add(Restrictions.eq("idAgreement", groupsAgreements.getIdAgreement()));
@@ -138,7 +141,7 @@ public class SapSaleDaoImpl extends AbstractDao<Integer, SapSale> implements Sap
         projList.add(Projections.distinct(Projections.groupProperty("idRegion")));
         projList.add(Projections.sum("comissionableAmount"));
         projList.add(Projections.count("idSale"));
-        projList.add(Projections.groupProperty("idDistributor"));
+//        projList.add(Projections.groupProperty("idDistributor"));
 
         for (GroupsAgreements groupsAgreements : groupsAgreementsList){
             disjuntionAgreement.add(Restrictions.eq("idAgreement", groupsAgreements.getIdAgreement()));
