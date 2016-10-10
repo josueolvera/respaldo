@@ -73,10 +73,19 @@ public class AgreementsGroupCondition implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAg;
 
+    @Column(name = "ID_DATE_CALCULATION", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idDateCalculation;
+
     @JoinColumn(name = "ID_AG", referencedColumnName = "ID_AG")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private CAgreementsGroups agreementsGroups;
+
+    @JoinColumn(name = "ID_DATE_CALCULATION", referencedColumnName = "ID_DATE_CALCULATION")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CDateCalculation cDateCalculation;
     
     @Column(name = "STATUS", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -175,6 +184,22 @@ public class AgreementsGroupCondition implements Serializable {
 
     public void setTypeOperation(int typeOperation) {
         this.typeOperation = typeOperation;
+    }
+
+    public Integer getIdDateCalculation() {
+        return idDateCalculation;
+    }
+
+    public void setIdDateCalculation(Integer idDateCalculation) {
+        this.idDateCalculation = idDateCalculation;
+    }
+
+    public CDateCalculation getcDateCalculation() {
+        return cDateCalculation;
+    }
+
+    public void setcDateCalculation(CDateCalculation cDateCalculation) {
+        this.cDateCalculation = cDateCalculation;
     }
 
     @Override
