@@ -35,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class EventsController {
     
     @Autowired
-    @Qualifier("OBJECT_MAPPER_BEAN")
     private ObjectMapper mapper;
     
     @Autowired
