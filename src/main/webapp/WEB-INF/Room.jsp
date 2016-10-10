@@ -59,8 +59,20 @@
                   });
               },
               addReservation: function () {
-                  console.log(this.startHour);
-                  $('#reservationModal').modal('show');
+                  var event= {};
+                    event.title=  this.title,
+                    event.start = this.selectedDay+''+startHour,
+                    event.end = this.selectedDay+''+endHour,
+                    event.user = this.User,
+                    event.room = this.Room,
+                    this.$http.post(ROOT_URL + "/events", JSON.stringify(this.employee)).success(function (event) {
+                          
+                            showAlert("Registro de empleado exitoso");
+                            
+                            });
+                  
+                  $('#reservationModal').modal('hide');
+                  
               },
               createCalendar: function () {
                   
@@ -149,7 +161,7 @@
                                     </thead>
                                     <tbody>
                                       <tr v-fo=''>
-                                        <td>{{users.mail}}</td>
+                                        <td>{{user.mail}}</td>
                                         <td>{{title}}</td>
                                         <td>{{startHour}} </td>
                                         <td>{{endHour}}</td>
@@ -168,7 +180,7 @@
                             <div class="form-group">
                                 <br>
                                 <label>Título</label>
-                                <input type='text' class="form-control" v-model="title" />
+                                <input type='text' class="form-control" v-model={{title}} />
                             </div>
                         </div>
                         <div class='col-md-3'>
@@ -176,7 +188,7 @@
                                 <br>
                                 <label>Hora de entrada</label>
                                 <div class='input-group date' id='startHour'>
-                                    <input type='text' class="form-control" v-model="startHour" />
+                                    <input type='text' class="form-control" v-model={{startHour}} />
                                     <span class="input-group-addon">
                                         <span class="glyphicon glyphicon-time"></span>
                                     </span>
@@ -188,7 +200,7 @@
                                 <br>
                                 <label>Hora de salida</label>
                                 <div class='input-group date' id='endHour'>
-                                    <input type='text' class="form-control" v-model="endHour" />
+                                    <input type='text' class="form-control" v-model= {{endHour}}/>
                                     <span class="input-group-addon">
                                         <span class="glyphicon glyphicon-time"></span>
                                     </span>
