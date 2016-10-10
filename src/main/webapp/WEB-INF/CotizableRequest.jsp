@@ -822,10 +822,6 @@
                     </div>
                 </div>
             </div>
-            <pre>
-              {{ $data.objectRequest | json}}
-          </pre>
-
         </div> <!-- container-fluid -->
         </div> <!-- #contenidos -->
         <!-- Fecha de Termino- Agregar fecha dia de solicitud-->
