@@ -14,6 +14,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import mx.bidg.interceptor.ControllerInterceptor;
 import org.exolab.castor.mapping.MappingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -100,10 +101,18 @@ public class AppConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public ObjectMapper mapper(){
+        return new ObjectMapper()
+                .registerModules(new Hibernate4Module());
+
+    }
+
+    @Bean(name = "OBJECT_MAPPER_BEAN")
+    @Qualifier("OBJECT_MAPPER_BEAN")
+    public ObjectMapper jsonObjectMapper() {
         return Jackson2ObjectMapperBuilder.json()
                 .serializationInclusion(JsonInclude.Include.NON_NULL)
                 .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-                .modules(new Hibernate4Module(), new JavaTimeModule(), new Jdk8Module())
+                .modules(new JavaTimeModule(), new Hibernate4Module(), new Jdk8Module())
                 .build();
     }
 

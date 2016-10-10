@@ -15,6 +15,7 @@ import mx.bidg.model.Events;
 import mx.bidg.model.Ticket;
 import mx.bidg.service.EventsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class EventsController {
     
     @Autowired
+    @Qualifier("OBJECT_MAPPER_BEAN")
     private ObjectMapper mapper;
     
     @Autowired
