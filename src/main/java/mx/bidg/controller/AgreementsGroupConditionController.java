@@ -9,6 +9,7 @@ import java.util.List;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.AgreementsGroupCondition;
 import mx.bidg.model.CAgreementsGroups;
+import mx.bidg.model.CDateCalculation;
 import mx.bidg.service.AgreementsGroupConditionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -70,6 +71,7 @@ public class AgreementsGroupConditionController {
         agreementsGroupCondition.setAmountMax(new BigDecimal(json.get("amountMax").asDouble()));
         agreementsGroupCondition.setStatus(0);
         agreementsGroupCondition.setTypeOperation(json.get("typeOperation").asInt());
+        agreementsGroupCondition.setcDateCalculation(new CDateCalculation(json.get("idDateCalculation").asInt()));
         
         if (ultimateRow == null) {
             agreementsGroupCondition.setOrder(1);
