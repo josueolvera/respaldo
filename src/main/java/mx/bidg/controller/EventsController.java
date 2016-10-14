@@ -54,6 +54,9 @@ public class EventsController {
     public ResponseEntity<String> save(@RequestBody Events event) throws IOException{
         event = eventsService.save(event);
         return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(event));
+            
+    
+    
     }
     
      
