@@ -5,9 +5,15 @@
  */
 package mx.bidg.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import mx.bidg.dao.BudgetsDao;
 import mx.bidg.dao.CBudgetCategoriesDao;
+import mx.bidg.model.Budgets;
 import mx.bidg.model.CBudgetCategories;
+import mx.bidg.service.BudgetsService;
 import mx.bidg.service.CBudgetCategoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +30,9 @@ public class CBudgetCategoriesServiceImpl implements CBudgetCategoriesService {
     @Autowired
     CBudgetCategoriesDao cBudgetCategoriesDao;
 
+    @Autowired
+    BudgetsDao budgetsDao;
+
     @Override
     public List<CBudgetCategories> findAll() {
         return cBudgetCategoriesDao.findAll();
@@ -37,6 +46,14 @@ public class CBudgetCategoriesServiceImpl implements CBudgetCategoriesService {
     @Override
     public CBudgetCategories save(CBudgetCategories budgetCategory) {
         return cBudgetCategoriesDao.save(budgetCategory);
+    }
+
+    @Override
+    public List<CBudgetCategories> getRequestCategories(Integer idCostCenter, Integer idRequestCategory) {
+
+        List<Budgets> budgets = budgetsDao.getBudgetsByCostCenterAndRequestCategory(idCostCenter, idRequestCategory);
+
+        return budgets.stream().map(budget -> budget.getAccountingAccount().getBudgetCategory()).collect(Collectors.toList());
     }
 
 }

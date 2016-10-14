@@ -170,4 +170,31 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
         return list;
     }
 
+    @Override
+    public List<Budgets> getBudgetsByCostCenterAndRequestCategory(Integer idCostCenter, Integer idRequestCategory) {
+
+        Criteria criteria = createEntityCriteria();
+
+        if (idCostCenter != null) {
+            criteria.add(Restrictions.eq("idCostCenter", idCostCenter));
+        }
+
+        if (idRequestCategory != null) {
+            criteria.add(Restrictions.eq("idRequestCategory", idRequestCategory));
+        }
+
+        return criteria.list();
+    }
+
+    @Override
+    public Budgets getBudgetForRequest(int idCostCenter, int idBudgetCategory, int idBudgetSubcategory, int idRequestCategory) {
+        return (Budgets) createEntityCriteria()
+                .createAlias("accountingAccount", "aa")
+                .add(Restrictions.eq("idCostCenter", idCostCenter))
+                .add(Restrictions.eq("aa.idBudgetCategory", idBudgetCategory))
+                .add(Restrictions.eq("aa.idBudgetSubcategory", idBudgetSubcategory))
+                .add(Restrictions.eq("idRequestCategory", idRequestCategory))
+                .uniqueResult();
+    }
+
 }

@@ -40,7 +40,7 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idRequest;
     
-    @Basic(optional = false)
+    @Basic
     @NotNull
     @Size(min = 1, max = 40)
     @Column(name = "FOLIO")
@@ -65,7 +65,7 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String justification;
     
-    @Basic(optional = false)
+    @Basic
     @NotNull
     @Column(name = "CREATION_DATE", updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -77,7 +77,7 @@ public class Requests implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime applyingDate;
     
-    @Basic(optional = false)
+    @Basic
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
@@ -104,7 +104,7 @@ public class Requests implements Serializable {
     private Integer idRequestStatus;
     
     @JoinColumn(name = "USER_REQUEST", referencedColumnName = "ID_USER")
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private Users userRequest;
     
@@ -114,17 +114,12 @@ public class Requests implements Serializable {
     private Users userResponsible;
     
     @JoinColumn(name = "ID_BUDGET_YEAR", referencedColumnName = "ID_BUDGET_YEAR")
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private BudgetYear budgetYear;
 
-    @JoinColumn(name = "ID_MONTH", referencedColumnName = "ID_MONTH")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private CMonths month;
-    
     @JoinColumn(name = "ID_REQUEST_STATUS", referencedColumnName = "ID_REQUEST_STATUS")
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private CRequestStatus requestStatus;
     
@@ -265,14 +260,6 @@ public class Requests implements Serializable {
         this.budgetYear = budgetYear;
     }
 
-    public CMonths getMonth() {
-        return month;
-    }
-
-    public void setMonth(CMonths month) {
-        this.month = month;
-    }
-
     public CRequestStatus getRequestStatus() {
         return requestStatus;
     }
@@ -299,6 +286,10 @@ public class Requests implements Serializable {
 
     public DateFormatsPojo getApplyingDateFormats() {
         return (applyingDate == null) ? null : new DateFormatsPojo(applyingDate);
+    }
+
+    public DateFormatsPojo getCreationDateFormats() {
+        return (creationDate == null) ? null : new DateFormatsPojo(creationDate);
     }
 
     public Boolean getActive() {
@@ -351,7 +342,6 @@ public class Requests implements Serializable {
                 ", userRequest=" + userRequest +
                 ", userResponsible=" + userResponsible +
                 ", budgetYear=" + budgetYear +
-                ", month=" + month +
                 ", requestStatus=" + requestStatus +
                 ", priceEstimationsList=" + priceEstimationsList +
                 ", requestProductsList=" + requestProductsList +

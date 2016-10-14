@@ -16,7 +16,7 @@ import mx.bidg.model.ProvidersAccounts;
  * @author kenneth
  */
 public interface ProvidersAccountsService {
-    List<ProvidersAccounts> findByProvider(Providers provider);
+    List<ProvidersAccounts> findByProvider(Integer idProvider);
     ProvidersAccounts save(String data) throws Exception;
     ProvidersAccounts findByAccountsProvider(Accounts a);
     Boolean delete(ProvidersAccounts providersAccounts);

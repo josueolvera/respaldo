@@ -13,9 +13,9 @@ import mx.bidg.model.CBudgetCategories;
 import mx.bidg.service.CBudgetCategoriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -31,10 +31,17 @@ public class CBudgetCategoriesController {
     @Autowired
     private ObjectMapper mapper;
     
-    @RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public @ResponseBody String getCBudgetCategories() throws Exception {
-        List<CBudgetCategories> list = cBudgetCategoriesService.findAll();
-        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(list);
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getCBudgetCategories(
+            @RequestParam(name = "cost_center", required = false) Integer idCostCenter,
+            @RequestParam(name = "request_category", required = false) Integer idRequestCategory
+    ) throws Exception {
+        return ResponseEntity.ok(
+                mapper.writerWithView(JsonViews.Root.class)
+                        .writeValueAsString(
+                                cBudgetCategoriesService.getRequestCategories(idCostCenter, idRequestCategory)
+                        )
+        );
     }
     
     @RequestMapping(value="/request", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

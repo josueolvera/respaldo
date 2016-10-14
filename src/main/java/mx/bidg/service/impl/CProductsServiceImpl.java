@@ -1,13 +1,19 @@
 package mx.bidg.service.impl;
 
 import java.util.ArrayList;
+
+import mx.bidg.dao.CBudgetSubcategoriesDao;
 import mx.bidg.dao.CProductsDao;
+import mx.bidg.model.CBudgetSubcategories;
 import mx.bidg.model.CProducts;
 import mx.bidg.service.CProductsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import mx.bidg.dao.ProductTypesProductDao;
 import mx.bidg.model.AccountingAccounts;
 import mx.bidg.model.ProductTypesProduct;
@@ -26,6 +32,9 @@ public class CProductsServiceImpl implements CProductsService {
     
     @Autowired
     ProductTypesProductDao productTypesProductDao;
+
+    @Autowired
+    CBudgetSubcategoriesDao budgetSubcategoriesDao;
 
     @Override
     public CProducts findById(int id) {
@@ -52,5 +61,25 @@ public class CProductsServiceImpl implements CProductsService {
         }
         
         return list;
+    }
+
+    @Override
+    public List<CProducts> findByBudgetSubcategory(int idBudgetSubcategory) {
+        return productsDao.findByBudgetSubcategory(idBudgetSubcategory);
+    }
+
+    @Override
+    public CProducts save(int idBudgetSubcategory, CProducts product) {
+
+        CBudgetSubcategories budgetSubcategory = budgetSubcategoriesDao.findById(idBudgetSubcategory);
+
+        if (budgetSubcategory != null) {
+            product.setProduct(product.getProduct().toUpperCase().trim());
+            product.setIdAccessLevel(1);
+            budgetSubcategory.getProducts().add(product);
+            budgetSubcategoriesDao.save(budgetSubcategory);
+        }
+
+        return product;
     }
 }

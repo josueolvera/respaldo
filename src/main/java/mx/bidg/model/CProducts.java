@@ -4,13 +4,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.util.HashSet;
+import java.util.Set;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -46,6 +42,9 @@ public class CProducts implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
+
+    @ManyToMany(mappedBy = "products")
+    private Set<CBudgetSubcategories> budgetSubcategories;
 
     public CProducts() {
     }
@@ -84,6 +83,14 @@ public class CProducts implements Serializable {
 
     public void setSku(String sku) {
         this.sku = sku;
+    }
+
+    public Set<CBudgetSubcategories> getBudgetSubcategories() {
+        return budgetSubcategories;
+    }
+
+    public void setBudgetSubcategories(Set<CBudgetSubcategories> budgetSubcategories) {
+        this.budgetSubcategories = budgetSubcategories;
     }
 
     @Override

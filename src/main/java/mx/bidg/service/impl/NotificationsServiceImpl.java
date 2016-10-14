@@ -66,7 +66,7 @@ public class NotificationsServiceImpl implements NotificationsService {
             }
         }
 
-        //emailDeliveryService.deliverEmail(emailTemplate); Se comenta porque se ocupa el segundo metodo creado para enviar emails
+        emailDeliveryService.deliverEmail(emailTemplate);
         return notifications;
     }
 
@@ -81,7 +81,6 @@ public class NotificationsServiceImpl implements NotificationsService {
 
     @Override
     public Notifications createForEstimationAuthorization(Users user, Requests request) {
-        System.out.println(notificationsDao.countForUserResource(user, request.getIdRequest()));
         if (notificationsDao.countForUserResource(user, request.getIdRequest()) > 0) {
             return null;
         }
@@ -104,12 +103,11 @@ public class NotificationsServiceImpl implements NotificationsService {
 
     @Override
     public Notifications createNotification(Users user, Requests request) {
-        EmailTemplates emailTemplate = emailTemplatesService.findByName("request_autorization_notification");
-        request = requestsDao.findById(request.getIdRequest());
+        EmailTemplates emailTemplate = emailTemplatesService.findByName("notification");
         emailTemplate.addRecipient(new EmailRecipients(user.getMail(), user.getUsername(), EmailRecipients.TO));
         emailTemplate.addProperty("user", user);
-        emailTemplate.addProperty("subject", "Solicitud: Se requiere su autorización");
-        //emailDeliveryService.deliverEmail(emailTemplate);
+        emailTemplate.addProperty("subject", "Su solicitud ha sido recibida");
+        emailDeliveryService.deliverEmail(emailTemplate);
         Notifications notification = build(request, user);
         notification.setSubtitle("Se requiere su autorización");
         return notificationsDao.save(notification);
@@ -166,7 +164,7 @@ public class NotificationsServiceImpl implements NotificationsService {
 
         Notifications notification = new Notifications();
         notification.setIdResource(request.getIdRequest());
-        //notification.setResourcesTasks(request.getRequestTypeProduct().getRequestCategory().getResourcesTasks());
+        notification.setResourcesTasks(request.getBudgetYear().getBudget().getRequestsCategory().getResourcesTasks());
         notification.setTitle("Solicitud: " + request.getBudgetYear().getBudget().getAccountingAccount().getBudgetCategory().getBudgetCategory());
         notification.setSubtitle(request.getBudgetYear().getBudget().getAccountingAccount().getBudgetSubcategory().getBudgetSubcategory());
         notification.setText(request.getDescription());

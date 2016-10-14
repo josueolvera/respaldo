@@ -16,7 +16,7 @@ import mx.bidg.model.Users;
  */
 public interface PriceEstimationsService {
     
-    PriceEstimations saveData(String data, Users user) throws Exception;
+    PriceEstimations saveData(String data, Integer idRequest, Users user) throws Exception;
     
     PriceEstimations saveFileData(int idEstimation, String fileName, String filePath);
     

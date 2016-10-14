@@ -297,7 +297,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
                 List<PriceEstimations> priceEstimations = requests.getPriceEstimationsList();
                 PriceEstimations priceEstimationsAutorized = new PriceEstimations();
                 for(PriceEstimations priceEstimation : priceEstimations){
-                    if(priceEstimation.getIdEstimationStatus() == CEstimationStatus.APROBADA){
+                    if(priceEstimation.getIdEstimationStatus() == CEstimationStatus.APROBADA.getIdEstimationStatus()){
                         priceEstimationsAutorized = priceEstimation;
                     }
                 }

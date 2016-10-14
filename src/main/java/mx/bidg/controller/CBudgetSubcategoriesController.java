@@ -7,6 +7,8 @@ package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
+import java.util.Set;
+
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.CBudgetSubcategories;
 import mx.bidg.service.CBudgetSubcategoriesService;
@@ -39,7 +41,7 @@ public class CBudgetSubcategoriesController {
 
     @RequestMapping(value = "/category/{idBudgetCategory}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody String getByBudgetCategory(@PathVariable Integer idBudgetCategory) throws Exception {
-        List<CBudgetSubcategories> list = cBudgetSubcategoriesService.getByBudgetCategory(idBudgetCategory);
+        Set<CBudgetSubcategories> list = cBudgetSubcategoriesService.getByBudgetCategory(idBudgetCategory);
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(list);
     }
 }

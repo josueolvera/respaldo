@@ -12,10 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Rafael Viveros
@@ -36,6 +33,11 @@ public class ProductsController {
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(productsService.findAll());
     }
 
+    @RequestMapping(value = "/subcategory/{idBudgetSubcategory}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody String save(@PathVariable int idBudgetSubcategory, @RequestBody CProducts product) throws Exception {
+        return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(productsService.save(idBudgetSubcategory, product));
+    }
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody String findProductsById(@PathVariable int id) throws Exception {
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(productsService.findById(id));
@@ -46,5 +48,12 @@ public class ProductsController {
         
         List<CProducts> list = productsService.findByProductTypes(new AccountingAccounts(idAccountingAccount));
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(list), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/subcategory/{idBudgetSubcategory}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody ResponseEntity<String> findByBudgetSubcategory(@PathVariable int idBudgetSubcategory) throws Exception {
+
+        List<CProducts> list = productsService.findByBudgetSubcategory(idBudgetSubcategory);
+        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(list));
     }
 }

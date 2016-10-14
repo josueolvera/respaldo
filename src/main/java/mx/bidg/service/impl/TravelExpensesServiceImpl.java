@@ -123,7 +123,6 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
                     request.setUserRequest(user);
                     request.setCreationDate(now);
                     request.setApplyingDate(startDate);
-                    request.setMonth(new CMonths(now.getMonthValue()));
                     request.setRequestStatus(CRequestStatus.PENDIENTE);
                     request.setBudgetYear(budgetYear);
                     request.setIdAccessLevel(1);

@@ -57,7 +57,7 @@ public class ProvidersServiceImpl implements ProvidersService {
     }
 
     @Override
-    public List<Providers> findByBudgetSubtegorie(CBudgetSubcategories budgetSubcategories) {
-        return dao.findByBudgetSubtegorie(budgetSubcategories);
+    public List<Providers> findByBudgetSubtegorie(Integer idBudgetSubcategory) {
+        return dao.findByBudgetSubtegorie(idBudgetSubcategory);
     }
 }

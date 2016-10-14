@@ -34,7 +34,7 @@ public class AccountsServiceImpl implements AccountsService {
     @Override
     public List<Accounts> findByProvider(Providers provider) {
         List<Accounts> list = new ArrayList<>();
-        List<ProvidersAccounts> providersAccounts = providersAccountsDao.findByProvider(provider);
+        List<ProvidersAccounts> providersAccounts = providersAccountsDao.findByProvider(provider.getIdProvider());
         for(ProvidersAccounts providersAccount : providersAccounts) {
             list.add(providersAccount.getAccount());
         }

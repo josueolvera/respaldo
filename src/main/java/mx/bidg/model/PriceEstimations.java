@@ -27,6 +27,7 @@ import mx.bidg.config.JsonViews;
 import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Type;
 
 
 /**
@@ -79,9 +80,10 @@ public class PriceEstimations implements Serializable {
     
     @Basic(optional = false)
     @NotNull
-    @Column(name = "OUT_OF_BUDGET")
+    @Column(name = "OUT_OF_BUDGET", columnDefinition = "TINYINT", nullable = false)
+    @Type(type = "org.hibernate.type.NumericBooleanType")
     @JsonView(JsonViews.Root.class)
-    private int outOfBudget;
+    private Boolean outOfBudget;
     
     @Column(name = "ID_REQUEST", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -91,10 +93,14 @@ public class PriceEstimations implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idEstimationStatus;
     
+    @Column(name = "ID_PROVIDER", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private int idProvider;
+
     @Column(name = "ID_ACCOUNT", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private int idAccount;
-    
+
     @Column(name = "ID_CURRENCY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private int idCurrency;
@@ -122,6 +128,11 @@ public class PriceEstimations implements Serializable {
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private CEstimationStatus estimationStatus;
+
+    @JoinColumn(name = "ID_PROVIDER", referencedColumnName = "ID_PROVIDER")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private Providers provider;
     
     @JoinColumn(name = "ID_ACCOUNT", referencedColumnName = "ID_ACCOUNT")
     @ManyToOne(optional = false)
@@ -216,11 +227,11 @@ public class PriceEstimations implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public int getOutOfBudget() {
+    public Boolean getOutOfBudget() {
         return outOfBudget;
     }
 
-    public void setOutOfBudget(int outOfBudget) {
+    public void setOutOfBudget(Boolean outOfBudget) {
         this.outOfBudget = outOfBudget;
     }
 
@@ -350,6 +361,22 @@ public class PriceEstimations implements Serializable {
 
     public void setRate(BigDecimal rate) {
         this.rate = rate;
+    }
+
+    public int getIdProvider() {
+        return idProvider;
+    }
+
+    public void setIdProvider(int idProvider) {
+        this.idProvider = idProvider;
+    }
+
+    public Providers getProvider() {
+        return provider;
+    }
+
+    public void setProvider(Providers provider) {
+        this.provider = provider;
     }
 
     public BigDecimal getAmountMXN() {

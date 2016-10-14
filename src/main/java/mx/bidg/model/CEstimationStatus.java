@@ -28,9 +28,9 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "C_ESTIMATION_STATUS")
 public class CEstimationStatus implements Serializable {
 
-    public static final int PENDIENTE = 1;
-    public static final int APROBADA = 2;
-    public static final int RECHAZADA = 3;
+    public static final CEstimationStatus PENDIENTE = new CEstimationStatus(1);
+    public static final CEstimationStatus APROBADA = new CEstimationStatus(2);
+    public static final CEstimationStatus RECHAZADA = new CEstimationStatus(3);
 
     private static final long serialVersionUID = 1L;
     

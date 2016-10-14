@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -59,6 +60,14 @@ public class CBudgetSubcategories implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "BUDGET_SUBCATEGORY_PRODUCT",
+            joinColumns = @JoinColumn(name = "ID_BUDGET_SUBCATEGORY"),
+            inverseJoinColumns = @JoinColumn(name = "ID_PRODUCT")
+    )
+    private Set<CProducts> products;
+
     public CBudgetSubcategories() {
     }
 
@@ -103,6 +112,14 @@ public class CBudgetSubcategories implements Serializable {
 
     public void setIdAccessLevel(int idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
+    }
+
+    public Set<CProducts> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Set<CProducts> products) {
+        this.products = products;
     }
 
     @Override

@@ -6,7 +6,9 @@
 package mx.bidg.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import mx.bidg.dao.AccountingAccountsDao;
 import mx.bidg.dao.CBudgetSubcategoriesDao;
@@ -37,10 +39,10 @@ public class CBudgetSubcategoriesServiceImpl implements CBudgetSubcategoriesServ
     }
 
     @Override
-    public List<CBudgetSubcategories> getByBudgetCategory(Integer idBudgetCategory) {
+    public Set<CBudgetSubcategories> getByBudgetCategory(Integer idBudgetCategory) {
 
         List<AccountingAccounts> accountingAccounts = accountingAccountsDao.findByBudgetCategory(idBudgetCategory);
-        List<CBudgetSubcategories> budgetSubcategories = new ArrayList<>();
+        Set<CBudgetSubcategories> budgetSubcategories = new HashSet<>();
 
         for (AccountingAccounts accountingAccount : accountingAccounts) {
             budgetSubcategories.add(accountingAccount.getBudgetSubcategory());

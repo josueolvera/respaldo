@@ -53,14 +53,12 @@ public class ProvidersController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/product-type/{idAccountingAccount}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findByProductType(@PathVariable int idAccountingAccount) throws IOException {
+    @RequestMapping(value = "/product-type/{idBudgetSubcategory}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findByProductType(@PathVariable int idBudgetSubcategory) throws IOException {
         
-        AccountingAccounts accountingAccounts = accountingAccountsService.findById(idAccountingAccount);
-        List<Providers> providers = providersService.findByBudgetSubtegorie(accountingAccounts.getBudgetSubcategory());
-        return new ResponseEntity<>(
-                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(providers),
-                HttpStatus.OK
+        List<Providers> providers = providersService.findByBudgetSubtegorie(idBudgetSubcategory);
+        return ResponseEntity.ok(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(providers)
         );
     }
 
@@ -160,7 +158,7 @@ public class ProvidersController {
     @RequestMapping(value = "/{idProvider}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> deleteProvider(@PathVariable int idProvider) {
         Providers provider = providersService.findById(idProvider);
-        List<ProvidersAccounts> providersAccounts = providersAccountsService.findByProvider(provider);
+        List<ProvidersAccounts> providersAccounts = providersAccountsService.findByProvider(idProvider);
         for (ProvidersAccounts pa : providersAccounts) {
             providersAccountsService.delete(pa);
         }

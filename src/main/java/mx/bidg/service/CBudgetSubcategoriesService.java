@@ -6,6 +6,8 @@
 package mx.bidg.service;
 
 import java.util.List;
+import java.util.Set;
+
 import mx.bidg.model.CBudgetSubcategories;
 
 /**
@@ -14,6 +16,6 @@ import mx.bidg.model.CBudgetSubcategories;
  */
 public interface CBudgetSubcategoriesService {
     List<CBudgetSubcategories> findAll();
-    List<CBudgetSubcategories> getByBudgetCategory(Integer idBudgetCategory);
+    Set<CBudgetSubcategories> getByBudgetCategory(Integer idBudgetCategory);
     CBudgetSubcategories save(CBudgetSubcategories budgetSubcategory);
 }

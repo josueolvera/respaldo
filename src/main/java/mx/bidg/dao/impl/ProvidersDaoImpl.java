@@ -56,9 +56,10 @@ public class ProvidersDaoImpl extends AbstractDao<Integer, Providers> implements
     }
 
     @Override
-    public List<Providers> findByBudgetSubtegorie(CBudgetSubcategories budgetSubcategories) {
+    public List<Providers> findByBudgetSubtegorie(Integer idBudgetSubcategory) {
         return createEntityCriteria()
-                .add(Restrictions.eq("idBudgetSubcategorie", budgetSubcategories.getIdBudgetSubcategory()))
+                .createAlias("providersBudgetSubcategories", "pbs")
+                .add(Restrictions.eq("pbs.idBudgetSubcategory", idBudgetSubcategory))
                 .list();
     }
 }
