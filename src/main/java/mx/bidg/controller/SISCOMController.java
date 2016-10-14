@@ -76,4 +76,11 @@ public class SISCOMController {
         model.setViewName("AgreementTabsGroup");
         return model;
     }
+
+    @RequestMapping(value = "/bonds-manager", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ModelAndView bondsManagerView() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("bondsManager");
+        return model;
+    }
 }
