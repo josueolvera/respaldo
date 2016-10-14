@@ -34,15 +34,15 @@ public class ProvidersAccountsController {
     @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"}, produces = "application/json;charset=UTF-8")
     public @ResponseBody ResponseEntity<String> saveProviderAccount(@RequestBody String data) throws Exception {
         ProvidersAccounts providersAccount = providersAccountsService.save(data);
-        return new ResponseEntity<>(mapper.writeValueAsString(providersAccount), HttpStatus.OK);
+        return ResponseEntity.ok(mapper.writeValueAsString(providersAccount));
 
     }
 
     @RequestMapping(value = "/provider/{idProvider}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-    public @ResponseBody ResponseEntity<String> getByProvider(@PathVariable int idProvider) throws Exception {
-        List<ProvidersAccounts> list = providersAccountsService.findByProvider(new Providers(idProvider));
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.EmbeddedAccounts.class)
-                .writeValueAsString(list), HttpStatus.OK);
+    public @ResponseBody ResponseEntity<String> getByProvider(@PathVariable Integer idProvider) throws Exception {
+        List<ProvidersAccounts> list = providersAccountsService.findByProvider(idProvider);
+        return ResponseEntity.ok(mapper.writerWithView(JsonViews.EmbeddedAccounts.class)
+                .writeValueAsString(list));
     }
 
     @RequestMapping(value = "/account/{idAccount}", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")

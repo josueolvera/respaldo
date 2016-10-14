@@ -14,6 +14,7 @@ public class RequestCreatedEvent implements CreationEvent<Requests> {
         this.request = request;
     }
 
+    @Override
     public Requests getResource() {
         return request;
     }

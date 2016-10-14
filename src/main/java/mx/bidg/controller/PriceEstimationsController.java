@@ -64,12 +64,11 @@ public class PriceEstimationsController {
     @Autowired
     private ObjectMapper mapper;
     
-    @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json; charset=UTF-8"},
-            produces = "application/json; charset=UTF-8")
-    public @ResponseBody ResponseEntity<String> save(@RequestBody String data, HttpSession session) throws Exception {
-        
+    @RequestMapping(value = "/request/{idRequest}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody ResponseEntity<String> save(@RequestBody String data, @PathVariable Integer idRequest,HttpSession session) throws Exception {
+
         Users user = (Users) session.getAttribute("user");
-        PriceEstimations estimation = estimationsService.saveData(data, user);
+        PriceEstimations estimation = estimationsService.saveData(data, idRequest, user);
         
         if(estimation == null) {
             return new ResponseEntity<>("Error al guardar la cotizacion", HttpStatus.CONFLICT);

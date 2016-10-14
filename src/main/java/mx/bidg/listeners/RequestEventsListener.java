@@ -61,10 +61,8 @@ public class RequestEventsListener {
 
     @EventListener
     public void createBaseNotifications(CreationEvent<Requests> event) {
-        List<Users> users = new ArrayList<>();
         Requests request = event.getResource();
-        users.add(request.getUserRequest());
-        notificationsService.createNotification(users, request);
+        notificationsService.createNotification(request.getUserRequest(), request);
         AuthorizationTreeRules rule = authorizationTreeRulesService.findByRuleName(ESTIMATION_CREATION_RULE_NAME);
         Integer idUser = evalRule(rule, request);
         notificationsService.createForEstimationCreation(new Users(idUser), request);

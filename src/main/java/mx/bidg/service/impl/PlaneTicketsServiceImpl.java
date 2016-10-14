@@ -96,7 +96,6 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
                     request.setUserRequest(user);
                     request.setCreationDate(now);
                     request.setApplyingDate(LocalDateTime.parse(startDate + " 00:00",formatter));
-                    request.setMonth(new CMonths(now.getMonthValue()));
                     request.setRequestStatus(CRequestStatus.SIN_CONFIRMACION);
                     request.setBudgetYear(budgetYear);
                     request.setIdAccessLevel(1);

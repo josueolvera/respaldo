@@ -66,7 +66,7 @@ public class SIADController {
         ModelAndView model= new ModelAndView();
         model.addObject("idRequest", 0);
         model.addObject("cat", CRequestsCategories.PAGO_PROVEEDORES.getIdRequestCategory());
-        model.setViewName("CotizableRequest");
+        model.setViewName("Requests");
         return model;
     }
 

@@ -15,5 +15,7 @@ import mx.bidg.model.CBudgetSubcategories;
  * @author sistemask
  */
 public interface ProvidersDao extends InterfaceDao<Providers> {
-    List<Providers> findByBudgetSubtegorie(CBudgetSubcategories budgetSubcategories);
+
+    List<Providers> findByBudgetSubtegorie(Integer idBudgetSubcategory);
+
 }

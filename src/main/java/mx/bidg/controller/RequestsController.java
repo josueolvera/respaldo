@@ -36,13 +36,13 @@ import mx.bidg.service.EmailTemplatesService;
 public class RequestsController {
     
     @Autowired
-    RequestsService requestsService;
+    private RequestsService requestsService;
 
     @Autowired
-    AccountsPayableService accountsPayableService;
+    private AccountsPayableService accountsPayableService;
 
     @Autowired
-    PeriodicPaymentsService periodicPaymentsService;
+    private PeriodicPaymentsService periodicPaymentsService;
 
     @Autowired
     private ApplicationEventPublisher eventPublisher;
@@ -56,8 +56,8 @@ public class RequestsController {
     @Autowired
     private AccountingAccountsService accountingAccountsService;
     
-    @RequestMapping(method = RequestMethod.POST, headers = {"Accept=application/json;charset=UTF-8"})
-    public @ResponseBody ResponseEntity<String> saveRequest(@RequestBody String data, HttpSession session) 
+    @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> saveRequest(@RequestBody String data, HttpSession session)
         throws Exception{
         
         Users user = (Users) session.getAttribute("user");
@@ -72,7 +72,7 @@ public class RequestsController {
             response = "Error al guardar la Solicitud";
         }
         
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
         
     }
 
@@ -92,12 +92,11 @@ public class RequestsController {
         return mapper.writeValueAsString(periodicsPayment);
     }
     
-    @RequestMapping(value="/{idRequest}", method = RequestMethod.GET, headers = "Accept=application/json; charset=UTF-8",
-            produces = "application/json;charset=UTF-8")
-    public @ResponseBody String findRequestByID(@PathVariable int idRequest) throws Exception {
+    @RequestMapping(value="/{idRequest}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findRequestByID(@PathVariable int idRequest) throws Exception {
         Requests request = requestsService.findById(idRequest);
 //        request.getRequestTypeProduct().setAccountingAccountInfo(accountingAccountsService.findById(request.getRequestTypeProduct().getIdAccountingAccount()));
-        return mapper.writeValueAsString(request);
+        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(request));
     }
 
     @RequestMapping(value = "/folio", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

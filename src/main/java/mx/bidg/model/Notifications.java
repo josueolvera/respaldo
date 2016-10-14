@@ -44,20 +44,20 @@ public class Notifications implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String text;
 
-    @Basic(optional = false)
+    @Basic
     @NotNull
     @Column(name = "ID_RESOURCE")
     @JsonView(JsonViews.Root.class)
     private int idResource;
 
-    @Basic(optional = false)
+    @Basic
     @NotNull
     @Column(name = "CREATION_DATE", updatable = false)
     @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
     private LocalDateTime creationDate;
 
-    @Basic(optional = false)
+    @Basic
     @NotNull
     @Column(name = "DUE_DATE")
     @Convert(converter = DateTimeConverter.class)
@@ -81,22 +81,22 @@ public class Notifications implements Serializable {
     private Integer idUser;
 
     @JoinColumn(name = "ID_NOTIFICATION_STATUS", referencedColumnName = "ID_NOTIFICATION_STATUS")
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private CNotificationsStatus notificationsStatus;
 
     @JoinColumn(name = "ID_NOTIFICATION_TYPE", referencedColumnName = "ID_NOTIFICATION_TYPE")
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private CNotificationTypes notificationTypes;
 
     @JoinColumn(name = "ID_RESOURCE_TASK", referencedColumnName = "ID_RESOURCE_TASK")
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private ResourcesTasks resourcesTasks;
 
     @JoinColumn(name = "ID_USER", referencedColumnName = "ID_USER")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private Users user;
 

@@ -16,5 +16,8 @@ public interface CProductsService {
     public List<CProducts> findAll();
     
     public List<CProducts> findByProductTypes(AccountingAccounts accountingAccounts);
-    
+
+    List<CProducts> findByBudgetSubcategory(int idBudgetSubcategory);
+
+    CProducts save(int idBudgetSubcategory, CProducts product);
 }

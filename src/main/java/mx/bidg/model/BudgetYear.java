@@ -170,7 +170,7 @@ public class BudgetYear implements Serializable {
     private Integer year;
 
     @JoinColumn(name = "ID_BUDGET", referencedColumnName = "ID_BUDGET")
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false)
     @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
     private Budgets budget;
 

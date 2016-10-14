@@ -2,6 +2,7 @@ package mx.bidg.dao.impl;
 
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.EmployeesDao;
+import mx.bidg.model.DwEmployees;
 import mx.bidg.model.DwEnterprises;
 import mx.bidg.model.Employees;
 import org.hibernate.Criteria;
@@ -95,6 +96,16 @@ public class EmployeesDaoImpl extends AbstractDao<Integer, Employees> implements
     @Override
     public Employees findByCurp(String curp) {
         return (Employees) createEntityCriteria().add(Restrictions.eq("curp", curp)).uniqueResult();
+    }
+
+    @Override
+    public List<Employees> findByJoinDate(LocalDateTime fromDate, LocalDateTime toDate) {
+
+        Criteria criteria = createEntityCriteria();
+
+        criteria.add(Restrictions.between("joinDate",fromDate,toDate));
+
+        return criteria.add(Restrictions.eq("status",1)).list();
     }
 
     @Override

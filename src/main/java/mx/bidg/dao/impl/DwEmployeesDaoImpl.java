@@ -133,4 +133,29 @@ public class DwEmployeesDaoImpl extends AbstractDao<Integer, DwEmployees> implem
                 .add(Restrictions.eq("idRole", idRole))
                 .list();
     }
+
+    @Override
+    public List<DwEmployees> findByRolePromotor(List<Employees> employeesList) {
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjunctionEmployee = Restrictions.disjunction();
+
+        criteria.add(Restrictions.eq("idRole", 64));
+
+        if (employeesList.isEmpty() == false){
+            for (Employees employee : employeesList){
+                disjunctionEmployee.add(Restrictions.eq("idEmployee", employee.getIdEmployee()));
+            }
+        }
+
+        criteria.add(disjunctionEmployee);
+
+        return criteria.list();
+    }
+
+    @Override
+    public DwEmployees findByIdEmployee(Integer idEmployee) {
+        return (DwEmployees) createEntityCriteria()
+                .add(Restrictions.eq("idEmployee", idEmployee))
+                .uniqueResult();
+    }
 }

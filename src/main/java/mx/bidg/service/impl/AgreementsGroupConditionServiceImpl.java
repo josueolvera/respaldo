@@ -1,16 +1,16 @@
 package mx.bidg.service.impl;
 
-import mx.bidg.dao.AgreementsGroupConditionDao;
-import mx.bidg.dao.CommissionAmountGroupDao;
-import mx.bidg.model.AgreementsGroupCondition;
-import mx.bidg.model.CommissionAmountGroup;
+import mx.bidg.dao.*;
+import mx.bidg.model.*;
 import mx.bidg.service.AgreementsGroupConditionService;
+import mx.bidg.service.BonusCommisionableEmployeeService;
 import org.exolab.castor.xml.descriptors.ListClassDescriptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -25,6 +25,15 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
 
     @Autowired
     CommissionAmountGroupDao commissionAmountGroupDao;
+
+    @Autowired
+    BonusCommisionableEmployeeDao bonusCommisionableEmployeeDao;
+
+    @Autowired
+    EmployeesDao employeesDao;
+
+    @Autowired
+    DwEmployeesDao dwEmployeesDao;
 
     @Override
     public AgreementsGroupCondition save(AgreementsGroupCondition agreementsGroupCondition) {
@@ -54,7 +63,6 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
 
     @Override
     public List<CommissionAmountGroup> setTabulator(List<AgreementsGroupCondition> agreementsGroupConditionList) {
-        int conditionNumber = agreementsGroupConditionList.size();
 
         for (AgreementsGroupCondition aGC: agreementsGroupConditionList){
                 AgreementsGroupCondition groupCondition = agreementsGroupConditionDao.getTabulator(aGC.getOrder(),aGC);
@@ -70,28 +78,36 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
                     cAGroup.setCommission(cAGroup.getAmount().multiply(comission));
                     commissionAmountGroupDao.update(cAGroup);
                 }
-            } else if(groupCondition.getTypeOperation() == 2){
+            } else if(groupCondition.getTypeOperation() == 2) {
                 //2 significa que calcule bono cumplimiento
                 List<CommissionAmountGroup> requestGroups = commissionAmountGroupDao.getBonusByConditon(groupCondition);
 
                 for (CommissionAmountGroup cAGroup :  requestGroups){
-                    cAGroup.setTabulator(groupCondition.getAmountMin());
-                    BigDecimal comission = groupCondition.getTabulator();
-                    cAGroup.setCommission(comission);
-                    commissionAmountGroupDao.update(cAGroup);
-                }
-            } else if (groupCondition.getTypeOperation() == 3){
-                //3 signifique que calcule el alcance de la sucursal
-                List<CommissionAmountGroup> scopeGroups = commissionAmountGroupDao.getScopeByConditon(groupCondition);
 
-                for(CommissionAmountGroup commissionAmountGroup : scopeGroups){
-                    commissionAmountGroup.setTabulator(groupCondition.getTabulator());
-                    BigDecimal divide = new BigDecimal(100);
-                    BigDecimal comission = groupCondition.getTabulator().divide(divide);
-                    commissionAmountGroup.setCommission(commissionAmountGroup.getAmount().multiply(comission));
-                    commissionAmountGroupDao.update(commissionAmountGroup);
+                    BonusCommisionableEmployee bonusCommisionableEmployee = new BonusCommisionableEmployee();
+                    bonusCommisionableEmployee.setIdEmployee(cAGroup.getIdEmployee());
+                    bonusCommisionableEmployee.setBonusAmount(groupCondition.getTabulator());
+                    bonusCommisionableEmployee.setcCommissionBonus(CCommissionBonus.BONO_POR_CUMPLIMIENTO);
+
+                    bonusCommisionableEmployeeDao.save(bonusCommisionableEmployee);
+//                    cAGroup.setTabulator(groupCondition.getAmountMin());
+//                    BigDecimal comission = groupCondition.getTabulator();
+//                    cAGroup.setCommission(comission);
+//                    commissionAmountGroupDao.update(cAGroup);
                 }
             }
+//            } else if (groupCondition.getTypeOperation() == 3){
+//                //3 signifique que calcule el alcance de la sucursal
+//                List<CommissionAmountGroup> scopeGroups = commissionAmountGroupDao.getScopeByConditon(groupCondition);
+//
+//                for(CommissionAmountGroup commissionAmountGroup : scopeGroups){
+//                    commissionAmountGroup.setTabulator(groupCondition.getTabulator());
+//                    BigDecimal divide = new BigDecimal(100);
+//                    BigDecimal comission = groupCondition.getTabulator().divide(divide);
+//                    commissionAmountGroup.setCommission(commissionAmountGroup.getAmount().multiply(comission));
+//                    commissionAmountGroupDao.update(commissionAmountGroup);
+//                }
+//            }
         }
 
         return commissionAmountGroupDao.findAll();
@@ -216,6 +232,84 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
                     commissionAmountGroups.setCommission(commissionByBranch);
                     commissionAmountGroupDao.update(commissionAmountGroups);
                 }
+            }
+        }
+
+        return commissionAmountGroupDao.findAll();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> obtainCommissionByReprocessingToAuxiluiar(List<AgreementsGroupCondition> agreementsGroupConditionList) {
+        for (AgreementsGroupCondition aGC : agreementsGroupConditionList) {
+            AgreementsGroupCondition groupCondition = agreementsGroupConditionDao.getTabulator(aGC.getOrder(), aGC);
+
+            List<CommissionAmountGroup> reprocessingGroups = commissionAmountGroupDao.getReprocessingByCondition(groupCondition);
+
+            for (CommissionAmountGroup commissionAxiliarGroup : reprocessingGroups) {
+                commissionAxiliarGroup.setTabulator(groupCondition.getTabulator());
+                BigDecimal divide = new BigDecimal(100);
+                BigDecimal tabulatorAuxiliar = groupCondition.getTabulator().divide(divide);
+                commissionAxiliarGroup.setCommission(commissionAxiliarGroup.getAmount().multiply(tabulatorAuxiliar));
+                commissionAmountGroupDao.update(commissionAxiliarGroup);
+            }
+        }
+        return commissionAmountGroupDao.findAll();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> obtainCommissionByGoalBranchToBranchManagaer(List<AgreementsGroupCondition> agreementsGroupConditions) {
+        for (AgreementsGroupCondition aGC : agreementsGroupConditions) {
+            AgreementsGroupCondition groupCondition = agreementsGroupConditionDao.getTabulator(aGC.getOrder(), aGC);
+
+            List<CommissionAmountGroup> scopeGroups = commissionAmountGroupDao.getScopeByConditon(groupCondition);
+
+            for(CommissionAmountGroup commissionAmountGroup : scopeGroups){
+                commissionAmountGroup.setTabulator(groupCondition.getTabulator());
+                BigDecimal divide = new BigDecimal(100);
+                BigDecimal tabulatorBranchManager = groupCondition.getTabulator().divide(divide);
+                commissionAmountGroup.setCommission(commissionAmountGroup.getAmount().multiply(tabulatorBranchManager));
+                commissionAmountGroupDao.update(commissionAmountGroup);
+            }
+        }
+        return commissionAmountGroupDao.findAll();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> obtainCommissionByPromotor(List<AgreementsGroupCondition> agreementsGroupConditions) {
+        for (AgreementsGroupCondition aGC: agreementsGroupConditions) {
+            AgreementsGroupCondition groupCondition = agreementsGroupConditionDao.getTabulator(aGC.getOrder(), aGC);
+
+            if (groupCondition.getTypeOperation() == 1) {
+                List<CommissionAmountGroup> amountGroups = commissionAmountGroupDao.getComissionsByConditon(groupCondition);
+
+                for (CommissionAmountGroup cAGroup : amountGroups) {
+                    cAGroup.setTabulator(groupCondition.getTabulator());
+                    BigDecimal divisor = new BigDecimal(100);
+                    BigDecimal comission = groupCondition.getTabulator().divide(divisor);
+                    cAGroup.setCommission(cAGroup.getAmount().multiply(comission));
+                    commissionAmountGroupDao.update(cAGroup);
+                }
+            }
+        }
+        return commissionAmountGroupDao.findAll();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> bonusJoinDate(LocalDateTime joinDateFrom, LocalDateTime toDateFrom) {
+
+        List<Employees> employeesList = employeesDao.findByJoinDate(joinDateFrom, toDateFrom);
+        List<DwEmployees> dwEmployeesList = dwEmployeesDao.findByRolePromotor(employeesList);
+
+        for (DwEmployees dwEmployees : dwEmployeesList){
+            CommissionAmountGroup newEmployee = commissionAmountGroupDao.getOnlyDataOfGroupNineTeen(dwEmployees.getIdEmployee());
+            if (newEmployee !=null){
+                BonusCommisionableEmployee bonusJoinDate = new BonusCommisionableEmployee();
+                BigDecimal bonus = new BigDecimal(375);
+                bonusJoinDate.setBonusAmount(bonus);
+                bonusJoinDate.setcCommissionBonus(CCommissionBonus.BONO_POR_NUEVO_INGRESO);
+                bonusJoinDate.setIdEmployee(newEmployee.getIdEmployee());
+
+                bonusCommisionableEmployeeDao.save(bonusJoinDate);
             }
         }
 

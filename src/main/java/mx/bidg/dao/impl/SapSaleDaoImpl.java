@@ -68,6 +68,7 @@ public class SapSaleDaoImpl extends AbstractDao<Integer, SapSale> implements Sap
         projList.add(Projections.distinct(Projections.groupProperty("claveSap")));
         projList.add(Projections.count("idSale"));
         projList.add(Projections.sum("comissionableAmount"));
+        projList.add(Projections.groupProperty("idEmployee"));
         
         for (GroupsAgreements groupsAgreements : groupsAgreementsList){
             disjuntionAgreement.add(Restrictions.eq("idAgreement", groupsAgreements.getIdAgreement()));

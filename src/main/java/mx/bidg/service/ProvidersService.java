@@ -15,11 +15,19 @@ import mx.bidg.model.Providers;
  * @author sistemask
  */
 public interface ProvidersService {
+
     List<Providers> findAll();
+
     Providers findById(Integer idProvider);
+
     Providers save(Providers providers);
+
     Providers update(Providers providers);
+
     Boolean delete(Providers providers);
+
     void low(Integer idProviders);
-    List<Providers> findByBudgetSubtegorie(CBudgetSubcategories budgetSubcategories);
+
+    List<Providers> findByBudgetSubtegorie(Integer idBudgetSubcategory);
+
 }

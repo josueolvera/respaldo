@@ -17,6 +17,6 @@ import mx.bidg.model.ProvidersAccounts;
  */
 public interface ProvidersAccountsDao extends InterfaceDao<ProvidersAccounts> {
     Long countByProvider(Providers provider);
-    List<ProvidersAccounts> findByProvider(Providers p);
+    List<ProvidersAccounts> findByProvider(Integer idProvider);
     ProvidersAccounts findByAccount(Accounts a);
 }

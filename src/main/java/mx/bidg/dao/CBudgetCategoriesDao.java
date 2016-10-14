@@ -13,5 +13,7 @@ import mx.bidg.model.CBudgetCategories;
  * @author sistemask
  */
 public interface CBudgetCategoriesDao extends InterfaceDao<CBudgetCategories> {
-    public List<CBudgetCategories> findAllRequest();
+
+    List<CBudgetCategories> findAllRequest();
+
 }

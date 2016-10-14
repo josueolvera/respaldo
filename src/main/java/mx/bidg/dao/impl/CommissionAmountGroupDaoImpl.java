@@ -171,4 +171,24 @@ public class CommissionAmountGroupDaoImpl extends AbstractDao<Integer, Commissio
                         agreementsGroupCondition.getAmountMax()))
                 .list();
     }
+
+    @Override
+    public List<CommissionAmountGroup> getReprocessingByCondition(AgreementsGroupCondition agreementsGroupCondition) {
+         return createEntityCriteria().add(Restrictions.isNotNull("idBranch"))
+                .add(Restrictions.isNull("idRegion"))
+                .add(Restrictions.isNull("idZona"))
+                .add(Restrictions.isNull("idDistributor"))
+                .add(Restrictions.eq("idAg",agreementsGroupCondition.getIdAg()))
+                .add(Restrictions.between("indexReprocessing",agreementsGroupCondition.getAmountMin(),
+                        agreementsGroupCondition.getAmountMax()))
+                .list();
+    }
+
+    @Override
+    public CommissionAmountGroup getOnlyDataOfGroupNineTeen(Integer idEmployee) {
+        return (CommissionAmountGroup) createEntityCriteria()
+                .add(Restrictions.eq("idAg", 19))
+                .add(Restrictions.eq("idEmployee", idEmployee))
+                .uniqueResult();
+    }
 }

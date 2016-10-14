@@ -133,15 +133,19 @@ public class RequestsServiceImpl implements RequestsService {
         Requests request = new Requests();
         request.setDescription(jsonRequest.get("request").get("description").asText());
         request.setPurpose(jsonRequest.get("request").get("purpose").asText());
-        int idBudget = jsonRequest.get("request").get("idBudget").asInt();
+        int idCostCenter = jsonRequest.get("request").get("idCostCenter").asInt();
+        int idBudgetCategory = jsonRequest.get("request").get("idBudgetCategory").asInt();
+        int idBudgetSubcategory = jsonRequest.get("request").get("idBudgetSubcategory").asInt();
+        int idRequestCategory = jsonRequest.get("request").get("idRequestCategory").asInt();
         int year = LocalDateTime.now().getYear();
-        BudgetYear budgetYear = budgetYearService.findByBudgetAndYear(idBudget, year);
+        Budgets budget = budgetsDao.getBudgetForRequest(idCostCenter, idBudgetCategory, idBudgetSubcategory, idRequestCategory);
+        BudgetYear budgetYear = budgetYearService.findByBudgetAndYear(budget.getIdBudget(), year);
         //51 es el id de Requests en CTables
         request.setFolio(foliosService.createNew(new CTables(51)));
         request.setUserRequest(user);
         request.setRequestStatus(CRequestStatus.PENDIENTE);
         request.setBudgetYear(budgetYear);
-        request.setUserResponsible(new Users(jsonRequest.get("request").get("idUserResponsable").asInt()));
+//        request.setUserResponsible(new Users(jsonRequest.get("request").get("idUserResponsible").asInt()));
         request.setCreationDate(LocalDateTime.now());
         request.setApplyingDate(LocalDateTime.now());
         request.setIdAccessLevel(1);
@@ -183,7 +187,7 @@ public class RequestsServiceImpl implements RequestsService {
         }
 
         for(PriceEstimations estimation : estimations) {
-            if(estimation.getIdEstimationStatus() == CEstimationStatus.APROBADA) {
+            if(estimation.getIdEstimationStatus() == CEstimationStatus.APROBADA.getIdEstimationStatus()) {
                 estimationAccepted = true;
                 break;
             }
@@ -218,10 +222,8 @@ public class RequestsServiceImpl implements RequestsService {
     }
 
     @Override
-    public Requests findById(Integer idRequest)
-    {
-        Requests request = requestsDao.findById(idRequest);
-        return request;
+    public Requests findById(Integer idRequest) {
+        return requestsDao.findById(idRequest);
     }
 
     @Override

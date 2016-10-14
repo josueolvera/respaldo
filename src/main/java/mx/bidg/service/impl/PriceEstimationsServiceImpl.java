@@ -2,16 +2,24 @@ package mx.bidg.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
 import mx.bidg.dao.*;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
+import mx.bidg.pojos.FilePojo;
 import mx.bidg.service.PriceEstimationsService;
+import mx.bidg.utils.BudgetHelper;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,47 +52,84 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     @Autowired
     private ObjectMapper mapper;
 
+    @Autowired
+    private BudgetHelper budgetHelper;
+
+    @Autowired
+    private Environment env;
+
     @Override
-    public PriceEstimations saveData(String data, Users user) throws Exception {
+    public PriceEstimations saveData(String data, Integer idRequest, Users user) throws Exception {
 
-        JsonNode json = mapper.readTree(data);
+        String SAVE_PATH = env.getRequiredProperty("estimations.documents_dir");
+        String[] fileMediaTypes = env.getRequiredProperty("estimations.attachments.media_types").split(",");
 
-        Integer idRequest = json.get("idRequest").asInt();
+        JsonNode node = mapper.readTree(data);
+
         Requests request = requestsDao.findByIdFetchBudgetMonthBranch(idRequest);
-//        BigDecimal budgetAmount = request.getBudgetYearConcept().getAmount();
-//        BigDecimal expendedAmount = request.getBudgetYearConcept().getExpendedAmount();
-//        BigDecimal residualAmount = budgetAmount.subtract(expendedAmount);
-        Accounts account = accountsDao.findById(json.get("idAccount").asInt());
-        int idCurrency = json.get("idCurrency").asInt();
-        BigDecimal rate = ((json.get("rate").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("rate").decimalValue() : BigDecimal.ONE;
-        BigDecimal amount = ((json.get("amount").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("amount").decimalValue() : BigDecimal.ZERO;
-        BigDecimal tempAmount = amount.multiply(rate);
 
-        PriceEstimations estimation = new PriceEstimations();
-        estimation.setRequest(request);
-        estimation.setAccount(account);
-        estimation.setCurrency(new CCurrencies(idCurrency));
-        estimation.setAmount(amount);
-        estimation.setFilePath("");
-        estimation.setFileName("");
-        estimation.setRate(rate);
-        estimation.setCreationDate(LocalDateTime.now());
-        estimation.setUserEstimation(user);
-        estimation.setIdAccessLevel(1);
-//        if (request.getRequestTypeProduct().getIdRequestCategory() == CRequestsCategories.DIRECTA) {
-//            estimation.setEstimationStatus(new CEstimationStatus(CEstimationStatus.APROBADA));
-//        } else {
-//            estimation.setEstimationStatus(new CEstimationStatus(CEstimationStatus.PENDIENTE));
-//        }
-        //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
-//        estimation.setOutOfBudget((residualAmount.compareTo(tempAmount) == -1)? 1 : 0);
-        estimation = priceEstimationsDao.save(estimation);
+        if (request != null) {
+            PriceEstimations priceEstimation = new PriceEstimations();
 
-        request.setRequestStatus(CRequestStatus.COTIZADA);
-        requestsDao.update(request);
+            priceEstimation.setAmount(mapper.treeToValue(node.get("amount"), BigDecimal.class));
+            priceEstimation.setAccount(mapper.treeToValue(node.get("account"), Accounts.class));
+            priceEstimation.setCreationDate(LocalDateTime.now());
+            priceEstimation.setCurrency(mapper.treeToValue(node.get("currency"), CCurrencies.class));
+            priceEstimation.setEstimationStatus(CEstimationStatus.PENDIENTE);
+            priceEstimation.setIdAccessLevel(1);
+            priceEstimation.setRequest(request);
+            priceEstimation.setUserEstimation(user);
+            priceEstimation.setRate(mapper.treeToValue(node.get("rate"), BigDecimal.class));
+            priceEstimation.setProvider(mapper.treeToValue(node.get("provider"), Providers.class));
 
-        return estimation;
+            BudgetYear budgetYear = request.getBudgetYear();
 
+            priceEstimation.setOutOfBudget(budgetHelper.checkWhetherIsOutOfBudget(budgetYear, LocalDateTime.now().getMonthValue(), priceEstimation.getAmount().doubleValue()));
+
+            FilePojo file = mapper.treeToValue(node.get("file"), FilePojo.class);
+
+            priceEstimation.setFileName(file.getName());
+
+            priceEstimation = priceEstimationsDao.save(priceEstimation);
+
+
+            boolean isValidMediaType = false;
+
+            for (String mediaType : fileMediaTypes) {
+                if (file.getType().equals(mediaType)) {
+                    isValidMediaType = true;
+                    break;
+                }
+            }
+
+            if (! isValidMediaType) {
+                throw new ValidationException("Tipo de archivo no admitido", "Tipo de archivo no admitido");
+            }
+
+            String destDir = "/estimation_" + priceEstimation.getIdEstimation();
+            String destFile = destDir + "/Documento." + priceEstimation.getCreationDate().toInstant(ZoneOffset.UTC).getEpochSecond();
+
+            priceEstimation.setFilePath(destFile);
+
+            File dir = new File(SAVE_PATH + destDir);
+            if (! dir.exists()) {
+                dir.mkdir();
+            }
+
+            String encodingPrefix = "base64,";
+            int contentStartIndex = file.getDataUrl().indexOf(encodingPrefix) + encodingPrefix.length();
+            byte[] byteArreyData = Base64.decodeBase64(file.getDataUrl().substring(contentStartIndex));
+
+            FileOutputStream out = new FileOutputStream(new File(SAVE_PATH + destFile));
+            out.write(byteArreyData);
+            out.close();
+
+            priceEstimation = priceEstimationsDao.save(priceEstimation);
+
+            return priceEstimation;
+        }
+
+        return null;
     }
 
     @Override
@@ -159,9 +204,9 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
                 e.setAuthorizationDate(LocalDateTime.now());
 
                 if (e.getIdEstimation().equals(idEstimation)) {
-                    e.setEstimationStatus(new CEstimationStatus(CEstimationStatus.APROBADA));
+                    e.setEstimationStatus(CEstimationStatus.APROBADA);
                 } else {
-                    e.setEstimationStatus(new CEstimationStatus(CEstimationStatus.RECHAZADA));
+                    e.setEstimationStatus(CEstimationStatus.RECHAZADA);
                 }
             }
         }
@@ -176,7 +221,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         List<PriceEstimations> estimations = priceEstimationsDao.findByIdRequest(request.getIdRequest());
 
         for (PriceEstimations e : estimations) {
-            e.setEstimationStatus(new CEstimationStatus(CEstimationStatus.PENDIENTE));
+            e.setEstimationStatus(CEstimationStatus.PENDIENTE);
         }
         accountsPayableDao.deleteByFolio(request.getFolio());
         return true;
@@ -185,7 +230,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     @Override
     public boolean delete(Integer idEstimation) {
         PriceEstimations estimation = priceEstimationsDao.findByIdFetchRequestStatus(idEstimation);
-        if(estimation.getIdEstimationStatus() == CEstimationStatus.PENDIENTE){
+        if(estimation.getIdEstimationStatus() == CEstimationStatus.PENDIENTE.getIdEstimationStatus()){
             return priceEstimationsDao.delete(estimation);
         } else {
             throw new ValidationException("La cotizacion no tiene estatus de Pendiente", "Solo pueden" +

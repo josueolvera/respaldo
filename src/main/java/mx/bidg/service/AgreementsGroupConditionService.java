@@ -3,6 +3,7 @@ package mx.bidg.service;
 import mx.bidg.model.AgreementsGroupCondition;
 import mx.bidg.model.CommissionAmountGroup;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -22,4 +23,8 @@ public interface AgreementsGroupConditionService {
     List<CommissionAmountGroup> obtainCommissionByGoalBranchToZona(List <AgreementsGroupCondition> agreementsGroupConditionList);
     List<CommissionAmountGroup> obtainCommissionByGoalBranchToRegion(List <AgreementsGroupCondition> agreementsGroupConditionList);
     List<CommissionAmountGroup> obtainCommissionByGoalBranchToDistributor(List <AgreementsGroupCondition> agreementsGroupConditionList);
+    List<CommissionAmountGroup> obtainCommissionByReprocessingToAuxiluiar(List <AgreementsGroupCondition> agreementsGroupConditionList);
+    List<CommissionAmountGroup> obtainCommissionByGoalBranchToBranchManagaer(List<AgreementsGroupCondition> agreementsGroupConditions);
+    List<CommissionAmountGroup> obtainCommissionByPromotor(List<AgreementsGroupCondition> agreementsGroupConditions);
+    List<CommissionAmountGroup> bonusJoinDate (LocalDateTime joinDateFrom, LocalDateTime toDateFrom);
 }

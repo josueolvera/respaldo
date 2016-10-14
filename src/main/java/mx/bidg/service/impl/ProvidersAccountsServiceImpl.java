@@ -20,14 +20,14 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProvidersAccountsServiceImpl implements ProvidersAccountsService {
     
     @Autowired
-    private ProvidersAccountsDao dao;
+    private ProvidersAccountsDao providersAccountsDao;
 
     @Autowired
     private ObjectMapper mapper;
 
     @Override
-    public List<ProvidersAccounts> findByProvider(Providers provider) {
-        return dao.findByProvider(provider);
+    public List<ProvidersAccounts> findByProvider(Integer idProvider) {
+        return providersAccountsDao.findByProvider(idProvider);
     }
 
     @Override
@@ -57,23 +57,23 @@ public class ProvidersAccountsServiceImpl implements ProvidersAccountsService {
         providersAccount.setAccount(account);
         providersAccount.setProvider(provider);
         
-        return dao.save(providersAccount);
+        return providersAccountsDao.save(providersAccount);
     }
 
     @Override
     public ProvidersAccounts findByAccountsProvider(Accounts a) {
-        return dao.findByAccount(a);
+        return providersAccountsDao.findByAccount(a);
     }
 
     @Override
     public Boolean delete(ProvidersAccounts providersAccounts) {
-        dao.delete(providersAccounts);
+        providersAccountsDao.delete(providersAccounts);
         return true;
     }
 
     @Override
     public ProvidersAccounts save(ProvidersAccounts providersAccounts) {
-        dao.save(providersAccounts);
+        providersAccountsDao.save(providersAccounts);
         return providersAccounts;
     }
 

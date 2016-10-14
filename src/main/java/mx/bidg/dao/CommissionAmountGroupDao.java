@@ -24,4 +24,6 @@ public interface CommissionAmountGroupDao extends InterfaceDao<CommissionAmountG
     List<CommissionAmountGroup> obtainBranchByZonaAndCondition(Integer idZona, AgreementsGroupCondition agreementsGroupCondition);
     List<CommissionAmountGroup> obtainBranchByRegionAndCondition(Integer idRegion, AgreementsGroupCondition agreementsGroupCondition);
     List<CommissionAmountGroup> obtainBranchByDistributorAndCondition(Integer idDistributor, AgreementsGroupCondition agreementsGroupCondition);
+    List<CommissionAmountGroup> getReprocessingByCondition(AgreementsGroupCondition agreementsGroupCondition);
+    CommissionAmountGroup getOnlyDataOfGroupNineTeen(Integer idEmployee);
 }

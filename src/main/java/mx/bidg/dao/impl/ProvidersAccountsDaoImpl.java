@@ -50,11 +50,12 @@ public class ProvidersAccountsDaoImpl extends AbstractDao<Integer, ProvidersAcco
     }
 
     @Override
-    public List<ProvidersAccounts> findByProvider(Providers p) {
+    public List<ProvidersAccounts> findByProvider(Integer idProvider) {
         Criteria criteria = createEntityCriteria()
-                .add(Restrictions.eq("provider", p))
-                .createCriteria("account", JoinType.INNER_JOIN)
-                    .add(Restrictions.isNull("deleteDay"));
+                .createAlias("account", "a")
+                .createAlias("provider", "p")
+                .add(Restrictions.eq("p.idProvider", idProvider))
+                .add(Restrictions.isNull("a.deleteDay"));
         return criteria.list();
     }
 

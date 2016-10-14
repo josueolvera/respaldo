@@ -13,20 +13,22 @@ import java.util.List;
  * Created on 20/11/15.
  */
 @Repository
+@SuppressWarnings("unchecked")
 public class CProductsDaoImpl extends AbstractDao<Integer, CProducts> implements CProductsDao {
     @Override
     public CProducts save(CProducts entity) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        persist(entity);
+        return entity;
     }
 
     @Override
     public CProducts findById(int id) {
-        return (CProducts) createEntityCriteria().add(Restrictions.eq("idProduct", id)).uniqueResult();
+        return getByKey(id);
     }
 
     @Override
     public List<CProducts> findAll() {
-        return (List<CProducts>) createEntityCriteria().list();
+        return createEntityCriteria().list();
     }
 
     @Override
@@ -37,5 +39,13 @@ public class CProductsDaoImpl extends AbstractDao<Integer, CProducts> implements
     @Override
     public boolean delete(CProducts entity) {
         throw new UnsupportedOperationException("Not implemented yet.");
+    }
+
+    @Override
+    public List<CProducts> findByBudgetSubcategory(int idBudgetSubcategory) {
+        return createEntityCriteria()
+                .createAlias("budgetSubcategories","bs")
+                .add(Restrictions.eq("bs.idBudgetSubcategory", idBudgetSubcategory))
+                .list();
     }
 }

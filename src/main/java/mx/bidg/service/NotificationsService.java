@@ -9,7 +9,7 @@ import java.util.List;
  * Created on 10/02/16.
  */
 public interface NotificationsService {
-    List<Notifications> createNotification(List<Users> users, Requests request);
+    List<Notifications> createNotification(List<Users> user, Requests request);
     List<Notifications> createNotification(List<Users> users, Stocks stock);
     List<Notifications> createNotification(List<Users> users, AccountsPayable accountPayable);
 

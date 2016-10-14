@@ -38,4 +38,7 @@ public interface BudgetsDao extends InterfaceDao<Budgets> {
     
     ArrayList<Budgets> findByCostCenter(Integer idCostCenter);
 
+    List<Budgets> getBudgetsByCostCenterAndRequestCategory(Integer idCostCenter, Integer idRequestCategory);
+
+    Budgets getBudgetForRequest(int idCostCenter, int idBudgetCategory, int idBudgetSubcategory, int idRequestCategory);
 }
