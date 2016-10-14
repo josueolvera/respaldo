@@ -3,6 +3,7 @@ package mx.bidg.dao;
 import mx.bidg.model.DwEnterprises;
 import mx.bidg.model.Employees;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -17,4 +18,5 @@ public interface EmployeesDao extends InterfaceDao<Employees> {
     List<Employees> findByStatus(Integer status);
     Employees findByRfc(String rfc);
     Employees findByCurp(String curp);
+    List<Employees> findByJoinDate(LocalDateTime fromDate, LocalDateTime toDate);
 }
