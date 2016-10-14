@@ -114,6 +114,10 @@ public class CommissionAmountGroup implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime toDate;
 
+    @Column(name = "ID_EMPLOYEE")
+    @JsonView(JsonViews.Root.class)
+    private Integer idEmployee;
+
     public CommissionAmountGroup() {
     }
 
@@ -285,6 +289,14 @@ public class CommissionAmountGroup implements Serializable {
             return null;
         }
         return new DateFormatsPojo(toDate);
+    }
+
+    public Integer getIdEmployee() {
+        return idEmployee;
+    }
+
+    public void setIdEmployee(Integer idEmployee) {
+        this.idEmployee = idEmployee;
     }
 
     @Override
