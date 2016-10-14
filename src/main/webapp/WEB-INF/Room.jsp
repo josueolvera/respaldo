@@ -15,31 +15,31 @@
         <script type="text/javascript">
           var vm= new Vue({
           el: '#contenidos',
-          created: function(){
+          created: function() {
               
           },
-          ready: function ()
-          {
+          ready: function () {
               this.getUser();
-              this.createCalendar();
               this.getRoom();
+              this.getEvents();
           },
           data: {
               user:{},
               now: "${now}",
               idRoom: ${room},
               room:{},
-              calendar:{},
+              calendar:null,
+              eventsByDay:[],
               selectedDay:'',
               startHourTimePicker:'',
               startHour:'',
               endHourTimePicker:'',
               endHour:'',
-              title:''
+              title:'',
+              id:''
               
           },
-          methods:
-          {
+          methods: {
               getUser: function () {
                   this.$http.get(ROOT_URL + '/user')
                           .success(function (data) {
@@ -58,26 +58,100 @@
                       
                   });
               },
+              refresh: function(){
+                location = self.location;  
+              },
+              
+              getEvents: function () {
+                  this.$http.get(ROOT_URL + '/events?room=' + this.idRoom)
+                          .success(function (data) {
+                              
+                              if (this.calendar == null) {
+                                  this.createCalendar(data);
+                              } else {
+                                 // this.calendar.fullCalendar('removeEventSource');
+                              }
+                              
+                              
+                  })
+                  .error(function (data) {
+                      
+                  });
+              },
+              getEventsByDay: function () {
+                  this.$http.get(ROOT_URL + '/events?room=' + this.idRoom + '&day=' + this.selectedDay )
+                          .success(function (data) {
+
+                              var jsonObjectIndex = {};
+                      
+                                data.forEach(function (event) {
+                                    if (isNaN(event.user)) {
+                                        jsonObjectIndex[event.user._id] = event.user;
+                                    } else {
+                                        event.user = jsonObjectIndex[event.user];
+                                    }
+                                });
+                                
+                              this.eventsByDay = data;
+                      
+                            $('#reservationModal').modal('show');
+                            self.startHourTimePicker = $('#startHour').datetimepicker({
+                                    format: 'LT'
+                                });
+                            self.endHourTimePicker = $('#endHour').datetimepicker({
+                                    format: 'LT'
+                                    
+                                });
+                  })
+                  .error(function (data) {
+                      
+                  });
+              },
               addReservation: function () {
+                  if (this.startHour.length < 5) {
+                      this.startHour = '0' + this.startHour;
+                  }
+                  
+                  if (this.endHour.length < 5) {
+                      this.endHour = '0' + this.endHour;
+                  }
+                  
                   var event= {};
                     event.title=  this.title,
-                    event.start = this.selectedDay+''+startHour,
-                    event.end = this.selectedDay+''+endHour,
-                    event.user = this.User,
-                    event.room = this.Room,
-                    this.$http.post(ROOT_URL + "/events", JSON.stringify(this.employee)).success(function (event) {
-                          
-                            showAlert("Registro de empleado exitoso");
-                            
+                    event.start = this.selectedDay+'T'+this.startHour,
+                    event.end = this.selectedDay+'T'+this.endHour,
+                    event.idUser = this.user.idUser,
+                    event.room = this.room,
+                    this.$http.post(ROOT_URL + "/events?room=" + this.idRoom, JSON.stringify(event))
+                    .success(function (event) {
+                        
+                        this.clearEvenData();
+                        
+                        this.getEventsByDay();
+                            showAlert("Agendado exitosamente");
+                            }).error(function (data) {
+                                showAlert(data.error.message, {type: 3});
                             });
                   
-                  $('#reservationModal').modal('hide');
-                  
               },
-              createCalendar: function () {
+              clearEvenData: function () {
+                  this.title = '';
+                  this.startHour = '';
+                  this.endHour = '';
+              },
+              deleteReservation: function (id) {
+                  this.id= id;
+                        this.$http.post(ROOT_URL + "/events/" + this.id)
+                                .success(function (data) {
+                                    
+                                    showAlert("Registro eliminado");
+                            this.getEventsByDay();
+                            
+                                });
+                    },
+              createCalendar: function (events) {
                   
                   var self = this;
-                  
                   this.calendar = $('#calendar').fullCalendar({
                      
                         now: this.now,
@@ -92,22 +166,32 @@
                         nowIndicator:true,
 			navLinks: true, // can click day/week names to navigate views
 			eventLimit: true, // allow "more" link when too many events
+                        eventSources: {
+                            events: events,
+                            textColor: 'white', // an option!
+                            backgroundColor: '#337ab7',
+                            borderColor: '#2e6da4'
+                        },
                         dayClick: function(date, jsEvent, view) {
                             
                             self.selectedDay = date.format();
+                            
+                            self.getEventsByDay();
 
                             //$(this).css('background-color', 'red');
                             
-                            $('#reservationModal').modal('show');
-                            self.startHourTimePicker = $('#startHour').datetimepicker({
-                                    format: 'LT'
-                                });
-                            self.endHourTimePicker = $('#endHour').datetimepicker({
-                                    format: 'LT'
-                                });
-
                         }
                     });
+              }
+          },
+          filters: {
+              hour: function (val) {
+                  var date = moment(val);
+                  return date.format('hh:mm a');
+              },
+              date: function (val) {
+                  var date = moment(val);
+                  return date.format('LL');
               }
           }
         });
@@ -139,9 +223,11 @@
           <div class="modal fade" id="reservationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog modal-lg" role="document">
               <div class="modal-content">
+                  <form id="attachments-form" method="post" enctype="multipart/form-data"
+                      v-on:submit.prevent="addReservation">
                 <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                  <h4 class="modal-title" id="myModalLabel">Reservación para el día {{selectedDay}}</h4>
+                  <h4 class="modal-title" id="myModalLabel">Reservación para el día <b class="text-primary">{{selectedDay | date}}</b></h4>
                 </div>
                 <div class="modal-body">
                     <div class="panel panel-default">
@@ -157,14 +243,17 @@
                                         <th>Título</th>
                                         <th>Hora de entrada</th>
                                         <th>Hora de salida</th>
+                                        <th></th>
                                       </tr>
                                     </thead>
                                     <tbody>
-                                      <tr v-fo=''>
-                                        <td>{{user.mail}}</td>
-                                        <td>{{title}}</td>
-                                        <td>{{startHour}} </td>
-                                        <td>{{endHour}}</td>
+                                      <tr v-for="event in eventsByDay">
+                                        <td>{{event.user.mail}}</td>
+                                        <td>{{event.title}}</td>
+                                        <td>{{event.start | hour}} </td>
+                                        <td>{{event.end | hour}}</td>
+                                        <td><button class="btn btn-default" @click="deleteReservation(event.id)">
+                                                    <span class="glyphicon glyphicon-trash"></span></button></td>
                                       </tr>
                                     </tbody>
                                   </table>
@@ -173,14 +262,16 @@
                       </div>
                     <label>Email</label>
                     <br>
-                    <span class="label label-default">{{user.mail}}</span>
+                   
+                     
+                        <span class="label label-default">{{user.mail}}</span>
                     <br>
                     <div class="row">
-                        <div class='col-md-6'>
+                            <div class='col-md-6'>
                             <div class="form-group">
                                 <br>
                                 <label>Título</label>
-                                <input type='text' class="form-control" v-model={{title}} />
+                                <input type='text' class="form-control" v-model="title" required/>
                             </div>
                         </div>
                         <div class='col-md-3'>
@@ -188,7 +279,7 @@
                                 <br>
                                 <label>Hora de entrada</label>
                                 <div class='input-group date' id='startHour'>
-                                    <input type='text' class="form-control" v-model={{startHour}} />
+                                    <input type='text' class="form-control" v-model="startHour" required/>
                                     <span class="input-group-addon">
                                         <span class="glyphicon glyphicon-time"></span>
                                     </span>
@@ -200,21 +291,23 @@
                                 <br>
                                 <label>Hora de salida</label>
                                 <div class='input-group date' id='endHour'>
-                                    <input type='text' class="form-control" v-model= {{endHour}}/>
+                                    <input type='text' class="form-control" v-model="endHour" required/>
                                     <span class="input-group-addon">
                                         <span class="glyphicon glyphicon-time"></span>
                                     </span>
                                 </div>
                             </div>
-                        </div>
+                          </div>
                         
                         
-                    </div>
-                </div>
+                          </div>
+                       </div>
+                        
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                  <button type="button" class="btn btn-primary" @click="addReservation">Añadir Reservacion</button>
+                  <button type="button" class="btn btn-default" data-dismiss="modal"@click="refresh">Salir</button>
+                  <button type="submit" class="btn btn-primary">Añadir Reservacion</button>
                 </div>
+                  </form>
               </div>
             </div>
           </div>

@@ -44,20 +44,31 @@ public class EventsController {
     public ResponseEntity<String> getEvents(
             @RequestParam(name = "room", required = false) Integer idRoom,
             @RequestParam(name = "user", required = false) Integer idUser,
-            @RequestParam(name = "date", required = false) String date
+            @RequestParam(name="day",required= false) String day
     ) throws Exception {
-        List<Events> events = eventsService.getEvents(idRoom, idUser,date);
+        List<Events> events = eventsService.getEvents(idRoom, idUser, day);
         return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(events));
     }
     
      @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> save(@RequestBody Events event) throws IOException{
-        event = eventsService.save(event);
+    public ResponseEntity<String> save(@RequestBody String data, @RequestParam(name="room") Integer idRoom) throws IOException, Exception{
+        Events event = eventsService.save(data, idRoom);
         return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(event));
             
     
     
     }
+    
+    @RequestMapping(value = "/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> delete(@PathVariable Integer id)throws IOException{
+        Events event = eventsService.findById(id);
+        
+        if (event != null) {
+            eventsService.delete(event);
+        }
+        return new ResponseEntity<>("Registro Eliminado",HttpStatus.OK);
+    }
+    
     
      
 }

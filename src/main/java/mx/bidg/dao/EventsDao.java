@@ -5,6 +5,7 @@
  */
 package mx.bidg.dao;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import mx.bidg.model.Events;
 
@@ -14,7 +15,7 @@ import mx.bidg.model.Events;
  */
 public interface EventsDao extends InterfaceDao<Events>{
 
-    List<Events> getEvents(Integer idRoom, Integer idUser, String date);
-        
+    List<Events> getEvents(Integer idRoom, Integer idUser, LocalDateTime day);
     
+    Events findBetweenStartAndEnd(LocalDateTime start, LocalDateTime end, Integer idRoom);
 }

@@ -20,12 +20,12 @@ public interface EventsService {
     
     List<Events> findAll();
     Events findById(Integer idevent);
-    Events save(Events eVents);
+    Events save(String data, Integer idRoom) throws Exception;
     Events update(Events eVents);
     Boolean delete(Events eVents);
 
 
-    List<Events> getEvents(Integer idRoom, Integer idUser, String idDate);
+    List<Events> getEvents(Integer idRoom, Integer idUser, String day);
    
             
     

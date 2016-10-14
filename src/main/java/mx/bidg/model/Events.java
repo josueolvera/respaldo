@@ -31,27 +31,13 @@ import mx.bidg.utils.DateTimeConverter;
 @Table(name = "EVENTS")
 public class Events implements Serializable{
     private static long serialVersionUID = 1L;
-
-    /**
-     * @return the serialVersionUID
-     */
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
-    /**
-     * @param aSerialVersionUID the serialVersionUID to set
-     */
-    public static void setSerialVersionUID(long aSerialVersionUID) {
-        serialVersionUID = aSerialVersionUID;
-    }
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_EVENT")
     @JsonView(JsonViews.Root.class)
-    private Integer idevent;
+    private Integer id;
     
     @Size(max = 200)
     @Column(name = "TITLE")
@@ -88,12 +74,12 @@ public class Events implements Serializable{
     @JsonView(JsonViews.Root.class)
     private Integer idRoom;
 
-    public Integer getIdevent() {
-        return idevent;
+    public Integer getId() {
+        return id;
     }
 
-    public void setIdevent(Integer idevent) {
-        this.idevent = idevent;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -104,16 +90,16 @@ public class Events implements Serializable{
         this.title = title;
     }
 
-    public LocalDateTime getStart() {
-        return start;
+    public String getStart() {
+        return start.toString();
     }
 
     public void setStart(LocalDateTime start) {
         this.start = start;
     }
 
-    public LocalDateTime getEnd() {
-        return end;
+    public String getEnd() {
+        return end.toString();
     }
 
     public void setEnd(LocalDateTime end) {
