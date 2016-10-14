@@ -15,6 +15,7 @@
                     this.obtainDateType();
                     this.activateDateTimePickerStartDateMonth();
                     this.activateDateTimePickerStartDate();
+                    this.findAll();
                 },
                 data: {
                     search : {
@@ -27,8 +28,14 @@
                     ofDate: '',
                     commission: [],
                     btn : false,
+                    btnExportReport: false,
                     dateTypes: [],
-                    typeCalculation: {}
+                    typeCalculation: {},
+                    adviserCredit: {
+                        fromDate: '',
+                        toDate: ''
+                    },
+                    commsionableAmounts: []
                 },
                 methods: {
                     activateDateTimePickerStartDate: function () {
@@ -106,10 +113,30 @@
                         });
                     },
                     generateCalculation : function () {
+                        this.commsionableAmounts = [];
+
+                        var fecha = new Date();
+                        var fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth() + 1) + "-" + fecha.getDate();
+                        var fechaMinima = moment(fecha_actual).subtract('months', 2).format('YYYY-MM-DD');
+
                         this.fromDate = this.dateTimePickerStartDate.DateTimePicker.date().toISOString().slice(0, -1);
                         this.ofDate = this.dateTimePickerEndDate.DateTimePicker.date().toISOString().slice(0, -1);
-                        window.location = ROOT_URL + "/sap-sale/prueba/"+this.typeCalculation.idDateCalculation+"?fromDate="+this.fromDate+"&toDate="+this.ofDate;
-                        this.btn = true;
+
+                        this.adviserCredit.fromDate = fechaMinima+"T00:00:00.000";
+                        this.adviserCredit.toDate = fecha_actual+"T00:00:00.000";
+
+                        this.$http.get(ROOT_URL + "/sap-sale/prueba/"+this.typeCalculation.idDateCalculation
+                                +"?fromDate="+this.fromDate+"&toDate="+this.ofDate
+                                +"&fromJoinDate="+this.adviserCredit.fromDate+"&toJoinDate="+this.adviserCredit.toDate).success(function (data) {
+                            this.btnExportReport = true;
+                            this.commsionableAmounts =  data;
+                        }).error(function () {
+                            showAlert("Hubo un error al generar el calculo intente de nuevo", {type:3});
+                        });
+//                        window.location = ROOT_URL + "/sap-sale/prueba/"+this.typeCalculation.idDateCalculation
+//                                +"?fromDate="+this.fromDate+"&toDate="+this.ofDate
+//                                +"&fromJoinDate="+this.adviserCredit.fromDate+"&toJoinDate="+this.adviserCredit.toDate;
+//                        this.btn = true;
 //                        showAlert('No es posible generar debido a que no existen empleados asignados', {type:2});
                     },
                     obtainDateType: function () {
@@ -122,6 +149,15 @@
                     clear: function () {
                         this.search.endDate = "";
                         this.search.startDate = "";
+                    },
+                    exportReport: function () {
+                     window.location = ROOT_URL + "/commission-amount-group/report-advisers";
+                        this.btn = true;
+                    },
+                    findAll: function () {
+                        this.$http.get(ROOT_URL + "/commission-amount-group").success(function (data) {
+                            this.commsionableAmounts =  data;
+                        });
                     }
                 }
             });
@@ -171,9 +207,14 @@
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <button type="button" class="btn btn-success form-control"
+                            <button type="button" class="btn form-control"
                                     @click="generateCalculation" style="margin-top: 27px">
                                 Generar cálculo
+                            </button>
+                        </div>
+                        <div class="col-md-2" v-if="btnExportReport">
+                            <button type="button" @click="exportReport" class="btn btn-success form-control" style="margin-top: 27px">
+                                Exportar reporte
                             </button>
                         </div>
                         <div class="col-md-2" v-if="btn">
@@ -208,9 +249,14 @@
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <button type="button" class="btn btn-success form-control"
+                            <button type="button" class="btn form-control"
                                     @click="generateCalculation" style="margin-top: 27px">
                                 Generar cálculo
+                            </button>
+                        </div>
+                        <div class="col-md-2" v-if="btnExportReport">
+                            <button type="button" @click="saveCalculation" class="btn btn-success form-control" style="margin-top: 27px">
+                                Exportar reporte
                             </button>
                         </div>
                         <div class="col-md-2" v-if="btn">
@@ -219,6 +265,10 @@
                             </button>
                         </div>
                     </form>
+                </div>
+                <div v-if="!commsionableAmounts.length > 0"
+                     style="height: 6rem; padding: 2rem 0;">
+                    <div class="loader">Cargando...</div>
                 </div>
             </div>
         </div>
