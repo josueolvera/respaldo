@@ -252,7 +252,7 @@
                                         <td>{{event.title}}</td>
                                         <td>{{event.start | hour}} </td>
                                         <td>{{event.end | hour}}</td>
-                                        <td><button class="btn btn-default" @click="deleteReservation(event.id)">
+                                        <td><button class="btn btn-default" type="button" @click="deleteReservation(event.id)">
                                                     <span class="glyphicon glyphicon-trash"></span></button></td>
                                       </tr>
                                     </tbody>
