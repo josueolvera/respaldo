@@ -93,15 +93,9 @@
                                 });
                                 
                               this.eventsByDay = data;
-                      
-                            $('#reservationModal').modal('show');
-                            self.startHourTimePicker = $('#startHour').datetimepicker({
-                                    format: 'LT'
-                                });
-                            self.endHourTimePicker = $('#endHour').datetimepicker({
-                                    format: 'LT'
-                                    
-                                });
+                              
+                              $('#reservationModal').modal('show');
+                     
                   })
                   .error(function (data) {
                       
@@ -172,15 +166,39 @@
                             backgroundColor: '#337ab7',
                             borderColor: '#2e6da4'
                         },
-                        dayClick: function(date, jsEvent, view) {
-                            
-                            self.selectedDay = date.format();
-                            
-                            self.getEventsByDay();
+                        dayClick: function(date,allDay, jsEvent, view) {
+                     
+                            var myDate = new Date();
 
-                            //$(this).css('background-color', 'red');
+                            //How many days to add from today?
+                            var daysToAdd = -1;
+
+                            myDate.setDate(myDate.getDate() + daysToAdd);
+
+                            if (date < myDate) {
+                                //TRUE Clicked date smaller than today + daysToadd
+                                showAlert("Fecha Invalida",{type: 3});
+                            } else {
+                                //FLASE Clicked date larger than today + daysToadd
+                               self.selectedDay = date.format();
+                               self.getEventsByDay();
+                            }
                             
                         }
+                    });
+              },
+              activarDateTimePickerStarHour: function (){
+                   var fecha = new Date();  
+                    $('#startHour').datetimepicker({
+                           format: 'LT',
+                            minDate: moment({h:fecha.getHours(), m:fecha.getMinutes()}) 
+                       });
+              },
+              activarDateTimePickerEndHour: function (startHour){
+                  $('#endHour').datetimepicker({
+                        format: 'LT',
+                        minDate: moment(startHour, 'HH:mm').add(1,'minute')
+
                     });
               }
           },
@@ -280,7 +298,7 @@
                                 <label>Hora de entrada</label>
                                 <div class='input-group date' id='startHour'>
                                     <input type='text' class="form-control" v-model="startHour" required/>
-                                    <span class="input-group-addon">
+                                    <span class="input-group-addon" @click="activarDateTimePickerStarHour()">
                                         <span class="glyphicon glyphicon-time"></span>
                                     </span>
                                 </div>
@@ -292,7 +310,7 @@
                                 <label>Hora de salida</label>
                                 <div class='input-group date' id='endHour'>
                                     <input type='text' class="form-control" v-model="endHour" required/>
-                                    <span class="input-group-addon">
+                                    <span class="input-group-addon" @click="activarDateTimePickerEndHour(startHour)">
                                         <span class="glyphicon glyphicon-time"></span>
                                     </span>
                                 </div>
