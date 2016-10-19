@@ -171,7 +171,7 @@
                             var myDate = new Date();
 
                             //How many days to add from today?
-                            var daysToAdd = -1;
+                            var daysToAdd = -2;
 
                             myDate.setDate(myDate.getDate() + daysToAdd);
 
@@ -222,8 +222,8 @@
             #calendar {
                 
                 background-color: white;
-                padding: 80px;
-                border-style: solid;
+                padding: 10px;
+                
                 
                 border-top-color: #080808
             }
@@ -231,9 +231,9 @@
     </jsp:attribute>
 
     <jsp:body>
-        <div id="contenidos" class="col-md-10 col-md-offset-2">
+        <div id="contenidos" class="col-md-12 ">
           <div class="container-fluid">
-              <h2>Sala de Juntas</h2>
+              <h2>Sala de Juntas {{room.name}}</h2>
               <div id="calendar" style=""></div>
               <br>
           </div>
