@@ -145,9 +145,23 @@ public class SapSaleController {
 
                         agreementsGroupConditionService.setTabulator(agreementsGroupConditionList);
 
-                        if (groupAgreements.getIdAg() == 19){
+                        if (groupAgreements.getIdAg() == 19) {
                             agreementsGroupConditionService.bonusJoinDate(ofJoinDate, untilJoinDate);
                         }
+                    }
+                }
+                else if (role.getIdCalculationRole() == 5) {
+                    List<RolesGroupAgreements> rolesGroupAgreementsList = rolesGroupAgreementsService.findByRole(role.getIdCalculationRole());
+                    for (RolesGroupAgreements groupAgreements : rolesGroupAgreementsList) {
+                        List sapSales = sapSaleService.findByZonaGroup(groupAgreements.getIdAg(), ofDate, untilDate);
+
+                        CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
+
+                        commissionAmountGroupService.obtainAmountsbyZona(sapSales, agreementsGroups, ofDate, untilDate);
+
+                        List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg(), idDateCalculation);
+
+                        agreementsGroupConditionService.setTabulator(agreementsGroupConditionList);
                     }
                 }
             }
