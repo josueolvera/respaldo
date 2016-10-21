@@ -27,4 +27,5 @@ public interface CommissionAmountGroupService {
     void comissionByReport(OutputStream stream) throws IOException;
     List<CommissionAmountGroup> obtainBranchManager();
     List<CommissionAmountGroup> obtainAuxiliar();
+    void reportMonthlyCommissions(OutputStream stream, LocalDateTime fromDate, LocalDateTime toDate) throws IOException;
 }

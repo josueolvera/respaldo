@@ -142,25 +142,46 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
 
             for (CommissionAmountGroup commissionAmountGroup : zonasList){
                 List<CommissionAmountGroup> commissionAmountGroupList = commissionAmountGroupDao.obtainBranchByZonaAndCondition(commissionAmountGroup.getIdZona(), groupCondition);
-                if (commissionAmountGroupList.size() > 6){
-                    BigDecimal defaultValue = new BigDecimal(6);
-                    BigDecimal tabulator = groupCondition.getTabulator().multiply(defaultValue);
-                    commissionAmountGroup.setTabulator(tabulator);
-                    BigDecimal divisor = new BigDecimal(100);
-                    BigDecimal percentage = tabulator.divide(divisor);
-                    BigDecimal comission = percentage.multiply(commissionAmountGroup.getAmount());
-                    commissionAmountGroup.setCommission(comission);
-                    commissionAmountGroupDao.update(commissionAmountGroup);
+                if( commissionAmountGroup.getIdZona() == 10){
+                    if (commissionAmountGroupList.size() == 5 ){
+                        BigDecimal defaultValue = new BigDecimal(0.40);
+                        commissionAmountGroup.setTabulator(defaultValue);
+                        BigDecimal divisor = new BigDecimal(100);
+                        BigDecimal percentage = defaultValue.divide(divisor);
+                        BigDecimal comission = percentage.multiply(commissionAmountGroup.getAmount());
+                        commissionAmountGroup.setCommission(comission);
+                        commissionAmountGroupDao.update(commissionAmountGroup);
+                    }  else if (commissionAmountGroupList.size() >= 2) {
+                        int size = commissionAmountGroupList.size();
+                        BigDecimal value = new BigDecimal(size);
+                        BigDecimal tabulatorBranch = groupCondition.getTabulator().multiply(value);
+                        commissionAmountGroup.setTabulator(tabulatorBranch);
+                        BigDecimal divisor = new BigDecimal(100);
+                        BigDecimal percentage = tabulatorBranch.divide(divisor);
+                        BigDecimal commissionByBranch = percentage.multiply(commissionAmountGroup.getAmount());
+                        commissionAmountGroup.setCommission(commissionByBranch);
+                        commissionAmountGroupDao.update(commissionAmountGroup);
+                    }
                 }else {
-                    int size = commissionAmountGroupList.size();
-                    BigDecimal value = new BigDecimal(size);
-                    BigDecimal tabulatorBranch = groupCondition.getTabulator().multiply(value);
-                    commissionAmountGroup.setTabulator(tabulatorBranch);
-                    BigDecimal divisor = new BigDecimal(100);
-                    BigDecimal percentage = tabulatorBranch.divide(divisor);
-                    BigDecimal commissionByBranch = percentage.multiply(commissionAmountGroup.getAmount());
-                    commissionAmountGroup.setCommission(commissionByBranch);
-                    commissionAmountGroupDao.update(commissionAmountGroup);
+                    if (commissionAmountGroupList.size() >= 6){
+                        BigDecimal defaultValue = new BigDecimal(0.40);
+                        commissionAmountGroup.setTabulator(defaultValue);
+                        BigDecimal divisor = new BigDecimal(100);
+                        BigDecimal percentage = defaultValue.divide(divisor);
+                        BigDecimal comission = percentage.multiply(commissionAmountGroup.getAmount());
+                        commissionAmountGroup.setCommission(comission);
+                        commissionAmountGroupDao.update(commissionAmountGroup);
+                    } else if (commissionAmountGroupList.size() >= 2) {
+                        int size = commissionAmountGroupList.size();
+                        BigDecimal value = new BigDecimal(size);
+                        BigDecimal tabulatorBranch = groupCondition.getTabulator().multiply(value);
+                        commissionAmountGroup.setTabulator(tabulatorBranch);
+                        BigDecimal divisor = new BigDecimal(100);
+                        BigDecimal percentage = tabulatorBranch.divide(divisor);
+                        BigDecimal commissionByBranch = percentage.multiply(commissionAmountGroup.getAmount());
+                        commissionAmountGroup.setCommission(commissionByBranch);
+                        commissionAmountGroupDao.update(commissionAmountGroup);
+                    }
                 }
             }
         }
@@ -177,25 +198,58 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
 
             for (CommissionAmountGroup commissionAmountGroups : regionList){
                 List<CommissionAmountGroup> branchsList = commissionAmountGroupDao.obtainBranchByRegionAndCondition(commissionAmountGroups.getIdRegion(), groupCondition);
-                if (branchsList.size() > 25){
-                    BigDecimal defaultValue = new BigDecimal(25);
-                    BigDecimal tabulator = groupCondition.getTabulator().multiply(defaultValue);
-                    commissionAmountGroups.setTabulator(tabulator);
-                    BigDecimal divisor = new BigDecimal(100);
-                    BigDecimal percentage = tabulator.divide(divisor);
-                    BigDecimal comission = percentage.multiply(commissionAmountGroups.getAmount());
-                    commissionAmountGroups.setCommission(comission);
-                    commissionAmountGroupDao.update(commissionAmountGroups);
+                BigDecimal salaryRegionalSur = new BigDecimal(56092.80);
+                if (commissionAmountGroups.getIdRegion() == 2){
+                    if (commissionAmountGroups.getAmount().doubleValue() >= 18000000){
+                        commissionAmountGroups.setCommission(salaryRegionalSur);
+                        commissionAmountGroupDao.update(commissionAmountGroups);
+                    }else {
+                        if (branchsList.size() >= 25){
+                            BigDecimal defaultValue = new BigDecimal(25);
+                            BigDecimal tabulator = groupCondition.getTabulator().multiply(defaultValue);
+                            commissionAmountGroups.setTabulator(tabulator);
+                            BigDecimal divisor = new BigDecimal(100);
+                            BigDecimal percentage = tabulator.divide(divisor);
+                            BigDecimal comission = percentage.multiply(commissionAmountGroups.getAmount());
+                            BigDecimal adjustment = comission.add(new BigDecimal(12500));
+                            BigDecimal totalCommission = salaryRegionalSur.subtract(adjustment);
+                            commissionAmountGroups.setCommission(totalCommission);
+                            commissionAmountGroupDao.update(commissionAmountGroups);
+                        }else {
+                            int size = branchsList.size();
+                            BigDecimal value = new BigDecimal(size);
+                            BigDecimal tabulatorBranch = groupCondition.getTabulator().multiply(value);
+                            commissionAmountGroups.setTabulator(tabulatorBranch);
+                            BigDecimal divisor = new BigDecimal(100);
+                            BigDecimal percentage = tabulatorBranch.divide(divisor);
+                            BigDecimal commissionByBranch = percentage.multiply(commissionAmountGroups.getAmount());
+                            BigDecimal adjustment = commissionByBranch.add(new BigDecimal(12500));
+                            BigDecimal totalCommission = salaryRegionalSur.subtract(adjustment);
+                            commissionAmountGroups.setCommission(totalCommission);
+                            commissionAmountGroupDao.update(commissionAmountGroups);
+                        }
+                    }
                 }else {
-                    int size = branchsList.size();
-                    BigDecimal value = new BigDecimal(size);
-                    BigDecimal tabulatorBranch = groupCondition.getTabulator().multiply(value);
-                    commissionAmountGroups.setTabulator(tabulatorBranch);
-                    BigDecimal divisor = new BigDecimal(100);
-                    BigDecimal percentage = tabulatorBranch.divide(divisor);
-                    BigDecimal commissionByBranch = percentage.multiply(commissionAmountGroups.getAmount());
-                    commissionAmountGroups.setCommission(commissionByBranch);
-                    commissionAmountGroupDao.update(commissionAmountGroups);
+                    if (branchsList.size() >= 25){
+                        BigDecimal defaultValue = new BigDecimal(25);
+                        BigDecimal tabulator = groupCondition.getTabulator().multiply(defaultValue);
+                        commissionAmountGroups.setTabulator(tabulator);
+                        BigDecimal divisor = new BigDecimal(100);
+                        BigDecimal percentage = tabulator.divide(divisor);
+                        BigDecimal comission = percentage.multiply(commissionAmountGroups.getAmount());
+                        commissionAmountGroups.setCommission(comission);
+                        commissionAmountGroupDao.update(commissionAmountGroups);
+                    }else {
+                        int size = branchsList.size();
+                        BigDecimal value = new BigDecimal(size);
+                        BigDecimal tabulatorBranch = groupCondition.getTabulator().multiply(value);
+                        commissionAmountGroups.setTabulator(tabulatorBranch);
+                        BigDecimal divisor = new BigDecimal(100);
+                        BigDecimal percentage = tabulatorBranch.divide(divisor);
+                        BigDecimal commissionByBranch = percentage.multiply(commissionAmountGroups.getAmount());
+                        commissionAmountGroups.setCommission(commissionByBranch);
+                        commissionAmountGroupDao.update(commissionAmountGroups);
+                    }
                 }
             }
         }
@@ -212,7 +266,7 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
 
             for (CommissionAmountGroup commissionAmountGroups : distributorList){
                 List<CommissionAmountGroup> branchsList = commissionAmountGroupDao.obtainBranchByDistributorAndCondition(commissionAmountGroups.getIdDistributor(), groupCondition);
-                if (branchsList.size() > 40){
+                if (branchsList.size() >= 40){
                     BigDecimal defaultValue = new BigDecimal(40);
                     BigDecimal tabulator = groupCondition.getTabulator().multiply(defaultValue);
                     commissionAmountGroups.setTabulator(tabulator);
@@ -287,6 +341,17 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
                     BigDecimal divisor = new BigDecimal(100);
                     BigDecimal comission = groupCondition.getTabulator().divide(divisor);
                     cAGroup.setCommission(cAGroup.getAmount().multiply(comission));
+                    commissionAmountGroupDao.update(cAGroup);
+                }
+            }else if (groupCondition.getTypeOperation() == 5){
+                List<CommissionAmountGroup> amountGroups = commissionAmountGroupDao.getComissionsByConditon(groupCondition);
+                BigDecimal defaultValue = new BigDecimal(300000.00);
+
+                for (CommissionAmountGroup cAGroup : amountGroups) {
+                    cAGroup.setTabulator(groupCondition.getTabulator());
+                    BigDecimal divisor = new BigDecimal(100);
+                    BigDecimal comission = groupCondition.getTabulator().divide(divisor);
+                    cAGroup.setCommission(defaultValue.multiply(comission));
                     commissionAmountGroupDao.update(cAGroup);
                 }
             }
