@@ -802,26 +802,16 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
         row.createCell(13).setCellValue("No. SOL. GOBIERNO");
         row.createCell(14).setCellValue("MONTO GOBIERNO");
         row.createCell(15).setCellValue("COMISION GOBIERNO");
-        row.createCell(16).setCellValue("No. SOL. MAGISTERIO");
-        row.createCell(17).setCellValue("MONTO MAGISTERIO");
-        row.createCell(18).setCellValue("COMISION MAGISTERIO");
-        row.createCell(19).setCellValue("No. SOL. PEMEX");
-        row.createCell(20).setCellValue("MONTO PEMEX");
-        row.createCell(21).setCellValue("COMISION PEMEX");
-        row.createCell(22).setCellValue("No. SOL. SALUD");
-        row.createCell(23).setCellValue("MONTO SALUD");
-        row.createCell(24).setCellValue("COMISION SALUD");
-        row.createCell(25).setCellValue("No. SOL. SALUD-CI");
-        row.createCell(26).setCellValue("MONTO SALUD-CI");
-        row.createCell(27).setCellValue("COMISION SALUD-CI");
-        row.createCell(28).setCellValue("No. SOL. IEEPO");
-        row.createCell(29).setCellValue("MONTO IEEPO");
-        row.createCell(30).setCellValue("COMISION IEEPO");
-        row.createCell(31).setCellValue("No. SOL. TOTAL");
-        row.createCell(32).setCellValue("MONTO TOTAL");
-        row.createCell(33).setCellValue("BONO CUMPLIMIENTO");
-        row.createCell(34).setCellValue("BONO POR NUEVO INGRESO");
-        row.createCell(35).setCellValue("COMISION TOTAL");
+        row.createCell(16).setCellValue("No. SOL. SALUD");
+        row.createCell(17).setCellValue("MONTO SALUD");
+        row.createCell(18).setCellValue("COMISION SALUD");
+        row.createCell(19).setCellValue("No. SOL. SALUD-CI");
+        row.createCell(20).setCellValue("MONTO SALUD-CI");
+        row.createCell(21).setCellValue("COMISION SALUD-CI");
+        row.createCell(22).setCellValue("COMISION ACUMULADA");
+        row.createCell(23).setCellValue("ALCANCE FINAL");
+        row.createCell(24).setCellValue("BONO SALUD");
+        row.createCell(25).setCellValue("BONO SALUD-CI");
 
         //Implementacion del estilo
         for (Cell celda : row) {
@@ -832,7 +822,6 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
 
         for (List listGeneric : commissionAmountGroupStreamList){
             row = hoja.createRow(aux);
-            BigDecimal totalComission = new BigDecimal(0);
 
             for (Object object: listGeneric){
                 CommissionAmountGroup commissionAmountGroup = (CommissionAmountGroup) object;
@@ -871,14 +860,69 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                     row.createCell(13).setCellValue(commissionAmountGroup.getApplicationsNumber().doubleValue());
                     row.createCell(14).setCellValue(commissionAmountGroup.getAmount().doubleValue());
                     row.createCell(15).setCellValue(commissionAmountGroup.getCommission().doubleValue());
-                    totalComission = totalComission.add(commissionAmountGroup.getCommission());
+                    List listaGobierno = commissionAmountGroupBackupDao.findTotalAmountGroupGobierno(fromDate, toDate);
+                    for (Object data : listaGobierno){
+                        Object[] projection = (Object[]) data;
+                        String claveSap = (String) projection[0];
+                        BigDecimal commissionableAmount = (BigDecimal) projection[1];
+                        BigDecimal numRequest = new BigDecimal(projection[2].toString());
+                        BigDecimal comission = new BigDecimal(projection[3].toString());
+                        Integer idAg = (Integer) projection[4];
+
+                        if (claveSap.equals(commissionAmountGroup.getClaveSap())){
+                            row.createCell(22).setCellValue(comission.doubleValue());
+                            row.createCell(23).setCellValue(commissionAmountGroup.getCommission().subtract(comission).doubleValue());
+                        }
+                    }
                 }
 
                 if(commissionAmountGroup.getIdAg() == 16){
-                    row.createCell(22).setCellValue(commissionAmountGroup.getApplicationsNumber().doubleValue());
-                    row.createCell(23).setCellValue(commissionAmountGroup.getAmount().doubleValue());
-                    row.createCell(24).setCellValue(commissionAmountGroup.getCommission().doubleValue());
-                    totalComission = totalComission.add(commissionAmountGroup.getCommission());
+                    row.createCell(16).setCellValue(commissionAmountGroup.getApplicationsNumber().doubleValue());
+                    row.createCell(17).setCellValue(commissionAmountGroup.getAmount().doubleValue());
+                    row.createCell(18).setCellValue(commissionAmountGroup.getCommission().doubleValue());
+                    List listaSalud = commissionAmountGroupBackupDao.findTotalAmountGroupSalud(fromDate, toDate);
+                    for (Object data : listaSalud){
+                        Object[] projection = (Object[]) data;
+                        String claveSap = (String) projection[0];
+                        BigDecimal commissionableAmount = (BigDecimal) projection[1];
+                        BigDecimal numRequest = new BigDecimal(projection[2].toString());
+                        BigDecimal comission = new BigDecimal(projection[3].toString());
+                        Integer idAg = (Integer) projection[4];
+
+                        if (claveSap.equals(commissionAmountGroup.getClaveSap())){
+                            row.createCell(22).setCellValue(comission.doubleValue());
+                            if (commissionAmountGroup.getAmount().doubleValue() >= 300000){
+                                row.createCell(24).setCellValue(commissionAmountGroup.getCommission().doubleValue());
+                            }else {
+                                row.createCell(23).setCellValue(commissionAmountGroup.getCommission().subtract(comission).doubleValue());
+                            }
+                        }
+                    }
+                }
+
+                if(commissionAmountGroup.getIdAg() == 17){
+                    row.createCell(19).setCellValue(commissionAmountGroup.getApplicationsNumber().doubleValue());
+                    row.createCell(20).setCellValue(commissionAmountGroup.getAmount().doubleValue());
+                    row.createCell(21).setCellValue(commissionAmountGroup.getCommission().doubleValue());
+                    List listaSaludCI = commissionAmountGroupBackupDao.findTotalAmountGroupSaludCI(fromDate, toDate);
+                    for (Object data : listaSaludCI){
+                        CommissionAmountGroup commissionAmountGroups;
+                        Object[] projection = (Object[]) data;
+                        String claveSap = (String) projection[0];
+                        BigDecimal commissionableAmount = (BigDecimal) projection[1];
+                        BigDecimal numRequest = new BigDecimal(projection[2].toString());
+                        BigDecimal comission = new BigDecimal(projection[3].toString());
+                        Integer idAg = (Integer) projection[4];
+
+                        if (claveSap.equals(commissionAmountGroup.getClaveSap())){
+                            row.createCell(22).setCellValue(comission.doubleValue());
+                            if (commissionAmountGroup.getAmount().doubleValue() >= 300000){
+                                row.createCell(25).setCellValue(commissionAmountGroup.getCommission().doubleValue());
+                            }else {
+                                row.createCell(23).setCellValue(commissionAmountGroup.getCommission().subtract(comission).doubleValue());
+                            }
+                        }
+                    }
                 }
             }
             aux++;
