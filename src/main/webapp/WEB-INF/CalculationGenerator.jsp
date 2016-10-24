@@ -119,6 +119,8 @@
                         var fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth() + 1) + "-" + fecha.getDate();
                         var fechaMinima = moment(fecha_actual).subtract('months', 2).format('YYYY-MM-DD');
 
+                        console.log(this.dateTimePickerStartDate.DateTimePicker.date().toISOString().slice(0, -1));
+
                         this.fromDate = this.dateTimePickerStartDate.DateTimePicker.date().toISOString().slice(0, -1);
                         this.ofDate = this.dateTimePickerEndDate.DateTimePicker.date().toISOString().slice(0, -1);
 
@@ -152,6 +154,10 @@
                     },
                     exportReport: function () {
                      window.location = ROOT_URL + "/commission-amount-group/report-advisers";
+                        this.btn = true;
+                    },
+                    exportReportMonthly: function () {
+                        window.location = ROOT_URL + "/commission-amount-group/report-all-commissions?fromDate="+this.fromDate+"&toDate="+this.ofDate;
                         this.btn = true;
                     },
                     findAll: function () {
@@ -255,7 +261,7 @@
                             </button>
                         </div>
                         <div class="col-md-2" v-if="btnExportReport">
-                            <button type="button" @click="saveCalculation" class="btn btn-success form-control" style="margin-top: 27px">
+                            <button type="button" @click="exportReportMonthly" class="btn btn-success form-control" style="margin-top: 27px">
                                 Exportar reporte
                             </button>
                         </div>

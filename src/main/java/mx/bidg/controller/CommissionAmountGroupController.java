@@ -11,10 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -42,6 +45,27 @@ public class CommissionAmountGroupController {
         response.setHeader("Content-Disposition", "attachment; filename=\"" +"Reporte de calculo de comisiones.xls"+ "\"");
         OutputStream outputStream = response.getOutputStream();
         commissionAmountGroupService.comissionByReport(outputStream);
+        outputStream.flush();
+        outputStream.close();
+
+        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(commissionAmountGroupService.findAll()));
+    }
+
+    @RequestMapping(value = "/report-all-commissions", method = RequestMethod.GET)
+    public ResponseEntity<String> reporteMensual(HttpServletResponse response, @RequestParam(name= "fromDate", required=true) String fromDate
+            , @RequestParam(name="toDate", required=true) String toDate) throws IOException{
+
+
+        LocalDateTime ofDate = (fromDate == null || fromDate.equals("")) ? null :
+                LocalDateTime.parse(fromDate, DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime untilDate = (toDate == null || toDate.equals("")) ? null :
+                LocalDateTime.parse(toDate, DateTimeFormatter.ISO_DATE_TIME);
+
+
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" +"Reporte de calculo mensual.xls"+ "\"");
+        OutputStream outputStream = response.getOutputStream();
+        commissionAmountGroupService.reportMonthlyCommissions(outputStream, ofDate, untilDate);
         outputStream.flush();
         outputStream.close();
 

@@ -278,7 +278,7 @@
 
                 <div class="col-xs-3">
                     <label>
-                        Numero de solicitudes
+                        Nùmero de solicitudes
                     </label>
                     <div class="input-group">
                         <span class="input-group-addon">#</span>
@@ -420,6 +420,57 @@
                 </div>
             </div>
 
+            <div class="row" v-if="ruleType == 5">
+                <div class="col-xs-3">
+                    <label>
+                        Monto mínimo
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">$</span>
+                        <input number type="text" class="form-control" v-model="montoMinimo"
+                               onkeypress="return isNumberKey(event,this)">
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <label>
+                        Monto máximo
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">$</span>
+                        <input number type="text" class="form-control" v-model="montoMaximo"
+                               onkeypress="return isNumberKey(event,this)">
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <label>
+                        Bono
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">%</span>
+                        <input number type="text" class="form-control" v-model="tabulator"
+                               onkeypress="return isNumberKey(event,this)">
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <label>
+                        Tipo de calculo
+                    </label>
+                    <select class="form-control" v-model="idDateCalculation">
+                        <option v-for="type in dateTypes" value="{{type.idDateCalculation}}">
+                            {{type.nameDate}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-xs-1 text-left" style="margin-top: 25px">
+                    <button class="btn btn-default" @click="saveTab(ruleType)" title="Almacenar regla">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-xs-12">
                     <h3>Tabuladores Existentes</h3>
@@ -485,6 +536,9 @@
                                 </label>
                                 <label v-if="tab.typeOperation == 4">
                                     Indice de reproceso
+                                </label>
+                                <label v-if="tab.typeOperation == 5">
+                                    Bono por acumulado mensual
                                 </label>
                             </td>
                         </tr>
