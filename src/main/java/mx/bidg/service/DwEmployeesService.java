@@ -30,6 +30,15 @@ public interface DwEmployeesService {
             Integer idBranch,
             Integer idArea
     );
+    
+    List<DwEmployees> findDwEmployeeByDwEnterpirseAndRoleAdvisers(
+            Integer idDwEnterprise,
+            Integer idRole
+            
+    );
+    
+    
+    
     List<DwEmployees> findAll();
     DwEmployees save(DwEmployees dwEmployees);
     void createReportDistributors(List<EmployeesHistory> employeesHistories, OutputStream outputStream) throws IOException;
@@ -40,4 +49,6 @@ public interface DwEmployeesService {
     boolean validateExistRole (Integer idDwEnterprise, Integer idRole);
     void createReportCompanys(List<EmployeesHistory> employeesHistories, OutputStream outputStream) throws IOException;
     void createReportBpo(List<EmployeesHistory> employeesHistorys, OutputStream outputStream) throws IOException;
+    
+    
 }

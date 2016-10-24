@@ -62,4 +62,11 @@ public class SAEMController {
         model.setViewName("persectionsDeductionsByEmployee");
         return model;
     }
+    
+    @RequestMapping(value = "/multilevel-employee", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView saemMultilevelEmployee() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("MultilevelEmployee");
+        return model;
+    }
 }

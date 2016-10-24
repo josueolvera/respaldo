@@ -158,4 +158,12 @@ public class DwEmployeesDaoImpl extends AbstractDao<Integer, DwEmployees> implem
                 .add(Restrictions.eq("idEmployee", idEmployee))
                 .uniqueResult();
     }
+
+    @Override
+    public List<DwEmployees> findDwEmployeeByDwEnterpirseAndRoleAdvisers(Integer idDwEnterprise) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idDwEnterprise", idDwEnterprise))
+                .add(Restrictions.eq("idRole", 64))
+                .list();
+    }
 }

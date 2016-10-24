@@ -745,4 +745,9 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
 
         wb.write(outputStream);
     }
+
+    @Override
+    public List<DwEmployees> findDwEmployeeByDwEnterpirseAndRoleAdvisers(Integer idDwEnterprise, Integer idRole) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
