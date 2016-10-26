@@ -15,6 +15,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -48,6 +50,24 @@ public class MultilevelEmployee implements Serializable {
     @Column(name = "LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer level;
+    
+    @Column(name = "ID_BRANCH", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idBranch;
+    
+    @Column(name = "ID_EMPLOYEE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idEmployee;
+    
+    @JoinColumn(name = "ID_BRANCH", referencedColumnName = "ID_BRANCH")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CBranchs branchs;
+    
+    @JoinColumn(name = "ID_EMPLOYEE", referencedColumnName = "ID_EMPLOYEE")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private Employees employees;
 
     public MultilevelEmployee() {
     }
@@ -79,6 +99,38 @@ public class MultilevelEmployee implements Serializable {
     public void setLevel(Integer level) {
         this.level = level;
     }
+    
+    public Integer getIdBranch() {
+        return idBranch;
+    }
+
+    public void setIdBranch(Integer idBranch) {
+        this.idBranch = idBranch;
+    }
+
+    public Integer getIdEmployee() {
+        return idEmployee;
+    }
+
+    public void setIdEmployee(Integer idEmployee) {
+        this.idEmployee = idEmployee;
+    }
+
+    public CBranchs getBranchs() {
+        return branchs;
+    }
+
+    public void setBranchs(CBranchs branchs) {
+        this.branchs = branchs;
+    }
+
+    public Employees getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(Employees employees) {
+        this.employees = employees;
+    }
 
     @Override
     public int hashCode() {
@@ -104,5 +156,5 @@ public class MultilevelEmployee implements Serializable {
     public String toString() {
         return "mx.bidg.model.MultilevelEmployee[ idMultilevel=" + idMultilevel + " ]";
     }
-    
+  
 }

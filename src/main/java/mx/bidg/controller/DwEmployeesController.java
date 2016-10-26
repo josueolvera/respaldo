@@ -161,4 +161,17 @@ public class DwEmployeesController {
             return new ResponseEntity<>("El puesto ya esta ocupado", HttpStatus.BAD_REQUEST);
         }
     }
+    
+    @RequestMapping(value = "/advisers-by-branch/{idDwEnterprise}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findDwEmployeeByDwEnterpirseAndRoleAdvisers(@PathVariable Integer idDwEnterprise) throws IOException {
+
+     List<DwEmployees> dwEmployees = dwEmployeesService.findDwEmployeeByDwEnterpirseAndRoleAdvisers(idDwEnterprise);
+
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEmployees),
+                HttpStatus.OK
+        );
+    }
+    
+    
 }

@@ -747,7 +747,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     }
 
     @Override
-    public List<DwEmployees> findDwEmployeeByDwEnterpirseAndRoleAdvisers(Integer idDwEnterprise, Integer idRole) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<DwEmployees> findDwEmployeeByDwEnterpirseAndRoleAdvisers(Integer idDwEnterprise) {
+        return dwEmployeesDao.findDwEmployeeByDwEnterpirseAndRoleAdvisers(idDwEnterprise);
     }
 }

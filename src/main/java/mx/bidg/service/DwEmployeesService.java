@@ -31,14 +31,6 @@ public interface DwEmployeesService {
             Integer idArea
     );
     
-    List<DwEmployees> findDwEmployeeByDwEnterpirseAndRoleAdvisers(
-            Integer idDwEnterprise,
-            Integer idRole
-            
-    );
-    
-    
-    
     List<DwEmployees> findAll();
     DwEmployees save(DwEmployees dwEmployees);
     void createReportDistributors(List<EmployeesHistory> employeesHistories, OutputStream outputStream) throws IOException;
@@ -50,5 +42,5 @@ public interface DwEmployeesService {
     void createReportCompanys(List<EmployeesHistory> employeesHistories, OutputStream outputStream) throws IOException;
     void createReportBpo(List<EmployeesHistory> employeesHistorys, OutputStream outputStream) throws IOException;
     
-    
+    List<DwEmployees> findDwEmployeeByDwEnterpirseAndRoleAdvisers(Integer idDwEnterprise );
 }

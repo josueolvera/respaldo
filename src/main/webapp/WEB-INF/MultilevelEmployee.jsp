@@ -24,6 +24,10 @@
                     dwEmployees: [],
                     employeesHistories: [],
                     searching: false,
+                    arrayAdvisersObj:{
+                        arrayAdvisers:[],
+                        supervisor:{}
+                    },
                     searchSelectedOptions: {
                         area: {
                             idArea: 0,
@@ -112,7 +116,8 @@
                     registerNumber: 0,
                     dwEnterprises: [],
                     supervisor:{},
-                    advisersBranch:[]
+                    advisersBranch:[],
+                    dwEnterpriseByBranch:[]
                 },
                 methods: {
                     arrayObjectIndexOf: function (myArray, searchTerm, property) {
@@ -254,15 +259,71 @@
                         this.supervisor = dwEmployee;
                         $("#promoterstModal").modal("show");
                         this.$http.get(ROOT_URL + "/dw-enterprises?idBranch="+this.supervisor.dwEnterprisesR.branch.idBranch).success(function (data) {
-                            this.advaisersBranch = data;
-                            console.log(data);
+                            this.dwEnterpriseByBranch = data;
+                            console.log(this.dwEnterpriseByBranch);
+                           this.getDwEnterpirseAndRoleAdvisers(this.dwEnterpriseByBranch[0]);
                         });
                         
                         
+                    },
+                    getDwEnterpirseAndRoleAdvisers: function (dwEnterprises) {
+                        this.$http.get(ROOT_URL + "/dw-employees/advisers-by-branch/"+dwEnterprises.idDwEnterprise).success(function (data) {
+                            this.advisersBranch = data;
+                            console.log( this.advisersBranch);
+                            
+                        });
+                        
+                        
+                    },
+                    
+                    saveSelectedAdvisers: function () {
+                        this.arrayAdvisersObj.supervisor = this.supervisor;
+                       console.log(this.arrayAdvisersObj);
+                       
+                       if(this.arrayAdvisersObj.arrayAdvisers.length >=3)
+                       {
+                           var arrayPromotores = {};
+                           
+                                arrayPromotores.IdEmployeeMultilevel = this.IdEmployeeMultilevel,
+                                       
+                                   
+                                   
+                           
+                           
+                           
+                           this.$http.post(ROOT_URL + "/multilevel-employee/newMultilevel?=" + this.idMultilevelEmploye, JSON.stringify())
+                    .success(function () {
+                        
+                        //this.clearEvenData();
+                        
+                     
+                            showAlert("Agendado exitosamente");
+                            }).error(function (data) {
+                                showAlert(data.error.message, {type: 3});
+                            });
+                           
+                           //showAlert("ok");
+                       }
+                       
+                       else
+                       {
+                           showAlert("no se puede agregar");
+                       }
+                           // this.$http.post(ROOT_URL + "/c-agreements-groups/new", JSON.stringify(this.group)).success(function (data) {
+                             //   showAlert("");
+                         //   }).error(function () {
+                           //     showAlert("Error en la solicitud", {type: 3});
+                                
                     }
                     
+                    
+                       
                 }
-            });
+                    
+                    
+            
+           
+});
         </script>
     </jsp:attribute>
 
@@ -414,13 +475,9 @@
             <div class="modal fade" id="promoterstModal"  role="dialog">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                    aria-hidden="true">&times;</span></button>
+                        <div class="modal-header a.bg-success">
                             <h4 class="modal-title">Supervisor  <b class="text-primary">{{supervisor.fullName}}</b></h4>
-                            <h4 class="modal-title">Sucursal <b class="text-primary">{{supervisor.dwEnterprisesR.branch.branchShort}}</b></h4>
-                             
-                            
+                            <h4 class="modal-title">Sucursal <b class="text-primary">{{supervisor.dwEnterprisesR.branch.branchShort}}</b></h4>     
                         </div>
                         
                         <div class="modal-body">
@@ -429,22 +486,19 @@
                                 <table class="table">
                                     <thead>
                                       <tr>
+                                          <th></th>
                                           <th>Nombre</th>
-                                        
                                         <th>RFC</th>
                                         <th>Puesto</th
                                         <th></th>
                                       </tr>
                                     </thead>
                                     <tbody>
-                                      <tr v-for="dwEmployee in dwEmployees">
-                                        <td>{{dwEmployee.fullName}}</td>
-                                        <td>{{dwEmployee.rfc}}</td>
-                                        <td>{{dwEmployee.rolesR.roleName}}</td>
-                                        
-                                        <td><div class="checkbox">
-                                                <label><input type="checkbox" value=""></label>
-                                            </div></td>
+                                      <tr v-for="aB in advisersBranch">
+                                        <td><input type="checkbox" :value="aB" v-model="arrayAdvisersObj.arrayAdvisers" ></td>
+                                        <td>{{aB.employee.fullName}}</td>
+                                        <td>{{aB.employee.rfc}}</td>
+                                        <td>{{aB.role.roleName}}</td>
                                       </tr>
                                     </tbody>
                                   </table>
@@ -453,7 +507,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
-                            <button type="button" class="btn btn-success" @click="createReport">Aceptar</button>
+                            <button type="button" class="btn btn-success" @click="saveSelectedAdvisers()">Guardar</button>
                         </div>
                     </div>
                 </div>
