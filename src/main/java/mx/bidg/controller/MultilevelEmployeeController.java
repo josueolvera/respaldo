@@ -57,7 +57,7 @@ public class MultilevelEmployeeController {
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(multilevelEmployees), HttpStatus.OK);
     }
     
-    @RequestMapping(value="/newMultilevel", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value="/new-multilevel", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public  ResponseEntity<String> save(@RequestBody String data) throws IOException{
         JsonNode node = mapper.readTree(data);
         

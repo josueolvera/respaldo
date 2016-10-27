@@ -282,17 +282,11 @@
                        
                        if(this.arrayAdvisersObj.arrayAdvisers.length >=3)
                        {
-                          
-                          this.$http.post(ROOT_URL + "/multilevel-employee/newMultilevel" , JSON.stringify(this.arrayAdvisersObj.arrayAdvisers))
-                    .success(function (data) {
-                        
-                       
-                        
-                       $("#promoterstModal").modal("show");
-                            showAlert("Agendado exitosamente");
-                            }).error(function () {
-                                showAlert("error", {type: 3});
-                            });
+                           this.$http.post(ROOT_URL+"/multilevel-employee/new-multilevel", JSON.stringify(this.arrayAdvisersObj)).success(function (data) {
+                               showAlert("ok");
+                           }).error(function () {
+                              showAlert("error", {type: 3});
+                           });
                           
                        }
                        
@@ -480,7 +474,7 @@
                                           <th></th>
                                           <th>Nombre</th>
                                         <th>RFC</th>
-                                        <th>Puesto</th
+                                        <th>Puesto</th>
                                         <th></th>
                                       </tr>
                                     </thead>
@@ -494,7 +488,7 @@
                                     </tbody>
                                   </table>
                             </div>
-                        </div
+                        </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
