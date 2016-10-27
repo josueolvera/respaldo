@@ -9,7 +9,7 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users" />
 
-<t:template pageTitle="BID Group: Reportes SAEM">
+<t:template pageTitle="BID Group: Multinivel Empleado">
     <jsp:attribute name="scripts">
         <script type="text/javascript">
             var vm = new Vue({
@@ -282,27 +282,18 @@
                        
                        if(this.arrayAdvisersObj.arrayAdvisers.length >=3)
                        {
-                           var arrayPromotores = {};
-                           
-                                arrayPromotores.IdEmployeeMultilevel = this.IdEmployeeMultilevel,
-                                       
-                                   
-                                   
-                           
-                           
-                           
-                           this.$http.post(ROOT_URL + "/multilevel-employee/newMultilevel?=" + this.idMultilevelEmploye, JSON.stringify())
-                    .success(function () {
+                          
+                          this.$http.post(ROOT_URL + "/multilevel-employee/newMultilevel" , JSON.stringify(this.arrayAdvisersObj.arrayAdvisers))
+                    .success(function (data) {
                         
-                        //this.clearEvenData();
+                       
                         
-                     
+                       $("#promoterstModal").modal("show");
                             showAlert("Agendado exitosamente");
-                            }).error(function (data) {
-                                showAlert(data.error.message, {type: 3});
+                            }).error(function () {
+                                showAlert("error", {type: 3});
                             });
-                           
-                           //showAlert("ok");
+                          
                        }
                        
                        else
