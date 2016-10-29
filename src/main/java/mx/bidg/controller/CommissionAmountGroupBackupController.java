@@ -64,6 +64,9 @@ public class CommissionAmountGroupBackupController {
             commissionAmountGroupBackup.setPttoPromVta(commissionAmountGroup.getPttoPromVta());
             commissionAmountGroupBackup.setScope(commissionAmountGroup.getScope());
             commissionAmountGroupBackup.setTabulator(commissionAmountGroup.getTabulator());
+            commissionAmountGroupBackup.setIdRole(commissionAmountGroup.getIdRole());
+            commissionAmountGroupBackup.setIdEmployee(commissionAmountGroup.getIdEmployee());
+            commissionAmountGroupBackup.setTabulator(commissionAmountGroup.getTabulator());
 
             commissionAmountGroupBackupService.save(commissionAmountGroupBackup);
         }
