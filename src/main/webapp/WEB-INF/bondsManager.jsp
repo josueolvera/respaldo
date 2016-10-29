@@ -159,7 +159,7 @@
             </div>
             <br>
             <div class="table-body flex-row flex-content">
-                <div class="row table-row" v-for="employeeBonus in employeesBonus | filterBy search in 'employees'">
+                <div class="row table-row" v-for="employeeBonus in employeesBonus | filterBy search in 'employees' | orderBy 'employees.rfc'">
                     <div class="col-xs-4">{{employeeBonus.employees.fullName}}</div>
                     <div class="col-xs-2">{{employeeBonus.employees.rfc}}</div>
                     <div class="col-xs-2">{{employeeBonus.bonusAmount}}</div>
