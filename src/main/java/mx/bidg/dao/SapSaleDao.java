@@ -18,4 +18,5 @@ public interface SapSaleDao extends InterfaceDao<SapSale>  {
     List findByZonaGroup(List<GroupsAgreements>groupsAgreementsList, LocalDateTime fromDate, LocalDateTime toDate);
     List findByRegionGroup(List<GroupsAgreements>groupsAgreementsList, LocalDateTime fromDate, LocalDateTime toDate);
     List findByDistributorGroup(List<GroupsAgreements>groupsAgreementsList, LocalDateTime fromDate, LocalDateTime toDate);
+    List findBySupervisorRoleAndGroup(Integer idEmployee,List<GroupsAgreements>groupsAgreementsList, LocalDateTime fromDate, LocalDateTime toDate);
 }

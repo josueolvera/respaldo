@@ -69,7 +69,8 @@ public class SapSaleDaoImpl extends AbstractDao<Integer, SapSale> implements Sap
         projList.add(Projections.count("idSale"));
         projList.add(Projections.sum("comissionableAmount"));
         projList.add(Projections.groupProperty("idEmployee"));
-        
+        projList.add(Projections.groupProperty("idRole"));
+
         for (GroupsAgreements groupsAgreements : groupsAgreementsList){
             disjuntionAgreement.add(Restrictions.eq("idAgreement", groupsAgreements.getIdAgreement()));
         }
@@ -173,6 +174,33 @@ public class SapSaleDaoImpl extends AbstractDao<Integer, SapSale> implements Sap
         criteria.setProjection(projList);
         criteria.add(Restrictions.disjunction(disjuntionAgreement));
         criteria.add(Restrictions.between("purchaseDate",from,to));
+
+        return criteria.list();
+    }
+
+    @Override
+    public List findBySupervisorRoleAndGroup(Integer idEmployee, List<GroupsAgreements> groupsAgreementsList, LocalDateTime fromDate, LocalDateTime toDate) {
+        Date from = Date.from(fromDate.atZone(ZoneId.systemDefault()).toInstant());
+        Date to = Date.from(toDate.atZone(ZoneId.systemDefault()).toInstant());
+
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjuntionAgreement = Restrictions.disjunction();
+        ProjectionList projList = Projections.projectionList();
+
+        projList.add(Projections.distinct(Projections.groupProperty("claveSap")));
+        projList.add(Projections.sum("comissionableAmount"));
+        projList.add(Projections.count("idSale"));
+        projList.add(Projections.groupProperty("idEmployee"));
+        projList.add(Projections.groupProperty("idRole"));
+
+        for (GroupsAgreements groupsAgreements : groupsAgreementsList){
+            disjuntionAgreement.add(Restrictions.eq("idAgreement", groupsAgreements.getIdAgreement()));
+        }
+        criteria.setProjection(projList);
+        criteria.add(Restrictions.disjunction(disjuntionAgreement));
+        criteria.add(Restrictions.between("purchaseDate",from,to));
+        criteria.add(Restrictions.eq("idEmployee", idEmployee));
+        criteria.add(Restrictions.eq("idRole", 81));
 
         return criteria.list();
     }
