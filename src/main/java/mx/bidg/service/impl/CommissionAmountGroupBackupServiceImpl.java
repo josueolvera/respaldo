@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,5 +46,35 @@ public class CommissionAmountGroupBackupServiceImpl implements CommissionAmountG
     public boolean delete(CommissionAmountGroupBackup commissionAmountGroupBackup) {
         commissionAmountGroupBackupDao.delete(commissionAmountGroupBackup);
         return true;
+    }
+
+    @Override
+    public List<CommissionAmountGroupBackup> findByAcumulateEmployee(Integer idEmployee, LocalDateTime fromDate, LocalDateTime toDate) {
+        List<CommissionAmountGroupBackup> commissionAmountGroupBackupList = new ArrayList<>();
+
+        List commission = commissionAmountGroupBackupDao.findAcumulateBySupervisor(idEmployee, fromDate, toDate);
+
+        for (Object data : commission){
+            CommissionAmountGroupBackup commissionAmountGroup = new CommissionAmountGroupBackup();
+            Object[] projection = (Object[]) data;
+            BigDecimal numRequest = new BigDecimal(projection[2].toString());
+            BigDecimal commissionAmount  = (BigDecimal) projection[3];
+            BigDecimal amount = (BigDecimal) projection[1];
+            Integer idAg = (Integer) projection[0];
+            Integer idEmploye = (Integer) projection[4];
+
+            commissionAmountGroup.setAmount(amount);
+            commissionAmountGroup.setApplicationsNumber(numRequest);
+            commissionAmountGroup.setIdAg(idAg);
+            commissionAmountGroup.setCommission(commissionAmount);
+            commissionAmountGroup.setTabulator(BigDecimal.valueOf(0));
+            commissionAmountGroup.setFromDate(fromDate);
+            commissionAmountGroup.setToDate(toDate);
+            commissionAmountGroup.setIdEmployee(idEmploye);
+
+            commissionAmountGroupBackupList.add(commissionAmountGroup);
+        }
+
+        return commissionAmountGroupBackupList;
     }
 }

@@ -15,4 +15,5 @@ public interface CommissionAmountGroupBackupService {
     CommissionAmountGroupBackup findById(Integer idCommissionAmountGroupBackup);
     List<CommissionAmountGroupBackup> findAll();
     boolean delete(CommissionAmountGroupBackup commissionAmountGroupBackup);
+    List<CommissionAmountGroupBackup> findByAcumulateEmployee(Integer idEmployee, LocalDateTime fromDate, LocalDateTime toDate);
 }
