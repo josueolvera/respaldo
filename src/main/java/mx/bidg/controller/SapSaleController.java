@@ -59,6 +59,9 @@ public class SapSaleController {
     @Autowired
     private BonusCommisionableEmployeeService bonusCommisionableEmployeeService;
 
+    @Autowired
+    private MultilevelEmployeeService multilevelEmployeeService;
+
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody String findSapSales() throws Exception {
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(sapSaleService.findAll());
@@ -271,6 +274,25 @@ public class SapSaleController {
                         List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg(), idDateCalculation);
 
                         agreementsGroupConditionService.obtainCommissionByGoalBranchToDistributor(agreementsGroupConditionList);
+                    }
+                    //ROLE 8 supervisor
+                }else if (role.getIdCalculationRole() == 8){
+                    List<CommissionAmountGroup> commissionBranchGoal = commissionAmountGroupService.getBranchWithScopeGoal();
+                    List<RolesGroupAgreements> rolesGroupAgreementsList = rolesGroupAgreementsService.findByRole(role.getIdCalculationRole());
+
+                    for (CommissionAmountGroup commissionAmountGroup : commissionBranchGoal){
+                        List multilevelEmployees = multilevelEmployeeService.findByIdBranch(commissionAmountGroup.getIdBranch());
+                        if (!multilevelEmployees.isEmpty()){
+                            for(int j = 0; j >= multilevelEmployees.size(); j++){
+                                Integer idEmployeeSupervisor = (Integer) multilevelEmployees.get(j);
+
+                                List sapSales = sapSaleService.findBySupervisorAndRleGroup(idEmployeeSupervisor, rolesGroupAgreementsList.get(0).getIdAg(), ofDate, untilDate);
+                                CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(rolesGroupAgreementsList.get(0).getIdAg());
+                                commissionAmountGroupService.obtainAmountsbySupervisor(sapSales, agreementsGroups, ofDate, untilDate);
+                                List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(rolesGroupAgreementsList.get(0).getIdAg(), idDateCalculation);
+                                agreementsGroupConditionService.obtainCommissionBySupervisor(agreementsGroupConditionList);
+                            }
+                        }
                     }
                 }
             }
