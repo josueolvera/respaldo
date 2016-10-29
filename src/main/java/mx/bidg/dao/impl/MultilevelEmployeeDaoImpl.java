@@ -9,6 +9,11 @@ import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.MultilevelEmployeeDao;
 import mx.bidg.model.MultilevelEmployee;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Projection;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -41,5 +46,19 @@ public class MultilevelEmployeeDaoImpl extends AbstractDao <Integer, MultilevelE
         remove(entity);
         return true;
     }
-    
+
+    @Override
+    public List findByIdBranch(Integer idBranch) {
+        Criteria criteria = createEntityCriteria();
+        ProjectionList projList = Projections.projectionList();
+
+        projList.add(Projections.distinct(Projections.groupProperty("idEmployeeMultilevel")));
+
+        return criteria.setProjection(projList).add(Restrictions.eq("idBranch",idBranch)).list();
+    }
+
+    @Override
+    public List<MultilevelEmployee> findByIdEmployeeMultilevel(Integer idEmployeeMultilevel) {
+        return createEntityCriteria().add(Restrictions.eq("idEmployeeMultilevel", idEmployeeMultilevel)).list();
+    }
 }

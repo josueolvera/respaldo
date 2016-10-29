@@ -5,14 +5,18 @@
  */
 package mx.bidg.dao;
 
+import mx.bidg.model.Multilevel;
 import mx.bidg.model.MultilevelEmployee;
+
+import java.util.List;
 
 /**
  *
  * @author Cristhian de la cruz
  */
 public interface MultilevelEmployeeDao extends InterfaceDao<MultilevelEmployee>{
-    
-   
-    
+
+    List findByIdBranch(Integer idBranch);
+    List<MultilevelEmployee> findByIdEmployeeMultilevel(Integer idEmployeeMultilevel);
+
 }
