@@ -161,6 +161,10 @@ public class SapSale implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idZonas;
 
+    @Column(name = "ID_ROLE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRole;
+
     @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
     @ManyToOne()
     private DwEnterprises dwEnterprise;
@@ -188,6 +192,10 @@ public class SapSale implements Serializable {
     @JoinColumn(name = "ID_ZONAS", referencedColumnName = "ID_ZONAS")
     @ManyToOne(optional = true)
     private CZonas zona;
+
+    @JoinColumn(name = "ID_ROLE", referencedColumnName = "ID_ROLE")
+    @ManyToOne(optional = true)
+    private CRoles role;
 
     public SapSale() {
     }
@@ -520,6 +528,22 @@ public class SapSale implements Serializable {
 
     public void setZona(CZonas zona) {
         this.zona = zona;
+    }
+
+    public Integer getIdRole() {
+        return idRole;
+    }
+
+    public void setIdRole(Integer idRole) {
+        this.idRole = idRole;
+    }
+
+    public CRoles getRole() {
+        return role;
+    }
+
+    public void setRole(CRoles role) {
+        this.role = role;
     }
 
     @Override
