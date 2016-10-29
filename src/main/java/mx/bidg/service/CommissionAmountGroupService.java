@@ -28,4 +28,6 @@ public interface CommissionAmountGroupService {
     List<CommissionAmountGroup> obtainBranchManager();
     List<CommissionAmountGroup> obtainAuxiliar();
     void reportMonthlyCommissions(OutputStream stream, LocalDateTime fromDate, LocalDateTime toDate) throws IOException;
+    List<CommissionAmountGroup> getBranchWithScopeGoal();
+    List<CommissionAmountGroup> obtainAmountsbySupervisor(List list, CAgreementsGroups agreementsGroups, LocalDateTime fromDate, LocalDateTime toDate);
 }
