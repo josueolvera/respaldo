@@ -118,6 +118,10 @@ public class CommissionAmountGroup implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idEmployee;
 
+    @Column(name = "ID_ROLE")
+    @JsonView(JsonViews.Root.class)
+    private Integer idRole;
+
     public CommissionAmountGroup() {
     }
 
@@ -297,6 +301,14 @@ public class CommissionAmountGroup implements Serializable {
 
     public void setIdEmployee(Integer idEmployee) {
         this.idEmployee = idEmployee;
+    }
+
+    public Integer getIdRole() {
+        return idRole;
+    }
+
+    public void setIdRole(Integer idRole) {
+        this.idRole = idRole;
     }
 
     @Override
