@@ -15,4 +15,5 @@ public interface AgreementsGroupConditionDao extends InterfaceDao<AgreementsGrou
     AgreementsGroupCondition updateStatus(Integer idGroupCondition, boolean statusBoolean);
     AgreementsGroupCondition save(AgreementsGroupCondition agreementsGroupCondition);
     AgreementsGroupCondition getFinalOrder(Integer idAg);
+    List<AgreementsGroupCondition> getRuleTransport();
 }

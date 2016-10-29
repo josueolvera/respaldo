@@ -99,4 +99,11 @@ public class AgreementsGroupConditionDaoImpl extends AbstractDao<Integer, Agreem
                 .uniqueResult();
         return agc;
     }
+
+    @Override
+    public List<AgreementsGroupCondition> getRuleTransport() {
+        Criteria criteria = createEntityCriteria();
+
+        return criteria.add(Restrictions.eq("idAg", 19)).add(Restrictions.eq("typeOperation", 6)).list();
+    }
 }
