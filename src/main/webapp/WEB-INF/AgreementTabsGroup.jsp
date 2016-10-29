@@ -126,7 +126,7 @@
                         newTab.idAg = this.idAgreementGroup;
                         newTab.idDateCalculation = this.idDateCalculation;
 
-                        if (ruleType == 1 || ruleType == 3 || ruleType == 4) {
+                        if (ruleType == 1 || ruleType == 3 || ruleType == 4 || ruleType == 5) {
                             newTab.amountMin = this.montoMinimo;
                             newTab.amountMax = this.montoMaximo;
 
@@ -136,7 +136,7 @@
                                 this.montoMaximo = '';
                             }
                         }
-                        if (ruleType == 2) {
+                        if (ruleType == 2 || ruleType == 6) {
                             newTab.amountMin = this.montoMaximo;
                             newTab.amountMax = this.montoMaximo;
                         }
@@ -448,7 +448,7 @@
                         Bono
                     </label>
                     <div class="input-group">
-                        <span class="input-group-addon">%</span>
+                        <span class="input-group-addon">$</span>
                         <input number type="text" class="form-control" v-model="tabulator"
                                onkeypress="return isNumberKey(event,this)">
                     </div>
@@ -465,6 +465,48 @@
                 </div>
 
                 <div class="col-xs-1 text-left" style="margin-top: 25px">
+                    <button class="btn btn-default" @click="saveTab(ruleType)" title="Almacenar regla">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="row" v-if="ruleType == 6">
+
+                <div class="col-xs-3">
+                    <label>
+                        Nùmero de solicitudes
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">#</span>
+                        <input number type="text" class="form-control" v-model="montoMaximo"
+                               onkeypress="return isNumberKey(event,this)">
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <label>
+                        Bono
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">$</span>
+                        <input number type="text" class="form-control" v-model="tabulator"
+                               onkeypress="return isNumberKey(event,this)">
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <label>
+                        Tipo de calculo
+                    </label>
+                    <select class="form-control" v-model="idDateCalculation">
+                        <option v-for="type in dateTypes" value="{{type.idDateCalculation}}">
+                            {{type.nameDate}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-xs-3 text-left" style="margin-top: 25px">
                     <button class="btn btn-default" @click="saveTab(ruleType)" title="Almacenar regla">
                         <span class="glyphicon glyphicon-plus"></span>
                     </button>
@@ -539,6 +581,9 @@
                                 </label>
                                 <label v-if="tab.typeOperation == 5">
                                     Bono por acumulado mensual
+                                </label>
+                                <label v-if="tab.typeOperation == 6">
+                                    Bono apoyo a pasajes
                                 </label>
                             </td>
                         </tr>
