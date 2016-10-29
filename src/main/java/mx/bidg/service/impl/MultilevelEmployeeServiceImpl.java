@@ -49,5 +49,10 @@ public class MultilevelEmployeeServiceImpl implements MultilevelEmployeeService 
         
         return multilevelEmployeeDao.delete(multilevelEmployee);
     }
-    
+
+    @Override
+    public List findByIdBranch(Integer idBranch) {
+        return multilevelEmployeeDao.findByIdBranch(idBranch);
+    }
+
 }

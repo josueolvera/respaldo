@@ -23,6 +23,8 @@ public interface MultilevelEmployeeService {
     List<MultilevelEmployee> findAll();
     
     boolean delete(MultilevelEmployee multilevelEmployee);
+
+    List findByIdBranch(Integer idBranch);
     
     
     
