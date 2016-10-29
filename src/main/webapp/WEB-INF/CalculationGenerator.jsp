@@ -13,8 +13,6 @@
                 el: '#content',
                 ready : function () {
                     this.obtainDateType();
-                    this.activateDateTimePickerStartDateMonth();
-                    this.activateDateTimePickerStartDate();
                     this.findAll();
                 },
                 data: {
@@ -49,7 +47,6 @@
                         }).data();
                     },
                     activateDateTimePickerStartDateMonth: function () {
-                        var currentDate = new Date();
 
                         this.dateTimePickerStartDate = $('#startDateMonth').datetimepicker({
                             locale: 'es',
@@ -119,8 +116,6 @@
                         var fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth() + 1) + "-" + fecha.getDate();
                         var fechaMinima = moment(fecha_actual).subtract('months', 2).format('YYYY-MM-DD');
 
-                        console.log(this.dateTimePickerStartDate.DateTimePicker.date().toISOString().slice(0, -1));
-
                         this.fromDate = this.dateTimePickerStartDate.DateTimePicker.date().toISOString().slice(0, -1);
                         this.ofDate = this.dateTimePickerEndDate.DateTimePicker.date().toISOString().slice(0, -1);
 
@@ -151,6 +146,8 @@
                     clear: function () {
                         this.search.endDate = "";
                         this.search.startDate = "";
+                        this.activateDateTimePickerStartDateMonth();
+                        this.activateDateTimePickerStartDate();
                     },
                     exportReport: function () {
                      window.location = ROOT_URL + "/commission-amount-group/report-advisers";
@@ -218,7 +215,7 @@
                                 Generar cálculo
                             </button>
                         </div>
-                        <div class="col-md-2" v-if="btnExportReport">
+                        <div class="col-md-2">
                             <button type="button" @click="exportReport" class="btn btn-success form-control" style="margin-top: 27px">
                                 Exportar reporte
                             </button>
@@ -260,7 +257,7 @@
                                 Generar cálculo
                             </button>
                         </div>
-                        <div class="col-md-2" v-if="btnExportReport">
+                        <div class="col-md-2">
                             <button type="button" @click="exportReportMonthly" class="btn btn-success form-control" style="margin-top: 27px">
                                 Exportar reporte
                             </button>
