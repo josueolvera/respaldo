@@ -1,5 +1,6 @@
 package mx.bidg.dao;
 
+import mx.bidg.dao.impl.CommissionAmountGroupDaoImpl;
 import mx.bidg.model.AgreementsGroupCondition;
 import mx.bidg.model.CommissionAmountGroup;
 
@@ -26,4 +27,12 @@ public interface CommissionAmountGroupDao extends InterfaceDao<CommissionAmountG
     List<CommissionAmountGroup> obtainBranchByDistributorAndCondition(Integer idDistributor, AgreementsGroupCondition agreementsGroupCondition);
     List<CommissionAmountGroup> getReprocessingByCondition(AgreementsGroupCondition agreementsGroupCondition);
     CommissionAmountGroup getOnlyDataOfGroupNineTeen(Integer idEmployee);
+    List<CommissionAmountGroup> findAllByAdvisersAndCleaning();
+    List findOnlyByClaveSapAndAdvisersAndCleaning ();
+    List <CommissionAmountGroup> getBranchWithScopeGoal();
+    List<CommissionAmountGroup> findByGroupSupervisorAndSupervisors();
+    List findOnlyClaveSapAndSupervisor ();
+    List<CommissionAmountGroup> findAllBySupervisor();
+    List<CommissionAmountGroup> findAllRegisterBySupervisorExceptGroupSupervisor(String claveSap);
+    CommissionAmountGroup getGroupNineTeenAndConditons(Integer idEmployee, AgreementsGroupCondition agreementsGroupCondition);
 }

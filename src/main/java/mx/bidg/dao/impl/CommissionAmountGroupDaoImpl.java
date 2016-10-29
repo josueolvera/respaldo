@@ -5,11 +5,10 @@ import mx.bidg.dao.CommissionAmountGroupDao;
 import mx.bidg.model.AgreementsGroupCondition;
 import mx.bidg.model.CommissionAmountGroup;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -81,12 +80,16 @@ public class CommissionAmountGroupDaoImpl extends AbstractDao<Integer, Commissio
         ProjectionList projList = Projections.projectionList();
 
         projList.add(Projections.distinct(Projections.groupProperty("claveSap")));
-        return createEntityCriteria().setProjection(projList).add(Restrictions.isNotNull("claveSap")).list();
+        return createEntityCriteria()
+                .setProjection(projList)
+                .add(Restrictions.isNotNull("claveSap"))
+                .add(Restrictions.ne("idAg",30))
+                .list();
     }
 
     @Override
     public List<CommissionAmountGroup> findAllByClaveSap() {
-        return createEntityCriteria().add(Restrictions.isNotNull("claveSap")).list();
+        return createEntityCriteria().add(Restrictions.isNotNull("claveSap")).add(Restrictions.ne("idAg",30)).list();
     }
 
     @Override
@@ -189,6 +192,100 @@ public class CommissionAmountGroupDaoImpl extends AbstractDao<Integer, Commissio
         return (CommissionAmountGroup) createEntityCriteria()
                 .add(Restrictions.eq("idAg", 19))
                 .add(Restrictions.eq("idEmployee", idEmployee))
+                .uniqueResult();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findAllByAdvisersAndCleaning() {
+        Criteria criteria = createEntityCriteria();
+
+        Criterion advisers = Restrictions.eq("idRole", 64);
+        Criterion cleaning = Restrictions.eq("idRole", 82);
+        Criterion emptys = Restrictions.isNull("idRole");
+
+        LogicalExpression orExpression1 = Restrictions.or(advisers, cleaning);
+        LogicalExpression orExpression2 = Restrictions.or(orExpression1, emptys);
+
+        return criteria.add(Restrictions.isNotNull("claveSap"))
+                .add(orExpression2)
+                .add(Restrictions.ne("idAg",30))
+                .add(Restrictions.ne("idRole",81))
+                .addOrder(Order.desc("idRole"))
+                .list();
+    }
+
+    @Override
+    public List findOnlyByClaveSapAndAdvisersAndCleaning() {
+        ProjectionList projList = Projections.projectionList();
+
+        Criterion advisers = Restrictions.eq("idRole", 64);
+        Criterion cleaning = Restrictions.eq("idRole", 82);
+        Criterion emptys = Restrictions.isNull("idRole");
+
+        LogicalExpression orExpression1 = Restrictions.or(advisers, cleaning);
+        LogicalExpression orExpression2 = Restrictions.or(orExpression1, emptys);
+
+        projList.add(Projections.distinct(Projections.groupProperty("claveSap")));
+        return createEntityCriteria()
+                .setProjection(projList)
+                .add(orExpression2)
+                .add(Restrictions.ne("idAg",30))
+                .add(Restrictions.ne("idRole",81))
+                .addOrder(Order.desc("idRole"))
+                .list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> getBranchWithScopeGoal() {
+        return createEntityCriteria().add(Restrictions.ne("idAg",18)).add(Restrictions.ne("idAg",21))
+                .add(Restrictions.isNotNull("idBranch")).add(Restrictions.ge("scope", new BigDecimal(0.80)))
+                .list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findByGroupSupervisorAndSupervisors() {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idAg", 30))
+                .add(Restrictions.eq("idRole", 81))
+                .list();
+    }
+
+    @Override
+    public List findOnlyClaveSapAndSupervisor() {
+        ProjectionList projList = Projections.projectionList();
+
+        projList.add(Projections.distinct(Projections.groupProperty("claveSap")));
+        return createEntityCriteria()
+                .setProjection(projList)
+                .add(Restrictions.isNotNull("claveSap"))
+                .add(Restrictions.eq("idRole",81))
+                .list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findAllBySupervisor() {
+        Criteria criteria = createEntityCriteria();
+
+        return criteria.add(Restrictions.isNotNull("claveSap"))
+                .add(Restrictions.eq("idRole",81))
+                .list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findAllRegisterBySupervisorExceptGroupSupervisor(String claveSap) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("claveSap", claveSap))
+                .add(Restrictions.ne("idAg",30))
+                .list();
+    }
+
+    @Override
+    public CommissionAmountGroup getGroupNineTeenAndConditons(Integer idEmployee, AgreementsGroupCondition agreementsGroupCondition) {
+        return (CommissionAmountGroup) createEntityCriteria()
+                .add(Restrictions.eq("idAg", 19))
+                .add(Restrictions.eq("idEmployee", idEmployee))
+                .add(Restrictions.between("applicationsNumber",agreementsGroupCondition.getAmountMin(),
+                        agreementsGroupCondition.getAmountMax()))
                 .uniqueResult();
     }
 }
