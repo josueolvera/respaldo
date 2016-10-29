@@ -22,4 +22,5 @@ public interface SapSaleService {
     List findByZonaGroup(Integer idAg, LocalDateTime fromDate, LocalDateTime toDate);
     List findByRegionGroup(Integer idAg, LocalDateTime fromDate, LocalDateTime toDate);
     List findByDistributorGroup(Integer idAg, LocalDateTime fromDate, LocalDateTime toDate);
+    List findBySupervisorAndRleGroup(Integer idEmployee, Integer idAg, LocalDateTime fromDate, LocalDateTime toDate);
 }

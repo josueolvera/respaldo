@@ -48,6 +48,9 @@ public class SapSaleServiceImpl implements SapSaleService {
     @Autowired
     private EmployeesDao employeesDao;
 
+    @Autowired
+    private DwEmployeesDao dwEmployeesDao;
+
     @Override
     public List<SapSale> findAll() {
         return sapSaleDao.findAll();
@@ -160,6 +163,15 @@ public class SapSaleServiceImpl implements SapSaleService {
                 Employees employee = employeesDao.findByClaveSap(claveSap.getStringCellValue());
                 sapSale.setEmployee(employee);
                 sapSale.setClaveSap(claveSap.getStringCellValue());
+
+                if(employee !=null){
+                    DwEmployees dwEmployees = dwEmployeesDao.findByIdEmployee(employee.getIdEmployee());
+                    if (dwEmployees != null){
+                        if (dwEmployees.getRole() != null){
+                            sapSale.setRole(dwEmployees.getRole());
+                        }
+                    }
+                }
             }
             if (clientId != null) {
                 sapSale.setClientId(clientId.getStringCellValue());
@@ -301,6 +313,15 @@ public class SapSaleServiceImpl implements SapSaleService {
                         Employees employee = employeesDao.findByClaveSap(claveSap.getStringCellValue());
                         sapSale.setEmployee(employee);
                         sapSale.setClaveSap(claveSap.getStringCellValue());
+
+                        if(employee !=null) {
+                            DwEmployees dwEmployees = dwEmployeesDao.findByIdEmployee(employee.getIdEmployee());
+                            if (dwEmployees != null) {
+                                if (dwEmployees.getRole() != null){
+                                    sapSale.setRole(dwEmployees.getRole());
+                                }
+                            }
+                        }
                     }
                     if (bonification != null) {
                         BigDecimal bdBonification = new BigDecimal(bonification.getNumericCellValue());
@@ -438,6 +459,15 @@ public class SapSaleServiceImpl implements SapSaleService {
                         Employees employee = employeesDao.findByClaveSap(claveSap.getStringCellValue());
                         newSapSale.setEmployee(employee);
                         newSapSale.setClaveSap(claveSap.getStringCellValue());
+
+                        if(employee !=null) {
+                            DwEmployees dwEmployees = dwEmployeesDao.findByIdEmployee(employee.getIdEmployee());
+                            if (dwEmployees != null) {
+                                if (dwEmployees.getRole() != null){
+                                    sapSale.setRole(dwEmployees.getRole());
+                                }
+                            }
+                        }
                     }
                     if (bonification != null) {
                         BigDecimal bdBonification = new BigDecimal(bonification.getNumericCellValue());
@@ -453,11 +483,21 @@ public class SapSaleServiceImpl implements SapSaleService {
                             DwEnterprises dwEnterprises = dwEnterprisesDao.findByBranch(branch.getIdBranch());
 
                             if (dwEnterprises != null) {
-                                sapSale.setDistributor(dwEnterprises.getDistributor());
-                                sapSale.setZona(dwEnterprises.getZona());
-                                sapSale.setRegion(dwEnterprises.getRegion());
-                                sapSale.setDwEnterprise(dwEnterprises);
-                                sapSale.setBranch(branch);
+                                if(dwEnterprises.getDistributor() != null){
+                                    sapSale.setDistributor(dwEnterprises.getDistributor());
+                                }
+                                if (dwEnterprises.getZona() != null){
+                                    sapSale.setZona(dwEnterprises.getZona());
+                                }
+                                if (dwEnterprises.getZona() != null){
+                                    sapSale.setRegion(dwEnterprises.getRegion());
+                                }
+                                if (dwEnterprises != null){
+                                    sapSale.setDwEnterprise(dwEnterprises);
+                                }
+                                if (branch != null){
+                                    sapSale.setBranch(branch);
+                                }
 
                                 if (agreementName != null) {
                                     String clearAgreementName = StringUtils.stripAccents(agreementName.getStringCellValue());
@@ -649,5 +689,11 @@ public class SapSaleServiceImpl implements SapSaleService {
     public List findByDistributorGroup(Integer idAg, LocalDateTime fromDate, LocalDateTime toDate) {
         List<GroupsAgreements> groupsAgreementsList = groupsAgreementsDao.findGroupsAgreementsSelectedByAg(idAg);
         return sapSaleDao.findByDistributorGroup(groupsAgreementsList,fromDate,toDate);
+    }
+
+    @Override
+    public List findBySupervisorAndRleGroup(Integer idEmployee, Integer idAg, LocalDateTime fromDate, LocalDateTime toDate) {
+        List<GroupsAgreements> groupsAgreementsList = groupsAgreementsDao.findGroupsAgreementsSelectedByAg(idAg);
+        return sapSaleDao.findBySupervisorRoleAndGroup(idEmployee, groupsAgreementsList, fromDate, toDate);
     }
 }
