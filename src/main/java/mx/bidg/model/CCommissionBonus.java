@@ -23,6 +23,7 @@ public class CCommissionBonus implements Serializable {
 
     public static final CCommissionBonus BONO_POR_CUMPLIMIENTO = new CCommissionBonus(1);
     public static final CCommissionBonus BONO_POR_NUEVO_INGRESO  = new CCommissionBonus(2);
+    public static final CCommissionBonus APOYO_PASAJE  = new CCommissionBonus(3);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
