@@ -102,4 +102,22 @@ public class CommissionAmountGroupBackupDaoImpl extends AbstractDao<Integer, Com
 
         return criteria.add(Restrictions.eq("idAg", 17)).list();
     }
+
+    @Override
+    public List findAcumulateBySupervisor(Integer idEmployee, LocalDateTime fromDate, LocalDateTime toDate) {
+
+        Criteria criteria = createEntityCriteria();
+        ProjectionList projList = Projections.projectionList();
+
+        projList.add(Projections.distinct(Projections.groupProperty("idAg")));
+        projList.add(Projections.sum("amount"));
+        projList.add(Projections.sum("applicationsNumber"));
+        projList.add(Projections.sum("commission"));
+        projList.add(Projections.groupProperty("idEmployee"));
+
+        criteria.setProjection(projList);
+        criteria.add(Restrictions.between("toDate",fromDate,toDate));
+
+        return criteria.add(Restrictions.eq("idEmployee", idEmployee)).list();
+    }
 }
