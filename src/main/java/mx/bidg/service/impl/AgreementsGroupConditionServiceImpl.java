@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -149,7 +150,7 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
                 if( commissionAmountGroup.getIdZona() == 10){
                     if (commissionAmountGroupList.size() == 5 ){
                         BigDecimal defaultValue = new BigDecimal(0.40);
-                        commissionAmountGroup.setTabulator(defaultValue);
+                        commissionAmountGroup.setTabulator(defaultValue.divide(new BigDecimal(100)));
                         BigDecimal divisor = new BigDecimal(100);
                         BigDecimal percentage = defaultValue.divide(divisor);
                         BigDecimal comission = percentage.multiply(commissionAmountGroup.getAmount());
@@ -159,7 +160,8 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
                         int size = commissionAmountGroupList.size();
                         BigDecimal value = new BigDecimal(size);
                         BigDecimal tabulatorBranch = groupCondition.getTabulator().multiply(value);
-                        commissionAmountGroup.setTabulator(tabulatorBranch);
+                        BigDecimal tabulator = tabulatorBranch.divide(new BigDecimal(100));
+                        commissionAmountGroup.setTabulator(tabulator);
                         BigDecimal divisor = new BigDecimal(100);
                         BigDecimal percentage = tabulatorBranch.divide(divisor);
                         BigDecimal commissionByBranch = percentage.multiply(commissionAmountGroup.getAmount());
@@ -169,7 +171,7 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
                 }else {
                     if (commissionAmountGroupList.size() >= 6){
                         BigDecimal defaultValue = new BigDecimal(0.40);
-                        commissionAmountGroup.setTabulator(defaultValue);
+                        commissionAmountGroup.setTabulator(defaultValue.divide(new BigDecimal(100)));
                         BigDecimal divisor = new BigDecimal(100);
                         BigDecimal percentage = defaultValue.divide(divisor);
                         BigDecimal comission = percentage.multiply(commissionAmountGroup.getAmount());
@@ -179,7 +181,8 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
                         int size = commissionAmountGroupList.size();
                         BigDecimal value = new BigDecimal(size);
                         BigDecimal tabulatorBranch = groupCondition.getTabulator().multiply(value);
-                        commissionAmountGroup.setTabulator(tabulatorBranch);
+                        BigDecimal tabulator = tabulatorBranch.divide(new BigDecimal(100));
+                        commissionAmountGroup.setTabulator(tabulator);
                         BigDecimal divisor = new BigDecimal(100);
                         BigDecimal percentage = tabulatorBranch.divide(divisor);
                         BigDecimal commissionByBranch = percentage.multiply(commissionAmountGroup.getAmount());
@@ -373,9 +376,9 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
 
                 for (CommissionAmountGroup cAGroup : amountGroups) {
                     cAGroup.setTabulator(groupCondition.getTabulator());
-                    BigDecimal divisor = new BigDecimal(100);
-                    BigDecimal comission = groupCondition.getTabulator().divide(divisor);
-                    cAGroup.setCommission(defaultValue.multiply(comission));
+//                    BigDecimal divisor = new BigDecimal(100);
+//                    BigDecimal comission = groupCondition.getTabulator().divide(divisor);
+                    cAGroup.setCommission(groupCondition.getTabulator());
                     commissionAmountGroupDao.update(cAGroup);
                 }
             }
@@ -454,7 +457,7 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
                     totalCelula = totalCelula.add(adviser.getAmount());
                     numRequest = numRequest.add(adviser.getApplicationsNumber());
                 }
-                BigDecimal scope = supervisorG.getAmount().divide(totalCelula);
+                BigDecimal scope = supervisorG.getAmount().divide(totalCelula, 2, RoundingMode.HALF_UP);
 
                 BigDecimal divisor = new BigDecimal(100);
                 BigDecimal tabulator = groupCondition.getTabulator().divide(divisor);
@@ -491,6 +494,22 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
         }
 
         return commissionAmountGroupDao.findAll();
+    }
+
+    @Override
+    public List<AgreementsGroupCondition> changeStatusByCalculationDate(Integer idDateCalculation) {
+        List<AgreementsGroupCondition> activesConditions = agreementsGroupConditionDao.findByCalculationStatus(idDateCalculation);
+        List<AgreementsGroupCondition> disabledConditions = agreementsGroupConditionDao.findByCalculationStatusDifferent(idDateCalculation);
+
+        for (AgreementsGroupCondition groupCondition : activesConditions){
+            agreementsGroupConditionDao.updateStatus(groupCondition.getIdGroupCondition(),true);
+        }
+
+        for (AgreementsGroupCondition agreementsGroupCondition : disabledConditions){
+            agreementsGroupConditionDao.updateStatus(agreementsGroupCondition.getIdGroupCondition(),false);
+        }
+
+        return agreementsGroupConditionDao.findAll();
     }
 
 }

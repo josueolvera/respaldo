@@ -28,4 +28,5 @@ public interface AgreementsGroupConditionService {
     List<CommissionAmountGroup> obtainCommissionByPromotor(List<AgreementsGroupCondition> agreementsGroupConditions);
     List<CommissionAmountGroup> bonusJoinDate (LocalDateTime joinDateFrom, LocalDateTime toDateFrom);
     List<CommissionAmountGroup> obtainCommissionBySupervisor(List<AgreementsGroupCondition> agreementsGroupConditionList);
+    List<AgreementsGroupCondition> changeStatusByCalculationDate(Integer idDateCalculation);
 }
