@@ -40,9 +40,9 @@ public class CommissionAmountGroupController {
     }
 
     @RequestMapping(value = "/report-advisers", method = RequestMethod.GET)
-    public ResponseEntity<String> reporteSemanal(HttpServletResponse response) throws IOException{
+    public ResponseEntity<String> reporteSemanal(HttpServletResponse response, @RequestParam(name="file_name", required=true) String name) throws IOException{
         response.setContentType("application/octet-stream");
-        response.setHeader("Content-Disposition", "attachment; filename=\"" +"Reporte de calculo de comisiones.xls"+ "\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" +name+".xls"+ "\"");
         OutputStream outputStream = response.getOutputStream();
         commissionAmountGroupService.comissionByReport(outputStream);
         outputStream.flush();
@@ -53,7 +53,7 @@ public class CommissionAmountGroupController {
 
     @RequestMapping(value = "/report-all-commissions", method = RequestMethod.GET)
     public ResponseEntity<String> reporteMensual(HttpServletResponse response, @RequestParam(name= "fromDate", required=true) String fromDate
-            , @RequestParam(name="toDate", required=true) String toDate) throws IOException{
+            , @RequestParam(name="toDate", required=true) String toDate, @RequestParam(name="file_name", required=true) String name) throws IOException{
 
 
         LocalDateTime ofDate = (fromDate == null || fromDate.equals("")) ? null :
@@ -63,7 +63,7 @@ public class CommissionAmountGroupController {
 
 
         response.setContentType("application/octet-stream");
-        response.setHeader("Content-Disposition", "attachment; filename=\"" +"Reporte de calculo mensual.xls"+ "\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"" +name+".xls"+ "\"");
         OutputStream outputStream = response.getOutputStream();
         commissionAmountGroupService.reportMonthlyCommissions(outputStream, ofDate, untilDate);
         outputStream.flush();
