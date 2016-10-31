@@ -454,19 +454,24 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
                 BigDecimal numRequest = new BigDecimal(0);
                 for (MultilevelEmployee multilevelEmployee : multilevelEmployees){
                     CommissionAmountGroup adviser = commissionAmountGroupDao.getOnlyDataOfGroupNineTeen(multilevelEmployee.getIdEmployee());
-                    totalCelula = totalCelula.add(adviser.getAmount());
-                    numRequest = numRequest.add(adviser.getApplicationsNumber());
+                    if(adviser != null){
+                        totalCelula = totalCelula.add(adviser.getAmount());
+                        numRequest = numRequest.add(adviser.getApplicationsNumber());
+                    }
                 }
-                BigDecimal scope = supervisorG.getAmount().divide(totalCelula, 2, RoundingMode.HALF_UP);
-
-                BigDecimal divisor = new BigDecimal(100);
-                BigDecimal tabulator = groupCondition.getTabulator().divide(divisor);
-                supervisorG.setTabulator(groupCondition.getTabulator());
-                supervisorG.setCommission(totalCelula.multiply(tabulator));
-                supervisorG.setScope(scope);
-                supervisorG.setApplicationsNumber(numRequest);
-                supervisorG.setAmount(totalCelula);
-                commissionAmountGroupDao.update(supervisorG);
+                if (totalCelula.doubleValue() > 0){
+                    BigDecimal scope = supervisorG.getAmount().divide(totalCelula, 4, RoundingMode.HALF_UP);
+                    if(scope.doubleValue() <= 0.30){
+                        BigDecimal divisor = new BigDecimal(100);
+                        BigDecimal tabulator = groupCondition.getTabulator().divide(divisor);
+                        supervisorG.setTabulator(groupCondition.getTabulator());
+                        supervisorG.setCommission(totalCelula.multiply(tabulator));
+                        supervisorG.setScope(scope);
+                        supervisorG.setApplicationsNumber(numRequest);
+                        supervisorG.setAmount(totalCelula);
+                        commissionAmountGroupDao.update(supervisorG);
+                    }
+                }
 
 //                if (scope.doubleValue() >= groupCondition.getAmountMax().doubleValue()){
 //                    commissionAmountGroupDao.delete(supervisorG);
