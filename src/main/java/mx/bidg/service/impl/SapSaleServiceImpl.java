@@ -464,7 +464,7 @@ public class SapSaleServiceImpl implements SapSaleService {
                             DwEmployees dwEmployees = dwEmployeesDao.findByIdEmployee(employee.getIdEmployee());
                             if (dwEmployees != null) {
                                 if (dwEmployees.getRole() != null){
-                                    sapSale.setRole(dwEmployees.getRole());
+                                    newSapSale.setRole(dwEmployees.getRole());
                                 }
                             }
                         }
@@ -484,19 +484,19 @@ public class SapSaleServiceImpl implements SapSaleService {
 
                             if (dwEnterprises != null) {
                                 if(dwEnterprises.getDistributor() != null){
-                                    sapSale.setDistributor(dwEnterprises.getDistributor());
+                                    newSapSale.setDistributor(dwEnterprises.getDistributor());
                                 }
                                 if (dwEnterprises.getZona() != null){
-                                    sapSale.setZona(dwEnterprises.getZona());
+                                    newSapSale.setZona(dwEnterprises.getZona());
                                 }
                                 if (dwEnterprises.getZona() != null){
-                                    sapSale.setRegion(dwEnterprises.getRegion());
+                                    newSapSale.setRegion(dwEnterprises.getRegion());
                                 }
                                 if (dwEnterprises != null){
-                                    sapSale.setDwEnterprise(dwEnterprises);
+                                    newSapSale.setDwEnterprise(dwEnterprises);
                                 }
                                 if (branch != null){
-                                    sapSale.setBranch(branch);
+                                    newSapSale.setBranch(branch);
                                 }
 
                                 if (agreementName != null) {
@@ -506,7 +506,7 @@ public class SapSaleServiceImpl implements SapSaleService {
 
                                     if (agreement != null) {
 
-                                        sapSale.setAgreement(agreement);
+                                        newSapSale.setAgreement(agreement);
 
                                     } else {
                                         CAgreements newAgreement = new CAgreements();
@@ -529,7 +529,7 @@ public class SapSaleServiceImpl implements SapSaleService {
                                             groupsAgreementsDao.save(groupsAgreements);
                                         }
 
-                                        sapSale.setAgreement(newAgreement);
+                                        newSapSale.setAgreement(newAgreement);
                                     }
                                 }
                             }
