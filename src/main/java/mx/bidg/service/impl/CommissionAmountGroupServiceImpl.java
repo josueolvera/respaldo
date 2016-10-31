@@ -1457,9 +1457,15 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
 
                     if(commissionAmountGroup.getIdAg() == 30){
                         row7.createCell(34).setCellValue(commissionAmountGroup.getAmount().doubleValue());
-                        row7.createCell(35).setCellValue(commissionAmountGroup.getScope().doubleValue());
-                        row7.createCell(36).setCellValue(commissionAmountGroup.getTabulator().doubleValue());
-                        row7.createCell(37).setCellValue(commissionAmountGroup.getCommission().doubleValue());
+                        if(commissionAmountGroup.getScope() != null){
+                            row7.createCell(35).setCellValue(commissionAmountGroup.getScope().doubleValue());
+                        }
+                        if (commissionAmountGroup.getTabulator() != null){
+                            row7.createCell(36).setCellValue(commissionAmountGroup.getTabulator().doubleValue());
+                        }
+                        if(commissionAmountGroup.getCommission() != null){
+                            row7.createCell(37).setCellValue(commissionAmountGroup.getCommission().doubleValue());
+                        }
                     }
                 }
             }
