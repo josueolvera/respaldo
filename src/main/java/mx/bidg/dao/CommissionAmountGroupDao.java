@@ -35,4 +35,6 @@ public interface CommissionAmountGroupDao extends InterfaceDao<CommissionAmountG
     List<CommissionAmountGroup> findAllBySupervisor();
     List<CommissionAmountGroup> findAllRegisterBySupervisorExceptGroupSupervisor(String claveSap);
     CommissionAmountGroup getGroupNineTeenAndConditons(Integer idEmployee, AgreementsGroupCondition agreementsGroupCondition);
+    List findSupervisorOnlyClaveSapeByBuildingReport();
+    List<CommissionAmountGroup> findSupervisorByBuildingReport();
 }

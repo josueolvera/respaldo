@@ -208,7 +208,6 @@ public class CommissionAmountGroupDaoImpl extends AbstractDao<Integer, Commissio
 
         return criteria.add(Restrictions.isNotNull("claveSap"))
                 .add(orExpression2)
-                .add(Restrictions.ne("idAg",30))
                 .add(Restrictions.ne("idRole",81))
                 .addOrder(Order.desc("idRole"))
                 .list();
@@ -229,7 +228,6 @@ public class CommissionAmountGroupDaoImpl extends AbstractDao<Integer, Commissio
         return createEntityCriteria()
                 .setProjection(projList)
                 .add(orExpression2)
-                .add(Restrictions.ne("idAg",30))
                 .add(Restrictions.ne("idRole",81))
                 .addOrder(Order.desc("idRole"))
                 .list();
@@ -238,7 +236,7 @@ public class CommissionAmountGroupDaoImpl extends AbstractDao<Integer, Commissio
     @Override
     public List<CommissionAmountGroup> getBranchWithScopeGoal() {
         return createEntityCriteria().add(Restrictions.ne("idAg",18)).add(Restrictions.ne("idAg",21))
-                .add(Restrictions.isNotNull("idBranch")).add(Restrictions.ge("scope", new BigDecimal(0.80)))
+                .add(Restrictions.isNotNull("idBranch")).add(Restrictions.ge("scope", new BigDecimal(80)))
                 .list();
     }
 
@@ -287,5 +285,28 @@ public class CommissionAmountGroupDaoImpl extends AbstractDao<Integer, Commissio
                 .add(Restrictions.between("applicationsNumber",agreementsGroupCondition.getAmountMin(),
                         agreementsGroupCondition.getAmountMax()))
                 .uniqueResult();
+    }
+
+    @Override
+    public List findSupervisorOnlyClaveSapeByBuildingReport() {
+        ProjectionList projList = Projections.projectionList();
+
+        projList.add(Projections.distinct(Projections.groupProperty("claveSap")));
+        return createEntityCriteria()
+                .setProjection(projList)
+                .add(Restrictions.isNotNull("claveSap"))
+                .add(Restrictions.eq("idRole",81))
+                .add(Restrictions.eq("idAg",30))
+                .list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findSupervisorByBuildingReport() {
+        Criteria criteria = createEntityCriteria();
+
+        return criteria.add(Restrictions.isNotNull("claveSap"))
+                .add(Restrictions.eq("idRole",81))
+                .add(Restrictions.eq("idAg",30))
+                .list();
     }
 }
