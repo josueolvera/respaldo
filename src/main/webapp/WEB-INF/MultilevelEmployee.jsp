@@ -283,9 +283,9 @@
                        if(this.arrayAdvisersObj.arrayAdvisers.length >=3)
                        {
                            this.$http.post(ROOT_URL+"/multilevel-employee/new-multilevel", JSON.stringify(this.arrayAdvisersObj)).success(function (data) {
-                               showAlert("ok");
+                               showAlert("asesores agregados correctamente");
                            }).error(function () {
-                              showAlert("error", {type: 3});
+                              showAlert("datos ya seleccionados", {type: 3});
                            });
                           
                        }
