@@ -42,5 +42,5 @@ public interface DwEmployeesService {
     void createReportCompanys(List<EmployeesHistory> employeesHistories, OutputStream outputStream) throws IOException;
     void createReportBpo(List<EmployeesHistory> employeesHistorys, OutputStream outputStream) throws IOException;
     
-    List<DwEmployees> findDwEmployeeByDwEnterpirseAndRoleAdvisers(Integer idDwEnterprise );
+    List<DwEmployees> findDwEmployeeByDwEnterpirseAndRoleAdvisers(Integer idDwEnterprise, List<MultilevelEmployee> multilevelEmployeeList);
 }

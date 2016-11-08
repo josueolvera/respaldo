@@ -91,6 +91,9 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     @Autowired
     private CEducationDao cEducationDao;
 
+    @Autowired
+    private MultilevelEmployeeDao multilevelEmployeeDao;
+
     @Override
     public DwEmployees findById(Integer id) {
         return dwEmployeesDao.findById(id);
@@ -277,6 +280,26 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     @Override
     public void changeEmployeeStatus(Integer idDwEmployee, Users user) {
         DwEmployees dwEmployee = dwEmployeesDao.findById(idDwEmployee);
+
+        if(dwEmployee.getRole() != null){
+            if (dwEmployee.getRole().getIdRole() == 81){
+                if (dwEmployee.getEmployee() != null){
+                    List<MultilevelEmployee> multilevelEmployeeList = multilevelEmployeeDao.findByIdEmployeeMultilevel(dwEmployee.getEmployee().getIdEmployee());
+                    if (!multilevelEmployeeList.isEmpty()){
+                        for (MultilevelEmployee multilevelEmployee : multilevelEmployeeList){
+                            multilevelEmployeeDao.delete(multilevelEmployee);
+                        }
+                    }
+                }
+            }else if(dwEmployee.getRole().getIdRole() == 64){
+                if (dwEmployee.getEmployee() != null){
+                    MultilevelEmployee multilevelEmployee = multilevelEmployeeDao.findByEmployee(dwEmployee.getEmployee().getIdEmployee());
+                    if (multilevelEmployee != null){
+                        multilevelEmployeeDao.delete(multilevelEmployee);
+                    }
+                }
+            }
+        }
 
         Employees employee = dwEmployee.getEmployee();
         employee.setStatus(0);
@@ -747,7 +770,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     }
 
     @Override
-    public List<DwEmployees> findDwEmployeeByDwEnterpirseAndRoleAdvisers(Integer idDwEnterprise) {
-        return dwEmployeesDao.findDwEmployeeByDwEnterpirseAndRoleAdvisers(idDwEnterprise);
+    public List<DwEmployees> findDwEmployeeByDwEnterpirseAndRoleAdvisers(Integer idDwEnterprise, List<MultilevelEmployee> multilevelEmployeeList) {
+        return dwEmployeesDao.findDwEmployeeByDwEnterpirseAndRoleAdvisers(idDwEnterprise, multilevelEmployeeList);
     }
 }
