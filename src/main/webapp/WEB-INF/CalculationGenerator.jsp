@@ -115,7 +115,12 @@
                         this.commsionableAmounts = [];
 
                         var fecha = new Date();
-                        var fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth() + 1) + "-" + fecha.getDate();
+                        var fecha_actual;
+                        if(fecha.getDate() < 10){
+                             fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth() + 1) + "-0" + fecha.getDate();
+                        }else{
+                             fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth() + 1) + "-" + fecha.getDate();
+                        }
                         var fechaMinima = moment(fecha_actual).subtract('months', 2).format('YYYY-MM-DD');
 
                         this.fromDate = this.dateTimePickerStartDate.DateTimePicker.date().toISOString().slice(0, -1);
