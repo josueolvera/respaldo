@@ -24,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -67,10 +68,32 @@ public class MultilevelEmployeeController {
         multiemployee.setIdEmployeeMultilevel(node.get("supervisor").get("idEmployee").asInt());
         multiemployee.setBranchs(new CBranchs(node.get("supervisor").get("dwEnterprisesR").get("branch").get("idBranch").asInt()));
         multiemployee.setEmployees(new Employees(jNode.get("employee").get("idEmployee").asInt()));
+        multiemployee.setStatus(true);
         multilevelEmployeeService.save(multiemployee);            
         }
         
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(multilevelEmployeeService.findAll()), HttpStatus.OK); 
+    }
+
+    @RequestMapping(value="/find-by-supervisor/{idMultilevelEmployee}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findByMultilevelEmployee(@PathVariable Integer idMultilevelEmployee) throws IOException{
+        List<MultilevelEmployee> multilevelEmployeeList = multilevelEmployeeService.findByMultilevelEmployee(idMultilevelEmployee);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(multilevelEmployeeList), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/delete/{idMultilevel}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> delete (@PathVariable Integer idMultilevel) throws IOException{
+        MultilevelEmployee multilevelEmployee = multilevelEmployeeService.findById(idMultilevel);
+        if(multilevelEmployee != null){
+            multilevelEmployeeService.delete(multilevelEmployee);
+        }
+        return new ResponseEntity<>("Multinivel eliminado", HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/find-employee/{idEmployee}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findByEmployee(@PathVariable Integer idEmployee)throws IOException{
+        MultilevelEmployee multilevelEmployee = multilevelEmployeeService.findByEmployee(idEmployee);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(multilevelEmployee), HttpStatus.OK);
     }
     
 }
