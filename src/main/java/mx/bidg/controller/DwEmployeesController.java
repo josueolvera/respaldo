@@ -5,8 +5,10 @@ import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.DwEmployees;
+import mx.bidg.model.MultilevelEmployee;
 import mx.bidg.model.Users;
 import mx.bidg.service.DwEmployeesService;
+import mx.bidg.service.MultilevelEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +23,7 @@ import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,6 +38,9 @@ public class DwEmployeesController {
 
     @Autowired
     private ObjectMapper mapper;
+
+    @Autowired
+    private MultilevelEmployeeService multilevelEmployeeService;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getDwEmployees
@@ -165,7 +171,11 @@ public class DwEmployeesController {
     @RequestMapping(value = "/advisers-by-branch/{idDwEnterprise}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findDwEmployeeByDwEnterpirseAndRoleAdvisers(@PathVariable Integer idDwEnterprise) throws IOException {
 
-     List<DwEmployees> dwEmployees = dwEmployeesService.findDwEmployeeByDwEnterpirseAndRoleAdvisers(idDwEnterprise);
+        List<MultilevelEmployee> multilevelEmployees = multilevelEmployeeService.findAllActives();
+
+
+
+        List<DwEmployees> dwEmployees = dwEmployeesService.findDwEmployeeByDwEnterpirseAndRoleAdvisers(idDwEnterprise, multilevelEmployees);
 
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(dwEmployees),
