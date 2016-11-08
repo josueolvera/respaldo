@@ -140,7 +140,8 @@
                     regions: [],
                     zonas: [],
                     branchch: [],
-                    registerNumber: 0
+                    registerNumber: 0,
+                    multilevelEmployee: null
                 },
                 methods: {
                     arrayObjectIndexOf: function (myArray, searchTerm, property) {
@@ -494,6 +495,17 @@
                     onDeleteButton: function (dwEmployee) {
                         this.currentDwEmployee = dwEmployee;
                         $("#deleteModal").modal("show");
+                        if(this.currentDwEmployee.rolesR.idRole == 64){
+                            this.$http.get(ROOT_URL + "/multilevel-employee/find-employee/" + this.currentDwEmployee.idEmployee).success(function (data) {
+                                this.multilevelEmployee = data;
+
+                                if(this.multilevelEmployee != null){
+                                    showAlert("El asesor de crédito a eliminar pertenece a una célula y se eliminara de su célula", {type: 3});
+                                }
+                            }).error(function () {
+
+                            });
+                        }
                     },
                     changeEmployeeStatus: function () {
                         this.$http.post(ROOT_URL + '/dw-employees/change-employee-status', this.currentDwEmployee.idDwEmployee)
