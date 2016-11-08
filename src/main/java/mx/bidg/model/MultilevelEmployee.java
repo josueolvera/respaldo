@@ -23,6 +23,7 @@ import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Type;
 
 /**
  *
@@ -50,6 +51,11 @@ public class MultilevelEmployee implements Serializable {
     @Column(name = "LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer level;
+
+    @Column(name = "STATUS", columnDefinition = "TINYINT", nullable = false)
+    @Type(type = "org.hibernate.type.NumericBooleanType")
+    @JsonView(JsonViews.Root.class)
+    private Boolean status;
     
     @Column(name = "ID_BRANCH", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -130,6 +136,14 @@ public class MultilevelEmployee implements Serializable {
 
     public void setEmployees(Employees employees) {
         this.employees = employees;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 
     @Override
