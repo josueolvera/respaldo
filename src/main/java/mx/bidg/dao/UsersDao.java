@@ -16,5 +16,6 @@ public interface UsersDao extends InterfaceDao<Users> {
     Users findByUsername(String username);
     Users findByIdFetchDwEmployee(int id);
     Users findByEmail(String email);
+    Users findByDwEmpployee(Integer idDwEmployee);
 
 }

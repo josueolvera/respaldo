@@ -79,4 +79,9 @@ public class UsersDaoImpl extends AbstractDao<Integer, Users> implements UsersDa
                 .uniqueResult();
     }
 
+    @Override
+    public Users findByDwEmpployee(Integer idDwEmployee) {
+        return (Users) createEntityCriteria().add(Restrictions.eq("idDwemployee", idDwEmployee)).uniqueResult();
+    }
+
 }
