@@ -5,7 +5,9 @@ import mx.bidg.dao.DwEmployeesDao;
 import mx.bidg.model.DwEmployees;
 import mx.bidg.model.DwEnterprises;
 import mx.bidg.model.Employees;
+import mx.bidg.model.MultilevelEmployee;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Conjunction;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -160,8 +162,19 @@ public class DwEmployeesDaoImpl extends AbstractDao<Integer, DwEmployees> implem
     }
 
     @Override
-    public List<DwEmployees> findDwEmployeeByDwEnterpirseAndRoleAdvisers(Integer idDwEnterprise) {
-        return createEntityCriteria()
+    public List<DwEmployees> findDwEmployeeByDwEnterpirseAndRoleAdvisers(Integer idDwEnterprise, List<MultilevelEmployee> multilevelEmployeeList) {
+        Criteria criteria = createEntityCriteria();
+        Conjunction conjuntionMultilevel = Restrictions.conjunction();
+
+        if (!multilevelEmployeeList.isEmpty()){
+            for (MultilevelEmployee multilevelEmployee : multilevelEmployeeList){
+                conjuntionMultilevel.add(Restrictions.ne("idEmployee", multilevelEmployee.getIdEmployee()));
+            }
+        }
+
+        criteria.add(Restrictions.conjunction(conjuntionMultilevel));
+
+        return criteria
                 .add(Restrictions.eq("idDwEnterprise", idDwEnterprise))
                 .add(Restrictions.eq("idRole", 64))
                 .list();

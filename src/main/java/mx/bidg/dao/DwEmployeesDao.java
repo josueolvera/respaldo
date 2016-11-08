@@ -3,6 +3,7 @@ package mx.bidg.dao;
 import mx.bidg.model.DwEmployees;
 import mx.bidg.model.DwEnterprises;
 import mx.bidg.model.Employees;
+import mx.bidg.model.MultilevelEmployee;
 
 import java.util.List;
 
@@ -28,5 +29,5 @@ public interface DwEmployeesDao extends InterfaceDao<DwEmployees> {
     List<DwEmployees> findDwEmployeeByDwEnterpirseAndRole(Integer idDwEnterprise, Integer idRole);
     List<DwEmployees> findByRolePromotor(List<Employees> employeesList);
     DwEmployees findByIdEmployee(Integer idEmployee);
-     List<DwEmployees> findDwEmployeeByDwEnterpirseAndRoleAdvisers(Integer idDwEnterprise);
+     List<DwEmployees> findDwEmployeeByDwEnterpirseAndRoleAdvisers(Integer idDwEnterprise, List<MultilevelEmployee> multilevelEmployeeList);
 }
