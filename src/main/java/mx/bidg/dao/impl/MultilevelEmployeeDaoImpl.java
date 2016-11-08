@@ -61,4 +61,14 @@ public class MultilevelEmployeeDaoImpl extends AbstractDao <Integer, MultilevelE
     public List<MultilevelEmployee> findByIdEmployeeMultilevel(Integer idEmployeeMultilevel) {
         return createEntityCriteria().add(Restrictions.eq("idEmployeeMultilevel", idEmployeeMultilevel)).list();
     }
+
+    @Override
+    public List<MultilevelEmployee> FindAllActives() {
+        return createEntityCriteria().add(Restrictions.eq("status",true)).list();
+    }
+
+    @Override
+    public MultilevelEmployee findByEmployee(Integer idEmployee) {
+        return (MultilevelEmployee) createEntityCriteria().add(Restrictions.eq("idEmployee",idEmployee)).uniqueResult();
+    }
 }

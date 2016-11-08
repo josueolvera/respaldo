@@ -18,5 +18,7 @@ public interface MultilevelEmployeeDao extends InterfaceDao<MultilevelEmployee>{
 
     List findByIdBranch(Integer idBranch);
     List<MultilevelEmployee> findByIdEmployeeMultilevel(Integer idEmployeeMultilevel);
+    List<MultilevelEmployee> FindAllActives();
+    MultilevelEmployee findByEmployee(Integer idEmployee);
 
 }
