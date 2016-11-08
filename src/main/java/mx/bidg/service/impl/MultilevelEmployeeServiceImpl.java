@@ -55,4 +55,19 @@ public class MultilevelEmployeeServiceImpl implements MultilevelEmployeeService 
         return multilevelEmployeeDao.findByIdBranch(idBranch);
     }
 
+    @Override
+    public List<MultilevelEmployee> findAllActives() {
+        return multilevelEmployeeDao.FindAllActives();
+    }
+
+    @Override
+    public List<MultilevelEmployee> findByMultilevelEmployee(Integer idMultilevelEmployee) {
+        return multilevelEmployeeDao.findByIdEmployeeMultilevel(idMultilevelEmployee);
+    }
+
+    @Override
+    public MultilevelEmployee findByEmployee(Integer idEmployee) {
+        return multilevelEmployeeDao.findByEmployee(idEmployee);
+    }
+
 }

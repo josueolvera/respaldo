@@ -25,6 +25,12 @@ public interface MultilevelEmployeeService {
     boolean delete(MultilevelEmployee multilevelEmployee);
 
     List findByIdBranch(Integer idBranch);
+
+    List<MultilevelEmployee> findAllActives();
+
+    List<MultilevelEmployee> findByMultilevelEmployee(Integer idMultilevelEmployee);
+
+    MultilevelEmployee findByEmployee(Integer idEmployee);
     
     
     
