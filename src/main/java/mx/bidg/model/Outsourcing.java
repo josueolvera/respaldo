@@ -5,7 +5,9 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -13,9 +15,12 @@ import org.hibernate.annotations.DynamicUpdate;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.Objects;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import mx.bidg.pojos.DateFormatsPojo;
 
 /**
  *
@@ -24,768 +29,232 @@ import javax.validation.constraints.Size;
 @Entity
 @DynamicUpdate
 @Table(name = "OUTSOURCING")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Outsourcing implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
-    @Column(name = "ID")
+    @Column(name = "ID_OUTSOURCING")
     @JsonView(JsonViews.Root.class)
-    private Integer id;
-
-    @Size(max = 10)
-    @Column(name = "ID_W")
+    private Integer idOutsourcing;
+    
+     @Column(name = "ID_EMPLOYEE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private String idW;
-
+    private Integer idEmployee;
+    
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "SUELDO")
+    @Column(name = "SALARY")
     @JsonView(JsonViews.Root.class)
-    private BigDecimal sueldo;
-    @Basic(optional = false)
-
-    @NotNull
-    @Column(name = "SEPTIMO_DIA")
+    private BigDecimal salary;
+    
+    @Column(name = "SUBSIDY")
     @JsonView(JsonViews.Root.class)
-    private BigDecimal septimoDia;
-    @Basic(optional = false)
-
-    @NotNull
-    @Column(name = "HORAS_EXTRAS")
+    private BigDecimal subsidy;
+    
+    @Column(name = "IMSS_EMPLOYEE")
     @JsonView(JsonViews.Root.class)
-    private BigDecimal horasExtras;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "DESTAJOS")
+    private BigDecimal imssEmployee;
+    
+    @Column(name = "ISR")
     @JsonView(JsonViews.Root.class)
-    private BigDecimal destajos;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "COMISIONES")
+    private BigDecimal isr;
+    
+    @Column(name = "ADJUSTMENT")
     @JsonView(JsonViews.Root.class)
-    private BigDecimal comisiones;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "INDEMNIZACION_ESPECIAL")
+    private BigDecimal adjustment;
+    
+    @Column(name = "TOTAL_DEDUCTIONS")
     @JsonView(JsonViews.Root.class)
-    private BigDecimal indemnizacionEspecial;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "PREMIOS_EFICIENCIA")
+    private BigDecimal totalDeductions;
+    
+    @Column(name = "NET_ASSET_TAX")
     @JsonView(JsonViews.Root.class)
-    private BigDecimal premiosEficiencia;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "VACACIONES_A_TIEMPO")
+    private BigDecimal netAssetTax;
+    
+    @Column(name = "RCV")
     @JsonView(JsonViews.Root.class)
-    private BigDecimal vacacionesATiempo;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "PRIMA_DE_VACACIONES_A_TIEMPO")
+    private BigDecimal rcv;
+    
+    @Column(name = "SUBTOTAL")
     @JsonView(JsonViews.Root.class)
-    private BigDecimal primaDeVacacionesATiempo;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "VACACIONES_REPORTADAS")
+    private BigDecimal subtotal;
+    
+    @Column(name = "PAYROLL_TAX")
     @JsonView(JsonViews.Root.class)
-    private BigDecimal vacacionesReportadas;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "PRIMA_DE_VACACIONES_REPORTADA")
+    private BigDecimal payrollTax;
+    
+    @Column(name = "TOTAL_SOCIAL_SECURITY")
     @JsonView(JsonViews.Root.class)
-    private BigDecimal primaDeVacacionesReportada;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "AGUINALDO")
+    private BigDecimal totalSocialSecurity;
+    
+    @Column(name = "COMMISSION")
     @JsonView(JsonViews.Root.class)
-    private BigDecimal aguinaldo;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "PRIMA_DE_ANTIGUEDAD")
+    private BigDecimal commission;
+    
+    @Column(name = "ENTERPRISE_INFONAVIT")
     @JsonView(JsonViews.Root.class)
-    private BigDecimal primaDeAntiguedad;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "OTRAS_PERCEPCIONES")
+    private BigDecimal enterpriseInfonavit;
+    
+    @Column(name = "TOTAL")
     @JsonView(JsonViews.Root.class)
-    private BigDecimal otrasPercepciones;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "TOTAL_PERCEPCIONES")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal totalPercepciones;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "RET_INV_Y_VIDA")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal retInvYVida;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "RET_CESANTIA")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal retCesantia;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "RET_ENF_Y_MAT_OBRERO")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal retEnfYMatObrero;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "SEGURO_DE_VIVIENDA_INFONAVIT")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal seguroDeViviendaInfonavit;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "PRESTAMO_INFONAVIT_VSM")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal prestamoInfonavitVsm;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "SUBS_AL_EMPLEO_ACREDITADO")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal subsAlEmpleoAcreditado;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "SUBSIDIO_AL_EMPLEO_SP")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal subsidioAlEmpleoSp;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ISR_ANTES_DE_SUBS_AL_EMPLEO")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal isrAntesDeSubsAlEmpleo;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ISR_ART142")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal isrArt142;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ISR_SP")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal isrSp;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "IMSS")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal imss;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "PRESTAMO_INFONAVIT")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal prestamoInfonavit;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "AJUSTE_AL_NETO")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal ajusteAlNeto;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ISR_FINIQUITO")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal isrFiniquito;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "OTRAS_DEDUCCIONES")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal otrasDeducciones;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "TOTAL_DEDUCCIONES")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal totalDeducciones;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "NETO")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal neto;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "INVALIDEZ_Y_VIDA")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal invalidezYVida;
-
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "CESANTIA_Y_VEJEZ")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal cesantiaYVejez;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ENF_Y_MAT_PATRON")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal enfYMatPatron;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "FONDO_RETIRO_SAR")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal fondoRetiroSar;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "IMPUESTO_ESTATAL")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal impuestoEstatal;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "RIESGO_DE_TRABAJO")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal riesgoDeTrabajo;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "IMSS_EMPRESA")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal imssEmpresa;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "INFONAVIT_EMPRESA")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal infonavitEmpresa;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "GUARDERIA_IMSS")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal guarderiaImss;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "OTRAS_OBLIGACIONES")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal otrasObligaciones;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "TOTAL_OBLIGACIONES")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal totalObligaciones;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "PERCEPCIONES_SUBSIDIO_SP_TOTAL_OBLIGACIONES")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal percepcionesSubsidioSpTotalObligaciones;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "COMISION")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal comision;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "IVA")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal iva;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "TOTAL_IVA")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal totalIva;
-
-    @Basic(optional = false)
-    @NotNull
+    private BigDecimal total;
+    
     @Column(name = "CREATION_DATE")
+    @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
-    @JsonView(JsonViews.Root.class)
     private LocalDateTime creationDate;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "STATUS")
+    
+    @Column(name = "APPLICATION_DATE")
     @JsonView(JsonViews.Root.class)
-    private int status;
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime applicationDate;
+    
+    @JoinColumn(name = "ID_EMPLOYEE", referencedColumnName = "ID_EMPLOYEE")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private Employees employee;
 
     public Outsourcing() {
     }
 
-    public Outsourcing(Integer id) {
-        this.id = id;
+    public Outsourcing(Integer idOutsourcing) {
+        this.idOutsourcing = idOutsourcing;
     }
 
-    public Outsourcing(Integer id, BigDecimal sueldo, BigDecimal septimoDia, BigDecimal horasExtras, BigDecimal destajos, BigDecimal comisiones, BigDecimal indemnizacionEspecial, BigDecimal premiosEficiencia, BigDecimal vacacionesATiempo, BigDecimal primaDeVacacionesATiempo, BigDecimal vacacionesReportadas, BigDecimal primaDeVacacionesReportada, BigDecimal aguinaldo, BigDecimal primaDeAntiguedad, BigDecimal otrasPercepciones, BigDecimal totalPercepciones, BigDecimal retInvYVida, BigDecimal retCesantia, BigDecimal retEnfYMatObrero, BigDecimal seguroDeViviendaInfonavit, BigDecimal prestamoInfonavitVsm, BigDecimal subsAlEmpleoAcreditado, BigDecimal subsidioAlEmpleoSp, BigDecimal isrAntesDeSubsAlEmpleo, BigDecimal isrArt142, BigDecimal isrSp, BigDecimal imss, BigDecimal prestamoInfonavit, BigDecimal ajusteAlNeto, BigDecimal isrFiniquito, BigDecimal otrasDeducciones, BigDecimal totalDeducciones, BigDecimal neto, BigDecimal invalidezYVida, BigDecimal cesantiaYVejez, BigDecimal enfYMatPatron, BigDecimal fondoRetiroSar, BigDecimal impuestoEstatal, BigDecimal riesgoDeTrabajo, BigDecimal imssEmpresa, BigDecimal infonavitEmpresa, BigDecimal guarderiaImss, BigDecimal otrasObligaciones, BigDecimal totalObligaciones, BigDecimal percepcionesSubsidioSpTotalObligaciones, BigDecimal comision, BigDecimal iva, BigDecimal totalIva, LocalDateTime creationDate, int status) {
-        this.id = id;
-        this.sueldo = sueldo;
-        this.septimoDia = septimoDia;
-        this.horasExtras = horasExtras;
-        this.destajos = destajos;
-        this.comisiones = comisiones;
-        this.indemnizacionEspecial = indemnizacionEspecial;
-        this.premiosEficiencia = premiosEficiencia;
-        this.vacacionesATiempo = vacacionesATiempo;
-        this.primaDeVacacionesATiempo = primaDeVacacionesATiempo;
-        this.vacacionesReportadas = vacacionesReportadas;
-        this.primaDeVacacionesReportada = primaDeVacacionesReportada;
-        this.aguinaldo = aguinaldo;
-        this.primaDeAntiguedad = primaDeAntiguedad;
-        this.otrasPercepciones = otrasPercepciones;
-        this.totalPercepciones = totalPercepciones;
-        this.retInvYVida = retInvYVida;
-        this.retCesantia = retCesantia;
-        this.retEnfYMatObrero = retEnfYMatObrero;
-        this.seguroDeViviendaInfonavit = seguroDeViviendaInfonavit;
-        this.prestamoInfonavitVsm = prestamoInfonavitVsm;
-        this.subsAlEmpleoAcreditado = subsAlEmpleoAcreditado;
-        this.subsidioAlEmpleoSp = subsidioAlEmpleoSp;
-        this.isrAntesDeSubsAlEmpleo = isrAntesDeSubsAlEmpleo;
-        this.isrArt142 = isrArt142;
-        this.isrSp = isrSp;
-        this.imss = imss;
-        this.prestamoInfonavit = prestamoInfonavit;
-        this.ajusteAlNeto = ajusteAlNeto;
-        this.isrFiniquito = isrFiniquito;
-        this.otrasDeducciones = otrasDeducciones;
-        this.totalDeducciones = totalDeducciones;
-        this.neto = neto;
-        this.invalidezYVida = invalidezYVida;
-        this.cesantiaYVejez = cesantiaYVejez;
-        this.enfYMatPatron = enfYMatPatron;
-        this.fondoRetiroSar = fondoRetiroSar;
-        this.impuestoEstatal = impuestoEstatal;
-        this.riesgoDeTrabajo = riesgoDeTrabajo;
-        this.imssEmpresa = imssEmpresa;
-        this.infonavitEmpresa = infonavitEmpresa;
-        this.guarderiaImss = guarderiaImss;
-        this.otrasObligaciones = otrasObligaciones;
-        this.totalObligaciones = totalObligaciones;
-        this.percepcionesSubsidioSpTotalObligaciones = percepcionesSubsidioSpTotalObligaciones;
-        this.comision = comision;
-        this.iva = iva;
-        this.totalIva = totalIva;
-        this.creationDate = creationDate;
-        this.status = status;
+    public Outsourcing(Integer idOutsourcing, Integer idEmployee) {
+        this.idOutsourcing = idOutsourcing;
+        this.idEmployee = idEmployee;
     }
 
-    public Integer getId() {
-        return id;
+    public Integer getIdOutsourcing() {
+        return idOutsourcing;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setIdOutsourcing(Integer idOutsourcing) {
+        this.idOutsourcing = idOutsourcing;
     }
 
-    public String getIdW() {
-        return idW;
+    public Integer getIdEmployee() {
+        return idEmployee;
     }
 
-    public void setIdW(String idW) {
-        this.idW = idW;
+    public void setIdEmployee(Integer idEmployee) {
+        this.idEmployee = idEmployee;
     }
 
-    public BigDecimal getSueldo() {
-        return sueldo;
+    public BigDecimal getSalary() {
+        return salary;
     }
 
-    public void setSueldo(BigDecimal sueldo) {
-        this.sueldo = sueldo;
+    public void setSalary(BigDecimal salary) {
+        this.salary = salary;
     }
 
-    public BigDecimal getSeptimoDia() {
-        return septimoDia;
+    public BigDecimal getSubsidy() {
+        return subsidy;
     }
 
-    public void setSeptimoDia(BigDecimal septimoDia) {
-        this.septimoDia = septimoDia;
+    public void setSubsidy(BigDecimal subsidy) {
+        this.subsidy = subsidy;
     }
 
-    public BigDecimal getHorasExtras() {
-        return horasExtras;
+    public BigDecimal getImssEmployee() {
+        return imssEmployee;
     }
 
-    public void setHorasExtras(BigDecimal horasExtras) {
-        this.horasExtras = horasExtras;
+    public void setImssEmployee(BigDecimal imssEmployee) {
+        this.imssEmployee = imssEmployee;
     }
 
-    public BigDecimal getDestajos() {
-        return destajos;
+    public BigDecimal getIsr() {
+        return isr;
     }
 
-    public void setDestajos(BigDecimal destajos) {
-        this.destajos = destajos;
+    public void setIsr(BigDecimal isr) {
+        this.isr = isr;
     }
 
-    public BigDecimal getComisiones() {
-        return comisiones;
+    public BigDecimal getAdjustment() {
+        return adjustment;
     }
 
-    public void setComisiones(BigDecimal comisiones) {
-        this.comisiones = comisiones;
+    public void setAdjustment(BigDecimal adjustment) {
+        this.adjustment = adjustment;
     }
 
-    public BigDecimal getIndemnizacionEspecial() {
-        return indemnizacionEspecial;
+    public BigDecimal getTotalDeductions() {
+        return totalDeductions;
     }
 
-    public void setIndemnizacionEspecial(BigDecimal indemnizacionEspecial) {
-        this.indemnizacionEspecial = indemnizacionEspecial;
+    public void setTotalDeductions(BigDecimal totalDeductions) {
+        this.totalDeductions = totalDeductions;
     }
 
-    public BigDecimal getPremiosEficiencia() {
-        return premiosEficiencia;
+    public BigDecimal getNetAssetTax() {
+        return netAssetTax;
     }
 
-    public void setPremiosEficiencia(BigDecimal premiosEficiencia) {
-        this.premiosEficiencia = premiosEficiencia;
+    public void setNetAssetTax(BigDecimal netAssetTax) {
+        this.netAssetTax = netAssetTax;
     }
 
-    public BigDecimal getVacacionesATiempo() {
-        return vacacionesATiempo;
+    public BigDecimal getRcv() {
+        return rcv;
     }
 
-    public void setVacacionesATiempo(BigDecimal vacacionesATiempo) {
-        this.vacacionesATiempo = vacacionesATiempo;
+    public void setRcv(BigDecimal rcv) {
+        this.rcv = rcv;
     }
 
-    public BigDecimal getPrimaDeVacacionesATiempo() {
-        return primaDeVacacionesATiempo;
+    public BigDecimal getSubtotal() {
+        return subtotal;
     }
 
-    public void setPrimaDeVacacionesATiempo(BigDecimal primaDeVacacionesATiempo) {
-        this.primaDeVacacionesATiempo = primaDeVacacionesATiempo;
+    public void setSubtotal(BigDecimal subtotal) {
+        this.subtotal = subtotal;
     }
 
-    public BigDecimal getVacacionesReportadas() {
-        return vacacionesReportadas;
+    public BigDecimal getPayrollTax() {
+        return payrollTax;
     }
 
-    public void setVacacionesReportadas(BigDecimal vacacionesReportadas) {
-        this.vacacionesReportadas = vacacionesReportadas;
+    public void setPayrollTax(BigDecimal payrollTax) {
+        this.payrollTax = payrollTax;
     }
 
-    public BigDecimal getPrimaDeVacacionesReportada() {
-        return primaDeVacacionesReportada;
+    public BigDecimal getTotalSocialSecurity() {
+        return totalSocialSecurity;
     }
 
-    public void setPrimaDeVacacionesReportada(BigDecimal primaDeVacacionesReportada) {
-        this.primaDeVacacionesReportada = primaDeVacacionesReportada;
+    public void setTotalSocialSecurity(BigDecimal totalSocialSecurity) {
+        this.totalSocialSecurity = totalSocialSecurity;
     }
 
-    public BigDecimal getAguinaldo() {
-        return aguinaldo;
+    public BigDecimal getCommission() {
+        return commission;
     }
 
-    public void setAguinaldo(BigDecimal aguinaldo) {
-        this.aguinaldo = aguinaldo;
+    public void setCommission(BigDecimal commission) {
+        this.commission = commission;
     }
 
-    public BigDecimal getPrimaDeAntiguedad() {
-        return primaDeAntiguedad;
+    public BigDecimal getEnterpriseInfonavit() {
+        return enterpriseInfonavit;
     }
 
-    public void setPrimaDeAntiguedad(BigDecimal primaDeAntiguedad) {
-        this.primaDeAntiguedad = primaDeAntiguedad;
+    public void setEnterpriseInfonavit(BigDecimal enterpriseInfonavit) {
+        this.enterpriseInfonavit = enterpriseInfonavit;
     }
 
-    public BigDecimal getOtrasPercepciones() {
-        return otrasPercepciones;
+    public BigDecimal getTotal() {
+        return total;
     }
 
-    public void setOtrasPercepciones(BigDecimal otrasPercepciones) {
-        this.otrasPercepciones = otrasPercepciones;
-    }
-
-    public BigDecimal getTotalPercepciones() {
-        return totalPercepciones;
-    }
-
-    public void setTotalPercepciones(BigDecimal totalPercepciones) {
-        this.totalPercepciones = totalPercepciones;
-    }
-
-    public BigDecimal getRetInvYVida() {
-        return retInvYVida;
-    }
-
-    public void setRetInvYVida(BigDecimal retInvYVida) {
-        this.retInvYVida = retInvYVida;
-    }
-
-    public BigDecimal getRetCesantia() {
-        return retCesantia;
-    }
-
-    public void setRetCesantia(BigDecimal retCesantia) {
-        this.retCesantia = retCesantia;
-    }
-
-    public BigDecimal getRetEnfYMatObrero() {
-        return retEnfYMatObrero;
-    }
-
-    public void setRetEnfYMatObrero(BigDecimal retEnfYMatObrero) {
-        this.retEnfYMatObrero = retEnfYMatObrero;
-    }
-
-    public BigDecimal getSeguroDeViviendaInfonavit() {
-        return seguroDeViviendaInfonavit;
-    }
-
-    public void setSeguroDeViviendaInfonavit(BigDecimal seguroDeViviendaInfonavit) {
-        this.seguroDeViviendaInfonavit = seguroDeViviendaInfonavit;
-    }
-
-    public BigDecimal getPrestamoInfonavitVsm() {
-        return prestamoInfonavitVsm;
-    }
-
-    public void setPrestamoInfonavitVsm(BigDecimal prestamoInfonavitVsm) {
-        this.prestamoInfonavitVsm = prestamoInfonavitVsm;
-    }
-
-    public BigDecimal getSubsAlEmpleoAcreditado() {
-        return subsAlEmpleoAcreditado;
-    }
-
-    public void setSubsAlEmpleoAcreditado(BigDecimal subsAlEmpleoAcreditado) {
-        this.subsAlEmpleoAcreditado = subsAlEmpleoAcreditado;
-    }
-
-    public BigDecimal getSubsidioAlEmpleoSp() {
-        return subsidioAlEmpleoSp;
-    }
-
-    public void setSubsidioAlEmpleoSp(BigDecimal subsidioAlEmpleoSp) {
-        this.subsidioAlEmpleoSp = subsidioAlEmpleoSp;
-    }
-
-    public BigDecimal getIsrAntesDeSubsAlEmpleo() {
-        return isrAntesDeSubsAlEmpleo;
-    }
-
-    public void setIsrAntesDeSubsAlEmpleo(BigDecimal isrAntesDeSubsAlEmpleo) {
-        this.isrAntesDeSubsAlEmpleo = isrAntesDeSubsAlEmpleo;
-    }
-
-    public BigDecimal getIsrArt142() {
-        return isrArt142;
-    }
-
-    public void setIsrArt142(BigDecimal isrArt142) {
-        this.isrArt142 = isrArt142;
-    }
-
-    public BigDecimal getIsrSp() {
-        return isrSp;
-    }
-
-    public void setIsrSp(BigDecimal isrSp) {
-        this.isrSp = isrSp;
-    }
-
-    public BigDecimal getImss() {
-        return imss;
-    }
-
-    public void setImss(BigDecimal imss) {
-        this.imss = imss;
-    }
-
-    public BigDecimal getPrestamoInfonavit() {
-        return prestamoInfonavit;
-    }
-
-    public void setPrestamoInfonavit(BigDecimal prestamoInfonavit) {
-        this.prestamoInfonavit = prestamoInfonavit;
-    }
-
-    public BigDecimal getAjusteAlNeto() {
-        return ajusteAlNeto;
-    }
-
-    public void setAjusteAlNeto(BigDecimal ajusteAlNeto) {
-        this.ajusteAlNeto = ajusteAlNeto;
-    }
-
-    public BigDecimal getIsrFiniquito() {
-        return isrFiniquito;
-    }
-
-    public void setIsrFiniquito(BigDecimal isrFiniquito) {
-        this.isrFiniquito = isrFiniquito;
-    }
-
-    public BigDecimal getOtrasDeducciones() {
-        return otrasDeducciones;
-    }
-
-    public void setOtrasDeducciones(BigDecimal otrasDeducciones) {
-        this.otrasDeducciones = otrasDeducciones;
-    }
-
-    public BigDecimal getTotalDeducciones() {
-        return totalDeducciones;
-    }
-
-    public void setTotalDeducciones(BigDecimal totalDeducciones) {
-        this.totalDeducciones = totalDeducciones;
-    }
-
-    public BigDecimal getNeto() {
-        return neto;
-    }
-
-    public void setNeto(BigDecimal neto) {
-        this.neto = neto;
-    }
-
-    public BigDecimal getInvalidezYVida() {
-        return invalidezYVida;
-    }
-
-    public void setInvalidezYVida(BigDecimal invalidezYVida) {
-        this.invalidezYVida = invalidezYVida;
-    }
-
-    public BigDecimal getCesantiaYVejez() {
-        return cesantiaYVejez;
-    }
-
-    public void setCesantiaYVejez(BigDecimal cesantiaYVejez) {
-        this.cesantiaYVejez = cesantiaYVejez;
-    }
-
-    public BigDecimal getEnfYMatPatron() {
-        return enfYMatPatron;
-    }
-
-    public void setEnfYMatPatron(BigDecimal enfYMatPatron) {
-        this.enfYMatPatron = enfYMatPatron;
-    }
-
-    public BigDecimal getFondoRetiroSar() {
-        return fondoRetiroSar;
-    }
-
-    public void setFondoRetiroSar(BigDecimal fondoRetiroSar) {
-        this.fondoRetiroSar = fondoRetiroSar;
-    }
-
-    public BigDecimal getImpuestoEstatal() {
-        return impuestoEstatal;
-    }
-
-    public void setImpuestoEstatal(BigDecimal impuestoEstatal) {
-        this.impuestoEstatal = impuestoEstatal;
-    }
-
-    public BigDecimal getRiesgoDeTrabajo() {
-        return riesgoDeTrabajo;
-    }
-
-    public void setRiesgoDeTrabajo(BigDecimal riesgoDeTrabajo) {
-        this.riesgoDeTrabajo = riesgoDeTrabajo;
-    }
-
-    public BigDecimal getImssEmpresa() {
-        return imssEmpresa;
-    }
-
-    public void setImssEmpresa(BigDecimal imssEmpresa) {
-        this.imssEmpresa = imssEmpresa;
-    }
-
-    public BigDecimal getInfonavitEmpresa() {
-        return infonavitEmpresa;
-    }
-
-    public void setInfonavitEmpresa(BigDecimal infonavitEmpresa) {
-        this.infonavitEmpresa = infonavitEmpresa;
-    }
-
-    public BigDecimal getGuarderiaImss() {
-        return guarderiaImss;
-    }
-
-    public void setGuarderiaImss(BigDecimal guarderiaImss) {
-        this.guarderiaImss = guarderiaImss;
-    }
-
-    public BigDecimal getOtrasObligaciones() {
-        return otrasObligaciones;
-    }
-
-    public void setOtrasObligaciones(BigDecimal otrasObligaciones) {
-        this.otrasObligaciones = otrasObligaciones;
-    }
-
-    public BigDecimal getTotalObligaciones() {
-        return totalObligaciones;
-    }
-
-    public void setTotalObligaciones(BigDecimal totalObligaciones) {
-        this.totalObligaciones = totalObligaciones;
-    }
-
-    public BigDecimal getPercepcionesSubsidioSpTotalObligaciones() {
-        return percepcionesSubsidioSpTotalObligaciones;
-    }
-
-    public void setPercepcionesSubsidioSpTotalObligaciones(BigDecimal percepcionesSubsidioSpTotalObligaciones) {
-        this.percepcionesSubsidioSpTotalObligaciones = percepcionesSubsidioSpTotalObligaciones;
-    }
-
-    public BigDecimal getComision() {
-        return comision;
-    }
-
-    public void setComision(BigDecimal comision) {
-        this.comision = comision;
-    }
-
-    public BigDecimal getIva() {
-        return iva;
-    }
-
-    public void setIva(BigDecimal iva) {
-        this.iva = iva;
-    }
-
-    public BigDecimal getTotalIva() {
-        return totalIva;
-    }
-
-    public void setTotalIva(BigDecimal totalIva) {
-        this.totalIva = totalIva;
+    public void setTotal(BigDecimal total) {
+        this.total = total;
     }
 
     public LocalDateTime getCreationDate() {
@@ -796,37 +265,140 @@ public class Outsourcing implements Serializable {
         this.creationDate = creationDate;
     }
 
-    public int getStatus() {
-        return status;
+    public LocalDateTime getApplicationDate() {
+        return applicationDate;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setApplicationDate(LocalDateTime applicationDate) {
+        this.applicationDate = applicationDate;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+    public Employees getEmployee() {
+        return employee;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Outsourcing)) {
-            return false;
+    public void setEmployee(Employees employee) {
+        this.employee = employee;
+    }
+    
+    
+    
+    public DateFormatsPojo getCreationDateFormats() {
+        if (creationDate == null) {
+            return null;
         }
-        Outsourcing other = (Outsourcing) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
+        return new DateFormatsPojo(creationDate);
+    }
+    
+    public DateFormatsPojo getApplicationDateFormats() {
+        if (applicationDate == null) {
+            return null;
         }
-        return true;
+        return new DateFormatsPojo(applicationDate);
     }
 
     @Override
     public String toString() {
-        return "mx.bidg.model.Outsourcing[ id=" + id + " ]";
+        return "Outsourcing{" + "idOutsourcing=" + idOutsourcing + ", idEmployee=" + idEmployee + ", salary=" + salary + ", subsidy=" + subsidy + ", imssEmployee=" + imssEmployee + ", isr=" + isr + ", adjustment=" + adjustment + ", totalDeductions=" + totalDeductions + ", netAssetTax=" + netAssetTax + ", rcv=" + rcv + ", subtotal=" + subtotal + ", payrollTax=" + payrollTax + ", totalSocialSecurity=" + totalSocialSecurity + ", commission=" + commission + ", enterpriseInfonavit=" + enterpriseInfonavit + ", total=" + total + ", creationDate=" + creationDate + ", applicationDate=" + applicationDate + ", employee=" + employee + '}';
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 23 * hash + Objects.hashCode(this.idOutsourcing);
+        hash = 23 * hash + Objects.hashCode(this.idEmployee);
+        hash = 23 * hash + Objects.hashCode(this.salary);
+        hash = 23 * hash + Objects.hashCode(this.subsidy);
+        hash = 23 * hash + Objects.hashCode(this.imssEmployee);
+        hash = 23 * hash + Objects.hashCode(this.isr);
+        hash = 23 * hash + Objects.hashCode(this.adjustment);
+        hash = 23 * hash + Objects.hashCode(this.totalDeductions);
+        hash = 23 * hash + Objects.hashCode(this.netAssetTax);
+        hash = 23 * hash + Objects.hashCode(this.rcv);
+        hash = 23 * hash + Objects.hashCode(this.subtotal);
+        hash = 23 * hash + Objects.hashCode(this.payrollTax);
+        hash = 23 * hash + Objects.hashCode(this.totalSocialSecurity);
+        hash = 23 * hash + Objects.hashCode(this.commission);
+        hash = 23 * hash + Objects.hashCode(this.enterpriseInfonavit);
+        hash = 23 * hash + Objects.hashCode(this.total);
+        hash = 23 * hash + Objects.hashCode(this.creationDate);
+        hash = 23 * hash + Objects.hashCode(this.applicationDate);
+        hash = 23 * hash + Objects.hashCode(this.employee);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Outsourcing other = (Outsourcing) obj;
+        if (!Objects.equals(this.idOutsourcing, other.idOutsourcing)) {
+            return false;
+        }
+        if (!Objects.equals(this.idEmployee, other.idEmployee)) {
+            return false;
+        }
+        if (!Objects.equals(this.salary, other.salary)) {
+            return false;
+        }
+        if (!Objects.equals(this.subsidy, other.subsidy)) {
+            return false;
+        }
+        if (!Objects.equals(this.imssEmployee, other.imssEmployee)) {
+            return false;
+        }
+        if (!Objects.equals(this.isr, other.isr)) {
+            return false;
+        }
+        if (!Objects.equals(this.adjustment, other.adjustment)) {
+            return false;
+        }
+        if (!Objects.equals(this.totalDeductions, other.totalDeductions)) {
+            return false;
+        }
+        if (!Objects.equals(this.netAssetTax, other.netAssetTax)) {
+            return false;
+        }
+        if (!Objects.equals(this.rcv, other.rcv)) {
+            return false;
+        }
+        if (!Objects.equals(this.subtotal, other.subtotal)) {
+            return false;
+        }
+        if (!Objects.equals(this.payrollTax, other.payrollTax)) {
+            return false;
+        }
+        if (!Objects.equals(this.totalSocialSecurity, other.totalSocialSecurity)) {
+            return false;
+        }
+        if (!Objects.equals(this.commission, other.commission)) {
+            return false;
+        }
+        if (!Objects.equals(this.enterpriseInfonavit, other.enterpriseInfonavit)) {
+            return false;
+        }
+        if (!Objects.equals(this.total, other.total)) {
+            return false;
+        }
+        if (!Objects.equals(this.creationDate, other.creationDate)) {
+            return false;
+        }
+        if (!Objects.equals(this.applicationDate, other.applicationDate)) {
+            return false;
+        }
+        if (!Objects.equals(this.employee, other.employee)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
     
 }
