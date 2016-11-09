@@ -43,10 +43,10 @@ public class OutsourcingDaoImpl extends AbstractDao<Integer, Outsourcing> implem
     }
 
     @Override
-    public Outsourcing finfByidW(String idW, LocalDateTime creationDate) {
+    public Outsourcing finfByidEmployee(int idEmployee,LocalDateTime applicationDate) {
         return (Outsourcing) createEntityCriteria()
-                .add(Restrictions.eq("idW",idW))
-                .add(Restrictions.eq("creationDate",creationDate))
+                .add(Restrictions.eq("idEmployee",idEmployee))
+                .add(Restrictions.eq("applicationDate",applicationDate))
                 .uniqueResult();
     }
 }

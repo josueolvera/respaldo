@@ -8,5 +8,5 @@ import java.time.LocalDateTime;
  * Created by gerardo8 on 16/05/16.
  */
 public interface OutsourcingDao extends InterfaceDao<Outsourcing> {
-    Outsourcing finfByidW(String idW,LocalDateTime creationDate);
+    Outsourcing finfByidEmployee(int idEmployee,LocalDateTime applicationDate);
 }
