@@ -49,12 +49,12 @@ public class OutsourcingServiceImpl implements OutsourcingService {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
-        for (int i=8;i<=sheet.getLastRowNum();i++) {
+        for (int i=7;i<=sheet.getLastRowNum();i++) {
             Row currentRow = sheet.getRow(i);
 
-            Cell departament = currentRow.getCell(0);
+          //  Cell departament = currentRow.getCell(0);
             Cell code = currentRow.getCell(1);
-            Cell name = currentRow.getCell(2);
+        //    Cell name = currentRow.getCell(2);
             Cell salary = currentRow.getCell(3);
             Cell subsidy = currentRow.getCell(4);
             Cell imssEmployee = currentRow.getCell(5);
@@ -83,78 +83,160 @@ public class OutsourcingServiceImpl implements OutsourcingService {
                     outsourcing.setEmployee(employee);
                 }
                 if (salary != null){
-                    BigDecimal bdSalary = new BigDecimal(salary.getNumericCellValue());
-                    outsourcing.setSalary(bdSalary);
+                    if (salary.getCellType() == Cell.CELL_TYPE_STRING) {
+                        BigDecimal bdSalary = new BigDecimal(Integer.parseInt(salary.getStringCellValue()));
+                        outsourcing.setSalary(bdSalary);
+                    }else if (salary.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                        BigDecimal bdSalary = new BigDecimal(salary.getNumericCellValue());
+                        outsourcing.setSalary(bdSalary);
+                    }
+
                 }
                 if (subsidy != null){
-                    BigDecimal bdSubsidy = new BigDecimal(subsidy.getNumericCellValue());
-                    outsourcing.setSalary(bdSubsidy);
+                    if (subsidy.getCellType() == Cell.CELL_TYPE_STRING) {
+                        BigDecimal bdSubsidy = new BigDecimal(Integer.parseInt(subsidy.getStringCellValue()));
+                        outsourcing.setSubsidy(bdSubsidy);
+                    }else if (subsidy.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                        BigDecimal bdSubsidy = new BigDecimal(subsidy.getNumericCellValue());
+                        outsourcing.setSubsidy(bdSubsidy);
+                    }
+
                 }
                 if (imssEmployee != null){
-                    BigDecimal bdImssEmployee = new BigDecimal(imssEmployee.getNumericCellValue());
-                    outsourcing.setSalary(bdImssEmployee);
+                    if (imssEmployee.getCellType() == Cell.CELL_TYPE_STRING) {
+                        BigDecimal bdImssEmployee = new BigDecimal(Integer.parseInt(imssEmployee.getStringCellValue()));
+                        outsourcing.setImssEmployee(bdImssEmployee);
+                    }else if (imssEmployee.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                        BigDecimal bdImssEmployee = new BigDecimal(imssEmployee.getNumericCellValue());
+                        outsourcing.setImssEmployee(bdImssEmployee);
+                    }
                 }
 
                 if (isr != null){
-                    BigDecimal bdIsr = new BigDecimal(isr.getNumericCellValue());
-                    outsourcing.setSalary(bdIsr);
+                    if (isr.getCellType() == Cell.CELL_TYPE_STRING) {
+                        BigDecimal bdIsr = new BigDecimal(Integer.parseInt(isr.getStringCellValue()));
+                        outsourcing.setIsr(bdIsr);
+                    }else if (isr.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                        BigDecimal bdIsr = new BigDecimal(isr.getNumericCellValue());
+                        outsourcing.setIsr(bdIsr);
+                    }
                 }
                 if (adjustment != null){
-                    BigDecimal bdAdjustment = new BigDecimal(adjustment.getNumericCellValue());
-                    outsourcing.setSalary(bdAdjustment);
+                    if (adjustment.getCellType() == Cell.CELL_TYPE_STRING) {
+                        BigDecimal bdAdjustment = new BigDecimal(Integer.parseInt(adjustment.getStringCellValue()));
+                        outsourcing.setAdjustment(bdAdjustment);
+                    }else if (adjustment.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                        BigDecimal bdAdjustment = new BigDecimal(adjustment.getNumericCellValue());
+                        outsourcing.setAdjustment(bdAdjustment);
+                    }
                 }
                 if (totalDeduction != null){
-                    BigDecimal bdTotalDeduction = new BigDecimal(totalDeduction.getNumericCellValue());
-                    outsourcing.setSalary(bdTotalDeduction);
+                    if (totalDeduction.getCellType() == Cell.CELL_TYPE_STRING) {
+                        BigDecimal bdTotalDeduction = new BigDecimal(Integer.parseInt(totalDeduction.getStringCellValue()));
+                        outsourcing.setTotalDeductions(bdTotalDeduction);
+                    }else if (totalDeduction.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                        BigDecimal bdTotalDeduction = new BigDecimal(totalDeduction.getNumericCellValue());
+                        outsourcing.setTotalDeductions(bdTotalDeduction);
+                    }
                 }
 
                 if (netAssetTax != null){
-                    BigDecimal bdNetAssetTax = new BigDecimal(netAssetTax.getNumericCellValue());
-                    outsourcing.setSalary(bdNetAssetTax);
+                    if (netAssetTax.getCellType() == Cell.CELL_TYPE_STRING) {
+                        BigDecimal bdNetAssetTax = new BigDecimal(Integer.parseInt(netAssetTax.getStringCellValue()));
+                        outsourcing.setNetAssetTax(bdNetAssetTax);
+                    }else if (netAssetTax.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                        BigDecimal bdNetAssetTax = new BigDecimal(netAssetTax.getNumericCellValue());
+                        outsourcing.setNetAssetTax(bdNetAssetTax);
+                    }
                 }
 
                 if (imss != null){
-                    BigDecimal bdImss = new BigDecimal(imss.getNumericCellValue());
-                    outsourcing.setSalary(bdImss);
+                    if (imss.getCellType() == Cell.CELL_TYPE_STRING) {
+                        BigDecimal bdImss = new BigDecimal(Integer.parseInt(imss.getStringCellValue()));
+                        outsourcing.setImss(bdImss);
+                    }else if (imss.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                        BigDecimal bdImss = new BigDecimal(imss.getNumericCellValue());
+                        outsourcing.setImss(bdImss);
+                    }
                 }
                 if (rcv != null){
-                    BigDecimal bdRcv = new BigDecimal(rcv.getNumericCellValue());
-                    outsourcing.setSalary(bdRcv);
+                    if (rcv.getCellType() == Cell.CELL_TYPE_STRING) {
+                        BigDecimal bdRcv = new BigDecimal(Integer.parseInt(rcv.getStringCellValue()));
+                        outsourcing.setRcv(bdRcv);
+                    }else if (rcv.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                        BigDecimal bdRcv = new BigDecimal(rcv.getNumericCellValue());
+                        outsourcing.setRcv(bdRcv);
+                    }
                 }
 
                 if (enterpriseInfonavit != null){
-                    BigDecimal bdEnterpriseInfonavit = new BigDecimal(enterpriseInfonavit.getNumericCellValue());
-                    outsourcing.setSalary(bdEnterpriseInfonavit);
+                    if (enterpriseInfonavit.getCellType() == Cell.CELL_TYPE_STRING) {
+                        BigDecimal bdEnterpriseInfonavit = new BigDecimal(Integer.parseInt(enterpriseInfonavit.getStringCellValue()));
+                        outsourcing.setEnterpriseInfonavit(bdEnterpriseInfonavit);
+                    }else if (enterpriseInfonavit.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                        BigDecimal bdEnterpriseInfonavit = new BigDecimal(enterpriseInfonavit.getNumericCellValue());
+                        outsourcing.setEnterpriseInfonavit(bdEnterpriseInfonavit);
+                    }
                 }
 
                 if (payrollTax != null){
-                    BigDecimal bdPayrollTax = new BigDecimal(payrollTax.getNumericCellValue());
-                    outsourcing.setSalary(bdPayrollTax);
+                    if (payrollTax.getCellType() == Cell.CELL_TYPE_STRING) {
+                        BigDecimal bdPayrollTax = new BigDecimal(Integer.parseInt(payrollTax.getStringCellValue()));
+                        outsourcing.setPayrollTax(bdPayrollTax);
+                    }else if (payrollTax.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                        BigDecimal bdPayrollTax = new BigDecimal(payrollTax.getNumericCellValue());
+                        outsourcing.setPayrollTax(bdPayrollTax);
+                    }
                 }
 
                 if (totalSocialSecurity != null){
-                    BigDecimal bdTotalSocialitySecurity = new BigDecimal(totalSocialSecurity.getNumericCellValue());
-                    outsourcing.setSalary(bdTotalSocialitySecurity);
+                    if (totalSocialSecurity.getCellType() == Cell.CELL_TYPE_STRING) {
+                        BigDecimal bdTotalSocialitySecurity = new BigDecimal(Integer.parseInt(totalSocialSecurity.getStringCellValue()));
+                        outsourcing.setTotalSocialSecurity(bdTotalSocialitySecurity);
+                    }else if (totalSocialSecurity.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                        BigDecimal bdTotalSocialitySecurity = new BigDecimal(totalSocialSecurity.getNumericCellValue());
+                        outsourcing.setTotalSocialSecurity(bdTotalSocialitySecurity);
+                    }
                 }
 
                 if (commission != null){
-                    BigDecimal bdCommision = new BigDecimal(commission.getNumericCellValue());
-                    outsourcing.setSalary(bdCommision);
+                    if (commission.getCellType() == Cell.CELL_TYPE_STRING) {
+                        BigDecimal bdCommision = new BigDecimal(Integer.parseInt(commission.getStringCellValue()));
+                        outsourcing.setCommission(bdCommision);
+                    }else if (commission.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                        BigDecimal bdCommision = new BigDecimal(commission.getNumericCellValue());
+                        outsourcing.setCommission(bdCommision);
+                    }
                 }
 
                 if (subtotal != null){
-                    BigDecimal bdSubtotal = new BigDecimal(subtotal.getNumericCellValue());
-                    outsourcing.setSalary(bdSubtotal);
+                    if (subtotal.getCellType() == Cell.CELL_TYPE_STRING) {
+                        BigDecimal bdSubtotal = new BigDecimal(Integer.parseInt(subtotal.getStringCellValue()));
+                        outsourcing.setSubtotal(bdSubtotal);
+                    }else if (subtotal.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                        BigDecimal bdSubtotal = new BigDecimal(subtotal.getNumericCellValue());
+                        outsourcing.setSubtotal(bdSubtotal);
+                    }
                 }
 
                 if (iva != null){
-                    BigDecimal bdIva = new BigDecimal(iva.getNumericCellValue());
-                    outsourcing.setSalary(bdIva);
+                    if (iva.getCellType() == Cell.CELL_TYPE_STRING) {
+                        BigDecimal bdIva = new BigDecimal(Integer.parseInt(iva.getStringCellValue()));
+                        outsourcing.setIva(bdIva);
+                    }else if (iva.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                        BigDecimal bdIva = new BigDecimal(iva.getNumericCellValue());
+                        outsourcing.setIva(bdIva);
+                    }
                 }
 
                 if (total != null){
-                    BigDecimal bdTotal = new BigDecimal(total.getNumericCellValue());
-                    outsourcing.setSalary(bdTotal);
+                    if (total.getCellType() == Cell.CELL_TYPE_STRING) {
+                        BigDecimal bdTotal = new BigDecimal(Integer.parseInt(total.getStringCellValue()));
+                        outsourcing.setTotal(bdTotal);
+                    }else if (total.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                        BigDecimal bdTotal = new BigDecimal(total.getNumericCellValue());
+                        outsourcing.setTotal(bdTotal);
+                    }
                 }
 
 
@@ -175,11 +257,11 @@ public class OutsourcingServiceImpl implements OutsourcingService {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
-        for (int i=8;i<=sheet.getLastRowNum();i++) {
+        for (int i=7;i<=sheet.getLastRowNum();i++) {
             Row currentRow = sheet.getRow(i);
-            Cell departament = currentRow.getCell(0);
+//            Cell departament = currentRow.getCell(0);
             Cell code = currentRow.getCell(1);
-            Cell name = currentRow.getCell(2);
+//            Cell name = currentRow.getCell(2);
             Cell salary = currentRow.getCell(3);
             Cell subsidy = currentRow.getCell(4);
             Cell imssEmployee = currentRow.getCell(5);
@@ -211,82 +293,162 @@ public class OutsourcingServiceImpl implements OutsourcingService {
                     if (employee != null){
                         outsourcing.setEmployee(employee);
                     }
+
                     if (salary != null){
                         if (salary.getCellType() == Cell.CELL_TYPE_STRING) {
-                            break;
+                            BigDecimal bdSalary = new BigDecimal(Integer.parseInt(salary.getStringCellValue()));
+                            outsourcing.setSalary(bdSalary);
+                        }else if (salary.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                            BigDecimal bdSalary = new BigDecimal(salary.getNumericCellValue());
+                            outsourcing.setSalary(bdSalary);
                         }
-                        BigDecimal bdSalary = new BigDecimal(salary.getNumericCellValue());
-                        outsourcing.setSalary(bdSalary);
+
                     }
                     if (subsidy != null){
-                        BigDecimal bdSubsidy = new BigDecimal(subsidy.getNumericCellValue());
-                        outsourcing.setSalary(bdSubsidy);
+                        if (subsidy.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdSubsidy = new BigDecimal(Integer.parseInt(subsidy.getStringCellValue()));
+                            outsourcing.setSubsidy(bdSubsidy);
+                        }else if (subsidy.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                            BigDecimal bdSubsidy = new BigDecimal(subsidy.getNumericCellValue());
+                            outsourcing.setSubsidy(bdSubsidy);
+                        }
+
                     }
                     if (imssEmployee != null){
-                        BigDecimal bdImssEmployee = new BigDecimal(imssEmployee.getNumericCellValue());
-                        outsourcing.setSalary(bdImssEmployee);
+                        if (imssEmployee.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdImssEmployee = new BigDecimal(Integer.parseInt(imssEmployee.getStringCellValue()));
+                            outsourcing.setImssEmployee(bdImssEmployee);
+                        }else if (imssEmployee.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                            BigDecimal bdImssEmployee = new BigDecimal(imssEmployee.getNumericCellValue());
+                            outsourcing.setImssEmployee(bdImssEmployee);
+                        }
                     }
 
                     if (isr != null){
-                        BigDecimal bdIsr = new BigDecimal(isr.getNumericCellValue());
-                        outsourcing.setSalary(bdIsr);
+                        if (isr.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdIsr = new BigDecimal(Integer.parseInt(isr.getStringCellValue()));
+                            outsourcing.setIsr(bdIsr);
+                        }else if (isr.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                            BigDecimal bdIsr = new BigDecimal(isr.getNumericCellValue());
+                            outsourcing.setIsr(bdIsr);
+                        }
                     }
                     if (adjustment != null){
-                        BigDecimal bdAdjustment = new BigDecimal(adjustment.getNumericCellValue());
-                        outsourcing.setSalary(bdAdjustment);
+                        if (adjustment.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdAdjustment = new BigDecimal(Integer.parseInt(adjustment.getStringCellValue()));
+                            outsourcing.setAdjustment(bdAdjustment);
+                        }else if (adjustment.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                            BigDecimal bdAdjustment = new BigDecimal(adjustment.getNumericCellValue());
+                            outsourcing.setAdjustment(bdAdjustment);
+                        }
                     }
                     if (totalDeduction != null){
-                        BigDecimal bdTotalDeduction = new BigDecimal(totalDeduction.getNumericCellValue());
-                        outsourcing.setSalary(bdTotalDeduction);
+                        if (totalDeduction.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdTotalDeduction = new BigDecimal(Integer.parseInt(totalDeduction.getStringCellValue()));
+                            outsourcing.setTotalDeductions(bdTotalDeduction);
+                        }else if (totalDeduction.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                            BigDecimal bdTotalDeduction = new BigDecimal(totalDeduction.getNumericCellValue());
+                            outsourcing.setTotalDeductions(bdTotalDeduction);
+                        }
                     }
 
                     if (netAssetTax != null){
-                        BigDecimal bdNetAssetTax = new BigDecimal(netAssetTax.getNumericCellValue());
-                        outsourcing.setSalary(bdNetAssetTax);
+                        if (netAssetTax.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdNetAssetTax = new BigDecimal(Integer.parseInt(netAssetTax.getStringCellValue()));
+                            outsourcing.setNetAssetTax(bdNetAssetTax);
+                        }else if (netAssetTax.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                            BigDecimal bdNetAssetTax = new BigDecimal(netAssetTax.getNumericCellValue());
+                            outsourcing.setNetAssetTax(bdNetAssetTax);
+                        }
                     }
 
                     if (imss != null){
-                        BigDecimal bdImss = new BigDecimal(imss.getNumericCellValue());
-                        outsourcing.setSalary(bdImss);
+                        if (imss.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdImss = new BigDecimal(Integer.parseInt(imss.getStringCellValue()));
+                            outsourcing.setImss(bdImss);
+                        }else if (imss.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                            BigDecimal bdImss = new BigDecimal(imss.getNumericCellValue());
+                            outsourcing.setImss(bdImss);
+                        }
                     }
                     if (rcv != null){
-                        BigDecimal bdRcv = new BigDecimal(rcv.getNumericCellValue());
-                        outsourcing.setSalary(bdRcv);
+                        if (rcv.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdRcv = new BigDecimal(Integer.parseInt(rcv.getStringCellValue()));
+                            outsourcing.setRcv(bdRcv);
+                        }else if (rcv.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                            BigDecimal bdRcv = new BigDecimal(rcv.getNumericCellValue());
+                            outsourcing.setRcv(bdRcv);
+                        }
                     }
 
                     if (enterpriseInfonavit != null){
-                        BigDecimal bdEnterpriseInfonavit = new BigDecimal(enterpriseInfonavit.getNumericCellValue());
-                        outsourcing.setSalary(bdEnterpriseInfonavit);
+                        if (enterpriseInfonavit.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdEnterpriseInfonavit = new BigDecimal(Integer.parseInt(enterpriseInfonavit.getStringCellValue()));
+                            outsourcing.setEnterpriseInfonavit(bdEnterpriseInfonavit);
+                        }else if (enterpriseInfonavit.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                            BigDecimal bdEnterpriseInfonavit = new BigDecimal(enterpriseInfonavit.getNumericCellValue());
+                            outsourcing.setEnterpriseInfonavit(bdEnterpriseInfonavit);
+                        }
                     }
 
                     if (payrollTax != null){
-                        BigDecimal bdPayrollTax = new BigDecimal(payrollTax.getNumericCellValue());
-                        outsourcing.setSalary(bdPayrollTax);
+                        if (payrollTax.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdPayrollTax = new BigDecimal(Integer.parseInt(payrollTax.getStringCellValue()));
+                            outsourcing.setPayrollTax(bdPayrollTax);
+                        }else if (payrollTax.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                            BigDecimal bdPayrollTax = new BigDecimal(payrollTax.getNumericCellValue());
+                            outsourcing.setPayrollTax(bdPayrollTax);
+                        }
                     }
 
                     if (totalSocialSecurity != null){
-                        BigDecimal bdTotalSocialitySecurity = new BigDecimal(totalSocialSecurity.getNumericCellValue());
-                        outsourcing.setSalary(bdTotalSocialitySecurity);
+                        if (totalSocialSecurity.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdTotalSocialitySecurity = new BigDecimal(Integer.parseInt(totalSocialSecurity.getStringCellValue()));
+                            outsourcing.setTotalSocialSecurity(bdTotalSocialitySecurity);
+                        }else if (totalSocialSecurity.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                            BigDecimal bdTotalSocialitySecurity = new BigDecimal(totalSocialSecurity.getNumericCellValue());
+                            outsourcing.setTotalSocialSecurity(bdTotalSocialitySecurity);
+                        }
                     }
 
                     if (commission != null){
-                        BigDecimal bdCommision = new BigDecimal(commission.getNumericCellValue());
-                        outsourcing.setSalary(bdCommision);
+                        if (commission.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdCommision = new BigDecimal(Integer.parseInt(commission.getStringCellValue()));
+                            outsourcing.setCommission(bdCommision);
+                        }else if (commission.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                            BigDecimal bdCommision = new BigDecimal(commission.getNumericCellValue());
+                            outsourcing.setCommission(bdCommision);
+                        }
                     }
 
                     if (subtotal != null){
-                        BigDecimal bdSubtotal = new BigDecimal(subtotal.getNumericCellValue());
-                        outsourcing.setSalary(bdSubtotal);
+                        if (subtotal.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdSubtotal = new BigDecimal(Integer.parseInt(subtotal.getStringCellValue()));
+                            outsourcing.setSubtotal(bdSubtotal);
+                        }else if (subtotal.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                            BigDecimal bdSubtotal = new BigDecimal(subtotal.getNumericCellValue());
+                            outsourcing.setSubtotal(bdSubtotal);
+                        }
                     }
 
                     if (iva != null){
-                        BigDecimal bdIva = new BigDecimal(iva.getNumericCellValue());
-                        outsourcing.setSalary(bdIva);
+                        if (iva.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdIva = new BigDecimal(Integer.parseInt(iva.getStringCellValue()));
+                            outsourcing.setIva(bdIva);
+                        }else if (iva.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                            BigDecimal bdIva = new BigDecimal(iva.getNumericCellValue());
+                            outsourcing.setIva(bdIva);
+                        }
                     }
 
                     if (total != null){
-                        BigDecimal bdTotal = new BigDecimal(total.getNumericCellValue());
-                        outsourcing.setSalary(bdTotal);
+                        if (total.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdTotal = new BigDecimal(Integer.parseInt(total.getStringCellValue()));
+                            outsourcing.setTotal(bdTotal);
+                        }else if (total.getCellType() == Cell.CELL_TYPE_NUMERIC){
+                            BigDecimal bdTotal = new BigDecimal(total.getNumericCellValue());
+                            outsourcing.setTotal(bdTotal);
+                        }
                     }
 
                     outsourcing.setApplicationDate(LocalDateTime.parse(calculateDate+" 00:00",formatter));
@@ -311,7 +473,7 @@ public class OutsourcingServiceImpl implements OutsourcingService {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
-        Row headerRow = sheet.getRow(7);
+        Row headerRow = sheet.getRow(6);
         String[] headersToSkip = {
                 "Departamento", "Codigo","Nombre", "Sueldo",
                 "Subsidio","IMSS Empleado","ISR", "Ajuste al neto",
@@ -331,25 +493,27 @@ public class OutsourcingServiceImpl implements OutsourcingService {
 
         boolean existsOutsourcing = false;
 
-        for (int i=8;i<=sheet.getLastRowNum();i++) {
+        for (int i=7;i<=sheet.getLastRowNum();i++) {
             Row currentRow = sheet.getRow(i);
-            Cell codigo = currentRow.getCell(1);
+            if(currentRow != null){
+                Cell codigo = currentRow.getCell(1);
 
-            Outsourcing savedOutsourcing;
+                Outsourcing savedOutsourcing;
 
-            if (codigo != null) {
+                if (codigo != null) {
 
-                if (codigo.getCellType() == Cell.CELL_TYPE_STRING) {
-                    break;
-                }
+                    if (codigo.getCellType() == Cell.CELL_TYPE_STRING) {
+                        break;
+                    }
 
-                savedOutsourcing = outsourcingDao.finfByidEmployee(
-                        (int) codigo.getNumericCellValue(),
-                        LocalDateTime.parse(calculateDate+" 00:00",formatter)
-                );
+                    savedOutsourcing = outsourcingDao.finfByidEmployee(
+                            (int) codigo.getNumericCellValue(),
+                            LocalDateTime.parse(calculateDate+" 00:00",formatter)
+                    );
 
-                if (savedOutsourcing != null) {
-                    existsOutsourcing = true;
+                    if (savedOutsourcing != null) {
+                        existsOutsourcing = true;
+                    }
                 }
             }
         }
