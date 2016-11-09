@@ -73,6 +73,10 @@ public class Outsourcing implements Serializable {
     @Column(name = "NET_ASSET_TAX")
     @JsonView(JsonViews.Root.class)
     private BigDecimal netAssetTax;
+
+    @Column(name = "IMSS")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal imss;
     
     @Column(name = "RCV")
     @JsonView(JsonViews.Root.class)
@@ -101,6 +105,10 @@ public class Outsourcing implements Serializable {
     @Column(name = "TOTAL")
     @JsonView(JsonViews.Root.class)
     private BigDecimal total;
+
+    @Column(name = "IVA")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal iva;
     
     @Column(name = "CREATION_DATE")
     @JsonView(JsonViews.Root.class)
@@ -280,9 +288,23 @@ public class Outsourcing implements Serializable {
     public void setEmployee(Employees employee) {
         this.employee = employee;
     }
-    
-    
-    
+
+    public BigDecimal getImss() {
+        return imss;
+    }
+
+    public void setImss(BigDecimal imss) {
+        this.imss = imss;
+    }
+
+    public BigDecimal getIva() {
+        return iva;
+    }
+
+    public void setIva(BigDecimal iva) {
+        this.iva = iva;
+    }
+
     public DateFormatsPojo getCreationDateFormats() {
         if (creationDate == null) {
             return null;
