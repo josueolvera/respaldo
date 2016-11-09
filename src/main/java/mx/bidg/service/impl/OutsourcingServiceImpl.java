@@ -1,7 +1,9 @@
 package mx.bidg.service.impl;
 
+import mx.bidg.dao.EmployeesDao;
 import mx.bidg.dao.OutsourcingDao;
 import mx.bidg.exceptions.ValidationException;
+import mx.bidg.model.Employees;
 import mx.bidg.model.Outsourcing;
 import mx.bidg.service.OutsourcingService;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -27,6 +29,9 @@ public class OutsourcingServiceImpl implements OutsourcingService {
     @Autowired
     private OutsourcingDao outsourcingDao;
 
+    @Autowired
+    private EmployeesDao employeesDao;
+
     @Override
     public List<Outsourcing> findAll() {
         return outsourcingDao.findAll();
@@ -44,261 +49,120 @@ public class OutsourcingServiceImpl implements OutsourcingService {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
-        for (int i=9;i<=sheet.getLastRowNum();i++) {
+        for (int i=8;i<=sheet.getLastRowNum();i++) {
             Row currentRow = sheet.getRow(i);
-            Cell idW = currentRow.getCell(0);
-            Cell sueldo = currentRow.getCell(2);
-            Cell septimoDia = currentRow.getCell(3);
-            Cell horasExtras = currentRow.getCell(4);
-            Cell destajos = currentRow.getCell(5);
-            Cell comisiones = currentRow.getCell(6);
-            Cell indemnizacionEspecial = currentRow.getCell(7);
-            Cell premiosEficiencia = currentRow.getCell(8);
-            Cell vacacionesATiempo = currentRow.getCell(9);
-            Cell primaDeVacacionesATiempo = currentRow.getCell(10);
-            Cell vacacionesReportadas = currentRow.getCell(11);
-            Cell primaDeVacacionesReportada = currentRow.getCell(12);
-            Cell aguinaldo = currentRow.getCell(13);
-            Cell primaDeAntiguedad = currentRow.getCell(14);
-            Cell otrasPercepciones = currentRow.getCell(15);
-            Cell totalPercepciones = currentRow.getCell(16);
-            Cell retInvYVida = currentRow.getCell(17);
-            Cell retCesantia = currentRow.getCell(18);
-            Cell retEnfYMatObrero = currentRow.getCell(19);
-            Cell seguroDeViviendaInfonavit = currentRow.getCell(20);
-            Cell prestamoInfonavitVsm = currentRow.getCell(21);
-            Cell subsAlEmpleoAcreditado = currentRow.getCell(22);
-            Cell subsidioAlEmpleoSp = currentRow.getCell(23);
-            Cell isrAntesDeSubsAlEmpleo = currentRow.getCell(24);
-            Cell isrArt142 = currentRow.getCell(25);
-            Cell isrSp = currentRow.getCell(26);
-            Cell imss = currentRow.getCell(27);
-            Cell prestamoInfonavit = currentRow.getCell(28);
-            Cell ajusteAlNeto = currentRow.getCell(29);
-            Cell isrFiniquito = currentRow.getCell(30);
-            Cell otrasDeducciones = currentRow.getCell(31);
-            Cell totalDeducciones = currentRow.getCell(32);
-            Cell neto = currentRow.getCell(33);
-            Cell invalidezYVida = currentRow.getCell(34);
-            Cell cesantiaYVejez = currentRow.getCell(35);
-            Cell enfYMatPatron = currentRow.getCell(36);
-            Cell fondoRetiroSar = currentRow.getCell(37);
-            Cell impuestoEstatal = currentRow.getCell(38);
-            Cell riesgoDeTrabajo = currentRow.getCell(39);
-            Cell imssEmpresa = currentRow.getCell(40);
-            Cell infonavitEmpresa = currentRow.getCell(41);
-            Cell guarderiaImss = currentRow.getCell(42);
-            Cell otrasObligaciones = currentRow.getCell(43);
-            Cell totalObligaciones = currentRow.getCell(44);
-            Cell percepcionesSubsidioSpTotalObligaciones = currentRow.getCell(45);
-            Cell comision = currentRow.getCell(46);
-            Cell iva = currentRow.getCell(47);
-            Cell totalIva = currentRow.getCell(48);
+
+            Cell departament = currentRow.getCell(0);
+            Cell code = currentRow.getCell(1);
+            Cell name = currentRow.getCell(2);
+            Cell salary = currentRow.getCell(3);
+            Cell subsidy = currentRow.getCell(4);
+            Cell imssEmployee = currentRow.getCell(5);
+            Cell isr = currentRow.getCell(6);
+            Cell adjustment = currentRow.getCell(7);
+            Cell totalDeduction = currentRow.getCell(8);
+            Cell netAssetTax = currentRow.getCell(9);
+            Cell imss = currentRow.getCell(10);
+            Cell rcv = currentRow.getCell(11);
+            Cell enterpriseInfonavit = currentRow.getCell(12);
+            Cell payrollTax = currentRow.getCell(13);
+            Cell totalSocialSecurity = currentRow.getCell(14);
+            Cell commission = currentRow.getCell(15);
+            Cell subtotal = currentRow.getCell(16);
+            Cell iva = currentRow.getCell(17);
+            Cell total = currentRow.getCell(18);
+
+
 
             Outsourcing outsourcing = new Outsourcing();
 
-            if (idW != null) {
-                outsourcing.setIdW(idW.getStringCellValue());
-            }
-            if (sueldo != null) {
+            if (code != null){
+                Employees employee = employeesDao.findById((int) code.getNumericCellValue());
 
-                if (sueldo.getCellType() == Cell.CELL_TYPE_STRING) {
-                    break;
+                if (employee != null){
+                    outsourcing.setEmployee(employee);
                 }
-                
-                BigDecimal bdSueldo = new BigDecimal(sueldo.getNumericCellValue());
-                outsourcing.setSueldo(bdSueldo);
-            }
-            if (septimoDia != null) {
-                BigDecimal bdSeptimoDia = new BigDecimal(septimoDia.getNumericCellValue());
-                outsourcing.setSeptimoDia(bdSeptimoDia);
-            }
-            if (horasExtras != null) {
-                BigDecimal bdHorasExtras = new BigDecimal(horasExtras.getNumericCellValue());
-                outsourcing.setHorasExtras(bdHorasExtras);
-            }
-            if (destajos != null) {
-                BigDecimal bdDestajos = new BigDecimal(destajos.getNumericCellValue());
-                outsourcing.setDestajos(bdDestajos);
-            }
-            if (comisiones != null) {
-                BigDecimal bdComisiones = new BigDecimal(comisiones.getNumericCellValue());
-                outsourcing.setComisiones(bdComisiones);
-            }
-            if (indemnizacionEspecial != null) {
-                BigDecimal bdIndemnizacionEspecial = new BigDecimal(indemnizacionEspecial.getNumericCellValue());
-                outsourcing.setIndemnizacionEspecial(bdIndemnizacionEspecial);
-            }
-            if (premiosEficiencia != null) {
-                BigDecimal bdPremiosEficiencia = new BigDecimal(premiosEficiencia.getNumericCellValue());
-                outsourcing.setPremiosEficiencia(bdPremiosEficiencia);
-            }
-            if (vacacionesATiempo != null) {
-                BigDecimal bdVacacionesATiempo = new BigDecimal(vacacionesATiempo.getNumericCellValue());
-                outsourcing.setVacacionesATiempo(bdVacacionesATiempo);
-            }
-            if (primaDeVacacionesATiempo != null) {
-                BigDecimal bdPrimaDeVacacionesATiempo = new BigDecimal(primaDeVacacionesATiempo.getNumericCellValue());
-                outsourcing.setPrimaDeVacacionesATiempo(bdPrimaDeVacacionesATiempo);
-            }
-            if (vacacionesReportadas != null) {
-                BigDecimal bdVacacionesReportadas = new BigDecimal(vacacionesReportadas.getNumericCellValue());
-                outsourcing.setVacacionesReportadas(bdVacacionesReportadas);
-            }
-            if (primaDeVacacionesReportada != null) {
-                BigDecimal bdPrimaDeVacacionesReportada = new BigDecimal(primaDeVacacionesReportada.getNumericCellValue());
-                outsourcing.setPrimaDeVacacionesReportada(bdPrimaDeVacacionesReportada);
-            }
-            if (aguinaldo != null) {
-                BigDecimal bdAguinaldo = new BigDecimal(aguinaldo.getNumericCellValue());
-                outsourcing.setAguinaldo(bdAguinaldo);
-            }
-            if (primaDeAntiguedad != null) {
-                BigDecimal bdPrimaDeAntiguedad = new BigDecimal(primaDeAntiguedad.getNumericCellValue());
-                outsourcing.setPrimaDeAntiguedad(bdPrimaDeAntiguedad);
-            }
-            if (otrasPercepciones != null) {
-                BigDecimal bdOtrasPercepciones = new BigDecimal(otrasPercepciones.getNumericCellValue());
-                outsourcing.setOtrasPercepciones(bdOtrasPercepciones);
-            }
-            if (totalPercepciones != null) {
-                BigDecimal bdTotalPercepciones = new BigDecimal(totalPercepciones.getNumericCellValue());
-                outsourcing.setTotalPercepciones(bdTotalPercepciones);
-            }
-            if (retInvYVida != null) {
-                BigDecimal bdRetInvYVida = new BigDecimal(retInvYVida.getNumericCellValue());
-                outsourcing.setRetInvYVida(bdRetInvYVida);
-            }
-            if (retCesantia != null) {
-                BigDecimal bdRetCesantia = new BigDecimal(retCesantia.getNumericCellValue());
-                outsourcing.setRetCesantia(bdRetCesantia);
-            }
-            if (retEnfYMatObrero != null) {
-                BigDecimal bdRetEnfYMatObrero = new BigDecimal(retEnfYMatObrero.getNumericCellValue());
-                outsourcing.setRetEnfYMatObrero(bdRetEnfYMatObrero);
-            }
-            if (seguroDeViviendaInfonavit != null) {
-                BigDecimal bdSeguroDeViviendaInfonavit = new BigDecimal(seguroDeViviendaInfonavit.getNumericCellValue());
-                outsourcing.setSeguroDeViviendaInfonavit(bdSeguroDeViviendaInfonavit);
-            }
-            if (prestamoInfonavitVsm != null) {
-                BigDecimal bdPrestamoInfonavitVsm = new BigDecimal(prestamoInfonavitVsm.getNumericCellValue());
-                outsourcing.setPrestamoInfonavitVsm(bdPrestamoInfonavitVsm);
-            }
-            if (subsAlEmpleoAcreditado != null) {
-                BigDecimal bdSubsAlEmpleoAcreditado = new BigDecimal(subsAlEmpleoAcreditado.getNumericCellValue());
-                outsourcing.setSubsAlEmpleoAcreditado(bdSubsAlEmpleoAcreditado);
-            }
-            if (subsidioAlEmpleoSp != null) {
-                BigDecimal bdSubsidioAlEmpleoSp = new BigDecimal(subsidioAlEmpleoSp.getNumericCellValue());
-                outsourcing.setSubsidioAlEmpleoSp(bdSubsidioAlEmpleoSp);
-            }
-            if (isrAntesDeSubsAlEmpleo != null) {
-                BigDecimal bdIsrAntesDeSubsAlEmpleo = new BigDecimal(isrAntesDeSubsAlEmpleo.getNumericCellValue());
-                outsourcing.setIsrAntesDeSubsAlEmpleo(bdIsrAntesDeSubsAlEmpleo);
-            }
-            if (isrArt142 != null) {
-                BigDecimal bdIsrArt142 = new BigDecimal(isrArt142.getNumericCellValue());
-                outsourcing.setIsrArt142(bdIsrArt142);
-            }
-            if (isrSp != null) {
-                BigDecimal bdIsrSp = new BigDecimal(isrSp.getNumericCellValue());
-                outsourcing.setIsrSp(bdIsrSp);
-            }
-            if (imss != null) {
-                BigDecimal bdImss = new BigDecimal(imss.getNumericCellValue());
-                outsourcing.setImss(bdImss);
-            }
-            if (prestamoInfonavit != null) {
-                BigDecimal bdPrestamoInfonavit = new BigDecimal(prestamoInfonavit.getNumericCellValue());
-                outsourcing.setPrestamoInfonavit(bdPrestamoInfonavit);
-            }
-            if (ajusteAlNeto != null) {
-                BigDecimal bdAjusteAlNeto = new BigDecimal(ajusteAlNeto.getNumericCellValue());
-                outsourcing.setAjusteAlNeto(bdAjusteAlNeto);
-            }
-            if (isrFiniquito != null) {
-                BigDecimal bdIsrFiniquito = new BigDecimal(isrFiniquito.getNumericCellValue());
-                outsourcing.setIsrFiniquito(bdIsrFiniquito);
-            }
-            if (otrasDeducciones != null) {
-                BigDecimal bdOtrasDeducciones = new BigDecimal(otrasDeducciones.getNumericCellValue());
-                outsourcing.setOtrasDeducciones(bdOtrasDeducciones);
-            }
-            if (totalDeducciones != null) {
-                BigDecimal bdTotalDeducciones = new BigDecimal(totalDeducciones.getNumericCellValue());
-                outsourcing.setTotalDeducciones(bdTotalDeducciones);
-            }
-            if (neto != null) {
-                BigDecimal bdNeto = new BigDecimal(neto.getNumericCellValue());
-                outsourcing.setNeto(bdNeto);
-            }
-            if (invalidezYVida != null) {
-                BigDecimal bdInvalidezYVida = new BigDecimal(invalidezYVida.getNumericCellValue());
-                outsourcing.setInvalidezYVida(bdInvalidezYVida);
-            }
-            if (cesantiaYVejez != null) {
-                BigDecimal bdCesantiaYVejez = new BigDecimal(cesantiaYVejez.getNumericCellValue());
-                outsourcing.setCesantiaYVejez(bdCesantiaYVejez);
-            }
-            if (enfYMatPatron != null) {
-                BigDecimal bdEnfYMatPatron = new BigDecimal(enfYMatPatron.getNumericCellValue());
-                outsourcing.setEnfYMatPatron(bdEnfYMatPatron);
-            }
-            if (fondoRetiroSar != null) {
-                BigDecimal bdFondoRetiroSar = new BigDecimal(fondoRetiroSar.getNumericCellValue());
-                outsourcing.setFondoRetiroSar(bdFondoRetiroSar);
-            }
-            if (impuestoEstatal != null) {
-                BigDecimal bdImpuestoEstatal = new BigDecimal(impuestoEstatal.getNumericCellValue());
-                outsourcing.setImpuestoEstatal(bdImpuestoEstatal);
-            }
-            if (riesgoDeTrabajo != null) {
-                BigDecimal bdRiesgoDeTrabajo = new BigDecimal(riesgoDeTrabajo.getNumericCellValue());
-                outsourcing.setRiesgoDeTrabajo(bdRiesgoDeTrabajo);
-            }
-            if (imssEmpresa != null) {
-                BigDecimal bdImssEmpresa = new BigDecimal(imssEmpresa.getNumericCellValue());
-                outsourcing.setImssEmpresa(bdImssEmpresa);
-            }
-            if (infonavitEmpresa != null) {
-                BigDecimal bdInfonavitEmpresa = new BigDecimal(infonavitEmpresa.getNumericCellValue());
-                outsourcing.setInfonavitEmpresa(bdInfonavitEmpresa);
-            }
-            if (guarderiaImss != null) {
-                BigDecimal bdGuarderiaImss = new BigDecimal(guarderiaImss.getNumericCellValue());
-                outsourcing.setGuarderiaImss(bdGuarderiaImss);
-            }
-            if (otrasObligaciones != null) {
-                BigDecimal bdOtrasObligaciones = new BigDecimal(otrasObligaciones.getNumericCellValue());
-                outsourcing.setOtrasObligaciones(bdOtrasObligaciones);
-            }
-            if (totalObligaciones != null) {
-                BigDecimal bdTotalObligaciones = new BigDecimal(totalObligaciones.getNumericCellValue());
-                outsourcing.setTotalObligaciones(bdTotalObligaciones);
-            }
-            if (percepcionesSubsidioSpTotalObligaciones != null) {
-                BigDecimal bdPercepcionesSubsidioSpTotalObligaciones = new BigDecimal(percepcionesSubsidioSpTotalObligaciones.getNumericCellValue());
-                outsourcing.setPercepcionesSubsidioSpTotalObligaciones(bdPercepcionesSubsidioSpTotalObligaciones);
-            }
-            if (comision != null) {
-                BigDecimal bdComision = new BigDecimal(comision.getNumericCellValue());
-                outsourcing.setComision(bdComision);
-            }
-            if (iva != null) {
-                BigDecimal bdIva = new BigDecimal(iva.getNumericCellValue());
-                outsourcing.setIva(bdIva);
-            }
-            if (totalIva != null) {
-                BigDecimal bdTotalIva = new BigDecimal(totalIva.getNumericCellValue());
-                outsourcing.setTotalIva(bdTotalIva);
-            }
+                if (salary != null){
+                    BigDecimal bdSalary = new BigDecimal(salary.getNumericCellValue());
+                    outsourcing.setSalary(bdSalary);
+                }
+                if (subsidy != null){
+                    BigDecimal bdSubsidy = new BigDecimal(subsidy.getNumericCellValue());
+                    outsourcing.setSalary(bdSubsidy);
+                }
+                if (imssEmployee != null){
+                    BigDecimal bdImssEmployee = new BigDecimal(imssEmployee.getNumericCellValue());
+                    outsourcing.setSalary(bdImssEmployee);
+                }
 
-            outsourcing.setCreationDate(LocalDateTime.parse(calculateDate+" 00:00",formatter));
+                if (isr != null){
+                    BigDecimal bdIsr = new BigDecimal(isr.getNumericCellValue());
+                    outsourcing.setSalary(bdIsr);
+                }
+                if (adjustment != null){
+                    BigDecimal bdAdjustment = new BigDecimal(adjustment.getNumericCellValue());
+                    outsourcing.setSalary(bdAdjustment);
+                }
+                if (totalDeduction != null){
+                    BigDecimal bdTotalDeduction = new BigDecimal(totalDeduction.getNumericCellValue());
+                    outsourcing.setSalary(bdTotalDeduction);
+                }
 
-            if (outsourcing.getIdW() != null) {
-                outsourcingDao.save(outsourcing);
+                if (netAssetTax != null){
+                    BigDecimal bdNetAssetTax = new BigDecimal(netAssetTax.getNumericCellValue());
+                    outsourcing.setSalary(bdNetAssetTax);
+                }
+
+                if (imss != null){
+                    BigDecimal bdImss = new BigDecimal(imss.getNumericCellValue());
+                    outsourcing.setSalary(bdImss);
+                }
+                if (rcv != null){
+                    BigDecimal bdRcv = new BigDecimal(rcv.getNumericCellValue());
+                    outsourcing.setSalary(bdRcv);
+                }
+
+                if (enterpriseInfonavit != null){
+                    BigDecimal bdEnterpriseInfonavit = new BigDecimal(enterpriseInfonavit.getNumericCellValue());
+                    outsourcing.setSalary(bdEnterpriseInfonavit);
+                }
+
+                if (payrollTax != null){
+                    BigDecimal bdPayrollTax = new BigDecimal(payrollTax.getNumericCellValue());
+                    outsourcing.setSalary(bdPayrollTax);
+                }
+
+                if (totalSocialSecurity != null){
+                    BigDecimal bdTotalSocialitySecurity = new BigDecimal(totalSocialSecurity.getNumericCellValue());
+                    outsourcing.setSalary(bdTotalSocialitySecurity);
+                }
+
+                if (commission != null){
+                    BigDecimal bdCommision = new BigDecimal(commission.getNumericCellValue());
+                    outsourcing.setSalary(bdCommision);
+                }
+
+                if (subtotal != null){
+                    BigDecimal bdSubtotal = new BigDecimal(subtotal.getNumericCellValue());
+                    outsourcing.setSalary(bdSubtotal);
+                }
+
+                if (iva != null){
+                    BigDecimal bdIva = new BigDecimal(iva.getNumericCellValue());
+                    outsourcing.setSalary(bdIva);
+                }
+
+                if (total != null){
+                    BigDecimal bdTotal = new BigDecimal(total.getNumericCellValue());
+                    outsourcing.setSalary(bdTotal);
+                }
+
+
             }
+            outsourcing.setApplicationDate(LocalDateTime.parse(calculateDate+" 00:00",formatter));
+            outsourcing.setCreationDate(LocalDateTime.now());
+            outsourcingDao.save(outsourcing);
+
         }
 
         return outsourcingDao.findAll();
@@ -311,267 +175,129 @@ public class OutsourcingServiceImpl implements OutsourcingService {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
-        for (int i=9;i<=sheet.getLastRowNum();i++) {
+        for (int i=8;i<=sheet.getLastRowNum();i++) {
             Row currentRow = sheet.getRow(i);
-            Cell idW = currentRow.getCell(0);
-            Cell sueldo = currentRow.getCell(2);
-            Cell septimoDia = currentRow.getCell(3);
-            Cell horasExtras = currentRow.getCell(4);
-            Cell destajos = currentRow.getCell(5);
-            Cell comisiones = currentRow.getCell(6);
-            Cell indemnizacionEspecial = currentRow.getCell(7);
-            Cell premiosEficiencia = currentRow.getCell(8);
-            Cell vacacionesATiempo = currentRow.getCell(9);
-            Cell primaDeVacacionesATiempo = currentRow.getCell(10);
-            Cell vacacionesReportadas = currentRow.getCell(11);
-            Cell primaDeVacacionesReportada = currentRow.getCell(12);
-            Cell aguinaldo = currentRow.getCell(13);
-            Cell primaDeAntiguedad = currentRow.getCell(14);
-            Cell otrasPercepciones = currentRow.getCell(15);
-            Cell totalPercepciones = currentRow.getCell(16);
-            Cell retInvYVida = currentRow.getCell(17);
-            Cell retCesantia = currentRow.getCell(18);
-            Cell retEnfYMatObrero = currentRow.getCell(19);
-            Cell seguroDeViviendaInfonavit = currentRow.getCell(20);
-            Cell prestamoInfonavitVsm = currentRow.getCell(21);
-            Cell subsAlEmpleoAcreditado = currentRow.getCell(22);
-            Cell subsidioAlEmpleoSp = currentRow.getCell(23);
-            Cell isrAntesDeSubsAlEmpleo = currentRow.getCell(24);
-            Cell isrArt142 = currentRow.getCell(25);
-            Cell isrSp = currentRow.getCell(26);
-            Cell imss = currentRow.getCell(27);
-            Cell prestamoInfonavit = currentRow.getCell(28);
-            Cell ajusteAlNeto = currentRow.getCell(29);
-            Cell isrFiniquito = currentRow.getCell(30);
-            Cell otrasDeducciones = currentRow.getCell(31);
-            Cell totalDeducciones = currentRow.getCell(32);
-            Cell neto = currentRow.getCell(33);
-            Cell invalidezYVida = currentRow.getCell(34);
-            Cell cesantiaYVejez = currentRow.getCell(35);
-            Cell enfYMatPatron = currentRow.getCell(36);
-            Cell fondoRetiroSar = currentRow.getCell(37);
-            Cell impuestoEstatal = currentRow.getCell(38);
-            Cell riesgoDeTrabajo = currentRow.getCell(39);
-            Cell imssEmpresa = currentRow.getCell(40);
-            Cell infonavitEmpresa = currentRow.getCell(41);
-            Cell guarderiaImss = currentRow.getCell(42);
-            Cell otrasObligaciones = currentRow.getCell(43);
-            Cell totalObligaciones = currentRow.getCell(44);
-            Cell percepcionesSubsidioSpTotalObligaciones = currentRow.getCell(45);
-            Cell comision = currentRow.getCell(46);
-            Cell iva = currentRow.getCell(47);
-            Cell totalIva = currentRow.getCell(48);
+            Cell departament = currentRow.getCell(0);
+            Cell code = currentRow.getCell(1);
+            Cell name = currentRow.getCell(2);
+            Cell salary = currentRow.getCell(3);
+            Cell subsidy = currentRow.getCell(4);
+            Cell imssEmployee = currentRow.getCell(5);
+            Cell isr = currentRow.getCell(6);
+            Cell adjustment = currentRow.getCell(7);
+            Cell totalDeduction = currentRow.getCell(8);
+            Cell netAssetTax = currentRow.getCell(9);
+            Cell imss = currentRow.getCell(10);
+            Cell rcv = currentRow.getCell(11);
+            Cell enterpriseInfonavit = currentRow.getCell(12);
+            Cell payrollTax = currentRow.getCell(13);
+            Cell totalSocialSecurity = currentRow.getCell(14);
+            Cell commission = currentRow.getCell(15);
+            Cell subtotal = currentRow.getCell(16);
+            Cell iva = currentRow.getCell(17);
+            Cell total = currentRow.getCell(18);
 
 
-            if (idW != null) {
+            if (code != null){
 
-                Outsourcing outsourcing = outsourcingDao.finfByidW(
-                        idW.getStringCellValue(),
+                Outsourcing outsourcing = outsourcingDao.finfByidEmployee(
+                        (int) code.getNumericCellValue(),
                         LocalDateTime.parse(calculateDate+" 00:00",formatter)
                 );
 
-                if (idW.getCellType() == Cell.CELL_TYPE_STRING) {
-                    break;
-                }
+                if (outsourcing != null){
+                    Employees employee = employeesDao.findById((int) code.getNumericCellValue());
 
-                if (outsourcing != null) {
-                    if (sueldo != null) {
-
-                        if (sueldo.getCellType() == Cell.CELL_TYPE_STRING) {
+                    if (employee != null){
+                        outsourcing.setEmployee(employee);
+                    }
+                    if (salary != null){
+                        if (salary.getCellType() == Cell.CELL_TYPE_STRING) {
                             break;
                         }
+                        BigDecimal bdSalary = new BigDecimal(salary.getNumericCellValue());
+                        outsourcing.setSalary(bdSalary);
+                    }
+                    if (subsidy != null){
+                        BigDecimal bdSubsidy = new BigDecimal(subsidy.getNumericCellValue());
+                        outsourcing.setSalary(bdSubsidy);
+                    }
+                    if (imssEmployee != null){
+                        BigDecimal bdImssEmployee = new BigDecimal(imssEmployee.getNumericCellValue());
+                        outsourcing.setSalary(bdImssEmployee);
+                    }
 
-                        BigDecimal bdSueldo = new BigDecimal(sueldo.getNumericCellValue());
-                        outsourcing.setSueldo(bdSueldo);
+                    if (isr != null){
+                        BigDecimal bdIsr = new BigDecimal(isr.getNumericCellValue());
+                        outsourcing.setSalary(bdIsr);
                     }
-                    if (septimoDia != null) {
-                        BigDecimal bdSeptimoDia = new BigDecimal(septimoDia.getNumericCellValue());
-                        outsourcing.setSeptimoDia(bdSeptimoDia);
+                    if (adjustment != null){
+                        BigDecimal bdAdjustment = new BigDecimal(adjustment.getNumericCellValue());
+                        outsourcing.setSalary(bdAdjustment);
                     }
-                    if (horasExtras != null) {
-                        BigDecimal bdHorasExtras = new BigDecimal(horasExtras.getNumericCellValue());
-                        outsourcing.setHorasExtras(bdHorasExtras);
+                    if (totalDeduction != null){
+                        BigDecimal bdTotalDeduction = new BigDecimal(totalDeduction.getNumericCellValue());
+                        outsourcing.setSalary(bdTotalDeduction);
                     }
-                    if (destajos != null) {
-                        BigDecimal bdDestajos = new BigDecimal(destajos.getNumericCellValue());
-                        outsourcing.setDestajos(bdDestajos);
+
+                    if (netAssetTax != null){
+                        BigDecimal bdNetAssetTax = new BigDecimal(netAssetTax.getNumericCellValue());
+                        outsourcing.setSalary(bdNetAssetTax);
                     }
-                    if (comisiones != null) {
-                        BigDecimal bdComisiones = new BigDecimal(comisiones.getNumericCellValue());
-                        outsourcing.setComisiones(bdComisiones);
-                    }
-                    if (indemnizacionEspecial != null) {
-                        BigDecimal bdIndemnizacionEspecial = new BigDecimal(indemnizacionEspecial.getNumericCellValue());
-                        outsourcing.setIndemnizacionEspecial(bdIndemnizacionEspecial);
-                    }
-                    if (premiosEficiencia != null) {
-                        BigDecimal bdPremiosEficiencia = new BigDecimal(premiosEficiencia.getNumericCellValue());
-                        outsourcing.setPremiosEficiencia(bdPremiosEficiencia);
-                    }
-                    if (vacacionesATiempo != null) {
-                        BigDecimal bdVacacionesATiempo = new BigDecimal(vacacionesATiempo.getNumericCellValue());
-                        outsourcing.setVacacionesATiempo(bdVacacionesATiempo);
-                    }
-                    if (primaDeVacacionesATiempo != null) {
-                        BigDecimal bdPrimaDeVacacionesATiempo = new BigDecimal(primaDeVacacionesATiempo.getNumericCellValue());
-                        outsourcing.setPrimaDeVacacionesATiempo(bdPrimaDeVacacionesATiempo);
-                    }
-                    if (vacacionesReportadas != null) {
-                        BigDecimal bdVacacionesReportadas = new BigDecimal(vacacionesReportadas.getNumericCellValue());
-                        outsourcing.setVacacionesReportadas(bdVacacionesReportadas);
-                    }
-                    if (primaDeVacacionesReportada != null) {
-                        BigDecimal bdPrimaDeVacacionesReportada = new BigDecimal(primaDeVacacionesReportada.getNumericCellValue());
-                        outsourcing.setPrimaDeVacacionesReportada(bdPrimaDeVacacionesReportada);
-                    }
-                    if (aguinaldo != null) {
-                        BigDecimal bdAguinaldo = new BigDecimal(aguinaldo.getNumericCellValue());
-                        outsourcing.setAguinaldo(bdAguinaldo);
-                    }
-                    if (primaDeAntiguedad != null) {
-                        BigDecimal bdPrimaDeAntiguedad = new BigDecimal(primaDeAntiguedad.getNumericCellValue());
-                        outsourcing.setPrimaDeAntiguedad(bdPrimaDeAntiguedad);
-                    }
-                    if (otrasPercepciones != null) {
-                        BigDecimal bdOtrasPercepciones = new BigDecimal(otrasPercepciones.getNumericCellValue());
-                        outsourcing.setOtrasPercepciones(bdOtrasPercepciones);
-                    }
-                    if (totalPercepciones != null) {
-                        BigDecimal bdTotalPercepciones = new BigDecimal(totalPercepciones.getNumericCellValue());
-                        outsourcing.setTotalPercepciones(bdTotalPercepciones);
-                    }
-                    if (retInvYVida != null) {
-                        BigDecimal bdRetInvYVida = new BigDecimal(retInvYVida.getNumericCellValue());
-                        outsourcing.setRetInvYVida(bdRetInvYVida);
-                    }
-                    if (retCesantia != null) {
-                        BigDecimal bdRetCesantia = new BigDecimal(retCesantia.getNumericCellValue());
-                        outsourcing.setRetCesantia(bdRetCesantia);
-                    }
-                    if (retEnfYMatObrero != null) {
-                        BigDecimal bdRetEnfYMatObrero = new BigDecimal(retEnfYMatObrero.getNumericCellValue());
-                        outsourcing.setRetEnfYMatObrero(bdRetEnfYMatObrero);
-                    }
-                    if (seguroDeViviendaInfonavit != null) {
-                        BigDecimal bdSeguroDeViviendaInfonavit = new BigDecimal(seguroDeViviendaInfonavit.getNumericCellValue());
-                        outsourcing.setSeguroDeViviendaInfonavit(bdSeguroDeViviendaInfonavit);
-                    }
-                    if (prestamoInfonavitVsm != null) {
-                        BigDecimal bdPrestamoInfonavitVsm = new BigDecimal(prestamoInfonavitVsm.getNumericCellValue());
-                        outsourcing.setPrestamoInfonavitVsm(bdPrestamoInfonavitVsm);
-                    }
-                    if (subsAlEmpleoAcreditado != null) {
-                        BigDecimal bdSubsAlEmpleoAcreditado = new BigDecimal(subsAlEmpleoAcreditado.getNumericCellValue());
-                        outsourcing.setSubsAlEmpleoAcreditado(bdSubsAlEmpleoAcreditado);
-                    }
-                    if (subsidioAlEmpleoSp != null) {
-                        BigDecimal bdSubsidioAlEmpleoSp = new BigDecimal(subsidioAlEmpleoSp.getNumericCellValue());
-                        outsourcing.setSubsidioAlEmpleoSp(bdSubsidioAlEmpleoSp);
-                    }
-                    if (isrAntesDeSubsAlEmpleo != null) {
-                        BigDecimal bdIsrAntesDeSubsAlEmpleo = new BigDecimal(isrAntesDeSubsAlEmpleo.getNumericCellValue());
-                        outsourcing.setIsrAntesDeSubsAlEmpleo(bdIsrAntesDeSubsAlEmpleo);
-                    }
-                    if (isrArt142 != null) {
-                        BigDecimal bdIsrArt142 = new BigDecimal(isrArt142.getNumericCellValue());
-                        outsourcing.setIsrArt142(bdIsrArt142);
-                    }
-                    if (isrSp != null) {
-                        BigDecimal bdIsrSp = new BigDecimal(isrSp.getNumericCellValue());
-                        outsourcing.setIsrSp(bdIsrSp);
-                    }
-                    if (imss != null) {
+
+                    if (imss != null){
                         BigDecimal bdImss = new BigDecimal(imss.getNumericCellValue());
-                        outsourcing.setImss(bdImss);
+                        outsourcing.setSalary(bdImss);
                     }
-                    if (prestamoInfonavit != null) {
-                        BigDecimal bdPrestamoInfonavit = new BigDecimal(prestamoInfonavit.getNumericCellValue());
-                        outsourcing.setPrestamoInfonavit(bdPrestamoInfonavit);
+                    if (rcv != null){
+                        BigDecimal bdRcv = new BigDecimal(rcv.getNumericCellValue());
+                        outsourcing.setSalary(bdRcv);
                     }
-                    if (ajusteAlNeto != null) {
-                        BigDecimal bdAjusteAlNeto = new BigDecimal(ajusteAlNeto.getNumericCellValue());
-                        outsourcing.setAjusteAlNeto(bdAjusteAlNeto);
+
+                    if (enterpriseInfonavit != null){
+                        BigDecimal bdEnterpriseInfonavit = new BigDecimal(enterpriseInfonavit.getNumericCellValue());
+                        outsourcing.setSalary(bdEnterpriseInfonavit);
                     }
-                    if (isrFiniquito != null) {
-                        BigDecimal bdIsrFiniquito = new BigDecimal(isrFiniquito.getNumericCellValue());
-                        outsourcing.setIsrFiniquito(bdIsrFiniquito);
+
+                    if (payrollTax != null){
+                        BigDecimal bdPayrollTax = new BigDecimal(payrollTax.getNumericCellValue());
+                        outsourcing.setSalary(bdPayrollTax);
                     }
-                    if (otrasDeducciones != null) {
-                        BigDecimal bdOtrasDeducciones = new BigDecimal(otrasDeducciones.getNumericCellValue());
-                        outsourcing.setOtrasDeducciones(bdOtrasDeducciones);
+
+                    if (totalSocialSecurity != null){
+                        BigDecimal bdTotalSocialitySecurity = new BigDecimal(totalSocialSecurity.getNumericCellValue());
+                        outsourcing.setSalary(bdTotalSocialitySecurity);
                     }
-                    if (totalDeducciones != null) {
-                        BigDecimal bdTotalDeducciones = new BigDecimal(totalDeducciones.getNumericCellValue());
-                        outsourcing.setTotalDeducciones(bdTotalDeducciones);
+
+                    if (commission != null){
+                        BigDecimal bdCommision = new BigDecimal(commission.getNumericCellValue());
+                        outsourcing.setSalary(bdCommision);
                     }
-                    if (neto != null) {
-                        BigDecimal bdNeto = new BigDecimal(neto.getNumericCellValue());
-                        outsourcing.setNeto(bdNeto);
+
+                    if (subtotal != null){
+                        BigDecimal bdSubtotal = new BigDecimal(subtotal.getNumericCellValue());
+                        outsourcing.setSalary(bdSubtotal);
                     }
-                    if (invalidezYVida != null) {
-                        BigDecimal bdInvalidezYVida = new BigDecimal(invalidezYVida.getNumericCellValue());
-                        outsourcing.setInvalidezYVida(bdInvalidezYVida);
-                    }
-                    if (cesantiaYVejez != null) {
-                        BigDecimal bdCesantiaYVejez = new BigDecimal(cesantiaYVejez.getNumericCellValue());
-                        outsourcing.setCesantiaYVejez(bdCesantiaYVejez);
-                    }
-                    if (enfYMatPatron != null) {
-                        BigDecimal bdEnfYMatPatron = new BigDecimal(enfYMatPatron.getNumericCellValue());
-                        outsourcing.setEnfYMatPatron(bdEnfYMatPatron);
-                    }
-                    if (fondoRetiroSar != null) {
-                        BigDecimal bdFondoRetiroSar = new BigDecimal(fondoRetiroSar.getNumericCellValue());
-                        outsourcing.setFondoRetiroSar(bdFondoRetiroSar);
-                    }
-                    if (impuestoEstatal != null) {
-                        BigDecimal bdImpuestoEstatal = new BigDecimal(impuestoEstatal.getNumericCellValue());
-                        outsourcing.setImpuestoEstatal(bdImpuestoEstatal);
-                    }
-                    if (riesgoDeTrabajo != null) {
-                        BigDecimal bdRiesgoDeTrabajo = new BigDecimal(riesgoDeTrabajo.getNumericCellValue());
-                        outsourcing.setRiesgoDeTrabajo(bdRiesgoDeTrabajo);
-                    }
-                    if (imssEmpresa != null) {
-                        BigDecimal bdImssEmpresa = new BigDecimal(imssEmpresa.getNumericCellValue());
-                        outsourcing.setImssEmpresa(bdImssEmpresa);
-                    }
-                    if (infonavitEmpresa != null) {
-                        BigDecimal bdInfonavitEmpresa = new BigDecimal(infonavitEmpresa.getNumericCellValue());
-                        outsourcing.setInfonavitEmpresa(bdInfonavitEmpresa);
-                    }
-                    if (guarderiaImss != null) {
-                        BigDecimal bdGuarderiaImss = new BigDecimal(guarderiaImss.getNumericCellValue());
-                        outsourcing.setGuarderiaImss(bdGuarderiaImss);
-                    }
-                    if (otrasObligaciones != null) {
-                        BigDecimal bdOtrasObligaciones = new BigDecimal(otrasObligaciones.getNumericCellValue());
-                        outsourcing.setOtrasObligaciones(bdOtrasObligaciones);
-                    }
-                    if (totalObligaciones != null) {
-                        BigDecimal bdTotalObligaciones = new BigDecimal(totalObligaciones.getNumericCellValue());
-                        outsourcing.setTotalObligaciones(bdTotalObligaciones);
-                    }
-                    if (percepcionesSubsidioSpTotalObligaciones != null) {
-                        BigDecimal bdPercepcionesSubsidioSpTotalObligaciones = new BigDecimal(percepcionesSubsidioSpTotalObligaciones.getNumericCellValue());
-                        outsourcing.setPercepcionesSubsidioSpTotalObligaciones(bdPercepcionesSubsidioSpTotalObligaciones);
-                    }
-                    if (comision != null) {
-                        BigDecimal bdComision = new BigDecimal(comision.getNumericCellValue());
-                        outsourcing.setComision(bdComision);
-                    }
-                    if (iva != null) {
+
+                    if (iva != null){
                         BigDecimal bdIva = new BigDecimal(iva.getNumericCellValue());
-                        outsourcing.setIva(bdIva);
+                        outsourcing.setSalary(bdIva);
                     }
-                    if (totalIva != null) {
-                        BigDecimal bdTotalIva = new BigDecimal(totalIva.getNumericCellValue());
-                        outsourcing.setTotalIva(bdTotalIva);
+
+                    if (total != null){
+                        BigDecimal bdTotal = new BigDecimal(total.getNumericCellValue());
+                        outsourcing.setSalary(bdTotal);
                     }
+
+                    outsourcing.setApplicationDate(LocalDateTime.parse(calculateDate+" 00:00",formatter));
+                    outsourcing.setCreationDate(LocalDateTime.now());
+
 
                     outsourcingDao.update(outsourcing);
                 }
+
             }
+
         }
 
         return outsourcingDao.findAll();
@@ -587,25 +313,16 @@ public class OutsourcingServiceImpl implements OutsourcingService {
 
         Row headerRow = sheet.getRow(7);
         String[] headersToSkip = {
-                "Código", "Empleado","Sueldo", "Séptimo día",
-                "Horas extras","Destajos","Comisiones", "Indemnización Especial",
-                "Premios eficiencia","Vacaciones a tiempo","Prima de vacaciones a tiempo",
-                "Vacaciones reportadas $", "Prima de vacaciones reportada $",
-                "Aguinaldo","Prima de antiguedad", "*Otras* *Percepciones*",
-                "*TOTAL* *PERCEPCIONES*", "Ret. Inv. Y Vida", "Ret. Cesantia",
-                "Ret. Enf. y Mat. obrero","Seguro de vivienda Infonavit",
-                "Préstamo Infonavit (vsm)", "Subs al Empleo acreditado","Subsidio al Empleo (sp)",
-                "I.S.R. antes de Subs al Empleo","I.S.R. Art142", "I.S.R. (sp)",
-                "I.M.S.S.","Préstamo Infonavit","Ajuste al neto","I.S.R. finiquito",
-                "*Otras* *Deducciones*","*TOTAL* *DEDUCCIONES*","*NETO*","Invalidez y Vida",
-                "Cesantia y Vejez","Enf. y Mat. Patron","2% Fondo retiro SAR (8)",
-                "2% Impuesto estatal","Riesgo de trabajo (9)","I.M.S.S. empresa",
-                "Infonavit empresa","Guarderia I.M.S.S. (7)","*Otras* *Obligaciones*",
-                "*TOTAL* *OBLIGACIONES*","PERCEPCIONES + SUBSIDIO(sp) + TOTAL OBLIGACIONES",
-                "COMISION","IVA","TOTAL+IVA"
+                "Departamento", "Codigo","Nombre", "Sueldo",
+                "Subsidio","IMSS Empleado","ISR", "Ajuste al neto",
+                "TOTAL DEDUCCIONES","NETO SUELDO FISCAL     (A)","IMSS",
+                "RCV", "Infonavit empresa",
+                "Impuesto sobre nomina", "TOTALPREVISION SOCIAL",
+                "Comisión", "Subtotal", "IVA",
+                "Total"
         };
 
-        for (int i = 0 ; i < 49 ;i++) {
+        for (int i = 0 ; i < 19 ;i++) {
             if (!headerRow.getCell(i).getStringCellValue().equals(headersToSkip[i])) {
                 throw new ValidationException("Tipo de formato no compatible.",
                         "Los datos de este archivo no son los correctos o no cumplen con los datos de venta.");
@@ -614,20 +331,20 @@ public class OutsourcingServiceImpl implements OutsourcingService {
 
         boolean existsOutsourcing = false;
 
-        for (int i=9;i<=sheet.getLastRowNum();i++) {
+        for (int i=8;i<=sheet.getLastRowNum();i++) {
             Row currentRow = sheet.getRow(i);
-            Cell idW = currentRow.getCell(0);
+            Cell codigo = currentRow.getCell(1);
 
             Outsourcing savedOutsourcing;
 
-            if (idW != null) {
+            if (codigo != null) {
 
-                if (idW.getCellType() == Cell.CELL_TYPE_STRING) {
+                if (codigo.getCellType() == Cell.CELL_TYPE_STRING) {
                     break;
                 }
 
-                savedOutsourcing = outsourcingDao.finfByidW(
-                        idW.getStringCellValue(),
+                savedOutsourcing = outsourcingDao.finfByidEmployee(
+                        (int) codigo.getNumericCellValue(),
                         LocalDateTime.parse(calculateDate+" 00:00",formatter)
                 );
 
