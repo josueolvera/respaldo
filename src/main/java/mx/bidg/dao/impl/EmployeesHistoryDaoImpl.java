@@ -127,4 +127,12 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
                 .add(Restrictions.eq("idEmployee",idEmployee))
                 .list();
     }
+
+    @Override
+    public EmployeesHistory findByIdEmployeeAndLastRegister(Integer idEmployee) {
+        return (EmployeesHistory) createEntityCriteria()
+                .add(Restrictions.eq("idEmployee",idEmployee))
+                .add(Restrictions.eq("hStatus",1))
+                .uniqueResult();
+    }
 }

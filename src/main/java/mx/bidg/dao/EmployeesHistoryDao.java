@@ -23,4 +23,5 @@ public interface EmployeesHistoryDao  extends InterfaceDao<EmployeesHistory>  {
             String endDate
     );
     List<EmployeesHistory> findByIdEmployee(Integer idEmployee);
+    EmployeesHistory findByIdEmployeeAndLastRegister(Integer idEmployee);
 }
