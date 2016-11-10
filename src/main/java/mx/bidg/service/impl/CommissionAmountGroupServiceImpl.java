@@ -58,6 +58,15 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
     @Autowired
     CommissionAmountGroupBackupService commissionAmountGroupBackupService;
 
+    @Autowired
+    EmployeesHistoryDao employeesHistoryDao;
+
+    @Autowired
+    EmployeesDao employeesDao;
+
+    @Autowired
+    CRolesDao cRolesDao;
+
     @Override
     public CommissionAmountGroup save(CommissionAmountGroup commissionAmountGroup) {
         return commissionAmountGroupDao.save(commissionAmountGroup);
@@ -335,6 +344,7 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
         row.createCell(35).setCellValue("APOYO A PASAJE");
         row.createCell(36).setCellValue("COMISION TOTAL");
         row.createCell(37).setCellValue("PAGO");
+        row.createCell(38).setCellValue("ESTATUS");
 
         //Implementacion del estilo
         for (Cell celda : row) {
@@ -354,31 +364,64 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                 row.createCell(0).setCellValue(commissionAmountGroup.getClaveSap());
 
                 if (commissionAmountGroup.getIdEmployee() != null){
-                    DwEmployees dwEmployees = dwEmployeesDao.findByIdEmployee(commissionAmountGroup.getIdEmployee());
-                    if (dwEmployees != null){
-                        row.createCell(0).setCellValue(dwEmployees.getDwEnterprise().getDistributor().getDistributorName());
-                        row.createCell(1).setCellValue(dwEmployees.getDwEnterprise().getRegion().getRegionName());
-                        row.createCell(2).setCellValue(dwEmployees.getDwEnterprise().getZona().getName());
-                        row.createCell(3).setCellValue(dwEmployees.getEmployee().getFullName());
-                        row.createCell(4).setCellValue(dwEmployees.getEmployee().getClaveSap());
-                        row.createCell(5).setCellValue(dwEmployees.getRole().getRoleName());
+                    EmployeesHistory employeesHistory = employeesHistoryDao.findByIdEmployeeAndLastRegister(commissionAmountGroup.getIdEmployee());
+                    if (employeesHistory != null){
+                        Employees employees = employeesDao.findById(employeesHistory.getIdEmployee());
+                        if(employees != null){
+                            if (employees.getStatus() == 1){
+                                row.createCell(38).setCellValue("ALTA");
+                            }else if (employees.getStatus() == 0){
+                                row.createCell(38).setCellValue("BAJA");
+                            }
 
-                        EmployeesAccounts employeesAccounts = employeesAccountsDao.findByIdEmployee(dwEmployees.getIdEmployee());
+                            CDistributors cDistributor = cDistributorsDao.findById(employeesHistory.getIdDistributor());
 
-                        if (employeesAccounts != null){
-                            row.createCell(6).setCellValue(employeesAccounts.getAccount().getBank().getAcronyms());
-                            row.createCell(7).setCellValue(employeesAccounts.getAccount().getAccountNumber());
-                            row.createCell(8).setCellValue(employeesAccounts.getAccount().getAccountClabe());
-                        }
-                        row.createCell(9).setCellValue(dwEmployees.getDwEnterprise().getBranch().getBranchShort());
-                        row.createCell(10).setCellValue(dwEmployees.getEmployee().getRfc());
-                        row.createCell(11).setCellValue(dwEmployees.getEmployee().getCurp());
+                            if (cDistributor != null){
+                                row.createCell(0).setCellValue(cDistributor.getDistributorName());
+                            }
+                            CRegions cRegions = cRegionsDao.findById(employeesHistory.getIdRegion());
 
-                        if (dwEmployees.getEmployee().getJoinDate() != null){
-                            Date joinDate = Date.from(dwEmployees.getEmployee().getJoinDate().atZone(ZoneId.systemDefault()).toInstant());
-                            row.createCell(12);
-                            row.getCell(12).setCellValue(joinDate);
-                            row.getCell(12).setCellStyle(cellDateStyle);
+                            if (cRegions != null){
+                                row.createCell(1).setCellValue(cRegions.getRegionName());
+                            }
+                            CZonas cZonas = cZonaDao.findById(employeesHistory.getIdZona());
+
+                            if (cZonas != null){
+                                row.createCell(2).setCellValue(cZonas.getName());
+                            }
+
+                            row.createCell(3).setCellValue(employees.getFullName());
+                            row.createCell(4).setCellValue(employees.getClaveSap());
+
+                            CRoles cRoles = cRolesDao.findById(employeesHistory.getIdRole());
+
+                            if (cRoles != null){
+                                row.createCell(5).setCellValue(cRoles.getRoleName());
+                            }
+
+                            EmployeesAccounts employeesAccounts = employeesAccountsDao.findByIdEmployee(employees.getIdEmployee());
+
+                            if (employeesAccounts != null){
+                                row.createCell(6).setCellValue(employeesAccounts.getAccount().getBank().getAcronyms());
+                                row.createCell(7).setCellValue(employeesAccounts.getAccount().getAccountNumber());
+                                row.createCell(8).setCellValue(employeesAccounts.getAccount().getAccountClabe());
+                            }
+
+                            CBranchs cBranchs = cBranchsDao.findById(employeesHistory.getIdBranch());
+
+                            if(cBranchs != null){
+                                row.createCell(9).setCellValue(cBranchs.getBranchShort());
+                            }
+
+                            row.createCell(10).setCellValue(employees.getRfc());
+                            row.createCell(11).setCellValue(employees.getCurp());
+
+                            if (employees.getJoinDate() != null){
+                                Date joinDate = Date.from(employees.getJoinDate().atZone(ZoneId.systemDefault()).toInstant());
+                                row.createCell(12);
+                                row.getCell(12).setCellValue(joinDate);
+                                row.getCell(12).setCellStyle(cellDateStyle);
+                            }
                         }
                     }
                 }
