@@ -155,12 +155,12 @@
             <div>
                 <div class="row">
                     <div class="col-xs-10 text-header">
-                        <h2>Gestiòn de percepciones y deducciones por distribuidor</h2>
+                        <h2>Gestiòn de compensaciones</h2>
                     </div>
                     <div class="col-xs-2">
                         <button type="button" class="btn btn-default" name="button"
                                 style="margin-left: 70px; margin-top: 25px" data-toggle="modal" data-target="#modalAlta">
-                            Nueva P/D
+                            Nueva compensacion
                         </button>
                     </div>
                 </div>
@@ -173,7 +173,7 @@
                         <!-- Table -->
                         <div class="flex-box container-fluid">
                             <div class="row table-header active">
-                                <div class="col-xs-12" style="font-size: 18px"><b>Selecciona un distribuidor</b></div>
+                                <div class="col-xs-12" style="font-size: 18px"><b>Distribuidor/Empresa</b></div>
                             </div>
                             <br>
                             <div class="table-body flex-row flex-content">
@@ -193,7 +193,7 @@
                         <!-- Table -->
                         <div class="flex-box container-fluid">
                             <div class="row table-header active">
-                                <div class="col-xs-12" style="font-size: 18px"><b>Selecciona las percepciones/deducciones para asignarlas a un distribuidor</b></div>
+                                <div class="col-xs-12" style="font-size: 18px"><b>Selecciona las compensaciones</b></div>
                                 <div class="col-xs-12" style="font-size: 14px">
                                     <input type="checkbox" v-model="allCheck" @change="all()">
                                     <label>Seleccionar todos</label>
@@ -218,12 +218,12 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">Registro de percecciones o deducciones</h4>
+                            <h4 class="modal-title">Registro de compensacion</h4>
                         </div>
                         <div class="modal-body">
                             <div class="row" >
                                 <div class="col-xs-6">
-                                    <label>Nombre de la perceccion o deducciòn</label>
+                                    <label>Nombre de la compensacion</label>
                                     <input class="form-control" name="name" v-model="pD.namePD" onkeypress="return isLetterKey(event)">
                                 </div>
                                 <div class="col-xs-2"></div>
@@ -231,10 +231,10 @@
                                     <label>Tipo de operaciòn:</label>
                                     <select class="form-control" v-model="pD.idOperation">
                                         <option value="1">
-                                            RESTAR
+                                            DEDUCCIÓN
                                         </option>
                                         <option value="2">
-                                            SUMAR
+                                            PERCEPCIÓN
                                         </option>
                                     </select>
                                 </div>
