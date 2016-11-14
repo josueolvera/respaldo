@@ -1,7 +1,9 @@
 package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.servlet.http.HttpSession;
 import mx.bidg.config.JsonViews;
+import mx.bidg.model.Users;
 import mx.bidg.service.OutsourcingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,18 +39,18 @@ public class OutsourcingController {
 
     @RequestMapping(value = "/excel",method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public @ResponseBody ResponseEntity<String> saveExcelOutsourcing(@RequestParam("file") MultipartFile file,@RequestParam("calculateDate") String calculateDate) throws Exception {
-        System.out.println(calculateDate);
+    public @ResponseBody ResponseEntity<String> saveExcelOutsourcing(@RequestParam("file") MultipartFile file,@RequestParam("calculateDate") String calculateDate, HttpSession session) throws Exception {
+        Users user = (Users) session.getAttribute("user");
         return new ResponseEntity<String>(
-                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(outsourcingService.saveFromExcel(file,calculateDate)), HttpStatus.OK
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(outsourcingService.saveFromExcel(file,calculateDate,user)), HttpStatus.OK
         );
     }
     @RequestMapping(value = "/update-excel",method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public @ResponseBody ResponseEntity<String> updateExcelOutsourcing(@RequestParam("file") MultipartFile file,@RequestParam("calculateDate") String calculateDate) throws Exception {
-
+    public @ResponseBody ResponseEntity<String> updateExcelOutsourcing(@RequestParam("file") MultipartFile file,@RequestParam("calculateDate") String calculateDate,HttpSession session) throws Exception {
+        Users user = (Users) session.getAttribute("user");
         return new ResponseEntity<String>(
-                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(outsourcingService.updateFromExcel(file,calculateDate)), HttpStatus.OK
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(outsourcingService.updateFromExcel(file,calculateDate,user)), HttpStatus.OK
         );
     }
 
