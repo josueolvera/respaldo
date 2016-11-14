@@ -124,7 +124,11 @@ public class Outsourcing implements Serializable {
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private Employees employee;
-
+    
+    @Column(name = "USERNAME", nullable=true)
+    @JsonView(JsonViews.Root.class)
+    private String username;
+    
     public Outsourcing() {
     }
 
@@ -319,6 +323,15 @@ public class Outsourcing implements Serializable {
         return new DateFormatsPojo(applicationDate);
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+    
+    
     @Override
     public String toString() {
         return "Outsourcing{" + "idOutsourcing=" + idOutsourcing + ", idEmployee=" + idEmployee + ", salary=" + salary + ", subsidy=" + subsidy + ", imssEmployee=" + imssEmployee + ", isr=" + isr + ", adjustment=" + adjustment + ", totalDeductions=" + totalDeductions + ", netAssetTax=" + netAssetTax + ", rcv=" + rcv + ", subtotal=" + subtotal + ", payrollTax=" + payrollTax + ", totalSocialSecurity=" + totalSocialSecurity + ", commission=" + commission + ", enterpriseInfonavit=" + enterpriseInfonavit + ", total=" + total + ", creationDate=" + creationDate + ", applicationDate=" + applicationDate + ", employee=" + employee + '}';
