@@ -6,7 +6,8 @@
 package mx.bidg.dao;
 
 import java.time.LocalDateTime;
-import mx.bidg.model.Commission_Emcofin;
+
+import mx.bidg.model.CommissionEmcofin;
 
 
 
@@ -14,6 +15,6 @@ import mx.bidg.model.Commission_Emcofin;
  *
  * @author Kevin Salvador
  */
-public interface CommissionEmcofinDao extends InterfaceDao<Commission_Emcofin>{
-    Commission_Emcofin finfByidEmployee(int idEmployee,LocalDateTime applicationDate);
+public interface CommissionEmcofinDao extends InterfaceDao<CommissionEmcofin>{
+    CommissionEmcofin finfByidEmployee(int idEmployee,LocalDateTime applicationDate);
 }

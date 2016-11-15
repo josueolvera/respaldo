@@ -9,8 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CommissionEmcofinDao;
-import mx.bidg.model.Commission_Emcofin;
-import mx.bidg.model.Outsourcing;
+import mx.bidg.model.CommissionEmcofin;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -22,39 +21,39 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unchecked")
 @Repository
-public class CommissionEmcofinDaoImpl extends AbstractDao<Integer, Commission_Emcofin> implements CommissionEmcofinDao{
+public class CommissionEmcofinDaoImpl extends AbstractDao<Integer, CommissionEmcofin> implements CommissionEmcofinDao{
 
     @Override
-    public Commission_Emcofin save(Commission_Emcofin entity) {
+    public CommissionEmcofin save(CommissionEmcofin entity) {
         persist(entity);
         return entity;
     }
 
     @Override
-    public Commission_Emcofin findById(int id) {
+    public CommissionEmcofin findById(int id) {
         return getByKey(id);
     }
 
     @Override
-    public List<Commission_Emcofin> findAll() {
+    public List<CommissionEmcofin> findAll() {
         return createEntityCriteria().list();
     }
 
     @Override
-    public Commission_Emcofin update(Commission_Emcofin entity) {
+    public CommissionEmcofin update(CommissionEmcofin entity) {
         modify(entity);
         return entity;
     }
 
     @Override
-    public boolean delete(Commission_Emcofin entity) {
+    public boolean delete(CommissionEmcofin entity) {
         remove(entity);
         return true;
     }
 
     @Override
-    public Commission_Emcofin finfByidEmployee(int idEmployee, LocalDateTime applicationDate) {
-        return (Commission_Emcofin) createEntityCriteria()
+    public CommissionEmcofin finfByidEmployee(int idEmployee, LocalDateTime applicationDate) {
+        return (CommissionEmcofin) createEntityCriteria()
                 .add(Restrictions.eq("idEmployee",idEmployee))
                 .add(Restrictions.eq("applicationDate",applicationDate))
                 .uniqueResult();

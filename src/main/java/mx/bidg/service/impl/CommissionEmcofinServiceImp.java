@@ -13,7 +13,7 @@ import java.util.List;
 import mx.bidg.dao.CommissionEmcofinDao;
 import mx.bidg.dao.EmployeesDao;
 import mx.bidg.exceptions.ValidationException;
-import mx.bidg.model.Commission_Emcofin;
+import mx.bidg.model.CommissionEmcofin;
 import mx.bidg.model.Employees;
 import mx.bidg.model.Outsourcing;
 import mx.bidg.model.Users;
@@ -33,8 +33,9 @@ import org.springframework.web.multipart.MultipartFile;
  *
  * @author Kevin Salvador
  */
-@Transactional
+
 @Service
+@Transactional
 public class CommissionEmcofinServiceImp implements CommissionEmcofinService{
 
     @Autowired
@@ -44,17 +45,17 @@ public class CommissionEmcofinServiceImp implements CommissionEmcofinService{
     private EmployeesDao employeesDao;
     
     @Override
-    public List<Commission_Emcofin> findAll() {
+    public List<CommissionEmcofin> findAll() {
         return commissionEmcofinDao.findAll();
     }
 
     @Override
-    public Commission_Emcofin findById(Integer id) {
+    public CommissionEmcofin findById(Integer id) {
         return commissionEmcofinDao.findById(id);
     }
 
     @Override
-    public List<Commission_Emcofin> saveFromExcel(MultipartFile file, String calculateDate, Users user) throws IOException, InvalidFormatException {
+    public List<CommissionEmcofin> saveFromExcel(MultipartFile file, String calculateDate, Users user) throws IOException, InvalidFormatException {
         Workbook workbook = WorkbookFactory.create(file.getInputStream());
         
         Sheet sheet = workbook.getSheetAt(0);
@@ -68,7 +69,7 @@ public class CommissionEmcofinServiceImp implements CommissionEmcofinService{
             
             Cell commission = currentRow.getCell(2);
             
-            Commission_Emcofin c = new Commission_Emcofin();
+            CommissionEmcofin c = new CommissionEmcofin();
             if(idEmployee!=null){
                 Employees employee = employeesDao.findById((int)idEmployee.getNumericCellValue());
                 if(employee!=null){
@@ -96,7 +97,7 @@ public class CommissionEmcofinServiceImp implements CommissionEmcofinService{
     }
 
     @Override
-    public List<Commission_Emcofin> updateFromExcel(MultipartFile file, String calculateDate, Users user) throws IOException, InvalidFormatException {
+    public List<CommissionEmcofin> updateFromExcel(MultipartFile file, String calculateDate, Users user) throws IOException, InvalidFormatException {
         Workbook workbook = WorkbookFactory.create(file.getInputStream());
         Sheet sheet = workbook.getSheetAt(0);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
@@ -104,7 +105,7 @@ public class CommissionEmcofinServiceImp implements CommissionEmcofinService{
             Row currentRow = sheet.getRow(i);
             Cell idEmployee = currentRow.getCell(0);
             Cell commission = currentRow.getCell(2);
-            Commission_Emcofin c = new Commission_Emcofin();
+            CommissionEmcofin c = new CommissionEmcofin();
             if(idEmployee!=null){
                 Employees employee = employeesDao.findById((int)idEmployee.getNumericCellValue());
                 if(employee!=null){
@@ -148,7 +149,7 @@ public class CommissionEmcofinServiceImp implements CommissionEmcofinService{
             Row currentRow = sheet.getRow(i);
             if (currentRow != null) {
                 Cell codigo = currentRow.getCell(0);
-                Commission_Emcofin saveCommission;
+                CommissionEmcofin saveCommission;
 
                 if (codigo != null) {
 
