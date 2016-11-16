@@ -120,6 +120,7 @@ public class CommissionEmcofinServiceImp implements CommissionEmcofinService{
             c.setCreationDate(LocalDateTime.now());
             c.setUsername(user.getUsername());
             c.setStatus(true);
+            commissionEmcofinDao.update(c);
         }
         return commissionEmcofinDao.findAll();
     }
