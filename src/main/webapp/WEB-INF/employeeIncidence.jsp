@@ -51,6 +51,25 @@
                 }
 
             }
+
+            function validateFloatKeyPress(el, evt) {
+                var charCode = (evt.which) ? evt.which : event.keyCode;
+                var number = el.value.split('.');
+                if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+                    return false;
+                }
+                //just one dot
+                if(number.length>1 && charCode == 46){
+                    return false;
+                }
+                //get the carat position
+                var caratPos = getSelectionStart(el);
+                var dotPos = el.value.indexOf(".");
+                if( caratPos > dotPos && dotPos>-1 && (number[1].length > 1)){
+                    return false;
+                }
+                return true;
+            }
         </script>
         <script type="text/javascript">
             var vm = new Vue({
@@ -186,9 +205,11 @@
                         idCPd: '',
                         amount: '',
                         pdReason: '',
-                        applicationDate: ''
+                        applicationDate: '',
+                        days: ''
                     },
-                    pd: {}
+                    pd: {},
+                    division: 0.0
                 },
                 methods: {
                     arrayObjectIndexOf: function (myArray, searchTerm, property) {
@@ -331,6 +352,7 @@
                     },
                     onDiscountButton: function (dwEmployee) {
                         this.currentDwEmployee = dwEmployee;
+                        console.log(this.currentDwEmployee);
                         $("#discountModal").modal("show");
                         this.getPDbyDistributor(dwEmployee);
                     },
@@ -351,6 +373,9 @@
                         }).data();
                     },
                     onPDtoEmployee: function () {
+                        if(this.perceptionDeduction.idCPd == 1){
+                            this.perceptionDeduction.amount = this.division;
+                        }
                         this.perceptionDeduction.employee = (JSON.parse(JSON.stringify(this.currentDwEmployee)));
                         this.perceptionDeduction.applicationDate = this.timePickerApplicationDate.DateTimePicker.date().toISOString().slice(0, -1);
                         this.$http.post(ROOT_URL + "/perceptions-deductions-employee/save", JSON.stringify(this.perceptionDeduction)).success(function (data) {
@@ -364,12 +389,30 @@
                     deleteFields: function () {
                         this.perceptionDeduction.employee = {};
                         this.perceptionDeduction.pdReason = "";
+                        this.perceptionDeduction.days = "";
                         this.perceptionDeduction.amount = "";
                         this.perceptionDeduction.idCPd = "";
                         this.perceptionDeduction.applicationDate = "";
                         this.dPD = [];
                         this.application = "";
+                        this.division = 0.0;
                         $("#discountModal").modal("hide");
+                    },
+                    calculate: function () {
+                        var division = 30;
+                        var result1 = this.currentDwEmployee.salary/division;
+                        this.division = result1*this.perceptionDeduction.days;
+                    }
+                },
+                filters: {
+                    currencyDisplay : {
+                        read: function(val) {
+                            return val.formatMoney(2, '');
+                        },
+                        write: function(val, oldVal) {
+                            var number = +val.replace(/[^\d.]/g, '');
+                            return isNaN(number) ? 0 : parseFloat(number.toFixed(2));
+                        }
                     }
                 }
             });
@@ -605,7 +648,7 @@
                                             {{currentDwEmployee.fullName}}
                                         </div>
                                         <div class="col-xs-4">
-                                            <label>Fecha de aplicaciòn:</label>
+                                            <label>Fecha de aplicación:</label>
                                             <div class='input-group date' id='dateApplication'>
                                                 <input type='text' class="form-control" v-model="application" required>
                                                 <span class="input-group-addon"
@@ -620,7 +663,7 @@
                                 <div class="row">
                                     <div class="col-xs-12">
                                         <div class="col-xs-6">
-                                            <label>Tipo de Percepcion/Deduccion:</label>
+                                            <label>Tipo de Percepción/Deducción:</label>
                                             <select class="form-control" v-model="perceptionDeduction.idCPd" required>
                                                 <option v-for="pd in dPD" value="{{pd.cPerceptionsDeductions.idCPd}}">
                                                     {{pd.cPerceptionsDeductions.namePD}}
@@ -629,15 +672,33 @@
                                         </div>
                                         <div class="col-xs-2">
                                         </div>
-                                        <div class="col-xs-4">
+                                        <div class="col-xs-4" v-if="perceptionDeduction.idCPd > 0 && perceptionDeduction.idCPd != 1 ">
                                             <label>Monto:</label>
-                                            <input class="form-control" v-model="perceptionDeduction.amount"
-                                                   onkeypress="return isNumberKey(event)" required>
+                                            <input class="form-control" v-model="perceptionDeduction.amount | currency"
+                                                   onkeypress="return validateFloatKeyPress(this,event)" required>
                                         </div>
                                     </div>
                                 </div>
                                 <br>
-                                <div class="row">
+                                <div class="row" v-if="perceptionDeduction.idCPd == 1">
+                                    <div class="col-xs-12">
+                                        <div class="col-xs-4">
+                                            <label>Dias a descontar:</label>
+                                            <input class="form-control" v-model="perceptionDeduction.days"
+                                                   onkeypress="return isNumberKey(event)" maxlength="3" @input="calculate()" required>
+                                        </div>
+                                        <div class="col-xs-4">
+                                        </div>
+                                        <div class="col-xs-4">
+                                            <label>Monto a descontar</label>
+                                            <div v-if="division > 0">
+                                                <label>{{division | currency}}</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row"  v-if="perceptionDeduction.idCPd > 0 && perceptionDeduction.idCPd != 1">
                                     <div class="col-xs-12">
                                         <div class="col-xs-12">
                                             <label>Motivo:</label>
