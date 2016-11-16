@@ -29,8 +29,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @Entity
 @Table(name = "C_COMMISSIONS_CASH")
-@XmlRootElement
-
 public class CCommissionsCash implements Serializable {
 
     private static final long serialVersionUID = 1L;
