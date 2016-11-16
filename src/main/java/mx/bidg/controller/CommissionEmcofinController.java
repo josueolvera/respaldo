@@ -28,32 +28,42 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 @RequestMapping("/comisiones")
 public class CommissionEmcofinController {
-    
+
     @Autowired
     private CommissionEmcofinService commissionEmcofinService;
-    
+
     @Autowired
     private ObjectMapper mapper;
-    
+
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     String findCommission() throws Exception {
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(commissionEmcofinService.findAll());
     }
-    
-     @RequestMapping(value = "/excel",method = RequestMethod.POST,
+
+    @RequestMapping(value = "/excel", method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> saveExcelCommission(@RequestParam("file") MultipartFile file,@RequestParam("calculateDate") String calculateDate, HttpSession session) throws Exception {
+    public ResponseEntity<String> saveExcelCommission(@RequestParam("file") MultipartFile file, @RequestParam("calculateDate") String calculateDate, HttpSession session) throws Exception {
         Users user = (Users) session.getAttribute("user");
         return new ResponseEntity<String>(
-                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(commissionEmcofinService.saveFromExcel(file,calculateDate,user)), HttpStatus.OK
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(commissionEmcofinService.saveFromExcel(file, calculateDate, user)), HttpStatus.OK
         );
     }
-    
-    @RequestMapping(value = "/check-existing-commission",method = RequestMethod.POST,
+
+    @RequestMapping(value = "/check-existing-commission", method = RequestMethod.POST,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<Boolean> checkExistingOutsourcingRecord(@RequestParam("file") MultipartFile file ,@RequestParam("calculateDate") String calculateDate) throws Exception {
-        return ResponseEntity.ok(commissionEmcofinService.existsCommissionRecord(file,calculateDate));
+    public ResponseEntity<Boolean> checkExistingOutsourcingRecord(@RequestParam("file") MultipartFile file, @RequestParam("calculateDate") String calculateDate) throws Exception {
+        return ResponseEntity.ok(commissionEmcofinService.existsCommissionRecord(file, calculateDate));
     }
-    
+
+    @RequestMapping(value = "/update-excel", method = RequestMethod.POST,
+            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public @ResponseBody
+    ResponseEntity<String> updateExcelOutsourcing(@RequestParam("file") MultipartFile file, @RequestParam("calculateDate") String calculateDate, HttpSession session) throws Exception {
+        Users user = (Users) session.getAttribute("user");
+        return new ResponseEntity<String>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(commissionEmcofinService.updateFromExcel(file, calculateDate, user)), HttpStatus.OK
+        );
+    }
+
 }

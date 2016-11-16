@@ -11,214 +11,224 @@
 
         <script type="text/javascript">
             var vm = new Vue({
-            el: '#filesUpload',
-                    ready: function () {
+                el: '#filesUpload',
+                ready: function () {
                     this.typeFile = '';
                     this.getTypesFile();
+                },
+                data: {
+                    errorData: {},
+                    typesFile: [],
+                    typeFile: {
+                        idSapFile: '',
+                        sapFileName: '',
+                        fileName: '',
+                        lastUploadedDate: '',
+                        lastUploadedDateFormats: ''
                     },
-                    data: {
-                    errorData:{},
-                            typesFile: [],
-                            typeFile:{
-                            idSapFile:'',
-                                    sapFileName: '',
-                                    fileName: '',
-                                    lastUploadedDate: '',
-                                    lastUploadedDateFormats: ''
-                            },
-                            calculateDate:'',
-                            datetimepickerCalculateDate:'',
-                            layoutDownloadUrl: ROOT_URL + "/sap-file/layout/download/",
-                    },
-                    methods: {
-                    setUpTimePickerCalculateDate:function () {
-                    this.datetimepickerCalculateDate = $('#datetimepickerCalculateDate').datetimepicker({
-                    locale: 'es',
+                    calculateDate: '',
+                    datetimepickerCalculateDate: '',
+                    layoutDownloadUrl: ROOT_URL + "/sap-file/layout/download/",
+                },
+                methods: {
+                    setUpTimePickerCalculateDate: function () {
+                        this.datetimepickerCalculateDate = $('#datetimepickerCalculateDate').datetimepicker({
+                            locale: 'es',
                             format: 'DD-MM-YYYY',
                             useCurrent: false,
                             minDate: moment().add(1, 'minutes')
-                    }).data();
+                        }).data();
                     },
-                            validateForm:function () {
-                            },
-                            clearFileForm:function () {
-                            document.getElementById("inputFile").value = null;
-                            this.errorData = '';
-                            this.calculateDate = '';
-                            },
-                            saveFile: function () {
-                            if (this.typeFile.idSapFile == 1) {
+                    validateForm: function () {
+                    },
+                    clearFileForm: function () {
+                        document.getElementById("inputFile").value = null;
+                        this.errorData = '';
+                        this.calculateDate = '';
+                    },
+                    saveFile: function () {
+                        if (this.typeFile.idSapFile == 1) {
 
-                            }
-                            if (this.typeFile.idSapFile == 2) {
+                        }
+                        if (this.typeFile.idSapFile == 2) {
 
-                            }
-                            if (this.typeFile.idSapFile == 3) {
+                        }
+                        if (this.typeFile.idSapFile == 3) {
 
-                            }
-                            if (this.typeFile.idSapFile == 4) {
+                        }
+                        if (this.typeFile.idSapFile == 4) {
                             this.updateDwBranchs();
-                            }
-                            if (this.typeFile.idSapFile == 5) {
+                        }
+                        if (this.typeFile.idSapFile == 5) {
 
-                            }
-                            if (this.typeFile.idSapFile == 6) {
+                        }
+                        if (this.typeFile.idSapFile == 6) {
 
-                            }
-                            if (this.typeFile.idSapFile == 7) {
+                        }
+                        if (this.typeFile.idSapFile == 7) {
 
-                            }
-                            if (this.typeFile.idSapFile == 8) {
+                        }
+                        if (this.typeFile.idSapFile == 8) {
                             this.checkExistingSale();
-                            }
-                            if (this.typeFile.idSapFile == 9) {
+                        }
+                        if (this.typeFile.idSapFile == 9) {
                             this.checkExistingOutsourcing();
-                            }
-                            if (this.typeFile.idSapFile == 10) {
+                        }
+                        if (this.typeFile.idSapFile == 10) {
                             this.checkExistingCommission();
-                                    
-                            }
-                            },
-                            getFileFormData:function () {
-                            var formElement = document.getElementById("fileForm");
-                            var formData = new FormData(formElement);
-                            return formData;
-                            },
-                            updateTypeFile: function () {
 
-                            this.$http.post(ROOT_URL + '/sap-file/' + this.typeFile.idSapFile, this.getFileFormData()
-                                    ).success(function (data) {
+                        }
+                    },
+                    getFileFormData: function () {
+                        var formElement = document.getElementById("fileForm");
+                        var formData = new FormData(formElement);
+                        return formData;
+                    },
+                    updateTypeFile: function () {
+
+                        this.$http.post(ROOT_URL + '/sap-file/' + this.typeFile.idSapFile, this.getFileFormData()
+                                ).success(function (data) {
                             this.getTypesFile();
                             this.typeFile = '';
                             showAlert("Registros guardados con exito");
-                            })
-                                    .error(function (data) {
+                        })
+                                .error(function (data) {
 
-                                    });
-                            },
-                            getTypesFile: function () {
-                            this.$http.get(ROOT_URL + '/sap-file')
-                                    .success(function (data) {
+                                });
+                    },
+                    getTypesFile: function () {
+                        this.$http.get(ROOT_URL + '/sap-file')
+                                .success(function (data) {
                                     this.typesFile = data;
-                                    })
-                                    .error(function (data) {
+                                })
+                                .error(function (data) {
 
-                                    })
-                            },
-                            saveSapSales: function () {
-                            $('#checkExistigSaleModal').modal('hide');
-                            this.$http.post(ROOT_URL + '/sap-sale/excel', this.getFileFormData())
-                                    .success(function (data) {
+                                })
+                    },
+                    saveSapSales: function () {
+                        $('#checkExistigSaleModal').modal('hide');
+                        this.$http.post(ROOT_URL + '/sap-sale/excel', this.getFileFormData())
+                                .success(function (data) {
                                     this.updateTypeFile();
-                                    })
-                                    .error(function (data) {
+                                })
+                                .error(function (data) {
 
-                                    });
-                            },
-                            updateSapSales: function () {
-                            $('#checkExistigSaleModal').modal('hide');
-                            this.$http.post(ROOT_URL + '/sap-sale/update-excel', this.getFileFormData())
-                                    .success(function (data) {
+                                });
+                    },
+                    updateSapSales: function () {
+                        $('#checkExistigSaleModal').modal('hide');
+                        this.$http.post(ROOT_URL + '/sap-sale/update-excel', this.getFileFormData())
+                                .success(function (data) {
                                     this.updateTypeFile();
-                                    })
-                                    .error(function (data) {
-                                    });
-                            },
-                            checkExistingSale: function () {
-                            this.$http.post(ROOT_URL + '/sap-sale/check-existing-sale', this.getFileFormData())
-                                    .success(function (data) {
+                                })
+                                .error(function (data) {
+                                });
+                    },
+                    checkExistingSale: function () {
+                        this.$http.post(ROOT_URL + '/sap-sale/check-existing-sale', this.getFileFormData())
+                                .success(function (data) {
                                     if (data == true) {
-                                    $('#checkExistigSaleModal').modal('show');
+                                        $('#checkExistigSaleModal').modal('show');
                                     } else {
-                                    this.saveSapSales();
+                                        this.saveSapSales();
                                     }
-                                    })
-                                    .error(function (data) {
+                                })
+                                .error(function (data) {
                                     this.errorData = data;
                                     $('#errorModal').modal('show');
-                                    });
-                            },
-                            checkExistingOutsourcing:function () {
-                            this.$http.post(ROOT_URL + '/outsourcing/check-existing-outsourcing', this.getFileFormData())
-                                    .success(function (data) {
+                                });
+                    },
+                    checkExistingOutsourcing: function () {
+                        this.$http.post(ROOT_URL + '/outsourcing/check-existing-outsourcing', this.getFileFormData())
+                                .success(function (data) {
                                     if (data == true) {
-                                    $('#checkExistigOutsourcingModal').modal('show');
+                                        $('#checkExistigOutsourcingModal').modal('show');
                                     } else {
-                                    this.saveOutsourcing();
+                                        this.saveOutsourcing();
                                     }
-                                    })
-                                    .error(function (data) {
+                                })
+                                .error(function (data) {
                                     this.errorData = data;
                                     $('#errorModal').modal('show');
-                                    });
-                            },
-                            saveOutsourcing:function () {
-                            this.$http.post(ROOT_URL + '/outsourcing/excel', this.getFileFormData())
-                                    .success(function (data) {
+                                });
+                    },
+                    saveOutsourcing: function () {
+                        this.$http.post(ROOT_URL + '/outsourcing/excel', this.getFileFormData())
+                                .success(function (data) {
                                     this.updateTypeFile();
                                     this.calculateDate = '';
                                     $('#checkExistigOutsourcingModal').modal('hide');
-                                    }).error(function (data) {
+                                }).error(function (data) {
                             this.errorData = data;
                             $('#errorModal').modal('show');
-                            });
-                            },
-                            updateOutsourcing:function () {
-                            this.$http.post(ROOT_URL + '/outsourcing/update-excel', this.getFileFormData())
-                                    .success(function (data) {
+                        });
+                    },
+                    updateOutsourcing: function () {
+                        this.$http.post(ROOT_URL + '/outsourcing/update-excel', this.getFileFormData())
+                                .success(function (data) {
                                     this.updateTypeFile();
                                     $('#checkExistigOutsourcingModal').modal('hide');
-                                    }).error(function (data) {
+                                }).error(function (data) {
                             this.errorData = data;
                             $('#errorModal').modal('show');
-                            });
-                            },
-                            updateDwBranchs:function () {
-                            this.$http.post(ROOT_URL + '/dw-branchs/update-excel', this.getFileFormData())
-                                    .success(function (data) {
+                        });
+                    },
+                    updateDwBranchs: function () {
+                        this.$http.post(ROOT_URL + '/dw-branchs/update-excel', this.getFileFormData())
+                                .success(function (data) {
                                     this.updateTypeFile();
-                                    })
-                                    .error(function (data) {
-                                    this.errorData = data;
-                                    $('#errorModal').modal('show');
-                                    });
-                            },
-                            checkExistingGoal: function () {
-                            this.$http.post(ROOT_URL + '/branchs-goals/update-excel', this.getFileFormData())
-                                    .success(function (data) {
-                                    this.updateTypeFile();
-                                    })
-                                    .error(function (data) {
-                                    this.errorData = data;
-                                    $('#errorModal').modal('show');
-                                    });
-                            },
-                            checkExistingCommission : function (){
-                                    this.$http.post(ROOT_URL + '/comisiones/check-existing-commission', this.getFileFormData())
-                                    .success(function (data){
-                                        
-                                    if (data == true) {
-                                    $('#checkExistigCommissionModal').modal('show');
-                                    } else {
-                                    this.saveCommission();
-                                    }
-                                    })
-                                    .error(function (data){
-                                     this.errorData = data;
-                                     $('#errorModal').modal('show');
-                                    });
-                            },
-                            saveCommission : function (){
-                            this.$http.post(ROOT_URL + '/comisiones/excel', this.getFileFormData())
-                                .success(function (data){
-                                this.updateTypeFile();
                                 })
-                                .error(function (data){
-                                this.errorData = data;
-                                $('#errorModal').modal('show');
-                             });
-                            }
+                                .error(function (data) {
+                                    this.errorData = data;
+                                    $('#errorModal').modal('show');
+                                });
+                    },
+                    checkExistingGoal: function () {
+                        this.$http.post(ROOT_URL + '/branchs-goals/update-excel', this.getFileFormData())
+                                .success(function (data) {
+                                    this.updateTypeFile();
+                                })
+                                .error(function (data) {
+                                    this.errorData = data;
+                                    $('#errorModal').modal('show');
+                                });
+                    },
+                    checkExistingCommission: function () {
+                        this.$http.post(ROOT_URL + '/comisiones/check-existing-commission', this.getFileFormData())
+                                .success(function (data) {
+
+                                    if (data == true) {
+                                        $('#checkExistigCommissionModal').modal('show');
+                                    } else {
+                                        this.saveCommission();
+                                    }
+                                })
+                                .error(function (data) {
+                                    this.errorData = data;
+                                    $('#errorModal').modal('show');
+                                });
+                    },
+                    saveCommission: function () {
+                        this.$http.post(ROOT_URL + '/comisiones/excel', this.getFileFormData())
+                                .success(function (data) {
+                                    this.updateTypeFile();
+                                })
+                                .error(function (data) {
+                                    this.errorData = data;
+                                    $('#errorModal').modal('show');
+                                });
+                    },
+                    updateCommission: function () {
+                        this.$http.post(ROOT_URL + '/comisiones/update-excel', this.getFileFormData())
+                                .success(function (data) {
+                                    this.updateTypeFile();
+                                })
+                                .error(function (data) {
+                                    this.errorData = data;
+                                    $('#errorModal').modal('show');
+                                });
                     }
+                }
             });
         </script>
     </jsp:attribute>
@@ -352,7 +362,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="modal fade" id="checkExistigCommissionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -360,7 +370,7 @@
                             Ya existen comisiones para esta fecha. ¿Desea sobreescribir los registros?
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" @click="updateOutsourcing">Aceptar</button>
+                            <button type="button" class="btn btn-primary" @click="updateCommission">Aceptar</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         </div>
                     </div>
