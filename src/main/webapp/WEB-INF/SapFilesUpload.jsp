@@ -222,6 +222,7 @@
                         this.$http.post(ROOT_URL + '/comisiones/update-excel', this.getFileFormData())
                                 .success(function (data) {
                                     this.updateTypeFile();
+                                    $('#checkExistigCommissionModal').modal('hide');
                                 })
                                 .error(function (data) {
                                     this.errorData = data;
