@@ -76,7 +76,7 @@
                 el: '#content',
                 ready: function () {
                     this.activateDateTimePickerStart();
-                    this.commissionEffective ();
+                    this.commissionEffective();
                 },
                 data: {
                     status: null,
@@ -215,7 +215,8 @@
                         days: ''
                     },
                     pd: {},
-                    division: 0.0
+                    division: 0.0,
+                    idCommissionCash: 1
                 },
                 methods: {
                     arrayObjectIndexOf: function (myArray, searchTerm, property) {
@@ -381,6 +382,8 @@
                     onPDtoEmployee: function () {
                         if(this.perceptionDeduction.idCPd == 1){
                             this.perceptionDeduction.amount = this.division;
+                        }else if(this.perceptionDeduction.idCPd == 7){
+                            this.perceptionDeduction.amount = this.resultCommission;
                         }
                         this.perceptionDeduction.employee = (JSON.parse(JSON.stringify(this.currentDwEmployee)));
                         this.perceptionDeduction.applicationDate = this.timePickerApplicationDate.DateTimePicker.date().toISOString().slice(0, -1);
@@ -402,6 +405,8 @@
                         this.dPD = [];
                         this.application = "";
                         this.division = 0.0;
+                        this.resultCommission = "";
+                        this.perceptionDeduction.rode = "";
                         $("#discountModal").modal("hide");
                     },
                     calculate: function () {
@@ -414,9 +419,20 @@
                         }
                     },
                     commissionEffective: function(){
-                        this.$http.get(ROOT_URL + "/commissions-cash/1").success(function (data){
+                        this.$http.get(ROOT_URL + "/commissions-cash/" + this.idCommissionCash).success(function (data){
                             this.commissions = data;
                         });
+                    },
+                    cleanFields: function () {
+                        this.perceptionDeduction.employee = {};
+                        this.perceptionDeduction.pdReason = "";
+                        this.perceptionDeduction.days = "";
+                        this.perceptionDeduction.amount = "";
+                        this.perceptionDeduction.applicationDate = "";
+                        this.application = "";
+                        this.division = 0.0;
+                        this.resultCommission = "";
+                        this.perceptionDeduction.rode = "";
                     }
                 },
                 filters: {
@@ -679,7 +695,7 @@
                                     <div class="col-xs-12">
                                         <div class="col-xs-6">
                                             <label>Tipo de Percepción/Deducción:</label>
-                                            <select class="form-control" v-model="perceptionDeduction.idCPd" required>
+                                            <select class="form-control" v-model="perceptionDeduction.idCPd" @change="cleanFields()" required>
                                                 <option v-for="pd in dPD" value="{{pd.cPerceptionsDeductions.idCPd}}">
                                                     {{pd.cPerceptionsDeductions.namePD}}
                                                 </option>
@@ -687,7 +703,7 @@
                                         </div>
                                         <div class="col-xs-2">
                                         </div>
-                                        <div class="col-xs-4" v-if="perceptionDeduction.idCPd > 0 && (perceptionDeduction.idCPd != 1 || perceptionDeduction.idCPd != 7)">
+                                        <div class="col-xs-4" v-if="perceptionDeduction.idCPd > 0 && (perceptionDeduction.idCPd != 1 && perceptionDeduction.idCPd != 7)">
                                             <label>Monto:</label>
                                             <input class="form-control" v-model="perceptionDeduction.amount | currency"
                                                    onkeypress="return validateFloatKeyPress(this,event)" required>
@@ -733,7 +749,7 @@
                                     </div>
                                 </div>
                                 <br>
-                                <div class="row"  v-if="perceptionDeduction.idCPd > 0 && perceptionDeduction.idCPd != 1">
+                                <div class="row"  v-if="perceptionDeduction.idCPd > 0 && (perceptionDeduction.idCPd != 1 && perceptionDeduction.idCPd != 7)">
                                     <div class="col-xs-12">
                                         <div class="col-xs-12">
                                             <label>Motivo:</label>
