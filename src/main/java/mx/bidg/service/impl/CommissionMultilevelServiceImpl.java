@@ -1,5 +1,6 @@
 package mx.bidg.service.impl;
 
+import java.io.IOException;
 import mx.bidg.dao.CommissionMultilevelDao;
 import mx.bidg.dao.EmployeesDao;
 import mx.bidg.model.CommissionMultilevel;
@@ -9,6 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import mx.bidg.model.Users;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Created by PC_YAIR on 17/11/2016.
@@ -31,18 +35,17 @@ public class CommissionMultilevelServiceImpl implements CommissionMultilevelServ
     }
 
     @Override
-    public CommissionMultilevel update(CommissionMultilevel commissionMultilevel) {
-        return commissionMultilevelDao.update(commissionMultilevel);
+    public List<CommissionMultilevel> update(MultipartFile file, String calculateDate, Users user) throws IOException, InvalidFormatException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public CommissionMultilevel save(CommissionMultilevel commissionMultilevel) {
-        return commissionMultilevelDao.save(commissionMultilevel);
+    public List<CommissionMultilevel> save(MultipartFile file, String calculateDate, Users user) throws IOException, InvalidFormatException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean delete(CommissionMultilevel commissionMultilevel) {
-        commissionMultilevelDao.delete(commissionMultilevel);
-        return true;
+    public Boolean existsMultilevelRecord(MultipartFile file, String calculateDate) throws IOException, InvalidFormatException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
