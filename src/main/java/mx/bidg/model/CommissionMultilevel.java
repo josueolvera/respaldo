@@ -19,6 +19,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -75,6 +77,11 @@ public class CommissionMultilevel implements Serializable {
     @Column(name = "USER_NAME")
     @JsonView(JsonViews.Root.class)
     private String userName;
+    
+    @JoinColumn(name = "ID_EMPLOYEE", referencedColumnName = "ID_EMPLOYEE")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private Employees employee;
 
     public CommissionMultilevel() {
     }
@@ -136,6 +143,14 @@ public class CommissionMultilevel implements Serializable {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public Employees getEmployee() {
+        return employee;
+    }
+
+    public void setEmployee(Employees employee) {
+        this.employee = employee;
     }
 
     @Override
