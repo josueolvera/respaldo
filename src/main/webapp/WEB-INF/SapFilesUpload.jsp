@@ -60,7 +60,7 @@
                             this.updateDwBranchs();
                         }
                         if (this.typeFile.idSapFile == 5) {
-
+                            this.checkExistingMultilevel();
                         }
                         if (this.typeFile.idSapFile == 6) {
 
@@ -228,6 +228,42 @@
                                     this.errorData = data;
                                     $('#errorModal').modal('show');
                                 });
+                    },
+                    checkExistingMultilevel: function (){
+                        this.$http.post(ROOT_URL + '/multilevel/check-existing-multilevel', this.getFileFormData())
+                                .success(function (data) {
+
+                                    if (data == true) {
+                                        $('#checkExistigMultilevelModal').modal('show');
+                                    } else {
+                                        this.saveCommission();
+                                    }
+                                })
+                                .error(function (data) {
+                                    this.errorData = data;
+                                    $('#errorModal').modal('show');
+                                });
+                    },
+                    saveMultilevel: function (){
+                        this.$http.post(ROOT_URL + '/multilevel/excel', this.getFileFormData())
+                                .success(function (data) {
+                                    this.updateTypeFile();
+                                })
+                                .error(function (data) {
+                                    this.errorData = data;
+                                    $('#errorModal').modal('show');
+                                });
+                    },
+                    updateMultilevel: function (){
+                        this.$http.post(ROOT_URL + '/multilevel/update-multilevel', this.getFileFormData())
+                                .success(function (data) {
+                                    this.updateTypeFile();
+                                    $('#checkExistigMultilevelModal').modal('hide');
+                                })
+                                .error(function (data) {
+                                    this.errorData = data;
+                                    $('#errorModal').modal('show');
+                                });
                     }
                 }
             });
@@ -266,9 +302,9 @@
                                                accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
                                                application/vnd.ms-excel">
                                     </div>
-                                    <div class="form-group" v-if="typeFile.idSapFile > 8" >
+                                    <div class="form-group" v-if="typeFile.idSapFile > 8 || typeFile.idSapFile == 5" >
                                         <label>
-                                            Fecha de calcuo
+                                            Fecha de calculo
                                         </label>
                                         <div class="input-group date" id="datetimepickerCalculateDate"
                                              @click="setUpTimePickerCalculateDate()">
@@ -369,6 +405,21 @@
                     <div class="modal-content">
                         <div class="modal-body">
                             Ya existen comisiones para esta fecha. ¿Desea sobreescribir los registros?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" @click="updateCommission">Aceptar</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <div class="modal fade" id="checkExistigMultilevelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            Ya existen comisiones multinivel para esta fecha. ¿Desea sobreescribir los registros?
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-primary" @click="updateCommission">Aceptar</button>
