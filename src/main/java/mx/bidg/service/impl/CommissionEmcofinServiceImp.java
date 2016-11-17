@@ -62,7 +62,7 @@ public class CommissionEmcofinServiceImp implements CommissionEmcofinService{
         
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
         
-        for (int i = 7; i <= sheet.getLastRowNum(); i++) {
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
             
             Row currentRow = sheet.getRow(i);
             Cell idEmployee = currentRow.getCell(0);
@@ -101,7 +101,7 @@ public class CommissionEmcofinServiceImp implements CommissionEmcofinService{
         Workbook workbook = WorkbookFactory.create(file.getInputStream());
         Sheet sheet = workbook.getSheetAt(0);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-        for (int i = 7; i <= sheet.getLastRowNum(); i++) {
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
             Row currentRow = sheet.getRow(i);
             Cell idEmployee = currentRow.getCell(0);
             Cell commission = currentRow.getCell(2);
@@ -140,7 +140,7 @@ public class CommissionEmcofinServiceImp implements CommissionEmcofinService{
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
-        Row headerRow = sheet.getRow(6);
+        Row headerRow = sheet.getRow(0);
         String[] headersToSkip = {
             "Codigo", "Nombre", "Comision"
         };
@@ -154,7 +154,7 @@ public class CommissionEmcofinServiceImp implements CommissionEmcofinService{
 
         boolean existsCommission = false;
 
-        for (int i = 7; i <= sheet.getLastRowNum(); i++) {
+        for (int i = 1; i <= sheet.getLastRowNum(); i++) {
             Row currentRow = sheet.getRow(i);
             if (currentRow != null) {
                 Cell codigo = currentRow.getCell(0);
