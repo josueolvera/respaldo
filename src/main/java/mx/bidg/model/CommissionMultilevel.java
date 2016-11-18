@@ -51,6 +51,10 @@ public class CommissionMultilevel implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idComissionM;
     
+    @Column(name = "ID_EMPLOYEE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idEmployee;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 13)
@@ -66,7 +70,7 @@ public class CommissionMultilevel implements Serializable {
     @Column(name = "APLICATION_DATE")
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
-    private LocalDateTime aplicationDate;
+    private LocalDateTime applicationDate;
     
     @Column(name = "CREATION_DATE")
     @JsonView(JsonViews.Root.class)
@@ -90,10 +94,15 @@ public class CommissionMultilevel implements Serializable {
         this.idComissionM = idComissionM;
     }
 
-    public CommissionMultilevel(Integer idComissionM, String rfc, LocalDateTime aplicationDate, LocalDateTime creationDate) {
+    public CommissionMultilevel(Integer idComissionM, Integer idEmployee) {
+        this.idComissionM = idComissionM;
+        this.idEmployee = idEmployee;
+    }
+    
+    public CommissionMultilevel(Integer idComissionM, String rfc, LocalDateTime applicationDate, LocalDateTime creationDate) {
         this.idComissionM = idComissionM;
         this.rfc = rfc;
-        this.aplicationDate = aplicationDate;
+        this.applicationDate = applicationDate;
         this.creationDate = creationDate;
     }
 
@@ -103,6 +112,14 @@ public class CommissionMultilevel implements Serializable {
 
     public void setIdComissionM(Integer idComissionM) {
         this.idComissionM = idComissionM;
+    }
+
+    public Integer getIdEmployee() {
+        return idEmployee;
+    }
+
+    public void setIdEmployee(Integer idEmployee) {
+        this.idEmployee = idEmployee;
     }
 
     public String getRfc() {
@@ -121,12 +138,12 @@ public class CommissionMultilevel implements Serializable {
         this.monto = monto;
     }
 
-    public LocalDateTime getAplicationDate() {
-        return aplicationDate;
+    public LocalDateTime getApplicationDate() {
+        return applicationDate;
     }
 
-    public void setAplicationDate(LocalDateTime aplicationDate) {
-        this.aplicationDate = aplicationDate;
+    public void setApplicationDate(LocalDateTime applicationDate) {
+        this.applicationDate = applicationDate;
     }
 
     public LocalDateTime getCreationDate() {
