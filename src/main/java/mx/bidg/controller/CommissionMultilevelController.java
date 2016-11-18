@@ -45,7 +45,7 @@ public class CommissionMultilevelController {
     public ResponseEntity<String> saveExcelMultilevel(@RequestParam("file") MultipartFile file, @RequestParam("calculateDate") String calculateDate, HttpSession session) throws Exception {
         Users user = (Users) session.getAttribute("user");
         return new ResponseEntity<String>(
-                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(commissionMultilevelService.save(file, calculateDate, user)), HttpStatus.OK
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(commissionMultilevelService.saveExcel(file, calculateDate, user)), HttpStatus.OK
         );
     }
 
@@ -61,7 +61,7 @@ public class CommissionMultilevelController {
     ResponseEntity<String> updateExcelMultilevel(@RequestParam("file") MultipartFile file, @RequestParam("calculateDate") String calculateDate, HttpSession session) throws Exception {
         Users user = (Users) session.getAttribute("user");
         return new ResponseEntity<String>(
-                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(commissionMultilevelService.update(file, calculateDate, user)), HttpStatus.OK
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(commissionMultilevelService.updateExcel(file, calculateDate, user)), HttpStatus.OK
         );
     }
     
