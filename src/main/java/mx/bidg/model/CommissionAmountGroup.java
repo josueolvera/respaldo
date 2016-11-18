@@ -122,6 +122,10 @@ public class CommissionAmountGroup implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idRole;
 
+    @Column(name = "BONUS_COMMISSIONABLE_AMOUNT")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal bonusCommissionableAmount;
+
     public CommissionAmountGroup() {
     }
 
@@ -309,6 +313,14 @@ public class CommissionAmountGroup implements Serializable {
 
     public void setIdRole(Integer idRole) {
         this.idRole = idRole;
+    }
+
+    public BigDecimal getBonusCommissionableAmount() {
+        return bonusCommissionableAmount;
+    }
+
+    public void setBonusCommissionableAmount(BigDecimal bonusCommissionableAmount) {
+        this.bonusCommissionableAmount = bonusCommissionableAmount;
     }
 
     @Override
