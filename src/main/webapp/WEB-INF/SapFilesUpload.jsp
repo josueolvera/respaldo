@@ -61,6 +61,7 @@
                         }
                         if (this.typeFile.idSapFile == 5) {
                             this.checkExistingMultilevel();
+                            //this.saveMultilevel();
                         }
                         if (this.typeFile.idSapFile == 6) {
 
@@ -236,7 +237,7 @@
                                     if (data == true) {
                                         $('#checkExistigMultilevelModal').modal('show');
                                     } else {
-                                        this.saveCommission();
+                                        this.saveMultilevel();
                                     }
                                 })
                                 .error(function (data) {
@@ -422,7 +423,7 @@
                             Ya existen comisiones multinivel para esta fecha. ¿Desea sobreescribir los registros?
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" @click="updateCommission">Aceptar</button>
+                            <button type="button" class="btn btn-primary" @click="updateMultilevel">Aceptar</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         </div>
                     </div>
