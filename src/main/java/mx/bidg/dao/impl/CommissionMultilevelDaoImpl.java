@@ -47,7 +47,7 @@ public class CommissionMultilevelDaoImpl extends AbstractDao<Integer, Commission
 
     @Override
     public CommissionMultilevel finfByidEmployee(int idEmployee, LocalDateTime applicationDate) {
-      return (CommissionMultilevel) createEntityCriteria()
+        return (CommissionMultilevel) createEntityCriteria()
                 .add(Restrictions.eq("idEmployee",idEmployee))
                 .add(Restrictions.eq("applicationDate",applicationDate))
                 .uniqueResult();
