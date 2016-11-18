@@ -383,7 +383,7 @@
                         if(this.perceptionDeduction.idCPd == 1){
                             this.perceptionDeduction.amount = this.division;
                         }else if(this.perceptionDeduction.idCPd == 7){
-                            this.perceptionDeduction.amount = this.resultCommission;
+                            this.perceptionDeduction.amount = this.perceptionDeduction.rode;
                         }
                         this.perceptionDeduction.employee = (JSON.parse(JSON.stringify(this.currentDwEmployee)));
                         this.perceptionDeduction.applicationDate = this.timePickerApplicationDate.DateTimePicker.date().toISOString().slice(0, -1);
