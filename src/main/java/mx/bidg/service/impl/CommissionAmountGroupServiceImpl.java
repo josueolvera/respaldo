@@ -866,10 +866,15 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
         row.createCell(19).setCellValue("No. SOL. SALUD-CI");
         row.createCell(20).setCellValue("MONTO SALUD-CI");
         row.createCell(21).setCellValue("COMISION SALUD-CI");
-        row.createCell(22).setCellValue("COMISION ACUMULADA");
-        row.createCell(23).setCellValue("ALCANCE FINAL");
-        row.createCell(24).setCellValue("BONO SALUD");
-        row.createCell(25).setCellValue("BONO SALUD-CI");
+        row.createCell(22).setCellValue("COMISION ACUMULADA GOBIERNO");
+        row.createCell(23).setCellValue("COMISION ACUMULADA SALUD");
+        row.createCell(24).setCellValue("COMISION ACUMULADA SALUD-CI");
+        row.createCell(25).setCellValue("AJUSTE COMISIÓN GOBIERNO");
+        row.createCell(26).setCellValue("AJUSTE COMISIÓN SALUD");
+        row.createCell(27).setCellValue("AJUSTE COMISIÓN SALUD-CI");
+        row.createCell(28).setCellValue("BONO SALUD");
+        row.createCell(29).setCellValue("BONO SALUD-CI");
+        row.createCell(30).setCellValue("MONTO A PAGAR");
 
         //Implementacion del estilo
         for (Cell celda : row) {
@@ -880,6 +885,7 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
 
         for (List listGeneric : commissionAmountGroupStreamList){
             row = hoja.createRow(aux);
+            BigDecimal totalComission = new BigDecimal(0);
 
             for (Object object: listGeneric){
                 CommissionAmountGroup commissionAmountGroup = (CommissionAmountGroup) object;
@@ -933,7 +939,14 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
 
                                 if (claveSap.equals(commissionAmountGroup.getClaveSap())){
                                     row.createCell(22).setCellValue(comission.doubleValue());
-                                    row.createCell(23).setCellValue(commissionAmountGroup.getCommission().subtract(comission).doubleValue());
+                                    BigDecimal finalCommission = commissionAmountGroup.getCommission().subtract(comission);
+                                    if (finalCommission.signum() == -1){
+                                        row.createCell(25).setCellValue(0);
+                                        totalComission = totalComission.add(new BigDecimal(0));
+                                    }else {
+                                        row.createCell(25).setCellValue(finalCommission.doubleValue());
+                                        totalComission = totalComission.add(finalCommission);
+                                    }
                                 }
                             }
                         }
@@ -952,12 +965,25 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                                 Integer idAg = (Integer) projection[4];
 
                                 if (claveSap.equals(commissionAmountGroup.getClaveSap())){
-                                    row.createCell(22).setCellValue(comission.doubleValue());
-                                    if (commissionAmountGroup.getAmount().doubleValue() >= 300000){
+                                    row.createCell(23).setCellValue(comission.doubleValue());
+                                    BigDecimal finalCommission = commissionAmountGroup.getCommission().subtract(comission);
+                                    if (finalCommission.signum() == -1){
+                                        row.createCell(26).setCellValue(0);
+                                        totalComission = totalComission.add(new BigDecimal(0));
+                                    }else {
+                                        row.createCell(26).setCellValue(finalCommission.doubleValue());
+                                        totalComission = totalComission.add(finalCommission);
+                                    }
+                                    if(commissionAmountGroup.getBonusCommissionableAmount() != null){
+                                        row.createCell(28).setCellValue(commissionAmountGroup.getBonusCommissionableAmount().doubleValue());
+                                        totalComission = totalComission.add(commissionAmountGroup.getBonusCommissionableAmount());
+                                    }
+/*                                    if (commissionAmountGroup.getAmount().doubleValue() >= 300000){
                                         row.createCell(24).setCellValue(commissionAmountGroup.getCommission().doubleValue());
                                     }else {
                                         row.createCell(23).setCellValue(commissionAmountGroup.getCommission().subtract(comission).doubleValue());
                                     }
+*/
                                 }
                             }
                         }
@@ -977,15 +1003,29 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                                 Integer idAg = (Integer) projection[4];
 
                                 if (claveSap.equals(commissionAmountGroup.getClaveSap())){
-                                    row.createCell(22).setCellValue(comission.doubleValue());
-                                    if (commissionAmountGroup.getAmount().doubleValue() >= 300000){
+                                    row.createCell(24).setCellValue(comission.doubleValue());
+                                    BigDecimal finalCommission = commissionAmountGroup.getCommission().subtract(comission);
+                                    if (finalCommission.signum() == -1){
+                                        row.createCell(27).setCellValue(0);
+                                        totalComission = totalComission.add(new BigDecimal(0));
+                                    }else {
+                                        row.createCell(27).setCellValue(finalCommission.doubleValue());
+                                        totalComission = totalComission.add(finalCommission);
+                                    }
+                                    if(commissionAmountGroup.getBonusCommissionableAmount() != null){
+                                        row.createCell(29).setCellValue(commissionAmountGroup.getBonusCommissionableAmount().doubleValue());
+                                        totalComission = totalComission.add(commissionAmountGroup.getBonusCommissionableAmount());
+                                    }
+/*                                    if (commissionAmountGroup.getAmount().doubleValue() >= 300000){
                                         row.createCell(25).setCellValue(commissionAmountGroup.getCommission().doubleValue());
                                     }else {
                                         row.createCell(23).setCellValue(commissionAmountGroup.getCommission().subtract(comission).doubleValue());
                                     }
+*/
                                 }
                             }
                         }
+                        row.createCell(30).setCellValue(totalComission.doubleValue());
                     }
                 } else {
                     row.createCell(0).setCellValue(commissionAmountGroup.getClaveSap());
@@ -1035,7 +1075,14 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
 
                             if (claveSap.equals(commissionAmountGroup.getClaveSap())){
                                 row.createCell(22).setCellValue(comission.doubleValue());
-                                row.createCell(23).setCellValue(commissionAmountGroup.getCommission().subtract(comission).doubleValue());
+                                BigDecimal finalCommission = commissionAmountGroup.getCommission().subtract(comission);
+                                if (finalCommission.signum() == -1){
+                                    row.createCell(25).setCellValue(0);
+                                    totalComission = totalComission.add(new BigDecimal(0));
+                                }else {
+                                    row.createCell(25).setCellValue(finalCommission.doubleValue());
+                                    totalComission = totalComission.add(finalCommission);
+                                }
                             }
                         }
                     }
@@ -1054,12 +1101,24 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                             Integer idAg = (Integer) projection[4];
 
                             if (claveSap.equals(commissionAmountGroup.getClaveSap())){
-                                row.createCell(22).setCellValue(comission.doubleValue());
-                                if (commissionAmountGroup.getAmount().doubleValue() >= 300000){
-                                    row.createCell(24).setCellValue(commissionAmountGroup.getCommission().doubleValue());
+                                row.createCell(23).setCellValue(comission.doubleValue());
+                                BigDecimal finalCommission = commissionAmountGroup.getCommission().subtract(comission);
+                                if (finalCommission.signum() == -1){
+                                    row.createCell(26).setCellValue(0);
+                                    totalComission = totalComission.add(new BigDecimal(0));
                                 }else {
-                                    row.createCell(23).setCellValue(commissionAmountGroup.getCommission().subtract(comission).doubleValue());
+                                    row.createCell(26).setCellValue(finalCommission.doubleValue());
+                                    totalComission = totalComission.add(finalCommission);
                                 }
+                                if(commissionAmountGroup.getBonusCommissionableAmount() != null){
+                                    row.createCell(28).setCellValue(commissionAmountGroup.getBonusCommissionableAmount().doubleValue());
+                                    totalComission = totalComission.add(commissionAmountGroup.getBonusCommissionableAmount());
+                                }
+//                                if (commissionAmountGroup.getAmount().doubleValue() >= 300000){
+//                                    row.createCell(24).setCellValue(commissionAmountGroup.getCommission().doubleValue());
+//                                }else {
+//                                    row.createCell(23).setCellValue(commissionAmountGroup.getCommission().subtract(comission).doubleValue());
+//                                }
                             }
                         }
                     }
@@ -1079,15 +1138,28 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                             Integer idAg = (Integer) projection[4];
 
                             if (claveSap.equals(commissionAmountGroup.getClaveSap())){
-                                row.createCell(22).setCellValue(comission.doubleValue());
-                                if (commissionAmountGroup.getAmount().doubleValue() >= 300000){
-                                    row.createCell(25).setCellValue(commissionAmountGroup.getCommission().doubleValue());
+                                row.createCell(24).setCellValue(comission.doubleValue());
+                                BigDecimal finalCommission = commissionAmountGroup.getCommission().subtract(comission);
+                                if (finalCommission.signum() == -1){
+                                    row.createCell(27).setCellValue(0);
+                                    totalComission = totalComission.add(new BigDecimal(0));
                                 }else {
-                                    row.createCell(23).setCellValue(commissionAmountGroup.getCommission().subtract(comission).doubleValue());
+                                    row.createCell(27).setCellValue(finalCommission.doubleValue());
+                                    totalComission = totalComission.add(finalCommission);
                                 }
+                                if(commissionAmountGroup.getBonusCommissionableAmount() != null){
+                                    row.createCell(29).setCellValue(commissionAmountGroup.getBonusCommissionableAmount().doubleValue());
+                                    totalComission = totalComission.add(commissionAmountGroup.getBonusCommissionableAmount());
+                                }
+//                                if (commissionAmountGroup.getAmount().doubleValue() >= 300000){
+//                                    row.createCell(25).setCellValue(commissionAmountGroup.getCommission().doubleValue());
+//                                }else {
+//                                    row.createCell(23).setCellValue(commissionAmountGroup.getCommission().subtract(comission).doubleValue());
+//                                }
                             }
                         }
                     }
+                    row.createCell(30).setCellValue(totalComission.doubleValue());
                 }
             }
             aux++;

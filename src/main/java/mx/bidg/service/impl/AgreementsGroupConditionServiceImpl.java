@@ -375,10 +375,10 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
                 BigDecimal defaultValue = new BigDecimal(300000.00);
 
                 for (CommissionAmountGroup cAGroup : amountGroups) {
-                    cAGroup.setTabulator(groupCondition.getTabulator());
+//                    cAGroup.setTabulator(groupCondition.getTabulator());
 //                    BigDecimal divisor = new BigDecimal(100);
 //                    BigDecimal comission = groupCondition.getTabulator().divide(divisor);
-                    cAGroup.setCommission(groupCondition.getTabulator());
+                    cAGroup.setBonusCommissionableAmount(groupCondition.getTabulator());
                     commissionAmountGroupDao.update(cAGroup);
                 }
             }
