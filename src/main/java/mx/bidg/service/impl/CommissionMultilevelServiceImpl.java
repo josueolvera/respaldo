@@ -3,7 +3,6 @@ package mx.bidg.service.impl;
 import mx.bidg.dao.CommissionMultilevelDao;
 import mx.bidg.dao.EmployeesDao;
 import mx.bidg.exceptions.ValidationException;
-import mx.bidg.model.CommissionEmcofin;
 import mx.bidg.model.CommissionMultilevel;
 import mx.bidg.model.Employees;
 import mx.bidg.model.Users;
@@ -11,8 +10,6 @@ import mx.bidg.service.CommissionMultilevelService;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -20,6 +17,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by PC_YAIR on 17/11/2016.
@@ -33,9 +32,10 @@ public class CommissionMultilevelServiceImpl implements CommissionMultilevelServ
 
     @Autowired
     private EmployeesDao employeesDao;
+    
     @Override
-    public CommissionMultilevel findById(Integer idCommissionMultilevel) {
-        return commissionMultilevelDao.findById(idCommissionMultilevel);
+    public CommissionMultilevel findById(Integer id) {
+        return commissionMultilevelDao.findById(id);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class CommissionMultilevelServiceImpl implements CommissionMultilevelServ
     }
 
     @Override
-    public List<CommissionMultilevel> update(MultipartFile file, String calculateDate, Users user) throws IOException, InvalidFormatException {
+    public List<CommissionMultilevel> updateExcel(MultipartFile file, String calculateDate, Users user) throws IOException, InvalidFormatException {
         Workbook workbook = WorkbookFactory.create(file.getInputStream());
         Sheet sheet = workbook.getSheetAt(0);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
@@ -73,7 +73,7 @@ public class CommissionMultilevelServiceImpl implements CommissionMultilevelServ
                             c.setMonto(bdCommission);
                         }
                     }
-                    c.setAplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
+                    c.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
                     c.setCreationDate(LocalDateTime.now());
                     c.setUserName(user.getUsername());
                     commissionMultilevelDao.update(c);
@@ -84,7 +84,7 @@ public class CommissionMultilevelServiceImpl implements CommissionMultilevelServ
     }
 
     @Override
-    public List<CommissionMultilevel> save(MultipartFile file, String calculateDate, Users user) throws IOException, InvalidFormatException {
+    public List<CommissionMultilevel> saveExcel(MultipartFile file, String calculateDate, Users user) throws IOException, InvalidFormatException {
         Workbook workbook = WorkbookFactory.create(file.getInputStream());
 
         Sheet sheet = workbook.getSheetAt(0);
@@ -104,7 +104,6 @@ public class CommissionMultilevelServiceImpl implements CommissionMultilevelServ
                 Employees employee = employeesDao.findById((int)idEmployee.getNumericCellValue());
                 if(employee!=null){
                     c.setEmployee(employee);
-
                 }
                 if(rfc!=null){
                     c.setRfc(rfc.getStringCellValue());
@@ -120,8 +119,7 @@ public class CommissionMultilevelServiceImpl implements CommissionMultilevelServ
                 }
 
             }
-
-            c.setAplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
+            c.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
             c.setCreationDate(LocalDateTime.now());
             c.setUserName(user.getUsername());
             commissionMultilevelDao.save(c);
@@ -141,14 +139,14 @@ public class CommissionMultilevelServiceImpl implements CommissionMultilevelServ
                 "Código", "RFC", "Monto"
         };
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 3; i++) {
             if (!headerRow.getCell(i).getStringCellValue().equals(headersToSkip[i])) {
                 throw new ValidationException("Tipo de formato no compatible.",
                         "Los datos de este archivo no son los correctos o no cumplen con los datos de venta.");
             }
         }
 
-        boolean existsCommission = false;
+        boolean existsMultilevel = false;
 
         for (int i = 1; i <= sheet.getLastRowNum(); i++) {
             Row currentRow = sheet.getRow(i);
@@ -168,13 +166,13 @@ public class CommissionMultilevelServiceImpl implements CommissionMultilevelServ
                     );
 
                     if (saveCommission != null) {
-                        existsCommission = true;
+                        existsMultilevel = true;
                     }
                 }
             }
         }
 
-        return existsCommission;
+        return existsMultilevel;
     }
     }
 

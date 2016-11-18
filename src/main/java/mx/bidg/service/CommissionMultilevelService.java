@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface CommissionMultilevelService {
     CommissionMultilevel findById (Integer idCommissionMultilevel);
     List<CommissionMultilevel> findAll();
-    List<CommissionMultilevel> update (MultipartFile file, String calculateDate, Users user)throws IOException, InvalidFormatException;
-    List<CommissionMultilevel> save (MultipartFile file, String calculateDate, Users user)throws IOException, InvalidFormatException;
+    List<CommissionMultilevel> updateExcel (MultipartFile file, String calculateDate, Users user)throws IOException, InvalidFormatException;
+    List<CommissionMultilevel> saveExcel (MultipartFile file, String calculateDate, Users user)throws IOException, InvalidFormatException;
     Boolean existsMultilevelRecord(MultipartFile file,String calculateDate) throws IOException, InvalidFormatException;
 }
