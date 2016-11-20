@@ -1,9 +1,11 @@
 package mx.bidg.service.impl;
 
 import mx.bidg.dao.CommissionMultilevelDao;
+import mx.bidg.dao.DwEmployeesDao;
 import mx.bidg.dao.EmployeesDao;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.CommissionMultilevel;
+import mx.bidg.model.DwEmployees;
 import mx.bidg.model.Employees;
 import mx.bidg.model.Users;
 import mx.bidg.service.CommissionMultilevelService;
@@ -30,6 +32,8 @@ public class CommissionMultilevelServiceImpl implements CommissionMultilevelServ
     @Autowired
     private CommissionMultilevelDao commissionMultilevelDao;
 
+     @Autowired
+     private DwEmployeesDao dwEmployeesDao;
     @Autowired
     private EmployeesDao employeesDao;
     
@@ -57,9 +61,13 @@ public class CommissionMultilevelServiceImpl implements CommissionMultilevelServ
                 CommissionMultilevel c = commissionMultilevelDao.finfByidEmployee((int)idEmployee.getNumericCellValue()
                         , LocalDateTime.parse(calculateDate + " 00:00", formatter));
                 Employees employee = employeesDao.findById((int)idEmployee.getNumericCellValue());
+
                 if (c != null){
                     if(employee!=null) {
                         c.setEmployee(employee);
+                        DwEmployees dwEmployees = dwEmployeesDao.findByEmployee((int)idEmployee.getNumericCellValue());
+                        c.setDwEmployees(dwEmployees.getDwEnterprise());
+
                     }
                 if(rfc!=null){
                     c.setRfc(rfc.getStringCellValue());
@@ -102,8 +110,11 @@ public class CommissionMultilevelServiceImpl implements CommissionMultilevelServ
            CommissionMultilevel c = new CommissionMultilevel();
             if(idEmployee!=null){
                 Employees employee = employeesDao.findById((int)idEmployee.getNumericCellValue());
-                if(employee!=null){
-                    c.setEmployee(employee);
+               if(employee!=null){
+                   DwEmployees dwEmployees = dwEmployeesDao.findByEmployee((int)idEmployee.getNumericCellValue());
+                   c.setEmployee(employee);
+                   c.setDwEmployees(dwEmployees.getDwEnterprise());
+
                 }
                 if(rfc!=null){
                     c.setRfc(rfc.getStringCellValue());
@@ -159,6 +170,7 @@ public class CommissionMultilevelServiceImpl implements CommissionMultilevelServ
                     if (codigo.getCellType() == Cell.CELL_TYPE_STRING) {
                         break;
                     }
+
 
                     saveCommission = commissionMultilevelDao.finfByidEmployee(
                             (int) codigo.getNumericCellValue(),
