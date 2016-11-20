@@ -11,12 +11,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import mx.bidg.dao.CommissionEmcofinDao;
+import mx.bidg.dao.DwEmployeesDao;
 import mx.bidg.dao.EmployeesDao;
 import mx.bidg.exceptions.ValidationException;
-import mx.bidg.model.CommissionEmcofin;
-import mx.bidg.model.Employees;
-import mx.bidg.model.Outsourcing;
-import mx.bidg.model.Users;
+import mx.bidg.model.*;
 import mx.bidg.service.CommissionEmcofinService;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
@@ -43,6 +41,9 @@ public class CommissionEmcofinServiceImp implements CommissionEmcofinService{
     
     @Autowired
     private EmployeesDao employeesDao;
+
+    @Autowired
+    private DwEmployeesDao dwEmployeesDao;
     
     @Override
     public List<CommissionEmcofin> findAll() {
@@ -74,7 +75,8 @@ public class CommissionEmcofinServiceImp implements CommissionEmcofinService{
                 Employees employee = employeesDao.findById((int)idEmployee.getNumericCellValue());
                 if(employee!=null){
                     c.setEmployee(employee);
-                    
+                    DwEmployees dwe= dwEmployeesDao.findByIdEmployee((int)idEmployee.getNumericCellValue());
+                    c.setDwEnterprises(dwe.getDwEnterprise());
                 }
                 if(commission!=null){
                     if (commission.getCellType() == Cell.CELL_TYPE_STRING) {
@@ -112,6 +114,8 @@ public class CommissionEmcofinServiceImp implements CommissionEmcofinService{
                 if (c != null){
                     if(employee!=null){
                         c.setEmployee(employee);
+                        DwEmployees dwe= dwEmployeesDao.findByIdEmployee((int)idEmployee.getNumericCellValue());
+                        c.setDwEnterprises(dwe.getDwEnterprise());
                     }
                     if(commission!=null){
                         if (commission.getCellType() == Cell.CELL_TYPE_STRING) {
