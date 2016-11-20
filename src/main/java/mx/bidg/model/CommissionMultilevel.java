@@ -11,7 +11,6 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -21,11 +20,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
@@ -50,11 +45,7 @@ public class CommissionMultilevel implements Serializable {
     @Column(name = "ID_COMISSION_M")
     @JsonView(JsonViews.Root.class)
     private Integer idComissionM;
-    
-    @Column(name = "ID_EMPLOYEE", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idEmployee;
-    
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 13)
@@ -81,11 +72,28 @@ public class CommissionMultilevel implements Serializable {
     @Column(name = "USER_NAME")
     @JsonView(JsonViews.Root.class)
     private String userName;
-    
+
+    @Column(name = "ID_EMPLOYEE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idEmployee;
+
+
     @JoinColumn(name = "ID_EMPLOYEE", referencedColumnName = "ID_EMPLOYEE")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private Employees employee;
+
+    @Column(name = "ID_DW_ENTERPRISE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idDwEnterprise;
+
+
+    @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private DwEnterprises dwEmployees;
+
+
 
     public CommissionMultilevel() {
     }
@@ -97,6 +105,7 @@ public class CommissionMultilevel implements Serializable {
     public CommissionMultilevel(Integer idComissionM, Integer idEmployee) {
         this.idComissionM = idComissionM;
         this.idEmployee = idEmployee;
+
     }
     
     public CommissionMultilevel(Integer idComissionM, String rfc, LocalDateTime applicationDate, LocalDateTime creationDate) {
@@ -169,6 +178,14 @@ public class CommissionMultilevel implements Serializable {
     public void setEmployee(Employees employee) {
         this.employee = employee;
     }
+
+    public Integer getIdDwEnterprise() {return idDwEnterprise;}
+
+    public void setIdDwEnterprise(Integer idDwEnterprise) {this.idDwEnterprise = idDwEnterprise;}
+
+    public DwEnterprises getDwEmployees() {return dwEmployees;}
+
+    public void setDwEmployees(DwEnterprises dwEmployees) {this.dwEmployees = dwEmployees;}
 
     @Override
     public int hashCode() {
