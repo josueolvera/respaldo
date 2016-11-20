@@ -84,6 +84,15 @@ public class CommissionEmcofin implements Serializable {
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private Employees employee;
+    
+    @Column(name = "ID_DW_ENTERPRISE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idDwEnterprise;
+
+    @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private DwEnterprises dwEnterprises;
 
     public CommissionEmcofin() {
     }
@@ -170,6 +179,22 @@ public class CommissionEmcofin implements Serializable {
 
     public void setEmployee(Employees employee) {
         this.employee = employee;
+    }
+
+    public Integer getIdDwEnterprise() {
+        return idDwEnterprise;
+    }
+
+    public void setIdDwEnterprise(Integer idDwEnterprise) {
+        this.idDwEnterprise = idDwEnterprise;
+    }
+
+    public DwEnterprises getDwEnterprises() {
+        return dwEnterprises;
+    }
+
+    public void setDwEnterprises(DwEnterprises dwEnterprises) {
+        this.dwEnterprises = dwEnterprises;
     }
 
     @Override

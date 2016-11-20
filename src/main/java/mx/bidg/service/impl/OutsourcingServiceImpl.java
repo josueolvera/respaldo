@@ -20,7 +20,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mx.bidg.dao.DwEmployeesDao;
+import mx.bidg.model.DwEmployees;
 import mx.bidg.model.Users;
+import mx.bidg.service.DwEmployeesService;
 
 /**
  * Created by gerardo8 on 16/05/16.
@@ -34,6 +37,10 @@ public class OutsourcingServiceImpl implements OutsourcingService {
 
     @Autowired
     private EmployeesDao employeesDao;
+    
+    @Autowired
+    private DwEmployeesDao dwEmployeesDao;
+
 
     @Override
     public List<Outsourcing> findAll() {
@@ -80,12 +87,14 @@ public class OutsourcingServiceImpl implements OutsourcingService {
                         (int) code.getNumericCellValue(),
                         LocalDateTime.parse(calculateDate + " 00:00", formatter)
                 );
+                DwEmployees dwe= dwEmployeesDao.findByIdEmployee((int)code.getNumericCellValue());
 
                 if (outsourcing != null) {
                     Employees employee = employeesDao.findById((int) code.getNumericCellValue());
 
                     if (employee != null) {
                         outsourcing.setEmployee(employee);
+                        outsourcing.setDwEnterprises(dwe.getDwEnterprise());
                     }
 
                     if (salary != null) {
@@ -352,9 +361,11 @@ public class OutsourcingServiceImpl implements OutsourcingService {
 
             if (code != null) {
                 Employees employee = employeesDao.findById((int) code.getNumericCellValue());
-
+                DwEmployees dwe=dwEmployeesDao.findByIdEmployee((int)code.getNumericCellValue());
+                outsourcing.setDwEnterprises(dwe.getDwEnterprise());
                 if (employee != null) {
                     outsourcing.setEmployee(employee);
+                    outsourcing.setDwEnterprises(dwe.getDwEnterprise());
                 }
                 if (salary != null) {
                     if (salary.getCellType() == Cell.CELL_TYPE_STRING) {

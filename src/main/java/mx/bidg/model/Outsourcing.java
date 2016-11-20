@@ -129,6 +129,15 @@ public class Outsourcing implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String username;
     
+    @Column(name = "ID_DW_ENTERPRISE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idDwEnterprise;
+    
+    @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private DwEnterprises dwEnterprises;
+    
     public Outsourcing() {
     }
 
@@ -330,7 +339,22 @@ public class Outsourcing implements Serializable {
     public String getUsername() {
         return username;
     }
-    
+
+    public Integer getIdDwEnterprise() {
+        return idDwEnterprise;
+    }
+
+    public void setIdDwEnterprise(Integer idDwEnterprise) {
+        this.idDwEnterprise = idDwEnterprise;
+    }
+
+    public DwEnterprises getDwEnterprises() {
+        return dwEnterprises;
+    }
+
+    public void setDwEnterprises(DwEnterprises dwEnterprises) {
+        this.dwEnterprises = dwEnterprises;
+    }
     
     @Override
     public String toString() {
