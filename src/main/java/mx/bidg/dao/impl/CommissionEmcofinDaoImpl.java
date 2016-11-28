@@ -56,7 +56,7 @@ public class CommissionEmcofinDaoImpl extends AbstractDao<Integer, CommissionEmc
         return (CommissionEmcofin) createEntityCriteria()
                 .add(Restrictions.eq("idEmployee",idEmployee))
                 .add(Restrictions.eq("applicationDate",applicationDate))
-                .uniqueResult();
+                .setMaxResults(1).uniqueResult();
     }
     
 }
