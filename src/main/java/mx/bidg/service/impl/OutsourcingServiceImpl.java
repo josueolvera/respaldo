@@ -1,10 +1,8 @@
 package mx.bidg.service.impl;
 
-import mx.bidg.dao.EmployeesDao;
-import mx.bidg.dao.OutsourcingDao;
+import mx.bidg.dao.*;
 import mx.bidg.exceptions.ValidationException;
-import mx.bidg.model.Employees;
-import mx.bidg.model.Outsourcing;
+import mx.bidg.model.*;
 import mx.bidg.service.OutsourcingService;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -20,9 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import mx.bidg.dao.DwEmployeesDao;
-import mx.bidg.model.DwEmployees;
-import mx.bidg.model.Users;
+
 import mx.bidg.service.DwEmployeesService;
 
 /**
@@ -39,7 +35,10 @@ public class OutsourcingServiceImpl implements OutsourcingService {
     private EmployeesDao employeesDao;
     
     @Autowired
-    private DwEmployeesDao dwEmployeesDao;
+    private EmployeesHistoryDao employeesHistoryDao;
+
+    @Autowired
+    private DwEnterprisesDao dwEnterprisesDao;
 
 
     @Override
@@ -87,14 +86,23 @@ public class OutsourcingServiceImpl implements OutsourcingService {
                         (int) code.getNumericCellValue(),
                         LocalDateTime.parse(calculateDate + " 00:00", formatter)
                 );
-                DwEmployees dwe= dwEmployeesDao.findByIdEmployee((int)code.getNumericCellValue());
+
+                EmployeesHistory employeesHistory = employeesHistoryDao.findByIdEmployeeAndLastRegister((int)code.getNumericCellValue());
+
+                if (employeesHistory != null){
+                    DwEnterprises dwEnterprises = dwEnterprisesDao.findById(employeesHistory.getIdDwEnterprise());
+
+                    if (dwEnterprises != null){
+                        outsourcing.setDwEnterprises(dwEnterprises);
+                    }
+
+                }
 
                 if (outsourcing != null) {
                     Employees employee = employeesDao.findById((int) code.getNumericCellValue());
 
                     if (employee != null) {
                         outsourcing.setEmployee(employee);
-                        outsourcing.setDwEnterprises(dwe.getDwEnterprise());
                     }
 
                     if (salary != null) {
@@ -361,11 +369,20 @@ public class OutsourcingServiceImpl implements OutsourcingService {
 
             if (code != null) {
                 Employees employee = employeesDao.findById((int) code.getNumericCellValue());
-                DwEmployees dwe=dwEmployeesDao.findByIdEmployee((int)code.getNumericCellValue());
-                outsourcing.setDwEnterprises(dwe.getDwEnterprise());
+
+                EmployeesHistory employeesHistory = employeesHistoryDao.findByIdEmployeeAndLastRegister((int)code.getNumericCellValue());
+
+                if (employeesHistory != null){
+                    DwEnterprises dwEnterprises = dwEnterprisesDao.findById(employeesHistory.getIdDwEnterprise());
+
+                    if (dwEnterprises != null){
+                        outsourcing.setDwEnterprises(dwEnterprises);
+                    }
+
+                }
+
                 if (employee != null) {
                     outsourcing.setEmployee(employee);
-                    outsourcing.setDwEnterprises(dwe.getDwEnterprise());
                 }
                 if (salary != null) {
                     if (salary.getCellType() == Cell.CELL_TYPE_STRING) {
