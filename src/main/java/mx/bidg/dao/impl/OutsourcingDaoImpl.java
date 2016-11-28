@@ -47,6 +47,6 @@ public class OutsourcingDaoImpl extends AbstractDao<Integer, Outsourcing> implem
         return (Outsourcing) createEntityCriteria()
                 .add(Restrictions.eq("idEmployee",idEmployee))
                 .add(Restrictions.eq("applicationDate",applicationDate))
-                .uniqueResult();
+                .setMaxResults(1).uniqueResult();
     }
 }
