@@ -10,9 +10,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import mx.bidg.dao.CommissionEmcofinDao;
-import mx.bidg.dao.DwEmployeesDao;
-import mx.bidg.dao.EmployeesDao;
+
+import mx.bidg.dao.*;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
 import mx.bidg.service.CommissionEmcofinService;
@@ -43,7 +42,10 @@ public class CommissionEmcofinServiceImp implements CommissionEmcofinService{
     private EmployeesDao employeesDao;
 
     @Autowired
-    private DwEmployeesDao dwEmployeesDao;
+    private EmployeesHistoryDao employeesHistoryDao;
+
+    @Autowired
+    private DwEnterprisesDao dwEnterprisesDao;
     
     @Override
     public List<CommissionEmcofin> findAll() {
@@ -75,8 +77,15 @@ public class CommissionEmcofinServiceImp implements CommissionEmcofinService{
                 Employees employee = employeesDao.findById((int)idEmployee.getNumericCellValue());
                 if(employee!=null){
                     c.setEmployee(employee);
-                    DwEmployees dwe= dwEmployeesDao.findByIdEmployee((int)idEmployee.getNumericCellValue());
-                    c.setDwEnterprises(dwe.getDwEnterprise());
+                    EmployeesHistory employeesHistory = employeesHistoryDao.findByIdEmployeeAndLastRegister((int)idEmployee.getNumericCellValue());
+
+                    if (employeesHistory != null){
+                        DwEnterprises dwEnterprises = dwEnterprisesDao.findById(employeesHistory.getIdDwEnterprise());
+
+                        if (dwEnterprises != null){
+                            c.setDwEnterprises(dwEnterprises);
+                        }
+                    }
                 }
                 if(commission!=null){
                     if (commission.getCellType() == Cell.CELL_TYPE_STRING) {
@@ -114,8 +123,15 @@ public class CommissionEmcofinServiceImp implements CommissionEmcofinService{
                 if (c != null){
                     if(employee!=null){
                         c.setEmployee(employee);
-                        DwEmployees dwe= dwEmployeesDao.findByIdEmployee((int)idEmployee.getNumericCellValue());
-                        c.setDwEnterprises(dwe.getDwEnterprise());
+                        EmployeesHistory employeesHistory = employeesHistoryDao.findByIdEmployeeAndLastRegister((int)idEmployee.getNumericCellValue());
+
+                        if (employeesHistory != null) {
+                            DwEnterprises dwEnterprises = dwEnterprisesDao.findById(employeesHistory.getIdDwEnterprise());
+
+                            if (dwEnterprises != null) {
+                                c.setDwEnterprises(dwEnterprises);
+                            }
+                        }
                     }
                     if(commission!=null){
                         if (commission.getCellType() == Cell.CELL_TYPE_STRING) {
