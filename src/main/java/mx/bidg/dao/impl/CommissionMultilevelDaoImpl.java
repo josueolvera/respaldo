@@ -50,6 +50,6 @@ public class CommissionMultilevelDaoImpl extends AbstractDao<Integer, Commission
         return (CommissionMultilevel) createEntityCriteria()
                 .add(Restrictions.eq("idEmployee",idEmployee))
                 .add(Restrictions.eq("applicationDate",applicationDate))
-                .uniqueResult();
+                .setMaxResults(1).uniqueResult();
     }
 }
