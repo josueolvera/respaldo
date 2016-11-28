@@ -1,13 +1,8 @@
 package mx.bidg.service.impl;
 
-import mx.bidg.dao.CommissionMultilevelDao;
-import mx.bidg.dao.DwEmployeesDao;
-import mx.bidg.dao.EmployeesDao;
+import mx.bidg.dao.*;
 import mx.bidg.exceptions.ValidationException;
-import mx.bidg.model.CommissionMultilevel;
-import mx.bidg.model.DwEmployees;
-import mx.bidg.model.Employees;
-import mx.bidg.model.Users;
+import mx.bidg.model.*;
 import mx.bidg.service.CommissionMultilevelService;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -19,6 +14,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,11 +28,15 @@ public class CommissionMultilevelServiceImpl implements CommissionMultilevelServ
     @Autowired
     private CommissionMultilevelDao commissionMultilevelDao;
 
-     @Autowired
-     private DwEmployeesDao dwEmployeesDao;
+    @Autowired
+    private EmployeesHistoryDao employeesHistoryDao;
+
+    @Autowired
+    private DwEnterprisesDao dwEnterprisesDao;
+
     @Autowired
     private EmployeesDao employeesDao;
-    
+
     @Override
     public CommissionMultilevel findById(Integer id) {
         return commissionMultilevelDao.findById(id);
@@ -57,22 +57,30 @@ public class CommissionMultilevelServiceImpl implements CommissionMultilevelServ
             Cell idEmployee = currentRow.getCell(0);
             Cell rfc = currentRow.getCell(1);
             Cell monto = currentRow.getCell(2);
-            if(idEmployee!=null){
-                CommissionMultilevel c = commissionMultilevelDao.finfByidEmployee((int)idEmployee.getNumericCellValue()
+            if (idEmployee != null) {
+                CommissionMultilevel c = commissionMultilevelDao.finfByidEmployee((int) idEmployee.getNumericCellValue()
                         , LocalDateTime.parse(calculateDate + " 00:00", formatter));
-                Employees employee = employeesDao.findById((int)idEmployee.getNumericCellValue());
+                Employees employee = employeesDao.findById((int) idEmployee.getNumericCellValue());
 
-                if (c != null){
-                    if(employee!=null) {
-                        c.setEmployee(employee);
-                        DwEmployees dwEmployees = dwEmployeesDao.findByEmployee((int)idEmployee.getNumericCellValue());
-                        c.setDwEmployees(dwEmployees.getDwEnterprise());
+                if (c != null) {
+                    if (employee != null) {
 
+                        EmployeesHistory employeesHistory = employeesHistoryDao.findByIdEmployeeAndLastRegister((int) idEmployee.getNumericCellValue());
+
+                        if (employeesHistory != null){
+                            DwEnterprises dwEnterprises = dwEnterprisesDao.findById(employeesHistory.getIdDwEnterprise());
+
+                            if (dwEnterprises != null){
+                                c.setDwEmployees(dwEnterprises);
+                            }
+
+                            c.setEmployee(employee);
+                        }
                     }
-                if(rfc!=null){
-                    c.setRfc(rfc.getStringCellValue());
-                }
-                    if(monto!=null){
+                    if (rfc != null) {
+                        c.setRfc(rfc.getStringCellValue());
+                    }
+                    if (monto != null) {
                         if (monto.getCellType() == Cell.CELL_TYPE_STRING) {
                             BigDecimal bdCommission = new BigDecimal(Integer.parseInt(monto.getStringCellValue()));
                             c.setMonto(bdCommission);
@@ -107,19 +115,27 @@ public class CommissionMultilevelServiceImpl implements CommissionMultilevelServ
             Cell monto = currentRow.getCell(2);
 
 
-           CommissionMultilevel c = new CommissionMultilevel();
-            if(idEmployee!=null){
-                Employees employee = employeesDao.findById((int)idEmployee.getNumericCellValue());
-               if(employee!=null){
-                   DwEmployees dwEmployees = dwEmployeesDao.findByEmployee((int)idEmployee.getNumericCellValue());
-                   c.setEmployee(employee);
-                   c.setDwEmployees(dwEmployees.getDwEnterprise());
+            CommissionMultilevel c = new CommissionMultilevel();
+            if (idEmployee != null) {
+                Employees employee = employeesDao.findById((int) idEmployee.getNumericCellValue());
+                if (employee != null) {
+                    EmployeesHistory employeesHistory = employeesHistoryDao.findByIdEmployeeAndLastRegister((int) idEmployee.getNumericCellValue());
 
+                    if (employeesHistory != null){
+                        DwEnterprises dwEnterprises = dwEnterprisesDao.findById(employeesHistory.getIdDwEnterprise());
+
+                        if (dwEnterprises != null){
+                            c.setDwEmployees(dwEnterprises);
+                        }
+
+                    }
+
+                    c.setEmployee(employee);
                 }
-                if(rfc!=null){
+                if (rfc != null) {
                     c.setRfc(rfc.getStringCellValue());
                 }
-                if(monto!=null){
+                if (monto != null) {
                     if (monto.getCellType() == Cell.CELL_TYPE_STRING) {
                         BigDecimal bdCommission = new BigDecimal(Integer.parseInt(monto.getStringCellValue()));
                         c.setMonto(bdCommission);
@@ -186,7 +202,7 @@ public class CommissionMultilevelServiceImpl implements CommissionMultilevelServ
 
         return existsMultilevel;
     }
-    }
+}
 
 
 
