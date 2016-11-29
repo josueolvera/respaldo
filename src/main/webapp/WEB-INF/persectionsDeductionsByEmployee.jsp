@@ -203,7 +203,7 @@
             <br>
             <div class="table-body flex-row flex-content">
                 <div class="row table-row"
-                     v-for="pd in employeesPD | filterBy search in 'aplicationDateFormats.dateNumber' | orderBy 'aplicationDateFormats.dateNumber'"
+                     v-for="pd in employeesPD | filterBy search in ''"
                      v-if="pd.status == true">
                     <div class="col-xs-3">{{pd.employee.fullName}}</div>
                     <div class="col-xs-2">{{pd.employee.rfc}}</div>
