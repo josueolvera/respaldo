@@ -13,10 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
@@ -105,5 +102,19 @@ public class PerceptionsDeductionsController {
         perceptionsDeductions = perceptionsDeductionsService.update(perceptionsDeductions);
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(perceptionsDeductionsService.findAll()),HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/generate-bonus/employee", method = RequestMethod.GET)
+    public ResponseEntity<String> generateBonus(
+            @RequestParam(name= "fromDate", required=true) String fromDate
+            , @RequestParam(name="toDate", required=true) String toDate
+            , HttpSession session
+    )throws IOException{
+
+        Users user = (Users) session.getAttribute("user");
+
+        List<PerceptionsDeductions> perceptionsDeductionsList = perceptionsDeductionsService.calculateBonus(user,fromDate,toDate);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(perceptionsDeductionsList), HttpStatus.OK);
     }
 }
