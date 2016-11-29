@@ -91,4 +91,13 @@ public class SqlQueriesDaoImpl extends AbstractDao<Integer, SqlQueries> implemen
     public SqlQueries findQuery(Integer idQuery) {
         return (SqlQueries) getByKey(idQuery);
     }
+
+    @Override
+    public List executeProcedurestoReport(SqlQueries query, String startDate, String endDate, String week4Init) {
+        SQLQuery sqlQuery = (SQLQuery) getSession().createSQLQuery(query.getSqlQuery())
+                .setParameter("fecha1",startDate)
+                .setParameter("fecha2",endDate)
+                .setParameter("fechaSemanal",week4Init);
+        return sqlQuery.list();
+    }
 }
