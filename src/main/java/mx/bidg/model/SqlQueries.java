@@ -4,11 +4,15 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
+import mx.bidg.utils.DateTimeConverter;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 /**
@@ -16,21 +20,25 @@ import java.util.Set;
  * @author Rafael Viveros
  */
 @Entity
+@DynamicUpdate
 @Table(name = "SQL_QUERIES")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class SqlQueries implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_QUERY")
+    @JsonView(JsonViews.Root.class)
     private Integer idQuery;
 
     @NotNull
     @Basic(optional = false)
     @Size(min = 1, max = 255)
     @Column(name = "QUERY_NAME")
+    @JsonView(JsonViews.Root.class)
     private String queryName;
 
     @Lob
@@ -38,24 +46,28 @@ public class SqlQueries implements Serializable {
     @Basic(optional = false)
     @Size(min = 1, max = 65535)
     @Column(name = "SQL_QUERY")
+    @JsonView(JsonViews.Root.class)
     private String sqlQuery;
 
     @Lob
-    @NotNull
-    @Basic(optional = false)
+    @Basic(optional = true)
     @Size(min = 1, max = 65535)
     @Column(name = "HEADERS")
+    @JsonView(JsonViews.Root.class)
     private String headers;
 
     @NotNull
     @Column(name = "SAVED")
     @Basic(optional = false)
+    @JsonView(JsonViews.Root.class)
     private Boolean saved;
 
     @Column(name = "CALCULATE")
+    @JsonView(JsonViews.Root.class)
     private Integer calculate;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sqlQuery")
+    @JsonView(JsonViews.Embedded.class)
     private Set<SqlQueryParameters> queryParameters;
 
     public SqlQueries() {
@@ -125,6 +137,10 @@ public class SqlQueries implements Serializable {
 
     public void setCalculate(Integer calculate) {
         this.calculate = calculate;
+    }
+
+    public Boolean getSaved() {
+        return saved;
     }
 
     @Override
