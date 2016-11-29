@@ -40,11 +40,20 @@ public class CommissionAmountGroupController {
     }
 
     @RequestMapping(value = "/report-advisers", method = RequestMethod.GET)
-    public ResponseEntity<String> reporteSemanal(HttpServletResponse response, @RequestParam(name="file_name", required=true) String name) throws IOException{
+    public ResponseEntity<String> reporteSemanal(HttpServletResponse response, @RequestParam(name= "fromDate", required=true) String fromDate
+            , @RequestParam(name="toDate", required=true) String toDate, @RequestParam(name="file_name", required=true) String name) throws IOException{
+
+
+        LocalDateTime ofDate = (fromDate == null || fromDate.equals("")) ? null :
+                LocalDateTime.parse(fromDate, DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime untilDate = (toDate == null || toDate.equals("")) ? null :
+                LocalDateTime.parse(toDate, DateTimeFormatter.ISO_DATE_TIME);
+
+
         response.setContentType("application/octet-stream");
         response.setHeader("Content-Disposition", "attachment; filename=\"" +name+".xls"+ "\"");
         OutputStream outputStream = response.getOutputStream();
-        commissionAmountGroupService.comissionByReport(outputStream);
+        commissionAmountGroupService.comissionByReport(outputStream, ofDate, untilDate);
         outputStream.flush();
         outputStream.close();
 
