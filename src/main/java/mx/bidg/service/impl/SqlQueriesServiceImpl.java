@@ -2,6 +2,7 @@ package mx.bidg.service.impl;
 
 import mx.bidg.dao.SqlQueriesDao;
 import mx.bidg.model.SqlQueries;
+import mx.bidg.service.PayrollService;
 import mx.bidg.service.SqlQueriesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import org.supercsv.prefs.CsvPreference;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +28,9 @@ public class SqlQueriesServiceImpl implements SqlQueriesService {
 
     @Autowired
     private SqlQueriesDao sqlQueriesDao;
+
+    @Autowired
+    private PayrollService payrollService;
 
     @Override
     public SqlQueries save(SqlQueries query) {
@@ -69,5 +74,21 @@ public class SqlQueriesServiceImpl implements SqlQueriesService {
     @Override
     public SqlQueries findQuery(Integer idQuery) {
         return sqlQueriesDao.findQuery(idQuery);
+    }
+
+    @Override
+    public List executeAPocedureFrom(SqlQueries query, OutputStream stream, String startDate, String endDate, LocalDateTime applicationDate1, LocalDateTime applicationDate2, String week4Init) throws IOException {
+        List queryResult = sqlQueriesDao.executeProcedurestoReport(query, startDate, endDate, week4Init);
+        if (query.getIdQuery() == 1){
+            payrollService.reportCorporate(stream, applicationDate1, applicationDate2);
+        }else if (query.getIdQuery() == 2){
+            payrollService.corporateFortyName(stream, applicationDate1, applicationDate2);
+        }else  if (query.getIdQuery() == 4){
+            payrollService.reportWeeklyPay(stream, applicationDate1, applicationDate2);
+        }else  if (query.getIdQuery() == 5){
+            payrollService.monthlyPayrollReport(stream, applicationDate1, applicationDate2);
+        }
+
+        return queryResult;
     }
 }

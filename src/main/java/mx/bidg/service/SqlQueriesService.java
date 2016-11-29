@@ -4,6 +4,8 @@ import mx.bidg.model.SqlQueries;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -18,4 +20,5 @@ public interface SqlQueriesService {
     void buildCSVfrom(SqlQueries query, OutputStream stream) throws IOException;
     List<SqlQueries> findByAllWithFlag();
     SqlQueries findQuery(Integer idQuery);
+    List executeAPocedureFrom(SqlQueries query, OutputStream stream, String startDate, String endDate, LocalDateTime applicationDate1, LocalDateTime applicationDate2, String week4Init) throws IOException;
 }
