@@ -1,12 +1,16 @@
 package mx.bidg.service.impl;
 
 import mx.bidg.dao.PerceptionsDeductionsDao;
+import mx.bidg.dao.SqlQueriesDao;
 import mx.bidg.model.PerceptionsDeductions;
+import mx.bidg.model.SqlQueries;
+import mx.bidg.model.Users;
 import mx.bidg.service.PerceptionsDeductionsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -18,6 +22,9 @@ public class PerceptionsDeductionsServiceImpl implements PerceptionsDeductionsSe
 
     @Autowired
     PerceptionsDeductionsDao perceptionsDeductionsDao;
+
+    @Autowired
+    SqlQueriesDao sqlQueriesDao;
 
     @Override
     public PerceptionsDeductions save(PerceptionsDeductions perceptionsDeductions) {
@@ -48,5 +55,12 @@ public class PerceptionsDeductionsServiceImpl implements PerceptionsDeductionsSe
     @Override
     public List<PerceptionsDeductions> findAllActives() {
         return perceptionsDeductionsDao.findAllWithStatus();
+    }
+
+    @Override
+    public List<PerceptionsDeductions> calculateBonus(Users user, String ofDate, String untilDate) {
+        SqlQueries sqlQuery = sqlQueriesDao.findQuery(3);
+        perceptionsDeductionsDao.calculateBonus(sqlQuery,user,ofDate,untilDate);
+        return perceptionsDeductionsDao.findAll();
     }
 }
