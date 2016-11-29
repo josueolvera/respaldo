@@ -67,6 +67,8 @@ public class CommissionAmountGroupBackupController {
             commissionAmountGroupBackup.setIdRole(commissionAmountGroup.getIdRole());
             commissionAmountGroupBackup.setIdEmployee(commissionAmountGroup.getIdEmployee());
             commissionAmountGroupBackup.setTabulator(commissionAmountGroup.getTabulator());
+            commissionAmountGroupBackup.setBonusCommissionableAmount(commissionAmountGroup.getBonusCommissionableAmount());
+            commissionAmountGroupBackup.setAdjustment(commissionAmountGroup.getAdjustment());
 
             commissionAmountGroupBackupService.save(commissionAmountGroupBackup);
         }
