@@ -122,6 +122,14 @@ public class CommissionAmountGroupBackup implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idEmployee;
 
+    @Column(name = "BONUS_COMMISSIONABLE_AMOUNT")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal bonusCommissionableAmount;
+
+    @Column(name = "ADJUSTMENT")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal adjustment;
+
     public CommissionAmountGroupBackup() {
     }
 
@@ -309,6 +317,22 @@ public class CommissionAmountGroupBackup implements Serializable {
 
     public void setIdEmployee(Integer idEmployee) {
         this.idEmployee = idEmployee;
+    }
+
+    public BigDecimal getBonusCommissionableAmount() {
+        return bonusCommissionableAmount;
+    }
+
+    public void setBonusCommissionableAmount(BigDecimal bonusCommissionableAmount) {
+        this.bonusCommissionableAmount = bonusCommissionableAmount;
+    }
+
+    public BigDecimal getAdjustment() {
+        return adjustment;
+    }
+
+    public void setAdjustment(BigDecimal adjustment) {
+        this.adjustment = adjustment;
     }
 
     @Override

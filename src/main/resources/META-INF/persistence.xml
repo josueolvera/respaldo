@@ -48,6 +48,7 @@
     <class>mx.bidg.model.ApportionmentRole</class>
     <class>mx.bidg.model.DistributorPerceptionDeduction</class>
     <class>mx.bidg.model.CDateCalculation</class>
+    <class>mx.bidg.model.Payroll</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties/>
   </persistence-unit>
