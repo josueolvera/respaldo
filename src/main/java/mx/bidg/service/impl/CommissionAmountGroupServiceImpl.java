@@ -67,6 +67,9 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
     @Autowired
     CRolesDao cRolesDao;
 
+    @Autowired
+    PerceptionsDeductionsDao perceptionsDeductionsDao;
+
     @Override
     public CommissionAmountGroup save(CommissionAmountGroup commissionAmountGroup) {
         return commissionAmountGroupDao.save(commissionAmountGroup);
@@ -258,7 +261,7 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
     }
 
     @Override
-    public void comissionByReport(OutputStream stream) throws IOException {
+    public void comissionByReport(OutputStream stream, LocalDateTime fromDate, LocalDateTime toDate) throws IOException {
 
         List<CommissionAmountGroup> commissionAmountGroupList = commissionAmountGroupDao.findAllByClaveSap();
 
@@ -477,22 +480,45 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                 if(commissionAmountGroup.getIdAg() == 19){
                     row.createCell(31).setCellValue(commissionAmountGroup.getApplicationsNumber().doubleValue());
                     row.createCell(32).setCellValue(commissionAmountGroup.getAmount().doubleValue());
+                    commissionAmountGroup.setCommission(commssionT);
+                    commissionAmountGroupDao.update(commissionAmountGroup);
 
-                    List<BonusCommisionableEmployee> bonusCommisionableEmployees = bonusCommisionableEmployeeDao.findByIdEmployee(commissionAmountGroup.getIdEmployee());
-                    if (!bonusCommisionableEmployees.isEmpty()){
-                        for (BonusCommisionableEmployee bonusCommisionableEmployee : bonusCommisionableEmployees){
-                            if (bonusCommisionableEmployee.getIdCommissionBonus() == 1){
-                                row.createCell(33).setCellValue(bonusCommisionableEmployee.getBonusAmount().doubleValue());
-                                totalComission = totalComission.add(bonusCommisionableEmployee.getBonusAmount());
-                            }else if (bonusCommisionableEmployee.getIdCommissionBonus() == 2){
-                                row.createCell(34).setCellValue(bonusCommisionableEmployee.getBonusAmount().doubleValue());
-                                totalComission = totalComission.add(bonusCommisionableEmployee.getBonusAmount());
-                            }else if (bonusCommisionableEmployee.getIdCommissionBonus() == 3){
-                                row.createCell(35).setCellValue(bonusCommisionableEmployee.getBonusAmount().doubleValue());
-                                totalComission = totalComission.add(bonusCommisionableEmployee.getBonusAmount());
+                    List<PerceptionsDeductions> perceptionsDeductionsList = perceptionsDeductionsDao.findByIdEmployeeAndApplicationDate(commissionAmountGroup.getIdEmployee(),fromDate,toDate);
+                    if (!perceptionsDeductionsList.isEmpty()){
+                        for (PerceptionsDeductions perceptionsDeductions : perceptionsDeductionsList){
+                            if (perceptionsDeductions.getIdCPd() == 9){
+                                row.createCell(33).setCellValue(perceptionsDeductions.getAmount().doubleValue());
+                                totalComission = totalComission.add(perceptionsDeductions.getAmount());
+                            }else if (perceptionsDeductions.getIdCPd() == 10){
+                                row.createCell(35).setCellValue(perceptionsDeductions.getAmount().doubleValue());
+                                totalComission = totalComission.add(perceptionsDeductions.getAmount());
+                            }else if (perceptionsDeductions.getIdCPd() == 11){
+                                row.createCell(34).setCellValue(perceptionsDeductions.getAmount().doubleValue());
+                                totalComission = totalComission.add(perceptionsDeductions.getAmount());
                             }
                         }
                     }
+
+//                    List<BonusCommisionableEmployee> bonusCommisionableEmployees = bonusCommisionableEmployeeDao.findByIdEmployee(commissionAmountGroup.getIdEmployee());
+//                    if (!bonusCommisionableEmployees.isEmpty()){
+//                        for (BonusCommisionableEmployee bonusCommisionableEmployee : bonusCommisionableEmployees){
+//                            if (bonusCommisionableEmployee.getIdCommissionBonus() == 1){
+//                                row.createCell(33).setCellValue(bonusCommisionableEmployee.getBonusAmount().doubleValue());
+//                                totalComission = totalComission.add(bonusCommisionableEmployee.getBonusAmount());
+//                            }else if (bonusCommisionableEmployee.getIdCommissionBonus() == 2){
+//                                row.createCell(34).setCellValue(bonusCommisionableEmployee.getBonusAmount().doubleValue());
+//                                totalComission = totalComission.add(bonusCommisionableEmployee.getBonusAmount());
+//                            }else if (bonusCommisionableEmployee.getIdCommissionBonus() == 3){
+//                                row.createCell(35).setCellValue(bonusCommisionableEmployee.getBonusAmount().doubleValue());
+//                                totalComission = totalComission.add(bonusCommisionableEmployee.getBonusAmount());
+//                            }
+//                        }
+//                    }
+                }
+                CommissionAmountGroup amountGroup = commissionAmountGroupDao.getOnlyDataOfGroupNineTeen(commissionAmountGroup.getIdEmployee());
+                if (amountGroup != null){
+                    amountGroup.setCommission(commssionT);
+                    commissionAmountGroupDao.update(amountGroup);
                 }
                 row.createCell(36).setCellValue(commssionT.doubleValue());
                 row.createCell(37).setCellValue(totalComission.doubleValue());
@@ -943,9 +969,13 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                                     if (finalCommission.signum() == -1){
                                         row.createCell(25).setCellValue(0);
                                         totalComission = totalComission.add(new BigDecimal(0));
+                                        commissionAmountGroup.setAdjustment(new BigDecimal(0));
+                                        commissionAmountGroupDao.update(commissionAmountGroup);
                                     }else {
                                         row.createCell(25).setCellValue(finalCommission.doubleValue());
                                         totalComission = totalComission.add(finalCommission);
+                                        commissionAmountGroup.setAdjustment(finalCommission);
+                                        commissionAmountGroupDao.update(commissionAmountGroup);
                                     }
                                 }
                             }
@@ -970,9 +1000,13 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                                     if (finalCommission.signum() == -1){
                                         row.createCell(26).setCellValue(0);
                                         totalComission = totalComission.add(new BigDecimal(0));
+                                        commissionAmountGroup.setAdjustment(new BigDecimal(0));
+                                        commissionAmountGroupDao.update(commissionAmountGroup);
                                     }else {
                                         row.createCell(26).setCellValue(finalCommission.doubleValue());
                                         totalComission = totalComission.add(finalCommission);
+                                        commissionAmountGroup.setAdjustment(finalCommission);
+                                        commissionAmountGroupDao.update(commissionAmountGroup);
                                     }
                                     if(commissionAmountGroup.getBonusCommissionableAmount() != null){
                                         row.createCell(28).setCellValue(commissionAmountGroup.getBonusCommissionableAmount().doubleValue());
@@ -1008,9 +1042,13 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                                     if (finalCommission.signum() == -1){
                                         row.createCell(27).setCellValue(0);
                                         totalComission = totalComission.add(new BigDecimal(0));
+                                        commissionAmountGroup.setAdjustment(new BigDecimal(0));
+                                        commissionAmountGroupDao.update(commissionAmountGroup);
                                     }else {
                                         row.createCell(27).setCellValue(finalCommission.doubleValue());
                                         totalComission = totalComission.add(finalCommission);
+                                        commissionAmountGroup.setAdjustment(finalCommission);
+                                        commissionAmountGroupDao.update(commissionAmountGroup);
                                     }
                                     if(commissionAmountGroup.getBonusCommissionableAmount() != null){
                                         row.createCell(29).setCellValue(commissionAmountGroup.getBonusCommissionableAmount().doubleValue());
@@ -1079,9 +1117,13 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                                 if (finalCommission.signum() == -1){
                                     row.createCell(25).setCellValue(0);
                                     totalComission = totalComission.add(new BigDecimal(0));
+                                    commissionAmountGroup.setAdjustment(new BigDecimal(0));
+                                    commissionAmountGroupDao.update(commissionAmountGroup);
                                 }else {
                                     row.createCell(25).setCellValue(finalCommission.doubleValue());
                                     totalComission = totalComission.add(finalCommission);
+                                    commissionAmountGroup.setAdjustment(finalCommission);
+                                    commissionAmountGroupDao.update(commissionAmountGroup);
                                 }
                             }
                         }
@@ -1106,9 +1148,13 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                                 if (finalCommission.signum() == -1){
                                     row.createCell(26).setCellValue(0);
                                     totalComission = totalComission.add(new BigDecimal(0));
+                                    commissionAmountGroup.setAdjustment(new BigDecimal(0));
+                                    commissionAmountGroupDao.update(commissionAmountGroup);
                                 }else {
                                     row.createCell(26).setCellValue(finalCommission.doubleValue());
                                     totalComission = totalComission.add(finalCommission);
+                                    commissionAmountGroup.setAdjustment(finalCommission);
+                                    commissionAmountGroupDao.update(commissionAmountGroup);
                                 }
                                 if(commissionAmountGroup.getBonusCommissionableAmount() != null){
                                     row.createCell(28).setCellValue(commissionAmountGroup.getBonusCommissionableAmount().doubleValue());
@@ -1143,9 +1189,13 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                                 if (finalCommission.signum() == -1){
                                     row.createCell(27).setCellValue(0);
                                     totalComission = totalComission.add(new BigDecimal(0));
+                                    commissionAmountGroup.setAdjustment(new BigDecimal(0));
+                                    commissionAmountGroupDao.update(commissionAmountGroup);
                                 }else {
                                     row.createCell(27).setCellValue(finalCommission.doubleValue());
                                     totalComission = totalComission.add(finalCommission);
+                                    commissionAmountGroup.setAdjustment(finalCommission);
+                                    commissionAmountGroupDao.update(commissionAmountGroup);
                                 }
                                 if(commissionAmountGroup.getBonusCommissionableAmount() != null){
                                     row.createCell(29).setCellValue(commissionAmountGroup.getBonusCommissionableAmount().doubleValue());

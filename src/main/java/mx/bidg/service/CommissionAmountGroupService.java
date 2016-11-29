@@ -24,7 +24,7 @@ public interface CommissionAmountGroupService {
     List<CommissionAmountGroup> obtainAmountsbyRegion(List list, CAgreementsGroups agreementsGroups, LocalDateTime fromDate, LocalDateTime toDate);
     List<CommissionAmountGroup> obtainAmountsbyDistributor(List list, CAgreementsGroups agreementsGroups, LocalDateTime fromDate, LocalDateTime toDate);
     List findByOnlyClaveSap ();
-    void comissionByReport(OutputStream stream) throws IOException;
+    void comissionByReport(OutputStream stream, LocalDateTime fromDate, LocalDateTime toDate) throws IOException;
     List<CommissionAmountGroup> obtainBranchManager();
     List<CommissionAmountGroup> obtainAuxiliar();
     void reportMonthlyCommissions(OutputStream stream, LocalDateTime fromDate, LocalDateTime toDate) throws IOException;
