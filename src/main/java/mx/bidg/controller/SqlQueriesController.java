@@ -18,9 +18,11 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 /**
  * @author Rafael Viveros
@@ -99,5 +101,49 @@ public class SqlQueriesController {
     public ResponseEntity<String> query(@PathVariable Integer idQuery) throws IOException{
         SqlQueries query = sqlQueriesService.findQuery(idQuery);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(query), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/execute/{idSqlQuery}", method = RequestMethod.GET)
+    public ResponseEntity<String> executeSqlQuery(
+            @PathVariable int idSqlQuery, @RequestParam(name = "file_name", required = true) String fileName
+            , @RequestParam(name = "startDate", required = true) String startDate
+            , @RequestParam(name = "endDate", required = true) String endDate
+            , @RequestParam(name = "applicationDate1", required = true) String applicationDate1
+            , @RequestParam(name = "applicationDate2", required = true) String applicationDate2
+            , HttpServletResponse response
+    ) throws Exception {
+
+        LocalDateTime applicationDateStart = (applicationDate1 == null || applicationDate1.equals("")) ? null :
+                LocalDateTime.parse(applicationDate1, DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime applicationDateEnd = (applicationDate2 == null || applicationDate2.equals("")) ? null :
+                LocalDateTime.parse(applicationDate2, DateTimeFormatter.ISO_DATE_TIME);
+
+        Date endDates = Date.from(applicationDateEnd.atZone(ZoneId.systemDefault()).toInstant());
+
+        Calendar cal = Calendar.getInstance(Locale.GERMAN);
+        cal.setTime(endDates);
+        int week = cal.get(Calendar.WEEK_OF_YEAR);
+
+        String pattern = "yyyy-MM-dd";
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
+
+
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(endDates);
+        calendar.set(Calendar.WEEK_OF_YEAR, week);
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+
+        OutputStream outputStream = response.getOutputStream();
+        SqlQueries query = sqlQueriesService.findById(idSqlQuery);
+
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment; filename=\""+ fileName +".xls\"");
+
+        List querys = sqlQueriesService.executeAPocedureFrom(query, outputStream, startDate, endDate, applicationDateStart, applicationDateEnd, format.format(calendar.getTime()));
+        outputStream.flush();
+        outputStream.close();
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(querys), HttpStatus.OK);
     }
 }
