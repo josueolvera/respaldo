@@ -368,187 +368,372 @@ public class OutsourcingServiceImpl implements OutsourcingService {
             Outsourcing outsourcing = new Outsourcing();
 
             if (code != null) {
-                Employees employee = employeesDao.findById((int) code.getNumericCellValue());
 
-                EmployeesHistory employeesHistory = employeesHistoryDao.findByIdEmployeeAndLastRegister((int)code.getNumericCellValue());
+                Outsourcing outsourcingExits = outsourcingDao.finfByidEmployee(
+                        (int) code.getNumericCellValue(),
+                        LocalDateTime.parse(calculateDate + " 00:00", formatter)
+                );
 
-                if (employeesHistory != null){
-                    DwEnterprises dwEnterprises = dwEnterprisesDao.findById(employeesHistory.getIdDwEnterprise());
+                if (outsourcingExits == null){
+                    Employees employee = employeesDao.findById((int) code.getNumericCellValue());
 
-                    if (dwEnterprises != null){
-                        outsourcing.setDwEnterprises(dwEnterprises);
+                    EmployeesHistory employeesHistory = employeesHistoryDao.findByIdEmployeeAndLastRegister((int)code.getNumericCellValue());
+
+                    if (employeesHistory != null){
+                        DwEnterprises dwEnterprises = dwEnterprisesDao.findById(employeesHistory.getIdDwEnterprise());
+
+                        if (dwEnterprises != null){
+                            outsourcing.setDwEnterprises(dwEnterprises);
+                        }
+
                     }
 
-                }
+                    if (employee != null) {
+                        outsourcing.setEmployee(employee);
+                    }
+                    if (salary != null) {
+                        if (salary.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdSalary = new BigDecimal(Integer.parseInt(salary.getStringCellValue()));
+                            outsourcing.setSalary(bdSalary);
+                        } else if (salary.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdSalary = new BigDecimal(salary.getNumericCellValue());
+                            outsourcing.setSalary(bdSalary);
+                        }
 
-                if (employee != null) {
-                    outsourcing.setEmployee(employee);
-                }
-                if (salary != null) {
-                    if (salary.getCellType() == Cell.CELL_TYPE_STRING) {
-                        BigDecimal bdSalary = new BigDecimal(Integer.parseInt(salary.getStringCellValue()));
-                        outsourcing.setSalary(bdSalary);
-                    } else if (salary.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                        BigDecimal bdSalary = new BigDecimal(salary.getNumericCellValue());
-                        outsourcing.setSalary(bdSalary);
+                    }
+                    if (subsidy != null) {
+                        if (subsidy.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdSubsidy = new BigDecimal(Integer.parseInt(subsidy.getStringCellValue()));
+                            outsourcing.setSubsidy(bdSubsidy);
+                        } else if (subsidy.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdSubsidy = new BigDecimal(subsidy.getNumericCellValue());
+                            outsourcing.setSubsidy(bdSubsidy);
+                        }
+
+                    }
+                    if (imssEmployee != null) {
+                        if (imssEmployee.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdImssEmployee = new BigDecimal(Integer.parseInt(imssEmployee.getStringCellValue()));
+                            outsourcing.setImssEmployee(bdImssEmployee);
+                        } else if (imssEmployee.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdImssEmployee = new BigDecimal(imssEmployee.getNumericCellValue());
+                            outsourcing.setImssEmployee(bdImssEmployee);
+                        }
                     }
 
-                }
-                if (subsidy != null) {
-                    if (subsidy.getCellType() == Cell.CELL_TYPE_STRING) {
-                        BigDecimal bdSubsidy = new BigDecimal(Integer.parseInt(subsidy.getStringCellValue()));
-                        outsourcing.setSubsidy(bdSubsidy);
-                    } else if (subsidy.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                        BigDecimal bdSubsidy = new BigDecimal(subsidy.getNumericCellValue());
-                        outsourcing.setSubsidy(bdSubsidy);
+                    if (isr != null) {
+                        if (isr.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdIsr = new BigDecimal(Integer.parseInt(isr.getStringCellValue()));
+                            outsourcing.setIsr(bdIsr);
+                        } else if (isr.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdIsr = new BigDecimal(isr.getNumericCellValue());
+                            outsourcing.setIsr(bdIsr);
+                        }
+                    }
+                    if (adjustment != null) {
+                        if (adjustment.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdAdjustment = new BigDecimal(Integer.parseInt(adjustment.getStringCellValue()));
+                            outsourcing.setAdjustment(bdAdjustment);
+                        } else if (adjustment.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdAdjustment = new BigDecimal(adjustment.getNumericCellValue());
+                            outsourcing.setAdjustment(bdAdjustment);
+                        }
+                    }
+                    if (totalDeduction != null) {
+                        if (totalDeduction.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdTotalDeduction = new BigDecimal(Integer.parseInt(totalDeduction.getStringCellValue()));
+                            outsourcing.setTotalDeductions(bdTotalDeduction);
+                        } else if (totalDeduction.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdTotalDeduction = new BigDecimal(totalDeduction.getNumericCellValue());
+                            outsourcing.setTotalDeductions(bdTotalDeduction);
+                        }
                     }
 
-                }
-                if (imssEmployee != null) {
-                    if (imssEmployee.getCellType() == Cell.CELL_TYPE_STRING) {
-                        BigDecimal bdImssEmployee = new BigDecimal(Integer.parseInt(imssEmployee.getStringCellValue()));
-                        outsourcing.setImssEmployee(bdImssEmployee);
-                    } else if (imssEmployee.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                        BigDecimal bdImssEmployee = new BigDecimal(imssEmployee.getNumericCellValue());
-                        outsourcing.setImssEmployee(bdImssEmployee);
+                    if (netAssetTax != null) {
+                        if (netAssetTax.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdNetAssetTax = new BigDecimal(Integer.parseInt(netAssetTax.getStringCellValue()));
+                            outsourcing.setNetAssetTax(bdNetAssetTax);
+                        } else if (netAssetTax.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdNetAssetTax = new BigDecimal(netAssetTax.getNumericCellValue());
+                            outsourcing.setNetAssetTax(bdNetAssetTax);
+                        }
                     }
-                }
 
-                if (isr != null) {
-                    if (isr.getCellType() == Cell.CELL_TYPE_STRING) {
-                        BigDecimal bdIsr = new BigDecimal(Integer.parseInt(isr.getStringCellValue()));
-                        outsourcing.setIsr(bdIsr);
-                    } else if (isr.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                        BigDecimal bdIsr = new BigDecimal(isr.getNumericCellValue());
-                        outsourcing.setIsr(bdIsr);
+                    if (imss != null) {
+                        if (imss.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdImss = new BigDecimal(Integer.parseInt(imss.getStringCellValue()));
+                            outsourcing.setImss(bdImss);
+                        } else if (imss.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdImss = new BigDecimal(imss.getNumericCellValue());
+                            outsourcing.setImss(bdImss);
+                        }
                     }
-                }
-                if (adjustment != null) {
-                    if (adjustment.getCellType() == Cell.CELL_TYPE_STRING) {
-                        BigDecimal bdAdjustment = new BigDecimal(Integer.parseInt(adjustment.getStringCellValue()));
-                        outsourcing.setAdjustment(bdAdjustment);
-                    } else if (adjustment.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                        BigDecimal bdAdjustment = new BigDecimal(adjustment.getNumericCellValue());
-                        outsourcing.setAdjustment(bdAdjustment);
+                    if (rcv != null) {
+                        if (rcv.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdRcv = new BigDecimal(Integer.parseInt(rcv.getStringCellValue()));
+                            outsourcing.setRcv(bdRcv);
+                        } else if (rcv.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdRcv = new BigDecimal(rcv.getNumericCellValue());
+                            outsourcing.setRcv(bdRcv);
+                        }
                     }
-                }
-                if (totalDeduction != null) {
-                    if (totalDeduction.getCellType() == Cell.CELL_TYPE_STRING) {
-                        BigDecimal bdTotalDeduction = new BigDecimal(Integer.parseInt(totalDeduction.getStringCellValue()));
-                        outsourcing.setTotalDeductions(bdTotalDeduction);
-                    } else if (totalDeduction.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                        BigDecimal bdTotalDeduction = new BigDecimal(totalDeduction.getNumericCellValue());
-                        outsourcing.setTotalDeductions(bdTotalDeduction);
-                    }
-                }
 
-                if (netAssetTax != null) {
-                    if (netAssetTax.getCellType() == Cell.CELL_TYPE_STRING) {
-                        BigDecimal bdNetAssetTax = new BigDecimal(Integer.parseInt(netAssetTax.getStringCellValue()));
-                        outsourcing.setNetAssetTax(bdNetAssetTax);
-                    } else if (netAssetTax.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                        BigDecimal bdNetAssetTax = new BigDecimal(netAssetTax.getNumericCellValue());
-                        outsourcing.setNetAssetTax(bdNetAssetTax);
+                    if (enterpriseInfonavit != null) {
+                        if (enterpriseInfonavit.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdEnterpriseInfonavit = new BigDecimal(Integer.parseInt(enterpriseInfonavit.getStringCellValue()));
+                            outsourcing.setEnterpriseInfonavit(bdEnterpriseInfonavit);
+                        } else if (enterpriseInfonavit.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdEnterpriseInfonavit = new BigDecimal(enterpriseInfonavit.getNumericCellValue());
+                            outsourcing.setEnterpriseInfonavit(bdEnterpriseInfonavit);
+                        }
                     }
-                }
 
-                if (imss != null) {
-                    if (imss.getCellType() == Cell.CELL_TYPE_STRING) {
-                        BigDecimal bdImss = new BigDecimal(Integer.parseInt(imss.getStringCellValue()));
-                        outsourcing.setImss(bdImss);
-                    } else if (imss.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                        BigDecimal bdImss = new BigDecimal(imss.getNumericCellValue());
-                        outsourcing.setImss(bdImss);
+                    if (payrollTax != null) {
+                        if (payrollTax.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdPayrollTax = new BigDecimal(Integer.parseInt(payrollTax.getStringCellValue()));
+                            outsourcing.setPayrollTax(bdPayrollTax);
+                        } else if (payrollTax.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdPayrollTax = new BigDecimal(payrollTax.getNumericCellValue());
+                            outsourcing.setPayrollTax(bdPayrollTax);
+                        }
                     }
-                }
-                if (rcv != null) {
-                    if (rcv.getCellType() == Cell.CELL_TYPE_STRING) {
-                        BigDecimal bdRcv = new BigDecimal(Integer.parseInt(rcv.getStringCellValue()));
-                        outsourcing.setRcv(bdRcv);
-                    } else if (rcv.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                        BigDecimal bdRcv = new BigDecimal(rcv.getNumericCellValue());
-                        outsourcing.setRcv(bdRcv);
-                    }
-                }
 
-                if (enterpriseInfonavit != null) {
-                    if (enterpriseInfonavit.getCellType() == Cell.CELL_TYPE_STRING) {
-                        BigDecimal bdEnterpriseInfonavit = new BigDecimal(Integer.parseInt(enterpriseInfonavit.getStringCellValue()));
-                        outsourcing.setEnterpriseInfonavit(bdEnterpriseInfonavit);
-                    } else if (enterpriseInfonavit.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                        BigDecimal bdEnterpriseInfonavit = new BigDecimal(enterpriseInfonavit.getNumericCellValue());
-                        outsourcing.setEnterpriseInfonavit(bdEnterpriseInfonavit);
+                    if (totalSocialSecurity != null) {
+                        if (totalSocialSecurity.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdTotalSocialitySecurity = new BigDecimal(Integer.parseInt(totalSocialSecurity.getStringCellValue()));
+                            outsourcing.setTotalSocialSecurity(bdTotalSocialitySecurity);
+                        } else if (totalSocialSecurity.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdTotalSocialitySecurity = new BigDecimal(totalSocialSecurity.getNumericCellValue());
+                            outsourcing.setTotalSocialSecurity(bdTotalSocialitySecurity);
+                        }
                     }
-                }
 
-                if (payrollTax != null) {
-                    if (payrollTax.getCellType() == Cell.CELL_TYPE_STRING) {
-                        BigDecimal bdPayrollTax = new BigDecimal(Integer.parseInt(payrollTax.getStringCellValue()));
-                        outsourcing.setPayrollTax(bdPayrollTax);
-                    } else if (payrollTax.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                        BigDecimal bdPayrollTax = new BigDecimal(payrollTax.getNumericCellValue());
-                        outsourcing.setPayrollTax(bdPayrollTax);
+                    if (commission != null) {
+                        if (commission.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdCommision = new BigDecimal(Integer.parseInt(commission.getStringCellValue()));
+                            outsourcing.setCommission(bdCommision);
+                        } else if (commission.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdCommision = new BigDecimal(commission.getNumericCellValue());
+                            outsourcing.setCommission(bdCommision);
+                        }
                     }
-                }
 
-                if (totalSocialSecurity != null) {
-                    if (totalSocialSecurity.getCellType() == Cell.CELL_TYPE_STRING) {
-                        BigDecimal bdTotalSocialitySecurity = new BigDecimal(Integer.parseInt(totalSocialSecurity.getStringCellValue()));
-                        outsourcing.setTotalSocialSecurity(bdTotalSocialitySecurity);
-                    } else if (totalSocialSecurity.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                        BigDecimal bdTotalSocialitySecurity = new BigDecimal(totalSocialSecurity.getNumericCellValue());
-                        outsourcing.setTotalSocialSecurity(bdTotalSocialitySecurity);
+                    if (subtotal != null) {
+                        if (subtotal.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdSubtotal = new BigDecimal(Integer.parseInt(subtotal.getStringCellValue()));
+                            outsourcing.setSubtotal(bdSubtotal);
+                        } else if (subtotal.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdSubtotal = new BigDecimal(subtotal.getNumericCellValue());
+                            outsourcing.setSubtotal(bdSubtotal);
+                        }
                     }
-                }
 
-                if (commission != null) {
-                    if (commission.getCellType() == Cell.CELL_TYPE_STRING) {
-                        BigDecimal bdCommision = new BigDecimal(Integer.parseInt(commission.getStringCellValue()));
-                        outsourcing.setCommission(bdCommision);
-                    } else if (commission.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                        BigDecimal bdCommision = new BigDecimal(commission.getNumericCellValue());
-                        outsourcing.setCommission(bdCommision);
+                    if (iva != null) {
+                        if (iva.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdIva = new BigDecimal(Integer.parseInt(iva.getStringCellValue()));
+                            outsourcing.setIva(bdIva);
+                        } else if (iva.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdIva = new BigDecimal(iva.getNumericCellValue());
+                            outsourcing.setIva(bdIva);
+                        }
                     }
-                }
 
-                if (subtotal != null) {
-                    if (subtotal.getCellType() == Cell.CELL_TYPE_STRING) {
-                        BigDecimal bdSubtotal = new BigDecimal(Integer.parseInt(subtotal.getStringCellValue()));
-                        outsourcing.setSubtotal(bdSubtotal);
-                    } else if (subtotal.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                        BigDecimal bdSubtotal = new BigDecimal(subtotal.getNumericCellValue());
-                        outsourcing.setSubtotal(bdSubtotal);
+                    if (total != null) {
+                        if (total.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdTotal = new BigDecimal(Integer.parseInt(total.getStringCellValue()));
+                            outsourcing.setTotal(bdTotal);
+                        } else if (total.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdTotal = new BigDecimal(total.getNumericCellValue());
+                            outsourcing.setTotal(bdTotal);
+                        }
                     }
-                }
+                    if (user != null) {
+                        outsourcing.setUsername(user.getUsername());
+                    }
 
-                if (iva != null) {
-                    if (iva.getCellType() == Cell.CELL_TYPE_STRING) {
-                        BigDecimal bdIva = new BigDecimal(Integer.parseInt(iva.getStringCellValue()));
-                        outsourcing.setIva(bdIva);
-                    } else if (iva.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                        BigDecimal bdIva = new BigDecimal(iva.getNumericCellValue());
-                        outsourcing.setIva(bdIva);
-                    }
-                }
+                    outsourcing.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
+                    outsourcing.setCreationDate(LocalDateTime.now());
+                    outsourcingDao.save(outsourcing);
 
-                if (total != null) {
-                    if (total.getCellType() == Cell.CELL_TYPE_STRING) {
-                        BigDecimal bdTotal = new BigDecimal(Integer.parseInt(total.getStringCellValue()));
-                        outsourcing.setTotal(bdTotal);
-                    } else if (total.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                        BigDecimal bdTotal = new BigDecimal(total.getNumericCellValue());
-                        outsourcing.setTotal(bdTotal);
+                } else {
+
+                    EmployeesHistory employeesHistory = employeesHistoryDao.findByIdEmployeeAndLastRegister(outsourcingExits.getIdEmployee());
+
+                    if (employeesHistory != null){
+                        DwEnterprises dwEnterprises = dwEnterprisesDao.findById(employeesHistory.getIdDwEnterprise());
+
+                        if (dwEnterprises != null){
+                            outsourcingExits.setDwEnterprises(dwEnterprises);
+                        }
+
                     }
-                }
-                if (user != null) {
-                    outsourcing.setUsername(user.getUsername());
+
+                    if (salary != null) {
+                        if (salary.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdSalary = new BigDecimal(Integer.parseInt(salary.getStringCellValue()));
+                            outsourcingExits.setSalary(bdSalary);
+                        } else if (salary.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdSalary = new BigDecimal(salary.getNumericCellValue());
+                            outsourcingExits.setSalary(bdSalary);
+                        }
+
+                    }
+                    if (subsidy != null) {
+                        if (subsidy.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdSubsidy = new BigDecimal(Integer.parseInt(subsidy.getStringCellValue()));
+                            outsourcingExits.setSubsidy(bdSubsidy);
+                        } else if (subsidy.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdSubsidy = new BigDecimal(subsidy.getNumericCellValue());
+                            outsourcingExits.setSubsidy(bdSubsidy);
+                        }
+
+                    }
+                    if (imssEmployee != null) {
+                        if (imssEmployee.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdImssEmployee = new BigDecimal(Integer.parseInt(imssEmployee.getStringCellValue()));
+                            outsourcingExits.setImssEmployee(bdImssEmployee);
+                        } else if (imssEmployee.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdImssEmployee = new BigDecimal(imssEmployee.getNumericCellValue());
+                            outsourcingExits.setImssEmployee(bdImssEmployee);
+                        }
+                    }
+
+                    if (isr != null) {
+                        if (isr.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdIsr = new BigDecimal(Integer.parseInt(isr.getStringCellValue()));
+                            outsourcingExits.setIsr(bdIsr);
+                        } else if (isr.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdIsr = new BigDecimal(isr.getNumericCellValue());
+                            outsourcingExits.setIsr(bdIsr);
+                        }
+                    }
+                    if (adjustment != null) {
+                        if (adjustment.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdAdjustment = new BigDecimal(Integer.parseInt(adjustment.getStringCellValue()));
+                            outsourcingExits.setAdjustment(bdAdjustment);
+                        } else if (adjustment.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdAdjustment = new BigDecimal(adjustment.getNumericCellValue());
+                            outsourcingExits.setAdjustment(bdAdjustment);
+                        }
+                    }
+                    if (totalDeduction != null) {
+                        if (totalDeduction.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdTotalDeduction = new BigDecimal(Integer.parseInt(totalDeduction.getStringCellValue()));
+                            outsourcingExits.setTotalDeductions(bdTotalDeduction);
+                        } else if (totalDeduction.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdTotalDeduction = new BigDecimal(totalDeduction.getNumericCellValue());
+                            outsourcingExits.setTotalDeductions(bdTotalDeduction);
+                        }
+                    }
+
+                    if (netAssetTax != null) {
+                        if (netAssetTax.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdNetAssetTax = new BigDecimal(Integer.parseInt(netAssetTax.getStringCellValue()));
+                            outsourcingExits.setNetAssetTax(bdNetAssetTax);
+                        } else if (netAssetTax.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdNetAssetTax = new BigDecimal(netAssetTax.getNumericCellValue());
+                            outsourcingExits.setNetAssetTax(bdNetAssetTax);
+                        }
+                    }
+
+                    if (imss != null) {
+                        if (imss.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdImss = new BigDecimal(Integer.parseInt(imss.getStringCellValue()));
+                            outsourcingExits.setImss(bdImss);
+                        } else if (imss.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdImss = new BigDecimal(imss.getNumericCellValue());
+                            outsourcingExits.setImss(bdImss);
+                        }
+                    }
+                    if (rcv != null) {
+                        if (rcv.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdRcv = new BigDecimal(Integer.parseInt(rcv.getStringCellValue()));
+                            outsourcingExits.setRcv(bdRcv);
+                        } else if (rcv.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdRcv = new BigDecimal(rcv.getNumericCellValue());
+                            outsourcingExits.setRcv(bdRcv);
+                        }
+                    }
+
+                    if (enterpriseInfonavit != null) {
+                        if (enterpriseInfonavit.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdEnterpriseInfonavit = new BigDecimal(Integer.parseInt(enterpriseInfonavit.getStringCellValue()));
+                            outsourcingExits.setEnterpriseInfonavit(bdEnterpriseInfonavit);
+                        } else if (enterpriseInfonavit.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdEnterpriseInfonavit = new BigDecimal(enterpriseInfonavit.getNumericCellValue());
+                            outsourcingExits.setEnterpriseInfonavit(bdEnterpriseInfonavit);
+                        }
+                    }
+
+                    if (payrollTax != null) {
+                        if (payrollTax.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdPayrollTax = new BigDecimal(Integer.parseInt(payrollTax.getStringCellValue()));
+                            outsourcingExits.setPayrollTax(bdPayrollTax);
+                        } else if (payrollTax.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdPayrollTax = new BigDecimal(payrollTax.getNumericCellValue());
+                            outsourcingExits.setPayrollTax(bdPayrollTax);
+                        }
+                    }
+
+                    if (totalSocialSecurity != null) {
+                        if (totalSocialSecurity.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdTotalSocialitySecurity = new BigDecimal(Integer.parseInt(totalSocialSecurity.getStringCellValue()));
+                            outsourcingExits.setTotalSocialSecurity(bdTotalSocialitySecurity);
+                        } else if (totalSocialSecurity.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdTotalSocialitySecurity = new BigDecimal(totalSocialSecurity.getNumericCellValue());
+                            outsourcingExits.setTotalSocialSecurity(bdTotalSocialitySecurity);
+                        }
+                    }
+
+                    if (commission != null) {
+                        if (commission.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdCommision = new BigDecimal(Integer.parseInt(commission.getStringCellValue()));
+                            outsourcingExits.setCommission(bdCommision);
+                        } else if (commission.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdCommision = new BigDecimal(commission.getNumericCellValue());
+                            outsourcingExits.setCommission(bdCommision);
+                        }
+                    }
+
+                    if (subtotal != null) {
+                        if (subtotal.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdSubtotal = new BigDecimal(Integer.parseInt(subtotal.getStringCellValue()));
+                            outsourcingExits.setSubtotal(bdSubtotal);
+                        } else if (subtotal.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdSubtotal = new BigDecimal(subtotal.getNumericCellValue());
+                            outsourcingExits.setSubtotal(bdSubtotal);
+                        }
+                    }
+
+                    if (iva != null) {
+                        if (iva.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdIva = new BigDecimal(Integer.parseInt(iva.getStringCellValue()));
+                            outsourcingExits.setIva(bdIva);
+                        } else if (iva.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdIva = new BigDecimal(iva.getNumericCellValue());
+                            outsourcingExits.setIva(bdIva);
+                        }
+                    }
+
+                    if (total != null) {
+                        if (total.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdTotal = new BigDecimal(Integer.parseInt(total.getStringCellValue()));
+                            outsourcingExits.setTotal(bdTotal);
+                        } else if (total.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdTotal = new BigDecimal(total.getNumericCellValue());
+                            outsourcingExits.setTotal(bdTotal);
+                        }
+                    }
+                    if (user != null) {
+                        outsourcingExits.setUsername(user.getUsername());
+                    }
+
+                    outsourcingExits.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
+                    outsourcingExits.setCreationDate(LocalDateTime.now());
+                    outsourcingDao.save(outsourcingExits);
                 }
 
             }
-            outsourcing.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
-            outsourcing.setCreationDate(LocalDateTime.now());
-            outsourcingDao.save(outsourcing);
-
         }
 
         return outsourcingDao.findAll();
