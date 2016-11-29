@@ -148,9 +148,9 @@ public class SapSaleController {
 
                         agreementsGroupConditionService.setTabulator(agreementsGroupConditionList);
 
-                        if (groupAgreements.getIdAg() == 19) {
-                            agreementsGroupConditionService.bonusJoinDate(ofJoinDate, untilJoinDate);
-                        }
+//                        if (groupAgreements.getIdAg() == 19) {
+//                            agreementsGroupConditionService.bonusJoinDate(ofJoinDate, untilJoinDate);
+//                        }
                     }
                 }
                 else if (role.getIdCalculationRole() == 5) {
