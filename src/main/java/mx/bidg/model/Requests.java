@@ -58,12 +58,6 @@ public class Requests implements Serializable {
     @Column(name = "PURPOSE")
     @JsonView(JsonViews.Root.class)
     private String purpose;
-
-    @Lob
-    @Size(max = 65535)
-    @Column(name = "JUSTIFICATION")
-    @JsonView(JsonViews.Root.class)
-    private String justification;
     
     @Basic
     @NotNull
@@ -135,6 +129,19 @@ public class Requests implements Serializable {
     @Type(type = "org.hibernate.type.NumericBooleanType")
     @JsonView(JsonViews.Root.class)
     private Boolean active;
+
+    @JoinColumn(name = "ID_MONTH", referencedColumnName = "ID_MONTH")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private CMonths cMonths;
+
+    public CMonths getcMonths() {
+        return cMonths;
+    }
+
+    public void setcMonths(CMonths cMonths) {
+        this.cMonths = cMonths;
+    }
 
     public Requests() {
         this.active = true;
@@ -298,14 +305,6 @@ public class Requests implements Serializable {
 
     public void setActive(Boolean active) {
         this.active = active;
-    }
-
-    public String getJustification() {
-        return justification;
-    }
-
-    public void setJustification(String justification) {
-        this.justification = justification;
     }
 
     @Override
