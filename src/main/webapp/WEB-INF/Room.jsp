@@ -122,7 +122,7 @@
                         this.clearEvenData();
                         
                         this.getEventsByDay();
-                            showAlert("Agendado exitosamente");
+                            showAlert("Reservación Agendada");
                             }).error(function (data) {
                                 showAlert(data.error.message, {type: 3});
                             });
@@ -138,7 +138,7 @@
                         this.$http.post(ROOT_URL + "/events/" + this.id)
                                 .success(function (data) {
                                     
-                                    showAlert("Registro eliminado");
+                                    showAlert("Reservación cancelada");
                             this.getEventsByDay();
                             
                                 });
@@ -188,16 +188,18 @@
                     });
               },
               activarDateTimePickerStarHour: function (){
-                   var fecha = new Date();  
+                   var fecha = new Date();
+
                     $('#startHour').datetimepicker({
                            format: 'LT',
-                            minDate: moment({h:fecha.getHours(), m:fecha.getMinutes()}) 
+                            //minDate: moment({h:fecha.getHours(), m:fecha.getMinutes()})
+                        minDate:moment({h:08, m:00})
                        });
               },
               activarDateTimePickerEndHour: function (startHour){
                   $('#endHour').datetimepicker({
                         format: 'LT',
-                        minDate: moment(startHour, 'HH:mm').add(1,'minute')
+                       minDate: moment(startHour, 'HH:mm').add(1,'minute')
 
                     });
               }
@@ -258,7 +260,7 @@
                                     <thead>
                                       <tr>
                                         <th>Email</th>
-                                        <th>Título</th>
+                                        <th>Motivo</th>
                                         <th>Hora de entrada</th>
                                         <th>Hora de salida</th>
                                         <th></th>
@@ -278,17 +280,18 @@
                             </div>
                         </div>
                       </div>
-                    <label>Email</label>
+                  <!--  <label>Email</label>
                     <br>
                    
                      
                         <span class="label label-default">{{user.mail}}</span>
+                    -->
                     <br>
                     <div class="row">
                             <div class='col-md-6'>
                             <div class="form-group">
                                 <br>
-                                <label>Título</label>
+                                <label>Motivo</label>
                                 <input type='text' class="form-control" v-model="title" required/>
                             </div>
                         </div>
