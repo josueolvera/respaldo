@@ -146,12 +146,9 @@ public class RequestsServiceImpl implements RequestsService {
         AccountingAccounts accountingAccounts=accountingAccountsDao.findByCategoryAndSubcategory(idBudgetCategory,idBudgetSubcategory);
         BudgetYear budgetYear = null;
         if (accountingAccounts != null && idCostCenter != 0) {
-            System.out.println("cuenta contable:" + accountingAccounts);
-            System.out.println("idCostCenter:" + idCostCenter);
             Budgets budget = budgetsDao.findByAccountingAccountAndCostCenter(accountingAccounts.getIdAccountingAccount(), idCostCenter);
             budgetYear =  budgetYearService.findByBudgetAndYear(budget.getIdBudget(), year);
         }
-        System.out.println("budget year:" + budgetYear);
         if (budgetYear != null){
             request.setBudgetYear(budgetYear);
         }
