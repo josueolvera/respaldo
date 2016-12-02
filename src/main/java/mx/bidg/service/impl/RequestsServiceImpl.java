@@ -138,14 +138,31 @@ public class RequestsServiceImpl implements RequestsService {
         int idBudgetSubcategory = jsonRequest.get("request").get("idBudgetSubcategory").asInt();
         int idRequestCategory = jsonRequest.get("request").get("idRequestCategory").asInt();
         int year = LocalDateTime.now().getYear();
-        Budgets budget = budgetsDao.getBudgetForRequest(idCostCenter, idBudgetCategory, idBudgetSubcategory, idRequestCategory);
-        BudgetYear budgetYear = budgetYearService.findByBudgetAndYear(budget.getIdBudget(), year);
+
+        int idMonth =LocalDateTime.now().getMonth().getValue();
+        CMonths months=cMonthsDao.findById(idMonth);
+        request.setcMonths(months);
+
+        AccountingAccounts accountingAccounts=accountingAccountsDao.findByCategoryAndSubcategory(idBudgetCategory,idBudgetSubcategory);
+        BudgetYear budgetYear = null;
+        if (accountingAccounts != null && idCostCenter != 0) {
+            System.out.println("cuenta contable:" + accountingAccounts);
+            System.out.println("idCostCenter:" + idCostCenter);
+            Budgets budget = budgetsDao.findByAccountingAccountAndCostCenter(accountingAccounts.getIdAccountingAccount(), idCostCenter);
+            budgetYear =  budgetYearService.findByBudgetAndYear(budget.getIdBudget(), year);
+        }
+        System.out.println("budget year:" + budgetYear);
+        if (budgetYear != null){
+            request.setBudgetYear(budgetYear);
+        }
+
         //51 es el id de Requests en CTables
         request.setFolio(foliosService.createNew(new CTables(51)));
         request.setUserRequest(user);
         request.setRequestStatus(CRequestStatus.PENDIENTE);
-        request.setBudgetYear(budgetYear);
-//        request.setUserResponsible(new Users(jsonRequest.get("request").get("idUserResponsible").asInt()));
+        //request.setBudgetYear(budgetYear);
+        //request.setUserResponsible(new Users(jsonRequest.get("request").get("idUserResponsible").asInt()));
+        request.setUserResponsible(user);
         request.setCreationDate(LocalDateTime.now());
         request.setApplyingDate(LocalDateTime.now());
         request.setIdAccessLevel(1);
