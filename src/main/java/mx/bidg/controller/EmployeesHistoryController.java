@@ -149,7 +149,7 @@ public class EmployeesHistoryController {
 
                 dwEnterprisesList = dwEnterprisesService.findByDistributorRegionZonaBranchAndArea(
                         node.get("dwEnterprise").get("distributor").get("idDistributor").asInt(),
-                        node.get("dwEnterprise").get("region").get("idRegion").asInt(),null,null,
+                        node.get("dwEnterprise").get("region").get("idRegion").asInt(),0,0,
                         node.get("dwEnterprise").get("area").get("idArea").asInt());
 
             } else if (node.get("dwEnterprise").get("branch").get("idBranch").asInt() == 0){
@@ -157,7 +157,7 @@ public class EmployeesHistoryController {
                 dwEnterprisesList = dwEnterprisesService.findByDistributorRegionZonaBranchAndArea(
                         node.get("dwEnterprise").get("distributor").get("idDistributor").asInt(),
                         node.get("dwEnterprise").get("region").get("idRegion").asInt(),
-                        node.get("dwEnterprise").get("zona").get("idZonas").asInt(),null,
+                        node.get("dwEnterprise").get("zona").get("idZonas").asInt(),0,
                         node.get("dwEnterprise").get("area").get("idArea").asInt());
 
             } else {
