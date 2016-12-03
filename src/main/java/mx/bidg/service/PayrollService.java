@@ -2,6 +2,7 @@ package mx.bidg.service;
 
 import mx.bidg.model.Payroll;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
@@ -21,4 +22,6 @@ public interface PayrollService {
     void corporateFortyName(OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd) throws IOException;
     void reportWeeklyPay (OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd) throws IOException;
     void monthlyPayrollReport (OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd) throws IOException;
+    void reportCorporateNec(FileOutputStream fileOutputStream) throws IOException;
+    void reportDistributionNec(FileOutputStream fileOutputStream) throws IOException;
 }

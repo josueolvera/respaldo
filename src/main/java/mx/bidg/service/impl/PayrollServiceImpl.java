@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
@@ -2121,5 +2122,285 @@ public class PayrollServiceImpl implements PayrollService {
         hoja6.autoSizeColumn(0);
 
         wb.write(outputStream);
+    }
+
+    @Override
+    public void reportCorporateNec(FileOutputStream fileOutputStream) throws IOException {
+
+        Workbook wb = new XSSFWorkbook();
+        //Definicion del estilo de la cabecera
+        Font font = wb.createFont();
+        font.setBold(true);
+        font.setFontHeightInPoints((short) 10);
+        font.setFontName("Arial");
+        font.setColor(IndexedColors.WHITE.getIndex());
+        CellStyle style = wb.createCellStyle();
+        style.setFont(font);
+        style.setFillForegroundColor(IndexedColors.DARK_BLUE.getIndex());
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+
+        CellStyle cellDateStyle = wb.createCellStyle();
+        CreationHelper createHelper = wb.getCreationHelper();
+        cellDateStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
+
+        Sheet hoja1 = wb.createSheet("GMT NEC");
+
+        //Se crea la fila que contiene la cabecera
+        Row row1 = hoja1.createRow(0);
+
+        row1.createCell(0).setCellValue("N");
+        row1.createCell(1).setCellValue("NOMBRE DEL EMPLEADO");
+        row1.createCell(2).setCellValue("BANCO");
+        row1.createCell(3).setCellValue("N. DE CUENTA");
+        row1.createCell(4).setCellValue("CLABE");
+        row1.createCell(5).setCellValue("SUCURSAL");
+        row1.createCell(6).setCellValue("AREA");
+        row1.createCell(7).setCellValue("RFC");
+        row1.createCell(8).setCellValue("CURP");
+        row1.createCell(9).setCellValue("MONTO A PAGAR");
+        row1.createCell(10).setCellValue("11.50%");
+        row1.createCell(11).setCellValue("TOTAL A FACTURAR");
+
+        //Implementacion del estilo
+        for (Cell celda : row1) {
+            celda.setCellStyle(style);
+        }
+
+        List<Payroll> payrollList = payrollDao.findAll();
+
+        int aux1 = 1;
+
+        for(Payroll payroll : payrollList){
+            row1 = hoja1.createRow(aux1);
+
+            if (payroll.getNumeroDeEmpleado() != null){
+                row1.createCell(0).setCellValue(payroll.getNumeroDeEmpleado());
+            }
+            if (payroll.getNombre() != null){
+                row1.createCell(1).setCellValue(payroll.getNombre());
+            }
+            if (payroll.getBanco() != null){
+                row1.createCell(2).setCellValue(payroll.getBanco());
+            }
+            if (payroll.getNumeroDeCuenta() != null){
+                row1.createCell(3).setCellValue(payroll.getNumeroDeCuenta());
+            }
+            if (payroll.getCuentaClabe() != null){
+                row1.createCell(4).setCellValue(payroll.getCuentaClabe());
+            }
+            if (payroll.getSucursal() != null){
+                row1.createCell(5).setCellValue(payroll.getSucursal());
+            }
+            if (payroll.getArea() != null){
+                row1.createCell(6).setCellValue(payroll.getArea());
+            }
+            if (payroll.getRfc() != null){
+                row1.createCell(7).setCellValue(payroll.getRfc());
+            }
+            if (payroll.getCurp() != null){
+                row1.createCell(8).setCellValue(payroll.getCurp());
+            }
+            if (payroll.getPago() != null){
+                row1.createCell(9).setCellValue(payroll.getPago().doubleValue());
+            }
+            if (payroll.getComisionNec() != null){
+                row1.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
+            }
+            if (payroll.getTotalFacturar() != null){
+                row1.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
+            }
+
+            aux1 ++;
+
+        }
+
+        hoja1.autoSizeColumn(0);
+
+        wb.write(fileOutputStream);
+    }
+
+    @Override
+    public void reportDistributionNec(FileOutputStream fileOutputStream) throws IOException {
+
+        Workbook wb = new XSSFWorkbook();
+        //Definicion del estilo de la cabecera
+        Font font = wb.createFont();
+        font.setBold(true);
+        font.setFontHeightInPoints((short) 10);
+        font.setFontName("Arial");
+        font.setColor(IndexedColors.WHITE.getIndex());
+        CellStyle style = wb.createCellStyle();
+        style.setFont(font);
+        style.setFillForegroundColor(IndexedColors.DARK_BLUE.getIndex());
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+
+        CellStyle cellDateStyle = wb.createCellStyle();
+        CreationHelper createHelper = wb.getCreationHelper();
+        cellDateStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
+
+        Sheet hoja1 = wb.createSheet("AMER NEC");
+
+        //Se crea la fila que contiene la cabecera
+        Row row1 = hoja1.createRow(0);
+
+        row1.createCell(0).setCellValue("N");
+        row1.createCell(1).setCellValue("NOMBRE DEL EMPLEADO");
+        row1.createCell(2).setCellValue("BANCO");
+        row1.createCell(3).setCellValue("N. DE CUENTA");
+        row1.createCell(4).setCellValue("CLABE");
+        row1.createCell(5).setCellValue("SUCURSAL");
+        row1.createCell(6).setCellValue("AREA");
+        row1.createCell(7).setCellValue("RFC");
+        row1.createCell(8).setCellValue("CURP");
+        row1.createCell(9).setCellValue("MONTO A PAGAR");
+        row1.createCell(10).setCellValue("11.50%");
+        row1.createCell(11).setCellValue("TOTAL A FACTURAR");
+
+        //Implementacion del estilo
+        for (Cell celda : row1) {
+            celda.setCellStyle(style);
+        }
+
+        int aux1 = 1;
+
+        List <Payroll> amerNec = payrollDao.findByDistributor(2);
+
+        for(Payroll payroll : amerNec){
+            row1 = hoja1.createRow(aux1);
+
+            if (payroll.getNumeroDeEmpleado() != null){
+                row1.createCell(0).setCellValue(payroll.getNumeroDeEmpleado());
+            }
+            if (payroll.getNombre() != null){
+                row1.createCell(1).setCellValue(payroll.getNombre());
+            }
+            if (payroll.getBanco() != null){
+                row1.createCell(2).setCellValue(payroll.getBanco());
+            }
+            if (payroll.getNumeroDeCuenta() != null){
+                row1.createCell(3).setCellValue(payroll.getNumeroDeCuenta());
+            }
+            if (payroll.getCuentaClabe() != null){
+                row1.createCell(4).setCellValue(payroll.getCuentaClabe());
+            }
+            if (payroll.getSucursal() != null){
+                row1.createCell(5).setCellValue(payroll.getSucursal());
+            }
+            if (payroll.getArea() != null){
+                row1.createCell(6).setCellValue(payroll.getArea());
+            }
+            if (payroll.getRfc() != null){
+                row1.createCell(7).setCellValue(payroll.getRfc());
+            }
+            if (payroll.getCurp() != null){
+                row1.createCell(8).setCellValue(payroll.getCurp());
+            }
+            if (payroll.getPago() != null){
+                row1.createCell(9).setCellValue(payroll.getPago().doubleValue());
+            }
+            if (payroll.getComisionNec() != null){
+                row1.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
+            }
+            if (payroll.getTotalFacturar() != null){
+                row1.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
+            }
+
+            aux1 ++;
+
+        }
+
+        Sheet hoja2 = wb.createSheet("AMERMEDIA NEC");
+
+        //Se crea la fila que contiene la cabecera
+        Row row2 = hoja2.createRow(0);
+
+        row2.createCell(0).setCellValue("N");
+        row2.createCell(1).setCellValue("NOMBRE DEL EMPLEADO");
+        row2.createCell(2).setCellValue("BANCO");
+        row2.createCell(3).setCellValue("N. DE CUENTA");
+        row2.createCell(4).setCellValue("CLABE");
+        row2.createCell(5).setCellValue("SUCURSAL");
+        row2.createCell(6).setCellValue("AREA");
+        row2.createCell(7).setCellValue("RFC");
+        row2.createCell(8).setCellValue("CURP");
+        row2.createCell(9).setCellValue("MONTO A PAGAR");
+        row2.createCell(10).setCellValue("11.50%");
+        row2.createCell(11).setCellValue("TOTAL A FACTURAR");
+
+        //Implementacion del estilo
+        for (Cell celda : row2) {
+            celda.setCellStyle(style);
+        }
+
+        int aux2 = 1;
+
+        List <Payroll> amermediaNec = payrollDao.findByDistributor(3);
+
+        for(Payroll payroll : amermediaNec){
+            row2 = hoja2.createRow(aux2);
+
+            if (payroll.getNumeroDeEmpleado() != null){
+                row2.createCell(0).setCellValue(payroll.getNumeroDeEmpleado());
+            }
+            if (payroll.getNombre() != null){
+                row2.createCell(1).setCellValue(payroll.getNombre());
+            }
+            if (payroll.getBanco() != null){
+                row2.createCell(2).setCellValue(payroll.getBanco());
+            }
+            if (payroll.getNumeroDeCuenta() != null){
+                row2.createCell(3).setCellValue(payroll.getNumeroDeCuenta());
+            }
+            if (payroll.getCuentaClabe() != null){
+                row2.createCell(4).setCellValue(payroll.getCuentaClabe());
+            }
+            if (payroll.getSucursal() != null){
+                row2.createCell(5).setCellValue(payroll.getSucursal());
+            }
+            if (payroll.getArea() != null){
+                row2.createCell(6).setCellValue(payroll.getArea());
+            }
+            if (payroll.getRfc() != null){
+                row2.createCell(7).setCellValue(payroll.getRfc());
+            }
+            if (payroll.getCurp() != null){
+                row2.createCell(8).setCellValue(payroll.getCurp());
+            }
+            if (payroll.getPago() != null){
+                row2.createCell(9).setCellValue(payroll.getPago().doubleValue());
+            }
+            if (payroll.getComisionNec() != null){
+                row2.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
+            }
+            if (payroll.getTotalFacturar() != null){
+                row2.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
+            }
+
+            aux2 ++;
+
+        }
+
+        hoja1.autoSizeColumn(0);
+        hoja2.autoSizeColumn(0);
+
+        wb.write(fileOutputStream);
     }
 }
