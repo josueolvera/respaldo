@@ -69,15 +69,17 @@ public class CommissionEmcofinServiceImp implements CommissionEmcofinService{
             
             Row currentRow = sheet.getRow(i);
             Cell idEmployee = currentRow.getCell(0);
-            
             Cell commission = currentRow.getCell(2);
-            
+
             CommissionEmcofin c = new CommissionEmcofin();
+
             if(idEmployee!=null){
-                Employees employee = employeesDao.findById((int)idEmployee.getNumericCellValue());
-                if(employee!=null){
-                    c.setEmployee(employee);
-                    EmployeesHistory employeesHistory = employeesHistoryDao.findByIdEmployeeAndLastRegister((int)idEmployee.getNumericCellValue());
+
+                CommissionEmcofin commissionEmcofin = commissionEmcofinDao.finfByidEmployee((int)idEmployee.getNumericCellValue()
+                        , LocalDateTime.parse(calculateDate + " 00:00", formatter));
+
+                if (commissionEmcofin != null){
+                    EmployeesHistory employeesHistory = employeesHistoryDao.findByIdEmployeeAndLastRegister(commissionEmcofin.getIdEmployee());
 
                     if (employeesHistory != null){
                         DwEnterprises dwEnterprises = dwEnterprisesDao.findById(employeesHistory.getIdDwEnterprise());
@@ -86,23 +88,51 @@ public class CommissionEmcofinServiceImp implements CommissionEmcofinService{
                             c.setDwEnterprises(dwEnterprises);
                         }
                     }
-                }
-                if(commission!=null){
-                    if (commission.getCellType() == Cell.CELL_TYPE_STRING) {
+                    if(commission!=null){
+                        if (commission.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdCommission = new BigDecimal(Integer.parseInt(commission.getStringCellValue()));
+                            commissionEmcofin.setCommission(bdCommission);
+                        } else if (commission.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdCommission = new BigDecimal(commission.getNumericCellValue());
+                            commissionEmcofin.setCommission(bdCommission);
+                        }
+                    }
+
+                    commissionEmcofin.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
+                    commissionEmcofin.setCreationDate(LocalDateTime.now());
+                    commissionEmcofin.setUsername(user.getUsername());
+                    commissionEmcofin.setStatus(true);
+                    commissionEmcofinDao.update(commissionEmcofin);
+                } else {
+                    Employees employee = employeesDao.findById((int)idEmployee.getNumericCellValue());
+                    if(employee!=null){
+                        c.setEmployee(employee);
+                        EmployeesHistory employeesHistory = employeesHistoryDao.findByIdEmployeeAndLastRegister((int)idEmployee.getNumericCellValue());
+
+                        if (employeesHistory != null){
+                            DwEnterprises dwEnterprises = dwEnterprisesDao.findById(employeesHistory.getIdDwEnterprise());
+
+                            if (dwEnterprises != null){
+                                c.setDwEnterprises(dwEnterprises);
+                            }
+                        }
+                    }
+                    if(commission!=null){
+                        if (commission.getCellType() == Cell.CELL_TYPE_STRING) {
                             BigDecimal bdCommission = new BigDecimal(Integer.parseInt(commission.getStringCellValue()));
                             c.setCommission(bdCommission);
                         } else if (commission.getCellType() == Cell.CELL_TYPE_NUMERIC) {
                             BigDecimal bdCommission = new BigDecimal(commission.getNumericCellValue());
                             c.setCommission(bdCommission);
                         }
+                    }
+                    c.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
+                    c.setCreationDate(LocalDateTime.now());
+                    c.setUsername(user.getUsername());
+                    c.setStatus(true);
+                    commissionEmcofinDao.save(c);
                 }
             }
-            
-            c.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
-            c.setCreationDate(LocalDateTime.now());
-            c.setUsername(user.getUsername());
-            c.setStatus(true);
-            commissionEmcofinDao.save(c);
         }
         return commissionEmcofinDao.findAll();
     }

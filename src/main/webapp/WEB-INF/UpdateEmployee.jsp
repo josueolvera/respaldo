@@ -841,9 +841,6 @@
                                             {{dwEnterprise.zona.name}}
                                         </td>
                                         <td class="col-xs-2">
-                                            {{dwEnterprise.branch.branchShort}}
-                                        </td>
-                                        <td class="col-xs-2">
                                             {{dwEnterprise.area.areaName}}
                                         </td>
                                         <td class="col-xs-2">

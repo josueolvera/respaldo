@@ -247,13 +247,15 @@
                         if (this.requestBody.products.length == 0 || this.selected.costCenter == null || this.selected.budgetCategory == null || this.selected.budgetSubcategory == null ) {
                             showAlert("Debes agregar un producto", {type:3});
                             return;
+                        }else if (this.estimations.length < 3){
+                            showAlert("Debes agregar al menos tres cotizaciones", {type: 3});
+                            return;
                         }
 
                         this.requestBody.request.idCostCenter = this.selected.costCenter.idCostCenter;
                         this.requestBody.request.idBudgetCategory = this.selected.budgetCategory.idBudgetCategory;
                         this.requestBody.request.idBudgetSubcategory = this.selected.budgetSubcategory.idBudgetSubcategory;
                         this.requestBody.request.idRequestCategory = 1;
-
 
                         this.$http.post(ROOT_URL + '/requests', this.requestBody)
                                 .success(function (data) {
@@ -262,17 +264,22 @@
                                     this.clearRequest();
                                 })
                                 .error(function (data) {
-
+                                    showAlert("Error al generar la solicitud", {type: 3});
                                 });
-                    },
+                    }
+                    ,
                     saveEstimations: function (data) {
                         var self = this;
                         this.estimations.forEach(function (estimation) {
                             self.saveEstimation(estimation, data);
                         });
+                        showAlert("Solicitud enviada");
                     },
                     saveEstimation: function (estimation, data) {
-                        this.$http.post(ROOT_URL + '/estimations/request/' + data.idRequest, estimation);
+                        this.$http.post(ROOT_URL + '/estimations/request/' + data.idRequest, estimation).success(function (data) {
+                        }).error(function () {
+                            showAlert("Error al agregar cotización", {type: 3});
+                        })
                     },
                     showNewEstimationModal: function () {
                         this.newEstimationFormActive = true;

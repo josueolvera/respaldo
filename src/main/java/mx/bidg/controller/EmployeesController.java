@@ -199,7 +199,7 @@ public class EmployeesController {
 
                 dwEnterprisesList = dwEnterprisesService.findByDistributorRegionZonaBranchAndArea(
                         jnode.get("dwEmployees").get("distributor").get("idDistributor").asInt(),
-                        jnode.get("dwEmployees").get("region").get("idRegion").asInt(),null,null,
+                        jnode.get("dwEmployees").get("region").get("idRegion").asInt(),0,0,
                         jnode.get("dwEmployees").get("area").get("idArea").asInt());
 
             } else if (jnode.get("dwEmployees").get("branch").get("idBranch").asInt() == 0){
@@ -207,7 +207,7 @@ public class EmployeesController {
                 dwEnterprisesList = dwEnterprisesService.findByDistributorRegionZonaBranchAndArea(
                         jnode.get("dwEmployees").get("distributor").get("idDistributor").asInt(),
                         jnode.get("dwEmployees").get("region").get("idRegion").asInt(),
-                        jnode.get("dwEmployees").get("zona").get("idZonas").asInt(),null,
+                        jnode.get("dwEmployees").get("zona").get("idZonas").asInt(),0,
                         jnode.get("dwEmployees").get("area").get("idArea").asInt());
 
             } else {

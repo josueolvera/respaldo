@@ -3,9 +3,16 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.PerceptionsDeductionsDao;
 import mx.bidg.model.PerceptionsDeductions;
+import mx.bidg.model.SqlQueries;
+import mx.bidg.model.Users;
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.SQLQuery;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -27,7 +34,9 @@ public class PerceptionsDeductionsDaoImpl extends AbstractDao<Integer, Perceptio
 
     @Override
     public List<PerceptionsDeductions> findAll() {
-        return createEntityCriteria().list();
+        Criteria criteria = createEntityCriteria();
+        criteria.addOrder(Order.asc("applicationDate"));
+        return criteria.list();
     }
 
     @Override
@@ -45,5 +54,29 @@ public class PerceptionsDeductionsDaoImpl extends AbstractDao<Integer, Perceptio
     @Override
     public List<PerceptionsDeductions> findAllWithStatus() {
         return createEntityCriteria().add(Restrictions.eq("status", true)).list();
+    }
+
+    @Override
+    public List calculateBonus(SqlQueries sqlQueries, Users user, String ofDate, String untilDate) {
+
+        SQLQuery sqlQuery = (SQLQuery) getSession().createSQLQuery(
+                sqlQueries.getSqlQuery())
+                .setParameter("usuario", user.getUsername())
+                .setParameter("fechaInicial", ofDate)
+                .setParameter("fechaFinal", untilDate)
+                ;
+
+        return  sqlQuery.list();
+    }
+
+    @Override
+    public List<PerceptionsDeductions> findByIdEmployeeAndApplicationDate(Integer idEmployee, LocalDateTime ofDate, LocalDateTime untilDate) {
+        Criteria criteria = createEntityCriteria();
+
+        return criteria
+                .add(Restrictions.eq("idEmployee", idEmployee))
+                .add(Restrictions.between("applicationDate",ofDate,untilDate))
+                .add(Restrictions.eq("status", true))
+                .list();
     }
 }

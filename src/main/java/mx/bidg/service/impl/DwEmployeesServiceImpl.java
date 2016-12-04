@@ -340,7 +340,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
 
                 dwEnterprisesList = dwEnterprisesService.findByDistributorRegionZonaBranchAndArea(
                         jsonNode.get("dwEmployee").get("dwEnterprise").get("distributor").get("idDistributor").asInt(),
-                        jsonNode.get("dwEmployee").get("dwEnterprise").get("region").get("idRegion").asInt(),null,null,
+                        jsonNode.get("dwEmployee").get("dwEnterprise").get("region").get("idRegion").asInt(),0,0,
                         jsonNode.get("dwEmployee").get("dwEnterprise").get("area").get("idArea").asInt());
 
             } else if (jsonNode.get("dwEmployee").get("dwEnterprise").get("branch").get("idBranch").asInt() == 0){
@@ -348,7 +348,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
                 dwEnterprisesList = dwEnterprisesService.findByDistributorRegionZonaBranchAndArea(
                         jsonNode.get("dwEmployee").get("dwEnterprise").get("distributor").get("idDistributor").asInt(),
                         jsonNode.get("dwEmployee").get("dwEnterprise").get("region").get("idRegion").asInt(),
-                        jsonNode.get("dwEmployee").get("dwEnterprise").get("zona").get("idZonas").asInt(),null,
+                        jsonNode.get("dwEmployee").get("dwEnterprise").get("zona").get("idZonas").asInt(),0,
                         jsonNode.get("dwEmployee").get("dwEnterprise").get("area").get("idArea").asInt());
 
             } else {

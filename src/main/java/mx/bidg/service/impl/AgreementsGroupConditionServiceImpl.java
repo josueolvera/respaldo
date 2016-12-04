@@ -83,24 +83,25 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
                     cAGroup.setCommission(cAGroup.getAmount().multiply(comission));
                     commissionAmountGroupDao.update(cAGroup);
                 }
-            } else if(groupCondition.getTypeOperation() == 2) {
+            }
+//            else if(groupCondition.getTypeOperation() == 2) {
                 //2 significa que calcule bono cumplimiento
-                List<CommissionAmountGroup> requestGroups = commissionAmountGroupDao.getBonusByConditon(groupCondition);
+//                List<CommissionAmountGroup> requestGroups = commissionAmountGroupDao.getBonusByConditon(groupCondition);
 
-                for (CommissionAmountGroup cAGroup :  requestGroups){
+//                for (CommissionAmountGroup cAGroup :  requestGroups){
+//
+//                    BonusCommisionableEmployee bonusCommisionableEmployee = new BonusCommisionableEmployee();
+//                    bonusCommisionableEmployee.setIdEmployee(cAGroup.getIdEmployee());
+//                    bonusCommisionableEmployee.setBonusAmount(groupCondition.getTabulator());
+//                    bonusCommisionableEmployee.setcCommissionBonus(CCommissionBonus.BONO_POR_CUMPLIMIENTO);
 
-                    BonusCommisionableEmployee bonusCommisionableEmployee = new BonusCommisionableEmployee();
-                    bonusCommisionableEmployee.setIdEmployee(cAGroup.getIdEmployee());
-                    bonusCommisionableEmployee.setBonusAmount(groupCondition.getTabulator());
-                    bonusCommisionableEmployee.setcCommissionBonus(CCommissionBonus.BONO_POR_CUMPLIMIENTO);
-
-                    bonusCommisionableEmployeeDao.save(bonusCommisionableEmployee);
+//                    bonusCommisionableEmployeeDao.save(bonusCommisionableEmployee);
 //                    cAGroup.setTabulator(groupCondition.getAmountMin());
 //                    BigDecimal comission = groupCondition.getTabulator();
 //                    cAGroup.setCommission(comission);
 //                    commissionAmountGroupDao.update(cAGroup);
-                }
-            }
+//                }
+//            }
 //            } else if (groupCondition.getTypeOperation() == 3){
 //                //3 signifique que calcule el alcance de la sucursal
 //                List<CommissionAmountGroup> scopeGroups = commissionAmountGroupDao.getScopeByConditon(groupCondition);
@@ -394,7 +395,7 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
 
         for (DwEmployees dwEmployees : dwEmployeesList){
             CommissionAmountGroup newEmployee = commissionAmountGroupDao.getOnlyDataOfGroupNineTeen(dwEmployees.getIdEmployee());
-            if (newEmployee !=null){
+            if (newEmployee != null){
                 BonusCommisionableEmployee bonusJoinDate = new BonusCommisionableEmployee();
                 BigDecimal bonus = new BigDecimal(375);
                 bonusJoinDate.setBonusAmount(bonus);
@@ -515,6 +516,28 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
         }
 
         return agreementsGroupConditionDao.findAll();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> bonusApplicationNumber(List<AgreementsGroupCondition> agreementsGroupConditionList) {
+        for (AgreementsGroupCondition aGC : agreementsGroupConditionList) {
+            AgreementsGroupCondition groupCondition = agreementsGroupConditionDao.getTabulator(aGC.getOrder(), aGC);
+            if (groupCondition.getTypeOperation() == 2) {
+                //2 significa que calcule bono cumplimiento
+                List<CommissionAmountGroup> requestGroups = commissionAmountGroupDao.getBonusByConditon(groupCondition);
+
+                for (CommissionAmountGroup cAGroup : requestGroups) {
+
+                    BonusCommisionableEmployee bonusCommisionableEmployee = new BonusCommisionableEmployee();
+                    bonusCommisionableEmployee.setIdEmployee(cAGroup.getIdEmployee());
+                    bonusCommisionableEmployee.setBonusAmount(groupCondition.getTabulator());
+                    bonusCommisionableEmployee.setcCommissionBonus(CCommissionBonus.BONO_POR_CUMPLIMIENTO);
+
+                    bonusCommisionableEmployeeDao.save(bonusCommisionableEmployee);
+                }
+            }
+        }
+        return commissionAmountGroupDao.findAll();
     }
 
 }

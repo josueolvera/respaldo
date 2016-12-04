@@ -46,8 +46,7 @@ public class CommissionMultilevel implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idComissionM;
 
-    @Basic(optional = false)
-    @NotNull
+    @Basic(optional = true)
     @Size(min = 1, max = 13)
     @Column(name = "RFC")
     @JsonView(JsonViews.Root.class)

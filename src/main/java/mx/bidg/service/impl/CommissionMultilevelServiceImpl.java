@@ -77,9 +77,6 @@ public class CommissionMultilevelServiceImpl implements CommissionMultilevelServ
                             c.setEmployee(employee);
                         }
                     }
-                    if (rfc != null) {
-                        c.setRfc(rfc.getStringCellValue());
-                    }
                     if (monto != null) {
                         if (monto.getCellType() == Cell.CELL_TYPE_STRING) {
                             BigDecimal bdCommission = new BigDecimal(Integer.parseInt(monto.getStringCellValue()));
@@ -117,39 +114,69 @@ public class CommissionMultilevelServiceImpl implements CommissionMultilevelServ
 
             CommissionMultilevel c = new CommissionMultilevel();
             if (idEmployee != null) {
-                Employees employee = employeesDao.findById((int) idEmployee.getNumericCellValue());
-                if (employee != null) {
-                    EmployeesHistory employeesHistory = employeesHistoryDao.findByIdEmployeeAndLastRegister((int) idEmployee.getNumericCellValue());
+
+                CommissionMultilevel commissionMultilevel = commissionMultilevelDao.finfByidEmployee((int) idEmployee.getNumericCellValue()
+                        , LocalDateTime.parse(calculateDate + " 00:00", formatter));
+
+                if (commissionMultilevel == null){
+                    Employees employee = employeesDao.findById((int) idEmployee.getNumericCellValue());
+                    if (employee != null) {
+                        EmployeesHistory employeesHistory = employeesHistoryDao.findByIdEmployeeAndLastRegister((int) idEmployee.getNumericCellValue());
+
+                        if (employeesHistory != null){
+                            DwEnterprises dwEnterprises = dwEnterprisesDao.findById(employeesHistory.getIdDwEnterprise());
+
+                            if (dwEnterprises != null){
+                                c.setDwEmployees(dwEnterprises);
+                            }
+
+                        }
+
+                        c.setEmployee(employee);
+                    }
+                    if (monto != null) {
+                        if (monto.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdCommission = new BigDecimal(Integer.parseInt(monto.getStringCellValue()));
+                            c.setMonto(bdCommission);
+                        } else if (monto.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdCommission = new BigDecimal(monto.getNumericCellValue());
+                            c.setMonto(bdCommission);
+                        }
+                    }
+
+                    c.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
+                    c.setCreationDate(LocalDateTime.now());
+                    c.setUserName(user.getUsername());
+                    commissionMultilevelDao.save(c);
+                }else{
+
+                    EmployeesHistory employeesHistory = employeesHistoryDao.findByIdEmployeeAndLastRegister(commissionMultilevel.getIdEmployee());
 
                     if (employeesHistory != null){
                         DwEnterprises dwEnterprises = dwEnterprisesDao.findById(employeesHistory.getIdDwEnterprise());
 
                         if (dwEnterprises != null){
-                            c.setDwEmployees(dwEnterprises);
+                            commissionMultilevel.setDwEmployees(dwEnterprises);
                         }
 
                     }
-
-                    c.setEmployee(employee);
-                }
-                if (rfc != null) {
-                    c.setRfc(rfc.getStringCellValue());
-                }
-                if (monto != null) {
-                    if (monto.getCellType() == Cell.CELL_TYPE_STRING) {
-                        BigDecimal bdCommission = new BigDecimal(Integer.parseInt(monto.getStringCellValue()));
-                        c.setMonto(bdCommission);
-                    } else if (monto.getCellType() == Cell.CELL_TYPE_NUMERIC) {
-                        BigDecimal bdCommission = new BigDecimal(monto.getNumericCellValue());
-                        c.setMonto(bdCommission);
+                    if (monto != null) {
+                        if (monto.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdCommission = new BigDecimal(Integer.parseInt(monto.getStringCellValue()));
+                            commissionMultilevel.setMonto(bdCommission);
+                        } else if (monto.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdCommission = new BigDecimal(monto.getNumericCellValue());
+                            commissionMultilevel.setMonto(bdCommission);
+                        }
                     }
+
+                    commissionMultilevel.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
+                    commissionMultilevel.setCreationDate(LocalDateTime.now());
+                    commissionMultilevel.setUserName(user.getUsername());
+                    commissionMultilevelDao.update(commissionMultilevel);
                 }
 
             }
-            c.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
-            c.setCreationDate(LocalDateTime.now());
-            c.setUserName(user.getUsername());
-            commissionMultilevelDao.save(c);
         }
         return commissionMultilevelDao.findAll();
     }

@@ -35,7 +35,11 @@
                     },
                     commsionableAmounts: [],
                     agreementsTabs: [],
-                    name: ''
+                    name: '',
+                    applicationDate: '',
+                    dateTimePickerApplicationDate: null,
+                    application: '',
+                    bonusCommissionable: []
                 },
                 methods: {
                     activateDateTimePickerStartDate: function () {
@@ -159,7 +163,7 @@
                     },
                     exportReport: function () {
                         if(this.name.length > 0) {
-                            window.location = ROOT_URL + "/commission-amount-group/report-advisers?file_name=" + this.name;
+                            window.location = ROOT_URL + "/commission-amount-group/report-advisers?fromDate="+this.fromDate+"&toDate="+this.ofDate+"&file_name="+this.name;
                             this.btn = true;
                             $('#modalNombre').modal('hide');
                             this.name = '';
@@ -191,7 +195,47 @@
                     openModalReportName: function () {
                         this.name = "";
                         $('#modalNombre').modal('show');
+                    },
+                    generateBonusDistribution: function () {
+                        var fecha_inicial = moment(this.search.startDate, "DD-MM-YYYY").format("YYYY-MM-DD");
+                        var fecha_final = moment(this.search.endDate, "DD-MM-YYYY").format("YYYY-MM-DD");
+                        this.$http.get(ROOT_URL + "/perceptions-deductions-employee/generate-bonus/employee?fromDate="+fecha_inicial+"&toDate="+fecha_final).success(function (data) {
+                            this.bonusCommissionable = data;
+                            showAlert("Se genero el calculo de bonos satisfactoriamente");
+                            $('#modalBonus').modal('hide');
+                        }).error(function () {
+                            showAlert("Error al generar de la solicitud", {type: 3});
+                        });
+//                        this.application = "";
+//                        this.applicationDate = "";
+//                        $('#modalBonus').modal('show');
+//
+//                        var currentDate = new Date();
+//                        var actualDate;
+//
+//                        actualDate = currentDate.getFullYear() + "-" + (currentDate.getMonth()+1) + "-" + currentDate.getDate();
+//
+//                        this.dateTimePickerApplicationDate = $('#applicationDate').datetimepicker({
+//                            locale: 'es',
+//                            format: 'DD-MM-YYYY',
+//                            useCurrent: false,
+//                            minDate: actualDate
+//                            //      maxDate: maxFecha
+//                        }).data();
                     }
+//                    generateBonus: function () {
+//                        var fecha_inicial = moment(this.search.startDate, "DD-MM-YYYY").format("YYYY-MM-DD");
+//                        var fecha_final = moment(this.search.endDate, "DD-MM-YYYY").format("YYYY-MM-DD");
+//                        var fecha_aplicacion = moment(this.applicationDate, "DD-MM-YYYY").format("YYYY-MM-DD");
+//                        this.$http.get(ROOT_URL + "/perceptions-deductions-employee/generate-bonus/employee?application="+fecha_aplicacion+"&fromDate="+fecha_inicial+"&toDate="+fecha_final).success(function (data) {
+//                            this.bonusCommissionable = data;
+//                            console.log(this.bonusCommissionable);
+//                            showAlert("Se genero el calculo de bonos satisfactoriamente");
+//                            $('#modalBonus').modal('hide');
+//                        }).error(function () {
+//                            showAlert("Error al generar de la solicitud", {type: 3});
+//                        });
+//                    }
                 }
             });
         </script>
@@ -239,6 +283,9 @@
                                    </span>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" @click="generateBonusDistribution" class="btn btn-default form-control" style="margin-top: 27px">Calcular bonos</button>
                             </div>
                             <div class="col-md-2">
                                 <button type="button" class="btn form-control"
@@ -318,6 +365,44 @@
                             </button>
                             <button v-if="typeCalculation.idDateCalculation == 2" type="button" class="btn btn-success" @click="exportReportMonthly">
                                 Reporte mensual
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modalBonus" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
+                <div class="modal-dialog ">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">
+                                Calcular bonos semanales
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-xs-6">
+                                <label>Fecha de aplicación</label>
+                                <div class="form-group">
+                                    <div class="input-group date" id="applicationDate">
+                                        <input type="text" class="form-control" v-model="applicationDate">
+                                        <span class="input-group-addon">
+                                       <span class="glyphicon glyphicon-calendar"></span>
+                                   </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <br>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button v-if="typeCalculation.idDateCalculation == 1" type="button" class="btn btn-success" @click="generateBonus()">
+                                Generar bonos
                             </button>
                         </div>
                     </div>

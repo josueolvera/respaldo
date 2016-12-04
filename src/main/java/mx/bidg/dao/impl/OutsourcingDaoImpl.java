@@ -2,7 +2,12 @@ package mx.bidg.dao.impl;
 
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.OutsourcingDao;
+import mx.bidg.model.DwEnterprises;
 import mx.bidg.model.Outsourcing;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -48,5 +53,41 @@ public class OutsourcingDaoImpl extends AbstractDao<Integer, Outsourcing> implem
                 .add(Restrictions.eq("idEmployee",idEmployee))
                 .add(Restrictions.eq("applicationDate",applicationDate))
                 .setMaxResults(1).uniqueResult();
+    }
+
+    @Override
+    public List<Outsourcing> findByDwEnterprise(List<DwEnterprises> dwEnterprisesList, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd) {
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjunctionEnterprise = Restrictions.disjunction();
+
+        if (!dwEnterprisesList.isEmpty()){
+            for (DwEnterprises dwEnterprise : dwEnterprisesList){
+                disjunctionEnterprise.add(Restrictions.eq("idDwEnterprise",dwEnterprise.getIdDwEnterprise()));
+            }
+        }
+
+        criteria.add(disjunctionEnterprise);
+        criteria.add(Restrictions.between("applicationDate",applicatioDateStart,applicationDateEnd));
+        return criteria.list();
+    }
+
+    @Override
+    public Object findSumRhmasByDwEnterprise(List<DwEnterprises> dwEnterprisesList, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd) {
+        Criteria criteria = createEntityCriteria();
+        ProjectionList projectionList = Projections.projectionList();
+        Disjunction disjunctionEnterprise = Restrictions.disjunction();
+
+        projectionList.add(Projections.sum("total"));
+
+        if (!dwEnterprisesList.isEmpty()){
+            for (DwEnterprises dwEnterprise : dwEnterprisesList){
+                disjunctionEnterprise.add(Restrictions.eq("idDwEnterprise",dwEnterprise.getIdDwEnterprise()));
+            }
+        }
+
+        criteria.setProjection(projectionList);
+        criteria.add(disjunctionEnterprise);
+        criteria.add(Restrictions.between("applicationDate",applicatioDateStart,applicationDateEnd));
+        return criteria.uniqueResult();
     }
 }
