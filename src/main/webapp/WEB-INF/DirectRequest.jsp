@@ -736,28 +736,57 @@
     <jsp:body>
         <div id="contenidos">
 
-            <div class="container-fluid">
+            <div class="content">
                 <form v-on:submit.prevent="saveAllInformationRequest">
                     <div class="row">
                         <div class="col-md-4">
-                            <h1>Pago a proveedores</h1>
+                            <h2>Pago a proveedores</h2>
                         </div>
-                        <div class="col-md-4 col-md-offset-4">
+                        <div class="col-md-8 text-right" style="margin-top: 10px">
                             <label>
                                 Solicitante
                             </label>
-                            <input class="form-control" type="text" value="" disabled="true" v-model="userRequest">
+                            <p>
+                                <span class="label label-default">{{userRequest}}</span>
+                            </p>
                         </div>
                     </div>
                     <br>
                     <div class="row">
-                        <div class="col-md-2">
+
+                        <div class="col-md-3">
+                            <label>
+                                Centro de Costos
+                            </label>
+                            <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
+                                    @change="obtainRequestInfo" :disabled="isUpdate">
+                                <option value="{{userInSession.idUser}}">
+                                    {{ userInSession.dwEmployee.dwEnterprise.branch.branchName }}
+                                    {{ userInSession.dwEmployee.dwEnterprise.area.areaName }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
                             <label>
                                 Rubro
                             </label>
                             <select class="form-control" v-model="obtainRequestInformation.idRequestType" :disabled="desactivarCombos || isUpdate" @change="obtainProductType" required>
                                 <option v-for="RequestType in RequestTypes"
                                         value="{{RequestType.idRequestType}}">{{RequestType.requestType}}
+                                </option>
+                            </select>
+                        </div>
+
+
+                        <div class="col-md-3">
+                            <label>
+                                Productos
+                            </label>
+                            <select class="form-control" v-model="idProducto" :disabled="isUpdate" required>
+                                <option></option>
+                                <option v-for="Product in Productos" value="{{Product.idProduct}}">
+                                    {{Product.product}}
                                 </option>
                             </select>
                         </div>
@@ -775,85 +804,59 @@
                             </select>
                         </div>
 
-                        <div class="col-md-2">
-                            <label>
-                                Productos
-                            </label>
-                            <select class="form-control" v-model="idProducto" :disabled="isUpdate" required>
-                                <option></option>
-                                <option v-for="Product in Productos" value="{{Product.idProduct}}">
-                                    {{Product.product}}
-                                </option>
-                            </select>
-                        </div>
-
                         <div class="col-md-1">
                             <div class="col-md-6">
-                                <button type="button" class="btn btn-default" style="margin-top: 25px; margin-left: -33px"
+                                <button type="button" class="btn btn-default" style="margin-top: 25px; margin-left: -22px"
                                         :disabled="isUpdate"  v-on:click="saveProduct" data-toggle="tooltip" data-placement="top" title="Agregar Producto">
-                                    <span class="glyphicon glyphicon-plus"></span>
+                                    Agregar
                                 </button>
                             </div>
                         </div>
 
-                        <div class="col-md-5">
-                            <label>
-                                Centro de Costos
-                            </label>
-                            <select class="form-control" required="true" v-model="obtainRequestInformation.idUserResponsable"
-                                    @change="obtainRequestInfo" :disabled="isUpdate">
-                                <option value="{{userInSession.idUser}}">
-                                    {{ userInSession.dwEmployee.dwEnterprise.branch.branchName }} -
-                                    {{ userInSession.dwEmployee.dwEnterprise.area.areaName }}
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label>
-                                Lista de Productos
-                            </label>
-                        </div>
-                    </div>
 
-                    <div class="row" v-for="produc in objectRequest.products">
-                        <div class="col-md-4">
-                            <div class="col-md-4">
-                                {{produc.descripcion}}
-                            </div>
-                            <div class="col-md-2 text-left">
-                                <button class="btn btn-default" @click="deleteProduct(produc)" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Quitar Producto">
-                                    <span class="glyphicon glyphicon-remove"></span>
-                                </button>
-                            </div>
-                        </div>
-
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label>
-                                Descripción de la Solicitud
-                            </label>
-                            <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.description"
-                                      :disabled="isUpdate" required></textarea>
-                        </div>
-                    </div>
-                    <br>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label>
-                                Justificación de la Solicitud
-                            </label>
-                            <textarea class="form-control" rows="3" cols="50" v-model="objectRequest.request.purpose"
-                                      :disabled="isUpdate" required></textarea>
-                        </div>
                     </div>
 
                     <br>
 
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <div class="row">
+                                                <div class="col-md-4 text-left">
+                                                    <div class="col-md-8">
+                                                        <h5><b>Lista de productos</b></h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="panel-body">
+                                                <div class="row" v-for="produc in objectRequest.products">
+                                                    <div class="col-md-4">
+                                                        {{produc.descripcion}}
+                                                    </div>
+                                                    <div class="col-md-2 text-left">
+                                                        <button class="btn btn-default" @click="deleteProduct(produc)" :disabled="isUpdate" data-toggle="tooltip" data-placement="top" title="Quitar Producto">
+                                                            <span class="glyphicon glyphicon-remove"></span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label>Descripción de la solicitud</label>
+                                                        <textarea rows="5" class="form-control" v-model="objectRequest.request.description" required></textarea>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label>Justificación de la solicitud</label>
+                                                        <textarea rows="5" class="form-control" v-model="objectRequest.request.purpose" required></textarea>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                    <br>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="panel panel-default">
@@ -957,6 +960,8 @@
                 </form>
             </div>
 
+
+            <!--
             <div class="row">
                 <div class="col-md-12">
                     <label>
@@ -1028,7 +1033,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
         </div> <!-- container-fluid -->
 
         </div> <!-- #contenidos -->
