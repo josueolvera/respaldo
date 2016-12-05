@@ -203,7 +203,7 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
             CRequestStatus cRequestStatus = cRequestStatusDao.findById(node.get("status").asInt());
 
             if (node.hasNonNull("justification")) {
-                travelExpense.getRequest().setJustification(node.get("justification").asText());
+                travelExpense.getRequest().setPurpose(node.get("justification").asText());
             }
 
             travelExpense.getRequest().setRequestStatus(cRequestStatus);
