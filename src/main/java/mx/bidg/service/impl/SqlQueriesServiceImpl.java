@@ -11,6 +11,7 @@ import org.supercsv.io.CsvMapWriter;
 import org.supercsv.io.ICsvMapWriter;
 import org.supercsv.prefs.CsvPreference;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -77,18 +78,27 @@ public class SqlQueriesServiceImpl implements SqlQueriesService {
     }
 
     @Override
-    public List executeAPocedureFrom(SqlQueries query, OutputStream stream, String startDate, String endDate, LocalDateTime applicationDate1, LocalDateTime applicationDate2, String week4Init) throws IOException {
+    public List executeAPocedureFrom(SqlQueries query, OutputStream stream, String startDate, String endDate, LocalDateTime applicationDate1, LocalDateTime applicationDate2, String week4Init, FileOutputStream fileOutputStream, FileOutputStream fileOutputStreamNec) throws IOException {
         List queryResult = sqlQueriesDao.executeProcedurestoReport(query, startDate, endDate, week4Init);
         if (query.getIdQuery() == 1){
-            payrollService.reportCorporate(stream, applicationDate1, applicationDate2);
+            payrollService.reportCorporate(stream, applicationDate1, applicationDate2, fileOutputStream);
+            payrollService.reportCorporateNec(fileOutputStreamNec);
         }else if (query.getIdQuery() == 2){
-            payrollService.corporateFortyName(stream, applicationDate1, applicationDate2);
+            payrollService.corporateFortyName(stream, applicationDate1, applicationDate2, fileOutputStream);
+            payrollService.reportDistributionNec(fileOutputStreamNec);
         }else  if (query.getIdQuery() == 4){
-            payrollService.reportWeeklyPay(stream, applicationDate1, applicationDate2);
+            payrollService.reportWeeklyPay(stream, applicationDate1, applicationDate2, fileOutputStream);
+            payrollService.reportDistributionNec(fileOutputStreamNec);
         }else  if (query.getIdQuery() == 5){
-            payrollService.monthlyPayrollReport(stream, applicationDate1, applicationDate2);
+            payrollService.monthlyPayrollReport(stream, applicationDate1, applicationDate2, fileOutputStream);
+            payrollService.reportDistributionNec(fileOutputStreamNec);
         }
 
         return queryResult;
+    }
+
+    @Override
+    public SqlQueries update(SqlQueries query) {
+        return sqlQueriesDao.update( query);
     }
 }
