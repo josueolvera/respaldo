@@ -283,16 +283,19 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
     }
 
     @Override
-    public List<DwEnterprises> findByRegion(Integer idRegion) {
+    public List<DwEnterprises> findByRegionForCalculation(Integer idRegion) {
         return createEntityCriteria()
                 .add(Restrictions.eq("idRegion", idRegion))
+                .add(Restrictions.ne("idZona", 0))
+                .add(Restrictions.ne("idBranch", 0))
                 .add(Restrictions.eq("status", true)).list();
     }
 
     @Override
-    public List<DwEnterprises> findByZona(Integer idZonas) {
+    public List<DwEnterprises> findByZonaForCalculation(Integer idZonas) {
         return createEntityCriteria()
                 .add(Restrictions.eq("idZona", idZonas))
+                .add(Restrictions.ne("idBranch", 0))
                 .add(Restrictions.eq("status", true)).list();
     }
 

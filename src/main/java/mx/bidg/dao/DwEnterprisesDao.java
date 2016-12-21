@@ -33,7 +33,7 @@ public interface DwEnterprisesDao extends InterfaceDao<DwEnterprises> {
     List<DwEnterprises> findByZonasSaem(List<CZonas> zonasList);
     List<DwEnterprises> findByBranchsSaem(List<CBranchs> branchsList);
     List<DwEnterprises> findByAreasSaem(List<CAreas> areasList);
-    List<DwEnterprises> findByRegion (Integer idRegion);
-    List<DwEnterprises> findByZona (Integer idZonas);
+    List<DwEnterprises> findByRegionForCalculation (Integer idRegion);
+    List<DwEnterprises> findByZonaForCalculation (Integer idZonas);
     List<DwEnterprises> findOnlyCorporate();
 }
