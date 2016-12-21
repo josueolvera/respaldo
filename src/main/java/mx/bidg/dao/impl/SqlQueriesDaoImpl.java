@@ -43,7 +43,8 @@ public class SqlQueriesDaoImpl extends AbstractDao<Integer, SqlQueries> implemen
 
     @Override
     public SqlQueries update(SqlQueries entity) {
-        throw new UnsupportedOperationException("Not implemented yet.");
+        modify(entity);
+        return entity;
     }
 
     @Override
