@@ -9,18 +9,13 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import java.time.LocalDateTime;
+import javax.persistence.*;
 
 /**
  *
@@ -45,6 +40,11 @@ public class AuthorizationReports implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer authorization;
 
+    @Column(name = "AUTHORIZATION_DATE")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime authorizationDate;
+
     @Column(name = "ID_QUERY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idQuery;
@@ -62,6 +62,10 @@ public class AuthorizationReports implements Serializable {
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private SqlQueries sqlQueries;
+
+    @Transient
+    @JsonView(JsonViews.Embedded.class)
+    private CalculationReport calculationReport;
 
     public AuthorizationReports() {
     }
@@ -116,6 +120,29 @@ public class AuthorizationReports implements Serializable {
 
     public void setSqlQueries(SqlQueries sqlQueries) {
         this.sqlQueries = sqlQueries;
+    }
+
+    public LocalDateTime getAuthorizationDate() {
+        return authorizationDate;
+    }
+
+    public void setAuthorizationDate(LocalDateTime authorizationDate) {
+        this.authorizationDate = authorizationDate;
+    }
+
+    public DateFormatsPojo getAuthorizationDateFormats() {
+        if (authorizationDate == null) {
+            return null;
+        }
+        return new DateFormatsPojo(authorizationDate);
+    }
+
+    public CalculationReport getCalculationReport() {
+        return calculationReport;
+    }
+
+    public void setCalculationReport(CalculationReport calculationReport) {
+        this.calculationReport = calculationReport;
     }
 
     @Override
