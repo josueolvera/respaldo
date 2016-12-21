@@ -38,12 +38,12 @@ public class CalculationReport implements Serializable {
     @Column(name = "ID_CALCULATION_REPORT")
     private Integer idCalculationReport;
 
-    @Size(max = 50)
+    @Size(max = 200)
     @Column(name = "FILE_NAME")
     @JsonView(JsonViews.Root.class)
     private String fileName;
 
-    @Size(max = 50)
+    @Size(max = 200)
     @Column(name = "FILE_PATH")
     @JsonView(JsonViews.Root.class)
     private String filePath;
@@ -63,6 +63,14 @@ public class CalculationReport implements Serializable {
     @Column(name = "STATUS")
     @JsonView(JsonViews.Root.class)
     private Integer status;
+
+    @Column(name = "SHOW_WINDOW")
+    @JsonView(JsonViews.Root.class)
+    private Integer showWindow;
+
+    @Column(name = "SEND")
+    @JsonView(JsonViews.Root.class)
+    private Integer send;
 
     @Column(name = "ID_QUERY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -156,7 +164,21 @@ public class CalculationReport implements Serializable {
         return new DateFormatsPojo(calculationDate);
     }
 
+    public Integer getShowWindow() {
+        return showWindow;
+    }
 
+    public void setShowWindow(Integer showWindow) {
+        this.showWindow = showWindow;
+    }
+
+    public Integer getSend() {
+        return send;
+    }
+
+    public void setSend(Integer send) {
+        this.send = send;
+    }
 
     @Override
     public int hashCode() {
