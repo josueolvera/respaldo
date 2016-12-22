@@ -23,7 +23,8 @@ public interface EmployeesHistoryService {
             String fullname,
             String rfc,
             String startDate,
-            String endDate
+            String endDate,
+            Integer idEmployee
     );
     EmployeesHistory save(DwEmployees dwEmployee, CActionTypes actionType, Accounts accounts, Users user);
 }
