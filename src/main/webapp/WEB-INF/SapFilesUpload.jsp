@@ -36,7 +36,7 @@
                             locale: 'es',
                             format: 'DD-MM-YYYY',
                             useCurrent: false,
-                            minDate: moment().add(1, 'minutes')
+                            //minDate: moment().add(1, 'minutes')
                         }).data();
                     },
                     validateForm: function () {
