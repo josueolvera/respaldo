@@ -1,7 +1,10 @@
 package mx.bidg.service.impl;
 
 import mx.bidg.dao.AuthorizationReportsDao;
+import mx.bidg.dao.CalculationReportDao;
+import mx.bidg.dao.SqlQueriesDao;
 import mx.bidg.model.AuthorizationReports;
+import mx.bidg.model.CalculationReport;
 import mx.bidg.service.AuthorizationReportsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,9 @@ public class AuthorizationReportsServiceImpl implements AuthorizationReportsServ
 
     @Autowired
     AuthorizationReportsDao authorizationReportsDao;
+
+    @Autowired
+    CalculationReportDao calculationReportDao;
 
     @Override
     public AuthorizationReports save(AuthorizationReports authorizationReports) {
@@ -42,5 +48,40 @@ public class AuthorizationReportsServiceImpl implements AuthorizationReportsServ
     @Override
     public boolean delete(AuthorizationReports authorizationReports) {
         return authorizationReportsDao.delete(authorizationReports);
+    }
+
+    @Override
+    public List<AuthorizationReports> findAllFlagsWithReportsNotAuthorized() {
+        List<CalculationReport> calculationReportList = calculationReportDao.findReportsGeneratedAndSendedNotAuthorized();
+
+        List<AuthorizationReports> authorizationReportsList = null;
+
+        if (!calculationReportList.isEmpty()){
+            for (CalculationReport calculationReport : calculationReportList){
+                authorizationReportsList = authorizationReportsDao.findByIdSqlQuery(calculationReport.getIdQuery());
+                if (!authorizationReportsList.isEmpty()){
+                    for (AuthorizationReports authorizationReports: authorizationReportsList){
+                        authorizationReports.setCalculationReport(calculationReport);
+                    }
+                }
+            }
+        }
+
+        return authorizationReportsList;
+    }
+
+    @Override
+    public List<AuthorizationReports> findByIdSqlQuery(Integer idSqlQueries) {
+        return authorizationReportsDao.findByIdSqlQuery(idSqlQueries);
+    }
+
+    @Override
+    public AuthorizationReports findByIdRoleAndIdQuery(Integer idRole, Integer idQuery) {
+        return authorizationReportsDao.findByIdRoleAndIdQuery(idRole, idQuery);
+    }
+
+    @Override
+    public List<AuthorizationReports> findByIdQueryAndAuthorized(Integer idQuery) {
+        return authorizationReportsDao.findByidQueryAndAuthorized(idQuery);
     }
 }

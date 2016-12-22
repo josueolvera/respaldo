@@ -13,4 +13,8 @@ public interface AuthorizationReportsService {
     AuthorizationReports findById(Integer idAuthorizationReports);
     List<AuthorizationReports> findAll();
     boolean delete (AuthorizationReports authorizationReports);
+    List<AuthorizationReports> findAllFlagsWithReportsNotAuthorized();
+    List<AuthorizationReports> findByIdSqlQuery(Integer idSqlQuery);
+    AuthorizationReports findByIdRoleAndIdQuery(Integer idRole, Integer idQuery);
+    List<AuthorizationReports> findByIdQueryAndAuthorized(Integer idQuery);
 }
