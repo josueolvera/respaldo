@@ -56,7 +56,7 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
     @Override
     public List<EmployeesHistory> findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
         (Integer status, List<CDistributors> distributors, Integer idRegion, Integer idZona, Integer idBranch, Integer idArea, Integer idRole,
-         String fullname, String rfc, String startDate, String endDate) {
+         String fullname, String rfc, String startDate, String endDate, Integer idEmployee) {
         Criteria criteria = createEntityCriteria();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         Disjunction dis = Restrictions.disjunction();
@@ -87,6 +87,9 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
         }
         if (idRole != null) {
             criteria.add(Restrictions.eq("idRole",idRole));
+        }
+        if (idEmployee != null) {
+            criteria.add(Restrictions.eq("idEmployee",idEmployee));
         }
 
         if(fullname != null){
