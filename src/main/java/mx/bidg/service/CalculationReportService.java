@@ -14,4 +14,9 @@ public interface CalculationReportService {
     CalculationReport findById (Integer idCalculationReport);
     List<CalculationReport> findAll();
     boolean delete(CalculationReport calculationReport);
+    CalculationReport findByName(String fileName);
+    List<CalculationReport> deleteReportsAndRegister(String fileName, String fileNameNec);
+    List<CalculationReport> findAllReportsNotSendedAndNotAuthorized();
+    List<CalculationReport> findAllAuthorizedCorporate();
+    List<CalculationReport> findAllAuthorizedOutsourcing();
 }
