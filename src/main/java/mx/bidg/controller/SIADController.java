@@ -216,4 +216,17 @@ public class SIADController {
         model.setViewName("accountingAccount");
         return model;
     }
+    @RequestMapping(value = "/cost-allocation", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ModelAndView costAllocation(){
+        ModelAndView model = new ModelAndView();
+        model.setViewName("cost-allocation");
+        return model;
+    }
+    @RequestMapping(value = "/cost-client", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView costClient(@RequestParam(name = "idDwEmployee") Integer idDwEmployee) {
+        ModelAndView model = new ModelAndView();
+        model.addObject("idDwEmployee", idDwEmployee);
+        model.setViewName("costClient");
+        return model;
+    }
 }
