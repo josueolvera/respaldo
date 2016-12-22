@@ -187,6 +187,8 @@
                     </div>
                 </div>
 
+                <div class="loading" v-if="employeesPD.length==0">
+                </div>
 
                 <div>
                     <div class="row table-header">
