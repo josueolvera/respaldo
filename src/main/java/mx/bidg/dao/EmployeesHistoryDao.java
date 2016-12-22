@@ -20,7 +20,8 @@ public interface EmployeesHistoryDao  extends InterfaceDao<EmployeesHistory>  {
             String fullName,
             String rfc,
             String startDate,
-            String endDate
+            String endDate,
+            Integer idEmployee
     );
     List<EmployeesHistory> findByIdEmployee(Integer idEmployee);
     EmployeesHistory findByIdEmployeeAndLastRegister(Integer idEmployee);
