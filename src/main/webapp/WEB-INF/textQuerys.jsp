@@ -56,6 +56,7 @@
                 },
                 ready: function () {
                     this.sqlQueriesAvailables();
+                    this.reportsCalculated();
                 },
                 data: {
                     sqlQueries: [],
@@ -67,33 +68,36 @@
                     startDate: '',
                     endDate: '',
                     applicationDate1: '',
-                    applicationDate2: ''
+                    applicationDate2: '',
+                    sqlQuerys: null,
+                    reportsGenerated: []
                 },
                 methods: {
                     sqlQueriesAvailables: function () {
+                        this.sqlQueries = [];
                         this.$http.get(ROOT_URL + "/sql-queries/querys").success(function (data) {
                             this.sqlQueries = data;
                         });
                     },
                     buildReport: function () {
-                        if (this.name.length > 0) {
-                            this.$http.get(ROOT_URL + "/sql-queries/" + this.idQuery).success(function (data) {
-                                this.sqlQuery = data;
-                                window.location = ROOT_URL + "/sql-queries/execute/"+this.idQuery+"?file_name="
-                                        + this.name +"&startDate=" + this.startDate + "&endDate=" + this.endDate
-                                        + "&applicationDate1=" + this.applicationDate1 + '&applicationDate2=' + this.applicationDate2;
-                                $('#modalNombre').modal('hide');
-                                this.name = '';
-                            }).error(function () {
-                                showAlert("Error al generar el archivo", {type: 3})
-                            });
-                        }
-                        else {
-                            showAlert("Ingresa un nombre al reporte", {type: 3})
-                        }
+                        this.sqlQueries = [];
+                        this.$http.get(ROOT_URL + "/sql-queries/" + this.sqlQuerys.idQuery).success(function (data) {
+                            this.sqlQuery = data;
+                            window.location = ROOT_URL + "/sql-queries/execute/"+this.sqlQuerys.idQuery+"?file_name="
+                                    + this.sqlQuerys.queryName +"_"+ this.startDate +"_" + this.endDate +"&startDate=" + this.startDate + "&endDate=" + this.endDate
+                                    + "&applicationDate1=" + this.applicationDate1 + '&applicationDate2=' + this.applicationDate2
+                                    + "&file_name_nec="+ this.sqlQuerys.queryName +"_"+ this.startDate +"_" + this.endDate +"_NEC";
+                            $('#modalNombre').modal('hide');
+                            this.name = '';
+                            setInterval(function () {
+                                location.reload();
+                            }, 40000);
+                        }).error(function () {
+                            showAlert("Error al generar el archivo", {type: 3})
+                        });
                     },
                     nameReport: function () {
-                        if (this.idQuery.length == 0) {
+                        if (this.startDate == '' && this.endDate == '' && this.sqlQuerys.name.length > 0) {
                             showAlert("Selecciona un reporte", {type: 3})
                         } else {
                             $('#modalNombre').modal('show');
@@ -117,6 +121,38 @@
                             useCurrent: false
 //                            minDate: fechaInicial
                         }).data();
+                    },
+                    sendNotification: function (report) {
+                        this.sqlQueries = [];
+                        this.$http.post(ROOT_URL + "/sql-queries/notification?file_name="+report.fileName+"&file_name_nec="+report.fileName+"_NEC").success(function (data) {
+                            showAlert("El cálculo se guardo y se envío las notificaciones correspondientes");
+                            setInterval(function () {
+                                location.reload();
+                            }, 5000);
+                        }).error(function () {
+                            showAlert("Error al generar la solicitud", {type: 3});
+                        });
+                    },
+                    deleteReports: function (report) {
+                        this.sqlQueries = [];
+                        this.$http.get(ROOT_URL + "/sql-queries/delete-reports?file_name="+report.fileName+"&file_name_nec="+report.fileName+"_NEC").success(function (data) {
+                            this.reportsGenerated = data;
+                            setInterval(function () {
+                                location.reload();
+                            }, 5000);
+                            showAlert("El reporte se elimino correctamente");
+                        }).error(function () {
+                            showAlert("Error al generar la solicitud", {type:3});
+                        })
+                    },
+                    reportsCalculated: function () {
+                        this.reportsGenerated = [];
+                        this.$http.get(ROOT_URL + "/calculation-reports/not-sended").success(function (data) {
+                            this.reportsGenerated = data;
+                            this.sqlQueriesAvailables();
+                        }).error(function () {
+                            showAlert("Error al generar la solicitud", {type:3});
+                        })
                     }
                 },
                 filters: {}
@@ -133,50 +169,97 @@
                 <div class="row">
                     <div class="col-xs-4"></div>
                     <div class="col-xs-7">
-                        <h2>Generador de reportes</h2>
+                        <h2>Reporte de nómina</h2>
                     </div>
                 </div>
+                <div class="loading" v-if="sqlQueries.length==0">
+                </div>
                 <br>
-                <div class="row">
-                    <div class="col-xs-4">
-                        <label>Reporte</label>
-                        <select class="form-control" name="" v-model="idQuery">
-                            <option></option>
-                            <option v-for="query in sqlQueries"
-                                    value="{{query.idQuery}}">
-                                {{query.queryName}}
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-xs-3">
-                        <label>Fecha de aplicación inicial</label>
-                        <div class="form-group">
-                            <div class="input-group date" id="applicationDate">
-                                <input type="text" class="form-control" v-model="startDate">
-                                <span class="input-group-addon" @click="activateDateTimePickerApplicationDate()">
-                                       <span class="glyphicon glyphicon-calendar"></span>
-                                   </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-3">
-                        <label>Fecha de aplicación final</label>
-                        <div class="form-group">
-                            <div class="input-group date" id="applicationDateEnd">
-                                <input type="text" class="form-control" v-model="endDate" required>
-                                <span class="input-group-addon" @click="activateDateTimePickerEndApplicationDate(startDate)">
-                                       <span class="glyphicon glyphicon-calendar"></span>
-                                   </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-xs-2">
-                        <button type="button" class="btn btn-success" data-placement="bottom" style="margin-top: 25px"
-                                @click="nameReport">
-                            Generar
-                        </button>
-                    </div>
+                <form id="attachments-form" method="post" enctype="multipart/form-data"
+                      v-on:submit.prevent="nameReport">
 
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <label>Generar reporte</label>
+                            <select class="form-control" name="" v-model="sqlQuerys" required>
+                                <option></option>
+                                <option v-for="query in sqlQueries"
+                                        :value="query">
+                                    {{query.queryName}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-xs-3">
+                            <label>Fecha de aplicación inicial</label>
+                            <div class="form-group">
+                                <div class="input-group date" id="applicationDate">
+                                    <input type="text" class="form-control" v-model="startDate" required>
+                                    <span class="input-group-addon" @click="activateDateTimePickerApplicationDate()">
+                                       <span class="glyphicon glyphicon-calendar"></span>
+                                   </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-3">
+                            <label>Fecha de aplicación final</label>
+                            <div class="form-group">
+                                <div class="input-group date" id="applicationDateEnd">
+                                    <input type="text" class="form-control" v-model="endDate" required>
+                                    <span class="input-group-addon" @click="activateDateTimePickerEndApplicationDate(startDate)">
+                                       <span class="glyphicon glyphicon-calendar"></span>
+                                   </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-2">
+                            <button type="submit" style="margin-top: 25px" data-placement="bottom"
+                                    class="btn btn-success">
+                                Guardar
+                            </button>
+                        </div>
+
+                    </div>
+                    </form>
+                <br>
+                <div class="row" style="margin-left: 300px" v-if="reportsGenerated.length>0">
+                    <div class="col-xs-8">
+                        <div class="panel panel-default">
+                            <!-- Default panel contents -->
+                            <div class="panel-heading"><b><center>Reportes generados</center></b></div>
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <tr>
+                                        <th>Nombre del reporte</th>
+                                        <th>Enviar</th>
+                                        <th>Cancelar</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr v-for="report in reportsGenerated">
+                                        <td>
+                                            {{report.fileName}}.xlsx
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-info" @click="sendNotification(report)"
+                                                    data-toggle="tooltip" data-placement="top"
+                                                    title="Enviar reporte">
+                                                <span class="glyphicon glyphicon-send"></span>
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-danger" @click="deleteReports(report)"
+                                                    data-toggle="tooltip" data-placement="top"
+                                                    title="Eliminar reporte">
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <!-- container-fluid -->
             </div>
@@ -190,18 +273,17 @@
                             </h4>
                         </div>
                         <div class="modal-body">
-                            <div class="col-xs-6">
-                                <input class="form-control" name="name" v-model="name"
-                                       onkeypress="return isLetterKey(event)">
+                            <div class="col-xs-12">
+                                <label>{{sqlQuerys.queryName}}_{{startDate}}_{{endDate}}</label>
                             </div>
                         </div>
                         <br>
                         <br>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" @click="buildReport">
+                            <button type="button" class="btn btn-success" @click="buildReport">
                                 Aceptar
                             </button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
                         </div>
                     </div>
                 </div>
