@@ -69,4 +69,25 @@ public class SAEMController {
         model.setViewName("MultilevelEmployee");
         return model;
     }
+
+    @RequestMapping(value = "/managment-roster", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView saemManagmentRoster() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("managmentRoster");
+        return model;
+    }
+
+    @RequestMapping(value = "/corporate-reports", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView saemCorporateReports() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("reportsCorporateRoster");
+        return model;
+    }
+
+    @RequestMapping(value = "/outsourcing-reports", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView saemOutsourcingReports() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("reportsOutsourcingRoster");
+        return model;
+    }
 }
