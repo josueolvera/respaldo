@@ -18,10 +18,10 @@ public interface PayrollService {
     Payroll findById(Integer idPayroll);
     List<Payroll> findAll();
     boolean delete(Payroll payroll);
-    void reportCorporate(OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd) throws IOException;
-    void corporateFortyName(OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd) throws IOException;
-    void reportWeeklyPay (OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd) throws IOException;
-    void monthlyPayrollReport (OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd) throws IOException;
+    void reportCorporate(OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd, FileOutputStream fileOutputStream) throws IOException;
+    void corporateFortyName(OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd, FileOutputStream fileOutputStream) throws IOException;
+    void reportWeeklyPay (OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd, FileOutputStream fileOutputStream) throws IOException;
+    void monthlyPayrollReport (OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd, FileOutputStream fileOutputStream) throws IOException;
     void reportCorporateNec(FileOutputStream fileOutputStream) throws IOException;
     void reportDistributionNec(FileOutputStream fileOutputStream) throws IOException;
 }

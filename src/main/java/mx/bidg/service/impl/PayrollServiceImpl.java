@@ -65,7 +65,7 @@ public class PayrollServiceImpl implements PayrollService {
     }
 
     @Override
-    public void reportCorporate(OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd) throws IOException {
+    public void reportCorporate(OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd, FileOutputStream fileOutputStream) throws IOException {
 
         Workbook wb = new XSSFWorkbook();
         //Definicion del estilo de la cabecera
@@ -434,11 +434,12 @@ public class PayrollServiceImpl implements PayrollService {
         hoja3.autoSizeColumn(0);
         hoja4.autoSizeColumn(0);
 
+        wb.write(fileOutputStream);
         wb.write(outputStream);
     }
 
     @Override
-    public void corporateFortyName(OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd) throws IOException {
+    public void corporateFortyName(OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd, FileOutputStream fileOutputStream) throws IOException {
 
         Workbook wb = new XSSFWorkbook();
         //Definicion del estilo de la cabecera
@@ -989,11 +990,12 @@ public class PayrollServiceImpl implements PayrollService {
         hoja5.autoSizeColumn(0);
         hoja6.autoSizeColumn(0);
 
+        wb.write(fileOutputStream);
         wb.write(outputStream);
     }
 
     @Override
-    public void reportWeeklyPay(OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd) throws IOException {
+    public void reportWeeklyPay(OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd, FileOutputStream fileOutputStream) throws IOException {
         Workbook wb = new XSSFWorkbook();
         //Definicion del estilo de la cabecera
         Font font = wb.createFont();
@@ -1551,11 +1553,12 @@ public class PayrollServiceImpl implements PayrollService {
         hoja5.autoSizeColumn(0);
         hoja6.autoSizeColumn(0);
 
+        wb.write(fileOutputStream);
         wb.write(outputStream);
     }
 
     @Override
-    public void monthlyPayrollReport(OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd) throws IOException {
+    public void monthlyPayrollReport(OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd, FileOutputStream fileOutputStream) throws IOException {
         Workbook wb = new XSSFWorkbook();
         //Definicion del estilo de la cabecera
         Font font = wb.createFont();
@@ -2121,6 +2124,7 @@ public class PayrollServiceImpl implements PayrollService {
         hoja5.autoSizeColumn(0);
         hoja6.autoSizeColumn(0);
 
+        wb.write(fileOutputStream);
         wb.write(outputStream);
     }
 
