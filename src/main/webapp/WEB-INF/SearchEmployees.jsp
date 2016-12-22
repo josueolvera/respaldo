@@ -141,7 +141,8 @@
                     zonas: [],
                     branchch: [],
                     registerNumber: 0,
-                    multilevelEmployee: null
+                    multilevelEmployee: null,
+                    numEmployeeSearch:''
                 },
                 methods: {
                     arrayObjectIndexOf: function (myArray, searchTerm, property) {
@@ -309,6 +310,15 @@
 //                                return false;
 //                            }
 //                        }
+
+                        if (this.numEmployeeSearch != '') {
+                            this.employeesUrl = this.setEmployeesUrlCharacters(this.employeesUrl);
+                            this.createReportUrl = this.setEmployeesUrlCharacters(this.createReportUrl);
+                            this.employeesUrl += 'idEmployee=' +
+                                    this.numEmployeeSearch;
+                            this.createReportUrl += 'idEmployee=' +
+                                    this.numEmployeeSearch;
+                        }
 
                         return true;
                     },
@@ -1130,6 +1140,10 @@
                             <label>RFC</label>
                             <input v-model="rfcSearch" type="text" class="form-control" placeholder="RFC">
                         </div>
+                                <div class="col-md-2">
+                                    <label>No. Empleado</label>
+                                    <input v-model="numEmployeeSearch" type="text" class="form-control" placeholder="No. Empleado">
+                                </div>
                             <%--<div class="col-md-2">--%>
                             <%--<label>--%>
                             <%--Fecha inicial--%>
