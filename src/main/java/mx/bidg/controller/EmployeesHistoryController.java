@@ -70,7 +70,8 @@ public class EmployeesHistoryController {
                     @RequestParam(name = "rfc", required = false) String rfc,
                     @RequestParam(name = "startDate", required = false) String startDate,
                     @RequestParam(name = "endDate", required = false) String endDate,
-                    @RequestParam(name = "idReport", required = false) Integer idReport
+                    @RequestParam(name = "idReport", required = false) Integer idReport,
+                    @RequestParam(name = "idEmployee", required = false) Integer idEmployee
             ) throws IOException {
 
         List<CDistributors> distributors;
@@ -91,7 +92,7 @@ public class EmployeesHistoryController {
         }
         List<EmployeesHistory> employeesHistories = new ArrayList();
         employeesHistories = employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
-        (status,distributors, idRegion, idZona,idBranch, idArea, idRole, fullname, rfc, startDate, endDate);
+        (status,distributors, idRegion, idZona,idBranch, idArea, idRole, fullname, rfc, startDate, endDate, idEmployee);
 
         for(EmployeesHistory employeesHistory : employeesHistories){
             if (employeesHistory != null){
@@ -200,6 +201,7 @@ public class EmployeesHistoryController {
                     @RequestParam(name = "endDate", required = false) String endDate,
                     @RequestParam(name = "reportFileName") String reportFileName,
                     @RequestParam(name = "idReport", required = false) Integer idReport,
+                    @RequestParam(name = "idEmployee", required = false) Integer idEmployee,
                     HttpServletResponse response
             ) throws IOException {
 
@@ -219,7 +221,7 @@ public class EmployeesHistoryController {
                 }
 
                 employeesHistories = employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
-                        (status,cDistributorsList, idRegion, idZona,idBranch, idArea, idRole, fullname, rfc,startDate, endDate);
+                        (status,cDistributorsList, idRegion, idZona,idBranch, idArea, idRole, fullname, rfc,startDate, endDate,idEmployee);
 
                 response.setContentType("application/octet-stream");
                 response.setHeader("Content-Disposition", "attachment; filename=\"" + reportFileName + "_" + dateTime.format(formatter) + ".xlsx"+ "\"");
@@ -238,7 +240,7 @@ public class EmployeesHistoryController {
                 }
 
                 employeesHistories = employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
-                        (status,cDistributorsList, idRegion, idZona,idBranch, idArea, idRole, fullname, rfc,startDate, endDate);
+                        (status,cDistributorsList, idRegion, idZona,idBranch, idArea, idRole, fullname, rfc,startDate, endDate, idEmployee);
 
                 response.setContentType("application/octet-stream");
                 response.setHeader("Content-Disposition", "attachment; filename=\"" + reportFileName + "_" + dateTime.format(formatter) + ".xlsx"+ "\"");
@@ -252,7 +254,7 @@ public class EmployeesHistoryController {
                 cDistributorsList = cDistributorsService.findAll();
 
                 employeesHistories = employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate
-                        (status,cDistributorsList, idRegion, idZona,idBranch, idArea, idRole, fullname, rfc,startDate, endDate);
+                        (status,cDistributorsList, idRegion, idZona,idBranch, idArea, idRole, fullname, rfc,startDate, endDate, idEmployee);
 
                 response.setContentType("application/octet-stream");
                 response.setHeader("Content-Disposition", "attachment; filename=\"" + reportFileName + "_" + dateTime.format(formatter) + ".xlsx"+ "\"");
