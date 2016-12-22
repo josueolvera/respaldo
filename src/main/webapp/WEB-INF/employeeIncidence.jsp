@@ -376,7 +376,7 @@
                             locale: 'es',
                             format: 'DD-MM-YYYY',
                             useCurrent: false,
-                            minDate: fecha_actual
+ //                           minDate: fecha_actual
                         }).data();
                     },
                     onPDtoEmployee: function () {
