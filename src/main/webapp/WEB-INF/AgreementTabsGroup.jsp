@@ -126,7 +126,7 @@
                         newTab.idAg = this.idAgreementGroup;
                         newTab.idDateCalculation = this.idDateCalculation;
 
-                        if (ruleType == 1 || ruleType == 3 || ruleType == 4 || ruleType == 5) {
+                        if (ruleType == 1 || ruleType == 3 || ruleType == 4 || ruleType == 5 || ruleType == 7 || ruleType == 8) {
                             newTab.amountMin = this.montoMinimo;
                             newTab.amountMax = this.montoMaximo;
 
@@ -513,6 +513,110 @@
                 </div>
             </div>
 
+            <div class="row" v-if="ruleType == 7">
+                <div class="col-xs-3">
+                    <label>
+                        Alcance mínimo
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">%</span>
+                        <input number type="text" class="form-control" v-model="montoMinimo"
+                               onkeypress="return isNumberKey(event,this)">
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <label>
+                        Alcance máximo
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">%</span>
+                        <input number type="text" class="form-control" v-model="montoMaximo"
+                               onkeypress="return isNumberKey(event,this)">
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <label>
+                        Tabulador
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">%</span>
+                        <input number type="text" class="form-control" v-model="tabulator"
+                               onkeypress="return isNumberKey(event,this)">
+                    </div>
+                </div>
+
+                <div class="col-xs-2">
+                    <label>
+                        Tipo de calculo
+                    </label>
+                    <select class="form-control" v-model="idDateCalculation">
+                        <option v-for="type in dateTypes" value="{{type.idDateCalculation}}">
+                            {{type.nameDate}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-xs-1 text-left" style="margin-top: 25px">
+                    <button class="btn btn-default" @click="saveTab(ruleType)" title="Almacenar regla">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="row" v-if="ruleType == 8">
+                <div class="col-xs-3">
+                    <label>
+                        Alcance mínimo
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">%</span>
+                        <input number type="text" class="form-control" v-model="montoMinimo"
+                               onkeypress="return isNumberKey(event,this)">
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <label>
+                        Alcance máximo
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">%</span>
+                        <input number type="text" class="form-control" v-model="montoMaximo"
+                               onkeypress="return isNumberKey(event,this)">
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <label>
+                        Tabulador
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">%</span>
+                        <input number type="text" class="form-control" v-model="tabulator"
+                               onkeypress="return isNumberKey(event,this)">
+                    </div>
+                </div>
+
+                <div class="col-xs-2">
+                    <label>
+                        Tipo de calculo
+                    </label>
+                    <select class="form-control" v-model="idDateCalculation">
+                        <option v-for="type in dateTypes" value="{{type.idDateCalculation}}">
+                            {{type.nameDate}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-xs-1 text-left" style="margin-top: 25px">
+                    <button class="btn btn-default" @click="saveTab(ruleType)" title="Almacenar regla">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-xs-12">
                     <h3>Tabuladores Existentes</h3>
@@ -584,6 +688,12 @@
                                 </label>
                                 <label v-if="tab.typeOperation == 6">
                                     Bono apoyo a pasajes
+                                </label>
+                                <label v-if="tab.typeOperation == 7">
+                                    Alcance de meta zona
+                                </label>
+                                <label v-if="tab.typeOperation == 8">
+                                    Alcance de meta región
                                 </label>
                             </td>
                         </tr>
