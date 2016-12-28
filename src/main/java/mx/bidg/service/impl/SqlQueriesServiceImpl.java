@@ -101,4 +101,18 @@ public class SqlQueriesServiceImpl implements SqlQueriesService {
     public SqlQueries update(SqlQueries query) {
         return sqlQueriesDao.update( query);
     }
+
+    @Override
+    public List<SqlQueries> findByReportCost() {
+        return sqlQueriesDao.findByCalculateReport();
+    }
+
+    @Override
+    public List executeProcedureReportCost(SqlQueries query, String startDate, String endDate, String week4Init) {
+        List queryResult = sqlQueriesDao.executeProcedurestoReport(query,startDate,endDate,week4Init);
+        if(query.getIdQuery()>5){
+
+        }
+        return queryResult;
+    }
 }

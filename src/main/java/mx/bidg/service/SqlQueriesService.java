@@ -23,4 +23,6 @@ public interface SqlQueriesService {
     SqlQueries findQuery(Integer idQuery);
     List executeAPocedureFrom(SqlQueries query, OutputStream stream, String startDate, String endDate, LocalDateTime applicationDate1, LocalDateTime applicationDate2, String week4Init, FileOutputStream fileOutputStream, FileOutputStream fileOutputStreamNec) throws IOException;
     SqlQueries update(SqlQueries query);
+    List<SqlQueries> findByReportCost();
+    List executeProcedureReportCost(SqlQueries query, String startDate, String endDate,String week4Init);
 }
