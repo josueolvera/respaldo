@@ -176,20 +176,21 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
         //Se crea la fila que contiene la cabecera
         Row row = hoja.createRow(0);
 
-        row.createCell(0).setCellValue("EMPRESA");
-        row.createCell(1).setCellValue("REGION");
-        row.createCell(2).setCellValue("ZONA");
-        row.createCell(3).setCellValue("NOMBRE DEL EMPLEADO");
-        row.createCell(4).setCellValue("CLAVE SAP");
-        row.createCell(5).setCellValue("PUESTO");
-        row.createCell(6).setCellValue("BANCO");
-        row.createCell(7).setCellValue("N. CUENTA");
-        row.createCell(8).setCellValue("CLABE");
-        row.createCell(9).setCellValue("SUCURSAL");
-        row.createCell(10).setCellValue("RFC");
-        row.createCell(11).setCellValue("CURP");
-        row.createCell(12).setCellValue("FECHA DE INGRESO");
-        row.createCell(13).setCellValue("SUELDO QUINCENAL");
+        row.createCell(0).setCellValue("ID DE EMPLEADO");
+        row.createCell(1).setCellValue("EMPRESA");
+        row.createCell(2).setCellValue("REGION");
+        row.createCell(3).setCellValue("ZONA");
+        row.createCell(4).setCellValue("NOMBRE DEL EMPLEADO");
+        row.createCell(5).setCellValue("CLAVE SAP");
+        row.createCell(6).setCellValue("PUESTO");
+        row.createCell(7).setCellValue("BANCO");
+        row.createCell(8).setCellValue("N. CUENTA");
+        row.createCell(9).setCellValue("CLABE");
+        row.createCell(10).setCellValue("SUCURSAL");
+        row.createCell(11).setCellValue("RFC");
+        row.createCell(12).setCellValue("CURP");
+        row.createCell(13).setCellValue("FECHA DE INGRESO");
+        row.createCell(14).setCellValue("SUELDO QUINCENAL");
 
         //Implementacion del estilo
         for (Cell celda : row) {
@@ -202,6 +203,11 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
 
             row = hoja.createRow(aux);
 
+            if(dwEmployee.getIdEmployee() != null) {
+                Employees employee = employeesDao.findById(dwEmployee.getIdEmployee());
+                EmployeesAccounts employeeAccount = employeesAccountsService.findEmployeeAccountActive(employee.getIdEmployee());
+            }
+
             if(dwEmployee.getIdDwEnterprise() != null){
                 DwEnterprises dwEnterprise = dwEnterprisesDao.findById(dwEmployee.getIdDwEnterprise());
                 if(dwEnterprise != null){
@@ -211,19 +217,19 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
                     CZonas zona = zonaDao.findById(dwEnterprise.getIdZona());
 
                     if(distributor != null){
-                        row.createCell(0).setCellValue(distributor.getDistributorName());
+                        row.createCell(1).setCellValue(distributor.getDistributorName());
                     }
 
                     if(region != null){
-                        row.createCell(1).setCellValue(region.getRegionName());
+                        row.createCell(2).setCellValue(region.getRegionName());
                     }
 
                     if(branch != null){
-                        row.createCell(9).setCellValue(branch.getBranchShort());
+                        row.createCell(10).setCellValue(branch.getBranchShort());
                     }
 
                     if (zona != null){
-                        row.createCell(2).setCellValue(zona.getName());
+                        row.createCell(3).setCellValue(zona.getName());
                     }
                 }
             }
@@ -231,7 +237,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
             if(dwEmployee.getIdRole() != null){
                 CRoles role = cRolesDao.findById(dwEmployee.getIdRole());
                 if (role != null){
-                    row.createCell(5).setCellValue(role.getRoleName());
+                    row.createCell(6).setCellValue(role.getRoleName());
                 }
             }
 
@@ -242,28 +248,30 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
                 if (!employeeAccountList.isEmpty()) {
                     Accounts account = employeeAccountList.get(0).getAccount();
                     if (account != null) {
-                        row.createCell(7).setCellValue(account.getAccountNumber());
-                        row.createCell(8).setCellValue(account.getAccountClabe());
+                        row.createCell(8).setCellValue(account.getAccountNumber());
+                        row.createCell(9).setCellValue(account.getAccountClabe());
                         CBanks bank = account.getBank();
                         if (bank != null) {
-                            row.createCell(6).setCellValue(bank.getAcronyms());
+                            row.createCell(7).setCellValue(bank.getAcronyms());
                         }
                     }
                 }
 
                 if (employee.getJoinDate() != null) {
                     Date joinDate = Date.from(employee.getJoinDate().atZone(ZoneId.systemDefault()).toInstant());
-                    row.createCell(12);
-                    row.getCell(12).setCellValue(joinDate);
-                    row.getCell(12).setCellStyle(cellDateStyle);
+                    row.createCell(13);
+                    row.getCell(13).setCellValue(joinDate);
+                    row.getCell(13).setCellStyle(cellDateStyle);
                 }
 
                 // Create a cell and put a value in it.
-                row.createCell(3).setCellValue(employee.getFullName().replace("_", " "));
-                row.createCell(4).setCellValue(employee.getClaveSap());
-                row.createCell(10).setCellValue(employee.getRfc());
-                row.createCell(11).setCellValue(employee.getCurp());
-                row.createCell(13).setCellValue((employee.getSalary().floatValue())/2);
+
+                row.createCell(0).setCellValue(employee.getIdEmployee());
+                row.createCell(4).setCellValue(employee.getFullName().replace("_", " "));
+                row.createCell(5).setCellValue(employee.getClaveSap());
+                row.createCell(11).setCellValue(employee.getRfc());
+                row.createCell(12).setCellValue(employee.getCurp());
+                row.createCell(14).setCellValue((employee.getSalary().floatValue())/2);
             }
 
             aux++;
@@ -498,17 +506,18 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
         //Se crea la fila que contiene la cabecera
         Row row = hoja.createRow(0);
 
-        row.createCell(0).setCellValue("EMPRESA");
-        row.createCell(1).setCellValue("NOMBRE DEL EMPLEADO");
-        row.createCell(2).setCellValue("AREA");
-        row.createCell(3).setCellValue("PUESTO");
-        row.createCell(4).setCellValue("BANCO");
-        row.createCell(5).setCellValue("N. CUENTA");
-        row.createCell(6).setCellValue("CLABE");
-        row.createCell(7).setCellValue("RFC");
-        row.createCell(8).setCellValue("CURP");
-        row.createCell(9).setCellValue("FECHA DE INGRESO");
-        row.createCell(10).setCellValue("SUELDO QUINCENAL");
+        row.createCell(0).setCellValue("ID DE EMPLEADO");
+        row.createCell(1).setCellValue("EMPRESA");
+        row.createCell(2).setCellValue("NOMBRE DEL EMPLEADO");
+        row.createCell(3).setCellValue("AREA");
+        row.createCell(4).setCellValue("PUESTO");
+        row.createCell(5).setCellValue("BANCO");
+        row.createCell(6).setCellValue("N. CUENTA");
+        row.createCell(7).setCellValue("CLABE");
+        row.createCell(8).setCellValue("RFC");
+        row.createCell(9).setCellValue("CURP");
+        row.createCell(10).setCellValue("FECHA DE INGRESO");
+        row.createCell(11).setCellValue("SUELDO QUINCENAL");
 
         //Implementacion del estilo
         for (Cell celda : row) {
@@ -521,24 +530,29 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
 
             row = hoja.createRow(aux);
 
-            if(eH.getIdDwEnterprise() != null){
+
+            if(eH.getIdEmployee() != null) {
+                Employees employee = employeesDao.findById(eH.getIdEmployee());
+                EmployeesAccounts employeeAccount = employeesAccountsService.findEmployeeAccountActive(employee.getIdEmployee());
+            }
+                if(eH.getIdDwEnterprise() != null){
                 DwEnterprises dwEnterprise = dwEnterprisesDao.findById(eH.getIdDwEnterprise());
                 CDistributors distributor = distributorsDao.findById(eH.getIdDistributor());
                 CAreas area = areasDao.findById(eH.getIdArea());
 
                 if(distributor != null){
-                    row.createCell(0).setCellValue(distributor.getDistributorName());
+                    row.createCell(1).setCellValue(distributor.getDistributorName());
                 }
 
                 if (area != null){
-                    row.createCell(2).setCellValue(area.getAreaName());
+                    row.createCell(3).setCellValue(area.getAreaName());
                 }
             }
 
             if(eH.getIdRole() != null){
                 CRoles role = cRolesDao.findById(eH.getIdRole());
                 if (role != null){
-                    row.createCell(3).setCellValue(role.getRoleName());
+                    row.createCell(4).setCellValue(role.getRoleName());
                 }
             }
 
@@ -549,27 +563,28 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
                 if (employeeAccount != null) {
                     Accounts accounts = employeeAccount.getAccount();
                     if (accounts != null) {
-                        row.createCell(5).setCellValue(accounts.getAccountNumber());
-                        row.createCell(6).setCellValue(accounts.getAccountClabe());
+                        row.createCell(6).setCellValue(accounts.getAccountNumber());
+                        row.createCell(7).setCellValue(accounts.getAccountClabe());
                         CBanks bank = accounts.getBank();
                         if (bank != null) {
-                            row.createCell(4).setCellValue(bank.getAcronyms());
+                            row.createCell(5).setCellValue(bank.getAcronyms());
                         }
                     }
                 }
 
                 if (employee.getJoinDate() != null) {
                     Date joinDate = Date.from(employee.getJoinDate().atZone(ZoneId.systemDefault()).toInstant());
-                    row.createCell(9);
-                    row.getCell(9).setCellValue(joinDate);
-                    row.getCell(9).setCellStyle(cellDateStyle);
+                    row.createCell(10);
+                    row.getCell(10).setCellValue(joinDate);
+                    row.getCell(10).setCellStyle(cellDateStyle);
                 }
 
                 // Create a cell and put a value in it.
-                row.createCell(1).setCellValue(employee.getFullName().replace("_", " "));
-                row.createCell(7).setCellValue(employee.getRfc());
-                row.createCell(8).setCellValue(employee.getCurp());
-                row.createCell(10).setCellValue((employee.getSalary().floatValue())/2);
+                row.createCell(0).setCellValue(employee.getIdEmployee());
+                row.createCell(2).setCellValue(employee.getFullName().replace("_", " "));
+                row.createCell(8).setCellValue(employee.getRfc());
+                row.createCell(9).setCellValue(employee.getCurp());
+                row.createCell(11).setCellValue((employee.getSalary().floatValue())/2);
             }
 
             aux++;

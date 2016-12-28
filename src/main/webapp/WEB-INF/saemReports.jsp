@@ -1146,27 +1146,29 @@
                 </div>
                 <div style="background: #ddd" class="panel panel-default" v-if="isThereItems">
                     <!-- Default panel contents -->
-                    <!-- Table -->
+                    <!-- Table de contenidos -->
                     <div class="flex-box container-fluid" v-if="dwEmployees.length > 0">
                         <div class="row table-header active">
+                            <div class="col-md-1"><b>Numero de empleado</b></div>
                             <div class="col-md-2"><b>Nombre de empleado</b></div>
                             <div class="col-md-2"><b>RFC</b></div>
-                            <div class="col-md-2"><b>Distribuidor</b></div>
-                            <div class="col-md-2"><b>Sucursal</b></div>
+                            <div class="col-md-1"><b>Distribuidor</b></div>
+                            <div class="col-md-1"><b>Sucursal</b></div>
                             <div class="col-md-1"><b>Puesto</b></div>
                             <div class="col-md-1"><b>Fecha de ingreso</b></div>
                             <div class="col-md-1"><b>Fecha de ultima modificaciòn</b></div>
-                            <div class="col-md-1"><b>Estatus del empleado</b></div>
+                            <div class="col-md-2"><b>Estatus del empleado</b></div>
                         </div>
                         <br>
                         <div class="table-body flex-row flex-content">
                             <div class="row table-row" v-for="dwEmployee in dwEmployees">
+                                <div class="col-md-1">{{dwEmployee.idEmployee}}</div>
                                 <div class="col-md-2">{{dwEmployee.fullName}}</div>
                                 <div class="col-md-2">{{dwEmployee.rfc}}</div>
-                                <div class="col-md-2">{{dwEmployee.dwEnterprisesR.distributor.distributorName}}</div>
-                                <div class="col-md-2">{{dwEmployee.dwEnterprisesR.branch.branchShort}}</div>
+                                <div class="col-md-1">{{dwEmployee.dwEnterprisesR.distributor.distributorName}}</div>
+                                <div class="col-md-1">{{dwEmployee.dwEnterprisesR.branch.branchShort}}</div>
                                 <div class="col-md-1">{{dwEmployee.rolesR.roleName}}</div>
-                                <div class="col-md-1">
+                                <div class="col-md-2">
                                     <center>{{dwEmployee.joinDateFormats.simpleDate}}</center>
                                 </div>
                                 <div class="col-md-1">
