@@ -24,4 +24,5 @@ public interface PayrollService {
     void monthlyPayrollReport (OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd, FileOutputStream fileOutputStream) throws IOException;
     void reportCorporateNec(FileOutputStream fileOutputStream) throws IOException;
     void reportDistributionNec(FileOutputStream fileOutputStream) throws IOException;
+    void reportCost(OutputStream outputStream, List queryResult) throws IOException;
 }
