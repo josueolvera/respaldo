@@ -101,10 +101,9 @@ public class SqlQueriesDaoImpl extends AbstractDao<Integer, SqlQueries> implemen
                 .setParameter("fechaSemanal",week4Init);
         return sqlQuery.list();
     }
-    //Pendiente
+
     @Override
     public List<SqlQueries> findByCalculateReport() {
         return (List<SqlQueries>) createEntityCriteria().add(Restrictions.eq("calculate",2)).list();
     }
-    
 }
