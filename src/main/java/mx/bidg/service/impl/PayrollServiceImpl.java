@@ -17,7 +17,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -2160,7 +2159,7 @@ public class PayrollServiceImpl implements PayrollService {
         CreationHelper createHelper = wb.getCreationHelper();
         cellDateStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
 
-        Sheet hoja1 = wb.createSheet("GMT NEC");
+        Sheet hoja1 = wb.createSheet("NEC");
 
         //Se crea la fila que contiene la cabecera
         Row row1 = hoja1.createRow(0);
@@ -2176,7 +2175,7 @@ public class PayrollServiceImpl implements PayrollService {
         row1.createCell(7).setCellValue("RFC");
         row1.createCell(8).setCellValue("CURP");
         row1.createCell(9).setCellValue("MONTO A PAGAR");
-        row1.createCell(10).setCellValue("11.50%");
+        row1.createCell(10).setCellValue("COSTO");
         row1.createCell(11).setCellValue("TOTAL A FACTURAR");
         row1.createCell(12).setCellValue("PAGADOR");
 
@@ -2185,54 +2184,54 @@ public class PayrollServiceImpl implements PayrollService {
             celda.setCellStyle(style);
         }
 
-        List<Payroll> payrollList = payrollDao.findAll();
-
         int aux1 = 1;
 
-        for(Payroll payroll : payrollList){
+        List<Object[]> results = queryResult;
+
+        for(Object[] costReportPojo : results){
             row1 = hoja1.createRow(aux1);
 
-            if (payroll.getNumeroDeEmpleado() != null){
-                row1.createCell(0).setCellValue(payroll.getNumeroDeEmpleado());
+            if (costReportPojo[0] != null){
+                row1.createCell(0).setCellValue(Integer.parseInt(String.valueOf(costReportPojo[0])));
             }
-            if (payroll.getNombre() != null){
-                row1.createCell(1).setCellValue(payroll.getNombre());
+            if (costReportPojo[1] != null){
+                row1.createCell(1).setCellValue(String.valueOf(costReportPojo[1]));
             }
-            if (payroll.getBanco() != null){
-                row1.createCell(2).setCellValue(payroll.getBanco());
+            if (costReportPojo[2] != null){
+                row1.createCell(2).setCellValue(String.valueOf(costReportPojo[2]));
             }
-            if (payroll.getNumeroDeCuenta() != null){
-                row1.createCell(3).setCellValue(payroll.getNumeroDeCuenta());
+            if (costReportPojo[3] != null){
+                row1.createCell(3).setCellValue(String.valueOf(costReportPojo[3]));
             }
-            if (payroll.getCuentaClabe() != null){
-                row1.createCell(4).setCellValue(payroll.getCuentaClabe());
+            if (costReportPojo[4] != null){
+                row1.createCell(4).setCellValue(String.valueOf(costReportPojo[4]));
             }
-            if (payroll.getSucursal() != null){
-                row1.createCell(5).setCellValue(payroll.getSucursal());
+            if (costReportPojo[6] != null){
+                row1.createCell(5).setCellValue(String.valueOf(costReportPojo[6]));
             }
-            if (payroll.getArea() != null){
-                row1.createCell(6).setCellValue(payroll.getArea());
+            if (costReportPojo[8] != null){
+                row1.createCell(6).setCellValue(String.valueOf(costReportPojo[8]));
             }
-            if (payroll.getRfc() != null){
-                row1.createCell(7).setCellValue(payroll.getRfc());
+            if (costReportPojo[9] != null){
+                row1.createCell(7).setCellValue(String.valueOf(costReportPojo[9]));
             }
-            if (payroll.getCurp() != null){
-                row1.createCell(8).setCellValue(payroll.getCurp());
+            if (costReportPojo[10] != null){
+                row1.createCell(8).setCellValue(String.valueOf(costReportPojo[10]));
             }
-            if (payroll.getPago() != null){
-                row1.createCell(9).setCellValue(payroll.getPago().doubleValue());
+            if (costReportPojo[11] != null){
+                row1.createCell(9).setCellValue(Double.parseDouble(String.valueOf(costReportPojo[11])));
             }
-            if (payroll.getComisionNec() != null){
-                row1.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
+            if (costReportPojo[12] != null){
+                row1.createCell(10).setCellValue(Double.parseDouble(String.valueOf(costReportPojo[12])));
             }
-            if (payroll.getTotalFacturar() != null){
-                row1.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
+            if (costReportPojo[13] != null){
+                row1.createCell(11).setCellValue(Double.parseDouble(String.valueOf(costReportPojo[13])));
             }
-            // Por modificar
-            /*if(payroll.getEfectivo()!= null){
-                row1.createCell(12).setCellValue(payroll.getEfectivo().doubleValue());
+
+            if(costReportPojo[14] != null){
+                row1.createCell(12).setCellValue(String.valueOf(costReportPojo[14]));
             }
-            */
+
             aux1 ++;
 
         }
