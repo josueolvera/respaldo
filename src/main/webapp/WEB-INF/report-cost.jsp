@@ -22,12 +22,14 @@
                     selected : {
                         report: null,
                         startDate: '',
-                        endDate: ''
+                        endDate: '',
+                        fileName: ''
                     },
                     dateTimePickerStart: '',
                     dateTimePickerEnd: '',
-                    reportFileName: '',
-                    createReportUrl: ''
+                    createReportUrl: '',
+                    valueIdReport: '',
+                    reportURL:''
                 },
                 methods : {
                     getCostReport: function () {
@@ -54,7 +56,7 @@
 
                         this.dateTimePickerEnd = $('#endDate').datetimepicker({
                             locale: 'es',
-                            format: 'DD-MM-YYYY',
+                            format: 'YYYY-MM-DD',
                             useCurrent: false,
                             minDate: minDate,
                             maxDate: currentDate
@@ -70,17 +72,21 @@
                         });
                     },
                     onExportButton: function () {
-                        console.log(this.selected.report);
                         $("#exportModal").modal("show");
                     },
                     createReport: function () {
-                        //Este metodo se modifica
-                        if (this.reportFileName != '') {
+                        if (this.selected.reportFileName != '') {
                             $("#exportModal").modal("hide");
-                            var createReportUrl = this.setEmployeesUrlCharacters(this.createReportUrl);
-                            createReportUrl += 'reportFileName=' + this.reportFileName;
-                            this.reportFileName = '';
-                            location.href = createReportUrl;
+                            this.selected.typeQuery = this.selected.report.sqlQuery;
+                            if(this.selected.report.idQuery!=null && this.selected.fileName!=null && this.selected.startDate!=null && this.selected.endDate!=null)
+                            {
+                                this.reportURL = ROOT_URL + '/sql-queries/execute-report/' + this.selected.report.idQuery + "?fileName=" + this.selected.fileName + "&startDate=" + this.selected.startDate + "&endDate=" + this.selected.endDate;
+                                location.href = this.reportURL;
+                                showAlert("Transaccion exitosa");
+                                this.reportFileName = '';
+                            }else {
+                                showAlert("Ha ocurrido un problema al generar el reporte, intentelo nuevamente.", {type: 3});
+                            }
                         } else {
                             showAlert("Debe asignar un nombre de archivo", {type: 3});
                             return;
@@ -93,7 +99,7 @@
 
                         this.dateTimePickerStart = $('#startDate').datetimepicker({
                             locale: 'es',
-                            format: 'DD-MM-YYYY',
+                            format: 'YYYY-MM-DD',
                             useCurrent: false,
                             maxDate: currentDate
                         }).data();
@@ -110,11 +116,6 @@
                     <div class="col-md-8">
                         <h2>Generador de reportes</h2>
                     </div>
-                    <div class="col-md-2">
-                    </div>
-                    <%--<div class="col-md-2" v-if="dwEmployees.length > 0" style="margin-top: 35px">--%>
-                        <%--<label><p style="color: darkblue">Nùmero de registros: {{registerNumber}}</p></label>--%>
-                    <%--</div>--%>
                 </div>
                 <div>
                     <div class="row">
@@ -173,7 +174,7 @@
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                         aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title">Exportar Reporte</h4>
+                                <h4 class="modal-title">Exportar reporte</h4>
                             </div>
                             <div class="modal-body">
                                 <br>
@@ -181,7 +182,7 @@
                                     <div class="form-group">
                                         <label for="reportFileName">Asigne un nombre al archivo</label>
                                         <input type="text" id="reportFileName" class="form-control"
-                                               placeholder="Nombre del Archivo" v-model="reportFileName">
+                                               placeholder="Nombre del Archivo" v-model="selected.fileName">
                                     </div>
                                 </div>
                                 <br>
