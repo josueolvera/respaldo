@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.*;
 import mx.bidg.service.*;
+import org.apache.poi.util.SystemOutLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -249,18 +250,33 @@ public class SqlQueriesController {
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(calculationReportList), HttpStatus.OK);
     }
-    
-    @RequestMapping(value = "/execute-report-cost/{idSqlQuery}", method = RequestMethod.GET)
-    public ResponseEntity<String> executeSqlQueryReportCost(
-            @PathVariable int idSqlQuery
-            ,@RequestParam(name = "startDate", required = true) String startDate
-            ,@RequestParam(name = "endDate", required = true) String endDate) throws Exception{
-            SqlQueries query = sqlQueriesService.findQuery(idSqlQuery);
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(query), HttpStatus.OK);
-    }
+
     @RequestMapping(value = "/report-cost", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public  ResponseEntity<String>getTypeReportCost()throws Exception{
         List<SqlQueries> list= sqlQueriesService.findByReportCost();
         return new ResponseEntity<String>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(list),HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/execute-report/{idSqlQuery}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> executeSqlQueryReportCost(
+            @PathVariable int idSqlQuery
+            ,@RequestParam(name = "fileName",required = true)String fileName
+            ,@RequestParam(name = "startDate", required = true) String startDate
+            ,@RequestParam(name = "endDate", required = true) String endDate
+            , HttpServletResponse response
+            ) throws Exception{
+
+        OutputStream outputStream = response.getOutputStream();
+        SqlQueries query = sqlQueriesService.findQuery(idSqlQuery);
+
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition", "attachment; filename=\""+ fileName +".xlsx\"");
+
+        List querys = sqlQueriesService.executeProcedureReportCost(query,startDate,endDate,"0000-00-00");
+
+        payrollService.reportCost(outputStream, querys);
+        outputStream.flush();
+        outputStream.close();
+        return new ResponseEntity<String>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(querys),HttpStatus.OK);
     }
 }
