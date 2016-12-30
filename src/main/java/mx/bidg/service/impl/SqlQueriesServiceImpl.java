@@ -4,6 +4,7 @@ import mx.bidg.dao.SqlQueriesDao;
 import mx.bidg.model.SqlQueries;
 import mx.bidg.service.PayrollService;
 import mx.bidg.service.SqlQueriesService;
+import org.apache.poi.util.SystemOutLogger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -110,9 +111,7 @@ public class SqlQueriesServiceImpl implements SqlQueriesService {
     @Override
     public List executeProcedureReportCost(SqlQueries query, String startDate, String endDate, String week4Init) {
         List queryResult = sqlQueriesDao.executeProcedurestoReport(query,startDate,endDate,week4Init);
-        if(query.getIdQuery()>5){
-
-        }
         return queryResult;
     }
+
 }
