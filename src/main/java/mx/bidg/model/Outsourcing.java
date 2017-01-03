@@ -137,6 +137,11 @@ public class Outsourcing implements Serializable {
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private DwEnterprises dwEnterprises;
+
+    @Basic(optional = true)
+    @Column(name = "TYPE")
+    @JsonView(JsonViews.Root.class)
+    private Integer type;
     
     public Outsourcing() {
     }
@@ -355,10 +360,18 @@ public class Outsourcing implements Serializable {
     public void setDwEnterprises(DwEnterprises dwEnterprises) {
         this.dwEnterprises = dwEnterprises;
     }
-    
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     @Override
     public String toString() {
-        return "Outsourcing{" + "idOutsourcing=" + idOutsourcing + ", idEmployee=" + idEmployee + ", salary=" + salary + ", subsidy=" + subsidy + ", imssEmployee=" + imssEmployee + ", isr=" + isr + ", adjustment=" + adjustment + ", totalDeductions=" + totalDeductions + ", netAssetTax=" + netAssetTax + ", rcv=" + rcv + ", subtotal=" + subtotal + ", payrollTax=" + payrollTax + ", totalSocialSecurity=" + totalSocialSecurity + ", commission=" + commission + ", enterpriseInfonavit=" + enterpriseInfonavit + ", total=" + total + ", creationDate=" + creationDate + ", applicationDate=" + applicationDate + ", employee=" + employee + '}';
+        return "Outsourcing{" + "idOutsourcing=" + idOutsourcing + ", idEmployee=" + idEmployee + ", salary=" + salary + ", subsidy=" + subsidy + ", imssEmployee=" + imssEmployee + ", isr=" + isr + ", adjustment=" + adjustment + ", totalDeductions=" + totalDeductions + ", netAssetTax=" + netAssetTax + ", rcv=" + rcv + ", subtotal=" + subtotal + ", payrollTax=" + payrollTax + ", totalSocialSecurity=" + totalSocialSecurity + ", commission=" + commission + ", enterpriseInfonavit=" + enterpriseInfonavit + ", total=" + total + ", creationDate=" + creationDate + ", applicationDate=" + applicationDate + ", employee=" + employee + ", type="+type+'}';
     }
 
     @Override
@@ -383,6 +396,7 @@ public class Outsourcing implements Serializable {
         hash = 23 * hash + Objects.hashCode(this.creationDate);
         hash = 23 * hash + Objects.hashCode(this.applicationDate);
         hash = 23 * hash + Objects.hashCode(this.employee);
+        hash = 23 * hash + Objects.hashCode(this.type);
         return hash;
     }
 
@@ -453,6 +467,9 @@ public class Outsourcing implements Serializable {
             return false;
         }
         if (!Objects.equals(this.employee, other.employee)) {
+            return false;
+        }
+        if (!Objects.equals(this.type, other.type)) {
             return false;
         }
         return true;
