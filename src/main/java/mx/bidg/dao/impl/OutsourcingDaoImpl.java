@@ -72,6 +72,14 @@ public class OutsourcingDaoImpl extends AbstractDao<Integer, Outsourcing> implem
     }
 
     @Override
+    public List<Outsourcing> findByType(Integer type, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd) {
+        Criteria criteria = createEntityCriteria();
+        criteria.add(Restrictions.eq("type", type));
+        criteria.add(Restrictions.between("applicationDate",applicatioDateStart,applicationDateEnd));
+        return criteria.list();
+    }
+
+    @Override
     public Object findSumRhmasByDwEnterprise(List<DwEnterprises> dwEnterprisesList, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd) {
         Criteria criteria = createEntityCriteria();
         ProjectionList projectionList = Projections.projectionList();

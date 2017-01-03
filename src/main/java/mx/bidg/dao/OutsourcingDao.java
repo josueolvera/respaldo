@@ -12,5 +12,6 @@ import java.util.List;
 public interface OutsourcingDao extends InterfaceDao<Outsourcing> {
     Outsourcing finfByidEmployee(int idEmployee,LocalDateTime applicationDate);
     List<Outsourcing> findByDwEnterprise(List<DwEnterprises> dwEnterprisesList, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd);
+    List<Outsourcing> findByType(Integer type, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd);
     Object findSumRhmasByDwEnterprise(List<DwEnterprises> dwEnterprisesList, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd);
 }
