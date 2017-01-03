@@ -79,6 +79,7 @@ public class OutsourcingServiceImpl implements OutsourcingService {
             Cell subtotal = currentRow.getCell(16);
             Cell iva = currentRow.getCell(17);
             Cell total = currentRow.getCell(18);
+            Cell tipo = currentRow.getCell(19);
 
             if (code != null) {
 
@@ -265,7 +266,11 @@ public class OutsourcingServiceImpl implements OutsourcingService {
                     if (user != null) {
                         outsourcing.setUsername(user.getUsername());
                     }
-
+                    if(tipo!=null) {
+                        outsourcing.setType((int) tipo.getNumericCellValue());
+                    }else{
+                        outsourcing.setType(null);
+                    }
                     outsourcing.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
                     outsourcing.setCreationDate(LocalDateTime.now());
 
@@ -295,10 +300,10 @@ public class OutsourcingServiceImpl implements OutsourcingService {
             "RCV", "Infonavit empresa",
             "Impuesto sobre nomina", "TOTALPREVISION SOCIAL",
             "Comisión", "Subtotal", "IVA",
-            "Total"
+            "Total","Tipo"
         };
 
-        for (int i = 0; i < 19; i++) {
+        for (int i = 0; i < 20; i++) {
             if (!headerRow.getCell(i).getStringCellValue().equals(headersToSkip[i])) {
                 throw new ValidationException("Tipo de formato no compatible.",
                         "Los datos de este archivo no son los correctos o no cumplen con los datos de venta.");
@@ -364,6 +369,7 @@ public class OutsourcingServiceImpl implements OutsourcingService {
             Cell subtotal = currentRow.getCell(16);
             Cell iva = currentRow.getCell(17);
             Cell total = currentRow.getCell(18);
+            Cell tipo = currentRow.getCell(19);
 
             Outsourcing outsourcing = new Outsourcing();
 
@@ -550,7 +556,11 @@ public class OutsourcingServiceImpl implements OutsourcingService {
                     if (user != null) {
                         outsourcing.setUsername(user.getUsername());
                     }
-
+                    if(tipo!=null) {
+                        outsourcing.setType((int) tipo.getNumericCellValue());
+                    }else{
+                        outsourcing.setType(null);
+                    }
                     outsourcing.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
                     outsourcing.setCreationDate(LocalDateTime.now());
                     outsourcingDao.save(outsourcing);
@@ -727,7 +737,11 @@ public class OutsourcingServiceImpl implements OutsourcingService {
                     if (user != null) {
                         outsourcingExits.setUsername(user.getUsername());
                     }
-
+                    if(tipo!=null) {
+                        outsourcingExits.setType((int) tipo.getNumericCellValue());
+                    }else {
+                        outsourcingExits.setType(null);
+                    }
                     outsourcingExits.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
                     outsourcingExits.setCreationDate(LocalDateTime.now());
                     outsourcingDao.save(outsourcingExits);
