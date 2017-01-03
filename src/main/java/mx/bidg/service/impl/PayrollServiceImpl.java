@@ -215,7 +215,7 @@ public class PayrollServiceImpl implements PayrollService {
             aux1++;
         }
 
-        Sheet hoja2 = wb.createSheet("RHMAS");
+        Sheet hoja2 = wb.createSheet("RHMAS GMT E ");
 
         //Se crea la fila que contiene la cabecera
         Row row2 = hoja2.createRow(0);
@@ -246,11 +246,11 @@ public class PayrollServiceImpl implements PayrollService {
         }
 
         List<DwEnterprises> dwEnterprisesList = dwEnterprisesDao.findOnlyCorporate();
-        List<Outsourcing> outsourcingList = outsourcingDao.findByDwEnterprise(dwEnterprisesList,applicatioDateStart,applicationDateEnd);
+        List<Outsourcing> outsourcingEList = outsourcingDao.findByType(1,applicatioDateStart,applicationDateEnd);
 
         int aux2 = 1;
 
-        for (Outsourcing outsourcing : outsourcingList){
+        for (Outsourcing outsourcing : outsourcingEList){
             row2 = hoja2.createRow(aux2);
 
             if (outsourcing.getDwEnterprises() != null){
@@ -314,6 +314,206 @@ public class PayrollServiceImpl implements PayrollService {
             }
 
             aux2++;
+        }
+
+        Sheet hoja5 = wb.createSheet("RHMAS GMT C ");
+
+        //Se crea la fila que contiene la cabecera
+        Row row5 = hoja5.createRow(0);
+
+        row5.createCell(0).setCellValue("DEPARTAMENTO");
+        row5.createCell(1).setCellValue("CODIGO");
+        row5.createCell(2).setCellValue("NOMBRE");
+        row5.createCell(3).setCellValue("SUELDO");
+        row5.createCell(4).setCellValue("SUBSIDIO");
+        row5.createCell(5).setCellValue("IMSS EMPLEADO");
+        row5.createCell(6).setCellValue("ISR");
+        row5.createCell(7).setCellValue("AJUSTE AL NETO");
+        row5.createCell(8).setCellValue("TOTAL DEDUCCIONES");
+        row5.createCell(9).setCellValue("NETO SUELDO FISCAL");
+        row5.createCell(10).setCellValue("IMSS");
+        row5.createCell(11).setCellValue("RCV");
+        row5.createCell(12).setCellValue("INFONAVIT EMPRESA");
+        row5.createCell(13).setCellValue("IMPUESTO SOBRE NÓMINA");
+        row5.createCell(14).setCellValue("TOTAL PREVISION SOCIAL");
+        row5.createCell(15).setCellValue("COMISIÓN");
+        row5.createCell(16).setCellValue("SUBTOTAL");
+        row5.createCell(17).setCellValue("IVA");
+        row5.createCell(18).setCellValue("TOTAL");
+
+        //Implementacion del estilo
+        for (Cell celda : row5) {
+            celda.setCellStyle(style);
+        }
+
+        List<Outsourcing> outsourcingCList = outsourcingDao.findByType(2,applicatioDateStart,applicationDateEnd);
+
+        int aux5 = 1;
+
+        for (Outsourcing outsourcing : outsourcingCList){
+            row5 = hoja5.createRow(aux5);
+
+            if (outsourcing.getDwEnterprises() != null){
+                if (outsourcing.getDwEnterprises().getArea() != null){
+                    row5.createCell(0).setCellValue(outsourcing.getDwEnterprises().getArea().getAreaName());
+                }
+            }
+            if(outsourcing.getEmployee() != null){
+                row5.createCell(1).setCellValue(outsourcing.getEmployee().getIdEmployee());
+            }
+            if(outsourcing.getEmployee() != null){
+                row5.createCell(2).setCellValue(outsourcing.getEmployee().getFullName());
+            }
+            if(outsourcing.getSalary() != null){
+                row5.createCell(3).setCellValue(outsourcing.getSalary().doubleValue());
+            }
+            if(outsourcing.getSubsidy() != null){
+                row5.createCell(4).setCellValue(outsourcing.getSubsidy().doubleValue());
+            }
+            if (outsourcing.getImssEmployee() != null){
+                row5.createCell(5).setCellValue(outsourcing.getImssEmployee().doubleValue());
+            }
+            if (outsourcing.getIsr() != null){
+                row5.createCell(6).setCellValue(outsourcing.getIsr().doubleValue());
+            }
+            if (outsourcing.getAdjustment() != null){
+                row5.createCell(7).setCellValue(outsourcing.getAdjustment().doubleValue());
+            }
+            if (outsourcing.getTotalDeductions() != null){
+                row5.createCell(8).setCellValue(outsourcing.getTotalDeductions().doubleValue());
+            }
+            if (outsourcing.getNetAssetTax() != null){
+                row5.createCell(9).setCellValue(outsourcing.getNetAssetTax().doubleValue());
+            }
+            if (outsourcing.getImss() != null){
+                row5.createCell(10).setCellValue(outsourcing.getImss().doubleValue());
+            }
+            if (outsourcing.getRcv() != null){
+                row5.createCell(11).setCellValue(outsourcing.getRcv().doubleValue());
+            }
+            if (outsourcing.getEnterpriseInfonavit() != null){
+                row5.createCell(12).setCellValue(outsourcing.getEnterpriseInfonavit().doubleValue());
+            }
+            if (outsourcing.getPayrollTax() != null){
+                row5.createCell(13).setCellValue(outsourcing.getPayrollTax().doubleValue());
+            }
+            if (outsourcing.getTotalSocialSecurity() != null){
+                row5.createCell(14).setCellValue(outsourcing.getTotalSocialSecurity().doubleValue());
+            }
+            if (outsourcing.getCommission() != null){
+                row5.createCell(15).setCellValue(outsourcing.getCommission().doubleValue());
+            }
+            if (outsourcing.getSubtotal() != null){
+                row5.createCell(16).setCellValue(outsourcing.getSubtotal().doubleValue());
+            }
+            if (outsourcing.getIva() != null){
+                row5.createCell(17).setCellValue(outsourcing.getIva().doubleValue());
+            }
+            if (outsourcing.getTotal() != null){
+                row5.createCell(18).setCellValue(outsourcing.getTotal().doubleValue());
+            }
+
+            aux5++;
+        }
+
+        Sheet hoja6 = wb.createSheet("RHMAS GMT BID ENERGY");
+
+        //Se crea la fila que contiene la cabecera
+        Row row6 = hoja6.createRow(0);
+
+        row6.createCell(0).setCellValue("DEPARTAMENTO");
+        row6.createCell(1).setCellValue("CODIGO");
+        row6.createCell(2).setCellValue("NOMBRE");
+        row6.createCell(3).setCellValue("SUELDO");
+        row6.createCell(4).setCellValue("SUBSIDIO");
+        row6.createCell(5).setCellValue("IMSS EMPLEADO");
+        row6.createCell(6).setCellValue("ISR");
+        row6.createCell(7).setCellValue("AJUSTE AL NETO");
+        row6.createCell(8).setCellValue("TOTAL DEDUCCIONES");
+        row6.createCell(9).setCellValue("NETO SUELDO FISCAL");
+        row6.createCell(10).setCellValue("IMSS");
+        row6.createCell(11).setCellValue("RCV");
+        row6.createCell(12).setCellValue("INFONAVIT EMPRESA");
+        row6.createCell(13).setCellValue("IMPUESTO SOBRE NÓMINA");
+        row6.createCell(14).setCellValue("TOTAL PREVISION SOCIAL");
+        row6.createCell(15).setCellValue("COMISIÓN");
+        row6.createCell(16).setCellValue("SUBTOTAL");
+        row6.createCell(17).setCellValue("IVA");
+        row6.createCell(18).setCellValue("TOTAL");
+
+        //Implementacion del estilo
+        for (Cell celda : row6) {
+            celda.setCellStyle(style);
+        }
+
+        List<Outsourcing> outsourcingBIDList = outsourcingDao.findByType(3,applicatioDateStart,applicationDateEnd);
+
+        int aux6 = 1;
+
+        for (Outsourcing outsourcing : outsourcingBIDList){
+            row6 = hoja6.createRow(aux6);
+
+            if (outsourcing.getDwEnterprises() != null){
+                if (outsourcing.getDwEnterprises().getArea() != null){
+                    row6.createCell(0).setCellValue(outsourcing.getDwEnterprises().getArea().getAreaName());
+                }
+            }
+            if(outsourcing.getEmployee() != null){
+                row6.createCell(1).setCellValue(outsourcing.getEmployee().getIdEmployee());
+            }
+            if(outsourcing.getEmployee() != null){
+                row6.createCell(2).setCellValue(outsourcing.getEmployee().getFullName());
+            }
+            if(outsourcing.getSalary() != null){
+                row6.createCell(3).setCellValue(outsourcing.getSalary().doubleValue());
+            }
+            if(outsourcing.getSubsidy() != null){
+                row6.createCell(4).setCellValue(outsourcing.getSubsidy().doubleValue());
+            }
+            if (outsourcing.getImssEmployee() != null){
+                row6.createCell(5).setCellValue(outsourcing.getImssEmployee().doubleValue());
+            }
+            if (outsourcing.getIsr() != null){
+                row6.createCell(6).setCellValue(outsourcing.getIsr().doubleValue());
+            }
+            if (outsourcing.getAdjustment() != null){
+                row6.createCell(7).setCellValue(outsourcing.getAdjustment().doubleValue());
+            }
+            if (outsourcing.getTotalDeductions() != null){
+                row6.createCell(8).setCellValue(outsourcing.getTotalDeductions().doubleValue());
+            }
+            if (outsourcing.getNetAssetTax() != null){
+                row6.createCell(9).setCellValue(outsourcing.getNetAssetTax().doubleValue());
+            }
+            if (outsourcing.getImss() != null){
+                row6.createCell(10).setCellValue(outsourcing.getImss().doubleValue());
+            }
+            if (outsourcing.getRcv() != null){
+                row6.createCell(11).setCellValue(outsourcing.getRcv().doubleValue());
+            }
+            if (outsourcing.getEnterpriseInfonavit() != null){
+                row6.createCell(12).setCellValue(outsourcing.getEnterpriseInfonavit().doubleValue());
+            }
+            if (outsourcing.getPayrollTax() != null){
+                row6.createCell(13).setCellValue(outsourcing.getPayrollTax().doubleValue());
+            }
+            if (outsourcing.getTotalSocialSecurity() != null){
+                row6.createCell(14).setCellValue(outsourcing.getTotalSocialSecurity().doubleValue());
+            }
+            if (outsourcing.getCommission() != null){
+                row6.createCell(15).setCellValue(outsourcing.getCommission().doubleValue());
+            }
+            if (outsourcing.getSubtotal() != null){
+                row6.createCell(16).setCellValue(outsourcing.getSubtotal().doubleValue());
+            }
+            if (outsourcing.getIva() != null){
+                row6.createCell(17).setCellValue(outsourcing.getIva().doubleValue());
+            }
+            if (outsourcing.getTotal() != null){
+                row6.createCell(18).setCellValue(outsourcing.getTotal().doubleValue());
+            }
+
+            aux6++;
         }
 
         Sheet hoja3 = wb.createSheet("GMT NEC");
