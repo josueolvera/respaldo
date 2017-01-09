@@ -126,7 +126,7 @@
                         newTab.idAg = this.idAgreementGroup;
                         newTab.idDateCalculation = this.idDateCalculation;
 
-                        if (ruleType == 1 || ruleType == 3 || ruleType == 4 || ruleType == 5 || ruleType == 7 || ruleType == 8) {
+                        if (ruleType == 1 || ruleType == 3 || ruleType == 4 || ruleType == 5 || ruleType == 7 || ruleType == 8 || ruleType == 9 || ruleType == 10) {
                             newTab.amountMin = this.montoMinimo;
                             newTab.amountMax = this.montoMaximo;
 
@@ -178,6 +178,16 @@
                         }).error(function () {
                             showAlert("Error al generar la solicitud", {type: 3});
                         })
+                    },
+                    deleteTab: function (tab) {
+                        this.$http.post(ROOT_URL + "/agreement-condition/delete", JSON.stringify(tab))
+                                .success(function (data) {
+                                    showAlert("Registro eliminado con éxito");
+                                    this.getTabsOfGroup();
+                                    this.clearFields();
+                                }).error(function () {
+                            showAlert("Error al generar la solicitud", {type: 3});
+                        });
                     }
                 },
                 filters: {}
@@ -617,6 +627,110 @@
                 </div>
             </div>
 
+            <div class="row" v-if="ruleType == 9">
+                <div class="col-xs-3">
+                    <label>
+                        Alcance mínimo
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">%</span>
+                        <input number type="text" class="form-control" v-model="montoMinimo"
+                               onkeypress="return isNumberKey(event,this)">
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <label>
+                        Alcance máximo
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">%</span>
+                        <input number type="text" class="form-control" v-model="montoMaximo"
+                               onkeypress="return isNumberKey(event,this)">
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <label>
+                        Tabulador
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">%</span>
+                        <input number type="text" class="form-control" v-model="tabulator"
+                               onkeypress="return isNumberKey(event,this)">
+                    </div>
+                </div>
+
+                <div class="col-xs-2">
+                    <label>
+                        Tipo de calculo
+                    </label>
+                    <select class="form-control" v-model="idDateCalculation">
+                        <option v-for="type in dateTypes" value="{{type.idDateCalculation}}">
+                            {{type.nameDate}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-xs-1 text-left" style="margin-top: 25px">
+                    <button class="btn btn-default" @click="saveTab(ruleType)" title="Almacenar regla">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="row" v-if="ruleType == 10">
+                <div class="col-xs-3">
+                    <label>
+                        Alcance mínimo
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">%</span>
+                        <input number type="text" class="form-control" v-model="montoMinimo"
+                               onkeypress="return isNumberKey(event,this)">
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <label>
+                        Alcance máximo
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">%</span>
+                        <input number type="text" class="form-control" v-model="montoMaximo"
+                               onkeypress="return isNumberKey(event,this)">
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <label>
+                        Tabulador
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">%</span>
+                        <input number type="text" class="form-control" v-model="tabulator"
+                               onkeypress="return isNumberKey(event,this)">
+                    </div>
+                </div>
+
+                <div class="col-xs-2">
+                    <label>
+                        Tipo de calculo
+                    </label>
+                    <select class="form-control" v-model="idDateCalculation">
+                        <option v-for="type in dateTypes" value="{{type.idDateCalculation}}">
+                            {{type.nameDate}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-xs-1 text-left" style="margin-top: 25px">
+                    <button class="btn btn-default" @click="saveTab(ruleType)" title="Almacenar regla">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-xs-12">
                     <h3>Tabuladores Existentes</h3>
@@ -648,6 +762,9 @@
                         <th>
                             Tipo de Regla
                         </th>
+                        <th>
+                            Eliminar
+                        </th>
                         </thead>
                         <tbody>
                         <tr v-for="tab in tabsOfGroup">
@@ -678,7 +795,7 @@
                                     Bono por solicitudes
                                 </label>
                                 <label v-if="tab.typeOperation == 3">
-                                    Alcance de meta
+                                    Alcance de meta de la sucursal por monto (S,Z,R,D)
                                 </label>
                                 <label v-if="tab.typeOperation == 4">
                                     Indice de reproceso
@@ -695,6 +812,19 @@
                                 <label v-if="tab.typeOperation == 8">
                                     Alcance de meta región
                                 </label>
+                                <label v-if="tab.typeOperation == 9">
+                                    Alcance de meta nacional
+                                </label>
+                                <label v-if="tab.typeOperation == 10">
+                                    Alcance de meta de la sucursal por monto acumulado de la Sucursal
+                                </label>
+                            </td>
+                            <td>
+                                <div class="col-xs-1">
+                                    <button class="btn btn-danger" @click="deleteTab(tab)" title="Eliminar regla">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                         </tbody>
