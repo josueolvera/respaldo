@@ -116,4 +116,13 @@ public class AgreementsGroupConditionDaoImpl extends AbstractDao<Integer, Agreem
     public List<AgreementsGroupCondition> findByCalculationStatusDifferent(Integer idDateCalculation) {
         return createEntityCriteria().add(Restrictions.ne("idDateCalculation",idDateCalculation)).list();
     }
+
+    @Override
+    public AgreementsGroupCondition findByAgreementGroupAndOrder(Integer idAg, int order) {
+        Criteria criteria = createEntityCriteria();
+        return (AgreementsGroupCondition) criteria
+                .add(Restrictions.eq("idAg", idAg))
+                .add(Restrictions.eq("order", order))
+                .uniqueResult();
+    }
 }

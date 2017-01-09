@@ -18,4 +18,5 @@ public interface AgreementsGroupConditionDao extends InterfaceDao<AgreementsGrou
     List<AgreementsGroupCondition> getRuleTransport();
     List<AgreementsGroupCondition> findByCalculationStatus(Integer idDateCalculation);
     List<AgreementsGroupCondition> findByCalculationStatusDifferent(Integer idDateCalculation);
+    AgreementsGroupCondition findByAgreementGroupAndOrder(Integer idAg, int order);
 }
