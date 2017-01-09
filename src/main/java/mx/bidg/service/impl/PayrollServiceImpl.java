@@ -3,6 +3,7 @@ package mx.bidg.service.impl;
 import mx.bidg.dao.DwEnterprisesDao;
 import mx.bidg.dao.OutsourcingDao;
 import mx.bidg.dao.PayrollDao;
+import mx.bidg.dao.SapSaleDao;
 import mx.bidg.model.DwEnterprises;
 import mx.bidg.model.Outsourcing;
 import mx.bidg.model.Payroll;
@@ -37,6 +38,9 @@ public class PayrollServiceImpl implements PayrollService {
 
     @Autowired
     OutsourcingDao outsourcingDao;
+
+    @Autowired
+    SapSaleDao sapSaleDao;
 
     @Override
     public Payroll save(Payroll payroll) {
@@ -128,6 +132,21 @@ public class PayrollServiceImpl implements PayrollService {
 
         int aux1 = 1;
 
+        Double sum1 = 0.00;
+        Double sum2 = 0.00;
+        Double sum3 = 0.00;
+        Double sum4 = 0.00;
+        Double sum5 = 0.00;
+        Double sum6 = 0.00;
+        Double sum7 = 0.00;
+        Double sum8 = 0.00;
+        Double sum9 = 0.00;
+        Double sum10 = 0.00;
+        Double sum11 = 0.00;
+        Double sum12 = 0.00;
+        Double sum13 = 0.00;
+        Double sum14 = 0.00;
+
         List<Payroll> payrollList = payrollDao.findAll();
 
         for (Payroll payroll : payrollList){
@@ -171,49 +190,81 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if (payroll.getSueldo() != null){
                 row1.createCell(11).setCellValue(payroll.getSueldo().doubleValue());
+                sum1 += payroll.getSueldo().doubleValue();
             }
             if (payroll.getMontoRetardo() != null){
                 row1.createCell(12).setCellValue(payroll.getMontoRetardo().doubleValue());
+                sum2 += payroll.getMontoRetardo().doubleValue();
             }
             if (payroll.getDescuento() != null){
                 row1.createCell(13).setCellValue(payroll.getDescuento().doubleValue());
+                sum3 += payroll.getDescuento().doubleValue();
             }
             if (payroll.getAjuste() != null){
                 row1.createCell(15).setCellValue(payroll.getAjuste().doubleValue());
+                sum4 += payroll.getAjuste().doubleValue();
             }
             if (payroll.getBono() != null){
                 row1.createCell(14).setCellValue(payroll.getBono().doubleValue());
+                sum5 += payroll.getBono().doubleValue();
             }
             if (payroll.getPrimaVacacional() != null){
                 row1.createCell(16).setCellValue(payroll.getPrimaVacacional().doubleValue());
+                sum6 += payroll.getPrimaVacacional().doubleValue();
             }
             if (payroll.getEfectivo() != null){
                 row1.createCell(17).setCellValue(payroll.getEfectivo().doubleValue());
+                sum7 += payroll.getEfectivo().doubleValue();
             }
             if (payroll.getEfectivoEdmon() != null){
                 row1.createCell(18).setCellValue(payroll.getEfectivoEdmon().doubleValue());
+                sum8 += payroll.getEfectivoEdmon().doubleValue();
             }
             if (payroll.getComisionEmcofin() != null){
                 row1.createCell(19).setCellValue(payroll.getComisionEmcofin().doubleValue());
+                sum9 += payroll.getComisionEmcofin().doubleValue();
             }
             if (payroll.getRhmasPago() != null){
                 row1.createCell(20).setCellValue(payroll.getRhmasPago().doubleValue());
+                sum10 += payroll.getRhmasPago().doubleValue();
             }
             if (payroll.getRhmasTotalFacturar() != null){
                 row1.createCell(21).setCellValue(payroll.getRhmasTotalFacturar().doubleValue());
+                sum11 += payroll.getRhmasTotalFacturar().doubleValue();
             }
             if (payroll.getPercepcion() != null){
                 row1.createCell(22).setCellValue(payroll.getPercepcion().doubleValue());
+                sum12 += payroll.getPercepcion().doubleValue();
             }
             if (payroll.getDeduccion() != null){
                 row1.createCell(23).setCellValue(payroll.getDeduccion().doubleValue());
+                sum13 += payroll.getDeduccion().doubleValue();
             }
             if (payroll.getPago() != null){
                 row1.createCell(24).setCellValue(payroll.getPago().doubleValue());
+                sum14 += payroll.getPago().doubleValue();
             }
 
             aux1++;
         }
+
+        row1 = hoja1.createRow(aux1+2);
+
+        row1.createCell(10).setCellValue("TOTALES");
+        row1.createCell(11).setCellValue(sum1);
+        row1.createCell(12).setCellValue(sum2);
+        row1.createCell(13).setCellValue(sum3);
+        row1.createCell(14).setCellValue(sum4);
+        row1.createCell(15).setCellValue(sum5);
+        row1.createCell(16).setCellValue(sum6);
+        row1.createCell(17).setCellValue(sum7);
+        row1.createCell(18).setCellValue(sum8);
+        row1.createCell(19).setCellValue(sum9);
+        row1.createCell(20).setCellValue(sum10);
+        row1.createCell(21).setCellValue(sum11);
+        row1.createCell(22).setCellValue(sum12);
+        row1.createCell(23).setCellValue(sum13);
+        row1.createCell(24).setCellValue(sum14);
 
         Sheet hoja2 = wb.createSheet("RHMAS GMT E ");
 
@@ -250,6 +301,23 @@ public class PayrollServiceImpl implements PayrollService {
 
         int aux2 = 1;
 
+        Double sum15 = 0.0;
+        Double sum16 = 0.0;
+        Double sum17 = 0.0;
+        Double sum18 = 0.0;
+        Double sum19 = 0.0;
+        Double sum20 = 0.0;
+        Double sum21 = 0.0;
+        Double sum22 = 0.0;
+        Double sum23 = 0.0;
+        Double sum24 = 0.0;
+        Double sum25 = 0.0;
+        Double sum26 = 0.0;
+        Double sum27 = 0.0;
+        Double sum28 = 0.0;
+        Double sum29 = 0.0;
+        Double sum30 = 0.0;
+
         for (Outsourcing outsourcing : outsourcingEList){
             row2 = hoja2.createRow(aux2);
 
@@ -266,55 +334,91 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if(outsourcing.getSalary() != null){
                 row2.createCell(3).setCellValue(outsourcing.getSalary().doubleValue());
+                sum15 += outsourcing.getSalary().doubleValue();
             }
             if(outsourcing.getSubsidy() != null){
                 row2.createCell(4).setCellValue(outsourcing.getSubsidy().doubleValue());
+                sum16 += outsourcing.getSalary().doubleValue();
             }
             if (outsourcing.getImssEmployee() != null){
                 row2.createCell(5).setCellValue(outsourcing.getImssEmployee().doubleValue());
+                sum17 += outsourcing.getSubsidy().doubleValue();
             }
             if (outsourcing.getIsr() != null){
                 row2.createCell(6).setCellValue(outsourcing.getIsr().doubleValue());
+                sum18 += outsourcing.getIsr().doubleValue();
             }
             if (outsourcing.getAdjustment() != null){
                 row2.createCell(7).setCellValue(outsourcing.getAdjustment().doubleValue());
+                sum19 += outsourcing.getAdjustment().doubleValue();
             }
             if (outsourcing.getTotalDeductions() != null){
                 row2.createCell(8).setCellValue(outsourcing.getTotalDeductions().doubleValue());
+                sum20 += outsourcing.getTotalDeductions().doubleValue();
             }
             if (outsourcing.getNetAssetTax() != null){
                 row2.createCell(9).setCellValue(outsourcing.getNetAssetTax().doubleValue());
+                sum21 += outsourcing.getNetAssetTax().doubleValue();
             }
             if (outsourcing.getImss() != null){
                 row2.createCell(10).setCellValue(outsourcing.getImss().doubleValue());
+                sum22 += outsourcing.getImss().doubleValue();
             }
             if (outsourcing.getRcv() != null){
                 row2.createCell(11).setCellValue(outsourcing.getRcv().doubleValue());
+                sum23 += outsourcing.getRcv().doubleValue();
             }
             if (outsourcing.getEnterpriseInfonavit() != null){
                 row2.createCell(12).setCellValue(outsourcing.getEnterpriseInfonavit().doubleValue());
+                sum24 += outsourcing.getEnterpriseInfonavit().doubleValue();
             }
             if (outsourcing.getPayrollTax() != null){
                 row2.createCell(13).setCellValue(outsourcing.getPayrollTax().doubleValue());
+                sum25 += outsourcing.getPayrollTax().doubleValue();
             }
             if (outsourcing.getTotalSocialSecurity() != null){
                 row2.createCell(14).setCellValue(outsourcing.getTotalSocialSecurity().doubleValue());
+                sum26 += outsourcing.getTotalSocialSecurity().doubleValue();
             }
             if (outsourcing.getCommission() != null){
                 row2.createCell(15).setCellValue(outsourcing.getCommission().doubleValue());
+                sum27 += outsourcing.getCommission().doubleValue();
             }
             if (outsourcing.getSubtotal() != null){
                 row2.createCell(16).setCellValue(outsourcing.getSubtotal().doubleValue());
+                sum28 += outsourcing.getSubtotal().doubleValue();
             }
             if (outsourcing.getIva() != null){
                 row2.createCell(17).setCellValue(outsourcing.getIva().doubleValue());
+                sum29 += outsourcing.getIva().doubleValue();
             }
             if (outsourcing.getTotal() != null){
                 row2.createCell(18).setCellValue(outsourcing.getTotal().doubleValue());
+                sum30 += outsourcing.getTotal().doubleValue();
             }
 
             aux2++;
         }
+
+        row2 = hoja2.createRow(aux2+2);
+
+        row2.createCell(2).setCellValue("TOTALES");
+        row2.createCell(3).setCellValue(sum15);
+        row2.createCell(4).setCellValue(sum16);
+        row2.createCell(5).setCellValue(sum17);
+        row2.createCell(6).setCellValue(sum18);
+        row2.createCell(7).setCellValue(sum19);
+        row2.createCell(8).setCellValue(sum20);
+        row2.createCell(9).setCellValue(sum21);
+        row2.createCell(10).setCellValue(sum22);
+        row2.createCell(11).setCellValue(sum23);
+        row2.createCell(12).setCellValue(sum24);
+        row2.createCell(13).setCellValue(sum25);
+        row2.createCell(14).setCellValue(sum26);
+        row2.createCell(15).setCellValue(sum27);
+        row2.createCell(16).setCellValue(sum28);
+        row2.createCell(17).setCellValue(sum29);
+        row2.createCell(18).setCellValue(sum30);
 
         Sheet hoja5 = wb.createSheet("RHMAS GMT C ");
 
@@ -350,6 +454,23 @@ public class PayrollServiceImpl implements PayrollService {
 
         int aux5 = 1;
 
+        Double sum31 = 0.0;
+        Double sum32 = 0.0;
+        Double sum33 = 0.0;
+        Double sum34 = 0.0;
+        Double sum35 = 0.0;
+        Double sum36 = 0.0;
+        Double sum37 = 0.0;
+        Double sum38 = 0.0;
+        Double sum39 = 0.0;
+        Double sum40 = 0.0;
+        Double sum41 = 0.0;
+        Double sum42 = 0.0;
+        Double sum43 = 0.0;
+        Double sum44 = 0.0;
+        Double sum45 = 0.0;
+        Double sum46 = 0.0;
+
         for (Outsourcing outsourcing : outsourcingCList){
             row5 = hoja5.createRow(aux5);
 
@@ -366,55 +487,91 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if(outsourcing.getSalary() != null){
                 row5.createCell(3).setCellValue(outsourcing.getSalary().doubleValue());
+                sum31 += outsourcing.getSalary().doubleValue();
             }
             if(outsourcing.getSubsidy() != null){
                 row5.createCell(4).setCellValue(outsourcing.getSubsidy().doubleValue());
+                sum32 += outsourcing.getSubsidy().doubleValue();
             }
             if (outsourcing.getImssEmployee() != null){
                 row5.createCell(5).setCellValue(outsourcing.getImssEmployee().doubleValue());
+                sum33 += outsourcing.getImssEmployee().doubleValue();
             }
             if (outsourcing.getIsr() != null){
                 row5.createCell(6).setCellValue(outsourcing.getIsr().doubleValue());
+                sum34 += outsourcing.getIsr().doubleValue();
             }
             if (outsourcing.getAdjustment() != null){
                 row5.createCell(7).setCellValue(outsourcing.getAdjustment().doubleValue());
+                sum35 += outsourcing.getAdjustment().doubleValue();
             }
             if (outsourcing.getTotalDeductions() != null){
                 row5.createCell(8).setCellValue(outsourcing.getTotalDeductions().doubleValue());
+                sum36 += outsourcing.getTotalDeductions().doubleValue();
             }
             if (outsourcing.getNetAssetTax() != null){
                 row5.createCell(9).setCellValue(outsourcing.getNetAssetTax().doubleValue());
+                sum37 += outsourcing.getNetAssetTax().doubleValue();
             }
             if (outsourcing.getImss() != null){
                 row5.createCell(10).setCellValue(outsourcing.getImss().doubleValue());
+                sum38 += outsourcing.getImss().doubleValue();
             }
             if (outsourcing.getRcv() != null){
                 row5.createCell(11).setCellValue(outsourcing.getRcv().doubleValue());
+                sum39 += outsourcing.getRcv().doubleValue();
             }
             if (outsourcing.getEnterpriseInfonavit() != null){
                 row5.createCell(12).setCellValue(outsourcing.getEnterpriseInfonavit().doubleValue());
+                sum40 += outsourcing.getEnterpriseInfonavit().doubleValue();
             }
             if (outsourcing.getPayrollTax() != null){
                 row5.createCell(13).setCellValue(outsourcing.getPayrollTax().doubleValue());
+                sum41 += outsourcing.getPayrollTax().doubleValue();
             }
             if (outsourcing.getTotalSocialSecurity() != null){
                 row5.createCell(14).setCellValue(outsourcing.getTotalSocialSecurity().doubleValue());
+                sum42 += outsourcing.getTotalSocialSecurity().doubleValue();
             }
             if (outsourcing.getCommission() != null){
                 row5.createCell(15).setCellValue(outsourcing.getCommission().doubleValue());
+                sum43 += outsourcing.getCommission().doubleValue();
             }
             if (outsourcing.getSubtotal() != null){
                 row5.createCell(16).setCellValue(outsourcing.getSubtotal().doubleValue());
+                sum44 += outsourcing.getSubtotal().doubleValue();
             }
             if (outsourcing.getIva() != null){
                 row5.createCell(17).setCellValue(outsourcing.getIva().doubleValue());
+                sum45 += outsourcing.getIva().doubleValue();
             }
             if (outsourcing.getTotal() != null){
                 row5.createCell(18).setCellValue(outsourcing.getTotal().doubleValue());
+                sum46 += outsourcing.getTotal().doubleValue();
             }
 
             aux5++;
         }
+
+        row5 = hoja5.createRow(aux5+2);
+
+        row5.createCell(2).setCellValue("TOTALES");
+        row5.createCell(3).setCellValue(sum31);
+        row5.createCell(4).setCellValue(sum32);
+        row5.createCell(5).setCellValue(sum33);
+        row5.createCell(6).setCellValue(sum34);
+        row5.createCell(7).setCellValue(sum35);
+        row5.createCell(8).setCellValue(sum36);
+        row5.createCell(9).setCellValue(sum37);
+        row5.createCell(10).setCellValue(sum38);
+        row5.createCell(11).setCellValue(sum39);
+        row5.createCell(12).setCellValue(sum40);
+        row5.createCell(13).setCellValue(sum41);
+        row5.createCell(14).setCellValue(sum42);
+        row5.createCell(15).setCellValue(sum43);
+        row5.createCell(16).setCellValue(sum44);
+        row5.createCell(17).setCellValue(sum45);
+        row5.createCell(18).setCellValue(sum46);
 
         Sheet hoja6 = wb.createSheet("RHMAS GMT BID ENERGY");
 
@@ -450,6 +607,23 @@ public class PayrollServiceImpl implements PayrollService {
 
         int aux6 = 1;
 
+        Double sum47 = 0.0;
+        Double sum48 = 0.0;
+        Double sum49 = 0.0;
+        Double sum50 = 0.0;
+        Double sum51 = 0.0;
+        Double sum52 = 0.0;
+        Double sum53 = 0.0;
+        Double sum54 = 0.0;
+        Double sum55 = 0.0;
+        Double sum56 = 0.0;
+        Double sum57 = 0.0;
+        Double sum58 = 0.0;
+        Double sum59 = 0.0;
+        Double sum60 = 0.0;
+        Double sum61 = 0.0;
+        Double sum62 = 0.0;
+
         for (Outsourcing outsourcing : outsourcingBIDList){
             row6 = hoja6.createRow(aux6);
 
@@ -466,57 +640,93 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if(outsourcing.getSalary() != null){
                 row6.createCell(3).setCellValue(outsourcing.getSalary().doubleValue());
+                sum47 += outsourcing.getSalary().doubleValue();
             }
             if(outsourcing.getSubsidy() != null){
                 row6.createCell(4).setCellValue(outsourcing.getSubsidy().doubleValue());
+                sum48 += outsourcing.getSubsidy().doubleValue();
             }
             if (outsourcing.getImssEmployee() != null){
                 row6.createCell(5).setCellValue(outsourcing.getImssEmployee().doubleValue());
+                sum49 += outsourcing.getImssEmployee().doubleValue();
             }
             if (outsourcing.getIsr() != null){
                 row6.createCell(6).setCellValue(outsourcing.getIsr().doubleValue());
+                sum50 += outsourcing.getIsr().doubleValue();
             }
             if (outsourcing.getAdjustment() != null){
                 row6.createCell(7).setCellValue(outsourcing.getAdjustment().doubleValue());
+                sum51 += outsourcing.getAdjustment().doubleValue();
             }
             if (outsourcing.getTotalDeductions() != null){
                 row6.createCell(8).setCellValue(outsourcing.getTotalDeductions().doubleValue());
+                sum52 += outsourcing.getTotalDeductions().doubleValue();
             }
             if (outsourcing.getNetAssetTax() != null){
                 row6.createCell(9).setCellValue(outsourcing.getNetAssetTax().doubleValue());
+                sum53 += outsourcing.getNetAssetTax().doubleValue();
             }
             if (outsourcing.getImss() != null){
                 row6.createCell(10).setCellValue(outsourcing.getImss().doubleValue());
+                sum54 += outsourcing.getImss().doubleValue();
             }
             if (outsourcing.getRcv() != null){
                 row6.createCell(11).setCellValue(outsourcing.getRcv().doubleValue());
+                sum55 += outsourcing.getRcv().doubleValue();
             }
             if (outsourcing.getEnterpriseInfonavit() != null){
                 row6.createCell(12).setCellValue(outsourcing.getEnterpriseInfonavit().doubleValue());
+                sum56 += outsourcing.getEnterpriseInfonavit().doubleValue();
             }
             if (outsourcing.getPayrollTax() != null){
                 row6.createCell(13).setCellValue(outsourcing.getPayrollTax().doubleValue());
+                sum57 += outsourcing.getPayrollTax().doubleValue();
             }
             if (outsourcing.getTotalSocialSecurity() != null){
                 row6.createCell(14).setCellValue(outsourcing.getTotalSocialSecurity().doubleValue());
+                sum58 += outsourcing.getTotalSocialSecurity().doubleValue();
             }
             if (outsourcing.getCommission() != null){
                 row6.createCell(15).setCellValue(outsourcing.getCommission().doubleValue());
+                sum59 += outsourcing.getCommission().doubleValue();
             }
             if (outsourcing.getSubtotal() != null){
                 row6.createCell(16).setCellValue(outsourcing.getSubtotal().doubleValue());
+                sum60 += outsourcing.getSubtotal().doubleValue();
             }
             if (outsourcing.getIva() != null){
                 row6.createCell(17).setCellValue(outsourcing.getIva().doubleValue());
+                sum61 += outsourcing.getIva().doubleValue();
             }
             if (outsourcing.getTotal() != null){
                 row6.createCell(18).setCellValue(outsourcing.getTotal().doubleValue());
+                sum62 += outsourcing.getTotal().doubleValue();
             }
 
             aux6++;
         }
 
-        Sheet hoja3 = wb.createSheet("GMT NEC");
+        row6 = hoja6.createRow(aux6+2);
+
+        row6.createCell(2).setCellValue("TOTALES");
+        row6.createCell(3).setCellValue(sum47);
+        row6.createCell(4).setCellValue(sum48);
+        row6.createCell(5).setCellValue(sum49);
+        row6.createCell(6).setCellValue(sum50);
+        row6.createCell(7).setCellValue(sum51);
+        row6.createCell(8).setCellValue(sum52);
+        row6.createCell(9).setCellValue(sum53);
+        row6.createCell(10).setCellValue(sum54);
+        row6.createCell(11).setCellValue(sum55);
+        row6.createCell(12).setCellValue(sum56);
+        row6.createCell(13).setCellValue(sum57);
+        row6.createCell(14).setCellValue(sum58);
+        row6.createCell(15).setCellValue(sum59);
+        row6.createCell(16).setCellValue(sum60);
+        row6.createCell(17).setCellValue(sum61);
+        row6.createCell(18).setCellValue(sum62);
+
+        Sheet hoja3 = wb.createSheet("GMT ENZO");
 
         //Se crea la fila que contiene la cabecera
         Row row3 = hoja3.createRow(0);
@@ -541,7 +751,13 @@ public class PayrollServiceImpl implements PayrollService {
 
         int aux3 = 1;
 
-        for(Payroll payroll : payrollList){
+        List<Payroll> payrolls = payrollDao.findAllByAmountPositives();
+
+        Double sum63 = 0.0;
+        Double sum64 = 0.0;
+        Double sum65 = 0.0;
+
+        for(Payroll payroll : payrolls){
             row3 = hoja3.createRow(aux3);
 
             if (payroll.getNumeroDeEmpleado() != null){
@@ -573,17 +789,27 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if (payroll.getPago() != null){
                 row3.createCell(9).setCellValue(payroll.getPago().doubleValue());
+                sum63 += payroll.getPago().doubleValue();
             }
             if (payroll.getComisionNec() != null){
                 row3.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
+                sum64 += payroll.getComisionNec().doubleValue();
             }
             if (payroll.getTotalFacturar() != null){
                 row3.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
+                sum65 += payroll.getTotalFacturar().doubleValue();
             }
 
             aux3 ++;
 
         }
+
+        row3 = hoja3.createRow(aux3+2);
+
+        row3.createCell(8).setCellValue("TOTALES");
+        row3.createCell(9).setCellValue(sum63);
+        row3.createCell(10).setCellValue(sum64);
+        row3.createCell(11).setCellValue(sum65);
 
         Sheet hoja4 = wb.createSheet("TOTALES");
 
@@ -820,6 +1046,23 @@ public class PayrollServiceImpl implements PayrollService {
 
         int aux2 = 1;
 
+        Double sum1 = 0.0;
+        Double sum2 = 0.0;
+        Double sum3 = 0.0;
+        Double sum4 = 0.0;
+        Double sum5 = 0.0;
+        Double sum6 = 0.0;
+        Double sum7 = 0.0;
+        Double sum8 = 0.0;
+        Double sum9 = 0.0;
+        Double sum10 = 0.0;
+        Double sum11 = 0.0;
+        Double sum12 = 0.0;
+        Double sum13 = 0.0;
+        Double sum14 = 0.0;
+        Double sum15 = 0.0;
+        Double sum16 = 0.0;
+
         for (Outsourcing outsourcing : outsourcingList){
             row2 = hoja2.createRow(aux2);
 
@@ -836,55 +1079,91 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if(outsourcing.getSalary() != null){
                 row2.createCell(3).setCellValue(outsourcing.getSalary().doubleValue());
+                sum1 += outsourcing.getSalary().doubleValue();
             }
             if(outsourcing.getSubsidy() != null){
                 row2.createCell(4).setCellValue(outsourcing.getSubsidy().doubleValue());
+                sum2 += outsourcing.getSubsidy().doubleValue();
             }
             if (outsourcing.getImssEmployee() != null){
                 row2.createCell(5).setCellValue(outsourcing.getImssEmployee().doubleValue());
+                sum3 += outsourcing.getImssEmployee().doubleValue();
             }
             if (outsourcing.getIsr() != null){
                 row2.createCell(6).setCellValue(outsourcing.getIsr().doubleValue());
+                sum4 += outsourcing.getIsr().doubleValue();
             }
             if (outsourcing.getAdjustment() != null){
                 row2.createCell(7).setCellValue(outsourcing.getAdjustment().doubleValue());
+                sum5 += outsourcing.getAdjustment().doubleValue();
             }
             if (outsourcing.getTotalDeductions() != null){
                 row2.createCell(8).setCellValue(outsourcing.getTotalDeductions().doubleValue());
+                sum6 += outsourcing.getTotalDeductions().doubleValue();
             }
             if (outsourcing.getNetAssetTax() != null){
                 row2.createCell(9).setCellValue(outsourcing.getNetAssetTax().doubleValue());
+                sum7 += outsourcing.getNetAssetTax().doubleValue();
             }
             if (outsourcing.getImss() != null){
                 row2.createCell(10).setCellValue(outsourcing.getImss().doubleValue());
+                sum8 += outsourcing.getImss().doubleValue();
             }
             if (outsourcing.getRcv() != null){
                 row2.createCell(11).setCellValue(outsourcing.getRcv().doubleValue());
+                sum9 += outsourcing.getRcv().doubleValue();
             }
             if (outsourcing.getEnterpriseInfonavit() != null){
                 row2.createCell(12).setCellValue(outsourcing.getEnterpriseInfonavit().doubleValue());
+                sum10 += outsourcing.getEnterpriseInfonavit().doubleValue();
             }
             if (outsourcing.getPayrollTax() != null){
                 row2.createCell(13).setCellValue(outsourcing.getPayrollTax().doubleValue());
+                sum11 += outsourcing.getPayrollTax().doubleValue();
             }
             if (outsourcing.getTotalSocialSecurity() != null){
                 row2.createCell(14).setCellValue(outsourcing.getTotalSocialSecurity().doubleValue());
+                sum12 += outsourcing.getTotalSocialSecurity().doubleValue();
             }
             if (outsourcing.getCommission() != null){
                 row2.createCell(15).setCellValue(outsourcing.getCommission().doubleValue());
+                sum13 += outsourcing.getCommission().doubleValue();
             }
             if (outsourcing.getSubtotal() != null){
                 row2.createCell(16).setCellValue(outsourcing.getSubtotal().doubleValue());
+                sum14 += outsourcing.getSubtotal().doubleValue();
             }
             if (outsourcing.getIva() != null){
                 row2.createCell(17).setCellValue(outsourcing.getIva().doubleValue());
+                sum15 += outsourcing.getIva().doubleValue();
             }
             if (outsourcing.getTotal() != null){
                 row2.createCell(18).setCellValue(outsourcing.getTotal().doubleValue());
+                sum16 += outsourcing.getTotal().doubleValue();
             }
 
             aux2++;
         }
+
+        row2 = hoja2.createRow(aux2+2);
+
+        row2.createCell(2).setCellValue("TOTALES");
+        row2.createCell(3).setCellValue(sum1);
+        row2.createCell(4).setCellValue(sum2);
+        row2.createCell(5).setCellValue(sum3);
+        row2.createCell(6).setCellValue(sum4);
+        row2.createCell(7).setCellValue(sum5);
+        row2.createCell(8).setCellValue(sum6);
+        row2.createCell(9).setCellValue(sum7);
+        row2.createCell(10).setCellValue(sum8);
+        row2.createCell(11).setCellValue(sum9);
+        row2.createCell(12).setCellValue(sum10);
+        row2.createCell(13).setCellValue(sum11);
+        row2.createCell(14).setCellValue(sum12);
+        row2.createCell(15).setCellValue(sum13);
+        row2.createCell(16).setCellValue(sum14);
+        row2.createCell(17).setCellValue(sum15);
+        row2.createCell(18).setCellValue(sum16);
 
         Sheet hoja3 = wb.createSheet("RHMAS AMERMEDIA");
 
@@ -921,6 +1200,23 @@ public class PayrollServiceImpl implements PayrollService {
 
         int aux3 = 1;
 
+        Double sum17 = 0.0;
+        Double sum18 = 0.0;
+        Double sum19 = 0.0;
+        Double sum20 = 0.0;
+        Double sum21 = 0.0;
+        Double sum22 = 0.0;
+        Double sum23 = 0.0;
+        Double sum24 = 0.0;
+        Double sum25 = 0.0;
+        Double sum26 = 0.0;
+        Double sum27 = 0.0;
+        Double sum28 = 0.0;
+        Double sum29 = 0.0;
+        Double sum30 = 0.0;
+        Double sum31 = 0.0;
+        Double sum32 = 0.0;
+
         for (Outsourcing outsourcing : outsourcings){
             row3 = hoja3.createRow(aux3);
 
@@ -937,55 +1233,91 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if(outsourcing.getSalary() != null){
                 row3.createCell(3).setCellValue(outsourcing.getSalary().doubleValue());
+                sum17 += outsourcing.getTotal().doubleValue();
             }
             if(outsourcing.getSubsidy() != null){
                 row3.createCell(4).setCellValue(outsourcing.getSubsidy().doubleValue());
+                sum18 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getImssEmployee() != null){
                 row3.createCell(5).setCellValue(outsourcing.getImssEmployee().doubleValue());
+                sum19 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getIsr() != null){
                 row3.createCell(6).setCellValue(outsourcing.getIsr().doubleValue());
+                sum20 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getAdjustment() != null){
                 row3.createCell(7).setCellValue(outsourcing.getAdjustment().doubleValue());
+                sum21 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getTotalDeductions() != null){
                 row3.createCell(8).setCellValue(outsourcing.getTotalDeductions().doubleValue());
+                sum22 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getNetAssetTax() != null){
                 row3.createCell(9).setCellValue(outsourcing.getNetAssetTax().doubleValue());
+                sum23 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getImss() != null){
                 row3.createCell(10).setCellValue(outsourcing.getImss().doubleValue());
+                sum24 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getRcv() != null){
                 row3.createCell(11).setCellValue(outsourcing.getRcv().doubleValue());
+                sum25 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getEnterpriseInfonavit() != null){
                 row3.createCell(12).setCellValue(outsourcing.getEnterpriseInfonavit().doubleValue());
+                sum26 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getPayrollTax() != null){
                 row3.createCell(13).setCellValue(outsourcing.getPayrollTax().doubleValue());
+                sum27 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getTotalSocialSecurity() != null){
                 row3.createCell(14).setCellValue(outsourcing.getTotalSocialSecurity().doubleValue());
+                sum28 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getCommission() != null){
                 row3.createCell(15).setCellValue(outsourcing.getCommission().doubleValue());
+                sum29 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getSubtotal() != null){
                 row3.createCell(16).setCellValue(outsourcing.getSubtotal().doubleValue());
+                sum30 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getIva() != null){
                 row3.createCell(17).setCellValue(outsourcing.getIva().doubleValue());
+                sum31 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getTotal() != null){
                 row3.createCell(18).setCellValue(outsourcing.getTotal().doubleValue());
+                sum32 += outsourcing.getTotal().doubleValue();
             }
 
             aux3++;
         }
+
+        row3 = hoja3.createRow(aux3+2);
+
+        row3.createCell(2).setCellValue("TOTALES");
+        row3.createCell(3).setCellValue(sum17);
+        row3.createCell(4).setCellValue(sum18);
+        row3.createCell(5).setCellValue(sum19);
+        row3.createCell(6).setCellValue(sum20);
+        row3.createCell(7).setCellValue(sum21);
+        row3.createCell(8).setCellValue(sum22);
+        row3.createCell(9).setCellValue(sum23);
+        row3.createCell(10).setCellValue(sum24);
+        row3.createCell(11).setCellValue(sum25);
+        row3.createCell(12).setCellValue(sum26);
+        row3.createCell(13).setCellValue(sum27);
+        row3.createCell(14).setCellValue(sum28);
+        row3.createCell(15).setCellValue(sum29);
+        row3.createCell(16).setCellValue(sum30);
+        row3.createCell(17).setCellValue(sum31);
+        row3.createCell(18).setCellValue(sum32);
 
         Sheet hoja4 = wb.createSheet("AMER NEC");
 
@@ -1013,6 +1345,10 @@ public class PayrollServiceImpl implements PayrollService {
         int aux4 = 1;
 
         List <Payroll> amerNec = payrollDao.findByDistributor(2);
+
+        Double sum33 = 0.0;
+        Double sum34 = 0.0;
+        Double sum35 = 0.0;
 
         for(Payroll payroll : amerNec){
             row4 = hoja4.createRow(aux4);
@@ -1046,17 +1382,27 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if (payroll.getPago() != null){
                 row4.createCell(9).setCellValue(payroll.getPago().doubleValue());
+                sum33 += payroll.getPago().doubleValue();
             }
             if (payroll.getComisionNec() != null){
                 row4.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
+                sum34 += payroll.getComisionNec().doubleValue();
             }
             if (payroll.getTotalFacturar() != null){
                 row4.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
+                sum35 += payroll.getTotalFacturar().doubleValue();
             }
 
             aux4 ++;
 
         }
+
+        row4 = hoja4.createRow(aux4+2);
+
+        row4.createCell(8).setCellValue("TOTALES");
+        row4.createCell(9).setCellValue(sum33);
+        row4.createCell(10).setCellValue(sum34);
+        row4.createCell(11).setCellValue(sum35);
 
         Sheet hoja5 = wb.createSheet("AMERMEDIA NEC");
 
@@ -1084,6 +1430,10 @@ public class PayrollServiceImpl implements PayrollService {
         int aux5 = 1;
 
         List <Payroll> amermediaNec = payrollDao.findByDistributor(3);
+
+        Double sum36 = 0.0;
+        Double sum37 = 0.0;
+        Double sum38 = 0.0;
 
         for(Payroll payroll : amermediaNec){
             row5 = hoja5.createRow(aux5);
@@ -1117,17 +1467,27 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if (payroll.getPago() != null){
                 row5.createCell(9).setCellValue(payroll.getPago().doubleValue());
+                sum36 += payroll.getPago().doubleValue();
             }
             if (payroll.getComisionNec() != null){
                 row5.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
+                sum37 += payroll.getComisionNec().doubleValue();
             }
             if (payroll.getTotalFacturar() != null){
                 row5.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
+                sum38 += payroll.getTotalFacturar().doubleValue();
             }
 
             aux5 ++;
 
         }
+
+        row5 = hoja5.createRow(aux5+2);
+
+        row5.createCell(8).setCellValue("TOTALES");
+        row5.createCell(9).setCellValue(sum36);
+        row5.createCell(10).setCellValue(sum37);
+        row5.createCell(11).setCellValue(sum38);
 
         Sheet hoja6 = wb.createSheet("TOTALES");
 
@@ -1194,7 +1554,7 @@ public class PayrollServiceImpl implements PayrollService {
     }
 
     @Override
-    public void reportWeeklyPay(OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd, FileOutputStream fileOutputStream) throws IOException {
+    public void reportWeeklyPay(OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd, FileOutputStream fileOutputStream, List queryResult) throws IOException {
         Workbook wb = new XSSFWorkbook();
         //Definicion del estilo de la cabecera
         Font font = wb.createFont();
@@ -1383,6 +1743,23 @@ public class PayrollServiceImpl implements PayrollService {
 
         int aux2 = 1;
 
+        Double sum1 = 0.0;
+        Double sum2 = 0.0;
+        Double sum3 = 0.0;
+        Double sum4 = 0.0;
+        Double sum5 = 0.0;
+        Double sum6 = 0.0;
+        Double sum7 = 0.0;
+        Double sum8 = 0.0;
+        Double sum9 = 0.0;
+        Double sum10 = 0.0;
+        Double sum11 = 0.0;
+        Double sum12 = 0.0;
+        Double sum13 = 0.0;
+        Double sum14 = 0.0;
+        Double sum15 = 0.0;
+        Double sum16 = 0.0;
+
         for (Outsourcing outsourcing : outsourcingList){
             row2 = hoja2.createRow(aux2);
 
@@ -1399,55 +1776,91 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if(outsourcing.getSalary() != null){
                 row2.createCell(3).setCellValue(outsourcing.getSalary().doubleValue());
+                sum1 += outsourcing.getSalary().doubleValue();
             }
             if(outsourcing.getSubsidy() != null){
                 row2.createCell(4).setCellValue(outsourcing.getSubsidy().doubleValue());
+                sum2 += outsourcing.getSubsidy().doubleValue();
             }
             if (outsourcing.getImssEmployee() != null){
                 row2.createCell(5).setCellValue(outsourcing.getImssEmployee().doubleValue());
+                sum3 += outsourcing.getImssEmployee().doubleValue();
             }
             if (outsourcing.getIsr() != null){
                 row2.createCell(6).setCellValue(outsourcing.getIsr().doubleValue());
+                sum4 += outsourcing.getIsr().doubleValue();
             }
             if (outsourcing.getAdjustment() != null){
                 row2.createCell(7).setCellValue(outsourcing.getAdjustment().doubleValue());
+                sum5 += outsourcing.getAdjustment().doubleValue();
             }
             if (outsourcing.getTotalDeductions() != null){
                 row2.createCell(8).setCellValue(outsourcing.getTotalDeductions().doubleValue());
+                sum6 += outsourcing.getTotalDeductions().doubleValue();
             }
             if (outsourcing.getNetAssetTax() != null){
                 row2.createCell(9).setCellValue(outsourcing.getNetAssetTax().doubleValue());
+                sum7 += outsourcing.getNetAssetTax().doubleValue();
             }
             if (outsourcing.getImss() != null){
                 row2.createCell(10).setCellValue(outsourcing.getImss().doubleValue());
+                sum8 += outsourcing.getImss().doubleValue();
             }
             if (outsourcing.getRcv() != null){
                 row2.createCell(11).setCellValue(outsourcing.getRcv().doubleValue());
+                sum9 += outsourcing.getRcv().doubleValue();
             }
             if (outsourcing.getEnterpriseInfonavit() != null){
                 row2.createCell(12).setCellValue(outsourcing.getEnterpriseInfonavit().doubleValue());
+                sum10 += outsourcing.getEnterpriseInfonavit().doubleValue();
             }
             if (outsourcing.getPayrollTax() != null){
                 row2.createCell(13).setCellValue(outsourcing.getPayrollTax().doubleValue());
+                sum11 += outsourcing.getPayrollTax().doubleValue();
             }
             if (outsourcing.getTotalSocialSecurity() != null){
                 row2.createCell(14).setCellValue(outsourcing.getTotalSocialSecurity().doubleValue());
+                sum12 += outsourcing.getTotalSocialSecurity().doubleValue();
             }
             if (outsourcing.getCommission() != null){
                 row2.createCell(15).setCellValue(outsourcing.getCommission().doubleValue());
+                sum13 += outsourcing.getCommission().doubleValue();
             }
             if (outsourcing.getSubtotal() != null){
                 row2.createCell(16).setCellValue(outsourcing.getSubtotal().doubleValue());
+                sum14 += outsourcing.getSubtotal().doubleValue();
             }
             if (outsourcing.getIva() != null){
                 row2.createCell(17).setCellValue(outsourcing.getIva().doubleValue());
+                sum15 += outsourcing.getIva().doubleValue();
             }
             if (outsourcing.getTotal() != null){
                 row2.createCell(18).setCellValue(outsourcing.getTotal().doubleValue());
+                sum16 += outsourcing.getTotal().doubleValue();
             }
 
             aux2++;
         }
+
+        row2 = hoja2.createRow(aux2+2);
+
+        row2.createCell(2).setCellValue("TOTALES");
+        row2.createCell(3).setCellValue(sum1);
+        row2.createCell(4).setCellValue(sum2);
+        row2.createCell(5).setCellValue(sum3);
+        row2.createCell(6).setCellValue(sum4);
+        row2.createCell(7).setCellValue(sum5);
+        row2.createCell(8).setCellValue(sum6);
+        row2.createCell(9).setCellValue(sum7);
+        row2.createCell(10).setCellValue(sum8);
+        row2.createCell(11).setCellValue(sum9);
+        row2.createCell(12).setCellValue(sum10);
+        row2.createCell(13).setCellValue(sum11);
+        row2.createCell(14).setCellValue(sum12);
+        row2.createCell(15).setCellValue(sum13);
+        row2.createCell(16).setCellValue(sum14);
+        row2.createCell(17).setCellValue(sum15);
+        row2.createCell(18).setCellValue(sum16);
 
         Sheet hoja3 = wb.createSheet("RHMAS AMERMEDIA");
 
@@ -1484,6 +1897,23 @@ public class PayrollServiceImpl implements PayrollService {
 
         int aux3 = 1;
 
+        Double sum17 = 0.0;
+        Double sum18 = 0.0;
+        Double sum19 = 0.0;
+        Double sum20 = 0.0;
+        Double sum21 = 0.0;
+        Double sum22 = 0.0;
+        Double sum23 = 0.0;
+        Double sum24 = 0.0;
+        Double sum25 = 0.0;
+        Double sum26 = 0.0;
+        Double sum27 = 0.0;
+        Double sum28 = 0.0;
+        Double sum29 = 0.0;
+        Double sum30 = 0.0;
+        Double sum31 = 0.0;
+        Double sum32 = 0.0;
+
         for (Outsourcing outsourcing : outsourcings){
             row3 = hoja3.createRow(aux3);
 
@@ -1500,55 +1930,91 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if(outsourcing.getSalary() != null){
                 row3.createCell(3).setCellValue(outsourcing.getSalary().doubleValue());
+                sum17 += outsourcing.getTotal().doubleValue();
             }
             if(outsourcing.getSubsidy() != null){
                 row3.createCell(4).setCellValue(outsourcing.getSubsidy().doubleValue());
+                sum18 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getImssEmployee() != null){
                 row3.createCell(5).setCellValue(outsourcing.getImssEmployee().doubleValue());
+                sum19 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getIsr() != null){
                 row3.createCell(6).setCellValue(outsourcing.getIsr().doubleValue());
+                sum20 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getAdjustment() != null){
                 row3.createCell(7).setCellValue(outsourcing.getAdjustment().doubleValue());
+                sum21 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getTotalDeductions() != null){
                 row3.createCell(8).setCellValue(outsourcing.getTotalDeductions().doubleValue());
+                sum22 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getNetAssetTax() != null){
                 row3.createCell(9).setCellValue(outsourcing.getNetAssetTax().doubleValue());
+                sum23 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getImss() != null){
                 row3.createCell(10).setCellValue(outsourcing.getImss().doubleValue());
+                sum24 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getRcv() != null){
                 row3.createCell(11).setCellValue(outsourcing.getRcv().doubleValue());
+                sum25 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getEnterpriseInfonavit() != null){
                 row3.createCell(12).setCellValue(outsourcing.getEnterpriseInfonavit().doubleValue());
+                sum26 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getPayrollTax() != null){
                 row3.createCell(13).setCellValue(outsourcing.getPayrollTax().doubleValue());
+                sum27 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getTotalSocialSecurity() != null){
                 row3.createCell(14).setCellValue(outsourcing.getTotalSocialSecurity().doubleValue());
+                sum28 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getCommission() != null){
                 row3.createCell(15).setCellValue(outsourcing.getCommission().doubleValue());
+                sum29 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getSubtotal() != null){
                 row3.createCell(16).setCellValue(outsourcing.getSubtotal().doubleValue());
+                sum30 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getIva() != null){
                 row3.createCell(17).setCellValue(outsourcing.getIva().doubleValue());
+                sum31 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getTotal() != null){
                 row3.createCell(18).setCellValue(outsourcing.getTotal().doubleValue());
+                sum32 += outsourcing.getTotal().doubleValue();
             }
 
             aux3++;
         }
+
+        row3 = hoja3.createRow(aux3+2);
+
+        row3.createCell(2).setCellValue("TOTALES");
+        row3.createCell(3).setCellValue(sum17);
+        row3.createCell(4).setCellValue(sum18);
+        row3.createCell(5).setCellValue(sum19);
+        row3.createCell(6).setCellValue(sum20);
+        row3.createCell(7).setCellValue(sum21);
+        row3.createCell(8).setCellValue(sum22);
+        row3.createCell(9).setCellValue(sum23);
+        row3.createCell(10).setCellValue(sum24);
+        row3.createCell(11).setCellValue(sum25);
+        row3.createCell(12).setCellValue(sum26);
+        row3.createCell(13).setCellValue(sum27);
+        row3.createCell(14).setCellValue(sum28);
+        row3.createCell(15).setCellValue(sum29);
+        row3.createCell(16).setCellValue(sum30);
+        row3.createCell(17).setCellValue(sum31);
+        row3.createCell(18).setCellValue(sum32);
 
         Sheet hoja4 = wb.createSheet("AMER NEC");
 
@@ -1576,6 +2042,10 @@ public class PayrollServiceImpl implements PayrollService {
         int aux4 = 1;
 
         List <Payroll> amerNec = payrollDao.findByDistributor(2);
+
+        Double sum33 = 0.0;
+        Double sum34 = 0.0;
+        Double sum35 = 0.0;
 
         for(Payroll payroll : amerNec){
             row4 = hoja4.createRow(aux4);
@@ -1609,17 +2079,27 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if (payroll.getPago() != null){
                 row4.createCell(9).setCellValue(payroll.getPago().doubleValue());
+                sum33 += payroll.getPago().doubleValue();
             }
             if (payroll.getComisionNec() != null){
                 row4.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
+                sum34 += payroll.getComisionNec().doubleValue();
             }
             if (payroll.getTotalFacturar() != null){
                 row4.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
+                sum35 += payroll.getTotalFacturar().doubleValue();
             }
 
             aux4 ++;
 
         }
+
+        row4 = hoja4.createRow(aux4+2);
+
+        row4.createCell(8).setCellValue("TOTALES");
+        row4.createCell(9).setCellValue(sum33);
+        row4.createCell(10).setCellValue(sum34);
+        row4.createCell(11).setCellValue(sum35);
 
         Sheet hoja5 = wb.createSheet("AMERMEDIA NEC");
 
@@ -1647,6 +2127,10 @@ public class PayrollServiceImpl implements PayrollService {
         int aux5 = 1;
 
         List <Payroll> amermediaNec = payrollDao.findByDistributor(3);
+
+        Double sum36 = 0.0;
+        Double sum37 = 0.0;
+        Double sum38 = 0.0;
 
         for(Payroll payroll : amermediaNec){
             row5 = hoja5.createRow(aux5);
@@ -1680,17 +2164,27 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if (payroll.getPago() != null){
                 row5.createCell(9).setCellValue(payroll.getPago().doubleValue());
+                sum36 += payroll.getPago().doubleValue();
             }
             if (payroll.getComisionNec() != null){
                 row5.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
+                sum37 += payroll.getComisionNec().doubleValue();
             }
             if (payroll.getTotalFacturar() != null){
                 row5.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
+                sum38 += payroll.getTotalFacturar().doubleValue();
             }
 
             aux5 ++;
 
         }
+
+        row5 = hoja5.createRow(aux5+2);
+
+        row5.createCell(8).setCellValue("TOTALES");
+        row5.createCell(9).setCellValue(sum36);
+        row5.createCell(10).setCellValue(sum37);
+        row5.createCell(11).setCellValue(sum38);
 
         Sheet hoja6 = wb.createSheet("TOTALES");
 
@@ -1745,12 +2239,66 @@ public class PayrollServiceImpl implements PayrollService {
         rowTotal.createCell(1).setCellValue("TOTAL");
         rowTotal.createCell(2).setCellValue(totalDeTotales);
 
+
+        Sheet hoja7 = wb.createSheet("CUADRO ADMON");
+
+        //Se crea la fila que contiene la cabecera
+        Row row7 = hoja7.createRow(0);
+
+
+        row7.createCell(0).setCellValue("CONCEPTO");
+        row7.createCell(1).setCellValue("VENTAS");
+        row7.createCell(2).setCellValue("% CONTRA VENTA");
+
+        //Implementacion del estilo
+        for (Cell celda : row7) {
+            celda.setCellStyle(style);
+        }
+
+        int aux7 = 1;
+
+        List<Object[]> results = queryResult;
+
+        Double sum100 = 0.00;
+        Double sum200 = 0.00;
+
+        for(Object[] admonReport : results){
+            row7 = hoja7.createRow(aux7);
+
+            if (admonReport[0] != null){
+                row7.createCell(0).setCellValue(String.valueOf(admonReport[0]));
+            }
+            if (admonReport[1] != null){
+                row7.createCell(1).setCellValue(Double.parseDouble(String.valueOf(admonReport[1])));
+                sum100 += Double.parseDouble(String.valueOf(admonReport[1]));
+            }
+            if (admonReport[2] != null){
+                String cadena = String.valueOf(admonReport[2]);
+                if (!cadena.isEmpty()){
+                    row7.createCell(2).setCellValue(Double.parseDouble(cadena));
+                    sum200 += Double.parseDouble(cadena);
+                }
+            }
+
+
+            aux7 ++;
+
+        }
+
+        BigDecimal totalAmountSap = (BigDecimal) sapSaleDao.sumTotalAmuntBeteween(applicatioDateStart,applicationDateEnd);
+
+        row7 = hoja7.createRow(aux7+1);
+        row7.createCell(0).setCellValue("Total promotor");
+        row7.createCell(1).setCellValue(sum100-totalAmountSap.doubleValue());
+        row7.createCell(2).setCellValue(sum200);
+
         hoja1.autoSizeColumn(0);
         hoja2.autoSizeColumn(0);
         hoja3.autoSizeColumn(0);
         hoja4.autoSizeColumn(0);
         hoja5.autoSizeColumn(0);
         hoja6.autoSizeColumn(0);
+        hoja7.autoSizeColumn(0);
 
         wb.write(fileOutputStream);
         wb.write(outputStream);
@@ -1760,7 +2308,7 @@ public class PayrollServiceImpl implements PayrollService {
 
 
     @Override
-    public void monthlyPayrollReport(OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd, FileOutputStream fileOutputStream) throws IOException {
+    public void monthlyPayrollReport(OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd, FileOutputStream fileOutputStream, List queryResult) throws IOException {
         Workbook wb = new XSSFWorkbook();
         //Definicion del estilo de la cabecera
         Font font = wb.createFont();
@@ -1957,6 +2505,23 @@ public class PayrollServiceImpl implements PayrollService {
 
         int aux2 = 1;
 
+        Double sum1 = 0.0;
+        Double sum2 = 0.0;
+        Double sum3 = 0.0;
+        Double sum4 = 0.0;
+        Double sum5 = 0.0;
+        Double sum6 = 0.0;
+        Double sum7 = 0.0;
+        Double sum8 = 0.0;
+        Double sum9 = 0.0;
+        Double sum10 = 0.0;
+        Double sum11 = 0.0;
+        Double sum12 = 0.0;
+        Double sum13 = 0.0;
+        Double sum14 = 0.0;
+        Double sum15 = 0.0;
+        Double sum16 = 0.0;
+
         for (Outsourcing outsourcing : outsourcingList){
             row2 = hoja2.createRow(aux2);
 
@@ -1973,55 +2538,91 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if(outsourcing.getSalary() != null){
                 row2.createCell(3).setCellValue(outsourcing.getSalary().doubleValue());
+                sum1 += outsourcing.getSalary().doubleValue();
             }
             if(outsourcing.getSubsidy() != null){
                 row2.createCell(4).setCellValue(outsourcing.getSubsidy().doubleValue());
+                sum2 += outsourcing.getSubsidy().doubleValue();
             }
             if (outsourcing.getImssEmployee() != null){
                 row2.createCell(5).setCellValue(outsourcing.getImssEmployee().doubleValue());
+                sum3 += outsourcing.getImssEmployee().doubleValue();
             }
             if (outsourcing.getIsr() != null){
                 row2.createCell(6).setCellValue(outsourcing.getIsr().doubleValue());
+                sum4 += outsourcing.getIsr().doubleValue();
             }
             if (outsourcing.getAdjustment() != null){
                 row2.createCell(7).setCellValue(outsourcing.getAdjustment().doubleValue());
+                sum5 += outsourcing.getAdjustment().doubleValue();
             }
             if (outsourcing.getTotalDeductions() != null){
                 row2.createCell(8).setCellValue(outsourcing.getTotalDeductions().doubleValue());
+                sum6 += outsourcing.getTotalDeductions().doubleValue();
             }
             if (outsourcing.getNetAssetTax() != null){
                 row2.createCell(9).setCellValue(outsourcing.getNetAssetTax().doubleValue());
+                sum7 += outsourcing.getNetAssetTax().doubleValue();
             }
             if (outsourcing.getImss() != null){
                 row2.createCell(10).setCellValue(outsourcing.getImss().doubleValue());
+                sum8 += outsourcing.getImss().doubleValue();
             }
             if (outsourcing.getRcv() != null){
                 row2.createCell(11).setCellValue(outsourcing.getRcv().doubleValue());
+                sum9 += outsourcing.getRcv().doubleValue();
             }
             if (outsourcing.getEnterpriseInfonavit() != null){
                 row2.createCell(12).setCellValue(outsourcing.getEnterpriseInfonavit().doubleValue());
+                sum10 += outsourcing.getEnterpriseInfonavit().doubleValue();
             }
             if (outsourcing.getPayrollTax() != null){
                 row2.createCell(13).setCellValue(outsourcing.getPayrollTax().doubleValue());
+                sum11 += outsourcing.getPayrollTax().doubleValue();
             }
             if (outsourcing.getTotalSocialSecurity() != null){
                 row2.createCell(14).setCellValue(outsourcing.getTotalSocialSecurity().doubleValue());
+                sum12 += outsourcing.getTotalSocialSecurity().doubleValue();
             }
             if (outsourcing.getCommission() != null){
                 row2.createCell(15).setCellValue(outsourcing.getCommission().doubleValue());
+                sum13 += outsourcing.getCommission().doubleValue();
             }
             if (outsourcing.getSubtotal() != null){
                 row2.createCell(16).setCellValue(outsourcing.getSubtotal().doubleValue());
+                sum14 += outsourcing.getSubtotal().doubleValue();
             }
             if (outsourcing.getIva() != null){
                 row2.createCell(17).setCellValue(outsourcing.getIva().doubleValue());
+                sum15 += outsourcing.getIva().doubleValue();
             }
             if (outsourcing.getTotal() != null){
                 row2.createCell(18).setCellValue(outsourcing.getTotal().doubleValue());
+                sum16 += outsourcing.getTotal().doubleValue();
             }
 
             aux2++;
         }
+
+        row2 = hoja2.createRow(aux2+2);
+
+        row2.createCell(2).setCellValue("TOTALES");
+        row2.createCell(3).setCellValue(sum1);
+        row2.createCell(4).setCellValue(sum2);
+        row2.createCell(5).setCellValue(sum3);
+        row2.createCell(6).setCellValue(sum4);
+        row2.createCell(7).setCellValue(sum5);
+        row2.createCell(8).setCellValue(sum6);
+        row2.createCell(9).setCellValue(sum7);
+        row2.createCell(10).setCellValue(sum8);
+        row2.createCell(11).setCellValue(sum9);
+        row2.createCell(12).setCellValue(sum10);
+        row2.createCell(13).setCellValue(sum11);
+        row2.createCell(14).setCellValue(sum12);
+        row2.createCell(15).setCellValue(sum13);
+        row2.createCell(16).setCellValue(sum14);
+        row2.createCell(17).setCellValue(sum15);
+        row2.createCell(18).setCellValue(sum16);
 
         Sheet hoja3 = wb.createSheet("RHMAS AMERMEDIA");
 
@@ -2058,6 +2659,23 @@ public class PayrollServiceImpl implements PayrollService {
 
         int aux3 = 1;
 
+        Double sum17 = 0.0;
+        Double sum18 = 0.0;
+        Double sum19 = 0.0;
+        Double sum20 = 0.0;
+        Double sum21 = 0.0;
+        Double sum22 = 0.0;
+        Double sum23 = 0.0;
+        Double sum24 = 0.0;
+        Double sum25 = 0.0;
+        Double sum26 = 0.0;
+        Double sum27 = 0.0;
+        Double sum28 = 0.0;
+        Double sum29 = 0.0;
+        Double sum30 = 0.0;
+        Double sum31 = 0.0;
+        Double sum32 = 0.0;
+
         for (Outsourcing outsourcing : outsourcings){
             row3 = hoja3.createRow(aux3);
 
@@ -2074,55 +2692,91 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if(outsourcing.getSalary() != null){
                 row3.createCell(3).setCellValue(outsourcing.getSalary().doubleValue());
+                sum17 += outsourcing.getTotal().doubleValue();
             }
             if(outsourcing.getSubsidy() != null){
                 row3.createCell(4).setCellValue(outsourcing.getSubsidy().doubleValue());
+                sum18 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getImssEmployee() != null){
                 row3.createCell(5).setCellValue(outsourcing.getImssEmployee().doubleValue());
+                sum19 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getIsr() != null){
                 row3.createCell(6).setCellValue(outsourcing.getIsr().doubleValue());
+                sum20 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getAdjustment() != null){
                 row3.createCell(7).setCellValue(outsourcing.getAdjustment().doubleValue());
+                sum21 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getTotalDeductions() != null){
                 row3.createCell(8).setCellValue(outsourcing.getTotalDeductions().doubleValue());
+                sum22 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getNetAssetTax() != null){
                 row3.createCell(9).setCellValue(outsourcing.getNetAssetTax().doubleValue());
+                sum23 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getImss() != null){
                 row3.createCell(10).setCellValue(outsourcing.getImss().doubleValue());
+                sum24 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getRcv() != null){
                 row3.createCell(11).setCellValue(outsourcing.getRcv().doubleValue());
+                sum25 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getEnterpriseInfonavit() != null){
                 row3.createCell(12).setCellValue(outsourcing.getEnterpriseInfonavit().doubleValue());
+                sum26 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getPayrollTax() != null){
                 row3.createCell(13).setCellValue(outsourcing.getPayrollTax().doubleValue());
+                sum27 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getTotalSocialSecurity() != null){
                 row3.createCell(14).setCellValue(outsourcing.getTotalSocialSecurity().doubleValue());
+                sum28 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getCommission() != null){
                 row3.createCell(15).setCellValue(outsourcing.getCommission().doubleValue());
+                sum29 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getSubtotal() != null){
                 row3.createCell(16).setCellValue(outsourcing.getSubtotal().doubleValue());
+                sum30 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getIva() != null){
                 row3.createCell(17).setCellValue(outsourcing.getIva().doubleValue());
+                sum31 += outsourcing.getTotal().doubleValue();
             }
             if (outsourcing.getTotal() != null){
                 row3.createCell(18).setCellValue(outsourcing.getTotal().doubleValue());
+                sum32 += outsourcing.getTotal().doubleValue();
             }
 
             aux3++;
         }
+
+        row3 = hoja3.createRow(aux3+2);
+
+        row3.createCell(2).setCellValue("TOTALES");
+        row3.createCell(3).setCellValue(sum17);
+        row3.createCell(4).setCellValue(sum18);
+        row3.createCell(5).setCellValue(sum19);
+        row3.createCell(6).setCellValue(sum20);
+        row3.createCell(7).setCellValue(sum21);
+        row3.createCell(8).setCellValue(sum22);
+        row3.createCell(9).setCellValue(sum23);
+        row3.createCell(10).setCellValue(sum24);
+        row3.createCell(11).setCellValue(sum25);
+        row3.createCell(12).setCellValue(sum26);
+        row3.createCell(13).setCellValue(sum27);
+        row3.createCell(14).setCellValue(sum28);
+        row3.createCell(15).setCellValue(sum29);
+        row3.createCell(16).setCellValue(sum30);
+        row3.createCell(17).setCellValue(sum31);
+        row3.createCell(18).setCellValue(sum32);
 
         Sheet hoja4 = wb.createSheet("AMER NEC");
 
@@ -2150,6 +2804,10 @@ public class PayrollServiceImpl implements PayrollService {
         int aux4 = 1;
 
         List <Payroll> amerNec = payrollDao.findByDistributor(2);
+
+        Double sum33 = 0.0;
+        Double sum34 = 0.0;
+        Double sum35 = 0.0;
 
         for(Payroll payroll : amerNec){
             row4 = hoja4.createRow(aux4);
@@ -2183,17 +2841,27 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if (payroll.getPago() != null){
                 row4.createCell(9).setCellValue(payroll.getPago().doubleValue());
+                sum33 += payroll.getPago().doubleValue();
             }
             if (payroll.getComisionNec() != null){
                 row4.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
+                sum34 += payroll.getComisionNec().doubleValue();
             }
             if (payroll.getTotalFacturar() != null){
                 row4.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
+                sum35 += payroll.getTotalFacturar().doubleValue();
             }
 
             aux4 ++;
 
         }
+
+        row4 = hoja4.createRow(aux4+2);
+
+        row4.createCell(8).setCellValue("TOTALES");
+        row4.createCell(9).setCellValue(sum33);
+        row4.createCell(10).setCellValue(sum34);
+        row4.createCell(11).setCellValue(sum35);
 
         Sheet hoja5 = wb.createSheet("AMERMEDIA NEC");
 
@@ -2221,6 +2889,10 @@ public class PayrollServiceImpl implements PayrollService {
         int aux5 = 1;
 
         List <Payroll> amermediaNec = payrollDao.findByDistributor(3);
+
+        Double sum36 = 0.0;
+        Double sum37 = 0.0;
+        Double sum38 = 0.0;
 
         for(Payroll payroll : amermediaNec){
             row5 = hoja5.createRow(aux5);
@@ -2254,17 +2926,27 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if (payroll.getPago() != null){
                 row5.createCell(9).setCellValue(payroll.getPago().doubleValue());
+                sum36 += payroll.getPago().doubleValue();
             }
             if (payroll.getComisionNec() != null){
                 row5.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
+                sum37 += payroll.getComisionNec().doubleValue();
             }
             if (payroll.getTotalFacturar() != null){
                 row5.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
+                sum38 += payroll.getTotalFacturar().doubleValue();
             }
 
             aux5 ++;
 
         }
+
+        row5 = hoja5.createRow(aux5+2);
+
+        row5.createCell(8).setCellValue("TOTALES");
+        row5.createCell(9).setCellValue(sum36);
+        row5.createCell(10).setCellValue(sum37);
+        row5.createCell(11).setCellValue(sum38);
 
         Sheet hoja6 = wb.createSheet("TOTALES");
 
@@ -2319,12 +3001,66 @@ public class PayrollServiceImpl implements PayrollService {
         rowTotal.createCell(1).setCellValue("TOTAL");
         rowTotal.createCell(2).setCellValue(totalDeTotales);
 
+
+        Sheet hoja7 = wb.createSheet("CUADRO ADMON");
+
+        //Se crea la fila que contiene la cabecera
+        Row row7 = hoja7.createRow(0);
+
+
+        row7.createCell(0).setCellValue("CONCEPTO");
+        row7.createCell(1).setCellValue("VENTAS");
+        row7.createCell(2).setCellValue("% CONTRA VENTA");
+
+        //Implementacion del estilo
+        for (Cell celda : row7) {
+            celda.setCellStyle(style);
+        }
+
+        int aux7 = 1;
+
+        List<Object[]> results = queryResult;
+
+        Double sum100 = 0.00;
+        Double sum200 = 0.00;
+
+        for(Object[] admonReport : results){
+            row7 = hoja7.createRow(aux7);
+
+            if (admonReport[0] != null){
+                row7.createCell(0).setCellValue(String.valueOf(admonReport[0]));
+            }
+            if (admonReport[1] != null){
+                row7.createCell(1).setCellValue(Double.parseDouble(String.valueOf(admonReport[1])));
+                sum100 += Double.parseDouble(String.valueOf(admonReport[1]));
+            }
+            if (admonReport[2] != null){
+                String cadena = String.valueOf(admonReport[2]);
+                if (!cadena.isEmpty()){
+                    row7.createCell(2).setCellValue(Double.parseDouble(cadena));
+                    sum200 += Double.parseDouble(cadena);
+                }
+            }
+
+
+            aux7 ++;
+
+        }
+
+        BigDecimal totalAmountSap = (BigDecimal) sapSaleDao.sumTotalAmuntBeteween(applicatioDateStart,applicationDateEnd);
+
+        row7 = hoja7.createRow(aux7+2);
+        row7.createCell(0).setCellValue("Subtotal");
+        row7.createCell(1).setCellValue(sum100-totalAmountSap.doubleValue());
+        row7.createCell(2).setCellValue(sum200);
+
         hoja1.autoSizeColumn(0);
         hoja2.autoSizeColumn(0);
         hoja3.autoSizeColumn(0);
         hoja4.autoSizeColumn(0);
         hoja5.autoSizeColumn(0);
         hoja6.autoSizeColumn(0);
+        hoja7.autoSizeColumn(0);
 
         wb.write(fileOutputStream);
         wb.write(outputStream);
@@ -2473,7 +3209,7 @@ public class PayrollServiceImpl implements PayrollService {
         CreationHelper createHelper = wb.getCreationHelper();
         cellDateStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
 
-        Sheet hoja1 = wb.createSheet("GMT NEC");
+        Sheet hoja1 = wb.createSheet("GMT ENZO");
 
         //Se crea la fila que contiene la cabecera
         Row row1 = hoja1.createRow(0);
@@ -2496,9 +3232,13 @@ public class PayrollServiceImpl implements PayrollService {
             celda.setCellStyle(style);
         }
 
-        List<Payroll> payrollList = payrollDao.findAll();
+        List<Payroll> payrollList = payrollDao.findAllByAmountPositives();
 
         int aux1 = 1;
+
+        Double sum1 = 0.0;
+        Double sum2 = 0.0;
+        Double sum3 = 0.0;
 
         for(Payroll payroll : payrollList){
             row1 = hoja1.createRow(aux1);
@@ -2532,17 +3272,26 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if (payroll.getPago() != null){
                 row1.createCell(9).setCellValue(payroll.getPago().doubleValue());
+                sum1 += payroll.getPago().doubleValue();
             }
             if (payroll.getComisionNec() != null){
                 row1.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
+                sum2 += payroll.getComisionNec().doubleValue();
             }
             if (payroll.getTotalFacturar() != null){
                 row1.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
+                sum3 += payroll.getTotalFacturar().doubleValue();
             }
 
             aux1 ++;
 
         }
+
+        row1 = hoja1.createRow(aux1+2);
+        row1.createCell(8).setCellValue("TOTALES");
+        row1.createCell(9).setCellValue(sum1);
+        row1.createCell(10).setCellValue(sum2);
+        row1.createCell(11).setCellValue(sum3);
 
         hoja1.autoSizeColumn(0);
 
@@ -2604,6 +3353,10 @@ public class PayrollServiceImpl implements PayrollService {
 
         List <Payroll> amerNec = payrollDao.findByDistributor(2);
 
+        Double sum1 = 0.0;
+        Double sum2 = 0.0;
+        Double sum3 = 0.0;
+
         for(Payroll payroll : amerNec){
             row1 = hoja1.createRow(aux1);
 
@@ -2636,17 +3389,26 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if (payroll.getPago() != null){
                 row1.createCell(9).setCellValue(payroll.getPago().doubleValue());
+                sum1 += payroll.getPago().doubleValue();
             }
             if (payroll.getComisionNec() != null){
                 row1.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
+                sum2 += payroll.getComisionNec().doubleValue();
             }
             if (payroll.getTotalFacturar() != null){
                 row1.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
+                sum3 += payroll.getTotalFacturar().doubleValue();
             }
 
             aux1 ++;
 
         }
+
+        row1 = hoja1.createRow(aux1+2);
+        row1.createCell(8).setCellValue("TOTALES");
+        row1.createCell(9).setCellValue(sum1);
+        row1.createCell(10).setCellValue(sum2);
+        row1.createCell(11).setCellValue(sum3);
 
         Sheet hoja2 = wb.createSheet("AMERMEDIA NEC");
 
@@ -2674,6 +3436,10 @@ public class PayrollServiceImpl implements PayrollService {
         int aux2 = 1;
 
         List <Payroll> amermediaNec = payrollDao.findByDistributor(3);
+
+        Double sum4 = 0.0;
+        Double sum5 = 0.0;
+        Double sum6 = 0.0;
 
         for(Payroll payroll : amermediaNec){
             row2 = hoja2.createRow(aux2);
@@ -2707,17 +3473,26 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if (payroll.getPago() != null){
                 row2.createCell(9).setCellValue(payroll.getPago().doubleValue());
+                sum4 += payroll.getPago().doubleValue();
             }
             if (payroll.getComisionNec() != null){
                 row2.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
+                sum5 += payroll.getComisionNec().doubleValue();
             }
             if (payroll.getTotalFacturar() != null){
                 row2.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
+                sum6 += payroll.getTotalFacturar().doubleValue();
             }
 
             aux2 ++;
 
         }
+
+        row2 = hoja2.createRow(aux2+2);
+        row2.createCell(8).setCellValue("TOTALES");
+        row2.createCell(9).setCellValue(sum4);
+        row2.createCell(10).setCellValue(sum5);
+        row2.createCell(11).setCellValue(sum6);
 
         hoja1.autoSizeColumn(0);
         hoja2.autoSizeColumn(0);

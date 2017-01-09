@@ -20,8 +20,8 @@ public interface PayrollService {
     boolean delete(Payroll payroll);
     void reportCorporate(OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd, FileOutputStream fileOutputStream) throws IOException;
     void corporateFortyName(OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd, FileOutputStream fileOutputStream) throws IOException;
-    void reportWeeklyPay (OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd, FileOutputStream fileOutputStream) throws IOException;
-    void monthlyPayrollReport (OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd, FileOutputStream fileOutputStream) throws IOException;
+    void reportWeeklyPay (OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd, FileOutputStream fileOutputStream, List queryResult) throws IOException;
+    void monthlyPayrollReport (OutputStream outputStream, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd, FileOutputStream fileOutputStream, List queryResult) throws IOException;
     void reportCorporateNec(FileOutputStream fileOutputStream) throws IOException;
     void reportDistributionNec(FileOutputStream fileOutputStream) throws IOException;
     void reportCost(OutputStream outputStream, List queryResult) throws IOException;
