@@ -61,29 +61,60 @@ public class AgreementsGroupConditionController {
         JsonNode json = mapper.readTree(data);
         
         AgreementsGroupCondition ultimateRow = agcs.getFinalOrder(json.get("idAg").asInt());
-        
-        
-        
-        AgreementsGroupCondition agreementsGroupCondition= new AgreementsGroupCondition();
-        agreementsGroupCondition.setAgreementsGroups(new CAgreementsGroups(json.get("idAg").asInt()));
-        agreementsGroupCondition.setTabulator(new BigDecimal(json.get("tabulator").asDouble()));
-        agreementsGroupCondition.setAmountMin(new BigDecimal(json.get("amountMin").asDouble()));
-        agreementsGroupCondition.setAmountMax(new BigDecimal(json.get("amountMax").asDouble()));
-        agreementsGroupCondition.setStatus(0);
-        agreementsGroupCondition.setTypeOperation(json.get("typeOperation").asInt());
-        agreementsGroupCondition.setcDateCalculation(new CDateCalculation(json.get("idDateCalculation").asInt()));
-        
-        if (ultimateRow == null) {
+
+        AgreementsGroupCondition agreementsGroupCondition = new AgreementsGroupCondition();
+        AgreementsGroupCondition agc;
+
+        if (json.get("typeOperation").asInt() == 3 || json.get("typeOperation").asInt() == 8 || json.get("typeOperation").asInt() == 9 || json.get("typeOperation").asInt() == 7){
+            AgreementsGroupCondition firstRow = agcs.findByAgreementsGroupAndOrder(json.get("idAg").asInt(),1);
+
+            if (firstRow != null){
+                if (ultimateRow != null){
+                    firstRow.setOrder(ultimateRow.getOrder() + 1);
+                    agcs.update(firstRow);
+                }
+            }
+
+            agreementsGroupCondition.setAgreementsGroups(new CAgreementsGroups(json.get("idAg").asInt()));
+            agreementsGroupCondition.setTabulator(new BigDecimal(json.get("tabulator").asDouble()));
+            agreementsGroupCondition.setAmountMin(new BigDecimal(json.get("amountMin").asDouble()));
+            agreementsGroupCondition.setAmountMax(new BigDecimal(json.get("amountMax").asDouble()));
+            agreementsGroupCondition.setStatus(0);
+            agreementsGroupCondition.setTypeOperation(json.get("typeOperation").asInt());
+            agreementsGroupCondition.setcDateCalculation(new CDateCalculation(json.get("idDateCalculation").asInt()));
             agreementsGroupCondition.setOrder(1);
+            agc = agcs.save(agreementsGroupCondition);
+        }else {
+            agreementsGroupCondition.setAgreementsGroups(new CAgreementsGroups(json.get("idAg").asInt()));
+            agreementsGroupCondition.setTabulator(new BigDecimal(json.get("tabulator").asDouble()));
+            agreementsGroupCondition.setAmountMin(new BigDecimal(json.get("amountMin").asDouble()));
+            agreementsGroupCondition.setAmountMax(new BigDecimal(json.get("amountMax").asDouble()));
+            agreementsGroupCondition.setStatus(0);
+            agreementsGroupCondition.setTypeOperation(json.get("typeOperation").asInt());
+            agreementsGroupCondition.setcDateCalculation(new CDateCalculation(json.get("idDateCalculation").asInt()));
+
+            if (ultimateRow == null) {
+                agreementsGroupCondition.setOrder(1);
+            }
+            else {
+                agreementsGroupCondition.setOrder(ultimateRow.getOrder() + 1);
+            }
+
+            agc = agcs.save(agreementsGroupCondition);
         }
-        else {
-            agreementsGroupCondition.setOrder(ultimateRow.getOrder() + 1);
-        }
-        
-        AgreementsGroupCondition agc = agcs.save(agreementsGroupCondition);
-         return new ResponseEntity<String>(
+         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(agc),
                 HttpStatus.OK);
     }
-    
+
+
+    @RequestMapping(value= "/delete", method = RequestMethod.POST, headers = {"Accept=application/json; charset=UTF-8"})
+    public @ResponseBody ResponseEntity<String> deleteAgreementCondition(@RequestBody String data) throws Exception{
+        JsonNode json = mapper.readTree(data);
+
+        AgreementsGroupCondition agreementsGroupCondition = agcs.findById(json.get("idGroupCondition").asInt());
+        agcs.delete(agreementsGroupCondition);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(agcs.findAll()), HttpStatus.OK);
+    }
 }
