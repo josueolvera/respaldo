@@ -124,10 +124,10 @@ public class SapSaleController {
         LocalDateTime untilDate = (toDate == null || toDate.equals("")) ? null :
                 LocalDateTime.parse(toDate, DateTimeFormatter.ISO_DATE_TIME);
 
-        LocalDateTime ofJoinDate = (fromJoinDate == null || fromJoinDate.equals("")) ? null :
-                LocalDateTime.parse(fromJoinDate, DateTimeFormatter.ISO_DATE_TIME);
-        LocalDateTime untilJoinDate = (toJoinDate == null || toJoinDate.equals("")) ? null :
-                LocalDateTime.parse(toJoinDate, DateTimeFormatter.ISO_DATE_TIME);
+//        LocalDateTime ofJoinDate = (fromJoinDate == null || fromJoinDate.equals("")) ? null :
+//                LocalDateTime.parse(fromJoinDate, DateTimeFormatter.ISO_DATE_TIME);
+//        LocalDateTime untilJoinDate = (toJoinDate == null || toJoinDate.equals("")) ? null :
+//                LocalDateTime.parse(toJoinDate, DateTimeFormatter.ISO_DATE_TIME);
 
 
         List<CalculationRoles> calculationRolesList = calculationRolesService.findAll();
@@ -153,20 +153,20 @@ public class SapSaleController {
 //                        }
                     }
                 }
-                else if (role.getIdCalculationRole() == 5) {
-                    List<RolesGroupAgreements> rolesGroupAgreementsList = rolesGroupAgreementsService.findByRole(role.getIdCalculationRole());
-                    for (RolesGroupAgreements groupAgreements : rolesGroupAgreementsList) {
-                        List sapSales = sapSaleService.findByZonaGroup(groupAgreements.getIdAg(), ofDate, untilDate);
-
-                        CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
-
-                        commissionAmountGroupService.obtainAmountsbyZona(sapSales, agreementsGroups, ofDate, untilDate);
-
-                        List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg(), idDateCalculation);
-
-                        agreementsGroupConditionService.setTabulator(agreementsGroupConditionList);
-                    }
-                }
+//                else if (role.getIdCalculationRole() == 5) {
+//                    List<RolesGroupAgreements> rolesGroupAgreementsList = rolesGroupAgreementsService.findByRole(role.getIdCalculationRole());
+//                    for (RolesGroupAgreements groupAgreements : rolesGroupAgreementsList) {
+//                        List sapSales = sapSaleService.findByZonaGroup(groupAgreements.getIdAg(), ofDate, untilDate);
+//
+//                        CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(groupAgreements.getIdAg());
+//
+//                        commissionAmountGroupService.obtainAmountsbyZona(sapSales, agreementsGroups, ofDate, untilDate);
+//
+//                        List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(groupAgreements.getIdAg(), idDateCalculation);
+//
+//                        agreementsGroupConditionService.setTabulator(agreementsGroupConditionList);
+//                    }
+//                }
             }
         }else if (idDateCalculation == 2){
             for (CalculationRoles role : calculationRolesList){
