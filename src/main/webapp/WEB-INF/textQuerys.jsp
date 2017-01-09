@@ -91,7 +91,7 @@
                             this.name = '';
                             setInterval(function () {
                                 location.reload();
-                            }, 40000);
+                            }, 660000);
                         }).error(function () {
                             showAlert("Error al generar el archivo", {type: 3})
                         });
