@@ -649,47 +649,47 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
 //            aux6++;
 //        }
 //
-        Sheet hoja3 = wb.createSheet("Gerente Zonal");
-
-        //Se crea la fila que contiene la cabecera
-        Row row3 = hoja3.createRow(0);
-
-//        row3.createCell(0).setCellValue("DISTRIBUIDOR");
-        row3.createCell(0).setCellValue("ZONA");
-        row3.createCell(1).setCellValue("MONTO");
-        row3.createCell(2).setCellValue("TABULADOR");
-        row3.createCell(3).setCellValue("COMISION");
-
-        //Implementacion del estilo
-        for (Cell celda : row3) {
-            celda.setCellStyle(style);
-        }
-
-        List<CommissionAmountGroup> zonalList = commissionAmountGroupDao.findByGroupZonalAndZona();
-
-        int aux2 = 1;
-
-        for (CommissionAmountGroup zonal: zonalList){
-            row3 = hoja3.createRow(aux2);
-
-//            CDistributors distributors = cDistributorsDao.findById(zonal.getIdDistributor());
+//        Sheet hoja3 = wb.createSheet("Gerente Zonal");
 //
-//            if (distributors != null){
-//                row3.createCell(0).setCellValue(distributors.getDistributorName());
+//        //Se crea la fila que contiene la cabecera
+//        Row row3 = hoja3.createRow(0);
+//
+////        row3.createCell(0).setCellValue("DISTRIBUIDOR");
+//        row3.createCell(0).setCellValue("ZONA");
+//        row3.createCell(1).setCellValue("MONTO");
+//        row3.createCell(2).setCellValue("TABULADOR");
+//        row3.createCell(3).setCellValue("COMISION");
+//
+//        //Implementacion del estilo
+//        for (Cell celda : row3) {
+//            celda.setCellStyle(style);
+//        }
+//
+//        List<CommissionAmountGroup> zonalList = commissionAmountGroupDao.findByGroupZonalAndZona();
+//
+//        int aux2 = 1;
+//
+//        for (CommissionAmountGroup zonal: zonalList){
+//            row3 = hoja3.createRow(aux2);
+//
+////            CDistributors distributors = cDistributorsDao.findById(zonal.getIdDistributor());
+////
+////            if (distributors != null){
+////                row3.createCell(0).setCellValue(distributors.getDistributorName());
+////            }
+//
+//            CZonas zonas = cZonaDao.findById(zonal.getIdZona());
+//
+//            if (zonas != null){
+//                row3.createCell(0).setCellValue(zonas.getName());
 //            }
-
-            CZonas zonas = cZonaDao.findById(zonal.getIdZona());
-
-            if (zonas != null){
-                row3.createCell(0).setCellValue(zonas.getName());
-            }
-
-            row3.createCell(1).setCellValue(zonal.getAmount().doubleValue());
-            row3.createCell(2).setCellValue(zonal.getTabulator().doubleValue());
-            row3.createCell(3).setCellValue(zonal.getCommission().doubleValue());
-
-            aux2++;
-        }
+//
+//            row3.createCell(1).setCellValue(zonal.getAmount().doubleValue());
+//            row3.createCell(2).setCellValue(zonal.getTabulator().doubleValue());
+//            row3.createCell(3).setCellValue(zonal.getCommission().doubleValue());
+//
+//            aux2++;
+//        }
 //
 //        Sheet hoja4 = wb.createSheet("Gerente Regional");
 //
