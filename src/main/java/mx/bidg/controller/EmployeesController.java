@@ -92,6 +92,12 @@ public class EmployeesController {
     @Autowired
     private ObjectMapper mapper;
 
+    @Autowired
+    private EmailTemplatesService emailTemplatesService;
+
+    @Autowired
+    private  EmailDeliveryService emailDeliveryService;
+
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findEmployeesByDwEnterprise(
             @RequestParam(name = "idDwEnterprise", required = false) String idDwEnterprise
@@ -235,6 +241,20 @@ public class EmployeesController {
 
         CActionTypes cActionType = CActionTypes.ALTA;
         employeesHistoryService.save(dwEmployees,cActionType, accounts, user);
+
+        if(dwEmployees.getRole().getIdRole()== 63 || dwEmployees.getRole().getIdRole()==80){
+            EmailTemplates emailTemplate = emailTemplatesService.findByName("employee_high_notification");
+            emailTemplate.addProperty("dwEmployees",dwEmployees);
+            emailDeliveryService.deliverEmail(emailTemplate);
+        }else  if(dwEmployees.getRole().getIdRole()==60){
+            EmailTemplates emailTemplate = emailTemplatesService.findByName("promoter_high_notification");
+            emailTemplate.addProperty("dwEmployees",dwEmployees);
+            emailDeliveryService.deliverEmail(emailTemplate);
+        }else{
+            EmailTemplates emailTemplate = emailTemplatesService.findByName("employee_high_corporate");
+            emailTemplate.addProperty("dwEmployees",dwEmployees);
+            emailDeliveryService.deliverEmail(emailTemplate);
+        }
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(employee), HttpStatus.OK);
     }
