@@ -30,4 +30,5 @@ public interface AgreementsGroupConditionService {
     List<CommissionAmountGroup> obtainCommissionBySupervisor(List<AgreementsGroupCondition> agreementsGroupConditionList);
     List<AgreementsGroupCondition> changeStatusByCalculationDate(Integer idDateCalculation);
     List<CommissionAmountGroup> bonusApplicationNumber (List <AgreementsGroupCondition> agreementsGroupConditionList);
+    AgreementsGroupCondition findByAgreementsGroupAndOrder(Integer idAg, int order);
 }
