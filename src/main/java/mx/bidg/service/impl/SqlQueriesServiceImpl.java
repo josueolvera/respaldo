@@ -88,10 +88,10 @@ public class SqlQueriesServiceImpl implements SqlQueriesService {
             payrollService.corporateFortyName(stream, applicationDate1, applicationDate2, fileOutputStream);
             payrollService.reportDistributionNec(fileOutputStreamNec);
         }else  if (query.getIdQuery() == 4){
-            payrollService.reportWeeklyPay(stream, applicationDate1, applicationDate2, fileOutputStream);
+            payrollService.reportWeeklyPay(stream, applicationDate1, applicationDate2, fileOutputStream, queryResult);
             payrollService.reportDistributionNec(fileOutputStreamNec);
         }else  if (query.getIdQuery() == 5){
-            payrollService.monthlyPayrollReport(stream, applicationDate1, applicationDate2, fileOutputStream);
+            payrollService.monthlyPayrollReport(stream, applicationDate1, applicationDate2, fileOutputStream, queryResult);
             payrollService.reportDistributionNec(fileOutputStreamNec);
         }
 
