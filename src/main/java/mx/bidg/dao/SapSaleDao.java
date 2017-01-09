@@ -19,4 +19,5 @@ public interface SapSaleDao extends InterfaceDao<SapSale>  {
     List findByRegionGroup(List<GroupsAgreements>groupsAgreementsList, LocalDateTime fromDate, LocalDateTime toDate);
     List findByDistributorGroup(List<GroupsAgreements>groupsAgreementsList, LocalDateTime fromDate, LocalDateTime toDate);
     List findBySupervisorRoleAndGroup(Integer idEmployee,List<GroupsAgreements>groupsAgreementsList, LocalDateTime fromDate, LocalDateTime toDate);
+    Object sumTotalAmuntBeteween(LocalDateTime fromDate, LocalDateTime toDate);
 }
