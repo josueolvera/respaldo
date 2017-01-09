@@ -317,13 +317,22 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
 
         CActionTypes actionType = CActionTypes.BAJA;
         employeesHistoryService.save(dwEmployee, actionType, employeesAccounts.getAccount(), user);
-
+        DwEmployees dw=dwEmployee;
         dwEmployeesDao.delete(dwEmployee);
 
-        EmailTemplates emailTemplate = emailTemplatesService.findByName("employee_low_notification");
-        emailTemplate.addProperty("dwEmployee", dwEmployee);
-
-        emailDeliveryService.deliverEmail(emailTemplate);
+        if(dw.getRole().getIdRole()==63 ||dw.getRole().getIdRole()==80) {
+            EmailTemplates emailTemplate = emailTemplatesService.findByName("sucursal_notification");
+            emailTemplate.addProperty("dwEmployee", dw);
+            emailDeliveryService.deliverEmail(emailTemplate);
+        }else if(dw.getRole().getIdRole()==60){
+            EmailTemplates emailTemplate = emailTemplatesService.findByName("promotor_notification");
+            emailTemplate.addProperty("dwEmployee", dw);
+            emailDeliveryService.deliverEmail(emailTemplate);
+        }else {
+            EmailTemplates emailTemplate = emailTemplatesService.findByName("corporativo_notification");
+            emailTemplate.addProperty("dwEmployee", dw);
+            emailDeliveryService.deliverEmail(emailTemplate);
+        }
     }
 
     @Override
