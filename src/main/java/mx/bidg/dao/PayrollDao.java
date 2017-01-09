@@ -12,4 +12,5 @@ public interface PayrollDao extends InterfaceDao<Payroll> {
     Object sumGmtNec();
     List<Payroll> findByDistributor(Integer idDistributor);
     Object sumDistributorNec(Integer idDistributor);
+    List<Payroll> findAllByAmountPositives();
 }

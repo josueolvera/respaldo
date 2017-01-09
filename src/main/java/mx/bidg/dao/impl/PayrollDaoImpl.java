@@ -4,11 +4,10 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.PayrollDao;
 import mx.bidg.model.Payroll;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.ProjectionList;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -30,7 +29,7 @@ public class PayrollDaoImpl extends AbstractDao <Integer,Payroll> implements Pay
 
     @Override
     public List<Payroll> findAll() {
-        return createEntityCriteria().list();
+        return createEntityCriteria().addOrder(Order.asc("banco")).list();
     }
 
     @Override
@@ -60,12 +59,22 @@ public class PayrollDaoImpl extends AbstractDao <Integer,Payroll> implements Pay
         ProjectionList projectionList = Projections.projectionList();
 
         projectionList.add(Projections.sum("totalFacturar"));
-        return criteria.setProjection(projectionList).uniqueResult();
+        return criteria.setProjection(projectionList).add(Restrictions.ge("totalFacturar", new BigDecimal(0.001))).uniqueResult();
     }
 
     @Override
     public List<Payroll> findByDistributor(Integer idDistributor) {
-        return createEntityCriteria().add(Restrictions.eq("idDistribuidor", idDistributor)).list();
+        Criterion pago = Restrictions.ge("pago", new BigDecimal(0.001));
+        Criterion comisionNec = Restrictions.ge("comisionNec", new BigDecimal(0.001));
+        Criterion totalFacturar = Restrictions.ge("totalFacturar", new BigDecimal(0.001));
+
+        LogicalExpression expression = Restrictions.and(pago,comisionNec);
+        LogicalExpression expression2 = Restrictions.and(expression,totalFacturar);
+        return createEntityCriteria()
+                .add(Restrictions.eq("idDistribuidor", idDistributor))
+                .add(expression2)
+                .addOrder(Order.asc("banco"))
+                .list();
     }
 
     @Override
@@ -74,6 +83,23 @@ public class PayrollDaoImpl extends AbstractDao <Integer,Payroll> implements Pay
         ProjectionList projectionList = Projections.projectionList();
 
         projectionList.add(Projections.sum("totalFacturar"));
-        return criteria.setProjection(projectionList).add(Restrictions.eq("idDistribuidor", idDistributor)).uniqueResult();
+        return criteria.setProjection(projectionList)
+                .add(Restrictions.ge("totalFacturar", new BigDecimal(0.001)))
+                .add(Restrictions.eq("idDistribuidor", idDistributor))
+                .uniqueResult();
+    }
+
+    @Override
+    public List<Payroll> findAllByAmountPositives() {
+        Criterion pago = Restrictions.ge("pago", new BigDecimal(0.001));
+        Criterion comisionNec = Restrictions.ge("comisionNec", new BigDecimal(0.001));
+        Criterion totalFacturar = Restrictions.ge("totalFacturar", new BigDecimal(0.001));
+
+        LogicalExpression expression = Restrictions.and(pago,comisionNec);
+        LogicalExpression expression2 = Restrictions.and(expression,totalFacturar);
+        return createEntityCriteria()
+                .add(expression2)
+                .addOrder(Order.asc("banco"))
+                .list();
     }
 }
