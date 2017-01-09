@@ -90,7 +90,7 @@ public class EmailDeliveryServiceImpl implements EmailDeliveryService {
                             .add("title", emailTemplate.getMessageTitle())
                             .add("body", compiledMessage)
             );
-            messageBodyPart.setContent(content, "text/html");
+            messageBodyPart.setContent(content, "text/html; charset=UTF-8");
             multipart.addBodyPart(messageBodyPart);
 
             for (EmailTemplateFiles templateFile : emailTemplate.getEmailTemplateFilesList()) {
