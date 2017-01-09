@@ -310,6 +310,13 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
     }
 
     @Override
+    public List<DwEnterprises> findByDistributorForCalculation(Integer idDistributor) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("status", true)).list();
+    }
+
+    @Override
     public DwEnterprises findByCombination(CGroups group, CDistributors distributor, CRegions region, CBranchs branch, CAreas area) {
         Criteria criteria = createEntityCriteria();
         HashMap<String, Object> map = new HashMap<>();
