@@ -1,5 +1,7 @@
 package mx.bidg.dao;
 
+import mx.bidg.model.PolicyTruckdriver;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
