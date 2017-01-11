@@ -3,6 +3,7 @@ package mx.bidg.service.impl;
 import mx.bidg.dao.PolicyTruckdriverDao;
 import mx.bidg.model.PolicyTruckdriver;
 import mx.bidg.service.PolicyTruckdriverService;
+import org.exolab.castor.types.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -29,6 +30,10 @@ public class PolicyTruckdriverServiceImpl implements PolicyTruckdriverService {
         return policyTruckdriverDao.findById(idPTD);
     }
 
+    @Override
+    public List findByDate(String startdate) {
+        return policyTruckdriverDao.findDate(startdate);
+    }
     @Override
     public List<PolicyTruckdriver> findAll() {
         return policyTruckdriverDao.findAll();
