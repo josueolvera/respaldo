@@ -1,7 +1,7 @@
 package mx.bidg.dao.impl;
 
 import mx.bidg.dao.AbstractDao;
-import mx.bidg.dao.PolicyTruckdriver;
+import mx.bidg.model.PolicyTruckdriver;
 import mx.bidg.dao.PolicyTruckdriverDao;
 import org.springframework.stereotype.Repository;
 
