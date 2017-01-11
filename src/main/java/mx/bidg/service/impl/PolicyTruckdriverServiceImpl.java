@@ -5,12 +5,17 @@ import mx.bidg.model.PolicyTruckdriver;
 import mx.bidg.service.PolicyTruckdriverService;
 import org.exolab.castor.types.Date;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
  * Created by PC_YAIR on 11/01/2017.
  */
+
+@Service
+@Transactional
 public class PolicyTruckdriverServiceImpl implements PolicyTruckdriverService {
     @Autowired
     PolicyTruckdriverDao policyTruckdriverDao;
