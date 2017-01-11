@@ -37,4 +37,9 @@ public class PolicyTruckdriverDaoImpl extends AbstractDao<Integer, PolicyTruckdr
         delete(entity);
         return true;
     }
+
+    @Override
+    public List findDate(String starDate) {
+        return (List<PolicyTruckdriver>)createEntityCriteria().list();
+    }
 }
