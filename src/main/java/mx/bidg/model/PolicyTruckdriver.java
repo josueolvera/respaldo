@@ -2,28 +2,20 @@ package mx.bidg.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
@@ -42,70 +34,69 @@ public class PolicyTruckdriver implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID_TRUCKDRIVER")
     @JsonView (JsonViews.Root.class)
-
     private Integer idTruckdriver;
+
     @Size(max = 15)
     @Column(name = "NUM_LICENSE_PLATE")
     @JsonView (JsonViews.Root.class)
-
     private String numLicensePlate;
+
     @Size(max = 15)
     @Column(name = "NUM_FOLIO")
     @JsonView (JsonViews.Root.class)
-
     private String numFolio;
+
     @Column(name = "H_CONTRACTING")
     @JsonView (JsonViews.Root.class)
     @Temporal(TemporalType.TIME)
+    private LocalTime hContracting;
 
-    private Date hContracting;
     @Basic(optional = false)
     @NotNull
     @Column(name = "D_START_VALIDITY")
     @JsonView (JsonViews.Root.class)
-    @Temporal(TemporalType.TIMESTAMP)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDate dStartValidity;
 
-    private Date dStartValidity;
     @Basic(optional = false)
     @NotNull
     @Column(name = "D_END_VALIDITY")
     @JsonView (JsonViews.Root.class)
-    @Temporal(TemporalType.TIMESTAMP)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDate dEndValidity;
 
-    private Date dEndValidity;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "INSURANCE_AMOUNT")
     @JsonView (JsonViews.Root.class)
-
     private BigDecimal insuranceAmount;
+
     @Size(max = 40)
     @Column(name = "NAME_CCONDUCTOR")
     @JsonView (JsonViews.Root.class)
-
     private String nameCconductor;
+
     @Column(name = "DRIVER_AGE")
     @JsonView (JsonViews.Root.class)
-
     private Integer driverAge;
+
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Size(max = 25)
     @Column(name = "EMAIL")
     @JsonView (JsonViews.Root.class)
-
     private String email;
+
     @Size(max = 40)
     @Column(name = "NAME_BENEFICIARY")
     @JsonView (JsonViews.Root.class)
-
     private String nameBeneficiary;
+
     @Column(name = "BENEFICIARY_AGE")
     @JsonView (JsonViews.Root.class)
-
     private Integer beneficiaryAge;
+
     @JoinColumn(name = "ID_TYPE_SECURE", referencedColumnName = "ID_TYPE_SECURE")
     @ManyToOne
     @JsonView (JsonViews.Embedded.class)
-
     private CTypeSecure idTypeSecure;
 
     public PolicyTruckdriver() {
@@ -115,7 +106,7 @@ public class PolicyTruckdriver implements Serializable {
         this.idTruckdriver = idTruckdriver;
     }
 
-    public PolicyTruckdriver(Integer idTruckdriver, Date dStartValidity, Date dEndValidity) {
+    public PolicyTruckdriver(Integer idTruckdriver, LocalDate dStartValidity, LocalDate dEndValidity) {
         this.idTruckdriver = idTruckdriver;
         this.dStartValidity = dStartValidity;
         this.dEndValidity = dEndValidity;
@@ -145,27 +136,27 @@ public class PolicyTruckdriver implements Serializable {
         this.numFolio = numFolio;
     }
 
-    public Date getHContracting() {
+    public LocalTime getHContracting() {
         return hContracting;
     }
 
-    public void setHContracting(Date hContracting) {
+    public void setHContracting(LocalTime hContracting) {
         this.hContracting = hContracting;
     }
 
-    public Date getDStartValidity() {
+    public LocalDate getDStartValidity() {
         return dStartValidity;
     }
 
-    public void setDStartValidity(Date dStartValidity) {
+    public void setDStartValidity(LocalDate dStartValidity) {
         this.dStartValidity = dStartValidity;
     }
 
-    public Date getDEndValidity() {
+    public LocalDate getDEndValidity() {
         return dEndValidity;
     }
 
-    public void setDEndValidity(Date dEndValidity) {
+    public void setDEndValidity(LocalDate dEndValidity) {
         this.dEndValidity = dEndValidity;
     }
 
