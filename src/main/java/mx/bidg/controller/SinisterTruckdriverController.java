@@ -37,13 +37,12 @@ public class SinisterTruckdriverController {
         );
     }
 
-    @RequestMapping(value = "/get-polize/{idTypeAssistance}",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String>getSinister(@PathVariable int idTypeAssistance,
-                                             @RequestParam (name = "startDate",required = true)String startDate
+    @RequestMapping(value = "/get-polize",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getSinister(@RequestParam (name = "startDate",required = true)String startDate
                                              )throws Exception{
-        LocalDateTime ofDate = (startDate == null || startDate.equals("")) ? null :
+        LocalDateTime creationDate = (startDate == null || startDate.equals("")) ? null :
                 LocalDateTime.parse(startDate, DateTimeFormatter.ISO_DATE_TIME);
-        List<SinisterTruckdriver>ListFindIdAndDate=sinisterTruckdriverService.findByDateStart(idTypeAssistance,startDate);
+        List<SinisterTruckdriver> ListFindIdAndDate = sinisterTruckdriverService.findByCreationDate(creationDate);
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Root.class).writeValueAsString(ListFindIdAndDate),
                 HttpStatus.OK
