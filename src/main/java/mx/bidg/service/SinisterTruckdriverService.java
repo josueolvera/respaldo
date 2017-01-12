@@ -2,6 +2,7 @@ package mx.bidg.service;
 
 import mx.bidg.model.SinisterTruckdriver;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,4 +15,5 @@ public interface SinisterTruckdriverService {
     SinisterTruckdriver findByid (Integer idST);
     List<SinisterTruckdriver> findAll ();
     boolean delete (SinisterTruckdriver sinisterTruckdriver);
+    List<SinisterTruckdriver>findByDateStart(int idTipeAssistance, String startDate);
 }
