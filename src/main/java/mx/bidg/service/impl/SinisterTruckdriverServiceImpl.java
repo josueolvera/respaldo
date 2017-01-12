@@ -4,12 +4,17 @@ import mx.bidg.dao.SinisterTruckdriverDao;
 import mx.bidg.model.SinisterTruckdriver;
 import mx.bidg.service.SinisterTruckdriverService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by PC_YAIR on 11/01/2017.
  */
+@Service
+@Transactional
 public class SinisterTruckdriverServiceImpl implements SinisterTruckdriverService {
     @Autowired
     SinisterTruckdriverDao sinisterTruckdriverDao;
@@ -36,5 +41,10 @@ public class SinisterTruckdriverServiceImpl implements SinisterTruckdriverServic
     public boolean delete(SinisterTruckdriver sinisterTruckdriver) {
         sinisterTruckdriverDao.delete(sinisterTruckdriver);
         return true;
+    }
+
+    @Override
+    public List<SinisterTruckdriver> findByDateStart(int idTipeAssistance, String startDate) {
+        return sinisterTruckdriverDao.findByDateStart(idTipeAssistance,startDate);
     }
 }
