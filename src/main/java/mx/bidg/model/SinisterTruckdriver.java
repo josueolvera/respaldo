@@ -8,21 +8,14 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -42,47 +35,47 @@ public class SinisterTruckdriver implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID_SINISTER")
     @JsonView(JsonViews.Root.class)
-
     private Integer idSinister;
+
     @Column(name = "NUM_LICENSE_PLATE")
     @JsonView(JsonViews.Root.class)
-
     private Integer numLicensePlate;
+
     @Basic(optional = false)
     @NotNull
-    @JsonView(JsonViews.Root.class)
     @Column(name = "D_START_VALIDITY")
-    @Temporal(TemporalType.TIMESTAMP)
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime dStartValidity;
 
-    private Date dStartValidity;
     @Basic(optional = false)
     @NotNull
     @Column(name = "D_END_VALIDITY")
     @JsonView(JsonViews.Root.class)
-    @Temporal(TemporalType.TIMESTAMP)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime dEndValidity;
 
-    private Date dEndValidity;
     @Basic(optional = false)
     @NotNull
     @Column(name = "D_SINISTER")
     @Temporal(TemporalType.TIMESTAMP)
     @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime dSinister;
 
-    private Date dSinister;
     @Column(name = "H_SINISTER")
     @Temporal(TemporalType.TIME)
     @JsonView(JsonViews.Root.class)
+    private LocalTime hSinister;
 
-    private Date hSinister;
     @Size(max = 30)
     @Column(name = "LOCATION_SINISTER")
     @JsonView(JsonViews.Root.class)
-
     private String locationSinister;
+
     @JoinColumn(name = "ID_TYPE_ASSISTANCE", referencedColumnName = "ID_TYPE_ASSISTANCE")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
-
     private CTypeAssistance idTypeAssistance;
 
     public SinisterTruckdriver() {
@@ -92,7 +85,7 @@ public class SinisterTruckdriver implements Serializable {
         this.idSinister = idSinister;
     }
 
-    public SinisterTruckdriver(Integer idSinister, Date dStartValidity, Date dEndValidity, Date dSinister) {
+    public SinisterTruckdriver(Integer idSinister, LocalDateTime dStartValidity, LocalDateTime dEndValidity, LocalDateTime dSinister) {
         this.idSinister = idSinister;
         this.dStartValidity = dStartValidity;
         this.dEndValidity = dEndValidity;
@@ -115,35 +108,35 @@ public class SinisterTruckdriver implements Serializable {
         this.numLicensePlate = numLicensePlate;
     }
 
-    public Date getDStartValidity() {
+    public LocalDateTime getDStartValidity() {
         return dStartValidity;
     }
 
-    public void setDStartValidity(Date dStartValidity) {
+    public void setDStartValidity(LocalDateTime dStartValidity) {
         this.dStartValidity = dStartValidity;
     }
 
-    public Date getDEndValidity() {
+    public LocalDateTime getDEndValidity() {
         return dEndValidity;
     }
 
-    public void setDEndValidity(Date dEndValidity) {
+    public void setDEndValidity(LocalDateTime dEndValidity) {
         this.dEndValidity = dEndValidity;
     }
 
-    public Date getDSinister() {
+    public LocalDateTime getDSinister() {
         return dSinister;
     }
 
-    public void setDSinister(Date dSinister) {
+    public void setDSinister(LocalDateTime dSinister) {
         this.dSinister = dSinister;
     }
 
-    public Date getHSinister() {
+    public LocalTime getHSinister() {
         return hSinister;
     }
 
-    public void setHSinister(Date hSinister) {
+    public void setHSinister(LocalTime hSinister) {
         this.hSinister = hSinister;
     }
 
