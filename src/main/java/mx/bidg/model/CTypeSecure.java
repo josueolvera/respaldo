@@ -7,6 +7,7 @@ import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -36,16 +37,23 @@ public class CTypeSecure implements Serializable {
     @Basic(optional = false)
     @Column(name = "ID_TYPE_SECURE")
     @JsonView(JsonViews.Root.class)
-
     private Integer idTypeSecure;
+
     @Size(max = 35)
     @Column(name = "NAME")
     @JsonView(JsonViews.Root.class)
-
     private String name;
+
+    @Column(name = "PRICE_SALE")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal priceSale;
+
+    @Column(name = "COMMISSION")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal commission;
+
     @OneToMany(mappedBy = "idTypeSecure")
     @JsonView(JsonViews.Embedded.class)
-
     private List<PolicyTruckdriver> policyTruckdriverList;
 
     public CTypeSecure() {
@@ -69,6 +77,22 @@ public class CTypeSecure implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public BigDecimal getPriceSale() {
+        return priceSale;
+    }
+
+    public void setPriceSale(BigDecimal priceSale) {
+        this.priceSale = priceSale;
+    }
+
+    public BigDecimal getCommission() {
+        return commission;
+    }
+
+    public void setCommission(BigDecimal commission) {
+        this.commission = commission;
     }
 
     @XmlTransient
