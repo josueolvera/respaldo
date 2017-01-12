@@ -7,6 +7,7 @@ import org.apache.xmlbeans.impl.xb.xsdschema.RestrictionDocument;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -44,7 +45,9 @@ public class SinisterTruckdriverDaoImpl extends AbstractDao<Integer,SinisterTruc
     }
 
     @Override
-    public List<SinisterTruckdriver> findByDateStart(Integer idTipeAssistance, String startDate) {
-        return createEntityCriteria().add(Restrictions.eq("idTipeAssistance",idTipeAssistance)).add(Restrictions.eq("startDate",startDate)).list();
+    public List<SinisterTruckdriver> findByCreationDate(LocalDateTime creationDate) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("creationDate", creationDate))
+                .list();
     }
 }
