@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class SinisterTruckdriverServiceImpl implements SinisterTruckdriverServic
     }
 
     @Override
-    public List<SinisterTruckdriver> findByDateStart(int idTipeAssistance, String startDate) {
-        return sinisterTruckdriverDao.findByDateStart(idTipeAssistance,startDate);
+    public List<SinisterTruckdriver> findByCreationDate(LocalDateTime creationDate) {
+        return sinisterTruckdriverDao.findByCreationDate(creationDate);
     }
 }
