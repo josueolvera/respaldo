@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -36,9 +37,10 @@ public class PolicyTruckdriverServiceImpl implements PolicyTruckdriverService {
     }
 
     @Override
-    public List findByDate(String startdate) {
-        return policyTruckdriverDao.findDate(startdate);
+    public List<PolicyTruckdriver> findByDStartValidity(LocalDate startdate) {
+        return policyTruckdriverDao.findDStartValidity(startdate);
     }
+
     @Override
     public List<PolicyTruckdriver> findAll() {
         return policyTruckdriverDao.findAll();
