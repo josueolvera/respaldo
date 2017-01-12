@@ -3,8 +3,11 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.model.PolicyTruckdriver;
 import mx.bidg.dao.PolicyTruckdriverDao;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.ResizableByteArrayOutputStream;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -39,7 +42,7 @@ public class PolicyTruckdriverDaoImpl extends AbstractDao<Integer, PolicyTruckdr
     }
 
     @Override
-    public List findDate(String starDate) {
-        return (List<PolicyTruckdriver>)createEntityCriteria().list();
+    public List<PolicyTruckdriver> findDStartValidity(LocalDate starDate) {
+        return  createEntityCriteria().add(Restrictions.eq("dStartValidity", starDate)).list();
     }
 }
