@@ -3,6 +3,7 @@ package mx.bidg.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
 
@@ -10,7 +11,9 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateConverter;
 import mx.bidg.utils.DateTimeConverter;
+import mx.bidg.utils.TimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -48,21 +51,21 @@ public class PolicyTruckdriver implements Serializable {
 
     @Column(name = "H_CONTRACTING")
     @JsonView (JsonViews.Root.class)
-    @Temporal(TemporalType.TIME)
+    @Convert(converter = TimeConverter.class)
     private LocalTime hContracting;
 
     @Basic(optional = false)
     @NotNull
     @Column(name = "D_START_VALIDITY")
     @JsonView (JsonViews.Root.class)
-    @Convert(converter = DateTimeConverter.class)
+    @Convert(converter = DateConverter.class)
     private LocalDate dStartValidity;
 
     @Basic(optional = false)
     @NotNull
     @Column(name = "D_END_VALIDITY")
     @JsonView (JsonViews.Root.class)
-    @Convert(converter = DateTimeConverter.class)
+    @Convert(converter = DateConverter.class)
     private LocalDate dEndValidity;
 
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
@@ -94,10 +97,32 @@ public class PolicyTruckdriver implements Serializable {
     @JsonView (JsonViews.Root.class)
     private Integer beneficiaryAge;
 
+    @Column(name = "ID_TYPE_SECURE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private int idTypeSecure;
+
     @JoinColumn(name = "ID_TYPE_SECURE", referencedColumnName = "ID_TYPE_SECURE")
     @ManyToOne
     @JsonView (JsonViews.Embedded.class)
-    private CTypeSecure idTypeSecure;
+    private CTypeSecure cTypeSecure;
+
+    @Basic(optional = false)
+    @Column(name = "CREATION_DATE", updatable = false)
+    @Convert(converter = DateTimeConverter.class)
+    @JsonView(JsonViews.Root.class)
+    private LocalDateTime creationDate;
+
+    @Transient
+    @JsonView(JsonViews.Embedded.class)
+    private BigDecimal priceSale;
+
+    @Transient
+    @JsonView(JsonViews.Embedded.class)
+    private BigDecimal cost;
+
+    @Transient
+    @JsonView(JsonViews.Embedded.class)
+    private BigDecimal total;
 
     public PolicyTruckdriver() {
     }
@@ -136,29 +161,6 @@ public class PolicyTruckdriver implements Serializable {
         this.numFolio = numFolio;
     }
 
-    public LocalTime getHContracting() {
-        return hContracting;
-    }
-
-    public void setHContracting(LocalTime hContracting) {
-        this.hContracting = hContracting;
-    }
-
-    public LocalDate getDStartValidity() {
-        return dStartValidity;
-    }
-
-    public void setDStartValidity(LocalDate dStartValidity) {
-        this.dStartValidity = dStartValidity;
-    }
-
-    public LocalDate getDEndValidity() {
-        return dEndValidity;
-    }
-
-    public void setDEndValidity(LocalDate dEndValidity) {
-        this.dEndValidity = dEndValidity;
-    }
 
     public BigDecimal getInsuranceAmount() {
         return insuranceAmount;
@@ -208,12 +210,76 @@ public class PolicyTruckdriver implements Serializable {
         this.beneficiaryAge = beneficiaryAge;
     }
 
-    public CTypeSecure getIdTypeSecure() {
+    public int getIdTypeSecure() {
         return idTypeSecure;
     }
 
-    public void setIdTypeSecure(CTypeSecure idTypeSecure) {
+    public void setIdTypeSecure(int idTypeSecure) {
         this.idTypeSecure = idTypeSecure;
+    }
+
+    public CTypeSecure getcTypeSecure() {
+        return cTypeSecure;
+    }
+
+    public void setcTypeSecure(CTypeSecure cTypeSecure) {
+        this.cTypeSecure = cTypeSecure;
+    }
+
+    public LocalTime gethContracting() {
+        return hContracting;
+    }
+
+    public void sethContracting(LocalTime hContracting) {
+        this.hContracting = hContracting;
+    }
+
+    public LocalDate getdStartValidity() {
+        return dStartValidity;
+    }
+
+    public void setdStartValidity(LocalDate dStartValidity) {
+        this.dStartValidity = dStartValidity;
+    }
+
+    public LocalDate getdEndValidity() {
+        return dEndValidity;
+    }
+
+    public void setdEndValidity(LocalDate dEndValidity) {
+        this.dEndValidity = dEndValidity;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public BigDecimal getPriceSale() {
+        return priceSale;
+    }
+
+    public void setPriceSale(BigDecimal priceSale) {
+        this.priceSale = priceSale;
+    }
+
+    public BigDecimal getCost() {
+        return cost;
+    }
+
+    public void setCost(BigDecimal cost) {
+        this.cost = cost;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
     }
 
     @Override
