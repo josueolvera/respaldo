@@ -19,11 +19,18 @@
                 },
                 data: {
                     isThereItems: false,
-                    policys:{},
+                    Polycys: [],
+                    searching: false,
+
                     selected:{
+
                         startDate:'',
                         policy:null
-                    }
+                    },
+
+
+
+                    registerNumber: 0
                 },
                 methods : {
                     activateDateTimePickerStart: function () {
@@ -38,20 +45,43 @@
                         }).data();
 
                     },
-                    searchPolize: function (policy,startDate) {
-                        console.log(this.selected)
-                        if(policy.idTypePolicy==1){
-
-                        }else if(policy.idTypePolicy==2){
-
-                        }else{
-
-                        }
+                    destroyDateTimePickerStart: function () {
+                        this.activateDateTimePickerStart();
+                        $("#startDate").on("dp.change", function (e) {
+                        });
                     },
-                    getPolicys:function () {
-                        this.$http.get(ROOT_URL+'/c-type-policy').success(function (data) {
-                            this.policys=data;
-                        })
+
+
+                    getPolicysByDate: function () {
+                        var self = this;
+                        this.$http.get(
+                                ROOT_URL + '/policy-truckdriver/get-by-date?startDate='+this.selected.startDate
+                        ).success(function (data) {
+                            this.Polycys = data;
+                            if (this.Polycys.length > 0) {
+                                this.registerNumber = this.Polycys.length;
+                                this.isThereItems = true;
+                            } else {
+                                showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
+                                setInterval(function () {
+                                    location.reload();
+                                }, 3000);
+                            }
+                        }).error(function (data) {
+                            showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
+                        });
+                    },
+
+                    startDateChanged: function () {
+                        this.isThereItems = false;
+                    },
+                    endDateChanged: function () {
+                        this.isThereItems = false;
+                    },
+
+                    searchPolize: function (policy,startDate) {
+                      this.getPolicysByDate();
+
                     }
                 }
             });
@@ -64,7 +94,7 @@
                     <div class="col-md-8">
                         <h2>Conciliación camionero</h2>
                     </div>
-                    <div class="col-md-2" style="margin-top: 35px">
+                    <div class="col-md-2" v-if="Polycys.length > 0"  style="margin-top: 35px">
                         <label><p style="color: darkblue">Nùmero de registros: {{registerNumber}}</p></label>
                     </div>
                 </div>
@@ -72,15 +102,6 @@
                     <form v-on:submit.prevent="searchPolize(selected.policy, selected.startDate)">
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="col-md-4">
-                                    <label>Selecciona el tipo de poliza</label>
-                                    <select class="form-control" v-model="selected.policy">
-                                        <option></option>
-                                        <option v-for="policy in policys" value="{{policy}}" >
-                                            {{policy.name}}
-                                        </option>
-                                    </select>
-                                </div>
                                 <div class="col-md-2">
                                     <label>Fecha de aplicacion</label>
                                     <div class="form-group">
@@ -93,7 +114,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-2">
-                                    <button style="margin-top: 25px" class="btn btn-info">Consultar</button>
+                                    <button style="margin-top: 25px" class="btn btn-info" @Click="getPolicysByDate">Consultar</button>
                                 </div>
                             </div>
                         </div>
@@ -101,22 +122,25 @@
                 </div>
                 <div class="col-md-12">
                     <br>
-                    <div style="background: #ddd" class="panel panel-default">
-                        <div class="flex-box container-fluid">
+                    <div v-if="!isThereItems && searching == true"
+                         style="height: 6rem; padding: 2rem 0;">
+                        <div class="loader">Cargando...</div>
+                    </div>
+                    <div style="background: #ddd" class="panel panel-default" v-if="isThereItems">
+                        <!-- Default panel contents -->
+                        <!-- Table de contenidos -->
+                        <div class="flex-box container-fluid" v-if="dwEmployees.length > 0">
                             <div class="row table-header active">
-                                <div class="col-md-2"><b>Id</b></div>
-                                <div class="col-md-2"><b>No. de placa</b></div>
-                                <div class="col-md-2"><b>No. de folio </b></div>
-                                <div class="col-md-2"><b>Fecha inicial</b></div>
-                                <div class="col-md-2"><b>Fecha final</b></div>
-                                <div class="col-md-2"><b>Suma del seguro</b></div>
+                                <div class="col-md-1"><b>Numero de polizas</b></div>
+                                <div class="col-md-2"><b>Precio de Venta</b></div>
+                                <div class="col-md-2"><b>Comisión</b></div>
+                                <div class="col-md-1"><b>Diferencia</b></div>
                             </div>
                             <br>
                             <div class="table-body flex-row flex-content">
                                 <div class="row table-row" v-for="dwEmployee in dwEmployees">
-                                    {{poliza.idSinister}}
-                                    {{}}
-                                    {{}
+                                    <div class="col-md-1">{{Polycys.}}</div>
+
                                 </div>
                             </div>
                         </div>
