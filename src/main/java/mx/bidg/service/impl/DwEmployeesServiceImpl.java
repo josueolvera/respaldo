@@ -324,7 +324,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
             EmailTemplates emailTemplate = emailTemplatesService.findByName("sucursal_notification");
             emailTemplate.addProperty("dwEmployee", dw);
             emailDeliveryService.deliverEmail(emailTemplate);
-        }else if(dw.getRole().getIdRole()==60){
+        }else if(dw.getRole().getIdRole()==64){
             EmailTemplates emailTemplate = emailTemplatesService.findByName("promotor_notification");
             emailTemplate.addProperty("dwEmployee", dw);
             emailDeliveryService.deliverEmail(emailTemplate);
