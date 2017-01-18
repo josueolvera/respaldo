@@ -90,6 +90,12 @@ public class SinisterTruckdriver implements Serializable {
     @JsonView(JsonViews.Root.class)
     private LocalDateTime creationDate;
 
+    @Size(max = 30)
+    @Column(name = "AUTHORIZATION_NUMBER")
+    @JsonView (JsonViews.Root.class)
+    private String authorizationNumber;
+
+
     public SinisterTruckdriver() {
     }
 
@@ -182,6 +188,14 @@ public class SinisterTruckdriver implements Serializable {
 
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public String getAuthorizationNumber() {
+        return authorizationNumber;
+    }
+
+    public void setAuthorizationNumber(String authorizationNumber) {
+        this.authorizationNumber = authorizationNumber;
     }
 
     @Override
