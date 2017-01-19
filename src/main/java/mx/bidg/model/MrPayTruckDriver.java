@@ -10,11 +10,13 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
+import mx.bidg.utils.TimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -63,8 +65,8 @@ public class MrPayTruckDriver implements Serializable {
 
     @Column(name = "PAYMENT_HOUR")
     @JsonView(JsonViews.Root.class)
-    @Convert(converter = DateTimeConverter.class)
-    private LocalDateTime paymentHour;
+    @Convert(converter = TimeConverter.class)
+    private LocalTime paymentHour;
 
     @JoinColumn(name = "ID_METHOD_PAY", referencedColumnName = "ID_METHOD_PAY")
     @ManyToOne(optional = false)
@@ -78,7 +80,7 @@ public class MrPayTruckDriver implements Serializable {
         this.idPayTruckDriver = idPayTruckDriver;
     }
 
-    public MrPayTruckDriver(Integer idPayTruckDriver, LocalDateTime paymentDate, LocalDateTime paymentHour) {
+    public MrPayTruckDriver(Integer idPayTruckDriver, LocalDateTime paymentDate, LocalTime paymentHour) {
         this.idPayTruckDriver = idPayTruckDriver;
         this.paymentDate = paymentDate;
         this.paymentHour = paymentHour;
@@ -132,11 +134,11 @@ public class MrPayTruckDriver implements Serializable {
         this.paymentDate = paymentDate;
     }
 
-    public LocalDateTime getPaymentHour() {
+    public LocalTime getPaymentHour() {
         return paymentHour;
     }
 
-    public void setPaymentHour(LocalDateTime paymentHour) {
+    public void setPaymentHour(LocalTime paymentHour) {
         this.paymentHour = paymentHour;
     }
 
