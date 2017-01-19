@@ -15,24 +15,31 @@
             var vm = new Vue({
                 el: '#content',
                 ready: function () {
-                    this.getPolicys();
                 },
                 data: {
                     isThereItems: false,
                     Polycys: [],
                     searching: false,
-
+                    precioVenta:0,
+                    costo:0,
+                    totales:0,
+                    diferencia:0,
                     selected:{
-
                         startDate:'',
                         policy:null
                     },
-
-
-
-                    registerNumber: 0
+                    registerNumber: 0,
+                    var1: 0,
+                    var2: 0,
+                    var3: 0
                 },
                 methods : {
+                    arrayObjectIndexOf: function (myArray, searchTerm, property) {
+                        for (var i = 0, len = myArray.length; i < len; i++) {
+                            if (myArray[i][property] === searchTerm) return i;
+                        }
+                        return -1;
+                    },
                     activateDateTimePickerStart: function () {
                         var date = new Date();
                         var dd = new Date().getDate()-1;
@@ -43,21 +50,30 @@
                             useCurrent: false,
                             maxDate: currentDate
                         }).data();
-
                     },
                     destroyDateTimePickerStart: function () {
                         this.activateDateTimePickerStart();
                         $("#startDate").on("dp.change", function (e) {
                         });
                     },
-
-
                     getPolicysByDate: function () {
                         var self = this;
                         this.$http.get(
                                 ROOT_URL + '/policy-truckdriver/get-by-date?startDate='+this.selected.startDate
                         ).success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (policy) {
+                                if (isNaN(policy.cTypeSecure)) {
+                                    jsonObjectIndex[policy.cTypeSecure._id] = policy.cTypeSecure;
+                                } else {
+                                    policy.cTypeSecure = jsonObjectIndex[policy.cTypeSecure];
+                                }
+                            });
                             this.Polycys = data;
+                            this.sumTotals();
+                            this.var1 = this.totales.toFixed(2);
+                            this.var2 = this.precioVenta.toFixed(2);
+                            this.var3 = this.costo.toFixed(2);
                             if (this.Polycys.length > 0) {
                                 this.registerNumber = this.Polycys.length;
                                 this.isThereItems = true;
@@ -71,7 +87,6 @@
                             showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
                         });
                     },
-
                     startDateChanged: function () {
                         this.isThereItems = false;
                     },
@@ -82,10 +97,40 @@
                     searchPolize: function (policy,startDate) {
                       this.getPolicysByDate();
 
+                    },
+                    sumTotals: function () {
+                        var self = this;
+                        this.Polycys.forEach(function (policy) {
+                            self.precioVenta += policy.priceSale;
+                            self.costo+=policy.cost;
+                            self.totales+=policy.total;
+                        });
                     }
                 }
             });
         </script>
+    </jsp:attribute>
+    <jsp:attribute name="styles">
+        <style>
+            .table-header {
+                padding: 1rem;
+                margin-top: 2rem;
+                background: black;
+                color: white;
+
+            }
+            .table-body .table-row:nth-child(2n+1) {
+                background: white;
+                overflow: auto;
+                border:solid 1px;
+            }
+            .table-row {
+                padding: 1rem;
+            }
+            .flex-content {
+                overflow-x: hidden;
+            }
+        </style>
     </jsp:attribute>
     <jsp:body>
         <div id="content">
@@ -99,7 +144,6 @@
                     </div>
                 </div>
                 <div class="row">
-                    <form v-on:submit.prevent="searchPolize(selected.policy, selected.startDate)">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="col-md-2">
@@ -118,7 +162,6 @@
                                 </div>
                             </div>
                         </div>
-                    </form>
                 </div>
                 <div class="col-md-12">
                     <br>
@@ -129,20 +172,41 @@
                     <div style="background: #ddd" class="panel panel-default" v-if="isThereItems">
                         <!-- Default panel contents -->
                         <!-- Table de contenidos -->
-                        <div class="flex-box container-fluid" v-if="dwEmployees.length > 0">
+                        <div class="flex-box container-fluid" v-if="Polycys.length > 0" style="width:100%">
                             <div class="row table-header active">
-                                <div class="col-md-1"><b>Numero de polizas</b></div>
-                                <div class="col-md-2"><b>Precio de Venta</b></div>
-                                <div class="col-md-2"><b>Comisión</b></div>
+                                <div class="col-md-1"><b>No de placa</b></div>
+                                <div class="col-md-2"><b>No de folio</b></div>
+                                <div class="col-md-2"><b>Inicio vigencia</b></div>
+                                <div class="col-md-2"><b>Fin vigencia</b></div>
+                                <div class="col-md-1"><b>Monto asegurado</b></div>
+                                <div class="col-md-1"><b>Tipo seguro</b></div>
+                                <div class="col-md-1"><b>Precio venta</b></div>
+                                <div class="col-md-1"><b>Comisión</b></div>
                                 <div class="col-md-1"><b>Diferencia</b></div>
                             </div>
                             <br>
                             <div class="table-body flex-row flex-content">
-                                <div class="row table-row" v-for="dwEmployee in dwEmployees">
-                                    <div class="col-md-1">{{Polycys.}}</div>
-
+                                <div class="row table-row" v-for="policy in Polycys">
+                                    <div class="col-md-1">{{policy.numLicensePlate}}</div>
+                                    <div class="col-md-2">{{policy.numFolio}}</div>
+                                    <div class="col-md-2">{{policy.dStartValidity.dayOfMonth}}-{{policy.dStartValidity.monthValue}}-{{policy.dStartValidity.year}}</div>
+                                    <div class="col-md-2">{{policy.dEndValidity.dayOfMonth}}-{{policy.dEndValidity.monthValue}}-{{policy.dEndValidity.year}}</div>
+                                    <div class="col-md-1">{{policy.insuranceAmount}}</div>
+                                    <div class="col-md-1">{{policy.cTypeSecure.name}}</div>
+                                    <div class="col-md-1">{{policy.priceSale}}</div>
+                                    <div class="col-md-1">{{policy.cost}}</div>
+                                    <div class="col-md-1">{{policy.total}}</div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="table-body flex-row flex-content"  v-if="Polycys.length > 0" style="width:100%">
+                        <div class="row table-row">
+                            <div class="col-md-1">Totales:</div>
+                            <div class="col-md-8"></div>
+                            <div class="col-md-1">{{var2}}</div>
+                            <div class="col-md-1">{{var3}}</div>
+                            <div class="col-md-1">{{var1}}</div>
                         </div>
                     </div>
                 </div>
