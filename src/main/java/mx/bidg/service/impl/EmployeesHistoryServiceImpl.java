@@ -157,4 +157,9 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
         }
         return new EmployeesHistory();
     }
+
+    @Override
+    public List<EmployeesHistory> findByIdDistributor(Integer idDistributor) {
+        return employeesHistoryDao.findByDistributor(idDistributor);
+    }
 }

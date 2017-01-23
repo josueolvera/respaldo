@@ -27,4 +27,5 @@ public interface EmployeesHistoryService {
             Integer idEmployee
     );
     EmployeesHistory save(DwEmployees dwEmployee, CActionTypes actionType, Accounts accounts, Users user);
+    List<EmployeesHistory>findByIdDistributor(Integer idDistributor);
 }
