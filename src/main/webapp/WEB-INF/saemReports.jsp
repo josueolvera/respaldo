@@ -818,7 +818,7 @@
             <div class="col-md-12">
                 <div class="row">
                     <div class="col-md-8">
-                        <h2>Generador de reportes</h2>
+                        <h2>Reportes de plantilla</h2>
                     </div>
                     <div class="col-md-2">
                     </div>
