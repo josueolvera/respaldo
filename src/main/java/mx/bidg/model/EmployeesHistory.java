@@ -286,7 +286,19 @@ public class EmployeesHistory implements Serializable {
     @Transient
     @JsonView(JsonViews.Embedded.class)
     private CActionTypes actionTypesR;
-    
+
+    @Transient
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal totalSumPerception;
+
+    @Transient
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal totalSumDeduction;
+
+    @Transient
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal total;
+
     public EmployeesHistory() {
     }
 
@@ -778,6 +790,30 @@ public class EmployeesHistory implements Serializable {
 
     public void setActionTypesR(CActionTypes actionTypesR) {
         this.actionTypesR = actionTypesR;
+    }
+
+    public BigDecimal getTotalSumPerception() {
+        return totalSumPerception;
+    }
+
+    public void setTotalSumPerception(BigDecimal totalSumPerception) {
+        this.totalSumPerception = totalSumPerception;
+    }
+
+    public BigDecimal getTotalSumDeduction() {
+        return totalSumDeduction;
+    }
+
+    public void setTotalSumDeduction(BigDecimal totalSumDeduction) {
+        this.totalSumDeduction = totalSumDeduction;
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public void setTotal(BigDecimal total) {
+        this.total = total;
     }
 
     @Override
