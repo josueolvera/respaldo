@@ -44,13 +44,10 @@ public class CTypeSecure implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String name;
 
-    @Column(name = "PRICE_SALE")
+    @Size(max = 3)
+    @Column(name = "TYPE_SECURE")
     @JsonView(JsonViews.Root.class)
-    private BigDecimal priceSale;
-
-    @Column(name = "COMMISSION")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal commission;
+    private String typeSecure;
 
     @OneToMany(mappedBy = "idTypeSecure")
     @JsonView(JsonViews.Embedded.class)
@@ -79,20 +76,12 @@ public class CTypeSecure implements Serializable {
         this.name = name;
     }
 
-    public BigDecimal getPriceSale() {
-        return priceSale;
+    public String getTypeSecure() {
+        return typeSecure;
     }
 
-    public void setPriceSale(BigDecimal priceSale) {
-        this.priceSale = priceSale;
-    }
-
-    public BigDecimal getCommission() {
-        return commission;
-    }
-
-    public void setCommission(BigDecimal commission) {
-        this.commission = commission;
+    public void setTypeSecure(String typeSecure) {
+        this.typeSecure = typeSecure;
     }
 
     @XmlTransient

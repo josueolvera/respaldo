@@ -124,6 +124,11 @@ public class PolicyTruckdriver implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private BigDecimal total;
 
+    @Size(max = 30)
+    @Column(name = "AUTHORIZATION_NUMBER")
+    @JsonView (JsonViews.Root.class)
+    private String authorizationNumber;
+
     public PolicyTruckdriver() {
     }
 
@@ -280,6 +285,14 @@ public class PolicyTruckdriver implements Serializable {
 
     public void setTotal(BigDecimal total) {
         this.total = total;
+    }
+
+    public String getAuthorizationNumber() {
+        return authorizationNumber;
+    }
+
+    public void setAuthorizationNumber(String authorizationNumber) {
+        this.authorizationNumber = authorizationNumber;
     }
 
     @Override
