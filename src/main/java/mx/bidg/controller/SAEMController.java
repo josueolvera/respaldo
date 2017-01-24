@@ -90,4 +90,12 @@ public class SAEMController {
         model.setViewName("reportsOutsourcingRoster");
         return model;
     }
+
+    @RequestMapping(value = "/consulting",method = RequestMethod.GET, produces ="text/html;charset=UTF-8")
+    public ModelAndView saemConsulting(){
+    ModelAndView model = new ModelAndView();
+    model.setViewName("Consulting");
+    return model;
+
+    }
 }
