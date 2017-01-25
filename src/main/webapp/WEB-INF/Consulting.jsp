@@ -56,6 +56,7 @@
             },
 
             data: {
+                URLSearch:'',
                 dwEmployees: [],
                 employeesHistories: [],
                 isThereItems: false,
@@ -68,13 +69,14 @@
                 createReportUrl: '',
                 startDate: '',
                 endDate: '',
-
+                reports:{},
                 distributors: {},
                 select : {
                     distributor:null,
                     startdate:'',
                     endDate:'',
-                    numEmployeeSearch:''
+                    numEmployeeSearch:'',
+                    report:null
                 },
                 registerNumber: 0,
                 var1: 0,
@@ -160,6 +162,7 @@
 
                 onExportButton: function () {
                     $("#exportModal").modal("show");
+                    location.href = ROOT_URL+'/report-by-employee?idEmployee=41&fileName=prueba';
                 },
 
                 createReport: function () {
@@ -183,7 +186,7 @@
 
                     this.dateTimePickerStart = $('#startDate').datetimepicker({
                         locale: 'es',
-                        format: 'DD-MM-YYYY',
+                        format: 'YYYY-MM-DDT00:00:00',
                         useCurrent: false,
                         maxDate: currentDate
                     }).data();
@@ -199,7 +202,7 @@
 
                     this.dateTimePickerEnd = $('#endDate').datetimepicker({
                         locale: 'es',
-                        format: 'DD-MM-YYYY',
+                        format: 'YYYY-MM-DDT00:00:00',
                         useCurrent: false,
                         minDate: minDate,
                         maxDate: currentDate
@@ -231,20 +234,75 @@
                         this.aux4 = false;
                     }
                 },
+                getIdEmployee:function () {
+                    var self = this;
+                    this.$http.get(ROOT_URL+'/employees-history/get-perception?idEmployee='+this.select.numEmployeeSearch).success(function (data) {
+                                this.reports=data;
+                                if (this.reports!=null) {
+                                    self.URLSearch = ROOT_URL+'/employees-history/get-perception?idEmployee='+this.select.numEmployeeSearch;
+                                    this.isThereItems = true;
+                                } else {
+                                    showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
+                                    setInterval(function () {
+                                        location.reload();
+                                    }, 3000);
+                                }
+                            }).error(function (data) {
+                                showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
+                            });
+                },
+                getDistributor: function () {
+                    var self = this;
+                    this.$http.get(ROOT_URL+'/employees-history/get-perception?idDistributor='+this.select.distributor.idDistributor).success(function (data) {
+                        this.reports=data;
+                        if (this.reports!=null) {
+                            self.URLSearch = ROOT_URL+'/employees-history/get-perception?idDistributor='+this.select.distributor.idDistributor;
+                            this.isThereItems = true;
+                        }else {
+                            showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
+                            setInterval(function () {
+                            location.reload();
+                            }, 3000);
+                        }
+                    }).error(function (data) {
+                        showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
+                    });
+                },
+                getByDate: function () {
+                    var self = this;
+                    this.$http.get(ROOT_URL + '/employees-history/get-perception?startDate='
+                                        + this.select.startdate + '&endDate=' + this.select.endDate).success(function (data) {
+                                    this.reports = data;
+                        if (this.reports!=null) {
+                            self.URLSearch=ROOT_URL + '/employees-history/get-perception?startDate='
+                                    + this.select.startdate + '&endDate=' + this.select.endDate;
+                            this.isThereItems = true;
+                        }else {
+                            showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
+                            setInterval(function () {
+                                location.reload();
+                            }, 8000);
+                        }
+                    }).error(function (data) {
+                        showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
+                    });
+                },
                 findPerseptionsDeductions: function () {
-                    if (this.select.numEmployeeSearch.length == 0 && this.select.distributor.distributorName.length == 0){
-                        showAlert("Es necesario ingresar un id empleado o un distribuidor", {type:3});
-                    }else {
-                        if(this.select.startdate.length > 0){
-                            if (this.select.endDate.length == 0){
+                    var self = this;
+                    if(this.select.startdate.length > 0){
+                        if (this.select.endDate.length == 0){
                                 showAlert("Es necesario ingresar una fecha final", {type: 3});
                             }else {
-                                showAlert("Aqui llamada AJAX");
-                            }
-                        }else {
-                            showAlert("Aqui llamada AJAX");
+                                this.getByDate();
                         }
                     }
+                        if(this.select.numEmployeeSearch!=null){
+                            this.getIdEmployee();
+                        }
+
+                        if(self.select.distributor!=null){
+                            this.getDistributor();
+                        }
                 }
             }
         });
@@ -278,7 +336,7 @@
                     <select :disabled ="aux2" v-model="select.distributor" class="form-control " @change="validateFields">
                         <option></option>
                         <option v-for="distributor in distributors" :value="distributor">
-                            {{ distributor.distributorName}}
+                            {{distributor.distributorName}}
                         </option>
                     </select>
                 </div>
@@ -329,28 +387,24 @@
                     <div style="background: #ddd" class="panel panel-default"  v-if="isThereItems" >
                         <!-- Default panel contents -->
                         <!-- Table de contenidos -->
-                        <div class="flex-box container-fluid"  v-if="dwEmployees.length > 0">
+                        <div class="flex-box container-fluid"  v-if="reports.length > 0">
                             <div class="row table-header active">
                                 <div class="col-md-2"><b>No de empleado</b></div>
                                 <div class="col-md-2"><b>Nombre</b></div>
                                 <div class="col-md-2"><b>RFC</b></div>
                                 <div class="col-md-2"><b>Total de percepción</b></div>
                                 <div class="col-md-2"><b>Total de deducción</b></div>
-                                <div class="col-md-1"><b>Total</b></div>
+                                <div class="col-md-2"><b>Total</b></div>
                             </div>
                             <br>
                             <div class="table-body flex-row flex-content">
-                                <div class="row table-row " v-for="dwEmployee in dwEmployees" onmouseover='this.style.background="#2ba6cb"' onmouseout='this.style.background="#DDDDDD"'>
-                                    <div class="col-md-1">{{dwEmployee.idEmployee}}</div>
-                                    <div class="col-md-2">{{dwEmployee.fullName}}</div>
-                                    <div class="col-md-2">{{dwEmployee.rfc}}</div>
-                                    <div class="col-md-2">{{policy.dStartValidity.dayOfMonth}}-{{policy.dStartValidity.monthValue}}-{{policy.dStartValidity.year}}</div>
-                                    <div class="col-md-2">{{policy.dEndValidity.dayOfMonth}}-{{policy.dEndValidity.monthValue}}-{{policy.dEndValidity.year}}</div>
-                                    <div class="col-md-1">{{policy.insuranceAmount}}</div>
-                                    <div class="col-md-1">{{policy.cTypeSecure.name}}</div>
-                                    <div class="col-md-1">{{policy.priceSale}}</div>
-                                    <div class="col-md-1">{{policy.cost}}</div>
-                                    <div class="col-md-1">{{policy.total}}</div>
+                                <div class="row table-row " v-for="report in reports" onmouseover='this.style.background="#2ba6cb"' onmouseout='this.style.background="#DDDDDD"'>
+                                    <div class="col-md-2">{{report.idEmployee}}</div>
+                                    <div class="col-md-2">{{report.fullName}}</div>
+                                    <div class="col-md-2">{{report.rfc}}</div>
+                                    <div class="col-md-2">{{report.totalSumPerception}}</div>
+                                    <div class="col-md-2">{{report.totalSumDeduction}}</div>
+                                    <div class="col-md-2">{{report.total}}</div>
                                 </div>
                             </div>
                         </div>
