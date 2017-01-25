@@ -9,6 +9,7 @@ import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.jdbc.object.SqlQuery;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
@@ -105,5 +106,15 @@ public class SqlQueriesDaoImpl extends AbstractDao<Integer, SqlQueries> implemen
     @Override
     public List<SqlQueries> findByCalculateReport() {
         return (List<SqlQueries>) createEntityCriteria().add(Restrictions.eq("calculate",2)).list();
+    }
+
+    @Override
+    public List executeReportPerceptionDeduction(SqlQueries query, Integer idEmployee, Integer idDistributor, String startDate, String endDate) {
+        SQLQuery sqlQuery = (SQLQuery) getSession().createSQLQuery(query.getSqlQuery())
+                .setParameter("idEmployee",idEmployee)
+                .setParameter("idDistributor",idDistributor)
+                .setParameter("fecha1",startDate)
+                .setParameter("fecha2",endDate);
+        return sqlQuery.list();
     }
 }

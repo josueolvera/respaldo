@@ -16,4 +16,5 @@ public interface SqlQueriesDao extends InterfaceDao<SqlQueries> {
     SqlQueries findQuery (Integer idQuery);
     List executeProcedurestoReport(SqlQueries query, String startDate, String endDate, String week4Init);
     List<SqlQueries>findByCalculateReport();
+    List executeReportPerceptionDeduction(SqlQueries query, Integer idEmployee,Integer idDistributor, String startDate, String endDate);
 }
