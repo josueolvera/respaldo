@@ -114,4 +114,10 @@ public class SqlQueriesServiceImpl implements SqlQueriesService {
         return queryResult;
     }
 
+    @Override
+    public List executeProcedurePD(SqlQueries query, Integer idEmployee, Integer idDistributor, String startDate, String endDate) {
+        List queryResult = sqlQueriesDao.executeReportPerceptionDeduction(query,idEmployee,idDistributor,startDate,endDate);
+        return queryResult;
+    }
+
 }

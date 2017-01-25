@@ -25,4 +25,5 @@ public interface SqlQueriesService {
     SqlQueries update(SqlQueries query);
     List<SqlQueries> findByReportCost();
     List executeProcedureReportCost(SqlQueries query, String startDate, String endDate,String week4Init);
+    List executeProcedurePD(SqlQueries query,Integer idEmployee,Integer idDistributor, String startDate, String endDate);
 }
