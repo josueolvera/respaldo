@@ -162,4 +162,9 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
     public List<EmployeesHistory> findByIdDistributor(Integer idDistributor) {
         return employeesHistoryDao.findByDistributor(idDistributor);
     }
+
+    @Override
+    public EmployeesHistory findIdEmployee(Integer idEmployee) {
+        return employeesHistoryDao.findIdEmployee(idEmployee);
+    }
 }
