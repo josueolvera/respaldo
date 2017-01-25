@@ -8,11 +8,13 @@ import mx.bidg.model.Users;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
+import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -79,4 +81,34 @@ public class PerceptionsDeductionsDaoImpl extends AbstractDao<Integer, Perceptio
                 .add(Restrictions.eq("status", true))
                 .list();
     }
+
+    @Override
+    public List<PerceptionsDeductions> findByIdEmployee(Integer idEmployee) {
+        Criteria criteria = createEntityCriteria();
+        return criteria.add(Restrictions.eq("idEmployee", idEmployee)).list();
+    }
+
+    @Override
+    public List<PerceptionsDeductions> findByStartDateEndDate(LocalDateTime startDate, LocalDateTime endDate) {
+        Criteria criteria = createEntityCriteria();
+        return criteria.add(Restrictions.between("applicationDate",startDate,endDate)).list();
+    }
+
+    @Override
+    public List<PerceptionsDeductions> findIdEmployeeAndActives(Integer idEmployee) {
+        Criteria criteria = createEntityCriteria();
+        return criteria.add(Restrictions.eq("idEmployee", idEmployee))
+                .add(Restrictions.eq("status", true)).list();
+    }
+
+//    @Override
+//    public List<PerceptionsDeductions> findByIdDistributorAndApplicationDate(Integer idDistributor, LocalDateTime ofDate, LocalDateTime untilDate) {
+//        Criteria criteria = createEntityCriteria();
+//        return criteria.createAlias("","")
+//                .add(Restrictions.between("applicationDate",ofDate,untilDate))
+//                .add(Restrictions.eq("status", true))
+//                .
+//                .list();
+//    }
+
 }

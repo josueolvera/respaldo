@@ -15,4 +15,8 @@ public interface PerceptionsDeductionsDao extends InterfaceDao<PerceptionsDeduct
     List<PerceptionsDeductions> findAllWithStatus();
     List calculateBonus(SqlQueries sqlQueries, Users user, String ofDate, String untilDate);
     List<PerceptionsDeductions> findByIdEmployeeAndApplicationDate(Integer idEmployee, LocalDateTime ofDate, LocalDateTime untilDate);
+    List<PerceptionsDeductions>findByIdEmployee(Integer idEmployee);
+    List<PerceptionsDeductions>findByStartDateEndDate(LocalDateTime startDate, LocalDateTime endDate);
+    List<PerceptionsDeductions> findIdEmployeeAndActives(Integer idEmployee);
+    //List<PerceptionsDeductions>findByIdDistributorAndApplicationDate(Integer idDistributor, LocalDateTime ofDate, LocalDateTime untilDate);
 }
