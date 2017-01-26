@@ -86,7 +86,11 @@
                 aux1: false,
                 aux2: false,
                 aux3: false,
-                aux4: false
+                aux4: false,
+                dateTimePickerStart: '',
+                dateTimePickerEndDate: '',
+                picked: '',
+                idDistributor: ''
               },
 
 
@@ -106,9 +110,6 @@
                         this.distributors = data;
                     });
                 },
-
-
-
                 getPolicysByDate: function () {
                     var self = this;
                     this.$http.get(
@@ -162,23 +163,45 @@
 
                 onExportButton: function () {
                     $("#exportModal").modal("show");
-                    location.href = ROOT_URL+'/report-by-employee?idEmployee=41&fileName=prueba';
                 },
 
                 createReport: function () {
                     if (this.reportFileName != '') {
-                        $("#exportModal").modal("hide");
-                        var createReportUrl = this.setEmployeesUrlCharacters(this.createReportUrl);
-                        createReportUrl += 'reportFileName=' + this.reportFileName;
-                        this.reportFileName = '';
-                        location.href = createReportUrl;
+                        if (this.picked !=  ''){
+                            if (this.picked == "false"){
+                                if(this.select.numEmployeeSearch != ""){
+                                    if(this.select.startdate.length != 0){
+                                        if (this.select.endDate.length != 0){
+                                            this.reportByIdEmployeeAndDate();
+                                        }
+                                    }else {
+                                        this.reportIdEmployee();
+                                    }
+                                }else if (this.select.distributor != null){
+                                    if(this.select.startdate.length != 0){
+                                        if (this.select.endDate.length != 0){
+                                            this.reportByDistributorAndDate();
+                                        }
+                                    }else {
+                                        this.reportDistributor();
+                                    }
+                                }else if(this.select.startdate.length != 0){
+                                    if (this.select.endDate.length != 0){
+                                        this.reportByDate();
+                                    }else {
+                                        showAlert("Es necesario ingresar una fecha final", {type: 3});
+                                    }
+                                }
+                            }else {
+                                this.reportSql();
+                            }
+                        }else {
+                            showAlert("Debe escoger un tipo de reporte", {type: 3});
+                        }
                     } else {
                         showAlert("Debe asignar un nombre de archivo", {type: 3});
-                        return;
                     }
                 },
-
-
                 activateDateTimePickerStart: function () {
 
                     var date = new Date();
@@ -186,36 +209,22 @@
 
                     this.dateTimePickerStart = $('#startDate').datetimepicker({
                         locale: 'es',
-                        format: 'YYYY-MM-DDT00:00:00',
+                        format: 'DD-MM-YYYY',
                         useCurrent: false,
                         maxDate: currentDate
                     }).data();
 
                 },
-                activateDateTimePickerEnd: function (startDate) {
+                activateDateTimePickerEndApplicationDate: function (fechaInicial) {
 
-                    var minDate = moment(startDate, 'DD-MM-YYYY')
-                            .format('YYYY-MM-DD');
+                    var fecha = moment(fechaInicial, 'DD-MM-YYYY').format('YYYY-MM-DD');
 
-                    var date = new Date();
-                    var currentDate = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-
-                    this.dateTimePickerEnd = $('#endDate').datetimepicker({
+                    this.dateTimePickerEndDate = $('#applicationDateEnd').datetimepicker({
                         locale: 'es',
-                        format: 'YYYY-MM-DDT00:00:00',
+                        format: 'DD-MM-YYYY',
                         useCurrent: false,
-                        minDate: minDate,
-                        maxDate: currentDate
+                        minDate: fecha
                     }).data();
-                },
-                destroyDateTimePickerStart: function () {
-                    this.activateDateTimePickerStart();
-                    $("#startDate").on("dp.change", function (e) {
-                        $('#endDate').data("DateTimePicker").minDate(e.date);
-                    });
-                    $("#endDate").on("dp.change", function (e) {
-                        $('#startDate').data("DateTimePicker").maxDate(e.date);
-                    });
                 },
                 validateFields: function () {
                     if (this.select.numEmployeeSearch.length > 0) {
@@ -236,10 +245,9 @@
                 },
                 getIdEmployee:function () {
                     var self = this;
-                    this.$http.get(ROOT_URL+'/employees-history/get-perception?idEmployee='+this.select.numEmployeeSearch).success(function (data) {
-                                this.reports=data;
-                                if (this.reports!=null) {
-                                    self.URLSearch = ROOT_URL+'/employees-history/get-perception?idEmployee='+this.select.numEmployeeSearch;
+                    this.$http.get(ROOT_URL+"/employees-history/get-perception?idEmployee="+this.select.numEmployeeSearch).success(function (data) {
+                                this.reports = data;
+                                if (this.reports.length > 0) {
                                     this.isThereItems = true;
                                 } else {
                                     showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
@@ -249,14 +257,16 @@
                                 }
                             }).error(function (data) {
                                 showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
+                        setInterval(function () {
+                            location.reload();
+                        }, 3000);
                             });
                 },
                 getDistributor: function () {
                     var self = this;
                     this.$http.get(ROOT_URL+'/employees-history/get-perception?idDistributor='+this.select.distributor.idDistributor).success(function (data) {
-                        this.reports=data;
-                        if (this.reports!=null) {
-                            self.URLSearch = ROOT_URL+'/employees-history/get-perception?idDistributor='+this.select.distributor.idDistributor;
+                        this.reports = data;
+                        if (this.reports.length > 0) {
                             this.isThereItems = true;
                         }else {
                             showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
@@ -266,16 +276,19 @@
                         }
                     }).error(function (data) {
                         showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
+                        setInterval(function () {
+                            location.reload();
+                        }, 3000);
                     });
                 },
                 getByDate: function () {
                     var self = this;
+                    this.startDate = this.dateTimePickerStart.DateTimePicker.date().toISOString().slice(0, -1);
+                    this.endDate = this.dateTimePickerEndDate.DateTimePicker.date().toISOString().slice(0, -1);
                     this.$http.get(ROOT_URL + '/employees-history/get-perception?startDate='
-                                        + this.select.startdate + '&endDate=' + this.select.endDate).success(function (data) {
+                                        + this.startDate + '&endDate=' + this.endDate).success(function (data) {
                                     this.reports = data;
-                        if (this.reports!=null) {
-                            self.URLSearch=ROOT_URL + '/employees-history/get-perception?startDate='
-                                    + this.select.startdate + '&endDate=' + this.select.endDate;
+                        if (this.reports.length > 0) {
                             this.isThereItems = true;
                         }else {
                             showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
@@ -285,24 +298,155 @@
                         }
                     }).error(function (data) {
                         showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
+                        setInterval(function () {
+                            location.reload();
+                        }, 8000);
+                    });
+                },
+                getByIdEmployeeAndDate: function () {
+                    this.startDate = this.dateTimePickerStart.DateTimePicker.date().toISOString().slice(0, -1);
+                    this.endDate = this.dateTimePickerEndDate.DateTimePicker.date().toISOString().slice(0, -1);
+                    this.$http.get(ROOT_URL + '/employees-history/get-perception?idEmployee='+this.select.numEmployeeSearch+'&startDate='
+                            + this.startDate + '&endDate=' + this.endDate).success(function (data) {
+                        this.reports = data;
+                        if (this.reports.length > 0) {
+                            this.isThereItems = true;
+                        }else {
+                            showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
+                            setInterval(function () {
+                                location.reload();
+                            }, 8000);
+                        }
+                    }).error(function (data) {
+                        showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
+                        setInterval(function () {
+                            location.reload();
+                        }, 8000);
+                    });
+                },
+                getByDistributorAndDate: function () {
+                    this.startDate = this.dateTimePickerStart.DateTimePicker.date().toISOString().slice(0, -1);
+                    this.endDate = this.dateTimePickerEndDate.DateTimePicker.date().toISOString().slice(0, -1);
+                    this.$http.get(ROOT_URL + '/employees-history/get-perception?idDistributor='+this.select.distributor.idDistributor+'&startDate='
+                            + this.startDate + '&endDate=' + this.endDate).success(function (data) {
+                        this.reports = data;
+                        if (this.reports.length > 0) {
+                            this.isThereItems = true;
+                        }else {
+                            showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
+                            setInterval(function () {
+                                location.reload();
+                            }, 8000);
+                        }
+                    }).error(function (data) {
+                        showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
+                        setInterval(function () {
+                            location.reload();
+                        }, 8000);
                     });
                 },
                 findPerseptionsDeductions: function () {
                     var self = this;
-                    if(this.select.startdate.length > 0){
-                        if (this.select.endDate.length == 0){
+                        if(this.select.numEmployeeSearch != ""){
+                            if(this.select.startdate.length != ""){
+                                if (this.select.endDate.length == 0){
+                                    showAlert("Es necesario ingresar una fecha final", {type: 3});
+                                }else {
+                                    this.getByIdEmployeeAndDate();
+                                }
+                            }else {
+                                this.getIdEmployee();
+                            }
+                        }else if (this.select.distributor != null){
+                            this.idDistributor = this.select.distributor.idDistributor;
+                            if(this.select.startdate.length != ""){
+                                if (this.select.endDate.length == 0){
+                                    showAlert("Es necesario ingresar una fecha final", {type: 3});
+                                }else {
+                                    this.getByDistributorAndDate();
+                                }
+                            }else {
+                                this.getDistributor();
+                            }
+                        }else if(this.select.startdate.length != ""){
+                            if (this.select.endDate.length == 0){
                                 showAlert("Es necesario ingresar una fecha final", {type: 3});
                             }else {
                                 this.getByDate();
+                            }
                         }
-                    }
-                        if(this.select.numEmployeeSearch!=null){
-                            this.getIdEmployee();
-                        }
+                },
+                reportIdEmployee:function () {
+                    var self = this;
+                    $("#exportModal").modal("hide");
+                    location.href = ROOT_URL+"/employees-history/report-by-employee?idEmployee="+this.select.numEmployeeSearch+"&fileName="+this.reportFileName;
+                    this.picked = "";
+                    this.reportFileName = "";
+                },
+                reportDistributor: function () {
+                    var self = this;
+                    $("#exportModal").modal("hide");
+                    location.href = ROOT_URL+"/employees-history/report-by-employee?idDistributor="+this.select.distributor.idDistributor+"&fileName="+this.reportFileName;
+                    this.picked = "";
+                    this.reportFileName = "";
+                },
+                reportByDate: function () {
+                    var self = this;
+                    this.startDate = this.dateTimePickerStart.DateTimePicker.date().toISOString().slice(0, -1);
+                    this.endDate = this.dateTimePickerEndDate.DateTimePicker.date().toISOString().slice(0, -1);
+                    $("#exportModal").modal("hide");
+                    location.href = ROOT_URL+"/employees-history/report-by-employee?startDate="
+                            + this.startDate + "&endDate=" + this.endDate+"&fileName="+this.reportFileName;
+                    this.picked = "";
+                    this.reportFileName = "";
+                },
+                reportByIdEmployeeAndDate: function () {
+                    this.startDate = this.dateTimePickerStart.DateTimePicker.date().toISOString().slice(0, -1);
+                    this.endDate = this.dateTimePickerEndDate.DateTimePicker.date().toISOString().slice(0, -1);
+                    $("#exportModal").modal("hide");
+                    location.href = ROOT_URL+"/employees-history/report-by-employee?idEmployee="+this.select.numEmployeeSearch+"&startDate="
+                            + this.startDate + "&endDate=" + this.endDate+"&fileName="+this.reportFileName;
+                    this.picked = "";
+                    this.reportFileName = "";
+                },
+                reportByDistributorAndDate: function () {
+                    this.startDate = this.dateTimePickerStart.DateTimePicker.date().toISOString().slice(0, -1);
+                    this.endDate = this.dateTimePickerEndDate.DateTimePicker.date().toISOString().slice(0, -1);
+                    $("#exportModal").modal("hide");
+                    location.href = ROOT_URL+"/employees-history/report-by-employee?idDistributor="+this.select.distributor.idDistributor+"&startDate="
+                            + this.startDate + "&endDate=" + this.endDate+"&fileName="+this.reportFileName;
+                    this.picked = "";
+                    this.reportFileName = "";
+                },
+                reportSql: function () {
+                    $("#exportModal").modal("hide");
+                    var fechaInicial = "0000-00-00";
+                    var fechaFinal = "0000-00-00";
 
-                        if(self.select.distributor!=null){
-                            this.getDistributor();
-                        }
+
+                    if(this.select.startdate.length != 0 && this.select.endDate.length != 0 ){
+                        fechaInicial = moment(this.select.startdate,'DD-MM-YYYY').format('YYYY-MM-DD');
+                        fechaFinal = moment(this.select.endDate,'DD-MM-YYYY').format('YYYY-MM-DD');
+                    }
+
+                    var distribuidor = '';
+
+                    if (this.idDistributor <= 0){
+                        distribuidor = 0;
+                    }else {
+                        distribuidor = this.select.distributor.idDistributor;
+                    }
+
+                    var idEmployee = this.select.numEmployeeSearch;
+
+                    if (idEmployee == ""){
+                        idEmployee = '';
+                    }
+
+                    location.href = ROOT_URL+"/employees-history/execute-report?idEmployee="+idEmployee+"&idDistributor="+distribuidor+"&startDate="
+                            + fechaInicial + "&endDate=" + fechaFinal + "&fileName=" + this.reportFileName;
+                    this.picked = "";
+                    this.reportFileName = "";
                 }
             }
         });
@@ -347,7 +491,8 @@
                     <div class="form-group">
                         <div class="input-group date" id="startDate">
                             <input type="text" class="form-control" v-model="select.startdate" :disabled ="aux3">
-                            <span class="input-group-addon" @click="destroyDateTimePickerStart">
+                            <span class="input-group-addon"
+                            @click="activateDateTimePickerStart()">
                             <span class="glyphicon glyphicon-calendar"></span>
                             </span>
                         </div>
@@ -358,10 +503,10 @@
                         Fecha final
                     </label>
                     <div class="form-group">
-                        <div class="input-group date" id="endDate">
+                        <div class="input-group date" id="applicationDateEnd">
                             <input  type="text" class="form-control" v-model="select.endDate" :disabled ="aux4">
                             <span class="input-group-addon"
-                                  @click="activateDateTimePickerEnd(select.startdate)">
+                                  @click="activateDateTimePickerEndApplicationDate(select.startdate)">
                             <span class="glyphicon glyphicon-calendar"></span>
                             </span>
                         </div>
@@ -443,19 +588,16 @@
                             <div clas ="col-md-2">
                             <div class="checkbox">
                                 <label>
-                                    <input type="radio"  id="input-1" value="radio1" v-model="picked">
+                                    <input type="radio"  id="input-1" value="true" v-model="picked">
                                     Con desglose
                                 </label>
-                            </div>
                                 <br>
                                 <br>
-
-                            </div>
-                            <div class="checkbox">
                                 <label>
-                                    <input  type="radio"  id="input-2" value="radio2" v-model="picked" >
+                                    <input  type="radio"  id="input-2" value="false" v-model="picked">
                                     Sin desglose
                                 </label>
+                            </div>
                             </div>
                         </div>
                         <br>
