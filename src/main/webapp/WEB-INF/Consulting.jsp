@@ -69,7 +69,7 @@
                 createReportUrl: '',
                 startDate: '',
                 endDate: '',
-                reports:{},
+                reports:[],
                 distributors: {},
                 select : {
                     distributor:null,
@@ -90,7 +90,13 @@
                 dateTimePickerStart: '',
                 dateTimePickerEndDate: '',
                 picked: '',
-                idDistributor: ''
+                idDistributor: '',
+                totalPercepcion:0,
+                totalDeduccion:0,
+                totalTotal:0,
+                var1:0,
+                var2:0,
+                var3:0
               },
 
 
@@ -249,6 +255,10 @@
                                 this.reports = data;
                                 if (this.reports.length > 0) {
                                     this.isThereItems = true;
+                                    this.sumTotals();
+                                    this.var1 = this.totalPercepcion.toFixed(2);
+                                    this.var2 = this.totalDeduccion.toFixed(2);
+                                    this.var3 = this.totalTotal.toFixed(2);
                                 } else {
                                     showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
                                     setInterval(function () {
@@ -268,6 +278,10 @@
                         this.reports = data;
                         if (this.reports.length > 0) {
                             this.isThereItems = true;
+                            this.sumTotals();
+                            this.var1 = this.totalPercepcion.toFixed(2);
+                            this.var2 = this.totalDeduccion.toFixed(2);
+                            this.var3 = this.totalTotal.toFixed(2);
                         }else {
                             showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
                             setInterval(function () {
@@ -290,6 +304,10 @@
                                     this.reports = data;
                         if (this.reports.length > 0) {
                             this.isThereItems = true;
+                            this.sumTotals();
+                            this.var1 = this.totalPercepcion.toFixed(2);
+                            this.var2 = this.totalDeduccion.toFixed(2);
+                            this.var3 = this.totalTotal.toFixed(2);
                         }else {
                             showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
                             setInterval(function () {
@@ -311,6 +329,10 @@
                         this.reports = data;
                         if (this.reports.length > 0) {
                             this.isThereItems = true;
+                            this.sumTotals();
+                            this.var1 = this.totalPercepcion.toFixed(2);
+                            this.var2 = this.totalDeduccion.toFixed(2);
+                            this.var3 = this.totalTotal.toFixed(2);
                         }else {
                             showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
                             setInterval(function () {
@@ -332,6 +354,10 @@
                         this.reports = data;
                         if (this.reports.length > 0) {
                             this.isThereItems = true;
+                            this.sumTotals();
+                            this.var1 = this.totalPercepcion.toFixed(2);
+                            this.var2 = this.totalDeduccion.toFixed(2);
+                            this.var3 = this.totalTotal.toFixed(2);
                         }else {
                             showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
                             setInterval(function () {
@@ -447,13 +473,45 @@
                             + fechaInicial + "&endDate=" + fechaFinal + "&fileName=" + this.reportFileName;
                     this.picked = "";
                     this.reportFileName = "";
+                },
+                sumTotals: function () {
+                    var self = this;
+                    this.reports.forEach(function (report) {
+                        self.totalPercepcion += report.totalSumPerception;
+                        self.totalDeduccion += report.totalSumDeduction;
+                        self.totalTotal += report.total;
+                    });
                 }
             }
         });
     </script>
 
     </jsp:attribute>
+    <jsp:attribute name="styles">
+        <style>
+            .table-header {
+                padding: 1rem;
+                margin-top: 2rem;
+                background: black;
+                color: white;
 
+            }
+            .table-body .table-row:nth-child(2n+1){
+                background: white;
+                overflow: auto;
+                border:solid 1px;
+            }
+            .table-row {
+                padding: 1rem;
+            }
+            .flex-content {
+                overflow-x: hidden;
+            }
+            .table-hover {
+                background-color: #2ba6cb;
+            }
+        </style>
+    </jsp:attribute>
 <jsp:body>
     <div id="content" class="flex-box container-fluid">
     <div>
@@ -469,7 +527,7 @@
     </div>
         <div class="row">
             <div class="panel panel-default">
-            <div class="panel-heading">Datos de la busqueda</div>
+            <div style="background: #286090; color: white" class="panel-heading">Datos de la busqueda</div>
             <div class="panel-body">
                 <div class="col-md-2">
                     <label>No. Empleado</label>
@@ -554,13 +612,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="table-body flex-row flex-content"  v-if="Polycys.length > 0" style="width:100%">
+                    <div class="table-body flex-row flex-content"  v-if="reports.length > 0" style="width:100%">
                         <div class="row table-row" style="font-weight: bold;">
-                            <div class="col-md-1">Totales:</div>
-                            <div class="col-md-8"></div>
-                            <div class="col-md-1">{{var2}}</div>
-                            <div class="col-md-1">{{var3}}</div>
-                            <div class="col-md-1">{{var1}}</div>
+                            <div class="col-md-2">Totales:</div>
+                            <div class="col-md-4"></div>
+                            <div class="col-md-2">{{var1}}</div>
+                            <div class="col-md-2">{{var2}}</div>
+                            <div class="col-md-2">{{var3}}</div>
                         </div>
                     </div>
                 </div>
