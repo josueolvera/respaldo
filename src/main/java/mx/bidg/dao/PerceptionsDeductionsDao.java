@@ -18,5 +18,4 @@ public interface PerceptionsDeductionsDao extends InterfaceDao<PerceptionsDeduct
     List<PerceptionsDeductions>findByIdEmployee(Integer idEmployee);
     List<PerceptionsDeductions>findByStartDateEndDate(LocalDateTime startDate, LocalDateTime endDate);
     List<PerceptionsDeductions> findIdEmployeeAndActives(Integer idEmployee);
-    //List<PerceptionsDeductions>findByIdDistributorAndApplicationDate(Integer idDistributor, LocalDateTime ofDate, LocalDateTime untilDate);
 }
