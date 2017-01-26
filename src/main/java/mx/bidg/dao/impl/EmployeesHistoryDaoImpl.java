@@ -152,4 +152,20 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
         return (EmployeesHistory) criteria.add(Restrictions.eq("idEmployee",idEmployee))
                 .add(Restrictions.eq("hStatus",1)).uniqueResult();
     }
+
+    @Override
+    public EmployeesHistory findIdDistributor(Integer idDistributor) {
+        Criteria criteria = createEntityCriteria();
+        return (EmployeesHistory) criteria.add(Restrictions.eq("idDistributor",idDistributor))
+                .add(Restrictions.eq("hStatus",1)).uniqueResult();
+    }
+
+    @Override
+    public List<EmployeesHistory> findIdEmployeeAndIdDistributor(Integer idEmployee,Integer idDistributor) {
+        Criteria criteria = createEntityCriteria();
+        return criteria
+                .add(Restrictions.eq("idEmployee",idEmployee))
+                .add(Restrictions.eq("idDistributor",idDistributor))
+                .add(Restrictions.eq("hStatus",1)).list();
+    }
 }

@@ -27,4 +27,6 @@ public interface EmployeesHistoryDao  extends InterfaceDao<EmployeesHistory>  {
     EmployeesHistory findByIdEmployeeAndLastRegister(Integer idEmployee);
     List<EmployeesHistory>findByDistributor(Integer idDistributor);
     EmployeesHistory findIdEmployee(Integer idEmployee);
+    EmployeesHistory findIdDistributor(Integer idDistributor);
+    List<EmployeesHistory> findIdEmployeeAndIdDistributor(Integer idEmployee,Integer idDistributor);
 }
