@@ -3,10 +3,7 @@ package mx.bidg.controller;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.config.JsonViews;
-import mx.bidg.model.AuthorizationReports;
-import mx.bidg.model.CalculationReport;
-import mx.bidg.model.EmailTemplates;
-import mx.bidg.model.SqlQueries;
+import mx.bidg.model.*;
 import mx.bidg.pojos.RejectReportPojo;
 import mx.bidg.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +44,18 @@ public class AuthorizationReportsController {
 
     @Autowired
     private EmailDeliveryService emailDeliveryService;
+
+    @Autowired
+    CDistributorsService cDistributorsService;
+
+    @Autowired
+    EmployeesHistoryService employeesHistoryService;
+
+    @Autowired
+    PerceptionsDeductionsService perceptionsDeductionsService;
+
+    @Autowired
+    OutsourcingService outsourcingService;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findAll () throws IOException{
@@ -149,6 +158,52 @@ public class AuthorizationReportsController {
                     SqlQueries sqlQuery = sqlQueriesService.findQuery(jnode.get("reportRole").get("idQuery").asInt());
                     sqlQuery.setCalculate(1);
                     sqlQuery =  sqlQueriesService.update(sqlQuery);
+
+                    if (calculationReport.getStatus() == 1){
+                        if (calculationReport.getIdQuery() == 1){
+                            List<CDistributors> cDistributorsList = cDistributorsService.getDistributorForSaem(null, false);
+                            if (!cDistributorsList.isEmpty()){
+                                List<EmployeesHistory> employeesHistories = employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(0,cDistributorsList,null,null,null,null,null,null,null,null,null,null);
+                                if (!employeesHistories.isEmpty()){
+                                    List<PerceptionsDeductions> perceptionsDeductionsList = perceptionsDeductionsService.findByAllEmployeesAndInitialDateAndFinalDate(employeesHistories, calculationReport.getInitialDate(), calculationReport.getFinalDate());
+                                    if (!perceptionsDeductionsList.isEmpty()){
+                                        for (PerceptionsDeductions perceptionsDeductions : perceptionsDeductionsList){
+                                            perceptionsDeductions.setStatus(false);
+                                            perceptionsDeductionsService.update(perceptionsDeductions);
+                                        }
+                                    }
+                                    List<Outsourcing> outsourcingList = outsourcingService.findByAllEmployeesAndApplicationDate(employeesHistories, calculationReport.getInitialDate(), calculationReport.getFinalDate());
+                                    if (!outsourcingList.isEmpty()){
+                                        for (Outsourcing outsourcing : outsourcingList){
+                                            outsourcing.setStatus(0);
+                                            outsourcingService.update(outsourcing);
+                                        }
+                                    }
+                                }
+                            }
+                        }else{
+                            List<CDistributors> distribucionList = cDistributorsService.getDistributorForSaem(null, true);
+                            if (!distribucionList.isEmpty()){
+                                List<EmployeesHistory> employeesHistories = employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(0,distribucionList,null,null,null,null,null,null,null,null,null,null);
+                                if (!employeesHistories.isEmpty()){
+                                    List<PerceptionsDeductions> perceptionsDeductionsList = perceptionsDeductionsService.findByAllEmployeesAndInitialDateAndFinalDate(employeesHistories, calculationReport.getInitialDate(), calculationReport.getFinalDate());
+                                    if (!perceptionsDeductionsList.isEmpty()){
+                                        for (PerceptionsDeductions perceptionsDeductions : perceptionsDeductionsList){
+                                            perceptionsDeductions.setStatus(false);
+                                            perceptionsDeductionsService.update(perceptionsDeductions);
+                                        }
+                                    }
+                                    List<Outsourcing> outsourcingList = outsourcingService.findByAllEmployeesAndApplicationDate(employeesHistories, calculationReport.getInitialDate(), calculationReport.getFinalDate());
+                                    if (!outsourcingList.isEmpty()){
+                                        for (Outsourcing outsourcing : outsourcingList){
+                                            outsourcing.setStatus(0);
+                                            outsourcingService.update(outsourcing);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
 
                     for (AuthorizationReports authorizationReport : allPersonsByAuthorized){
                         authorizationReport.setAuthorization(0);
