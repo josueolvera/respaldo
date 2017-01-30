@@ -62,6 +62,9 @@ public class SapSaleController {
     @Autowired
     private MultilevelEmployeeService multilevelEmployeeService;
 
+    @Autowired
+    private EmployeesHistoryService employeesHistoryService;
+
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody String findSapSales() throws Exception {
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(sapSaleService.findAll());
@@ -286,8 +289,30 @@ public class SapSaleController {
                             for (Integer idES : multilevelEmployees){
 
                                 List sapSales = sapSaleService.findBySupervisorAndRleGroup(idES, rolesGroupAgreementsList.get(0).getIdAg(), ofDate, untilDate);
-                                CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(rolesGroupAgreementsList.get(0).getIdAg());
-                                commissionAmountGroupService.obtainAmountsbySupervisor(sapSales, agreementsGroups, ofDate, untilDate);
+
+                                if (!sapSales.isEmpty()){
+                                    CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(rolesGroupAgreementsList.get(0).getIdAg());
+                                    commissionAmountGroupService.obtainAmountsbySupervisor(sapSales, agreementsGroups, ofDate, untilDate);
+                                }else{
+                                    CAgreementsGroups agreementsGroups = cAgreementsGroupsService.findById(rolesGroupAgreementsList.get(0).getIdAg());
+                                    EmployeesHistory employeesHistory = employeesHistoryService.findByIdEmployeeAndLastRegister(idES);
+
+                                    CommissionAmountGroup amountGroup = new CommissionAmountGroup();
+                                    amountGroup.setAmount(new BigDecimal(0));
+                                    amountGroup.setCommission(new BigDecimal(0));
+                                    amountGroup.setTabulator(new BigDecimal(0));
+                                    amountGroup.setApplicationsNumber(new BigDecimal(0));
+                                    amountGroup.setClaveSap(employeesHistory.getClaveSap());
+                                    amountGroup.setIdEmployee(employeesHistory.getIdEmployee());
+                                    amountGroup.setIdRole(employeesHistory.getIdRole());
+                                    amountGroup.setIdAg(agreementsGroups.getIdAg());
+                                    amountGroup.setGroupName(agreementsGroups.getAgreementGroupName());
+                                    amountGroup.setFromDate(ofDate);
+                                    amountGroup.setToDate(untilDate);
+
+                                    commissionAmountGroupService.save(amountGroup);
+                                }
+
                                 List<AgreementsGroupCondition> agreementsGroupConditionList = agreementsGroupConditionService.conditions(rolesGroupAgreementsList.get(0).getIdAg(), idDateCalculation);
                                 agreementsGroupConditionService.obtainCommissionBySupervisor(agreementsGroupConditionList);
                             }
