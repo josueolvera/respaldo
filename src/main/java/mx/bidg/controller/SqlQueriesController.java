@@ -183,6 +183,8 @@ public class SqlQueriesController {
         calculationReport.setSqlQueries(report);
         calculationReport.setShowWindow(1);
         calculationReport.setSend(0);
+        calculationReport.setInitialDate(applicationDateStart);
+        calculationReport.setFinalDate(applicationDateEnd);
         calculationReportService.save(calculationReport);
 
         calculationReportNec.setFileName(fileNameNec);
@@ -193,6 +195,8 @@ public class SqlQueriesController {
         calculationReportNec.setSqlQueries(report);
         calculationReportNec.setShowWindow(2);
         calculationReportNec.setSend(0);
+        calculationReportNec.setInitialDate(applicationDateStart);
+        calculationReportNec.setFinalDate(applicationDateEnd);
         calculationReportService.save(calculationReportNec);
 
         FileOutputStream fileOutputStream = new FileOutputStream(new File(destinationFile));
