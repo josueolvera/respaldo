@@ -19,4 +19,5 @@ public interface CDistributorsService {
     List<CDistributors> findAllForAgreement();
     List<CDistributors> getDistributors(Boolean forStock, Boolean forBudget, Boolean forAgreement);
     List<CDistributors> getDistributorForSaem (Integer idDistributor,Boolean saemFlag);
+    CDistributors findById(Integer idDistributor);
 }

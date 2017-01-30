@@ -48,4 +48,9 @@ public class CDistributorsServiceImpl implements CDistributorsService {
     public List<CDistributors> getDistributorForSaem(Integer idDistributor, Boolean saemFlag) {
         return cDistributorsDao.getDistributorsBySaemReports(idDistributor, saemFlag);
     }
+
+    @Override
+    public CDistributors findById(Integer idDistributor) {
+        return cDistributorsDao.findById(idDistributor);
+    }
 }
