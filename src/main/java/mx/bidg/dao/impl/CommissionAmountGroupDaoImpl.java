@@ -201,13 +201,15 @@ public class CommissionAmountGroupDaoImpl extends AbstractDao<Integer, Commissio
 
         Criterion advisers = Restrictions.eq("idRole", 64);
         Criterion cleaning = Restrictions.eq("idRole", 82);
+        Criterion auxiliar = Restrictions.eq("idRole", 80);
         Criterion emptys = Restrictions.isNull("idRole");
 
         LogicalExpression orExpression1 = Restrictions.or(advisers, cleaning);
-        LogicalExpression orExpression2 = Restrictions.or(orExpression1, emptys);
+        LogicalExpression orExpression2 = Restrictions.or(orExpression1, auxiliar);
+        LogicalExpression orExpression3 = Restrictions.or(orExpression2, emptys);
 
         return criteria.add(Restrictions.isNotNull("claveSap"))
-                .add(orExpression2)
+                .add(orExpression3)
                 .add(Restrictions.ne("idRole",81))
                 .addOrder(Order.desc("idRole"))
                 .list();
@@ -219,15 +221,17 @@ public class CommissionAmountGroupDaoImpl extends AbstractDao<Integer, Commissio
 
         Criterion advisers = Restrictions.eq("idRole", 64);
         Criterion cleaning = Restrictions.eq("idRole", 82);
+        Criterion auxiliar = Restrictions.eq("idRole", 80);
         Criterion emptys = Restrictions.isNull("idRole");
 
         LogicalExpression orExpression1 = Restrictions.or(advisers, cleaning);
-        LogicalExpression orExpression2 = Restrictions.or(orExpression1, emptys);
+        LogicalExpression orExpression2 = Restrictions.or(orExpression1, auxiliar);
+        LogicalExpression orExpression3 = Restrictions.or(orExpression2, emptys);
 
         projList.add(Projections.distinct(Projections.groupProperty("claveSap")));
         return createEntityCriteria()
                 .setProjection(projList)
-                .add(orExpression2)
+                .add(orExpression3)
                 .add(Restrictions.ne("idRole",81))
                 .addOrder(Order.desc("idRole"))
                 .list();
