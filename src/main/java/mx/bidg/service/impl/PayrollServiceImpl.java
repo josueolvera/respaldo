@@ -1350,63 +1350,63 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if(outsourcing.getSalary() != null){
                 row3.createCell(3).setCellValue(outsourcing.getSalary().doubleValue());
-                sum17 += outsourcing.getTotal().doubleValue();
+                sum17 += outsourcing.getSalary().doubleValue();
             }
             if(outsourcing.getSubsidy() != null){
                 row3.createCell(4).setCellValue(outsourcing.getSubsidy().doubleValue());
-                sum18 += outsourcing.getTotal().doubleValue();
+                sum18 += outsourcing.getSubsidy().doubleValue();
             }
             if (outsourcing.getImssEmployee() != null){
                 row3.createCell(5).setCellValue(outsourcing.getImssEmployee().doubleValue());
-                sum19 += outsourcing.getTotal().doubleValue();
+                sum19 += outsourcing.getImssEmployee().doubleValue();
             }
             if (outsourcing.getIsr() != null){
                 row3.createCell(6).setCellValue(outsourcing.getIsr().doubleValue());
-                sum20 += outsourcing.getTotal().doubleValue();
+                sum20 += outsourcing.getIsr().doubleValue();
             }
             if (outsourcing.getAdjustment() != null){
                 row3.createCell(7).setCellValue(outsourcing.getAdjustment().doubleValue());
-                sum21 += outsourcing.getTotal().doubleValue();
+                sum21 += outsourcing.getAdjustment().doubleValue();
             }
             if (outsourcing.getTotalDeductions() != null){
                 row3.createCell(8).setCellValue(outsourcing.getTotalDeductions().doubleValue());
-                sum22 += outsourcing.getTotal().doubleValue();
+                sum22 += outsourcing.getTotalDeductions().doubleValue();
             }
             if (outsourcing.getNetAssetTax() != null){
                 row3.createCell(9).setCellValue(outsourcing.getNetAssetTax().doubleValue());
-                sum23 += outsourcing.getTotal().doubleValue();
+                sum23 += outsourcing.getNetAssetTax().doubleValue();
             }
             if (outsourcing.getImss() != null){
                 row3.createCell(10).setCellValue(outsourcing.getImss().doubleValue());
-                sum24 += outsourcing.getTotal().doubleValue();
+                sum24 += outsourcing.getImss().doubleValue();
             }
             if (outsourcing.getRcv() != null){
                 row3.createCell(11).setCellValue(outsourcing.getRcv().doubleValue());
-                sum25 += outsourcing.getTotal().doubleValue();
+                sum25 += outsourcing.getRcv().doubleValue();
             }
             if (outsourcing.getEnterpriseInfonavit() != null){
                 row3.createCell(12).setCellValue(outsourcing.getEnterpriseInfonavit().doubleValue());
-                sum26 += outsourcing.getTotal().doubleValue();
+                sum26 += outsourcing.getEnterpriseInfonavit().doubleValue();
             }
             if (outsourcing.getPayrollTax() != null){
                 row3.createCell(13).setCellValue(outsourcing.getPayrollTax().doubleValue());
-                sum27 += outsourcing.getTotal().doubleValue();
+                sum27 += outsourcing.getPayrollTax().doubleValue();
             }
             if (outsourcing.getTotalSocialSecurity() != null){
                 row3.createCell(14).setCellValue(outsourcing.getTotalSocialSecurity().doubleValue());
-                sum28 += outsourcing.getTotal().doubleValue();
+                sum28 += outsourcing.getTotalSocialSecurity().doubleValue();
             }
             if (outsourcing.getCommission() != null){
                 row3.createCell(15).setCellValue(outsourcing.getCommission().doubleValue());
-                sum29 += outsourcing.getTotal().doubleValue();
+                sum29 += outsourcing.getCommission().doubleValue();
             }
             if (outsourcing.getSubtotal() != null){
                 row3.createCell(16).setCellValue(outsourcing.getSubtotal().doubleValue());
-                sum30 += outsourcing.getTotal().doubleValue();
+                sum30 += outsourcing.getSubtotal().doubleValue();
             }
             if (outsourcing.getIva() != null){
                 row3.createCell(17).setCellValue(outsourcing.getIva().doubleValue());
-                sum31 += outsourcing.getTotal().doubleValue();
+                sum31 += outsourcing.getIva().doubleValue();
             }
             if (outsourcing.getTotal() != null){
                 row3.createCell(18).setCellValue(outsourcing.getTotal().doubleValue());
@@ -2099,63 +2099,63 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if(outsourcing.getSalary() != null){
                 row3.createCell(3).setCellValue(outsourcing.getSalary().doubleValue());
-                sum17 += outsourcing.getTotal().doubleValue();
+                sum17 += outsourcing.getSalary().doubleValue();
             }
             if(outsourcing.getSubsidy() != null){
                 row3.createCell(4).setCellValue(outsourcing.getSubsidy().doubleValue());
-                sum18 += outsourcing.getTotal().doubleValue();
+                sum18 += outsourcing.getSubsidy().doubleValue();
             }
             if (outsourcing.getImssEmployee() != null){
                 row3.createCell(5).setCellValue(outsourcing.getImssEmployee().doubleValue());
-                sum19 += outsourcing.getTotal().doubleValue();
+                sum19 += outsourcing.getImssEmployee().doubleValue();
             }
             if (outsourcing.getIsr() != null){
                 row3.createCell(6).setCellValue(outsourcing.getIsr().doubleValue());
-                sum20 += outsourcing.getTotal().doubleValue();
+                sum20 += outsourcing.getIsr().doubleValue();
             }
             if (outsourcing.getAdjustment() != null){
                 row3.createCell(7).setCellValue(outsourcing.getAdjustment().doubleValue());
-                sum21 += outsourcing.getTotal().doubleValue();
+                sum21 += outsourcing.getAdjustment().doubleValue();
             }
             if (outsourcing.getTotalDeductions() != null){
                 row3.createCell(8).setCellValue(outsourcing.getTotalDeductions().doubleValue());
-                sum22 += outsourcing.getTotal().doubleValue();
+                sum22 += outsourcing.getTotalDeductions().doubleValue();
             }
             if (outsourcing.getNetAssetTax() != null){
                 row3.createCell(9).setCellValue(outsourcing.getNetAssetTax().doubleValue());
-                sum23 += outsourcing.getTotal().doubleValue();
+                sum23 += outsourcing.getNetAssetTax().doubleValue();
             }
             if (outsourcing.getImss() != null){
                 row3.createCell(10).setCellValue(outsourcing.getImss().doubleValue());
-                sum24 += outsourcing.getTotal().doubleValue();
+                sum24 += outsourcing.getImss().doubleValue();
             }
             if (outsourcing.getRcv() != null){
                 row3.createCell(11).setCellValue(outsourcing.getRcv().doubleValue());
-                sum25 += outsourcing.getTotal().doubleValue();
+                sum25 += outsourcing.getRcv().doubleValue();
             }
             if (outsourcing.getEnterpriseInfonavit() != null){
                 row3.createCell(12).setCellValue(outsourcing.getEnterpriseInfonavit().doubleValue());
-                sum26 += outsourcing.getTotal().doubleValue();
+                sum26 += outsourcing.getEnterpriseInfonavit().doubleValue();
             }
             if (outsourcing.getPayrollTax() != null){
                 row3.createCell(13).setCellValue(outsourcing.getPayrollTax().doubleValue());
-                sum27 += outsourcing.getTotal().doubleValue();
+                sum27 += outsourcing.getPayrollTax().doubleValue();
             }
             if (outsourcing.getTotalSocialSecurity() != null){
                 row3.createCell(14).setCellValue(outsourcing.getTotalSocialSecurity().doubleValue());
-                sum28 += outsourcing.getTotal().doubleValue();
+                sum28 += outsourcing.getTotalSocialSecurity().doubleValue();
             }
             if (outsourcing.getCommission() != null){
                 row3.createCell(15).setCellValue(outsourcing.getCommission().doubleValue());
-                sum29 += outsourcing.getTotal().doubleValue();
+                sum29 += outsourcing.getCommission().doubleValue();
             }
             if (outsourcing.getSubtotal() != null){
                 row3.createCell(16).setCellValue(outsourcing.getSubtotal().doubleValue());
-                sum30 += outsourcing.getTotal().doubleValue();
+                sum30 += outsourcing.getSubtotal().doubleValue();
             }
             if (outsourcing.getIva() != null){
                 row3.createCell(17).setCellValue(outsourcing.getIva().doubleValue());
-                sum31 += outsourcing.getTotal().doubleValue();
+                sum31 += outsourcing.getIva().doubleValue();
             }
             if (outsourcing.getTotal() != null){
                 row3.createCell(18).setCellValue(outsourcing.getTotal().doubleValue());
@@ -2990,63 +2990,63 @@ public class PayrollServiceImpl implements PayrollService {
             }
             if(outsourcing.getSalary() != null){
                 row3.createCell(3).setCellValue(outsourcing.getSalary().doubleValue());
-                sum17 += outsourcing.getTotal().doubleValue();
+                sum17 += outsourcing.getSalary().doubleValue();
             }
             if(outsourcing.getSubsidy() != null){
                 row3.createCell(4).setCellValue(outsourcing.getSubsidy().doubleValue());
-                sum18 += outsourcing.getTotal().doubleValue();
+                sum18 += outsourcing.getSubsidy().doubleValue();
             }
             if (outsourcing.getImssEmployee() != null){
                 row3.createCell(5).setCellValue(outsourcing.getImssEmployee().doubleValue());
-                sum19 += outsourcing.getTotal().doubleValue();
+                sum19 += outsourcing.getImssEmployee().doubleValue();
             }
             if (outsourcing.getIsr() != null){
                 row3.createCell(6).setCellValue(outsourcing.getIsr().doubleValue());
-                sum20 += outsourcing.getTotal().doubleValue();
+                sum20 += outsourcing.getIsr().doubleValue();
             }
             if (outsourcing.getAdjustment() != null){
                 row3.createCell(7).setCellValue(outsourcing.getAdjustment().doubleValue());
-                sum21 += outsourcing.getTotal().doubleValue();
+                sum21 += outsourcing.getAdjustment().doubleValue();
             }
             if (outsourcing.getTotalDeductions() != null){
                 row3.createCell(8).setCellValue(outsourcing.getTotalDeductions().doubleValue());
-                sum22 += outsourcing.getTotal().doubleValue();
+                sum22 += outsourcing.getTotalDeductions().doubleValue();
             }
             if (outsourcing.getNetAssetTax() != null){
                 row3.createCell(9).setCellValue(outsourcing.getNetAssetTax().doubleValue());
-                sum23 += outsourcing.getTotal().doubleValue();
+                sum23 += outsourcing.getNetAssetTax().doubleValue();
             }
             if (outsourcing.getImss() != null){
                 row3.createCell(10).setCellValue(outsourcing.getImss().doubleValue());
-                sum24 += outsourcing.getTotal().doubleValue();
+                sum24 += outsourcing.getImss().doubleValue();
             }
             if (outsourcing.getRcv() != null){
                 row3.createCell(11).setCellValue(outsourcing.getRcv().doubleValue());
-                sum25 += outsourcing.getTotal().doubleValue();
+                sum25 += outsourcing.getRcv().doubleValue();
             }
             if (outsourcing.getEnterpriseInfonavit() != null){
                 row3.createCell(12).setCellValue(outsourcing.getEnterpriseInfonavit().doubleValue());
-                sum26 += outsourcing.getTotal().doubleValue();
+                sum26 += outsourcing.getEnterpriseInfonavit().doubleValue();
             }
             if (outsourcing.getPayrollTax() != null){
                 row3.createCell(13).setCellValue(outsourcing.getPayrollTax().doubleValue());
-                sum27 += outsourcing.getTotal().doubleValue();
+                sum27 += outsourcing.getPayrollTax().doubleValue();
             }
             if (outsourcing.getTotalSocialSecurity() != null){
                 row3.createCell(14).setCellValue(outsourcing.getTotalSocialSecurity().doubleValue());
-                sum28 += outsourcing.getTotal().doubleValue();
+                sum28 += outsourcing.getTotalSocialSecurity().doubleValue();
             }
             if (outsourcing.getCommission() != null){
                 row3.createCell(15).setCellValue(outsourcing.getCommission().doubleValue());
-                sum29 += outsourcing.getTotal().doubleValue();
+                sum29 += outsourcing.getCommission().doubleValue();
             }
             if (outsourcing.getSubtotal() != null){
                 row3.createCell(16).setCellValue(outsourcing.getSubtotal().doubleValue());
-                sum30 += outsourcing.getTotal().doubleValue();
+                sum30 += outsourcing.getSubtotal().doubleValue();
             }
             if (outsourcing.getIva() != null){
                 row3.createCell(17).setCellValue(outsourcing.getIva().doubleValue());
-                sum31 += outsourcing.getTotal().doubleValue();
+                sum31 += outsourcing.getIva().doubleValue();
             }
             if (outsourcing.getTotal() != null){
                 row3.createCell(18).setCellValue(outsourcing.getTotal().doubleValue());
