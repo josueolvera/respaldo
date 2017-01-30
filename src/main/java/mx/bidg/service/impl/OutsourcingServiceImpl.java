@@ -33,7 +33,7 @@ public class OutsourcingServiceImpl implements OutsourcingService {
 
     @Autowired
     private EmployeesDao employeesDao;
-    
+
     @Autowired
     private EmployeesHistoryDao employeesHistoryDao;
 
@@ -80,6 +80,7 @@ public class OutsourcingServiceImpl implements OutsourcingService {
             Cell iva = currentRow.getCell(17);
             Cell total = currentRow.getCell(18);
             Cell tipo = currentRow.getCell(19);
+            Cell amortizationInfonavit = currentRow.getCell(20);
 
             if (code != null) {
 
@@ -87,19 +88,21 @@ public class OutsourcingServiceImpl implements OutsourcingService {
                         (int) code.getNumericCellValue(),
                         LocalDateTime.parse(calculateDate + " 00:00", formatter)
                 );
+                if (outsourcing != null) {
 
-                EmployeesHistory employeesHistory = employeesHistoryDao.findByIdEmployeeAndLastRegister((int)code.getNumericCellValue());
 
-                if (employeesHistory != null){
-                    DwEnterprises dwEnterprises = dwEnterprisesDao.findById(employeesHistory.getIdDwEnterprise());
+                    EmployeesHistory employeesHistory = employeesHistoryDao.findByIdEmployeeAndLastRegister((int) code.getNumericCellValue());
 
-                    if (dwEnterprises != null){
-                        outsourcing.setDwEnterprises(dwEnterprises);
+                    if (employeesHistory != null) {
+                        DwEnterprises dwEnterprises = dwEnterprisesDao.findById(employeesHistory.getIdDwEnterprise());
+
+                        if (dwEnterprises != null) {
+                            outsourcing.setDwEnterprises(dwEnterprises);
+                        }
+
                     }
 
-                }
 
-                if (outsourcing != null) {
                     Employees employee = employeesDao.findById((int) code.getNumericCellValue());
 
                     if (employee != null) {
@@ -266,19 +269,222 @@ public class OutsourcingServiceImpl implements OutsourcingService {
                     if (user != null) {
                         outsourcing.setUsername(user.getUsername());
                     }
-                    if(tipo!=null) {
+                    if (tipo != null) {
                         outsourcing.setType((int) tipo.getNumericCellValue());
-                    }else{
+                    } else {
                         outsourcing.setType(null);
+                    }
+                    if (amortizationInfonavit != null) {
+                        if (amortizationInfonavit.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdAmortizationInfonavit = new BigDecimal(Integer.parseInt(amortizationInfonavit.getStringCellValue()));
+                            outsourcing.setAmortizationInfonavit(bdAmortizationInfonavit);
+                        } else if (amortizationInfonavit.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdAmortizationInfonavit = new BigDecimal(amortizationInfonavit.getNumericCellValue());
+                            outsourcing.setAmortizationInfonavit(bdAmortizationInfonavit);
+                        }
                     }
                     outsourcing.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
                     outsourcing.setCreationDate(LocalDateTime.now());
 
+                    outsourcing.setStatus(1);
                     outsourcingDao.update(outsourcing);
+                } else {
+                    Outsourcing outsourcing1 = new Outsourcing();
+                    Employees employee = employeesDao.findById((int) code.getNumericCellValue());
+
+                    EmployeesHistory employeesHistorys = employeesHistoryDao.findByIdEmployeeAndLastRegister((int) code.getNumericCellValue());
+
+                    if (employeesHistorys != null) {
+                        DwEnterprises dwEnterprises = dwEnterprisesDao.findById(employeesHistorys.getIdDwEnterprise());
+
+                        if (dwEnterprises != null) {
+                            outsourcing1.setDwEnterprises(dwEnterprises);
+                        }
+
+                    }
+
+                    if (employee != null) {
+                        outsourcing1.setEmployee(employee);
+                    }
+                    if (salary != null) {
+                        if (salary.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdSalary = new BigDecimal(Integer.parseInt(salary.getStringCellValue()));
+                            outsourcing1.setSalary(bdSalary);
+                        } else if (salary.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdSalary = new BigDecimal(salary.getNumericCellValue());
+                            outsourcing1.setSalary(bdSalary);
+                        }
+
+                    }
+                    if (subsidy != null) {
+                        if (subsidy.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdSubsidy = new BigDecimal(Integer.parseInt(subsidy.getStringCellValue()));
+                            outsourcing1.setSubsidy(bdSubsidy);
+                        } else if (subsidy.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdSubsidy = new BigDecimal(subsidy.getNumericCellValue());
+                            outsourcing1.setSubsidy(bdSubsidy);
+                        }
+
+                    }
+                    if (imssEmployee != null) {
+                        if (imssEmployee.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdImssEmployee = new BigDecimal(Integer.parseInt(imssEmployee.getStringCellValue()));
+                            outsourcing1.setImssEmployee(bdImssEmployee);
+                        } else if (imssEmployee.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdImssEmployee = new BigDecimal(imssEmployee.getNumericCellValue());
+                            outsourcing1.setImssEmployee(bdImssEmployee);
+                        }
+                    }
+
+                    if (isr != null) {
+                        if (isr.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdIsr = new BigDecimal(Integer.parseInt(isr.getStringCellValue()));
+                            outsourcing1.setIsr(bdIsr);
+                        } else if (isr.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdIsr = new BigDecimal(isr.getNumericCellValue());
+                            outsourcing1.setIsr(bdIsr);
+                        }
+                    }
+                    if (adjustment != null) {
+                        if (adjustment.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdAdjustment = new BigDecimal(Integer.parseInt(adjustment.getStringCellValue()));
+                            outsourcing1.setAdjustment(bdAdjustment);
+                        } else if (adjustment.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdAdjustment = new BigDecimal(adjustment.getNumericCellValue());
+                            outsourcing1.setAdjustment(bdAdjustment);
+                        }
+                    }
+                    if (totalDeduction != null) {
+                        if (totalDeduction.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdTotalDeduction = new BigDecimal(Integer.parseInt(totalDeduction.getStringCellValue()));
+                            outsourcing1.setTotalDeductions(bdTotalDeduction);
+                        } else if (totalDeduction.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdTotalDeduction = new BigDecimal(totalDeduction.getNumericCellValue());
+                            outsourcing1.setTotalDeductions(bdTotalDeduction);
+                        }
+                    }
+
+                    if (netAssetTax != null) {
+                        if (netAssetTax.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdNetAssetTax = new BigDecimal(Integer.parseInt(netAssetTax.getStringCellValue()));
+                            outsourcing1.setNetAssetTax(bdNetAssetTax);
+                        } else if (netAssetTax.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdNetAssetTax = new BigDecimal(netAssetTax.getNumericCellValue());
+                            outsourcing1.setNetAssetTax(bdNetAssetTax);
+                        }
+                    }
+
+                    if (imss != null) {
+                        if (imss.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdImss = new BigDecimal(Integer.parseInt(imss.getStringCellValue()));
+                            outsourcing1.setImss(bdImss);
+                        } else if (imss.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdImss = new BigDecimal(imss.getNumericCellValue());
+                            outsourcing1.setImss(bdImss);
+                        }
+                    }
+                    if (rcv != null) {
+                        if (rcv.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdRcv = new BigDecimal(Integer.parseInt(rcv.getStringCellValue()));
+                            outsourcing1.setRcv(bdRcv);
+                        } else if (rcv.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdRcv = new BigDecimal(rcv.getNumericCellValue());
+                            outsourcing1.setRcv(bdRcv);
+                        }
+                    }
+
+                    if (enterpriseInfonavit != null) {
+                        if (enterpriseInfonavit.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdEnterpriseInfonavit = new BigDecimal(Integer.parseInt(enterpriseInfonavit.getStringCellValue()));
+                            outsourcing1.setEnterpriseInfonavit(bdEnterpriseInfonavit);
+                        } else if (enterpriseInfonavit.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdEnterpriseInfonavit = new BigDecimal(enterpriseInfonavit.getNumericCellValue());
+                            outsourcing1.setEnterpriseInfonavit(bdEnterpriseInfonavit);
+                        }
+                    }
+
+                    if (payrollTax != null) {
+                        if (payrollTax.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdPayrollTax = new BigDecimal(Integer.parseInt(payrollTax.getStringCellValue()));
+                            outsourcing1.setPayrollTax(bdPayrollTax);
+                        } else if (payrollTax.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdPayrollTax = new BigDecimal(payrollTax.getNumericCellValue());
+                            outsourcing1.setPayrollTax(bdPayrollTax);
+                        }
+                    }
+
+                    if (totalSocialSecurity != null) {
+                        if (totalSocialSecurity.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdTotalSocialitySecurity = new BigDecimal(Integer.parseInt(totalSocialSecurity.getStringCellValue()));
+                            outsourcing1.setTotalSocialSecurity(bdTotalSocialitySecurity);
+                        } else if (totalSocialSecurity.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdTotalSocialitySecurity = new BigDecimal(totalSocialSecurity.getNumericCellValue());
+                            outsourcing1.setTotalSocialSecurity(bdTotalSocialitySecurity);
+                        }
+                    }
+
+                    if (commission != null) {
+                        if (commission.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdCommision = new BigDecimal(Integer.parseInt(commission.getStringCellValue()));
+                            outsourcing1.setCommission(bdCommision);
+                        } else if (commission.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdCommision = new BigDecimal(commission.getNumericCellValue());
+                            outsourcing1.setCommission(bdCommision);
+                        }
+                    }
+
+                    if (subtotal != null) {
+                        if (subtotal.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdSubtotal = new BigDecimal(Integer.parseInt(subtotal.getStringCellValue()));
+                            outsourcing1.setSubtotal(bdSubtotal);
+                        } else if (subtotal.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdSubtotal = new BigDecimal(subtotal.getNumericCellValue());
+                            outsourcing1.setSubtotal(bdSubtotal);
+                        }
+                    }
+
+                    if (iva != null) {
+                        if (iva.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdIva = new BigDecimal(Integer.parseInt(iva.getStringCellValue()));
+                            outsourcing1.setIva(bdIva);
+                        } else if (iva.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdIva = new BigDecimal(iva.getNumericCellValue());
+                            outsourcing1.setIva(bdIva);
+                        }
+                    }
+
+                    if (total != null) {
+                        if (total.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdTotal = new BigDecimal(Integer.parseInt(total.getStringCellValue()));
+                            outsourcing1.setTotal(bdTotal);
+                        } else if (total.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdTotal = new BigDecimal(total.getNumericCellValue());
+                            outsourcing1.setTotal(bdTotal);
+                        }
+                    }
+                    if (user != null) {
+                        outsourcing1.setUsername(user.getUsername());
+                    }
+                    if (tipo != null) {
+                        outsourcing1.setType((int) tipo.getNumericCellValue());
+                    } else {
+                        outsourcing1.setType(null);
+                    }
+                    if (amortizationInfonavit != null) {
+                        if (amortizationInfonavit.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdAmortizationInfonavit = new BigDecimal(Integer.parseInt(amortizationInfonavit.getStringCellValue()));
+                            outsourcing1.setAmortizationInfonavit(bdAmortizationInfonavit);
+                        } else if (amortizationInfonavit.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdAmortizationInfonavit = new BigDecimal(amortizationInfonavit.getNumericCellValue());
+                            outsourcing1.setAmortizationInfonavit(bdAmortizationInfonavit);
+                        }
+                    }
+                    outsourcing1.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
+                    outsourcing1.setCreationDate(LocalDateTime.now());
+                    outsourcing1.setStatus(1);
+                    outsourcingDao.save(outsourcing1);
                 }
-
             }
-
         }
 
         return outsourcingDao.findAll();
@@ -294,16 +500,16 @@ public class OutsourcingServiceImpl implements OutsourcingService {
 
         Row headerRow = sheet.getRow(6);
         String[] headersToSkip = {
-            "Departamento", "Codigo", "Nombre", "Sueldo",
-            "Subsidio", "IMSS Empleado", "ISR", "Ajuste al neto",
-            "TOTAL DEDUCCIONES", "NETO SUELDO FISCAL     (A)", "IMSS",
-            "RCV", "Infonavit empresa",
-            "Impuesto sobre nomina", "TOTALPREVISION SOCIAL",
-            "Comisión", "Subtotal", "IVA",
-            "Total","Tipo"
+                "Departamento", "Codigo", "Nombre", "Sueldo",
+                "Subsidio", "IMSS Empleado", "ISR", "Ajuste al neto",
+                "TOTAL DEDUCCIONES", "NETO SUELDO FISCAL     (A)", "IMSS",
+                "RCV", "Infonavit empresa",
+                "Impuesto sobre nomina", "TOTALPREVISION SOCIAL",
+                "Comisión", "Subtotal", "IVA",
+                "Total", "Tipo", "Amortizacion Infonavit"
         };
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 21; i++) {
             if (!headerRow.getCell(i).getStringCellValue().equals(headersToSkip[i])) {
                 throw new ValidationException("Tipo de formato no compatible.",
                         "Los datos de este archivo no son los correctos o no cumplen con los datos de venta.");
@@ -370,6 +576,7 @@ public class OutsourcingServiceImpl implements OutsourcingService {
             Cell iva = currentRow.getCell(17);
             Cell total = currentRow.getCell(18);
             Cell tipo = currentRow.getCell(19);
+            Cell amortizationInfonavit = currentRow.getCell(20);
 
             Outsourcing outsourcing = new Outsourcing();
 
@@ -380,15 +587,15 @@ public class OutsourcingServiceImpl implements OutsourcingService {
                         LocalDateTime.parse(calculateDate + " 00:00", formatter)
                 );
 
-                if (outsourcingExits == null){
+                if (outsourcingExits == null) {
                     Employees employee = employeesDao.findById((int) code.getNumericCellValue());
 
-                    EmployeesHistory employeesHistory = employeesHistoryDao.findByIdEmployeeAndLastRegister((int)code.getNumericCellValue());
+                    EmployeesHistory employeesHistory = employeesHistoryDao.findByIdEmployeeAndLastRegister((int) code.getNumericCellValue());
 
-                    if (employeesHistory != null){
+                    if (employeesHistory != null) {
                         DwEnterprises dwEnterprises = dwEnterprisesDao.findById(employeesHistory.getIdDwEnterprise());
 
-                        if (dwEnterprises != null){
+                        if (dwEnterprises != null) {
                             outsourcing.setDwEnterprises(dwEnterprises);
                         }
 
@@ -556,23 +763,33 @@ public class OutsourcingServiceImpl implements OutsourcingService {
                     if (user != null) {
                         outsourcing.setUsername(user.getUsername());
                     }
-                    if(tipo!=null) {
+                    if (tipo != null) {
                         outsourcing.setType((int) tipo.getNumericCellValue());
-                    }else{
+                    } else {
                         outsourcing.setType(null);
+                    }
+                    if (amortizationInfonavit != null) {
+                        if (amortizationInfonavit.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdAmortizationInfonavit = new BigDecimal(Integer.parseInt(amortizationInfonavit.getStringCellValue()));
+                            outsourcing.setAmortizationInfonavit(bdAmortizationInfonavit);
+                        } else if (amortizationInfonavit.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdAmortizationInfonavit = new BigDecimal(amortizationInfonavit.getNumericCellValue());
+                            outsourcing.setAmortizationInfonavit(bdAmortizationInfonavit);
+                        }
                     }
                     outsourcing.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
                     outsourcing.setCreationDate(LocalDateTime.now());
+                    outsourcing.setStatus(1);
                     outsourcingDao.save(outsourcing);
 
                 } else {
 
                     EmployeesHistory employeesHistory = employeesHistoryDao.findByIdEmployeeAndLastRegister(outsourcingExits.getIdEmployee());
 
-                    if (employeesHistory != null){
+                    if (employeesHistory != null) {
                         DwEnterprises dwEnterprises = dwEnterprisesDao.findById(employeesHistory.getIdDwEnterprise());
 
-                        if (dwEnterprises != null){
+                        if (dwEnterprises != null) {
                             outsourcingExits.setDwEnterprises(dwEnterprises);
                         }
 
@@ -737,13 +954,23 @@ public class OutsourcingServiceImpl implements OutsourcingService {
                     if (user != null) {
                         outsourcingExits.setUsername(user.getUsername());
                     }
-                    if(tipo!=null) {
+                    if (tipo != null) {
                         outsourcingExits.setType((int) tipo.getNumericCellValue());
-                    }else {
+                    } else {
                         outsourcingExits.setType(null);
+                    }
+                    if (amortizationInfonavit != null) {
+                        if (amortizationInfonavit.getCellType() == Cell.CELL_TYPE_STRING) {
+                            BigDecimal bdAmortizationInfonavit = new BigDecimal(Integer.parseInt(amortizationInfonavit.getStringCellValue()));
+                            outsourcingExits.setAmortizationInfonavit(bdAmortizationInfonavit);
+                        } else if (amortizationInfonavit.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                            BigDecimal bdAmortizationInfonavit = new BigDecimal(amortizationInfonavit.getNumericCellValue());
+                            outsourcingExits.setAmortizationInfonavit(bdAmortizationInfonavit);
+                        }
                     }
                     outsourcingExits.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
                     outsourcingExits.setCreationDate(LocalDateTime.now());
+                    outsourcingExits.setStatus(1);
                     outsourcingDao.save(outsourcingExits);
                 }
 
@@ -752,6 +979,16 @@ public class OutsourcingServiceImpl implements OutsourcingService {
 
         return outsourcingDao.findAll();
 
+    }
+
+    @Override
+    public List<Outsourcing> findByAllEmployeesAndApplicationDate(List<EmployeesHistory> employeesHistoryList, LocalDateTime initialDate, LocalDateTime finalDate) {
+        return outsourcingDao.findByAllEmployeesAndApplicationDate(employeesHistoryList, initialDate, finalDate);
+    }
+
+    @Override
+    public Outsourcing update(Outsourcing outsourcing) {
+        return outsourcingDao.update(outsourcing);
     }
 
 }
