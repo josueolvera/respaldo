@@ -244,15 +244,15 @@ public class EmployeesController {
 
         if(dwEmployees.getRole().getIdRole()== 63 || dwEmployees.getRole().getIdRole()==80){
             EmailTemplates emailTemplate = emailTemplatesService.findByName("employee_high_notification");
-            emailTemplate.addProperty("dwEmployees",dwEmployees);
+            emailTemplate.addProperty("dwEmployee",dwEmployees);
             emailDeliveryService.deliverEmail(emailTemplate);
-        }else  if(dwEmployees.getRole().getIdRole()==60){
+        }else  if(dwEmployees.getRole().getIdRole()==64){
             EmailTemplates emailTemplate = emailTemplatesService.findByName("promoter_high_notification");
-            emailTemplate.addProperty("dwEmployees",dwEmployees);
+            emailTemplate.addProperty("dwEmployee",dwEmployees);
             emailDeliveryService.deliverEmail(emailTemplate);
         }else{
             EmailTemplates emailTemplate = emailTemplatesService.findByName("employee_high_corporate");
-            emailTemplate.addProperty("dwEmployees",dwEmployees);
+            emailTemplate.addProperty("dwEmployee",dwEmployees);
             emailDeliveryService.deliverEmail(emailTemplate);
         }
 
