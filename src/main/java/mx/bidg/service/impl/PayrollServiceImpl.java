@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -100,30 +101,31 @@ public class PayrollServiceImpl implements PayrollService {
         Row row1 = hoja1.createRow(0);
 
         row1.createCell(0).setCellValue("NÚMERO DE EMPLEADO");
-        row1.createCell(1).setCellValue("NOMBRE");
-        row1.createCell(2).setCellValue("BANCO");
-        row1.createCell(3).setCellValue("CUENTA");
-        row1.createCell(4).setCellValue("CLABE");
-        row1.createCell(5).setCellValue("PLAZA");
-        row1.createCell(6).setCellValue("AREA");
-        row1.createCell(7).setCellValue("PUESTO");
-        row1.createCell(8).setCellValue("RFC");
-        row1.createCell(9).setCellValue("CURP");
-        row1.createCell(10).setCellValue("FECHA DE INGRESO");
-        row1.createCell(11).setCellValue("SUELDO REAL QUINCENAL");
-        row1.createCell(12).setCellValue("MONTO RETARDO");
-        row1.createCell(13).setCellValue("DESCUENTO");
-        row1.createCell(14).setCellValue("BONO");
-        row1.createCell(15).setCellValue("AJUSTE");
-        row1.createCell(16).setCellValue("PRIMA VACACIONAL");
-        row1.createCell(17).setCellValue("EFECTIVO");
-        row1.createCell(18).setCellValue("EFECTIVO EDMON");
-        row1.createCell(19).setCellValue("COMISIONES EMCOFIN");
-        row1.createCell(20).setCellValue("RHMAS PAGO");
-        row1.createCell(21).setCellValue("RHMAS TOTAL A FACTURAR");
-        row1.createCell(22).setCellValue("PERCEPCIONES");
-        row1.createCell(23).setCellValue("DEDUCCIONES");
-        row1.createCell(24).setCellValue("DEPOSITO ASIMILABLES");
+        row1.createCell(1).setCellValue("EMPRESA");
+        row1.createCell(2).setCellValue("NOMBRE");
+        row1.createCell(3).setCellValue("BANCO");
+        row1.createCell(4).setCellValue("CUENTA");
+        row1.createCell(5).setCellValue("CLABE");
+        row1.createCell(6).setCellValue("PLAZA");
+        row1.createCell(7).setCellValue("AREA");
+        row1.createCell(8).setCellValue("PUESTO");
+        row1.createCell(9).setCellValue("RFC");
+        row1.createCell(10).setCellValue("CURP");
+        row1.createCell(11).setCellValue("FECHA DE INGRESO");
+        row1.createCell(12).setCellValue("SUELDO REAL QUINCENAL");
+        row1.createCell(13).setCellValue("MONTO RETARDO");
+        row1.createCell(14).setCellValue("DESCUENTO");
+        row1.createCell(15).setCellValue("BONO");
+        row1.createCell(16).setCellValue("AJUSTE");
+        row1.createCell(17).setCellValue("PRIMA VACACIONAL");
+        row1.createCell(18).setCellValue("EFECTIVO");
+        row1.createCell(19).setCellValue("EFECTIVO EDMON");
+        row1.createCell(20).setCellValue("COMISIONES EMCOFIN");
+        row1.createCell(21).setCellValue("RHMAS PAGO");
+        row1.createCell(22).setCellValue("RHMAS TOTAL A FACTURAR");
+        row1.createCell(23).setCellValue("PERCEPCIONES");
+        row1.createCell(24).setCellValue("DEDUCCIONES");
+        row1.createCell(25).setCellValue("DEPOSITO ASIMILABLES");
 
         //Implementacion del estilo
         for (Cell celda : row1) {
@@ -155,94 +157,167 @@ public class PayrollServiceImpl implements PayrollService {
             if (payroll.getNumeroDeEmpleado() != null){
                 row1.createCell(0).setCellValue(payroll.getNumeroDeEmpleado());
             }
+            if (payroll.getDistributorName() != null){
+                row1.createCell(1).setCellValue(payroll.getDistributorName());
+            }
             if (payroll.getNombre() != null){
-                row1.createCell(1).setCellValue(payroll.getNombre());
+                row1.createCell(2).setCellValue(payroll.getNombre());
             }
             if (payroll.getBanco() != null){
-                row1.createCell(2).setCellValue(payroll.getBanco());
+                row1.createCell(3).setCellValue(payroll.getBanco());
             }
             if (payroll.getNumeroDeCuenta() != null){
-                row1.createCell(3).setCellValue(payroll.getNumeroDeCuenta());
+                row1.createCell(4).setCellValue(payroll.getNumeroDeCuenta());
             }
             if (payroll.getCuentaClabe() != null){
-                row1.createCell(4).setCellValue(payroll.getCuentaClabe());
+                row1.createCell(5).setCellValue(payroll.getCuentaClabe());
             }
             if (payroll.getSucursal() != null){
-                row1.createCell(5).setCellValue(payroll.getSucursal());
+                row1.createCell(6).setCellValue(payroll.getSucursal());
             }
             if (payroll.getArea() != null){
-                row1.createCell(6).setCellValue(payroll.getArea());
+                row1.createCell(7).setCellValue(payroll.getArea());
             }
             if (payroll.getPuesto() != null){
-                row1.createCell(7).setCellValue(payroll.getPuesto());
+                row1.createCell(8).setCellValue(payroll.getPuesto());
             }
             if (payroll.getRfc() != null){
-                row1.createCell(8).setCellValue(payroll.getRfc());
+                row1.createCell(9).setCellValue(payroll.getRfc());
             }
             if (payroll.getCurp() != null){
-                row1.createCell(9).setCellValue(payroll.getCurp());
+                row1.createCell(10).setCellValue(payroll.getCurp());
             }
             if(payroll.getFechaIngreso() != null){
                 Date joinDate = Date.from(payroll.getFechaIngreso().atStartOfDay(ZoneId.systemDefault()).toInstant());
-                row1.createCell(10);
-                row1.getCell(10).setCellValue(joinDate);
-                row1.getCell(10).setCellStyle(cellDateStyle);
+                row1.createCell(11);
+                row1.getCell(11).setCellValue(joinDate);
+                row1.getCell(11).setCellStyle(cellDateStyle);
             }
             if (payroll.getSueldo() != null){
-                row1.createCell(11).setCellValue(payroll.getSueldo().doubleValue());
-                sum1 += payroll.getSueldo().doubleValue();
+                if(payroll.getSueldo().signum() == -1){
+                    row1.createCell(12).setCellValue(0.0);
+                    sum1 += 0.0;
+                }else {
+                    row1.createCell(12).setCellValue(payroll.getSueldo().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                    sum1 += payroll.getSueldo().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+                }
             }
             if (payroll.getMontoRetardo() != null){
-                row1.createCell(12).setCellValue(payroll.getMontoRetardo().doubleValue());
-                sum2 += payroll.getMontoRetardo().doubleValue();
+                if(payroll.getMontoRetardo().signum() == -1){
+                    row1.createCell(13).setCellValue(0.0);
+                    sum2 += 0.0;
+                }else{
+                    row1.createCell(13).setCellValue(payroll.getMontoRetardo().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                    sum2 += payroll.getMontoRetardo().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+                }
             }
             if (payroll.getDescuento() != null){
-                row1.createCell(13).setCellValue(payroll.getDescuento().doubleValue());
-                sum3 += payroll.getDescuento().doubleValue();
+                if (payroll.getDescuento().signum() == -1){
+                    row1.createCell(14).setCellValue(0.0);
+                    sum3 += 0.0;
+                }else {
+                    row1.createCell(14).setCellValue(payroll.getDescuento().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                    sum3 += payroll.getDescuento().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+                }
             }
             if (payroll.getAjuste() != null){
-                row1.createCell(15).setCellValue(payroll.getAjuste().doubleValue());
-                sum4 += payroll.getAjuste().doubleValue();
+                if (payroll.getAjuste().signum() == -1){
+                    row1.createCell(15).setCellValue(0.0);
+                    sum4 += 0.0;
+                }else {
+                    row1.createCell(15).setCellValue(payroll.getAjuste().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                    sum4 += payroll.getAjuste().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+                }
             }
             if (payroll.getBono() != null){
-                row1.createCell(14).setCellValue(payroll.getBono().doubleValue());
-                sum5 += payroll.getBono().doubleValue();
+                if (payroll.getBono().signum() == -1){
+                    row1.createCell(16).setCellValue(0.0);
+                    sum5 += 0.0;
+                }else {
+                    row1.createCell(16).setCellValue(payroll.getBono().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                    sum5 += payroll.getBono().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+                }
             }
             if (payroll.getPrimaVacacional() != null){
-                row1.createCell(16).setCellValue(payroll.getPrimaVacacional().doubleValue());
-                sum6 += payroll.getPrimaVacacional().doubleValue();
+                if (payroll.getPrimaVacacional().signum() == -1) {
+                    row1.createCell(17).setCellValue(0.0);
+                    sum6 += 0.0;
+                }else {
+                    row1.createCell(17).setCellValue(payroll.getPrimaVacacional().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                    sum6 += payroll.getPrimaVacacional().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+                }
             }
             if (payroll.getEfectivo() != null){
-                row1.createCell(17).setCellValue(payroll.getEfectivo().doubleValue());
-                sum7 += payroll.getEfectivo().doubleValue();
+                if (payroll.getEfectivo().signum() == -1){
+                    row1.createCell(18).setCellValue(0.0);
+                    sum7 += 0.0;
+                }else {
+                    row1.createCell(18).setCellValue(payroll.getEfectivo().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                    sum7 += payroll.getEfectivo().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+                }
             }
             if (payroll.getEfectivoEdmon() != null){
-                row1.createCell(18).setCellValue(payroll.getEfectivoEdmon().doubleValue());
-                sum8 += payroll.getEfectivoEdmon().doubleValue();
+                if (payroll.getEfectivoEdmon().signum() == -1){
+                    row1.createCell(19).setCellValue(0.0);
+                    sum8 += 0.0;
+                }else {
+                    row1.createCell(19).setCellValue(payroll.getEfectivoEdmon().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                    sum8 += payroll.getEfectivoEdmon().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+                }
             }
             if (payroll.getComisionEmcofin() != null){
-                row1.createCell(19).setCellValue(payroll.getComisionEmcofin().doubleValue());
-                sum9 += payroll.getComisionEmcofin().doubleValue();
+                if (payroll.getComisionEmcofin().signum() == -1){
+                    row1.createCell(20).setCellValue(0.0);
+                    sum9 += 0.0;
+                }else {
+                    row1.createCell(20).setCellValue(payroll.getComisionEmcofin().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                    sum9 += payroll.getComisionEmcofin().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+                }
             }
             if (payroll.getRhmasPago() != null){
-                row1.createCell(20).setCellValue(payroll.getRhmasPago().doubleValue());
-                sum10 += payroll.getRhmasPago().doubleValue();
+                if (payroll.getRhmasPago().signum() == -1){
+                    row1.createCell(21).setCellValue(0.0);
+                    sum10 += 0.0;
+                }else {
+                    row1.createCell(21).setCellValue(payroll.getRhmasPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                    sum10 += payroll.getRhmasPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+                }
             }
             if (payroll.getRhmasTotalFacturar() != null){
-                row1.createCell(21).setCellValue(payroll.getRhmasTotalFacturar().doubleValue());
-                sum11 += payroll.getRhmasTotalFacturar().doubleValue();
+                if (payroll.getRhmasTotalFacturar().signum() == -1){
+                    row1.createCell(22).setCellValue(0.0);
+                    sum11 += 0.0;
+                }else {
+                    row1.createCell(22).setCellValue(payroll.getRhmasTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                    sum11 += payroll.getRhmasTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+                }
             }
             if (payroll.getPercepcion() != null){
-                row1.createCell(22).setCellValue(payroll.getPercepcion().doubleValue());
-                sum12 += payroll.getPercepcion().doubleValue();
+                if (payroll.getPercepcion().signum() == -1){
+                    row1.createCell(23).setCellValue(0.0);
+                    sum12 += 0.0;
+                }else {
+                    row1.createCell(23).setCellValue(payroll.getPercepcion().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                    sum12 += payroll.getPercepcion().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+                }
             }
             if (payroll.getDeduccion() != null){
-                row1.createCell(23).setCellValue(payroll.getDeduccion().doubleValue());
-                sum13 += payroll.getDeduccion().doubleValue();
+                if (payroll.getDeduccion().signum() == -1){
+                    row1.createCell(24).setCellValue(0.0);
+                    sum13 += 0.0;
+                }else {
+                    row1.createCell(24).setCellValue(payroll.getDeduccion().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                    sum13 += payroll.getDeduccion().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+                }
             }
             if (payroll.getPago() != null){
-                row1.createCell(24).setCellValue(payroll.getPago().doubleValue());
-                sum14 += payroll.getPago().doubleValue();
+                if (payroll.getPago().signum() == -1){
+                    row1.createCell(25).setCellValue(0.0);
+                    sum14 += 0.0;
+                }else {
+                    row1.createCell(25).setCellValue(payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                    sum14 += payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+                }
             }
 
             aux1++;
@@ -250,21 +325,21 @@ public class PayrollServiceImpl implements PayrollService {
 
         row1 = hoja1.createRow(aux1+2);
 
-        row1.createCell(10).setCellValue("TOTALES");
-        row1.createCell(11).setCellValue(sum1);
-        row1.createCell(12).setCellValue(sum2);
-        row1.createCell(13).setCellValue(sum3);
-        row1.createCell(14).setCellValue(sum4);
-        row1.createCell(15).setCellValue(sum5);
-        row1.createCell(16).setCellValue(sum6);
-        row1.createCell(17).setCellValue(sum7);
-        row1.createCell(18).setCellValue(sum8);
-        row1.createCell(19).setCellValue(sum9);
-        row1.createCell(20).setCellValue(sum10);
-        row1.createCell(21).setCellValue(sum11);
-        row1.createCell(22).setCellValue(sum12);
-        row1.createCell(23).setCellValue(sum13);
-        row1.createCell(24).setCellValue(sum14);
+        row1.createCell(11).setCellValue("TOTALES");
+        row1.createCell(12).setCellValue(sum1);
+        row1.createCell(13).setCellValue(sum2);
+        row1.createCell(14).setCellValue(sum3);
+        row1.createCell(15).setCellValue(sum4);
+        row1.createCell(16).setCellValue(sum5);
+        row1.createCell(17).setCellValue(sum6);
+        row1.createCell(18).setCellValue(sum7);
+        row1.createCell(19).setCellValue(sum8);
+        row1.createCell(20).setCellValue(sum9);
+        row1.createCell(21).setCellValue(sum10);
+        row1.createCell(22).setCellValue(sum11);
+        row1.createCell(23).setCellValue(sum12);
+        row1.createCell(24).setCellValue(sum13);
+        row1.createCell(25).setCellValue(sum14);
 
         Sheet hoja2 = wb.createSheet("RHMAS GMT E ");
 
@@ -726,30 +801,31 @@ public class PayrollServiceImpl implements PayrollService {
         row6.createCell(17).setCellValue(sum61);
         row6.createCell(18).setCellValue(sum62);
 
-        Sheet hoja3 = wb.createSheet("GMT ENZO");
+        Sheet hoja3 = wb.createSheet("GMT NEC");
 
         //Se crea la fila que contiene la cabecera
-        Row row3 = hoja3.createRow(0);
+        Row row3 = hoja3.createRow(9);
 
         row3.createCell(0).setCellValue("N");
         row3.createCell(1).setCellValue("NOMBRE DEL EMPLEADO");
-        row3.createCell(2).setCellValue("BANCO");
-        row3.createCell(3).setCellValue("N. DE CUENTA");
-        row3.createCell(4).setCellValue("CLABE");
-        row3.createCell(5).setCellValue("SUCURSAL");
-        row3.createCell(6).setCellValue("AREA");
-        row3.createCell(7).setCellValue("RFC");
-        row3.createCell(8).setCellValue("CURP");
-        row3.createCell(9).setCellValue("MONTO A PAGAR");
-        row3.createCell(10).setCellValue("11.50%");
-        row3.createCell(11).setCellValue("TOTAL A FACTURAR");
+        row3.createCell(2).setCellValue("TIPO DE SOCIO");
+        row3.createCell(3).setCellValue("PUESTO");
+        row3.createCell(4).setCellValue("BANCO");
+        row3.createCell(5).setCellValue("N. DE CUENTA");
+        row3.createCell(6).setCellValue("CLABE");
+        row3.createCell(7).setCellValue("SUCURSAL");
+        row3.createCell(8).setCellValue("RFC");
+        row3.createCell(9).setCellValue("CURP");
+        row3.createCell(10).setCellValue("MONTO A DEPOSITAR");
+        row3.createCell(11).setCellValue("11.50%");
+        row3.createCell(12).setCellValue("TOTAL A FACTURAR");
 
         //Implementacion del estilo
         for (Cell celda : row3) {
             celda.setCellStyle(style);
         }
 
-        int aux3 = 1;
+        int aux3 = 10;
 
         List<Payroll> payrolls = payrollDao.findAllByAmountPositives();
 
@@ -766,38 +842,39 @@ public class PayrollServiceImpl implements PayrollService {
             if (payroll.getNombre() != null){
                 row3.createCell(1).setCellValue(payroll.getNombre());
             }
+            row3.createCell(2).setCellValue("ASIMILADOS");
+            if (payroll.getPuesto() != null){
+                row3.createCell(3).setCellValue(payroll.getPuesto());
+            }
             if (payroll.getBanco() != null){
-                row3.createCell(2).setCellValue(payroll.getBanco());
+                row3.createCell(4).setCellValue(payroll.getBanco());
             }
             if (payroll.getNumeroDeCuenta() != null){
-                row3.createCell(3).setCellValue(payroll.getNumeroDeCuenta());
+                row3.createCell(5).setCellValue(payroll.getNumeroDeCuenta());
             }
             if (payroll.getCuentaClabe() != null){
-                row3.createCell(4).setCellValue(payroll.getCuentaClabe());
+                row3.createCell(6).setCellValue(payroll.getCuentaClabe());
             }
             if (payroll.getSucursal() != null){
-                row3.createCell(5).setCellValue(payroll.getSucursal());
-            }
-            if (payroll.getArea() != null){
-                row3.createCell(6).setCellValue(payroll.getArea());
+                row3.createCell(7).setCellValue(payroll.getSucursal());
             }
             if (payroll.getRfc() != null){
-                row3.createCell(7).setCellValue(payroll.getRfc());
+                row3.createCell(8).setCellValue(payroll.getRfc());
             }
             if (payroll.getCurp() != null){
-                row3.createCell(8).setCellValue(payroll.getCurp());
+                row3.createCell(9).setCellValue(payroll.getCurp());
             }
             if (payroll.getPago() != null){
-                row3.createCell(9).setCellValue(payroll.getPago().doubleValue());
-                sum63 += payroll.getPago().doubleValue();
+                row3.createCell(10).setCellValue(payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum63 += payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
             if (payroll.getComisionNec() != null){
-                row3.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
-                sum64 += payroll.getComisionNec().doubleValue();
+                row3.createCell(11).setCellValue(payroll.getComisionNec().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum64 += payroll.getComisionNec().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
             if (payroll.getTotalFacturar() != null){
-                row3.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
-                sum65 += payroll.getTotalFacturar().doubleValue();
+                row3.createCell(12).setCellValue(payroll.getTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum65 += payroll.getTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
 
             aux3 ++;
@@ -806,10 +883,10 @@ public class PayrollServiceImpl implements PayrollService {
 
         row3 = hoja3.createRow(aux3+2);
 
-        row3.createCell(8).setCellValue("TOTALES");
-        row3.createCell(9).setCellValue(sum63);
-        row3.createCell(10).setCellValue(sum64);
-        row3.createCell(11).setCellValue(sum65);
+        row3.createCell(9).setCellValue("TOTALES");
+        row3.createCell(10).setCellValue(sum63);
+        row3.createCell(11).setCellValue(sum64);
+        row3.createCell(12).setCellValue(sum65);
 
         Sheet hoja4 = wb.createSheet("TOTALES");
 
@@ -827,25 +904,25 @@ public class PayrollServiceImpl implements PayrollService {
         BigDecimal rhmas = (BigDecimal) outsourcingDao.findSumRhmasByDwEnterprise(dwEnterprisesList,applicatioDateStart,applicationDateEnd);
         Double totalDeTotales = 0.00;
         if(gmtNec != null){
-            totalDeTotales+=gmtNec.doubleValue();
+            totalDeTotales+=gmtNec.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             Row rowGmt = hoja4.createRow(3);
 
             rowGmt.createCell(1).setCellValue("GMT NEC");
-            rowGmt.createCell(2).setCellValue(gmtNec.doubleValue());
+            rowGmt.createCell(2).setCellValue(gmtNec.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
         }
         if (efectivoEdmon != null){
-            totalDeTotales+=efectivoEdmon.doubleValue();
+            totalDeTotales+=efectivoEdmon.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             Row rowEfectivoEdmon = hoja4.createRow(5);
 
             rowEfectivoEdmon.createCell(1).setCellValue("EFECTIVO EDMON");
-            rowEfectivoEdmon.createCell(2).setCellValue(efectivoEdmon.doubleValue());
+            rowEfectivoEdmon.createCell(2).setCellValue(efectivoEdmon.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
         }
         if (rhmas != null){
-            totalDeTotales+=rhmas.doubleValue();
+            totalDeTotales+=rhmas.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             Row rowRhmas = hoja4.createRow(4);
 
             rowRhmas.createCell(1).setCellValue("RHMAS SEG, MSJ y GMT");
-            rowRhmas.createCell(2).setCellValue(rhmas.doubleValue());
+            rowRhmas.createCell(2).setCellValue(rhmas.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
         }
 
 
@@ -978,34 +1055,74 @@ public class PayrollServiceImpl implements PayrollService {
                 row1.getCell(13).setCellStyle(cellDateStyle);
             }
             if (payroll.getSueldo() != null){
-                row1.createCell(14).setCellValue(payroll.getSueldo().doubleValue());
+                if (payroll.getSueldo().signum() == -1){
+                    row1.createCell(14).setCellValue(0.0);
+                }else {
+                    row1.createCell(14).setCellValue(payroll.getSueldo().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getPrimaVacacional() != null){
-                row1.createCell(15).setCellValue(payroll.getPrimaVacacional().doubleValue());
+                if (payroll.getPrimaVacacional().signum() == -1){
+                    row1.createCell(15).setCellValue(0.0);
+                }else{
+                    row1.createCell(15).setCellValue(payroll.getPrimaVacacional().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getBono() != null){
-                row1.createCell(16).setCellValue(payroll.getBono().doubleValue());
+                if (payroll.getBono().signum() == -1){
+                    row1.createCell(16).setCellValue(0.0);
+                }else {
+                    row1.createCell(16).setCellValue(payroll.getBono().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getAjuste() != null){
-                row1.createCell(17).setCellValue(payroll.getAjuste().doubleValue());
+                if (payroll.getAjuste().signum() == -1){
+                    row1.createCell(17).setCellValue(0.0);
+                }else {
+                    row1.createCell(17).setCellValue(payroll.getAjuste().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getRhmasPago() != null){
-                row1.createCell(18).setCellValue(payroll.getRhmasPago().doubleValue());
+                if (payroll.getRhmasPago().signum() == -1){
+                    row1.createCell(18).setCellValue(0.0);
+                }else {
+                    row1.createCell(18).setCellValue(payroll.getRhmasPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getRhmasTotalFacturar() != null){
-                row1.createCell(19).setCellValue(payroll.getRhmasTotalFacturar().doubleValue());
+                if (payroll.getRhmasTotalFacturar().signum() == -1){
+                    row1.createCell(19).setCellValue(0.0);
+                }else {
+                    row1.createCell(19).setCellValue(payroll.getRhmasTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getDescuento() != null){
-                row1.createCell(20).setCellValue(payroll.getDescuento().doubleValue());
+                if (payroll.getDescuento().signum() == -1){
+                    row1.createCell(20).setCellValue(0.0);
+                }else {
+                    row1.createCell(20).setCellValue(payroll.getDescuento().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getPercepcion() != null){
-                row1.createCell(21).setCellValue(payroll.getPercepcion().doubleValue());
+                if (payroll.getPercepcion().signum() == -1){
+                    row1.createCell(21).setCellValue(0.0);
+                }else {
+                    row1.createCell(21).setCellValue(payroll.getPercepcion().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getDeduccion() != null){
-                row1.createCell(22).setCellValue(payroll.getDeduccion().doubleValue());
+                if (payroll.getDeduccion().signum() == -1){
+                    row1.createCell(22).setCellValue(0.0);
+                }else {
+                    row1.createCell(22).setCellValue(payroll.getDeduccion().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getPago() != null){
-                row1.createCell(23).setCellValue(payroll.getPago().doubleValue());
+                if (payroll.getPago().signum() == -1){
+                    row1.createCell(23).setCellValue(0.0);
+                }else {
+                    row1.createCell(23).setCellValue(payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
 
             aux1++;
@@ -1322,27 +1439,28 @@ public class PayrollServiceImpl implements PayrollService {
         Sheet hoja4 = wb.createSheet("AMER NEC");
 
         //Se crea la fila que contiene la cabecera
-        Row row4 = hoja4.createRow(0);
+        Row row4 = hoja4.createRow(9);
 
         row4.createCell(0).setCellValue("N");
         row4.createCell(1).setCellValue("NOMBRE DEL EMPLEADO");
-        row4.createCell(2).setCellValue("BANCO");
-        row4.createCell(3).setCellValue("N. DE CUENTA");
-        row4.createCell(4).setCellValue("CLABE");
-        row4.createCell(5).setCellValue("SUCURSAL");
-        row4.createCell(6).setCellValue("AREA");
-        row4.createCell(7).setCellValue("RFC");
-        row4.createCell(8).setCellValue("CURP");
-        row4.createCell(9).setCellValue("MONTO A PAGAR");
-        row4.createCell(10).setCellValue("11.50%");
-        row4.createCell(11).setCellValue("TOTAL A FACTURAR");
+        row4.createCell(2).setCellValue("TIPO DE SOCIO");
+        row4.createCell(3).setCellValue("PUESTO");
+        row4.createCell(4).setCellValue("BANCO");
+        row4.createCell(5).setCellValue("N. DE CUENTA");
+        row4.createCell(6).setCellValue("CLABE");
+        row4.createCell(7).setCellValue("SUCURSAL");
+        row4.createCell(8).setCellValue("RFC");
+        row4.createCell(9).setCellValue("CURP");
+        row4.createCell(10).setCellValue("MONTO A DEPOSITAR");
+        row4.createCell(11).setCellValue("11.50%");
+        row4.createCell(12).setCellValue("TOTAL A FACTURAR");
 
         //Implementacion del estilo
         for (Cell celda : row4) {
             celda.setCellStyle(style);
         }
 
-        int aux4 = 1;
+        int aux4 = 10;
 
         List <Payroll> amerNec = payrollDao.findByDistributor(2);
 
@@ -1359,38 +1477,39 @@ public class PayrollServiceImpl implements PayrollService {
             if (payroll.getNombre() != null){
                 row4.createCell(1).setCellValue(payroll.getNombre());
             }
+            row4.createCell(2).setCellValue("ADMINISTRATIVO");
+            if (payroll.getPuesto() != null){
+                row4.createCell(3).setCellValue(payroll.getPuesto());
+            }
             if (payroll.getBanco() != null){
-                row4.createCell(2).setCellValue(payroll.getBanco());
+                row4.createCell(4).setCellValue(payroll.getBanco());
             }
             if (payroll.getNumeroDeCuenta() != null){
-                row4.createCell(3).setCellValue(payroll.getNumeroDeCuenta());
+                row4.createCell(5).setCellValue(payroll.getNumeroDeCuenta());
             }
             if (payroll.getCuentaClabe() != null){
-                row4.createCell(4).setCellValue(payroll.getCuentaClabe());
+                row4.createCell(6).setCellValue(payroll.getCuentaClabe());
             }
             if (payroll.getSucursal() != null){
-                row4.createCell(5).setCellValue(payroll.getSucursal());
-            }
-            if (payroll.getArea() != null){
-                row4.createCell(6).setCellValue(payroll.getArea());
+                row4.createCell(7).setCellValue(payroll.getSucursal());
             }
             if (payroll.getRfc() != null){
-                row4.createCell(7).setCellValue(payroll.getRfc());
+                row4.createCell(8).setCellValue(payroll.getRfc());
             }
             if (payroll.getCurp() != null){
-                row4.createCell(8).setCellValue(payroll.getCurp());
+                row4.createCell(9).setCellValue(payroll.getCurp());
             }
             if (payroll.getPago() != null){
-                row4.createCell(9).setCellValue(payroll.getPago().doubleValue());
-                sum33 += payroll.getPago().doubleValue();
+                row4.createCell(10).setCellValue(payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum33 += payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
             if (payroll.getComisionNec() != null){
-                row4.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
-                sum34 += payroll.getComisionNec().doubleValue();
+                row4.createCell(11).setCellValue(payroll.getComisionNec().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum34 += payroll.getComisionNec().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
             if (payroll.getTotalFacturar() != null){
-                row4.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
-                sum35 += payroll.getTotalFacturar().doubleValue();
+                row4.createCell(12).setCellValue(payroll.getTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum35 += payroll.getTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
 
             aux4 ++;
@@ -1399,35 +1518,36 @@ public class PayrollServiceImpl implements PayrollService {
 
         row4 = hoja4.createRow(aux4+2);
 
-        row4.createCell(8).setCellValue("TOTALES");
-        row4.createCell(9).setCellValue(sum33);
-        row4.createCell(10).setCellValue(sum34);
-        row4.createCell(11).setCellValue(sum35);
+        row4.createCell(9).setCellValue("TOTALES");
+        row4.createCell(10).setCellValue(sum33);
+        row4.createCell(11).setCellValue(sum34);
+        row4.createCell(12).setCellValue(sum35);
 
         Sheet hoja5 = wb.createSheet("AMERMEDIA NEC");
 
         //Se crea la fila que contiene la cabecera
-        Row row5 = hoja5.createRow(0);
+        Row row5 = hoja5.createRow(9);
 
         row5.createCell(0).setCellValue("N");
         row5.createCell(1).setCellValue("NOMBRE DEL EMPLEADO");
-        row5.createCell(2).setCellValue("BANCO");
-        row5.createCell(3).setCellValue("N. DE CUENTA");
-        row5.createCell(4).setCellValue("CLABE");
-        row5.createCell(5).setCellValue("SUCURSAL");
-        row5.createCell(6).setCellValue("AREA");
-        row5.createCell(7).setCellValue("RFC");
-        row5.createCell(8).setCellValue("CURP");
-        row5.createCell(9).setCellValue("MONTO A PAGAR");
-        row5.createCell(10).setCellValue("11.50%");
-        row5.createCell(11).setCellValue("TOTAL A FACTURAR");
+        row5.createCell(2).setCellValue("TIPO DE SOCIO");
+        row5.createCell(3).setCellValue("PUESTO");
+        row5.createCell(4).setCellValue("BANCO");
+        row5.createCell(5).setCellValue("N. DE CUENTA");
+        row5.createCell(6).setCellValue("CLABE");
+        row5.createCell(7).setCellValue("SUCURSAL");
+        row5.createCell(8).setCellValue("RFC");
+        row5.createCell(9).setCellValue("CURP");
+        row5.createCell(10).setCellValue("MONTO A DEPOSITAR");
+        row5.createCell(11).setCellValue("11.50%");
+        row5.createCell(12).setCellValue("TOTAL A FACTURAR");
 
         //Implementacion del estilo
         for (Cell celda : row5) {
             celda.setCellStyle(style);
         }
 
-        int aux5 = 1;
+        int aux5 = 10;
 
         List <Payroll> amermediaNec = payrollDao.findByDistributor(3);
 
@@ -1444,38 +1564,39 @@ public class PayrollServiceImpl implements PayrollService {
             if (payroll.getNombre() != null){
                 row5.createCell(1).setCellValue(payroll.getNombre());
             }
+            row5.createCell(2).setCellValue("ADMINISTRATIVO");
+            if (payroll.getPuesto() != null){
+                row5.createCell(3).setCellValue(payroll.getPuesto());
+            }
             if (payroll.getBanco() != null){
-                row5.createCell(2).setCellValue(payroll.getBanco());
+                row5.createCell(4).setCellValue(payroll.getBanco());
             }
             if (payroll.getNumeroDeCuenta() != null){
-                row5.createCell(3).setCellValue(payroll.getNumeroDeCuenta());
+                row5.createCell(5).setCellValue(payroll.getNumeroDeCuenta());
             }
             if (payroll.getCuentaClabe() != null){
-                row5.createCell(4).setCellValue(payroll.getCuentaClabe());
+                row5.createCell(6).setCellValue(payroll.getCuentaClabe());
             }
             if (payroll.getSucursal() != null){
-                row5.createCell(5).setCellValue(payroll.getSucursal());
-            }
-            if (payroll.getArea() != null){
-                row5.createCell(6).setCellValue(payroll.getArea());
+                row5.createCell(7).setCellValue(payroll.getSucursal());
             }
             if (payroll.getRfc() != null){
-                row5.createCell(7).setCellValue(payroll.getRfc());
+                row5.createCell(8).setCellValue(payroll.getRfc());
             }
             if (payroll.getCurp() != null){
-                row5.createCell(8).setCellValue(payroll.getCurp());
+                row5.createCell(9).setCellValue(payroll.getCurp());
             }
             if (payroll.getPago() != null){
-                row5.createCell(9).setCellValue(payroll.getPago().doubleValue());
-                sum36 += payroll.getPago().doubleValue();
+                row5.createCell(10).setCellValue(payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum36 += payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
             if (payroll.getComisionNec() != null){
-                row5.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
-                sum37 += payroll.getComisionNec().doubleValue();
+                row5.createCell(11).setCellValue(payroll.getComisionNec().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum37 += payroll.getComisionNec().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
             if (payroll.getTotalFacturar() != null){
-                row5.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
-                sum38 += payroll.getTotalFacturar().doubleValue();
+                row5.createCell(12).setCellValue(payroll.getTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum38 += payroll.getTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
 
             aux5 ++;
@@ -1484,10 +1605,10 @@ public class PayrollServiceImpl implements PayrollService {
 
         row5 = hoja5.createRow(aux5+2);
 
-        row5.createCell(8).setCellValue("TOTALES");
-        row5.createCell(9).setCellValue(sum36);
-        row5.createCell(10).setCellValue(sum37);
-        row5.createCell(11).setCellValue(sum38);
+        row5.createCell(9).setCellValue("TOTALES");
+        row5.createCell(10).setCellValue(sum36);
+        row5.createCell(11).setCellValue(sum37);
+        row5.createCell(12).setCellValue(sum38);
 
         Sheet hoja6 = wb.createSheet("TOTALES");
 
@@ -1508,32 +1629,32 @@ public class PayrollServiceImpl implements PayrollService {
         Double totalDeTotales = 0.00;
 
         if(amerNecSum != null){
-            totalDeTotales+=amerNecSum.doubleValue();
+            totalDeTotales+=amerNecSum.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             Row rowAmerNec = hoja6.createRow(3);
 
             rowAmerNec.createCell(1).setCellValue("AMER NEC");
-            rowAmerNec.createCell(2).setCellValue(amerNecSum.doubleValue());
+            rowAmerNec.createCell(2).setCellValue(amerNecSum.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
         }
         if(amermediaNecSum != null){
-            totalDeTotales+=amermediaNecSum.doubleValue();
+            totalDeTotales+=amermediaNecSum.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             Row rowAmermediaNec = hoja6.createRow(4);
 
             rowAmermediaNec.createCell(1).setCellValue("AMERMEDIA NEC");
-            rowAmermediaNec.createCell(2).setCellValue(amermediaNecSum.doubleValue());
+            rowAmermediaNec.createCell(2).setCellValue(amermediaNecSum.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
         }
         if (rhmasAmer != null){
-            totalDeTotales+=rhmasAmer.doubleValue();
+            totalDeTotales+=rhmasAmer.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             Row rowRhmasAmer = hoja6.createRow(5);
 
             rowRhmasAmer.createCell(1).setCellValue("RHMAS AMER");
-            rowRhmasAmer.createCell(2).setCellValue(rhmasAmer.doubleValue());
+            rowRhmasAmer.createCell(2).setCellValue(rhmasAmer.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
         }
         if (rhmasAmermedia != null){
-            totalDeTotales+=rhmasAmermedia.doubleValue();
+            totalDeTotales+=rhmasAmermedia.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             Row rowRhmasAmermedia = hoja6.createRow(6);
 
             rowRhmasAmermedia.createCell(1).setCellValue("RHMAS AMERMEDIA");
-            rowRhmasAmermedia.createCell(2).setCellValue(rhmasAmermedia.doubleValue());
+            rowRhmasAmermedia.createCell(2).setCellValue(rhmasAmermedia.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
         }
 
 
@@ -1669,40 +1790,88 @@ public class PayrollServiceImpl implements PayrollService {
                 row1.getCell(13).setCellStyle(cellDateStyle);
             }
             if (payroll.getComissionPromotor() != null){
-                row1.createCell(14).setCellValue(payroll.getApoyo375().doubleValue());
+                if(payroll.getComissionPromotor().signum() == -1){
+                    row1.createCell(14).setCellValue(0.0);
+                }else {
+                    row1.createCell(14).setCellValue(payroll.getApoyo375().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getMontoPromotor() != null){
-                row1.createCell(15).setCellValue(payroll.getMontoPromotor().doubleValue());
+                if (payroll.getMontoPromotor().signum() == -1){
+                    row1.createCell(15).setCellValue(0.0);
+                }else {
+                    row1.createCell(15).setCellValue(payroll.getMontoPromotor().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getComissionPromotor() != null){
-                row1.createCell(16).setCellValue(payroll.getComissionPromotor().doubleValue());
+                if (payroll.getComissionPromotor().signum() == -1){
+                    row1.createCell(16).setCellValue(0.0);
+                }else {
+                    row1.createCell(16).setCellValue(payroll.getComissionPromotor().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getBono() != null){
-                row1.createCell(17).setCellValue(payroll.getBono().doubleValue());
+                if (payroll.getBono().signum() == -1){
+                    row1.createCell(17).setCellValue(0.0);
+                }else {
+                    row1.createCell(17).setCellValue(payroll.getBono().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getAjuste() != null){
-                row1.createCell(18).setCellValue(payroll.getAjuste().doubleValue());
+                if (payroll.getAjuste().signum() == -1){
+                    row1.createCell(18).setCellValue(0.0);
+                }else {
+                    row1.createCell(18).setCellValue(payroll.getAjuste().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getApoyoPasajes() != null){
-                row1.createCell(19).setCellValue(payroll.getApoyoPasajes().doubleValue());
+                if (payroll.getApoyoPasajes().signum() == -1){
+                    row1.createCell(19).setCellValue(0.0);
+                }else {
+                    row1.createCell(19).setCellValue(payroll.getApoyoPasajes().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getDescuento() != null){
-                row1.createCell(20).setCellValue(payroll.getDescuento().doubleValue());
+                if (payroll.getDescuento().signum() == -1){
+                    row1.createCell(20).setCellValue(0.0);
+                }else {
+                    row1.createCell(20).setCellValue(payroll.getDescuento().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getRhmasPago() != null){
-                row1.createCell(21).setCellValue(payroll.getRhmasPago().doubleValue());
+                if (payroll.getRhmasPago().signum() == -1){
+                    row1.createCell(21).setCellValue(0.0);
+                }else {
+                    row1.createCell(21).setCellValue(payroll.getRhmasPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getRhmasTotalFacturar() != null){
-                row1.createCell(22).setCellValue(payroll.getRhmasTotalFacturar().doubleValue());
+                if (payroll.getRhmasTotalFacturar().signum() == -1){
+                    row1.createCell(22).setCellValue(0.0);
+                }else {
+                    row1.createCell(22).setCellValue(payroll.getRhmasTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getPercepcion() != null){
-                row1.createCell(23).setCellValue(payroll.getPercepcion().doubleValue());
+                if (payroll.getPercepcion().signum() == -1){
+                    row1.createCell(23).setCellValue(0.0);
+                }else {
+                    row1.createCell(23).setCellValue(payroll.getPercepcion().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getDeduccion() != null){
-                row1.createCell(24).setCellValue(payroll.getDeduccion().doubleValue());
+                if (payroll.getDeduccion().signum() == -1){
+                    row1.createCell(24).setCellValue(0.0);
+                }else {
+                    row1.createCell(24).setCellValue(payroll.getDeduccion().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getPago() != null){
-                row1.createCell(25).setCellValue(payroll.getPago().doubleValue());
+                if (payroll.getPago().signum() == -1){
+                    row1.createCell(25).setCellValue(0.0);
+                }else {
+                    row1.createCell(25).setCellValue(payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
 
             aux1++;
@@ -2016,30 +2185,31 @@ public class PayrollServiceImpl implements PayrollService {
         row3.createCell(17).setCellValue(sum31);
         row3.createCell(18).setCellValue(sum32);
 
-        Sheet hoja4 = wb.createSheet("AMER NEC");
+        Sheet hoja4 = wb.createSheet("AMER ENZO");
 
         //Se crea la fila que contiene la cabecera
-        Row row4 = hoja4.createRow(0);
+        Row row4 = hoja4.createRow(9);
 
         row4.createCell(0).setCellValue("N");
         row4.createCell(1).setCellValue("NOMBRE DEL EMPLEADO");
-        row4.createCell(2).setCellValue("BANCO");
-        row4.createCell(3).setCellValue("N. DE CUENTA");
-        row4.createCell(4).setCellValue("CLABE");
-        row4.createCell(5).setCellValue("SUCURSAL");
-        row4.createCell(6).setCellValue("AREA");
-        row4.createCell(7).setCellValue("RFC");
-        row4.createCell(8).setCellValue("CURP");
-        row4.createCell(9).setCellValue("MONTO A PAGAR");
-        row4.createCell(10).setCellValue("11.50%");
-        row4.createCell(11).setCellValue("TOTAL A FACTURAR");
+        row4.createCell(2).setCellValue("TIPO DE SOCIO");
+        row4.createCell(3).setCellValue("PUESTO");
+        row4.createCell(4).setCellValue("BANCO");
+        row4.createCell(5).setCellValue("N. DE CUENTA");
+        row4.createCell(6).setCellValue("CLABE");
+        row4.createCell(7).setCellValue("SUCURSAL");
+        row4.createCell(8).setCellValue("RFC");
+        row4.createCell(9).setCellValue("CURP");
+        row4.createCell(10).setCellValue("MONTO A DEPOSITAR");
+        row4.createCell(11).setCellValue("11.50%");
+        row4.createCell(12).setCellValue("TOTAL A FACTURAR");
 
         //Implementacion del estilo
         for (Cell celda : row4) {
             celda.setCellStyle(style);
         }
 
-        int aux4 = 1;
+        int aux4 = 10;
 
         List <Payroll> amerNec = payrollDao.findByDistributor(2);
 
@@ -2056,38 +2226,39 @@ public class PayrollServiceImpl implements PayrollService {
             if (payroll.getNombre() != null){
                 row4.createCell(1).setCellValue(payroll.getNombre());
             }
+            row4.createCell(2).setCellValue("ADMINISTRATIVO");
+            if (payroll.getPuesto() != null){
+                row4.createCell(3).setCellValue(payroll.getPuesto());
+            }
             if (payroll.getBanco() != null){
-                row4.createCell(2).setCellValue(payroll.getBanco());
+                row4.createCell(4).setCellValue(payroll.getBanco());
             }
             if (payroll.getNumeroDeCuenta() != null){
-                row4.createCell(3).setCellValue(payroll.getNumeroDeCuenta());
+                row4.createCell(5).setCellValue(payroll.getNumeroDeCuenta());
             }
             if (payroll.getCuentaClabe() != null){
-                row4.createCell(4).setCellValue(payroll.getCuentaClabe());
+                row4.createCell(6).setCellValue(payroll.getCuentaClabe());
             }
             if (payroll.getSucursal() != null){
-                row4.createCell(5).setCellValue(payroll.getSucursal());
-            }
-            if (payroll.getArea() != null){
-                row4.createCell(6).setCellValue(payroll.getArea());
+                row4.createCell(7).setCellValue(payroll.getSucursal());
             }
             if (payroll.getRfc() != null){
-                row4.createCell(7).setCellValue(payroll.getRfc());
+                row4.createCell(8).setCellValue(payroll.getRfc());
             }
             if (payroll.getCurp() != null){
-                row4.createCell(8).setCellValue(payroll.getCurp());
+                row4.createCell(9).setCellValue(payroll.getCurp());
             }
             if (payroll.getPago() != null){
-                row4.createCell(9).setCellValue(payroll.getPago().doubleValue());
-                sum33 += payroll.getPago().doubleValue();
+                row4.createCell(10).setCellValue(payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum33 += payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
             if (payroll.getComisionNec() != null){
-                row4.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
-                sum34 += payroll.getComisionNec().doubleValue();
+                row4.createCell(11).setCellValue(payroll.getComisionNec().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum34 += payroll.getComisionNec().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
             if (payroll.getTotalFacturar() != null){
-                row4.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
-                sum35 += payroll.getTotalFacturar().doubleValue();
+                row4.createCell(12).setCellValue(payroll.getTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum35 += payroll.getTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
 
             aux4 ++;
@@ -2096,35 +2267,36 @@ public class PayrollServiceImpl implements PayrollService {
 
         row4 = hoja4.createRow(aux4+2);
 
-        row4.createCell(8).setCellValue("TOTALES");
-        row4.createCell(9).setCellValue(sum33);
-        row4.createCell(10).setCellValue(sum34);
-        row4.createCell(11).setCellValue(sum35);
+        row4.createCell(9).setCellValue("TOTALES");
+        row4.createCell(10).setCellValue(sum33);
+        row4.createCell(11).setCellValue(sum34);
+        row4.createCell(12).setCellValue(sum35);
 
-        Sheet hoja5 = wb.createSheet("AMERMEDIA NEC");
+        Sheet hoja5 = wb.createSheet("AMERMEDIA ENZO");
 
         //Se crea la fila que contiene la cabecera
-        Row row5 = hoja5.createRow(0);
+        Row row5 = hoja5.createRow(9);
 
         row5.createCell(0).setCellValue("N");
         row5.createCell(1).setCellValue("NOMBRE DEL EMPLEADO");
-        row5.createCell(2).setCellValue("BANCO");
-        row5.createCell(3).setCellValue("N. DE CUENTA");
-        row5.createCell(4).setCellValue("CLABE");
-        row5.createCell(5).setCellValue("SUCURSAL");
-        row5.createCell(6).setCellValue("AREA");
-        row5.createCell(7).setCellValue("RFC");
-        row5.createCell(8).setCellValue("CURP");
-        row5.createCell(9).setCellValue("MONTO A PAGAR");
-        row5.createCell(10).setCellValue("11.50%");
-        row5.createCell(11).setCellValue("TOTAL A FACTURAR");
+        row5.createCell(2).setCellValue("TIPO DE SOCIO");
+        row5.createCell(3).setCellValue("PUESTO");
+        row5.createCell(4).setCellValue("BANCO");
+        row5.createCell(5).setCellValue("N. DE CUENTA");
+        row5.createCell(6).setCellValue("CLABE");
+        row5.createCell(7).setCellValue("SUCURSAL");
+        row5.createCell(8).setCellValue("RFC");
+        row5.createCell(9).setCellValue("CURP");
+        row5.createCell(10).setCellValue("MONTO A DEPOSITAR");
+        row5.createCell(11).setCellValue("11.50%");
+        row5.createCell(12).setCellValue("TOTAL A FACTURAR");
 
         //Implementacion del estilo
         for (Cell celda : row5) {
             celda.setCellStyle(style);
         }
 
-        int aux5 = 1;
+        int aux5 = 10;
 
         List <Payroll> amermediaNec = payrollDao.findByDistributor(3);
 
@@ -2141,38 +2313,39 @@ public class PayrollServiceImpl implements PayrollService {
             if (payroll.getNombre() != null){
                 row5.createCell(1).setCellValue(payroll.getNombre());
             }
+            row5.createCell(2).setCellValue("ADMINISTRATIVO");
+            if (payroll.getPuesto() != null){
+                row5.createCell(3).setCellValue(payroll.getPuesto());
+            }
             if (payroll.getBanco() != null){
-                row5.createCell(2).setCellValue(payroll.getBanco());
+                row5.createCell(4).setCellValue(payroll.getBanco());
             }
             if (payroll.getNumeroDeCuenta() != null){
-                row5.createCell(3).setCellValue(payroll.getNumeroDeCuenta());
+                row5.createCell(5).setCellValue(payroll.getNumeroDeCuenta());
             }
             if (payroll.getCuentaClabe() != null){
-                row5.createCell(4).setCellValue(payroll.getCuentaClabe());
+                row5.createCell(6).setCellValue(payroll.getCuentaClabe());
             }
             if (payroll.getSucursal() != null){
-                row5.createCell(5).setCellValue(payroll.getSucursal());
-            }
-            if (payroll.getArea() != null){
-                row5.createCell(6).setCellValue(payroll.getArea());
+                row5.createCell(7).setCellValue(payroll.getSucursal());
             }
             if (payroll.getRfc() != null){
-                row5.createCell(7).setCellValue(payroll.getRfc());
+                row5.createCell(8).setCellValue(payroll.getRfc());
             }
             if (payroll.getCurp() != null){
-                row5.createCell(8).setCellValue(payroll.getCurp());
+                row5.createCell(9).setCellValue(payroll.getCurp());
             }
             if (payroll.getPago() != null){
-                row5.createCell(9).setCellValue(payroll.getPago().doubleValue());
-                sum36 += payroll.getPago().doubleValue();
+                row5.createCell(10).setCellValue(payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum36 += payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
             if (payroll.getComisionNec() != null){
-                row5.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
-                sum37 += payroll.getComisionNec().doubleValue();
+                row5.createCell(11).setCellValue(payroll.getComisionNec().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum37 += payroll.getComisionNec().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
             if (payroll.getTotalFacturar() != null){
-                row5.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
-                sum38 += payroll.getTotalFacturar().doubleValue();
+                row5.createCell(12).setCellValue(payroll.getTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum38 += payroll.getTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
 
             aux5 ++;
@@ -2181,10 +2354,10 @@ public class PayrollServiceImpl implements PayrollService {
 
         row5 = hoja5.createRow(aux5+2);
 
-        row5.createCell(8).setCellValue("TOTALES");
-        row5.createCell(9).setCellValue(sum36);
-        row5.createCell(10).setCellValue(sum37);
-        row5.createCell(11).setCellValue(sum38);
+        row5.createCell(9).setCellValue("TOTALES");
+        row5.createCell(10).setCellValue(sum36);
+        row5.createCell(11).setCellValue(sum37);
+        row5.createCell(12).setCellValue(sum38);
 
         Sheet hoja6 = wb.createSheet("TOTALES");
 
@@ -2205,18 +2378,18 @@ public class PayrollServiceImpl implements PayrollService {
         Double totalDeTotales = 0.00;
 
         if(amerNecSum != null){
-            totalDeTotales+=amerNecSum.doubleValue();
+            totalDeTotales+=amerNecSum.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             Row rowAmerNec = hoja6.createRow(3);
 
-            rowAmerNec.createCell(1).setCellValue("AMER NEC");
-            rowAmerNec.createCell(2).setCellValue(amerNecSum.doubleValue());
+            rowAmerNec.createCell(1).setCellValue("AMER ENZO");
+            rowAmerNec.createCell(2).setCellValue(amerNecSum.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
         }
         if(amermediaNecSum != null){
-            totalDeTotales+=amermediaNecSum.doubleValue();
+            totalDeTotales+=amermediaNecSum.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             Row rowAmermediaNec = hoja6.createRow(4);
 
-            rowAmermediaNec.createCell(1).setCellValue("AMERMEDIA NEC");
-            rowAmermediaNec.createCell(2).setCellValue(amermediaNecSum.doubleValue());
+            rowAmermediaNec.createCell(1).setCellValue("AMERMEDIA ENZO");
+            rowAmermediaNec.createCell(2).setCellValue(amermediaNecSum.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
         }
         if (rhmasAmer != null){
             totalDeTotales+=rhmasAmer.doubleValue();
@@ -2239,8 +2412,22 @@ public class PayrollServiceImpl implements PayrollService {
         rowTotal.createCell(1).setCellValue("TOTAL");
         rowTotal.createCell(2).setCellValue(totalDeTotales);
 
+        List<Object[]> results = queryResult;
+        List<Object[]> amerResults = new ArrayList<>();
+        List<Object[]> amermediaResults = new ArrayList<>();
 
-        Sheet hoja7 = wb.createSheet("CUADRO ADMON");
+        for (Object[] o : results){
+            if (o[3] != null) {
+                if (Integer.parseInt(String.valueOf(o[3])) == 2) {
+                    amerResults.add(o);
+                }else if (Integer.parseInt(String.valueOf(o[3])) == 3){
+                    amermediaResults.add(o);
+                }
+            }
+        }
+
+
+        Sheet hoja7 = wb.createSheet("CUADRO ADMON AMER");
 
         //Se crea la fila que contiene la cabecera
         Row row7 = hoja7.createRow(0);
@@ -2257,40 +2444,95 @@ public class PayrollServiceImpl implements PayrollService {
 
         int aux7 = 1;
 
-        List<Object[]> results = queryResult;
-
         Double sum100 = 0.00;
         Double sum200 = 0.00;
 
-        for(Object[] admonReport : results){
+        for(Object[] admonReport : amerResults){
             row7 = hoja7.createRow(aux7);
 
-            if (admonReport[0] != null){
-                row7.createCell(0).setCellValue(String.valueOf(admonReport[0]));
-            }
-            if (admonReport[1] != null){
-                row7.createCell(1).setCellValue(Double.parseDouble(String.valueOf(admonReport[1])));
-                sum100 += Double.parseDouble(String.valueOf(admonReport[1]));
-            }
-            if (admonReport[2] != null){
-                String cadena = String.valueOf(admonReport[2]);
-                if (!cadena.isEmpty()){
-                    row7.createCell(2).setCellValue(Double.parseDouble(cadena));
-                    sum200 += Double.parseDouble(cadena);
+            if (admonReport[3] != null){
+                if (Integer.parseInt(String.valueOf(admonReport[3])) == 2){
+                    if (admonReport[0] != null){
+                        row7.createCell(0).setCellValue(String.valueOf(admonReport[0]));
+                    }
+                    if (admonReport[1] != null){
+                        row7.createCell(1).setCellValue(Double.parseDouble(String.valueOf(admonReport[1])));
+                        sum100 += Double.parseDouble(String.valueOf(admonReport[1]));
+                    }
+                    if (admonReport[2] != null){
+                        String cadena = String.valueOf(admonReport[2]);
+                        if (!cadena.isEmpty()){
+                            row7.createCell(2).setCellValue(Double.parseDouble(cadena));
+                            sum200 += Double.parseDouble(cadena);
+                        }
+                    }
                 }
             }
-
 
             aux7 ++;
 
         }
 
-        BigDecimal totalAmountSap = (BigDecimal) sapSaleDao.sumTotalAmuntBeteween(applicatioDateStart,applicationDateEnd);
+        BigDecimal totalAmountSap = (BigDecimal) sapSaleDao.sumTotalAmuntBeteween(2,applicatioDateStart,applicationDateEnd);
 
         row7 = hoja7.createRow(aux7+1);
-        row7.createCell(0).setCellValue("Total promotor");
+        row7.createCell(0).setCellValue("TOTAL PROMOTOR");
         row7.createCell(1).setCellValue(sum100-totalAmountSap.doubleValue());
         row7.createCell(2).setCellValue(sum200);
+
+
+        Sheet hoja8 = wb.createSheet("CUADRO ADMON AMERMEDIA");
+
+        //Se crea la fila que contiene la cabecera
+        Row row8 = hoja8.createRow(0);
+
+
+        row8.createCell(0).setCellValue("CONCEPTO");
+        row8.createCell(1).setCellValue("VENTAS");
+        row8.createCell(2).setCellValue("% CONTRA VENTA");
+
+        //Implementacion del estilo
+        for (Cell celda : row8) {
+            celda.setCellStyle(style);
+        }
+
+        int aux8 = 1;
+
+        Double sum300 = 0.00;
+        Double sum400 = 0.00;
+
+        for(Object[] admonReport : amermediaResults){
+            row8 = hoja8.createRow(aux8);
+
+            if (admonReport[3] != null){
+                if (Integer.parseInt(String.valueOf(admonReport[3])) == 3){
+                    if (admonReport[0] != null){
+                        row8.createCell(0).setCellValue(String.valueOf(admonReport[0]));
+                    }
+                    if (admonReport[1] != null){
+                        row8.createCell(1).setCellValue(Double.parseDouble(String.valueOf(admonReport[1])));
+                        sum300 += Double.parseDouble(String.valueOf(admonReport[1]));
+                    }
+                    if (admonReport[2] != null){
+                        String cadena = String.valueOf(admonReport[2]);
+                        if (!cadena.isEmpty()){
+                            row8.createCell(2).setCellValue(Double.parseDouble(cadena));
+                            sum400 += Double.parseDouble(cadena);
+                        }
+                    }
+                }
+            }
+
+            aux8 ++;
+
+        }
+
+        BigDecimal totalAmountSapAmermedia = (BigDecimal) sapSaleDao.sumTotalAmuntBeteween(3,applicatioDateStart,applicationDateEnd);
+
+        row8 = hoja8.createRow(aux8+1);
+        row8.createCell(0).setCellValue("TOTAL PROMOTOR");
+        row8.createCell(1).setCellValue(sum300-totalAmountSapAmermedia.doubleValue());
+        row8.createCell(2).setCellValue(sum400);
 
         hoja1.autoSizeColumn(0);
         hoja2.autoSizeColumn(0);
@@ -2425,46 +2667,102 @@ public class PayrollServiceImpl implements PayrollService {
                 row1.getCell(13).setCellStyle(cellDateStyle);
             }
             if (payroll.getComissionPromotor() != null){
-                row1.createCell(14).setCellValue(payroll.getApoyo375().doubleValue());
+                if (payroll.getComissionPromotor().signum() == -1){
+                    row1.createCell(14).setCellValue(0.0);
+                }else {
+                    row1.createCell(14).setCellValue(payroll.getApoyo375().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getMontoPromotor() != null){
-                row1.createCell(15).setCellValue(payroll.getMontoPromotor().doubleValue());
+                if (payroll.getMontoPromotor().signum() == -1){
+                    row1.createCell(15).setCellValue(0.0);
+                }else {
+                    row1.createCell(15).setCellValue(payroll.getMontoPromotor().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getComissionPromotor() != null){
-                row1.createCell(16).setCellValue(payroll.getComissionPromotor().doubleValue());
+                if (payroll.getComissionPromotor().signum() == -1){
+                    row1.createCell(16).setCellValue(0.0);
+                }else {
+                    row1.createCell(16).setCellValue(payroll.getComissionPromotor().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getBono() != null){
-                row1.createCell(17).setCellValue(payroll.getBono().doubleValue());
+                if (payroll.getBono().signum() == -1){
+                    row1.createCell(17).setCellValue(0.0);
+                }else {
+                    row1.createCell(17).setCellValue(payroll.getBono().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getAjuste() != null){
-                row1.createCell(18).setCellValue(payroll.getAjuste().doubleValue());
+                if (payroll.getAjuste().signum() == -1){
+                    row1.createCell(18).setCellValue(0.0);
+                }else {
+                    row1.createCell(18).setCellValue(payroll.getAjuste().doubleValue());
+                }
             }
             if (payroll.getApoyoPasajes() != null){
-                row1.createCell(19).setCellValue(payroll.getApoyoPasajes().doubleValue());
+                if (payroll.getApoyoPasajes().signum() == -1){
+                    row1.createCell(19).setCellValue(0.0);
+                }else {
+                    row1.createCell(19).setCellValue(payroll.getApoyoPasajes().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getMontoMensual() != null){
-                row1.createCell(20).setCellValue(payroll.getMontoMensual().doubleValue());
+                if (payroll.getMontoMensual().signum() == -1){
+                    row1.createCell(20).setCellValue(0.0);
+                }else {
+                    row1.createCell(20).setCellValue(payroll.getMontoMensual().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getComisionMensual() != null){
-                row1.createCell(21).setCellValue(payroll.getComisionMensual().doubleValue());
+                if (payroll.getComisionMensual().signum() == -1){
+                    row1.createCell(21).setCellValue(0.0);
+                }else {
+                    row1.createCell(21).setCellValue(payroll.getComisionMensual().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getDescuento() != null){
-                row1.createCell(22).setCellValue(payroll.getDescuento().doubleValue());
+                if (payroll.getDescuento().signum() == -1){
+                    row1.createCell(22).setCellValue(0.0);
+                }else {
+                    row1.createCell(22).setCellValue(payroll.getDescuento().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getRhmasPago() != null){
-                row1.createCell(23).setCellValue(payroll.getRhmasPago().doubleValue());
+                if (payroll.getRhmasPago().signum() == -1){
+                    row1.createCell(23).setCellValue(0.0);
+                }else {
+                    row1.createCell(23).setCellValue(payroll.getRhmasPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getRhmasTotalFacturar() != null){
-                row1.createCell(24).setCellValue(payroll.getRhmasTotalFacturar().doubleValue());
+                if (payroll.getRhmasTotalFacturar().signum() == -1){
+                    row1.createCell(24).setCellValue(0.0);
+                }else {
+                    row1.createCell(24).setCellValue(payroll.getRhmasTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getPercepcion() != null){
-                row1.createCell(25).setCellValue(payroll.getPercepcion().doubleValue());
+                if (payroll.getPercepcion().signum() == -1){
+                    row1.createCell(25).setCellValue(0.0);
+                }else {
+                    row1.createCell(25).setCellValue(payroll.getPercepcion().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getDeduccion() != null){
-                row1.createCell(26).setCellValue(payroll.getDeduccion().doubleValue());
+                if (payroll.getDeduccion().signum() == -1){
+                    row1.createCell(26).setCellValue(0.0);
+                }else {
+                    row1.createCell(26).setCellValue(payroll.getDeduccion().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
             if (payroll.getPago() != null){
-                row1.createCell(27).setCellValue(payroll.getPago().doubleValue());
+                if (payroll.getPago().signum() == -1){
+                    row1.createCell(27).setCellValue(0.0);
+                }else {
+                    row1.createCell(27).setCellValue(payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                }
             }
 
             aux1++;
@@ -2778,30 +3076,31 @@ public class PayrollServiceImpl implements PayrollService {
         row3.createCell(17).setCellValue(sum31);
         row3.createCell(18).setCellValue(sum32);
 
-        Sheet hoja4 = wb.createSheet("AMER NEC");
+        Sheet hoja4 = wb.createSheet("AMER ENZO");
 
         //Se crea la fila que contiene la cabecera
-        Row row4 = hoja4.createRow(0);
+        Row row4 = hoja4.createRow(9);
 
         row4.createCell(0).setCellValue("N");
         row4.createCell(1).setCellValue("NOMBRE DEL EMPLEADO");
-        row4.createCell(2).setCellValue("BANCO");
-        row4.createCell(3).setCellValue("N. DE CUENTA");
-        row4.createCell(4).setCellValue("CLABE");
-        row4.createCell(5).setCellValue("SUCURSAL");
-        row4.createCell(6).setCellValue("AREA");
-        row4.createCell(7).setCellValue("RFC");
-        row4.createCell(8).setCellValue("CURP");
-        row4.createCell(9).setCellValue("MONTO A PAGAR");
-        row4.createCell(10).setCellValue("11.50%");
-        row4.createCell(11).setCellValue("TOTAL A FACTURAR");
+        row4.createCell(2).setCellValue("TIPO DE SOCIO");
+        row4.createCell(3).setCellValue("PUESTO");
+        row4.createCell(4).setCellValue("BANCO");
+        row4.createCell(5).setCellValue("N. DE CUENTA");
+        row4.createCell(6).setCellValue("CLABE");
+        row4.createCell(7).setCellValue("SUCURSAL");
+        row4.createCell(8).setCellValue("RFC");
+        row4.createCell(9).setCellValue("CURP");
+        row4.createCell(10).setCellValue("MONTO A DEPOSITAR");
+        row4.createCell(11).setCellValue("11.50%");
+        row4.createCell(12).setCellValue("TOTAL A FACTURAR");
 
         //Implementacion del estilo
         for (Cell celda : row4) {
             celda.setCellStyle(style);
         }
 
-        int aux4 = 1;
+        int aux4 = 10;
 
         List <Payroll> amerNec = payrollDao.findByDistributor(2);
 
@@ -2818,38 +3117,39 @@ public class PayrollServiceImpl implements PayrollService {
             if (payroll.getNombre() != null){
                 row4.createCell(1).setCellValue(payroll.getNombre());
             }
+            row4.createCell(2).setCellValue("ADMINISTRATIVO");
+            if (payroll.getPuesto() != null){
+                row4.createCell(3).setCellValue(payroll.getPuesto());
+            }
             if (payroll.getBanco() != null){
-                row4.createCell(2).setCellValue(payroll.getBanco());
+                row4.createCell(4).setCellValue(payroll.getBanco());
             }
             if (payroll.getNumeroDeCuenta() != null){
-                row4.createCell(3).setCellValue(payroll.getNumeroDeCuenta());
+                row4.createCell(5).setCellValue(payroll.getNumeroDeCuenta());
             }
             if (payroll.getCuentaClabe() != null){
-                row4.createCell(4).setCellValue(payroll.getCuentaClabe());
+                row4.createCell(6).setCellValue(payroll.getCuentaClabe());
             }
             if (payroll.getSucursal() != null){
-                row4.createCell(5).setCellValue(payroll.getSucursal());
-            }
-            if (payroll.getArea() != null){
-                row4.createCell(6).setCellValue(payroll.getArea());
+                row4.createCell(7).setCellValue(payroll.getSucursal());
             }
             if (payroll.getRfc() != null){
-                row4.createCell(7).setCellValue(payroll.getRfc());
+                row4.createCell(8).setCellValue(payroll.getRfc());
             }
             if (payroll.getCurp() != null){
-                row4.createCell(8).setCellValue(payroll.getCurp());
+                row4.createCell(9).setCellValue(payroll.getCurp());
             }
             if (payroll.getPago() != null){
-                row4.createCell(9).setCellValue(payroll.getPago().doubleValue());
-                sum33 += payroll.getPago().doubleValue();
+                row4.createCell(10).setCellValue(payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum33 += payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
             if (payroll.getComisionNec() != null){
-                row4.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
-                sum34 += payroll.getComisionNec().doubleValue();
+                row4.createCell(11).setCellValue(payroll.getComisionNec().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum34 += payroll.getComisionNec().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
             if (payroll.getTotalFacturar() != null){
-                row4.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
-                sum35 += payroll.getTotalFacturar().doubleValue();
+                row4.createCell(12).setCellValue(payroll.getTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum35 += payroll.getTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
 
             aux4 ++;
@@ -2858,35 +3158,36 @@ public class PayrollServiceImpl implements PayrollService {
 
         row4 = hoja4.createRow(aux4+2);
 
-        row4.createCell(8).setCellValue("TOTALES");
-        row4.createCell(9).setCellValue(sum33);
-        row4.createCell(10).setCellValue(sum34);
-        row4.createCell(11).setCellValue(sum35);
+        row4.createCell(9).setCellValue("TOTALES");
+        row4.createCell(10).setCellValue(sum33);
+        row4.createCell(11).setCellValue(sum34);
+        row4.createCell(12).setCellValue(sum35);
 
-        Sheet hoja5 = wb.createSheet("AMERMEDIA NEC");
+        Sheet hoja5 = wb.createSheet("AMERMEDIA ENZO");
 
         //Se crea la fila que contiene la cabecera
-        Row row5 = hoja5.createRow(0);
+        Row row5 = hoja5.createRow(9);
 
         row5.createCell(0).setCellValue("N");
         row5.createCell(1).setCellValue("NOMBRE DEL EMPLEADO");
-        row5.createCell(2).setCellValue("BANCO");
-        row5.createCell(3).setCellValue("N. DE CUENTA");
-        row5.createCell(4).setCellValue("CLABE");
-        row5.createCell(5).setCellValue("SUCURSAL");
-        row5.createCell(6).setCellValue("AREA");
-        row5.createCell(7).setCellValue("RFC");
-        row5.createCell(8).setCellValue("CURP");
-        row5.createCell(9).setCellValue("MONTO A PAGAR");
-        row5.createCell(10).setCellValue("11.50%");
-        row5.createCell(11).setCellValue("TOTAL A FACTURAR");
+        row5.createCell(2).setCellValue("TIPO DE SOCIO");
+        row5.createCell(3).setCellValue("PUESTO");
+        row5.createCell(4).setCellValue("BANCO");
+        row5.createCell(5).setCellValue("N. DE CUENTA");
+        row5.createCell(6).setCellValue("CLABE");
+        row5.createCell(7).setCellValue("SUCURSAL");
+        row5.createCell(8).setCellValue("RFC");
+        row5.createCell(9).setCellValue("CURP");
+        row5.createCell(10).setCellValue("MONTO A DEPOSITAR");
+        row5.createCell(11).setCellValue("11.50%");
+        row5.createCell(12).setCellValue("TOTAL A FACTURAR");
 
         //Implementacion del estilo
         for (Cell celda : row5) {
             celda.setCellStyle(style);
         }
 
-        int aux5 = 1;
+        int aux5 = 10;
 
         List <Payroll> amermediaNec = payrollDao.findByDistributor(3);
 
@@ -2903,38 +3204,39 @@ public class PayrollServiceImpl implements PayrollService {
             if (payroll.getNombre() != null){
                 row5.createCell(1).setCellValue(payroll.getNombre());
             }
+            row5.createCell(2).setCellValue("ADMINISTRATIVO");
+            if (payroll.getPuesto() != null){
+                row5.createCell(3).setCellValue(payroll.getPuesto());
+            }
             if (payroll.getBanco() != null){
-                row5.createCell(2).setCellValue(payroll.getBanco());
+                row5.createCell(4).setCellValue(payroll.getBanco());
             }
             if (payroll.getNumeroDeCuenta() != null){
-                row5.createCell(3).setCellValue(payroll.getNumeroDeCuenta());
+                row5.createCell(5).setCellValue(payroll.getNumeroDeCuenta());
             }
             if (payroll.getCuentaClabe() != null){
-                row5.createCell(4).setCellValue(payroll.getCuentaClabe());
+                row5.createCell(6).setCellValue(payroll.getCuentaClabe());
             }
             if (payroll.getSucursal() != null){
-                row5.createCell(5).setCellValue(payroll.getSucursal());
-            }
-            if (payroll.getArea() != null){
-                row5.createCell(6).setCellValue(payroll.getArea());
+                row5.createCell(7).setCellValue(payroll.getSucursal());
             }
             if (payroll.getRfc() != null){
-                row5.createCell(7).setCellValue(payroll.getRfc());
+                row5.createCell(8).setCellValue(payroll.getRfc());
             }
             if (payroll.getCurp() != null){
-                row5.createCell(8).setCellValue(payroll.getCurp());
+                row5.createCell(9).setCellValue(payroll.getCurp());
             }
             if (payroll.getPago() != null){
-                row5.createCell(9).setCellValue(payroll.getPago().doubleValue());
-                sum36 += payroll.getPago().doubleValue();
+                row5.createCell(10).setCellValue(payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum36 += payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
             if (payroll.getComisionNec() != null){
-                row5.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
-                sum37 += payroll.getComisionNec().doubleValue();
+                row5.createCell(11).setCellValue(payroll.getComisionNec().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum37 += payroll.getComisionNec().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
             if (payroll.getTotalFacturar() != null){
-                row5.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
-                sum38 += payroll.getTotalFacturar().doubleValue();
+                row5.createCell(12).setCellValue(payroll.getTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum38 += payroll.getTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
 
             aux5 ++;
@@ -2943,10 +3245,10 @@ public class PayrollServiceImpl implements PayrollService {
 
         row5 = hoja5.createRow(aux5+2);
 
-        row5.createCell(8).setCellValue("TOTALES");
-        row5.createCell(9).setCellValue(sum36);
-        row5.createCell(10).setCellValue(sum37);
-        row5.createCell(11).setCellValue(sum38);
+        row5.createCell(9).setCellValue("TOTALES");
+        row5.createCell(10).setCellValue(sum36);
+        row5.createCell(11).setCellValue(sum37);
+        row5.createCell(12).setCellValue(sum38);
 
         Sheet hoja6 = wb.createSheet("TOTALES");
 
@@ -2967,32 +3269,32 @@ public class PayrollServiceImpl implements PayrollService {
         Double totalDeTotales = 0.00;
 
         if(amerNecSum != null){
-            totalDeTotales+=amerNecSum.doubleValue();
+            totalDeTotales+=amerNecSum.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             Row rowAmerNec = hoja6.createRow(3);
 
-            rowAmerNec.createCell(1).setCellValue("AMER NEC");
-            rowAmerNec.createCell(2).setCellValue(amerNecSum.doubleValue());
+            rowAmerNec.createCell(1).setCellValue("AMER ENZO");
+            rowAmerNec.createCell(2).setCellValue(amerNecSum.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
         }
         if(amermediaNecSum != null){
-            totalDeTotales+=amermediaNecSum.doubleValue();
+            totalDeTotales+=amermediaNecSum.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             Row rowAmermediaNec = hoja6.createRow(4);
 
-            rowAmermediaNec.createCell(1).setCellValue("AMERMEDIA NEC");
-            rowAmermediaNec.createCell(2).setCellValue(amermediaNecSum.doubleValue());
+            rowAmermediaNec.createCell(1).setCellValue("AMERMEDIA ENZO");
+            rowAmermediaNec.createCell(2).setCellValue(amermediaNecSum.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
         }
         if (rhmasAmer != null){
-            totalDeTotales+=rhmasAmer.doubleValue();
+            totalDeTotales+=rhmasAmer.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             Row rowRhmasAmer = hoja6.createRow(5);
 
             rowRhmasAmer.createCell(1).setCellValue("RHMAS AMER");
-            rowRhmasAmer.createCell(2).setCellValue(rhmasAmer.doubleValue());
+            rowRhmasAmer.createCell(2).setCellValue(rhmasAmer.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
         }
         if (rhmasAmermedia != null){
-            totalDeTotales+=rhmasAmermedia.doubleValue();
+            totalDeTotales+=rhmasAmermedia.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             Row rowRhmasAmermedia = hoja6.createRow(6);
 
             rowRhmasAmermedia.createCell(1).setCellValue("RHMAS AMERMEDIA");
-            rowRhmasAmermedia.createCell(2).setCellValue(rhmasAmermedia.doubleValue());
+            rowRhmasAmermedia.createCell(2).setCellValue(rhmasAmermedia.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
         }
 
 
@@ -3002,7 +3304,22 @@ public class PayrollServiceImpl implements PayrollService {
         rowTotal.createCell(2).setCellValue(totalDeTotales);
 
 
-        Sheet hoja7 = wb.createSheet("CUADRO ADMON");
+        List<Object[]> results = queryResult;
+        List<Object[]> amerResults = new ArrayList<>();
+        List<Object[]> amermediaResults = new ArrayList<>();
+
+        for (Object[] o : results){
+            if (o[3] != null) {
+                if (Integer.parseInt(String.valueOf(o[3])) == 2) {
+                    amerResults.add(o);
+                }else if (Integer.parseInt(String.valueOf(o[3])) == 3){
+                    amermediaResults.add(o);
+                }
+            }
+        }
+
+
+        Sheet hoja7 = wb.createSheet("CUADRO ADMON AMER");
 
         //Se crea la fila que contiene la cabecera
         Row row7 = hoja7.createRow(0);
@@ -3019,40 +3336,95 @@ public class PayrollServiceImpl implements PayrollService {
 
         int aux7 = 1;
 
-        List<Object[]> results = queryResult;
-
         Double sum100 = 0.00;
         Double sum200 = 0.00;
 
-        for(Object[] admonReport : results){
+        for(Object[] admonReport : amerResults){
             row7 = hoja7.createRow(aux7);
 
-            if (admonReport[0] != null){
-                row7.createCell(0).setCellValue(String.valueOf(admonReport[0]));
-            }
-            if (admonReport[1] != null){
-                row7.createCell(1).setCellValue(Double.parseDouble(String.valueOf(admonReport[1])));
-                sum100 += Double.parseDouble(String.valueOf(admonReport[1]));
-            }
-            if (admonReport[2] != null){
-                String cadena = String.valueOf(admonReport[2]);
-                if (!cadena.isEmpty()){
-                    row7.createCell(2).setCellValue(Double.parseDouble(cadena));
-                    sum200 += Double.parseDouble(cadena);
+            if (admonReport[3] != null){
+                if (Integer.parseInt(String.valueOf(admonReport[3])) == 2){
+                    if (admonReport[0] != null){
+                        row7.createCell(0).setCellValue(String.valueOf(admonReport[0]));
+                    }
+                    if (admonReport[1] != null){
+                        row7.createCell(1).setCellValue(Double.parseDouble(String.valueOf(admonReport[1])));
+                        sum100 += Double.parseDouble(String.valueOf(admonReport[1]));
+                    }
+                    if (admonReport[2] != null){
+                        String cadena = String.valueOf(admonReport[2]);
+                        if (!cadena.isEmpty()){
+                            row7.createCell(2).setCellValue(Double.parseDouble(cadena));
+                            sum200 += Double.parseDouble(cadena);
+                        }
+                    }
                 }
             }
-
 
             aux7 ++;
 
         }
 
-        BigDecimal totalAmountSap = (BigDecimal) sapSaleDao.sumTotalAmuntBeteween(applicatioDateStart,applicationDateEnd);
+        BigDecimal totalAmountSap = (BigDecimal) sapSaleDao.sumTotalAmuntBeteween(2,applicatioDateStart,applicationDateEnd);
 
         row7 = hoja7.createRow(aux7+2);
-        row7.createCell(0).setCellValue("Subtotal");
+        row7.createCell(0).setCellValue("SUBTOTAL");
         row7.createCell(1).setCellValue(sum100-totalAmountSap.doubleValue());
         row7.createCell(2).setCellValue(sum200);
+
+
+        Sheet hoja8 = wb.createSheet("CUADRO ADMON AMERMEDIA");
+
+        //Se crea la fila que contiene la cabecera
+        Row row8 = hoja8.createRow(0);
+
+
+        row8.createCell(0).setCellValue("CONCEPTO");
+        row8.createCell(1).setCellValue("VENTAS");
+        row8.createCell(2).setCellValue("% CONTRA VENTA");
+
+        //Implementacion del estilo
+        for (Cell celda : row8) {
+            celda.setCellStyle(style);
+        }
+
+        int aux8 = 1;
+
+        Double sum300 = 0.00;
+        Double sum400 = 0.00;
+
+        for(Object[] admonReport : amermediaResults){
+            row8 = hoja8.createRow(aux8);
+
+            if (admonReport[3] != null){
+                if (Integer.parseInt(String.valueOf(admonReport[3])) == 3){
+                    if (admonReport[0] != null){
+                        row8.createCell(0).setCellValue(String.valueOf(admonReport[0]));
+                    }
+                    if (admonReport[1] != null){
+                        row8.createCell(1).setCellValue(Double.parseDouble(String.valueOf(admonReport[1])));
+                        sum300 += Double.parseDouble(String.valueOf(admonReport[1]));
+                    }
+                    if (admonReport[2] != null){
+                        String cadena = String.valueOf(admonReport[2]);
+                        if (!cadena.isEmpty()){
+                            row8.createCell(2).setCellValue(Double.parseDouble(cadena));
+                            sum400 += Double.parseDouble(cadena);
+                        }
+                    }
+                }
+            }
+
+            aux8 ++;
+
+        }
+
+        BigDecimal totalAmountSapAmermedia = (BigDecimal) sapSaleDao.sumTotalAmuntBeteween(3,applicatioDateStart,applicationDateEnd);
+
+        row8 = hoja8.createRow(aux8+2);
+        row8.createCell(0).setCellValue("SUBTOTAL");
+        row8.createCell(1).setCellValue(sum300-totalAmountSapAmermedia.doubleValue());
+        row8.createCell(2).setCellValue(sum400);
 
         hoja1.autoSizeColumn(0);
         hoja2.autoSizeColumn(0);
@@ -3209,23 +3581,24 @@ public class PayrollServiceImpl implements PayrollService {
         CreationHelper createHelper = wb.getCreationHelper();
         cellDateStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
 
-        Sheet hoja1 = wb.createSheet("GMT ENZO");
+        Sheet hoja1 = wb.createSheet("GMT NEC");
 
         //Se crea la fila que contiene la cabecera
-        Row row1 = hoja1.createRow(0);
+        Row row1 = hoja1.createRow(9);
 
         row1.createCell(0).setCellValue("N");
         row1.createCell(1).setCellValue("NOMBRE DEL EMPLEADO");
-        row1.createCell(2).setCellValue("BANCO");
-        row1.createCell(3).setCellValue("N. DE CUENTA");
-        row1.createCell(4).setCellValue("CLABE");
-        row1.createCell(5).setCellValue("SUCURSAL");
-        row1.createCell(6).setCellValue("AREA");
-        row1.createCell(7).setCellValue("RFC");
-        row1.createCell(8).setCellValue("CURP");
-        row1.createCell(9).setCellValue("MONTO A PAGAR");
-        row1.createCell(10).setCellValue("11.50%");
-        row1.createCell(11).setCellValue("TOTAL A FACTURAR");
+        row1.createCell(2).setCellValue("TIPO DE SOCIO");
+        row1.createCell(3).setCellValue("PUESTO");
+        row1.createCell(4).setCellValue("BANCO");
+        row1.createCell(5).setCellValue("N. DE CUENTA");
+        row1.createCell(6).setCellValue("CLABE");
+        row1.createCell(7).setCellValue("SUCURSAL");
+        row1.createCell(8).setCellValue("RFC");
+        row1.createCell(9).setCellValue("CURP");
+        row1.createCell(10).setCellValue("MONTO A DEPOSITAR");
+        row1.createCell(11).setCellValue("11.50%");
+        row1.createCell(12).setCellValue("TOTAL A FACTURAR");
 
         //Implementacion del estilo
         for (Cell celda : row1) {
@@ -3234,7 +3607,7 @@ public class PayrollServiceImpl implements PayrollService {
 
         List<Payroll> payrollList = payrollDao.findAllByAmountPositives();
 
-        int aux1 = 1;
+        int aux1 = 10;
 
         Double sum1 = 0.0;
         Double sum2 = 0.0;
@@ -3249,38 +3622,39 @@ public class PayrollServiceImpl implements PayrollService {
             if (payroll.getNombre() != null){
                 row1.createCell(1).setCellValue(payroll.getNombre());
             }
+            row1.createCell(2).setCellValue("ASIMILADOS");
+            if (payroll.getPuesto() != null){
+                row1.createCell(3).setCellValue(payroll.getPuesto());
+            }
             if (payroll.getBanco() != null){
-                row1.createCell(2).setCellValue(payroll.getBanco());
+                row1.createCell(4).setCellValue(payroll.getBanco());
             }
             if (payroll.getNumeroDeCuenta() != null){
-                row1.createCell(3).setCellValue(payroll.getNumeroDeCuenta());
+                row1.createCell(5).setCellValue(payroll.getNumeroDeCuenta());
             }
             if (payroll.getCuentaClabe() != null){
-                row1.createCell(4).setCellValue(payroll.getCuentaClabe());
+                row1.createCell(6).setCellValue(payroll.getCuentaClabe());
             }
             if (payroll.getSucursal() != null){
-                row1.createCell(5).setCellValue(payroll.getSucursal());
-            }
-            if (payroll.getArea() != null){
-                row1.createCell(6).setCellValue(payroll.getArea());
+                row1.createCell(7).setCellValue(payroll.getSucursal());
             }
             if (payroll.getRfc() != null){
-                row1.createCell(7).setCellValue(payroll.getRfc());
+                row1.createCell(8).setCellValue(payroll.getRfc());
             }
             if (payroll.getCurp() != null){
-                row1.createCell(8).setCellValue(payroll.getCurp());
+                row1.createCell(9).setCellValue(payroll.getCurp());
             }
             if (payroll.getPago() != null){
-                row1.createCell(9).setCellValue(payroll.getPago().doubleValue());
-                sum1 += payroll.getPago().doubleValue();
+                row1.createCell(10).setCellValue(payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum1 += payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
             if (payroll.getComisionNec() != null){
-                row1.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
-                sum2 += payroll.getComisionNec().doubleValue();
+                row1.createCell(11).setCellValue(payroll.getComisionNec().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum2 += payroll.getComisionNec().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
             if (payroll.getTotalFacturar() != null){
-                row1.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
-                sum3 += payroll.getTotalFacturar().doubleValue();
+                row1.createCell(12).setCellValue(payroll.getTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum3 += payroll.getTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
 
             aux1 ++;
@@ -3288,10 +3662,10 @@ public class PayrollServiceImpl implements PayrollService {
         }
 
         row1 = hoja1.createRow(aux1+2);
-        row1.createCell(8).setCellValue("TOTALES");
-        row1.createCell(9).setCellValue(sum1);
-        row1.createCell(10).setCellValue(sum2);
-        row1.createCell(11).setCellValue(sum3);
+        row1.createCell(9).setCellValue("TOTALES");
+        row1.createCell(10).setCellValue(sum1);
+        row1.createCell(11).setCellValue(sum2);
+        row1.createCell(12).setCellValue(sum3);
 
         hoja1.autoSizeColumn(0);
 
@@ -3329,27 +3703,28 @@ public class PayrollServiceImpl implements PayrollService {
         Sheet hoja1 = wb.createSheet("AMER NEC");
 
         //Se crea la fila que contiene la cabecera
-        Row row1 = hoja1.createRow(0);
+        Row row1 = hoja1.createRow(9);
 
         row1.createCell(0).setCellValue("N");
         row1.createCell(1).setCellValue("NOMBRE DEL EMPLEADO");
-        row1.createCell(2).setCellValue("BANCO");
-        row1.createCell(3).setCellValue("N. DE CUENTA");
-        row1.createCell(4).setCellValue("CLABE");
-        row1.createCell(5).setCellValue("SUCURSAL");
-        row1.createCell(6).setCellValue("AREA");
-        row1.createCell(7).setCellValue("RFC");
-        row1.createCell(8).setCellValue("CURP");
-        row1.createCell(9).setCellValue("MONTO A PAGAR");
-        row1.createCell(10).setCellValue("11.50%");
-        row1.createCell(11).setCellValue("TOTAL A FACTURAR");
+        row1.createCell(2).setCellValue("TIPO DE SOCIO");
+        row1.createCell(3).setCellValue("PUESTO");
+        row1.createCell(4).setCellValue("BANCO");
+        row1.createCell(5).setCellValue("N. DE CUENTA");
+        row1.createCell(6).setCellValue("CLABE");
+        row1.createCell(7).setCellValue("SUCURSAL");
+        row1.createCell(8).setCellValue("RFC");
+        row1.createCell(9).setCellValue("CURP");
+        row1.createCell(10).setCellValue("MONTO A DEPOSITAR");
+        row1.createCell(11).setCellValue("11.50%");
+        row1.createCell(12).setCellValue("TOTAL A FACTURAR");
 
         //Implementacion del estilo
         for (Cell celda : row1) {
             celda.setCellStyle(style);
         }
 
-        int aux1 = 1;
+        int aux1 = 10;
 
         List <Payroll> amerNec = payrollDao.findByDistributor(2);
 
@@ -3366,38 +3741,39 @@ public class PayrollServiceImpl implements PayrollService {
             if (payroll.getNombre() != null){
                 row1.createCell(1).setCellValue(payroll.getNombre());
             }
+            row1.createCell(2).setCellValue("ADMINISTRATIVO");
+            if (payroll.getPuesto() != null){
+                row1.createCell(3).setCellValue(payroll.getPuesto());
+            }
             if (payroll.getBanco() != null){
-                row1.createCell(2).setCellValue(payroll.getBanco());
+                row1.createCell(4).setCellValue(payroll.getBanco());
             }
             if (payroll.getNumeroDeCuenta() != null){
-                row1.createCell(3).setCellValue(payroll.getNumeroDeCuenta());
+                row1.createCell(5).setCellValue(payroll.getNumeroDeCuenta());
             }
             if (payroll.getCuentaClabe() != null){
-                row1.createCell(4).setCellValue(payroll.getCuentaClabe());
+                row1.createCell(6).setCellValue(payroll.getCuentaClabe());
             }
             if (payroll.getSucursal() != null){
-                row1.createCell(5).setCellValue(payroll.getSucursal());
-            }
-            if (payroll.getArea() != null){
-                row1.createCell(6).setCellValue(payroll.getArea());
+                row1.createCell(7).setCellValue(payroll.getSucursal());
             }
             if (payroll.getRfc() != null){
-                row1.createCell(7).setCellValue(payroll.getRfc());
+                row1.createCell(8).setCellValue(payroll.getRfc());
             }
             if (payroll.getCurp() != null){
-                row1.createCell(8).setCellValue(payroll.getCurp());
+                row1.createCell(9).setCellValue(payroll.getCurp());
             }
             if (payroll.getPago() != null){
-                row1.createCell(9).setCellValue(payroll.getPago().doubleValue());
-                sum1 += payroll.getPago().doubleValue();
+                row1.createCell(10).setCellValue(payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum1 += payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
             if (payroll.getComisionNec() != null){
-                row1.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
-                sum2 += payroll.getComisionNec().doubleValue();
+                row1.createCell(11).setCellValue(payroll.getComisionNec().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum2 += payroll.getComisionNec().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
             if (payroll.getTotalFacturar() != null){
-                row1.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
-                sum3 += payroll.getTotalFacturar().doubleValue();
+                row1.createCell(12).setCellValue(payroll.getTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum3 += payroll.getTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
 
             aux1 ++;
@@ -3405,35 +3781,36 @@ public class PayrollServiceImpl implements PayrollService {
         }
 
         row1 = hoja1.createRow(aux1+2);
-        row1.createCell(8).setCellValue("TOTALES");
-        row1.createCell(9).setCellValue(sum1);
-        row1.createCell(10).setCellValue(sum2);
-        row1.createCell(11).setCellValue(sum3);
+        row1.createCell(9).setCellValue("TOTALES");
+        row1.createCell(10).setCellValue(sum1);
+        row1.createCell(11).setCellValue(sum2);
+        row1.createCell(12).setCellValue(sum3);
 
         Sheet hoja2 = wb.createSheet("AMERMEDIA NEC");
 
         //Se crea la fila que contiene la cabecera
-        Row row2 = hoja2.createRow(0);
+        Row row2 = hoja2.createRow(9);
 
         row2.createCell(0).setCellValue("N");
         row2.createCell(1).setCellValue("NOMBRE DEL EMPLEADO");
-        row2.createCell(2).setCellValue("BANCO");
-        row2.createCell(3).setCellValue("N. DE CUENTA");
-        row2.createCell(4).setCellValue("CLABE");
-        row2.createCell(5).setCellValue("SUCURSAL");
-        row2.createCell(6).setCellValue("AREA");
-        row2.createCell(7).setCellValue("RFC");
-        row2.createCell(8).setCellValue("CURP");
-        row2.createCell(9).setCellValue("MONTO A PAGAR");
-        row2.createCell(10).setCellValue("11.50%");
-        row2.createCell(11).setCellValue("TOTAL A FACTURAR");
+        row2.createCell(2).setCellValue("TIPO DE SOCIO");
+        row2.createCell(3).setCellValue("PUESTO");
+        row2.createCell(4).setCellValue("BANCO");
+        row2.createCell(5).setCellValue("N. DE CUENTA");
+        row2.createCell(6).setCellValue("CLABE");
+        row2.createCell(7).setCellValue("SUCURSAL");
+        row2.createCell(8).setCellValue("RFC");
+        row2.createCell(9).setCellValue("CURP");
+        row2.createCell(10).setCellValue("MONTO A DEPOSITAR");
+        row2.createCell(11).setCellValue("11.50%");
+        row2.createCell(12).setCellValue("TOTAL A FACTURAR");
 
         //Implementacion del estilo
         for (Cell celda : row2) {
             celda.setCellStyle(style);
         }
 
-        int aux2 = 1;
+        int aux2 = 10;
 
         List <Payroll> amermediaNec = payrollDao.findByDistributor(3);
 
@@ -3450,38 +3827,39 @@ public class PayrollServiceImpl implements PayrollService {
             if (payroll.getNombre() != null){
                 row2.createCell(1).setCellValue(payroll.getNombre());
             }
+            row2.createCell(2).setCellValue("ADMINISTRATIVO");
+            if (payroll.getPuesto() != null){
+                row2.createCell(3).setCellValue(payroll.getPuesto());
+            }
             if (payroll.getBanco() != null){
-                row2.createCell(2).setCellValue(payroll.getBanco());
+                row2.createCell(4).setCellValue(payroll.getBanco());
             }
             if (payroll.getNumeroDeCuenta() != null){
-                row2.createCell(3).setCellValue(payroll.getNumeroDeCuenta());
+                row2.createCell(5).setCellValue(payroll.getNumeroDeCuenta());
             }
             if (payroll.getCuentaClabe() != null){
-                row2.createCell(4).setCellValue(payroll.getCuentaClabe());
+                row2.createCell(6).setCellValue(payroll.getCuentaClabe());
             }
             if (payroll.getSucursal() != null){
-                row2.createCell(5).setCellValue(payroll.getSucursal());
-            }
-            if (payroll.getArea() != null){
-                row2.createCell(6).setCellValue(payroll.getArea());
+                row2.createCell(7).setCellValue(payroll.getSucursal());
             }
             if (payroll.getRfc() != null){
-                row2.createCell(7).setCellValue(payroll.getRfc());
+                row2.createCell(8).setCellValue(payroll.getRfc());
             }
             if (payroll.getCurp() != null){
-                row2.createCell(8).setCellValue(payroll.getCurp());
+                row2.createCell(9).setCellValue(payroll.getCurp());
             }
             if (payroll.getPago() != null){
-                row2.createCell(9).setCellValue(payroll.getPago().doubleValue());
-                sum4 += payroll.getPago().doubleValue();
+                row2.createCell(10).setCellValue(payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum4 += payroll.getPago().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
             if (payroll.getComisionNec() != null){
-                row2.createCell(10).setCellValue(payroll.getComisionNec().doubleValue());
-                sum5 += payroll.getComisionNec().doubleValue();
+                row2.createCell(11).setCellValue(payroll.getComisionNec().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum5 += payroll.getComisionNec().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
             if (payroll.getTotalFacturar() != null){
-                row2.createCell(11).setCellValue(payroll.getTotalFacturar().doubleValue());
-                sum6 += payroll.getTotalFacturar().doubleValue();
+                row2.createCell(12).setCellValue(payroll.getTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue());
+                sum6 += payroll.getTotalFacturar().setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
             }
 
             aux2 ++;
@@ -3489,10 +3867,10 @@ public class PayrollServiceImpl implements PayrollService {
         }
 
         row2 = hoja2.createRow(aux2+2);
-        row2.createCell(8).setCellValue("TOTALES");
-        row2.createCell(9).setCellValue(sum4);
-        row2.createCell(10).setCellValue(sum5);
-        row2.createCell(11).setCellValue(sum6);
+        row2.createCell(9).setCellValue("TOTALES");
+        row2.createCell(10).setCellValue(sum4);
+        row2.createCell(11).setCellValue(sum5);
+        row2.createCell(12).setCellValue(sum6);
 
         hoja1.autoSizeColumn(0);
         hoja2.autoSizeColumn(0);
