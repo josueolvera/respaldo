@@ -44,4 +44,9 @@ public class CPerceptionsDeductionsDaoImpl extends AbstractDao<Integer, CPercept
         remove(entity);
         return true;
     }
+
+    @Override
+    public List<CPerceptionsDeductions> findByIdTypeOperation(Integer idTypeOperation) {
+        return createEntityCriteria().add(Restrictions.eq("idTypeOperation",idTypeOperation)).list();
+    }
 }
