@@ -214,7 +214,7 @@
                         <div class="col-xs-2">
                             <button type="submit" style="margin-top: 25px" data-placement="bottom"
                                     class="btn btn-success">
-                                Guardar
+                                Generar
                             </button>
                         </div>
 
