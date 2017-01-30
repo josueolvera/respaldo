@@ -1,8 +1,6 @@
 package mx.bidg.dao;
 
-import mx.bidg.model.PerceptionsDeductions;
-import mx.bidg.model.SqlQueries;
-import mx.bidg.model.Users;
+import mx.bidg.model.*;
 
 import javax.swing.*;
 import java.time.LocalDateTime;
@@ -15,7 +13,10 @@ public interface PerceptionsDeductionsDao extends InterfaceDao<PerceptionsDeduct
     List<PerceptionsDeductions> findAllWithStatus();
     List calculateBonus(SqlQueries sqlQueries, Users user, String ofDate, String untilDate);
     List<PerceptionsDeductions> findByIdEmployeeAndApplicationDate(Integer idEmployee, LocalDateTime ofDate, LocalDateTime untilDate);
+    List<PerceptionsDeductions> findByAllEmployeesAndInitialDateAndFinalDate(List<EmployeesHistory> employeesHistoryList, LocalDateTime initialDate, LocalDateTime finalDate);
     List<PerceptionsDeductions>findByIdEmployee(Integer idEmployee);
     List<PerceptionsDeductions>findByStartDateEndDate(LocalDateTime startDate, LocalDateTime endDate);
     List<PerceptionsDeductions> findIdEmployeeAndActives(Integer idEmployee);
+    List<PerceptionsDeductions> findByIdEmployeeAndApplicationDateAll(Integer idEmployee, LocalDateTime ofDate, LocalDateTime untilDate);
+    List findByAllEmployeesAndInitialDateAndFinalDatePerception(List<EmployeesHistory> employeesHistoryList, LocalDateTime initialDate, LocalDateTime finalDate, List<CPerceptionsDeductions> cPerceptionsDeductionsList);
 }
