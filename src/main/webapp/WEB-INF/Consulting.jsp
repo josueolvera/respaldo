@@ -249,158 +249,35 @@
                         this.aux4 = false;
                     }
                 },
-                getIdEmployee:function () {
-                    var self = this;
-                    this.$http.get(ROOT_URL+"/employees-history/get-perception?idEmployee="+this.select.numEmployeeSearch).success(function (data) {
-                                this.reports = data;
-                                if (this.reports.length > 0) {
-                                    this.isThereItems = true;
-                                    this.sumTotals();
-                                    this.var1 = this.totalPercepcion.toFixed(2);
-                                    this.var2 = this.totalDeduccion.toFixed(2);
-                                    this.var3 = this.totalTotal.toFixed(2);
-                                } else {
-                                    showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
-                                    setInterval(function () {
-                                        location.reload();
-                                    }, 3000);
-                                }
-                            }).error(function (data) {
-                                showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
-                        setInterval(function () {
-                            location.reload();
-                        }, 3000);
-                            });
-                },
-                getDistributor: function () {
-                    var self = this;
-                    this.$http.get(ROOT_URL+'/employees-history/get-perception?idDistributor='+this.select.distributor.idDistributor).success(function (data) {
-                        this.reports = data;
-                        if (this.reports.length > 0) {
-                            this.isThereItems = true;
-                            this.sumTotals();
-                            this.var1 = this.totalPercepcion.toFixed(2);
-                            this.var2 = this.totalDeduccion.toFixed(2);
-                            this.var3 = this.totalTotal.toFixed(2);
-                        }else {
-                            showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
-                            setInterval(function () {
-                            location.reload();
-                            }, 3000);
-                        }
-                    }).error(function (data) {
-                        showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
-                        setInterval(function () {
-                            location.reload();
-                        }, 3000);
-                    });
-                },
-                getByDate: function () {
-                    var self = this;
-                    this.startDate = this.dateTimePickerStart.DateTimePicker.date().toISOString().slice(0, -1);
-                    this.endDate = this.dateTimePickerEndDate.DateTimePicker.date().toISOString().slice(0, -1);
-                    this.$http.get(ROOT_URL + '/employees-history/get-perception?startDate='
-                                        + this.startDate + '&endDate=' + this.endDate).success(function (data) {
-                                    this.reports = data;
-                        if (this.reports.length > 0) {
-                            this.isThereItems = true;
-                            this.sumTotals();
-                            this.var1 = this.totalPercepcion.toFixed(2);
-                            this.var2 = this.totalDeduccion.toFixed(2);
-                            this.var3 = this.totalTotal.toFixed(2);
-                        }else {
-                            showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
-                            setInterval(function () {
-                                location.reload();
-                            }, 8000);
-                        }
-                    }).error(function (data) {
-                        showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
-                        setInterval(function () {
-                            location.reload();
-                        }, 8000);
-                    });
-                },
-                getByIdEmployeeAndDate: function () {
-                    this.startDate = this.dateTimePickerStart.DateTimePicker.date().toISOString().slice(0, -1);
-                    this.endDate = this.dateTimePickerEndDate.DateTimePicker.date().toISOString().slice(0, -1);
-                    this.$http.get(ROOT_URL + '/employees-history/get-perception?idEmployee='+this.select.numEmployeeSearch+'&startDate='
-                            + this.startDate + '&endDate=' + this.endDate).success(function (data) {
-                        this.reports = data;
-                        if (this.reports.length > 0) {
-                            this.isThereItems = true;
-                            this.sumTotals();
-                            this.var1 = this.totalPercepcion.toFixed(2);
-                            this.var2 = this.totalDeduccion.toFixed(2);
-                            this.var3 = this.totalTotal.toFixed(2);
-                        }else {
-                            showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
-                            setInterval(function () {
-                                location.reload();
-                            }, 8000);
-                        }
-                    }).error(function (data) {
-                        showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
-                        setInterval(function () {
-                            location.reload();
-                        }, 8000);
-                    });
-                },
-                getByDistributorAndDate: function () {
-                    this.startDate = this.dateTimePickerStart.DateTimePicker.date().toISOString().slice(0, -1);
-                    this.endDate = this.dateTimePickerEndDate.DateTimePicker.date().toISOString().slice(0, -1);
-                    this.$http.get(ROOT_URL + '/employees-history/get-perception?idDistributor='+this.select.distributor.idDistributor+'&startDate='
-                            + this.startDate + '&endDate=' + this.endDate).success(function (data) {
-                        this.reports = data;
-                        if (this.reports.length > 0) {
-                            this.isThereItems = true;
-                            this.sumTotals();
-                            this.var1 = this.totalPercepcion.toFixed(2);
-                            this.var2 = this.totalDeduccion.toFixed(2);
-                            this.var3 = this.totalTotal.toFixed(2);
-                        }else {
-                            showAlert("No hay datos para esa busqueda, intente con otra combinaciòn", {type: 3});
-                            setInterval(function () {
-                                location.reload();
-                            }, 8000);
-                        }
-                    }).error(function (data) {
-                        showAlert("No se pudo obtener informacion intente de nuevo", {type: 3});
-                        setInterval(function () {
-                            location.reload();
-                        }, 8000);
-                    });
-                },
                 findPerseptionsDeductions: function () {
                     var self = this;
-                        if(this.select.numEmployeeSearch != ""){
-                            if(this.select.startdate.length != ""){
-                                if (this.select.endDate.length == 0){
-                                    showAlert("Es necesario ingresar una fecha final", {type: 3});
-                                }else {
-                                    this.getByIdEmployeeAndDate();
-                                }
-                            }else {
-                                this.getIdEmployee();
-                            }
-                        }else if (this.select.distributor != null){
-                            this.idDistributor = this.select.distributor.idDistributor;
-                            if(this.select.startdate.length != ""){
-                                if (this.select.endDate.length == 0){
-                                    showAlert("Es necesario ingresar una fecha final", {type: 3});
-                                }else {
-                                    this.getByDistributorAndDate();
-                                }
-                            }else {
-                                this.getDistributor();
-                            }
-                        }else if(this.select.startdate.length != ""){
-                            if (this.select.endDate.length == 0){
-                                showAlert("Es necesario ingresar una fecha final", {type: 3});
-                            }else {
-                                this.getByDate();
-                            }
-                        }
+                    var fechaInicial = "0000-00-00";
+                    var fechaFinal = "0000-00-00";
+                    var idEmployee = this.select.numEmployeeSearch;
+                    var distribuidor = '';
+                    if(this.select.startdate.length != 0 && this.select.endDate.length != 0 ){
+                        fechaInicial = moment(this.select.startdate,'DD-MM-YYYY').format('YYYY-MM-DD');
+                        fechaFinal = moment(this.select.endDate,'DD-MM-YYYY').format('YYYY-MM-DD');
+                    }
+                    if (this.idDistributor <= 0){
+                        distribuidor = 0;
+                    }else {
+                        distribuidor = this.select.distributor.idDistributor;
+                    }
+                    if (idEmployee == ""){
+                        idEmployee = '';
+                    }
+                    this.$http.get(ROOT_URL + "/employees-history/get-perception?idEmployee="+idEmployee+"&idDistributor="+distribuidor+"&startDate="
+                            + fechaInicial + "&endDate=" + fechaFinal)
+                            .success(function (data) {
+                                this.reports = data;
+                            })
+                            .error(function (data) {
+                                showAlert("No se encontraron datos, intente otra convinacion", {type: 3});
+                            });
+                    //location.href = ROOT_URL+"/employees-history/get-perception?idEmployee="+idEmployee+"&idDistributor="+distribuidor+"&startDate="
+                      //      + fechaInicial + "&endDate=" + fechaFinal;
+                    this.picked = "";
                 },
                 reportIdEmployee:function () {
                     var self = this;
@@ -602,12 +479,12 @@
                             <br>
                             <div class="table-body flex-row flex-content">
                                 <div class="row table-row " v-for="report in reports" onmouseover='this.style.background="#2ba6cb"' onmouseout='this.style.background="#DDDDDD"'>
-                                    <div class="col-md-2">{{report.idEmployee}}</div>
-                                    <div class="col-md-2">{{report.fullName}}</div>
-                                    <div class="col-md-2">{{report.rfc}}</div>
-                                    <div class="col-md-2">{{report.totalSumPerception}}</div>
-                                    <div class="col-md-2">{{report.totalSumDeduction}}</div>
-                                    <div class="col-md-2">{{report.total}}</div>
+                                    <div class="col-md-2">{{report[0}}</div>
+                                    <div class="col-md-2">{{report[1}}</div>
+                                    <div class="col-md-2">{{report[2}}</div>
+                                    <div class="col-md-2">{{report[3}}</div>
+                                    <div class="col-md-2">{{report[4}}</div>
+                                    <div class="col-md-2">{{report[5}}</div>
                                 </div>
                             </div>
                         </div>
