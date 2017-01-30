@@ -41,7 +41,7 @@ public class Outsourcing implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idOutsourcing;
     
-     @Column(name = "ID_EMPLOYEE", insertable = false, updatable = false)
+    @Column(name = "ID_EMPLOYEE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idEmployee;
     
@@ -119,6 +119,11 @@ public class Outsourcing implements Serializable {
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime applicationDate;
+
+    @Column(name = "STATUS")
+    @JsonView(JsonViews.Root.class)
+    @Basic(optional = true)
+    private Integer status;
     
     @JoinColumn(name = "ID_EMPLOYEE", referencedColumnName = "ID_EMPLOYEE")
     @ManyToOne(optional = false)
@@ -134,7 +139,7 @@ public class Outsourcing implements Serializable {
     private Integer idDwEnterprise;
     
     @JoinColumn(name = "ID_DW_ENTERPRISE", referencedColumnName = "ID_DW_ENTERPRISE")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     @JsonView(JsonViews.Embedded.class)
     private DwEnterprises dwEnterprises;
 
@@ -142,6 +147,10 @@ public class Outsourcing implements Serializable {
     @Column(name = "TYPE")
     @JsonView(JsonViews.Root.class)
     private Integer type;
+
+    @Column(name = "AMORTIZATION_INFONAVIT")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal amortizationInfonavit;
     
     public Outsourcing() {
     }
@@ -367,6 +376,22 @@ public class Outsourcing implements Serializable {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public BigDecimal getAmortizationInfonavit() {
+        return amortizationInfonavit;
+    }
+
+    public void setAmortizationInfonavit(BigDecimal amortizationInfonavit) {
+        this.amortizationInfonavit = amortizationInfonavit;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     @Override
