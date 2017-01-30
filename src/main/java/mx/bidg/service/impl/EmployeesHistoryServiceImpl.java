@@ -164,6 +164,11 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
     }
 
     @Override
+    public EmployeesHistory findByIdEmployeeAndLastRegister(Integer idEmployee) {
+        return employeesHistoryDao.findByIdEmployeeAndLastRegister(idEmployee);
+    }
+
+    @Override
     public EmployeesHistory findIdEmployee(Integer idEmployee) {
         return employeesHistoryDao.findIdEmployee(idEmployee);
     }
