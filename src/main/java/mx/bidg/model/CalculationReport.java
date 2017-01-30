@@ -10,10 +10,12 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 import mx.bidg.pojos.DateFormatsPojo;
+import mx.bidg.utils.DateConverter;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -80,6 +82,16 @@ public class CalculationReport implements Serializable {
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private SqlQueries sqlQueries;
+
+    @Column(name = "INITIAL_DATE")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime initialDate;
+
+    @Column(name = "FINAL_DATE")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime finalDate;
 
     public CalculationReport() {
     }
@@ -178,6 +190,22 @@ public class CalculationReport implements Serializable {
 
     public void setSend(Integer send) {
         this.send = send;
+    }
+
+    public LocalDateTime getInitialDate() {
+        return initialDate;
+    }
+
+    public void setInitialDate(LocalDateTime initialDate) {
+        this.initialDate = initialDate;
+    }
+
+    public LocalDateTime getFinalDate() {
+        return finalDate;
+    }
+
+    public void setFinalDate(LocalDateTime finalDate) {
+        this.finalDate = finalDate;
     }
 
     @Override
