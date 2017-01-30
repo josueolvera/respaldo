@@ -73,6 +73,11 @@ public class PerceptionsDeductionsServiceImpl implements PerceptionsDeductionsSe
     }
 
     @Override
+    public List<PerceptionsDeductions> findByAllEmployeesAndInitialDateAndFinalDate(List<EmployeesHistory> employeesHistoryList, LocalDateTime initialDate, LocalDateTime finalDate) {
+        return perceptionsDeductionsDao.findByAllEmployeesAndInitialDateAndFinalDate(employeesHistoryList, initialDate, finalDate);
+    }
+
+    @Override
     public List<PerceptionsDeductions> findByIdEmployee(Integer idEmployee) {
         return perceptionsDeductionsDao.findByIdEmployee(idEmployee);
     }
@@ -84,7 +89,7 @@ public class PerceptionsDeductionsServiceImpl implements PerceptionsDeductionsSe
 
     @Override
     public List<PerceptionsDeductions> findByIdEmployeeAndStartDateEndDate(Integer idEmployee, LocalDateTime startDate, LocalDateTime endDate) {
-        return perceptionsDeductionsDao.findByIdEmployeeAndApplicationDate(idEmployee,startDate,endDate);
+        return perceptionsDeductionsDao.findByIdEmployeeAndApplicationDateAll(idEmployee,startDate,endDate);
     }
 
     @Override
@@ -316,9 +321,8 @@ public class PerceptionsDeductionsServiceImpl implements PerceptionsDeductionsSe
         wb.write(outputStream);
     }
 
-//    @Override
-//    public List<PerceptionsDeductions> findByIdDistributorAndStartDateEndDate(Integer idDistributor, LocalDateTime startDate, LocalDateTime endDate) {
-//        return nu;
-//    }
-
+    @Override
+    public List findByAllEmployeesAndInitialDateAndFinalDatePerception(List<EmployeesHistory> employeesHistoryList, LocalDateTime initialDate, LocalDateTime finalDate, List<CPerceptionsDeductions> cPerceptionsDeductionsList) {
+        return perceptionsDeductionsDao.findByAllEmployeesAndInitialDateAndFinalDatePerception(employeesHistoryList,initialDate,finalDate,cPerceptionsDeductionsList);
+    }
 }
