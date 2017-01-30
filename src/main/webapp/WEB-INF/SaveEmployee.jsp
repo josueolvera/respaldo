@@ -371,7 +371,10 @@
                                 ROOT_URL + "/employees/" + idEmployee + "/attachments",
                                 document
                         ).success(function (data) {
-                            location.reload();
+                            setInterval(function () {
+                                location.reload();
+                            },10000);
+
                         }).error(function (data) {
                             this.isSaving = false;
                             showAlert(data.error.message, {type: 3})
