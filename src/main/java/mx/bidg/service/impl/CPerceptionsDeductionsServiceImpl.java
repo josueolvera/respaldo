@@ -49,4 +49,9 @@ public class CPerceptionsDeductionsServiceImpl implements CPerceptionsDeductions
         cPerceptionsDeductionsDao.delete(cPerceptionsDeductions);
         return true;
     }
+
+    @Override
+    public List<CPerceptionsDeductions> findByIdTypeOperation(Integer idTypeOperation) {
+        return cPerceptionsDeductionsDao.findByIdTypeOperation(idTypeOperation);
+    }
 }

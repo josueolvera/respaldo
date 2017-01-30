@@ -13,4 +13,5 @@ public interface CPerceptionsDeductionsService {
     CPerceptionsDeductions findById(Integer idCPd);
     List<CPerceptionsDeductions> findAll();
     boolean delete(CPerceptionsDeductions cPerceptionsDeductions);
+    List<CPerceptionsDeductions> findByIdTypeOperation(Integer idTypeOperation);
 }
