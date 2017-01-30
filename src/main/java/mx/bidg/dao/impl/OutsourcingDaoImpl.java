@@ -3,6 +3,7 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.OutsourcingDao;
 import mx.bidg.model.DwEnterprises;
+import mx.bidg.model.EmployeesHistory;
 import mx.bidg.model.Outsourcing;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Disjunction;
@@ -68,6 +69,7 @@ public class OutsourcingDaoImpl extends AbstractDao<Integer, Outsourcing> implem
 
         criteria.add(disjunctionEnterprise);
         criteria.add(Restrictions.between("applicationDate",applicatioDateStart,applicationDateEnd));
+        criteria.add(Restrictions.eq("status",1));
         return criteria.list();
     }
 
@@ -76,6 +78,7 @@ public class OutsourcingDaoImpl extends AbstractDao<Integer, Outsourcing> implem
         Criteria criteria = createEntityCriteria();
         criteria.add(Restrictions.eq("type", type));
         criteria.add(Restrictions.between("applicationDate",applicatioDateStart,applicationDateEnd));
+        criteria.add(Restrictions.eq("status",1));
         return criteria.list();
     }
 
@@ -96,6 +99,23 @@ public class OutsourcingDaoImpl extends AbstractDao<Integer, Outsourcing> implem
         criteria.setProjection(projectionList);
         criteria.add(disjunctionEnterprise);
         criteria.add(Restrictions.between("applicationDate",applicatioDateStart,applicationDateEnd));
+        criteria.add(Restrictions.eq("status",1));
         return criteria.uniqueResult();
+    }
+
+    @Override
+    public List<Outsourcing> findByAllEmployeesAndApplicationDate(List<EmployeesHistory> employeesHistoryList, LocalDateTime iniialDate, LocalDateTime finalDate) {
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjunctionEmployees = Restrictions.disjunction();
+
+        if (!employeesHistoryList.isEmpty()){
+            for (EmployeesHistory employeesHistory : employeesHistoryList){
+                disjunctionEmployees.add(Restrictions.eq("idEmployee", employeesHistory.getIdEmployee()));
+            }
+        }
+
+        criteria.add(disjunctionEmployees);
+        criteria.add(Restrictions.between("applicationDate",iniialDate,finalDate));
+        return criteria.list();
     }
 }

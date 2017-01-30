@@ -1,6 +1,7 @@
 package mx.bidg.dao;
 
 import mx.bidg.model.DwEnterprises;
+import mx.bidg.model.EmployeesHistory;
 import mx.bidg.model.Outsourcing;
 
 import java.time.LocalDateTime;
@@ -14,4 +15,5 @@ public interface OutsourcingDao extends InterfaceDao<Outsourcing> {
     List<Outsourcing> findByDwEnterprise(List<DwEnterprises> dwEnterprisesList, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd);
     List<Outsourcing> findByType(Integer type, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd);
     Object findSumRhmasByDwEnterprise(List<DwEnterprises> dwEnterprisesList, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd);
+    List<Outsourcing> findByAllEmployeesAndApplicationDate(List<EmployeesHistory> employeesHistoryList, LocalDateTime iniialDate, LocalDateTime finalDate);
 }
