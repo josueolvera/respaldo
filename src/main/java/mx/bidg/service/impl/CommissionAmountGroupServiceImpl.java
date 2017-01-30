@@ -917,7 +917,7 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                 CommissionAmountGroup commissionAmountGroup = (CommissionAmountGroup) object;
 
                 if (commissionAmountGroup.getIdRole() != null){
-                    if (commissionAmountGroup.getIdRole() == 64 || commissionAmountGroup.getIdRole() == 82){
+                    if (commissionAmountGroup.getIdRole() == 64 || commissionAmountGroup.getIdRole() == 82 || commissionAmountGroup.getIdRole() == 80){
                         row.createCell(0).setCellValue(commissionAmountGroup.getClaveSap());
 
                         if (commissionAmountGroup.getIdEmployee() != null){
@@ -1463,31 +1463,31 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
         row7.createCell(10).setCellValue("RFC");
         row7.createCell(11).setCellValue("CURP");
         row7.createCell(12).setCellValue("FECHA INGRESO");
-        row7.createCell(13).setCellValue("No. SOL. GOBIERNO");
-        row7.createCell(14).setCellValue("MONTO GOBIERNO");
-        row7.createCell(15).setCellValue("COMISION GOBIERNO");
-        row7.createCell(16).setCellValue("No. SOL. MAGISTERIO");
-        row7.createCell(17).setCellValue("MONTO MAGISTERIO");
-        row7.createCell(18).setCellValue("COMISION MAGISTERIO");
-        row7.createCell(19).setCellValue("No. SOL. PEMEX");
-        row7.createCell(20).setCellValue("MONTO PEMEX");
-        row7.createCell(21).setCellValue("COMISION PEMEX");
-        row7.createCell(22).setCellValue("No. SOL. SALUD");
-        row7.createCell(23).setCellValue("MONTO SALUD");
-        row7.createCell(24).setCellValue("COMISION SALUD");
-        row7.createCell(25).setCellValue("No. SOL. SALUD-CI");
-        row7.createCell(26).setCellValue("MONTO SALUD-CI");
-        row7.createCell(27).setCellValue("COMISION SALUD-CI");
-        row7.createCell(28).setCellValue("No. SOL. IEEPO");
-        row7.createCell(29).setCellValue("MONTO IEEPO");
-        row7.createCell(30).setCellValue("COMISION IEEPO");
-        row7.createCell(31).setCellValue("No. SOL. TOTAL");
-        row7.createCell(32).setCellValue("MONTO TOTAL");
-        row7.createCell(33).setCellValue("COMISION TOTAL COMO PROMOTOR");
-        row7.createCell(34).setCellValue("MONTO ACUMULADO CELULA");
-        row7.createCell(35).setCellValue("ALCANCE");
-        row7.createCell(36).setCellValue("TABULADOR");
-        row7.createCell(37).setCellValue("COMISIÒN COMO SUPERVISOR");
+//        row7.createCell(13).setCellValue("No. SOL. GOBIERNO");
+//        row7.createCell(14).setCellValue("MONTO GOBIERNO");
+//        row7.createCell(15).setCellValue("COMISION GOBIERNO");
+//        row7.createCell(16).setCellValue("No. SOL. MAGISTERIO");
+//        row7.createCell(17).setCellValue("MONTO MAGISTERIO");
+//        row7.createCell(18).setCellValue("COMISION MAGISTERIO");
+//        row7.createCell(19).setCellValue("No. SOL. PEMEX");
+//        row7.createCell(20).setCellValue("MONTO PEMEX");
+//        row7.createCell(21).setCellValue("COMISION PEMEX");
+//        row7.createCell(22).setCellValue("No. SOL. SALUD");
+//        row7.createCell(23).setCellValue("MONTO SALUD");
+//        row7.createCell(24).setCellValue("COMISION SALUD");
+//        row7.createCell(25).setCellValue("No. SOL. SALUD-CI");
+//        row7.createCell(26).setCellValue("MONTO SALUD-CI");
+//        row7.createCell(27).setCellValue("COMISION SALUD-CI");
+//        row7.createCell(28).setCellValue("No. SOL. IEEPO");
+//        row7.createCell(29).setCellValue("MONTO IEEPO");
+//        row7.createCell(30).setCellValue("COMISION IEEPO");
+        row7.createCell(13).setCellValue("No. SOL. TOTAL");
+        row7.createCell(14).setCellValue("MONTO TOTAL COMO PROMOTOR");
+        row7.createCell(15).setCellValue("COMISION TOTAL COMO PROMOTOR");
+        row7.createCell(16).setCellValue("MONTO ACUMULADO CELULA");
+        row7.createCell(17).setCellValue("ALCANCE");
+        row7.createCell(18).setCellValue("TABULADOR");
+        row7.createCell(19).setCellValue("COMISIÒN COMO SUPERVISOR");
 
         //Implementacion del estilo
         for (Cell celda : row7) {
@@ -1539,9 +1539,9 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
 
                 for (CommissionAmountGroupBackup commissionAmountGroupBackup :  commissionAmountGroupBackupList){
                     if(commissionAmountGroupBackup.getIdAg() ==  13){
-                        row7.createCell(13).setCellValue(commissionAmountGroupBackup.getApplicationsNumber().doubleValue());
-                        row7.createCell(14).setCellValue(commissionAmountGroupBackup.getAmount().doubleValue());
-                        row7.createCell(15).setCellValue(commissionAmountGroupBackup.getCommission().doubleValue());
+//                        row7.createCell(13).setCellValue(commissionAmountGroupBackup.getApplicationsNumber().doubleValue());
+//                        row7.createCell(14).setCellValue(commissionAmountGroupBackup.getAmount().doubleValue());
+//                        row7.createCell(15).setCellValue(commissionAmountGroupBackup.getCommission().doubleValue());
 //                        commissionAmountGroup.setAmount(commissionAmountGroupBackup.getAmount());
 //                        commissionAmountGroup.setCommission(commissionAmountGroupBackup.getCommission());
 //                        commissionAmountGroup.setApplicationsNumber(commissionAmountGroupBackup.getApplicationsNumber());
@@ -1552,9 +1552,9 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                     }
 
                     if(commissionAmountGroupBackup.getIdAg() ==  14){
-                        row7.createCell(16).setCellValue(commissionAmountGroupBackup.getApplicationsNumber().doubleValue());
-                        row7.createCell(17).setCellValue(commissionAmountGroupBackup.getAmount().doubleValue());
-                        row7.createCell(18).setCellValue(commissionAmountGroupBackup.getCommission().doubleValue());
+//                        row7.createCell(16).setCellValue(commissionAmountGroupBackup.getApplicationsNumber().doubleValue());
+//                        row7.createCell(17).setCellValue(commissionAmountGroupBackup.getAmount().doubleValue());
+//                        row7.createCell(18).setCellValue(commissionAmountGroupBackup.getCommission().doubleValue());
 //                        commissionAmountGroup.setAmount(commissionAmountGroupBackup.getAmount());
 //                        commissionAmountGroup.setCommission(commissionAmountGroupBackup.getCommission());
 //                        commissionAmountGroup.setApplicationsNumber(commissionAmountGroupBackup.getApplicationsNumber());
@@ -1565,9 +1565,9 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                     }
 
                     if(commissionAmountGroupBackup.getIdAg() ==  15){
-                        row7.createCell(19).setCellValue(commissionAmountGroupBackup.getApplicationsNumber().doubleValue());
-                        row7.createCell(20).setCellValue(commissionAmountGroupBackup.getAmount().doubleValue());
-                        row7.createCell(21).setCellValue(commissionAmountGroupBackup.getCommission().doubleValue());
+//                        row7.createCell(19).setCellValue(commissionAmountGroupBackup.getApplicationsNumber().doubleValue());
+//                        row7.createCell(20).setCellValue(commissionAmountGroupBackup.getAmount().doubleValue());
+//                        row7.createCell(21).setCellValue(commissionAmountGroupBackup.getCommission().doubleValue());
 //                        commissionAmountGroup.setAmount(commissionAmountGroupBackup.getAmount());
 //                        commissionAmountGroup.setCommission(commissionAmountGroupBackup.getCommission());
 //                        commissionAmountGroup.setApplicationsNumber(commissionAmountGroupBackup.getApplicationsNumber());
@@ -1578,9 +1578,9 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                     }
 
                     if(commissionAmountGroupBackup.getIdAg() ==  16){
-                        row7.createCell(22).setCellValue(commissionAmountGroupBackup.getApplicationsNumber().doubleValue());
-                        row7.createCell(23).setCellValue(commissionAmountGroupBackup.getAmount().doubleValue());
-                        row7.createCell(24).setCellValue(commissionAmountGroupBackup.getCommission().doubleValue());
+//                        row7.createCell(22).setCellValue(commissionAmountGroupBackup.getApplicationsNumber().doubleValue());
+//                        row7.createCell(23).setCellValue(commissionAmountGroupBackup.getAmount().doubleValue());
+//                        row7.createCell(24).setCellValue(commissionAmountGroupBackup.getCommission().doubleValue());
 //                        commissionAmountGroup.setAmount(commissionAmountGroupBackup.getAmount());
 //                        commissionAmountGroup.setCommission(commissionAmountGroupBackup.getCommission());
 //                        commissionAmountGroup.setApplicationsNumber(commissionAmountGroupBackup.getApplicationsNumber());
@@ -1591,9 +1591,9 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                     }
 
                     if(commissionAmountGroupBackup.getIdAg() ==  17){
-                        row7.createCell(25).setCellValue(commissionAmountGroupBackup.getApplicationsNumber().doubleValue());
-                        row7.createCell(26).setCellValue(commissionAmountGroupBackup.getAmount().doubleValue());
-                        row7.createCell(27).setCellValue(commissionAmountGroupBackup.getCommission().doubleValue());
+//                        row7.createCell(25).setCellValue(commissionAmountGroupBackup.getApplicationsNumber().doubleValue());
+//                        row7.createCell(26).setCellValue(commissionAmountGroupBackup.getAmount().doubleValue());
+//                        row7.createCell(27).setCellValue(commissionAmountGroupBackup.getCommission().doubleValue());
 //                        commissionAmountGroup.setAmount(commissionAmountGroupBackup.getAmount());
 //                        commissionAmountGroup.setCommission(commissionAmountGroupBackup.getCommission());
 //                        commissionAmountGroup.setApplicationsNumber(commissionAmountGroupBackup.getApplicationsNumber());
@@ -1604,9 +1604,9 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                     }
 
                     if(commissionAmountGroupBackup.getIdAg() ==  29){
-                        row7.createCell(28).setCellValue(commissionAmountGroupBackup.getApplicationsNumber().doubleValue());
-                        row7.createCell(29).setCellValue(commissionAmountGroupBackup.getAmount().doubleValue());
-                        row7.createCell(30).setCellValue(commissionAmountGroupBackup.getCommission().doubleValue());
+//                        row7.createCell(28).setCellValue(commissionAmountGroupBackup.getApplicationsNumber().doubleValue());
+//                        row7.createCell(29).setCellValue(commissionAmountGroupBackup.getAmount().doubleValue());
+//                        row7.createCell(30).setCellValue(commissionAmountGroupBackup.getCommission().doubleValue());
 //                        commissionAmountGroup.setAmount(commissionAmountGroupBackup.getAmount());
 //                        commissionAmountGroup.setCommission(commissionAmountGroupBackup.getCommission());
 //                        commissionAmountGroup.setApplicationsNumber(commissionAmountGroupBackup.getApplicationsNumber());
@@ -1615,22 +1615,22 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                         totalAmount = totalAmount.add(commissionAmountGroupBackup.getAmount());
                         totalRequestNum = totalRequestNum.add(commissionAmountGroupBackup.getApplicationsNumber());
                     }
+                }
 
-                    row7.createCell(31).setCellValue(totalRequestNum.doubleValue());
-                    row7.createCell(32).setCellValue(totalAmount.doubleValue());
-                    row7.createCell(33).setCellValue(totalComission.doubleValue());
+                row7.createCell(13).setCellValue(totalRequestNum.doubleValue());
+                row7.createCell(14).setCellValue(totalAmount.doubleValue());
+                row7.createCell(15).setCellValue(totalComission.doubleValue());
 
-                    if(commissionAmountGroup.getIdAg() == 30){
-                        row7.createCell(34).setCellValue(commissionAmountGroup.getAmount().doubleValue());
-                        if(commissionAmountGroup.getScope() != null){
-                            row7.createCell(35).setCellValue(commissionAmountGroup.getScope().doubleValue());
-                        }
-                        if (commissionAmountGroup.getTabulator() != null){
-                            row7.createCell(36).setCellValue(commissionAmountGroup.getTabulator().doubleValue());
-                        }
-                        if(commissionAmountGroup.getCommission() != null){
-                            row7.createCell(37).setCellValue(commissionAmountGroup.getCommission().doubleValue());
-                        }
+                if(commissionAmountGroup.getIdAg() == 30){
+                    row7.createCell(16).setCellValue(commissionAmountGroup.getAmount().doubleValue());
+                    if(commissionAmountGroup.getScope() != null){
+                        row7.createCell(17).setCellValue(commissionAmountGroup.getScope().doubleValue());
+                    }
+                    if (commissionAmountGroup.getTabulator() != null){
+                        row7.createCell(18).setCellValue(commissionAmountGroup.getTabulator().doubleValue());
+                    }
+                    if(commissionAmountGroup.getCommission() != null){
+                        row7.createCell(19).setCellValue(commissionAmountGroup.getCommission().doubleValue());
                     }
                 }
             }
