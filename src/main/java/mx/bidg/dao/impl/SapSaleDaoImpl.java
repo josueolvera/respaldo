@@ -206,14 +206,16 @@ public class SapSaleDaoImpl extends AbstractDao<Integer, SapSale> implements Sap
     }
 
     @Override
-    public Object sumTotalAmuntBeteween(LocalDateTime fromDate, LocalDateTime toDate) {
+    public Object sumTotalAmuntBeteween(Integer idDistributor, LocalDateTime fromDate, LocalDateTime toDate) {
         Date from = Date.from(fromDate.atZone(ZoneId.systemDefault()).toInstant());
         Date to = Date.from(toDate.atZone(ZoneId.systemDefault()).toInstant());
 
         Criteria criteria = createEntityCriteria();
 
         return criteria.setProjection(Projections.sum("comissionableAmount"))
-                .add(Restrictions.between("purchaseDate", from,to)).uniqueResult();
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.between("purchaseDate", from,to))
+                .uniqueResult();
     }
 
     @Override
