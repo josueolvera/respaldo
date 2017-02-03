@@ -165,14 +165,14 @@ public class AuthorizationReportsController {
                             if (!cDistributorsList.isEmpty()){
                                 List<EmployeesHistory> employeesHistories = employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(0,cDistributorsList,null,null,null,null,null,null,null,null,null,null);
                                 if (!employeesHistories.isEmpty()){
-                                    List<PerceptionsDeductions> perceptionsDeductionsList = perceptionsDeductionsService.findByAllEmployeesAndInitialDateAndFinalDate(employeesHistories, calculationReport.getInitialDate(), calculationReport.getFinalDate());
+                                    List<PerceptionsDeductions> perceptionsDeductionsList = perceptionsDeductionsService.findByAllEmployeesAndInitialDateAndFinalDate(employeesHistories, calculationReport.getFinalDate(), calculationReport.getFinalDate());
                                     if (!perceptionsDeductionsList.isEmpty()){
                                         for (PerceptionsDeductions perceptionsDeductions : perceptionsDeductionsList){
                                             perceptionsDeductions.setStatus(false);
                                             perceptionsDeductionsService.update(perceptionsDeductions);
                                         }
                                     }
-                                    List<Outsourcing> outsourcingList = outsourcingService.findByAllEmployeesAndApplicationDate(employeesHistories, calculationReport.getInitialDate(), calculationReport.getFinalDate());
+                                    List<Outsourcing> outsourcingList = outsourcingService.findByAllEmployeesAndApplicationDate(employeesHistories, calculationReport.getFinalDate(), calculationReport.getFinalDate());
                                     if (!outsourcingList.isEmpty()){
                                         for (Outsourcing outsourcing : outsourcingList){
                                             outsourcing.setStatus(0);
@@ -186,14 +186,14 @@ public class AuthorizationReportsController {
                             if (!distribucionList.isEmpty()){
                                 List<EmployeesHistory> employeesHistories = employeesHistoryService.findByDistributorAndRegionAndBranchAndAreaAndRoleAndStartDateAndEndDate(0,distribucionList,null,null,null,null,null,null,null,null,null,null);
                                 if (!employeesHistories.isEmpty()){
-                                    List<PerceptionsDeductions> perceptionsDeductionsList = perceptionsDeductionsService.findByAllEmployeesAndInitialDateAndFinalDate(employeesHistories, calculationReport.getInitialDate(), calculationReport.getFinalDate());
+                                    List<PerceptionsDeductions> perceptionsDeductionsList = perceptionsDeductionsService.findByAllEmployeesAndInitialDateAndFinalDate(employeesHistories, calculationReport.getFinalDate(), calculationReport.getFinalDate());
                                     if (!perceptionsDeductionsList.isEmpty()){
                                         for (PerceptionsDeductions perceptionsDeductions : perceptionsDeductionsList){
                                             perceptionsDeductions.setStatus(false);
                                             perceptionsDeductionsService.update(perceptionsDeductions);
                                         }
                                     }
-                                    List<Outsourcing> outsourcingList = outsourcingService.findByAllEmployeesAndApplicationDate(employeesHistories, calculationReport.getInitialDate(), calculationReport.getFinalDate());
+                                    List<Outsourcing> outsourcingList = outsourcingService.findByAllEmployeesAndApplicationDate(employeesHistories, calculationReport.getFinalDate(), calculationReport.getFinalDate());
                                     if (!outsourcingList.isEmpty()){
                                         for (Outsourcing outsourcing : outsourcingList){
                                             outsourcing.setStatus(0);
