@@ -372,7 +372,7 @@ public class PayrollServiceImpl implements PayrollService {
         }
 
         List<DwEnterprises> dwEnterprisesList = dwEnterprisesDao.findOnlyCorporate();
-        List<Outsourcing> outsourcingEList = outsourcingDao.findByType(1,applicatioDateStart,applicationDateEnd);
+        List<Outsourcing> outsourcingEList = outsourcingDao.findByType(1,applicationDateEnd,applicationDateEnd);
 
         int aux2 = 1;
 
@@ -525,7 +525,7 @@ public class PayrollServiceImpl implements PayrollService {
             celda.setCellStyle(style);
         }
 
-        List<Outsourcing> outsourcingCList = outsourcingDao.findByType(2,applicatioDateStart,applicationDateEnd);
+        List<Outsourcing> outsourcingCList = outsourcingDao.findByType(2,applicationDateEnd,applicationDateEnd);
 
         int aux5 = 1;
 
@@ -678,7 +678,7 @@ public class PayrollServiceImpl implements PayrollService {
             celda.setCellStyle(style);
         }
 
-        List<Outsourcing> outsourcingBIDList = outsourcingDao.findByType(3,applicatioDateStart,applicationDateEnd);
+        List<Outsourcing> outsourcingBIDList = outsourcingDao.findByType(3,applicationDateEnd,applicationDateEnd);
 
         int aux6 = 1;
 
@@ -842,7 +842,7 @@ public class PayrollServiceImpl implements PayrollService {
             if (payroll.getNombre() != null){
                 row3.createCell(1).setCellValue(payroll.getNombre());
             }
-            row3.createCell(2).setCellValue("ASIMILADOS");
+            row3.createCell(2).setCellValue("AS");
             if (payroll.getPuesto() != null){
                 row3.createCell(3).setCellValue(payroll.getPuesto());
             }
@@ -901,7 +901,7 @@ public class PayrollServiceImpl implements PayrollService {
 
         BigDecimal gmtNec = (BigDecimal) payrollDao.sumGmtNec();
         BigDecimal efectivoEdmon = (BigDecimal) payrollDao.sumEfectivoEdmon();
-        BigDecimal rhmas = (BigDecimal) outsourcingDao.findSumRhmasByDwEnterprise(dwEnterprisesList,applicatioDateStart,applicationDateEnd);
+        BigDecimal rhmas = (BigDecimal) outsourcingDao.findSumRhmasByDwEnterprise(dwEnterprisesList,applicationDateEnd,applicationDateEnd);
         Double totalDeTotales = 0.00;
         if(gmtNec != null){
             totalDeTotales+=gmtNec.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
@@ -1159,7 +1159,7 @@ public class PayrollServiceImpl implements PayrollService {
         }
 
         List<DwEnterprises> dwEnterprisesList = dwEnterprisesDao.findByDistributor(2);
-        List<Outsourcing> outsourcingList = outsourcingDao.findByDwEnterprise(dwEnterprisesList,applicatioDateStart,applicationDateEnd);
+        List<Outsourcing> outsourcingList = outsourcingDao.findByDwEnterprise(dwEnterprisesList,applicationDateEnd,applicationDateEnd);
 
         int aux2 = 1;
 
@@ -1313,7 +1313,7 @@ public class PayrollServiceImpl implements PayrollService {
         }
 
         List<DwEnterprises> dwEnterList = dwEnterprisesDao.findByDistributor(3);
-        List<Outsourcing> outsourcings = outsourcingDao.findByDwEnterprise(dwEnterList,applicatioDateStart,applicationDateEnd);
+        List<Outsourcing> outsourcings = outsourcingDao.findByDwEnterprise(dwEnterList,applicationDateEnd,applicationDateEnd);
 
         int aux3 = 1;
 
@@ -1477,7 +1477,7 @@ public class PayrollServiceImpl implements PayrollService {
             if (payroll.getNombre() != null){
                 row4.createCell(1).setCellValue(payroll.getNombre());
             }
-            row4.createCell(2).setCellValue("ADMINISTRATIVO");
+            row4.createCell(2).setCellValue("AS");
             if (payroll.getPuesto() != null){
                 row4.createCell(3).setCellValue(payroll.getPuesto());
             }
@@ -1564,7 +1564,7 @@ public class PayrollServiceImpl implements PayrollService {
             if (payroll.getNombre() != null){
                 row5.createCell(1).setCellValue(payroll.getNombre());
             }
-            row5.createCell(2).setCellValue("ADMINISTRATIVO");
+            row5.createCell(2).setCellValue("AS");
             if (payroll.getPuesto() != null){
                 row5.createCell(3).setCellValue(payroll.getPuesto());
             }
@@ -1623,8 +1623,8 @@ public class PayrollServiceImpl implements PayrollService {
 
         BigDecimal amerNecSum = (BigDecimal) payrollDao.sumDistributorNec(2);
         BigDecimal amermediaNecSum = (BigDecimal) payrollDao.sumDistributorNec(3);
-        BigDecimal rhmasAmer  = (BigDecimal) outsourcingDao.findSumRhmasByDwEnterprise(dwEnterprisesList,applicatioDateStart,applicationDateEnd);
-        BigDecimal rhmasAmermedia  = (BigDecimal) outsourcingDao.findSumRhmasByDwEnterprise(dwEnterList,applicatioDateStart,applicationDateEnd);
+        BigDecimal rhmasAmer  = (BigDecimal) outsourcingDao.findSumRhmasByDwEnterprise(dwEnterprisesList,applicationDateEnd,applicationDateEnd);
+        BigDecimal rhmasAmermedia  = (BigDecimal) outsourcingDao.findSumRhmasByDwEnterprise(dwEnterList,applicationDateEnd,applicationDateEnd);
 
         Double totalDeTotales = 0.00;
 
@@ -1908,7 +1908,7 @@ public class PayrollServiceImpl implements PayrollService {
         }
 
         List<DwEnterprises> dwEnterprisesList = dwEnterprisesDao.findByDistributor(2);
-        List<Outsourcing> outsourcingList = outsourcingDao.findByDwEnterprise(dwEnterprisesList,applicatioDateStart,applicationDateEnd);
+        List<Outsourcing> outsourcingList = outsourcingDao.findByDwEnterprise(dwEnterprisesList,applicationDateEnd,applicationDateEnd);
 
         int aux2 = 1;
 
@@ -2062,7 +2062,7 @@ public class PayrollServiceImpl implements PayrollService {
         }
 
         List<DwEnterprises> dwEnterList = dwEnterprisesDao.findByDistributor(3);
-        List<Outsourcing> outsourcings = outsourcingDao.findByDwEnterprise(dwEnterList,applicatioDateStart,applicationDateEnd);
+        List<Outsourcing> outsourcings = outsourcingDao.findByDwEnterprise(dwEnterList,applicationDateEnd,applicationDateEnd);
 
         int aux3 = 1;
 
@@ -2226,7 +2226,7 @@ public class PayrollServiceImpl implements PayrollService {
             if (payroll.getNombre() != null){
                 row4.createCell(1).setCellValue(payroll.getNombre());
             }
-            row4.createCell(2).setCellValue("ADMINISTRATIVO");
+            row4.createCell(2).setCellValue("AS");
             if (payroll.getPuesto() != null){
                 row4.createCell(3).setCellValue(payroll.getPuesto());
             }
@@ -2313,7 +2313,7 @@ public class PayrollServiceImpl implements PayrollService {
             if (payroll.getNombre() != null){
                 row5.createCell(1).setCellValue(payroll.getNombre());
             }
-            row5.createCell(2).setCellValue("ADMINISTRATIVO");
+            row5.createCell(2).setCellValue("AS");
             if (payroll.getPuesto() != null){
                 row5.createCell(3).setCellValue(payroll.getPuesto());
             }
@@ -2372,8 +2372,8 @@ public class PayrollServiceImpl implements PayrollService {
 
         BigDecimal amerNecSum = (BigDecimal) payrollDao.sumDistributorNec(2);
         BigDecimal amermediaNecSum = (BigDecimal) payrollDao.sumDistributorNec(3);
-        BigDecimal rhmasAmer  = (BigDecimal) outsourcingDao.findSumRhmasByDwEnterprise(dwEnterprisesList,applicatioDateStart,applicationDateEnd);
-        BigDecimal rhmasAmermedia  = (BigDecimal) outsourcingDao.findSumRhmasByDwEnterprise(dwEnterList,applicatioDateStart,applicationDateEnd);
+        BigDecimal rhmasAmer  = (BigDecimal) outsourcingDao.findSumRhmasByDwEnterprise(dwEnterprisesList,applicationDateEnd,applicationDateEnd);
+        BigDecimal rhmasAmermedia  = (BigDecimal) outsourcingDao.findSumRhmasByDwEnterprise(dwEnterList,applicationDateEnd,applicationDateEnd);
 
         Double totalDeTotales = 0.00;
 
@@ -2799,7 +2799,7 @@ public class PayrollServiceImpl implements PayrollService {
         }
 
         List<DwEnterprises> dwEnterprisesList = dwEnterprisesDao.findByDistributor(2);
-        List<Outsourcing> outsourcingList = outsourcingDao.findByDwEnterprise(dwEnterprisesList,applicatioDateStart,applicationDateEnd);
+        List<Outsourcing> outsourcingList = outsourcingDao.findByDwEnterprise(dwEnterprisesList,applicationDateEnd,applicationDateEnd);
 
         int aux2 = 1;
 
@@ -2953,7 +2953,7 @@ public class PayrollServiceImpl implements PayrollService {
         }
 
         List<DwEnterprises> dwEnterList = dwEnterprisesDao.findByDistributor(3);
-        List<Outsourcing> outsourcings = outsourcingDao.findByDwEnterprise(dwEnterList,applicatioDateStart,applicationDateEnd);
+        List<Outsourcing> outsourcings = outsourcingDao.findByDwEnterprise(dwEnterList,applicationDateEnd,applicationDateEnd);
 
         int aux3 = 1;
 
@@ -3117,7 +3117,7 @@ public class PayrollServiceImpl implements PayrollService {
             if (payroll.getNombre() != null){
                 row4.createCell(1).setCellValue(payroll.getNombre());
             }
-            row4.createCell(2).setCellValue("ADMINISTRATIVO");
+            row4.createCell(2).setCellValue("AS");
             if (payroll.getPuesto() != null){
                 row4.createCell(3).setCellValue(payroll.getPuesto());
             }
@@ -3204,7 +3204,7 @@ public class PayrollServiceImpl implements PayrollService {
             if (payroll.getNombre() != null){
                 row5.createCell(1).setCellValue(payroll.getNombre());
             }
-            row5.createCell(2).setCellValue("ADMINISTRATIVO");
+            row5.createCell(2).setCellValue("AS");
             if (payroll.getPuesto() != null){
                 row5.createCell(3).setCellValue(payroll.getPuesto());
             }
@@ -3263,8 +3263,8 @@ public class PayrollServiceImpl implements PayrollService {
 
         BigDecimal amerNecSum = (BigDecimal) payrollDao.sumDistributorNec(2);
         BigDecimal amermediaNecSum = (BigDecimal) payrollDao.sumDistributorNec(3);
-        BigDecimal rhmasAmer  = (BigDecimal) outsourcingDao.findSumRhmasByDwEnterprise(dwEnterprisesList,applicatioDateStart,applicationDateEnd);
-        BigDecimal rhmasAmermedia  = (BigDecimal) outsourcingDao.findSumRhmasByDwEnterprise(dwEnterList,applicatioDateStart,applicationDateEnd);
+        BigDecimal rhmasAmer  = (BigDecimal) outsourcingDao.findSumRhmasByDwEnterprise(dwEnterprisesList,applicationDateEnd,applicationDateEnd);
+        BigDecimal rhmasAmermedia  = (BigDecimal) outsourcingDao.findSumRhmasByDwEnterprise(dwEnterList,applicationDateEnd,applicationDateEnd);
 
         Double totalDeTotales = 0.00;
 
@@ -3442,8 +3442,8 @@ public class PayrollServiceImpl implements PayrollService {
     @Override
     public void reportCost(OutputStream outputStream, List queryResult) throws IOException{
 
-    Workbook wb = new XSSFWorkbook();
-    //Definicion del estilo de la cabecera
+        Workbook wb = new XSSFWorkbook();
+        //Definicion del estilo de la cabecera
         Font font = wb.createFont();
         font.setBold(true);
         font.setFontHeightInPoints((short) 10);
@@ -3589,11 +3589,12 @@ public class PayrollServiceImpl implements PayrollService {
         row1.createCell(0).setCellValue("N");
         row1.createCell(1).setCellValue("NOMBRE DEL EMPLEADO");
         row1.createCell(2).setCellValue("TIPO DE SOCIO");
-        row1.createCell(3).setCellValue("PUESTO");
-        row1.createCell(4).setCellValue("BANCO");
-        row1.createCell(5).setCellValue("N. DE CUENTA");
-        row1.createCell(6).setCellValue("CLABE");
-        row1.createCell(7).setCellValue("SUCURSAL");
+//        row1.createCell(3).setCellValue("PUESTO");
+        row1.createCell(3).setCellValue("BANCO");
+        row1.createCell(4).setCellValue("N. DE CUENTA");
+        row1.createCell(5).setCellValue("CLABE");
+        row1.createCell(6).setCellValue("SUCURSAL");
+        row1.createCell(7).setCellValue("AREA");
         row1.createCell(8).setCellValue("RFC");
         row1.createCell(9).setCellValue("CURP");
         row1.createCell(10).setCellValue("MONTO A DEPOSITAR");
@@ -3622,21 +3623,21 @@ public class PayrollServiceImpl implements PayrollService {
             if (payroll.getNombre() != null){
                 row1.createCell(1).setCellValue(payroll.getNombre());
             }
-            row1.createCell(2).setCellValue("ASIMILADOS");
-            if (payroll.getPuesto() != null){
-                row1.createCell(3).setCellValue(payroll.getPuesto());
-            }
+            row1.createCell(2).setCellValue("AS");
             if (payroll.getBanco() != null){
-                row1.createCell(4).setCellValue(payroll.getBanco());
+                row1.createCell(3).setCellValue(payroll.getBanco());
             }
             if (payroll.getNumeroDeCuenta() != null){
-                row1.createCell(5).setCellValue(payroll.getNumeroDeCuenta());
+                row1.createCell(4).setCellValue(payroll.getNumeroDeCuenta());
             }
             if (payroll.getCuentaClabe() != null){
-                row1.createCell(6).setCellValue(payroll.getCuentaClabe());
+                row1.createCell(5).setCellValue(payroll.getCuentaClabe());
             }
             if (payroll.getSucursal() != null){
-                row1.createCell(7).setCellValue(payroll.getSucursal());
+                row1.createCell(6).setCellValue(payroll.getSucursal());
+            }
+            if (payroll.getArea() != null){
+                row1.createCell(7).setCellValue(payroll.getArea());
             }
             if (payroll.getRfc() != null){
                 row1.createCell(8).setCellValue(payroll.getRfc());
@@ -3708,11 +3709,11 @@ public class PayrollServiceImpl implements PayrollService {
         row1.createCell(0).setCellValue("N");
         row1.createCell(1).setCellValue("NOMBRE DEL EMPLEADO");
         row1.createCell(2).setCellValue("TIPO DE SOCIO");
-        row1.createCell(3).setCellValue("PUESTO");
-        row1.createCell(4).setCellValue("BANCO");
-        row1.createCell(5).setCellValue("N. DE CUENTA");
-        row1.createCell(6).setCellValue("CLABE");
-        row1.createCell(7).setCellValue("SUCURSAL");
+        row1.createCell(3).setCellValue("BANCO");
+        row1.createCell(4).setCellValue("N. DE CUENTA");
+        row1.createCell(5).setCellValue("CLABE");
+        row1.createCell(6).setCellValue("SUCURSAL");
+        row1.createCell(7).setCellValue("AREA");
         row1.createCell(8).setCellValue("RFC");
         row1.createCell(9).setCellValue("CURP");
         row1.createCell(10).setCellValue("MONTO A DEPOSITAR");
@@ -3741,21 +3742,21 @@ public class PayrollServiceImpl implements PayrollService {
             if (payroll.getNombre() != null){
                 row1.createCell(1).setCellValue(payroll.getNombre());
             }
-            row1.createCell(2).setCellValue("ADMINISTRATIVO");
-            if (payroll.getPuesto() != null){
-                row1.createCell(3).setCellValue(payroll.getPuesto());
-            }
+            row1.createCell(2).setCellValue("AS");
             if (payroll.getBanco() != null){
-                row1.createCell(4).setCellValue(payroll.getBanco());
+                row1.createCell(3).setCellValue(payroll.getBanco());
             }
             if (payroll.getNumeroDeCuenta() != null){
-                row1.createCell(5).setCellValue(payroll.getNumeroDeCuenta());
+                row1.createCell(4).setCellValue(payroll.getNumeroDeCuenta());
             }
             if (payroll.getCuentaClabe() != null){
-                row1.createCell(6).setCellValue(payroll.getCuentaClabe());
+                row1.createCell(5).setCellValue(payroll.getCuentaClabe());
             }
             if (payroll.getSucursal() != null){
-                row1.createCell(7).setCellValue(payroll.getSucursal());
+                row1.createCell(6).setCellValue(payroll.getSucursal());
+            }
+            if (payroll.getArea() != null){
+                row1.createCell(7).setCellValue(payroll.getArea());
             }
             if (payroll.getRfc() != null){
                 row1.createCell(8).setCellValue(payroll.getRfc());
@@ -3794,11 +3795,11 @@ public class PayrollServiceImpl implements PayrollService {
         row2.createCell(0).setCellValue("N");
         row2.createCell(1).setCellValue("NOMBRE DEL EMPLEADO");
         row2.createCell(2).setCellValue("TIPO DE SOCIO");
-        row2.createCell(3).setCellValue("PUESTO");
-        row2.createCell(4).setCellValue("BANCO");
-        row2.createCell(5).setCellValue("N. DE CUENTA");
-        row2.createCell(6).setCellValue("CLABE");
-        row2.createCell(7).setCellValue("SUCURSAL");
+        row2.createCell(3).setCellValue("BANCO");
+        row2.createCell(4).setCellValue("N. DE CUENTA");
+        row2.createCell(5).setCellValue("CLABE");
+        row2.createCell(6).setCellValue("SUCURSAL");
+        row2.createCell(7).setCellValue("AREA");
         row2.createCell(8).setCellValue("RFC");
         row2.createCell(9).setCellValue("CURP");
         row2.createCell(10).setCellValue("MONTO A DEPOSITAR");
@@ -3827,21 +3828,21 @@ public class PayrollServiceImpl implements PayrollService {
             if (payroll.getNombre() != null){
                 row2.createCell(1).setCellValue(payroll.getNombre());
             }
-            row2.createCell(2).setCellValue("ADMINISTRATIVO");
-            if (payroll.getPuesto() != null){
-                row2.createCell(3).setCellValue(payroll.getPuesto());
-            }
+            row2.createCell(2).setCellValue("AS");
             if (payroll.getBanco() != null){
-                row2.createCell(4).setCellValue(payroll.getBanco());
+                row2.createCell(3).setCellValue(payroll.getBanco());
             }
             if (payroll.getNumeroDeCuenta() != null){
-                row2.createCell(5).setCellValue(payroll.getNumeroDeCuenta());
+                row2.createCell(4).setCellValue(payroll.getNumeroDeCuenta());
             }
             if (payroll.getCuentaClabe() != null){
-                row2.createCell(6).setCellValue(payroll.getCuentaClabe());
+                row2.createCell(5).setCellValue(payroll.getCuentaClabe());
             }
             if (payroll.getSucursal() != null){
-                row2.createCell(7).setCellValue(payroll.getSucursal());
+                row2.createCell(6).setCellValue(payroll.getSucursal());
+            }
+            if (payroll.getArea() != null){
+                row2.createCell(7).setCellValue(payroll.getArea());
             }
             if (payroll.getRfc() != null){
                 row2.createCell(8).setCellValue(payroll.getRfc());
