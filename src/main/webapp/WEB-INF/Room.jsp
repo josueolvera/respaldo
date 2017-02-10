@@ -182,7 +182,7 @@
                                 var myDate = new Date();
 
                                 //How many days to add from today?
-                                var daysToAdd = -1;
+                                var daysToAdd = -2;
 
                                 myDate.setDate(myDate.getDate() + daysToAdd);
 
