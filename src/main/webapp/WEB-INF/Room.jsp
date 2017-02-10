@@ -36,7 +36,8 @@
                     endHourTimePicker: '',
                     endHour: '',
                     title: '',
-                    id: ''
+                    id: '',
+                    regresarBusqueda: ROOT_URL + '/agenda/rooms'
 
                 },
                 methods: {
@@ -102,7 +103,8 @@
                             });
                     },
                     addReservation: function () {
-
+                        var actual = new Date();
+                        var var3 = moment(actual).format('LT');
                         var var1 = moment(this.startHour, 'HH:mm a').format('LT');
                         var var2 = moment(this.endHour, 'HH:mm a').format('LT');
                         if (var1.length < 5) {
@@ -112,24 +114,30 @@
                         if (var2.length < 5) {
                             var2 = '0' + var2;
                         }
+                        console.log(var3);
+                        console.log(var1);
+                        console.log(var2);
+                        if(var1 >= var3) {
 
-                        var event = {};
-                        event.title = this.title,
-                            event.start = this.selectedDay + 'T' + var1,
-                            event.end = this.selectedDay + 'T' + var2,
-                            event.idUser = this.user.idUser,
-                            event.room = this.room,
-                            this.$http.post(ROOT_URL + "/events?room=" + this.idRoom, JSON.stringify(event))
-                                .success(function (event) {
+                            var event = {};
+                            event.title = this.title,
+                                    event.start = this.selectedDay + 'T' + var1,
+                                    event.end = this.selectedDay + 'T' + var2,
+                                    event.idUser = this.user.idUser,
+                                    event.room = this.room,
+                                    this.$http.post(ROOT_URL + "/events?room=" + this.idRoom, JSON.stringify(event))
+                                            .success(function (event) {
 
-                                    this.clearEvenData();
+                                                this.clearEvenData();
 
-                                    this.getEventsByDay();
-                                    showAlert("Reservación Agendada");
-                                }).error(function (data) {
-                                showAlert(data.error.message, {type: 3});
-                            });
-
+                                                this.getEventsByDay();
+                                                showAlert("Reservación Agendada");
+                                            }).error(function (data) {
+                                        showAlert(data.error.message, {type: 3});
+                                    });
+                        }else {
+                            showAlert("Horario no aplicable", {type: 3});
+                        }
                     },
                     clearEvenData: function () {
                         this.title = '';
@@ -174,7 +182,7 @@
                                 var myDate = new Date();
 
                                 //How many days to add from today?
-                                var daysToAdd = -2;
+                                var daysToAdd = -1;
 
                                 myDate.setDate(myDate.getDate() + daysToAdd);
 
@@ -192,13 +200,14 @@
                     },
                     activarDateTimePickerStarHour: function () {
                         var fecha = new Date();
-
+                        startHour= '';
                         $('#startHour').datetimepicker({
                             format: 'hh:mm a',
-                            //format: 'LT',
-                            minDate: moment({h: fecha.getHours(), m: fecha.getMinutes(), a: fecha.get})
-                            //minDate:moment({h:08, m:00})
+                            //minDate: moment({h: fecha.getHours(), m: fecha.getMinutes(), a: fecha.get})
                         });
+                    },
+                    exit: function () {
+                        window.location = this.regresarBusqueda;
                     },
                     activarDateTimePickerEndHour: function (startHour) {
                         var var1 = moment(startHour, 'hh:mm a').format('HH:mm');
@@ -240,12 +249,15 @@
 
     <jsp:body>
         <div id="contenidos" class="col-md-12 ">
+            <div class="col-md-12 text-right">
+                <button style="margin-top: 25px" class="btn btn-default" @click="exit">Regresar</button>
+            </div>
+            <br>
             <div class="container-fluid">
                 <h2>Sala de Juntas {{room.name}}</h2>
                 <div id="calendar" style=""></div>
                 <br>
             </div>
-
             <div class="modal fade" id="reservationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
