@@ -86,7 +86,7 @@ public class OutsourcingServiceImpl implements OutsourcingService {
 
                 Outsourcing outsourcing = outsourcingDao.finfByidEmployee(
                         (int) code.getNumericCellValue(),
-                        LocalDateTime.parse(calculateDate + " 00:00", formatter)
+                        LocalDateTime.parse(calculateDate + " 06:00", formatter)
                 );
                 if (outsourcing != null) {
 
@@ -283,7 +283,7 @@ public class OutsourcingServiceImpl implements OutsourcingService {
                             outsourcing.setAmortizationInfonavit(bdAmortizationInfonavit);
                         }
                     }
-                    outsourcing.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
+                    outsourcing.setApplicationDate(LocalDateTime.parse(calculateDate + " 06:00", formatter));
                     outsourcing.setCreationDate(LocalDateTime.now());
 
                     outsourcing.setStatus(1);
@@ -479,7 +479,7 @@ public class OutsourcingServiceImpl implements OutsourcingService {
                             outsourcing1.setAmortizationInfonavit(bdAmortizationInfonavit);
                         }
                     }
-                    outsourcing1.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
+                    outsourcing1.setApplicationDate(LocalDateTime.parse(calculateDate + " 06:00", formatter));
                     outsourcing1.setCreationDate(LocalDateTime.now());
                     outsourcing1.setStatus(1);
                     outsourcingDao.save(outsourcing1);
@@ -533,7 +533,7 @@ public class OutsourcingServiceImpl implements OutsourcingService {
 
                     savedOutsourcing = outsourcingDao.finfByidEmployee(
                             (int) codigo.getNumericCellValue(),
-                            LocalDateTime.parse(calculateDate + " 00:00", formatter)
+                            LocalDateTime.parse(calculateDate + " 06:00", formatter)
                     );
 
                     if (savedOutsourcing != null) {
@@ -584,7 +584,7 @@ public class OutsourcingServiceImpl implements OutsourcingService {
 
                 Outsourcing outsourcingExits = outsourcingDao.finfByidEmployee(
                         (int) code.getNumericCellValue(),
-                        LocalDateTime.parse(calculateDate + " 00:00", formatter)
+                        LocalDateTime.parse(calculateDate + " 06:00", formatter)
                 );
 
                 if (outsourcingExits == null) {
@@ -777,7 +777,7 @@ public class OutsourcingServiceImpl implements OutsourcingService {
                             outsourcing.setAmortizationInfonavit(bdAmortizationInfonavit);
                         }
                     }
-                    outsourcing.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
+                    outsourcing.setApplicationDate(LocalDateTime.parse(calculateDate + " 06:00", formatter));
                     outsourcing.setCreationDate(LocalDateTime.now());
                     outsourcing.setStatus(1);
                     outsourcingDao.save(outsourcing);
@@ -968,7 +968,7 @@ public class OutsourcingServiceImpl implements OutsourcingService {
                             outsourcingExits.setAmortizationInfonavit(bdAmortizationInfonavit);
                         }
                     }
-                    outsourcingExits.setApplicationDate(LocalDateTime.parse(calculateDate + " 00:00", formatter));
+                    outsourcingExits.setApplicationDate(LocalDateTime.parse(calculateDate + " 06:00", formatter));
                     outsourcingExits.setCreationDate(LocalDateTime.now());
                     outsourcingExits.setStatus(1);
                     outsourcingDao.save(outsourcingExits);
