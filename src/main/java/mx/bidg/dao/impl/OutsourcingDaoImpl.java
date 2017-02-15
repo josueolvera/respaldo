@@ -104,6 +104,28 @@ public class OutsourcingDaoImpl extends AbstractDao<Integer, Outsourcing> implem
     }
 
     @Override
+    public Object sumRhmasByDwEnterpriseAndType(List<DwEnterprises> dwEnterprisesList, Integer type, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd) {
+        Criteria criteria = createEntityCriteria();
+        ProjectionList projectionList = Projections.projectionList();
+        Disjunction disjunctionEnterprise = Restrictions.disjunction();
+
+        projectionList.add(Projections.sum("total"));
+
+        if (!dwEnterprisesList.isEmpty()){
+            for (DwEnterprises dwEnterprise : dwEnterprisesList){
+                disjunctionEnterprise.add(Restrictions.eq("idDwEnterprise",dwEnterprise.getIdDwEnterprise()));
+            }
+        }
+
+        criteria.setProjection(projectionList);
+        criteria.add(disjunctionEnterprise);
+        criteria.add(Restrictions.eq("type", type));
+        criteria.add(Restrictions.between("applicationDate",applicatioDateStart,applicationDateEnd));
+        criteria.add(Restrictions.eq("status",1));
+        return criteria.uniqueResult();
+    }
+
+    @Override
     public List<Outsourcing> findByAllEmployeesAndApplicationDate(List<EmployeesHistory> employeesHistoryList, LocalDateTime iniialDate, LocalDateTime finalDate) {
         Criteria criteria = createEntityCriteria();
         Disjunction disjunctionEmployees = Restrictions.disjunction();

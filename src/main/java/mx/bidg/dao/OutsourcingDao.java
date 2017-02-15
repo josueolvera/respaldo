@@ -15,5 +15,6 @@ public interface OutsourcingDao extends InterfaceDao<Outsourcing> {
     List<Outsourcing> findByDwEnterprise(List<DwEnterprises> dwEnterprisesList, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd);
     List<Outsourcing> findByType(Integer type, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd);
     Object findSumRhmasByDwEnterprise(List<DwEnterprises> dwEnterprisesList, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd);
+    Object sumRhmasByDwEnterpriseAndType(List<DwEnterprises> dwEnterprisesList, Integer type, LocalDateTime applicatioDateStart, LocalDateTime applicationDateEnd);
     List<Outsourcing> findByAllEmployeesAndApplicationDate(List<EmployeesHistory> employeesHistoryList, LocalDateTime iniialDate, LocalDateTime finalDate);
 }
