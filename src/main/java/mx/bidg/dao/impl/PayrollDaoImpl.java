@@ -59,7 +59,7 @@ public class PayrollDaoImpl extends AbstractDao <Integer,Payroll> implements Pay
         ProjectionList projectionList = Projections.projectionList();
 
         projectionList.add(Projections.sum("totalFacturar"));
-        return criteria.setProjection(projectionList).add(Restrictions.ge("totalFacturar", new BigDecimal(0.001))).uniqueResult();
+        return criteria.setProjection(projectionList).add(Restrictions.ge("totalFacturar", new BigDecimal(0.001))).add(Restrictions.ne("numeroDeEmpleado",3220)).uniqueResult();
     }
 
     @Override
