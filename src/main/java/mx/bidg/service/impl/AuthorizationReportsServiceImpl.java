@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,6 +55,7 @@ public class AuthorizationReportsServiceImpl implements AuthorizationReportsServ
     public List<AuthorizationReports> findAllFlagsWithReportsNotAuthorized() {
         List<CalculationReport> calculationReportList = calculationReportDao.findReportsGeneratedAndSendedNotAuthorized();
 
+        List<AuthorizationReports> reportsByManager = new ArrayList<>();
         List<AuthorizationReports> authorizationReportsList = null;
 
         if (!calculationReportList.isEmpty()){
@@ -61,13 +63,16 @@ public class AuthorizationReportsServiceImpl implements AuthorizationReportsServ
                 authorizationReportsList = authorizationReportsDao.findByIdSqlQuery(calculationReport.getIdQuery());
                 if (!authorizationReportsList.isEmpty()){
                     for (AuthorizationReports authorizationReports: authorizationReportsList){
-                        authorizationReports.setCalculationReport(calculationReport);
+                        if (authorizationReports != null){
+                            authorizationReports.setCalculationReport(calculationReport);
+                            reportsByManager.add(authorizationReports);
+                        }
                     }
                 }
             }
         }
 
-        return authorizationReportsList;
+        return reportsByManager;
     }
 
     @Override
