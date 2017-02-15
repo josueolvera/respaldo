@@ -195,7 +195,6 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
             commissionAmountGroup.setIdAg(agreementsGroups.getIdAg());
             commissionAmountGroup.setGroupName(agreementsGroups.getAgreementGroupName());
             commissionAmountGroup.setCommission(BigDecimal.valueOf(0));
-            commissionAmountGroup.setTabulator(BigDecimal.valueOf(0));
             commissionAmountGroup.setApplicationsNumber(numRequest);
             commissionAmountGroup.setFromDate(fromDate);
             commissionAmountGroup.setToDate(toDate);
@@ -221,7 +220,6 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
             commissionAmountGroup.setIdAg(agreementsGroups.getIdAg());
             commissionAmountGroup.setGroupName(agreementsGroups.getAgreementGroupName());
             commissionAmountGroup.setCommission(BigDecimal.valueOf(0));
-            commissionAmountGroup.setTabulator(BigDecimal.valueOf(0));
             commissionAmountGroup.setApplicationsNumber(numRequest);
             commissionAmountGroup.setFromDate(fromDate);
             commissionAmountGroup.setToDate(toDate);
@@ -245,7 +243,6 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
             commissionAmountGroup.setIdAg(agreementsGroups.getIdAg());
             commissionAmountGroup.setGroupName(agreementsGroups.getAgreementGroupName());
             commissionAmountGroup.setCommission(BigDecimal.valueOf(0));
-            commissionAmountGroup.setTabulator(BigDecimal.valueOf(0));
             commissionAmountGroup.setApplicationsNumber(numRequest);
             commissionAmountGroup.setFromDate(fromDate);
             commissionAmountGroup.setToDate(toDate);
@@ -1349,7 +1346,9 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
             }
 
             row3.createCell(1).setCellValue(zonal.getAmount().doubleValue());
-            row3.createCell(2).setCellValue(zonal.getTabulator().doubleValue());
+            if (zonal.getTabulator() != null){
+                row3.createCell(2).setCellValue(zonal.getTabulator().doubleValue());
+            }
             row3.createCell(3).setCellValue(zonal.getCommission().doubleValue());
 
             aux2++;
@@ -1391,7 +1390,9 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
             }
 
             row4.createCell(1).setCellValue(region.getAmount().doubleValue());
-            row4.createCell(2).setCellValue(region.getTabulator().doubleValue());
+            if (region.getTabulator() != null){
+                row4.createCell(2).setCellValue(region.getTabulator().doubleValue());
+            }
             row4.createCell(3).setCellValue(region.getCommission().doubleValue());
 
             aux3++;
