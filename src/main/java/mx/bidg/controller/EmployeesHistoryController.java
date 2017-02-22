@@ -288,7 +288,7 @@ public class EmployeesHistoryController {
                     @RequestParam (name = "idDistributor", required = false) Integer idDistributor,
                     @RequestParam(name = "startDate", required = false) String startDate,
                     @RequestParam(name = "endDate", required = false) String endDate) throws Exception{
-        SqlQueries query = sqlQueriesService.findQuery(12);
+        SqlQueries query = sqlQueriesService.findQuery(13);
         List querys = sqlQueriesService.executeProcedurePD(query, idEmployee, idDistributor, startDate, endDate);
         return  new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(querys),HttpStatus.OK);
     }
@@ -302,113 +302,44 @@ public class EmployeesHistoryController {
                                                 ,@RequestParam(name = "fileName",required = true)String fileName
                                                 , HttpServletResponse response) throws IOException{
         OutputStream outputStream = response.getOutputStream();
+        SqlQueries query = sqlQueriesService.findQuery(12);
         response.setContentType("application/octet-stream");
         response.setHeader("Content-Disposition", "attachment; filename=\""+ fileName +".xlsx\"");
-        LocalDateTime ofDate = (startDate == null || startDate.equals("")) ? null :
-                LocalDateTime.parse(startDate, DateTimeFormatter.ISO_DATE_TIME);
-        LocalDateTime untilDate = (endDate == null || endDate.equals("")) ? null :
-                LocalDateTime.parse(endDate, DateTimeFormatter.ISO_DATE_TIME);
-        List<EmployeesHistory>resultFilter = new ArrayList();
-        BigDecimal suma = new BigDecimal(0);
-        BigDecimal resta = new BigDecimal(0);
-        BigDecimal total = new BigDecimal(0);
-        EmployeesHistory employee;
-        if(idEmployee!=null && ofDate!=null && untilDate!=null){
-            List<PerceptionsDeductions> range = perceptionsDeductionsService.findByIdEmployeeAndStartDateEndDate(idEmployee,ofDate,untilDate);
-            for(PerceptionsDeductions p: range){
-                employee = employeesHistoryService.findIdEmployee(idEmployee);
-                CPerceptionsDeductions cp = cPerceptionsDeductionsService.findById(p.getIdCPd());
-                if(cp.getIdTypeOperation()==2){
-                    suma = suma.add(p.getAmount());
-                }else if(cp.getIdTypeOperation()==1){
-                    resta = resta.add(p.getAmount());
-                }
-                total = suma.subtract(resta);
-                employee.setTotalSumPerception(suma);
-                employee.setTotalSumDeduction(resta);
-                employee.setTotal(total);
-                resultFilter.add(employee);
-            }
-            perceptionsDeductionsService.reporUnfold(resultFilter,outputStream);
-        }else if(idDistributor!=null&& ofDate!=null&&untilDate!=null){
-            List<PerceptionsDeductions> range = perceptionsDeductionsService.findByStartDateEndDate(ofDate,untilDate);
-            for (PerceptionsDeductions p: range){
-                List<EmployeesHistory>getDistributors = employeesHistoryService.findIdEmployeeAndIdDistributor(p.getIdEmployee(),idDistributor);
-                for(EmployeesHistory eh: getDistributors) {
-                    employee = employeesHistoryService.findIdEmployee(eh.getIdEmployee());
-                    CPerceptionsDeductions cp = cPerceptionsDeductionsService.findById(p.getIdCPd());
-                    if (cp.getIdTypeOperation() == 2) {
-                        suma = suma.add(p.getAmount());
-                    } else if (cp.getIdTypeOperation() == 1) {
-                        resta = resta.add(p.getAmount());
-                    }
-                    total = suma.subtract(resta);
-                    employee.setTotalSumPerception(suma);
-                    employee.setTotalSumDeduction(resta);
-                    employee.setTotal(total);
-                    resultFilter.add(employee);
-                }
-            }
-            perceptionsDeductionsService.reporUnfold(resultFilter,outputStream);
-        } else if(idEmployee!=null){
-            employee= employeesHistoryService.findIdEmployee(idEmployee);
-            List<PerceptionsDeductions> perceptionsDeductions =  perceptionsDeductionsService.findByIdEmployee(idEmployee);
-            for(PerceptionsDeductions p : perceptionsDeductions){
-                CPerceptionsDeductions cp = cPerceptionsDeductionsService.findById(p.getIdCPd());
-                if(cp.getIdTypeOperation()==2){
-                    suma = suma.add(p.getAmount());
-                }else if(cp.getIdTypeOperation()==1){
-                    resta = resta.add(p.getAmount());
-                }
-            }
-            total = suma.subtract(resta);
-            employee.setTotalSumPerception(suma);
-            employee.setTotalSumDeduction(resta);
-            employee.setTotal(total);
-            resultFilter.add(employee);
-            perceptionsDeductionsService.reporUnfold(resultFilter,outputStream);
-        }else if(idDistributor!=null){
-            employee=null;
-            List <EmployeesHistory> employeesHist = employeesHistoryService.findByIdDistributor(idDistributor);
-            for(EmployeesHistory e : employeesHist) {
-                employee=e;
-                List<PerceptionsDeductions> perceptionsForEmployee = perceptionsDeductionsService.findByIdEmployee(e.getIdEmployee());
-                for(PerceptionsDeductions p: perceptionsForEmployee){
-                    CPerceptionsDeductions cp = cPerceptionsDeductionsService.findById(p.getIdCPd());
-                    if(cp.getIdTypeOperation()==2){
-                        suma = suma.add(p.getAmount());
-                    }else if(cp.getIdTypeOperation()==1){
-                        resta = resta.add(p.getAmount());
-                    }
-                }
-                total = suma.subtract(resta);
-                employee.setTotalSumPerception(suma);
-                employee.setTotalSumDeduction(resta);
-                employee.setTotal(total);
-                resultFilter.add(employee);
-            }
-            perceptionsDeductionsService.reporUnfold(resultFilter,outputStream);
-        }else if(ofDate!=null && untilDate!=null) {
-            List<PerceptionsDeductions> range = perceptionsDeductionsService.findByStartDateEndDate(ofDate, untilDate);
-            for (PerceptionsDeductions p : range) {
-                employee = employeesHistoryService.findIdEmployee(p.getIdEmployee());
-                CPerceptionsDeductions cp = cPerceptionsDeductionsService.findById(p.getIdCPd());
-                if (cp.getIdTypeOperation() == 2) {
-                    suma = suma.add(p.getAmount());
-                } else if (cp.getIdTypeOperation() == 1) {
-                    resta = resta.add(p.getAmount());
-                }
-                total = suma.subtract(resta);
-                employee.setTotalSumPerception(suma);
-                employee.setTotalSumDeduction(resta);
-                employee.setTotal(total);
-                resultFilter.add(employee);
-            }
-            perceptionsDeductionsService.reporUnfold(resultFilter, outputStream);
+        if(idEmployee!=null && startDate!=null && endDate!=null) {
+            List querys = sqlQueriesService.executeProcedurePD(query, idEmployee, 0, startDate, endDate);
+            perceptionsDeductionsService.reportPDSD(outputStream,querys);
+            outputStream.flush();
+            outputStream.close();
+            return  new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(querys),HttpStatus.OK);
         }
-        outputStream.flush();
-        outputStream.close();
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(resultFilter),HttpStatus.OK);
+        if (idDistributor != null && startDate != null && endDate != null) {
+            List querys = sqlQueriesService.executeProcedurePD(query, 0, idDistributor, startDate, endDate);
+            perceptionsDeductionsService.reportPDSD(outputStream, querys);
+            outputStream.flush();
+            outputStream.close();
+            return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(querys), HttpStatus.OK);
+        }
+        if(idEmployee!=null){
+            List querys = sqlQueriesService.executeProcedurePD(query, idEmployee,0, "0000-00-00", "0000-00-00");
+            perceptionsDeductionsService.reportPDSD(outputStream,querys);
+            outputStream.flush();
+            outputStream.close();
+            return  new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(querys),HttpStatus.OK);
+        }
+        if(idDistributor!=null){
+            List querys = sqlQueriesService.executeProcedurePD(query, 0, idDistributor, "0000-00-00", "0000-00-00");
+            perceptionsDeductionsService.reportPDSD(outputStream,querys);
+            outputStream.flush();
+            outputStream.close();
+            return  new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(querys),HttpStatus.OK);
+        }
+        else {
+            List querys = sqlQueriesService.executeProcedurePD(query, idEmployee, idDistributor, startDate, endDate);
+            perceptionsDeductionsService.reportPDSD(outputStream,querys);
+            outputStream.flush();
+            outputStream.close();
+            return  new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(querys),HttpStatus.OK);
+        }
     }
 
     @RequestMapping(value = "/execute-report", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
