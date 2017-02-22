@@ -175,29 +175,7 @@
                     if (this.reportFileName != '') {
                         if (this.picked != '') {
                             if (this.picked == "false") {
-                                if (this.select.numEmployeeSearch != "") {
-                                    if (this.select.startdate.length != 0) {
-                                        if (this.select.endDate.length != 0) {
-                                            this.reportByIdEmployeeAndDate();
-                                        }
-                                    } else {
-                                        this.reportIdEmployee();
-                                    }
-                                } else if (this.select.distributor != null) {
-                                    if (this.select.startdate.length != 0) {
-                                        if (this.select.endDate.length != 0) {
-                                            this.reportByDistributorAndDate();
-                                        }
-                                    } else {
-                                        this.reportDistributor();
-                                    }
-                                } else if (this.select.startdate.length != 0) {
-                                    if (this.select.endDate.length != 0) {
-                                        this.reportByDate();
-                                    } else {
-                                        showAlert("Es necesario ingresar una fecha final", {type: 3});
-                                    }
-                                }
+                                this.reportSqlSinDes();
                             } else {
                                 this.reportSql();
                             }
@@ -272,6 +250,7 @@
                             + fechaInicial + "&endDate=" + fechaFinal)
                             .success(function (data) {
                                 this.reports = data;
+                                //this.searching = true;
                                 if (data.length > 0) {
                                     this.sumTotals();
                                     this.searching = true;
@@ -282,45 +261,26 @@
                             });
                     this.picked = "";
                 },
-                reportIdEmployee: function () {
-                    var self = this;
+                reportSqlSinDes:function () {
                     $("#exportModal").modal("hide");
-                    location.href = ROOT_URL + "/employees-history/report-by-employee?idEmployee=" + this.select.numEmployeeSearch + "&fileName=" + this.reportFileName;
-                    this.picked = "";
-                    this.reportFileName = "";
-                },
-                reportDistributor: function () {
-                    var self = this;
-                    $("#exportModal").modal("hide");
-                    location.href = ROOT_URL + "/employees-history/report-by-employee?idDistributor=" + this.select.distributor.idDistributor + "&fileName=" + this.reportFileName;
-                    this.picked = "";
-                    this.reportFileName = "";
-                },
-                reportByDate: function () {
-                    var self = this;
-                    this.startDate = this.dateTimePickerStart.DateTimePicker.date().toISOString().slice(0, -1);
-                    this.endDate = this.dateTimePickerEndDate.DateTimePicker.date().toISOString().slice(0, -1);
-                    $("#exportModal").modal("hide");
-                    location.href = ROOT_URL + "/employees-history/report-by-employee?startDate="
-                            + this.startDate + "&endDate=" + this.endDate + "&fileName=" + this.reportFileName;
-                    this.picked = "";
-                    this.reportFileName = "";
-                },
-                reportByIdEmployeeAndDate: function () {
-                    this.startDate = this.dateTimePickerStart.DateTimePicker.date().toISOString().slice(0, -1);
-                    this.endDate = this.dateTimePickerEndDate.DateTimePicker.date().toISOString().slice(0, -1);
-                    $("#exportModal").modal("hide");
-                    location.href = ROOT_URL + "/employees-history/report-by-employee?idEmployee=" + this.select.numEmployeeSearch + "&startDate="
-                            + this.startDate + "&endDate=" + this.endDate + "&fileName=" + this.reportFileName;
-                    this.picked = "";
-                    this.reportFileName = "";
-                },
-                reportByDistributorAndDate: function () {
-                    this.startDate = this.dateTimePickerStart.DateTimePicker.date().toISOString().slice(0, -1);
-                    this.endDate = this.dateTimePickerEndDate.DateTimePicker.date().toISOString().slice(0, -1);
-                    $("#exportModal").modal("hide");
-                    location.href = ROOT_URL + "/employees-history/report-by-employee?idDistributor=" + this.select.distributor.idDistributor + "&startDate="
-                            + this.startDate + "&endDate=" + this.endDate + "&fileName=" + this.reportFileName;
+                    var fechaInicial = "0000-00-00";
+                    var fechaFinal = "0000-00-00";
+                    if (this.select.startdate.length != 0 && this.select.endDate.length != 0) {
+                        fechaInicial = moment(this.select.startdate, 'DD-MM-YYYY').format('YYYY-MM-DD');
+                        fechaFinal = moment(this.select.endDate, 'DD-MM-YYYY').format('YYYY-MM-DD');
+                    }
+                    var distribuidor = '';
+                    if (this.idDistributor <= 0) {
+                        distribuidor = 0;
+                    } else {
+                        distribuidor = this.select.distributor.idDistributor;
+                    }
+                    var idEmployee = this.select.numEmployeeSearch;
+                    if (idEmployee == "") {
+                        idEmployee = '';
+                    }
+                    location.href = ROOT_URL + "/employees-history/report-by-employee?idEmployee=" + idEmployee + "&idDistributor=" + distribuidor + "&startDate="
+                            + fechaInicial + "&endDate=" + fechaFinal + "&fileName=" + this.reportFileName;
                     this.picked = "";
                     this.reportFileName = "";
                 },
