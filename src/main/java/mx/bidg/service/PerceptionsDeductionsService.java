@@ -28,4 +28,5 @@ public interface PerceptionsDeductionsService {
     void reporUnfold(List<EmployeesHistory>reportData, OutputStream outputStream)throws IOException;
     void reportPD(OutputStream outputStream,List queryResult)throws IOException;
     List findByAllEmployeesAndInitialDateAndFinalDatePerception(List<EmployeesHistory> employeesHistoryList, LocalDateTime initialDate, LocalDateTime finalDate, List<CPerceptionsDeductions> cPerceptionsDeductionsList);
+    void reportPDSD(OutputStream outputStream,List queryResult)throws IOException;
 }

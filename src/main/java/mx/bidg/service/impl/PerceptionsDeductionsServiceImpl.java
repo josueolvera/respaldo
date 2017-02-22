@@ -325,4 +325,72 @@ public class PerceptionsDeductionsServiceImpl implements PerceptionsDeductionsSe
     public List findByAllEmployeesAndInitialDateAndFinalDatePerception(List<EmployeesHistory> employeesHistoryList, LocalDateTime initialDate, LocalDateTime finalDate, List<CPerceptionsDeductions> cPerceptionsDeductionsList) {
         return perceptionsDeductionsDao.findByAllEmployeesAndInitialDateAndFinalDatePerception(employeesHistoryList,initialDate,finalDate,cPerceptionsDeductionsList);
     }
+
+    @Override
+    public void reportPDSD(OutputStream outputStream, List queryResult) throws IOException {
+        Workbook wb = new XSSFWorkbook();
+        //Definicion del estilo de la cabecera
+        Font font = wb.createFont();
+        font.setBold(true);
+        font.setFontHeightInPoints((short) 10);
+        font.setFontName("Arial");
+        font.setColor(IndexedColors.WHITE.getIndex());
+        CellStyle style = wb.createCellStyle();
+        style.setFont(font);
+        style.setFillForegroundColor(IndexedColors.DARK_BLUE.getIndex());
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        style.setBorderBottom(CellStyle.BORDER_THIN);
+        style.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderRight(CellStyle.BORDER_THIN);
+        style.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderLeft(CellStyle.BORDER_THIN);
+        style.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style.setBorderTop(CellStyle.BORDER_THIN);
+        style.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style.setAlignment(CellStyle.ALIGN_CENTER);
+        CellStyle cellDateStyle = wb.createCellStyle();
+        CreationHelper createHelper = wb.getCreationHelper();
+        cellDateStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd/MM/yyyy"));
+        Sheet hoja1 = wb.createSheet("Percepciones y Deducciones");
+        Row row1 = hoja1.createRow(0);
+        row1.createCell(0).setCellValue("No Empleado");
+        row1.createCell(1).setCellValue("NOMBRE");
+        row1.createCell(2).setCellValue("RFC");
+        row1.createCell(3).setCellValue("TIPO");
+        row1.createCell(4).setCellValue("MONTO");
+        row1.createCell(5).setCellValue("MOTIVO");
+        row1.createCell(6).setCellValue("FECHA APLICACION");
+        for (Cell celda : row1) {
+            celda.setCellStyle(style);
+        }
+        int aux1 = 1;
+        List<Object[]> results = queryResult;
+        for(Object[] reportPd : results) {
+            row1 = hoja1.createRow(aux1);
+            if(reportPd[0]!=null){
+                row1.createCell(0).setCellValue(String.valueOf(reportPd[0]));
+            }
+            if(reportPd[1]!=null){
+                row1.createCell(1).setCellValue(String.valueOf(reportPd[1]));
+            }
+            if(reportPd[2]!=null){
+                row1.createCell(2).setCellValue(String.valueOf(reportPd[2]));
+            }
+            if(reportPd[3]!=null){
+                row1.createCell(3).setCellValue(String.valueOf(reportPd[3]));
+            }
+            if(reportPd[4]!=null){
+                row1.createCell(4).setCellValue(Double.parseDouble(String.valueOf(reportPd[4])));
+            }
+            if(reportPd[5]!=null){
+                row1.createCell(5).setCellValue(String.valueOf(reportPd[5]));
+            }
+            if(reportPd[6]!=null){
+                row1.createCell(6).setCellValue(String.valueOf(reportPd[6]));
+            }
+            aux1 ++;
+        }
+        hoja1.autoSizeColumn(0);
+        wb.write(outputStream);
+    }
 }
