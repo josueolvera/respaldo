@@ -78,9 +78,9 @@
                     },
                     formValidation:function () {
                         if (
-                                this.ticket.incidence != '' &&
-                                this.ticket.priority != '' &&
-                                this.ticket.descripcionProblema != ''
+                            this.ticket.incidence != '' &&
+                            this.ticket.priority != '' &&
+                            this.ticket.descripcionProblema != ''
                         ) {
                             return true;
                         } else return false;
@@ -156,7 +156,7 @@
                 <div class="row">
                     <div class="col-xs-4">
                         <label>Solicitante</label>
-                        <input type="text" class="form-control" v-model="userInSession.dwEmployee.employee.fullName" disabled>
+                        <input type="text" class="form-control" v-model="userInSession.mail" disabled>
                     </div>
                     <div class="col-xs-4">
                         <label>Tipo de solicitud</label>
@@ -181,8 +181,8 @@
                 <div class="row">
                     <div class="col-xs-12">
                         <label>Descripción</label>
-                            <textarea class="form-control" maxlength="2000"
-                                      rows="8" v-model="ticket.descripcionProblema">
+                        <textarea class="form-control" maxlength="2000"
+                                  rows="8" v-model="ticket.descripcionProblema">
                             </textarea>
                     </div>
                 </div>
