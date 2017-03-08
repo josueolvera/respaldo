@@ -7,6 +7,7 @@ import mx.bidg.config.JsonViews;
 import mx.bidg.model.*;
 import mx.bidg.service.CIncidenceService;
 import mx.bidg.service.CPriorityService;
+import mx.bidg.service.CTicketStatusService;
 import mx.bidg.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -34,6 +36,9 @@ public class TicketController {
 
     @Autowired
     private CPriorityService cPriorityService;
+
+    @Autowired
+    private CTicketStatusService cTicketStatusService;
 
     @Autowired
     private ObjectMapper mapper;
@@ -74,12 +79,35 @@ public class TicketController {
     }
 
     @RequestMapping(value = "/change-ticket-status/{idTicket}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> update(@RequestBody CTicketStatus ticketStatus, @PathVariable Integer idTicket) throws IOException {
-
+    public ResponseEntity<String> update(@PathVariable Integer idTicket,@RequestBody String data) throws IOException {
+        JsonNode node = mapper.readTree(data);
+        Ticket t = ticketService.findById(idTicket);
+        CTicketStatus ts = cTicketStatusService.findById(node.get("idTicketStatus").asInt());
+        System.out.println("idStatus"+node.get("idTicketStatus").asInt());
+        t.setTicketStatus(ts);
+        t.setFechaFinal(LocalDateTime.now());
+        ticketService.update(t);
+        List<Ticket>findAll= ticketService.findStatusOpen(1);
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Root.class)
-                        .writeValueAsString(ticketService.changeTicketStatus(idTicket,ticketStatus)),
-                HttpStatus.OK
-        );
+                        .writeValueAsString(findAll), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/open/{idTicketStatus}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findOpen(@PathVariable int idTicketStatus) throws IOException {
+        List<Ticket> ticketsOpen = ticketService.findStatusOpen(idTicketStatus);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(ticketsOpen), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/priority/{idPriority}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findPriority(@PathVariable int idPriority) throws IOException {
+        List<Ticket> ticketsPriority = ticketService.findByPriority(idPriority);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(ticketsPriority), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/{idPriority}/{idTicketStatus}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findPriority(@PathVariable int idPriority, @PathVariable int idTicketStatus) throws IOException {
+        List<Ticket> ticketsPriorityAndStatus = ticketService.findByTicketStatusPriority(idPriority,idTicketStatus);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(ticketsPriorityAndStatus), HttpStatus.OK);
     }
 }
