@@ -17,7 +17,7 @@
             var vm = new Vue({
                 el: '#content',
                 ready: function () {
-                    this.getTickets();
+                    this.getTicketsOpen();
                     this.getIncidences();
                     this.getPriorities();
                     this.getUserInSession();
@@ -25,6 +25,7 @@
                 },
                 data: {
                     ticketCategory: ${ticketCategory.idTicketCategory},
+                    ticketOpen:1,
                     tickets:[],
                     incidences:[],
                     priorities:[],
@@ -42,8 +43,8 @@
                     selectedTicketStatus:''
                 },
                 methods: {
-                    getTickets:function () {
-                        this.$http.get(ROOT_URL + '/ticket/category/' + this.ticketCategory).success(function (data) {
+                    getTicketsOpen: function () {
+                        this.$http.get(ROOT_URL + '/ticket/open/' + this.ticketOpen).success(function (data) {
                             var jsonObjectIndex = {};
                             data.forEach(function (ticket) {
                                 if (isNaN(ticket.user)) {
@@ -53,9 +54,47 @@
                                 }
                             });
                             this.tickets = data;
-                        }).error(function (data) {
-
                         });
+                    },
+                    getTicketsPriority: function () {
+                        this.$http.get(ROOT_URL + '/ticket/priority/' + this.priority.idPriority).success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (ticket) {
+                                if (isNaN(ticket.user)) {
+                                    jsonObjectIndex[ticket.user._id] = ticket.user;
+                                } else {
+                                    ticket.user = jsonObjectIndex[ticket.user];
+                                }
+                            });
+                            this.tickets = data;
+                        });
+                    },
+                    getTicketStatusPriority:function () {
+                        this.$http.get(ROOT_URL + '/ticket/'+ this.priority.idPriority+'/'+this.ticketOpen).success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (ticket) {
+                                if (isNaN(ticket.user)) {
+                                    jsonObjectIndex[ticket.user._id] = ticket.user;
+                                } else {
+                                    ticket.user = jsonObjectIndex[ticket.user];
+                                }
+                            });
+                            this.tickets = data;
+                        });
+                    },
+                    getTicketsByTicketStatusPriority:function () {
+                        this.tickets='';
+                        if (this.priority != '' && this.ticketStatus != '') {
+                            this.ticketOpen=this.ticketStatus.idTicketStatus;
+                            this.getTicketStatusPriority();
+                        }
+                        else if (this.priority != '') {
+                            this.getTicketsPriority();
+                        }
+                        else if(this.ticketStatus != ''){
+                            this.ticketOpen=this.ticketStatus.idTicketStatus;
+                            this.getTicketsOpen();
+                        }
                     },
                     closeAskModal:function () {
                         this.question = '';
@@ -63,65 +102,36 @@
                         this.currentTicket.ticketStatus = '';
                         $('#askModal').modal('hide');
                     },
-                    acceptAction:function (data) {
+                    acceptAction:function (ticket) {
                         this.getTicketsByTicketStatusPriority();
                         this.question = '¿Estas suguro que quieres dar por terminado el ticket?';
-                        this.currentTicket.idTicket = data.idTicket;
+                        this.currentTicket.idTicket = ticket.idTicket;
                         this.currentTicket.ticketStatus = this.selectedTicketStatus;
-
                         if(this.currentTicket.ticketStatus.idTicketStatus != 4) {
                             this.changeTicketStatus();
                             return;
                         }
                         $('#askModal').modal('show');
-
+                        this.ticketOpen=this.ticket;
+                        //this.getTicketsByTicketStatusPriority();
                     },
-                    changeTicketStatus:function () {
+                    changeTicketStatus:function (){
 
-                        this.$http.post(
-                                ROOT_URL + '/ticket/change-ticket-status/' + this.currentTicket.idTicket,
-                                this.currentTicket.ticketStatus
-                        ).success(function (data) {
+                        this.$http.post(ROOT_URL + '/ticket/change-ticket-status/' + this.currentTicket.idTicket, this.selectedTicketStatus).success(function (data) {
                             this.question = '';
                             this.currentTicket.idTicket = '';
                             this.currentTicket.ticketStatus = '';
                             $('#askModal').modal('hide');
                             showAlert("Status de ticket cambiado");
-                            this.getTicketsByTicketStatusPriority();
+                            if(this.priority != '' && this.ticketStatus != ''){
+                                this.getTicketsByTicketStatusPriority();
+                            }else{
+                                this.ticketOpen=1;
+                                this.getTicketsOpen();
+                            }
                         }).error(function (data) {
 
                         });
-                    },
-                    getTicketsByTicketStatusPriority:function () {
-
-                        if (this.priority != 'Todos' && this.ticketStatus != 'Todos') {
-                            this.$http.get(ROOT_URL + '/ticket/' + this.ticketStatus.idTicketStatus + '/' + this.priority.idPriority).success(function (data) {
-                                this.tickets = data;
-                            }).error(function (data) {
-
-                            });
-                            return;
-                        }
-
-                        if (this.priority != 'Todos') {
-                            this.$http.get(ROOT_URL + '/ticket/priority/' + this.priority.idPriority).success(function (data) {
-                                this.tickets = data;
-                            }).error(function (data) {
-
-                            });
-                            return;
-                        }
-                        if (this.ticketStatus != 'Todos') {
-                            this.$http.get(ROOT_URL + '/ticket/ticket-status/' + this.ticketStatus.idTicketStatus).success(function (data) {
-                                this.tickets = data;
-                            }).error(function (data) {
-
-                            });
-                            return;
-                        }
-
-                        this.getTickets();
-
                     },
                     getIncidences:function () {
                         this.$http.get(ROOT_URL + '/incidence/category/' + this.ticketCategory).success(function (data) {
@@ -172,30 +182,30 @@
 
     <jsp:attribute name="styles">
         <style>
-            .ticket-list {
-                height: 500px;
-                overflow-y: scroll;
+            .table-header {
+                padding: 1rem;
+                margin-top: 2rem;
+                background: darkslategrey;
+                color: white;
+
+            }
+
+            .table-body .table-row:nth-child(2n+1) {
+                background: white;
+                overflow: auto;
+                border: solid 1px;
+            }
+
+            .table-row {
+                padding: 1rem;
+            }
+
+            .flex-content {
                 overflow-x: hidden;
             }
-            .btn-toggle-ticket:hover {
-                background-color: #AFAFAF;
-            }
-            .btn-toggle-ticket {
-                border-color: #dddddd;
-                background-color: #f5f5f5;
-            }
-            .ticket-list .ticket:nth-child(2n+1) .panel-heading,
-            .ticket-list .ticket:nth-child(2n+1) .btn-toggle-ticket {
-                background-color: #dddddd;
-            }
-            .ticket .table-header, .btn-toggle-ticket {
-                cursor: pointer;
-            }
-            .ticket p {
-                overflow-wrap: break-word;
-            }
-            .btn-cerrar-ticket {
-                cursor: default;
+
+            .table-hover {
+                background-color: #2ba6cb;
             }
         </style>
     </jsp:attribute>
@@ -209,22 +219,20 @@
                 <div class="form-group">
                     <div class="row">
                         <div class="col-xs-4">
-                            <label>Solicitante</label>
-                            <input type="text" v-model="solicitante" class="form-control"/>
+                            <label>Administrador</label>
+                            <input type="text" v-model="userInSession.mail" class="form-control"/>
                         </div>
                         <div class="col-xs-4">
                             <label>Prioridad</label>
                             <select v-model="priority" class="form-control" @change="getTicketsByTicketStatusPriority">
-                                <option selected>Todos</option>
                                 <option v-for="priority in priorities" value="{{priority}}">
                                     {{priority.priorityName}}
                                 </option>
                             </select>
                         </div>
                         <div class="col-xs-4">
-                            <label>Status</label>
+                            <label>Estatus</label>
                             <select v-model="ticketStatus" class="form-control" @change="getTicketsByTicketStatusPriority">
-                                <option selected>Todos</option>
                                 <option v-for="ticketStatus in ticketStatusList" value="{{ticketStatus}}">
                                     {{ticketStatus.ticketStatusName}}
                                 </option>
@@ -251,8 +259,8 @@
                                         <option selected hidden value="{{ticket.ticketStatus}}">
                                             {{ ticket.ticketStatus.ticketStatusName }}
                                         </option>
-                                        <option v-for="ticketStatus in ticketStatusList" value="{{ticketStatus}}">
-                                            {{ticketStatus.ticketStatusName}}
+                                        <option v-for="selectedTicketStatus in ticketStatusList" value="{{selectedTicketStatus}}">
+                                            {{selectedTicketStatus.ticketStatusName}}
                                         </option>
                                     </select>
                                 </div>
