@@ -99,8 +99,8 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<Ticket> findByTicketStatusPriority(Integer idTicketStatus, Integer idPriority) {
-        return ticketDao.findByTicketStatusPriority(idTicketStatus,idPriority);
+    public List<Ticket> findByTicketStatusPriority(Integer idPriority,Integer idTicketStatus) {
+        return ticketDao.findByTicketStatusPriority(idPriority,idTicketStatus);
     }
 
     @Override
@@ -141,5 +141,10 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public Ticket findByFolio(String folio) {
         return ticketDao.findByFolio(folio);
+    }
+
+    @Override
+    public List<Ticket> findStatusOpen(Integer idTicketStatus) {
+        return ticketDao.findStatusOpen(idTicketStatus);
     }
 }

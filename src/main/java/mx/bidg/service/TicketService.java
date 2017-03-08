@@ -15,9 +15,10 @@ public interface TicketService {
     Ticket update(Ticket ticket);
     List<Ticket> findByPriority(Integer idPriority);
     List<Ticket> findByTicketStatus(Integer idTicketStatus);
-    List<Ticket> findByTicketStatusPriority(Integer idTicketStatus, Integer idPriority);
+    List<Ticket> findByTicketStatusPriority(Integer idPriority,Integer idTicketStatus);
     Ticket changeTicketStatus(Integer idTicket, CTicketStatus ticketStatus);
     EmailTemplates sendEmailNewTicket(Ticket ticket);
     EmailTemplates sendEmailStatusTicket(Ticket ticket);
     Ticket findByFolio(String folio);
+    List<Ticket>findStatusOpen(Integer idTicketStatus);
 }
