@@ -4,6 +4,7 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.TicketDao;
 import mx.bidg.model.CTicketsCategories;
 import mx.bidg.model.Ticket;
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.sql.JoinType;
@@ -40,8 +41,14 @@ public class TicketDaoImpl extends AbstractDao<Integer,Ticket> implements Ticket
         return createEntityCriteria()
                 .addOrder( Order.asc("ticketStatus.idTicketStatus"))
                 .createCriteria("incidence", JoinType.INNER_JOIN)
-                    .add(Restrictions.eq("idTicketCategory", category.getIdTicketCategory()))
+                .add(Restrictions.eq("idTicketCategory", category.getIdTicketCategory()))
                 .list();
+    }
+
+    @Override
+    public List<Ticket> findStatusOpen(Integer idTicketStatus) {
+        Criteria criteria = createEntityCriteria();
+        return criteria.add(Restrictions.eq("idTicketStatus",idTicketStatus)).list();
     }
 
     @Override
@@ -70,9 +77,9 @@ public class TicketDaoImpl extends AbstractDao<Integer,Ticket> implements Ticket
     }
 
     @Override
-    public List<Ticket> findByTicketStatusPriority(Integer idTicketStatus, Integer idPriority) {
-        return createEntityCriteria()
-                .add(Restrictions.eq("idPriority",idPriority))
+    public List<Ticket> findByTicketStatusPriority(Integer idPriority,Integer idTicketStatus) {
+        Criteria criteria = createEntityCriteria();
+        return criteria.add(Restrictions.eq("idPriority",idPriority))
                 .add(Restrictions.eq("idTicketStatus",idTicketStatus))
                 .list();
     }

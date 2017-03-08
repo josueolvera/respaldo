@@ -11,7 +11,8 @@ import java.util.List;
 public interface TicketDao extends InterfaceDao<Ticket> {
     List<Ticket> findByPriority(Integer idPriority);
     List<Ticket> findByTicketStatus(Integer idTicketStatus);
-    List<Ticket> findByTicketStatusPriority(Integer idTicketStatus, Integer idPriority);
+    List<Ticket> findByTicketStatusPriority(Integer idPriority,Integer idTicketStatus);
     Ticket findByFolio(String folio);
     List<Ticket> findAll(CTicketsCategories category);
+    List<Ticket>findStatusOpen(Integer idTicketStatus);
 }
