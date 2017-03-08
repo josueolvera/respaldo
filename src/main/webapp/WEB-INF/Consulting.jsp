@@ -250,10 +250,14 @@
                             + fechaInicial + "&endDate=" + fechaFinal)
                             .success(function (data) {
                                 this.reports = data;
-                                //this.searching = true;
                                 if (data.length > 0) {
                                     this.sumTotals();
                                     this.searching = true;
+                                }else {
+                                    showAlert("No se encontraron datos, intente otra convinacion", {type: 3});
+                                    setInterval(function () {
+                                        location.reload();
+                                    }, 2000);
                                 }
                             })
                             .error(function (data) {
