@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateConverter;
 import mx.bidg.utils.DateTimeConverter;
 import mx.bidg.utils.TimeConverter;
@@ -28,10 +29,10 @@ import javax.validation.constraints.Size;
 @DynamicUpdate
 @Table(name = "POLICY_TRUCKDRIVER")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
-
 public class PolicyTruckdriver implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -97,14 +98,10 @@ public class PolicyTruckdriver implements Serializable {
     @JsonView (JsonViews.Root.class)
     private Integer beneficiaryAge;
 
-    @Column(name = "ID_TYPE_SECURE", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private int idTypeSecure;
-
-    @JoinColumn(name = "ID_TYPE_SECURE", referencedColumnName = "ID_TYPE_SECURE")
-    @ManyToOne
-    @JsonView (JsonViews.Embedded.class)
-    private CTypeSecure cTypeSecure;
+    @Size(max = 5)
+    @Column(name = "DAYS")
+    @JsonView (JsonViews.Root.class)
+    private String days;
 
     @Basic(optional = false)
     @Column(name = "CREATION_DATE", updatable = false)
@@ -112,22 +109,36 @@ public class PolicyTruckdriver implements Serializable {
     @JsonView(JsonViews.Root.class)
     private LocalDateTime creationDate;
 
-    @Transient
-    @JsonView(JsonViews.Embedded.class)
-    private BigDecimal priceSale;
+    @Size(max = 30)
+    @Column(name = "PAGO_ID")
+    @JsonView (JsonViews.Root.class)
+    private String pagoId;
+
+    @Size(max = 30)
+    @Column(name = "AUTHORIZATION_NUMBER")
+    @JsonView(JsonViews.Root.class)
+    private String authorizationNumber;
+
+    @Column(name = "ID_INSURANCE_PREMIUM", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idInsurancePremium;
+
+    @JoinColumn(name = "ID_INSURANCE_PREMIUM", referencedColumnName = "ID_INSURANCE_PREMIUM")
+    @ManyToOne
+    @JsonView (JsonViews.Embedded.class)
+    private InsurancePremium insurancePremium;
 
     @Transient
     @JsonView(JsonViews.Embedded.class)
-    private BigDecimal cost;
+    private BigDecimal subtotal;
+
+    @Transient
+    @JsonView(JsonViews.Embedded.class)
+    private BigDecimal iva;
 
     @Transient
     @JsonView(JsonViews.Embedded.class)
     private BigDecimal total;
-
-    @Size(max = 30)
-    @Column(name = "AUTHORIZATION_NUMBER")
-    @JsonView (JsonViews.Root.class)
-    private String authorizationNumber;
 
     public PolicyTruckdriver() {
     }
@@ -215,22 +226,6 @@ public class PolicyTruckdriver implements Serializable {
         this.beneficiaryAge = beneficiaryAge;
     }
 
-    public int getIdTypeSecure() {
-        return idTypeSecure;
-    }
-
-    public void setIdTypeSecure(int idTypeSecure) {
-        this.idTypeSecure = idTypeSecure;
-    }
-
-    public CTypeSecure getcTypeSecure() {
-        return cTypeSecure;
-    }
-
-    public void setcTypeSecure(CTypeSecure cTypeSecure) {
-        this.cTypeSecure = cTypeSecure;
-    }
-
     public LocalTime gethContracting() {
         return hContracting;
     }
@@ -263,20 +258,60 @@ public class PolicyTruckdriver implements Serializable {
         this.creationDate = creationDate;
     }
 
-    public BigDecimal getPriceSale() {
-        return priceSale;
+    public String getPagoId() {
+        return pagoId;
     }
 
-    public void setPriceSale(BigDecimal priceSale) {
-        this.priceSale = priceSale;
+    public void setPagoId(String pagoId) {
+        this.pagoId = pagoId;
     }
 
-    public BigDecimal getCost() {
-        return cost;
+    public String getDays() {
+        return days;
     }
 
-    public void setCost(BigDecimal cost) {
-        this.cost = cost;
+    public void setDays(String days) {
+        this.days = days;
+    }
+
+    public Integer getIdInsurancePremium() {
+        return idInsurancePremium;
+    }
+
+    public void setIdInsurancePremium(Integer idInsurancePremium) {
+        this.idInsurancePremium = idInsurancePremium;
+    }
+
+    public InsurancePremium getInsurancePremium() {
+        return insurancePremium;
+    }
+
+    public void setInsurancePremium(InsurancePremium insurancePremium) {
+        this.insurancePremium = insurancePremium;
+    }
+
+    public String getAuthorizationNumber() {
+        return authorizationNumber;
+    }
+
+    public void setAuthorizationNumber(String authorizationNumber) {
+        this.authorizationNumber = authorizationNumber;
+    }
+
+    public BigDecimal getSubtotal() {
+        return subtotal;
+    }
+
+    public void setSubtotal(BigDecimal subtotal) {
+        this.subtotal = subtotal;
+    }
+
+    public BigDecimal getIva() {
+        return iva;
+    }
+
+    public void setIva(BigDecimal iva) {
+        this.iva = iva;
     }
 
     public BigDecimal getTotal() {
@@ -287,12 +322,18 @@ public class PolicyTruckdriver implements Serializable {
         this.total = total;
     }
 
-    public String getAuthorizationNumber() {
-        return authorizationNumber;
+    public DateFormatsPojo getStartDateFormats() {
+        if (dStartValidity == null) {
+            return null;
+        }
+        return new DateFormatsPojo(dStartValidity);
     }
 
-    public void setAuthorizationNumber(String authorizationNumber) {
-        this.authorizationNumber = authorizationNumber;
+    public DateFormatsPojo getEndDateFormats() {
+        if (dEndValidity == null) {
+            return null;
+        }
+        return new DateFormatsPojo(dEndValidity);
     }
 
     @Override
