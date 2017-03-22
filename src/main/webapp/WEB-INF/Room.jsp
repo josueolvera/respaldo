@@ -104,39 +104,69 @@
                     },
                     addReservation: function () {
                         var actual = new Date();
-                        var var3 = moment(actual).format('LT');
                         var var1 = moment(this.startHour, 'HH:mm a').format('LT');
                         var var2 = moment(this.endHour, 'HH:mm a').format('LT');
+                        var var3 = moment(actual).format('LT');
+                        var fecha = new Date(moment(this.selectedDay).format('YYYY-MM-DD'));
+                        var mesIn = fecha.getMonth()+1;
+                        var diaIn = fecha.getDate()+1;
+                        var fechaIngresa = fecha.getFullYear()+"-"+mesIn+"-"+diaIn;
+                        var fechaDeHoy = new Date();
+                        var mes;
+                        mes = fechaDeHoy.getMonth()+1;
+                        if (mes < 10){
+                            mes = "0"+mes;
+                        }
+                        if(mesIn<10){
+                            mesIn= "0"+mesIn;
+                        }
+                        var fechaC = fechaDeHoy.getFullYear()+"-"+mes+"-"+fechaDeHoy.getDate();
                         if (var1.length < 5) {
                             var1 = '0' + var1;
                         }
-
                         if (var2.length < 5) {
                             var2 = '0' + var2;
                         }
-                        console.log(var3);
                         console.log(var1);
                         console.log(var2);
-                        if(var1 >= var3) {
-
-                            var event = {};
-                            event.title = this.title,
+                        console.log(var3);
+                        if((fecha.getFullYear()== fechaDeHoy.getFullYear()) &&(mesIn== mes) && (diaIn== fechaDeHoy.getDate())){
+                            console.log("Fechas iguales");
+                            if(var1 >= var3){
+                                var event = {};
+                                event.title = this.title,
                                     event.start = this.selectedDay + 'T' + var1,
                                     event.end = this.selectedDay + 'T' + var2,
                                     event.idUser = this.user.idUser,
                                     event.room = this.room,
                                     this.$http.post(ROOT_URL + "/events?room=" + this.idRoom, JSON.stringify(event))
-                                            .success(function (event) {
-
-                                                this.clearEvenData();
-
-                                                this.getEventsByDay();
-                                                showAlert("Reservación Agendada");
-                                            }).error(function (data) {
+                                        .success(function (event) {
+                                            this.clearEvenData();
+                                            this.getEventsByDay();
+                                            showAlert("Reservación Agendada");
+                                        }).error(function (data) {
                                         showAlert(data.error.message, {type: 3});
                                     });
-                        }else {
-                            showAlert("Horario no aplicable", {type: 3});
+                            }else{
+                                showAlert("Horario no aplicable", {type: 3});
+                            }
+                        }
+                        else if((fecha.getFullYear()>= fechaDeHoy.getFullYear()) &&(mesIn >= mes) && (diaIn>= fechaDeHoy.getDate())){
+                            console.log("El dia a reservar es mayor al actual");
+                            var event = {};
+                            event.title = this.title,
+                                event.start = this.selectedDay + 'T' + var1,
+                                event.end = this.selectedDay + 'T' + var2,
+                                event.idUser = this.user.idUser,
+                                event.room = this.room,
+                                this.$http.post(ROOT_URL + "/events?room=" + this.idRoom, JSON.stringify(event))
+                                    .success(function (event) {
+                                        this.clearEvenData();
+                                        this.getEventsByDay();
+                                        showAlert("Reservación Agendada");
+                                    }).error(function (data) {
+                                    showAlert(data.error.message, {type: 3});
+                                });
                         }
                     },
                     clearEvenData: function () {
@@ -182,7 +212,7 @@
                                 var myDate = new Date();
 
                                 //How many days to add from today?
-                                var daysToAdd = -2;
+                                var daysToAdd = -1;
 
                                 myDate.setDate(myDate.getDate() + daysToAdd);
 
@@ -264,9 +294,9 @@
                         <form id="attachments-form" method="post" enctype="multipart/form-data"
                               v-on:submit.prevent="addReservation">
                             <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="refresh"><span
                                         aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="myModalLabel">Reservación para el día <b
+                                <h4 class="modal-title" id="myModalLabel" @click="refresh">Reservación para el día <b
                                         class="text-primary">{{selectedDay | date}}</b></h4>
                             </div>
                             <div class="modal-body">
