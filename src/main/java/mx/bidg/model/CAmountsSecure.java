@@ -38,7 +38,7 @@ public class CAmountsSecure implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idAmountsSecure;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "rode")
+    @Column(name = "RODE")
     @JsonView(JsonViews.Root.class)
     private BigDecimal rode;
 

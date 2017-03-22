@@ -3,8 +3,10 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CAmountsSecureDao;
 import mx.bidg.model.CAmountsSecure;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -14,7 +16,8 @@ import java.util.List;
 public class CAmountsSecureDaoImpl extends AbstractDao<Integer,CAmountsSecure> implements CAmountsSecureDao{
     @Override
     public CAmountsSecure save(CAmountsSecure entity) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        persist(entity);
+        return entity;
     }
 
     @Override
@@ -29,11 +32,20 @@ public class CAmountsSecureDaoImpl extends AbstractDao<Integer,CAmountsSecure> i
 
     @Override
     public CAmountsSecure update(CAmountsSecure entity) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        modify(entity);
+        return entity;
     }
 
     @Override
     public boolean delete(CAmountsSecure entity) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        remove(entity);
+        return true;
+    }
+
+    @Override
+    public CAmountsSecure findByRode(BigDecimal rode) {
+        return (CAmountsSecure) createEntityCriteria()
+                .add(Restrictions.eq("rode",rode))
+                .uniqueResult();
     }
 }

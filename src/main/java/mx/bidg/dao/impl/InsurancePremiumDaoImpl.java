@@ -3,6 +3,8 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.InsurancePremiumDao;
 import mx.bidg.model.InsurancePremium;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -38,5 +40,15 @@ public class InsurancePremiumDaoImpl extends AbstractDao<Integer,InsurancePremiu
     public boolean delete(InsurancePremium entity) {
         remove(entity);
         return true;
+    }
+
+    @Override
+    public InsurancePremium findByTypeSecureAndAmountSecure(Integer idTypeSecure, Integer idAmountsSecure) {
+        Criteria criteria = createEntityCriteria();
+
+        return (InsurancePremium) criteria
+                .add(Restrictions.eq("idAmountsSecure",idAmountsSecure))
+                .add(Restrictions.eq("idTypeSecure",idTypeSecure))
+                .uniqueResult();
     }
 }

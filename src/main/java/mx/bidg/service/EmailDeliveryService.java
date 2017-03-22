@@ -8,4 +8,5 @@ import mx.bidg.model.EmailTemplates;
  */
 public interface EmailDeliveryService {
     void deliverEmail(EmailTemplates emailTemplate);
+    void sendEmailwithAttachmentTruckDriver(EmailTemplates emailTemplate, String filePath);
 }

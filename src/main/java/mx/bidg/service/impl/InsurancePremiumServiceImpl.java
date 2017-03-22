@@ -42,4 +42,9 @@ public class InsurancePremiumServiceImpl implements InsurancePremiumService {
     public boolean delete(InsurancePremium insurancePremium) {
         return insurancePremiumDao.delete(insurancePremium);
     }
+
+    @Override
+    public InsurancePremium findByTypeSecureAndAmountSecure(Integer idTypeSecure, Integer idAmountsSecure) {
+        return insurancePremiumDao.findByTypeSecureAndAmountSecure(idTypeSecure,idAmountsSecure);
+    }
 }

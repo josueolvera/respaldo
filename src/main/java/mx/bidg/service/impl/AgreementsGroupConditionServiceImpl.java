@@ -247,7 +247,8 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
                                 commissionAmountGroup.setAmount(new BigDecimal(branchAcumulateAmount));
                                 int size = commissionAmountGroupList.size();
                                 BigDecimal value = new BigDecimal(size);
-                                BigDecimal tabulatorBranch = groupCondition.getTabulator().multiply(value);
+                                BigDecimal sumaTabulador =  groupCondition.getTabulator().add(new BigDecimal(0.02));
+                                BigDecimal tabulatorBranch = sumaTabulador.multiply(value);
                                 BigDecimal tabulator = tabulatorBranch.divide(new BigDecimal(100));
                                 commissionAmountGroup.setTabulator(tabulator);
                                 BigDecimal divisor = new BigDecimal(100);
@@ -498,41 +499,82 @@ public class AgreementsGroupConditionServiceImpl implements AgreementsGroupCondi
                     }
                 }
             }else if (groupCondition.getTypeOperation() == 10){
+                List<CommissionAmountGroup> commissionAmountGroupList = commissionAmountGroupDao.getBranchWithScopeGoalBetween(groupCondition);
+                Double branchsAcumulateGlobalAmount = 0.0;
+                BigDecimal tabulatorGlobal;
+                if (commissionAmountGroupList.size() >= 40){
+                    for(CommissionAmountGroup amount : commissionAmountGroupList){
+                        branchsAcumulateGlobalAmount += amount.getAmount().doubleValue();
+                    }
+                    BigDecimal defaultValue = new BigDecimal(40);
+                    tabulatorGlobal = groupCondition.getTabulator().multiply(defaultValue);
+                }else {
+                    for (CommissionAmountGroup amountGroup : commissionAmountGroupList){
+                        branchsAcumulateGlobalAmount += amountGroup.getAmount().doubleValue();
+                    }
+                    BigDecimal value = new BigDecimal(commissionAmountGroupList.size());
+                    tabulatorGlobal = groupCondition.getTabulator().multiply(value);
+                }
+
                 for (CommissionAmountGroup commissionAmountGroups : distributorList){
                     if (commissionAmountGroups.getTabulator() == null){
                         List<CommissionAmountGroup> branchsList = commissionAmountGroupDao.obtainBranchByDistributorAndCondition(commissionAmountGroups.getIdDistributor(), groupCondition);
-                        if (branchsList.size() >= 40){
+                        if (branchsList.size() >= 0){
                             Double branchsAcumulateAmount = 0.0;
                             for(CommissionAmountGroup amount : branchsList){
                                 branchsAcumulateAmount += amount.getAmount().doubleValue();
                             }
                             commissionAmountGroups.setAmount(new BigDecimal(branchsAcumulateAmount));
-                            BigDecimal defaultValue = new BigDecimal(40);
-                            BigDecimal tabulator = groupCondition.getTabulator().multiply(defaultValue);
+                            BigDecimal value = new BigDecimal(branchsList.size());
+                            BigDecimal valueGlobal = new BigDecimal(commissionAmountGroupList.size());
+                            BigDecimal percentageByDistributor = value.divide(valueGlobal, 2, BigDecimal.ROUND_HALF_UP);
+                            BigDecimal tabulator = percentageByDistributor.multiply(tabulatorGlobal);
                             commissionAmountGroups.setTabulator(tabulator);
                             BigDecimal divisor = new BigDecimal(100);
                             BigDecimal percentage = tabulator.divide(divisor);
-                            BigDecimal comission = percentage.multiply(new BigDecimal(branchsAcumulateAmount));
-                            commissionAmountGroups.setCommission(comission);
-                            commissionAmountGroupDao.update(commissionAmountGroups);
-                        }else {
-                            Double branchsAcumulateAmount = 0.0;
-                            for(CommissionAmountGroup amount : branchsList){
-                                branchsAcumulateAmount += amount.getAmount().doubleValue();
-                            }
-                            commissionAmountGroups.setAmount(new BigDecimal(branchsAcumulateAmount));
-                            int size = branchsList.size();
-                            BigDecimal value = new BigDecimal(size);
-                            BigDecimal tabulatorBranch = groupCondition.getTabulator().multiply(value);
-                            commissionAmountGroups.setTabulator(tabulatorBranch);
-                            BigDecimal divisor = new BigDecimal(100);
-                            BigDecimal percentage = tabulatorBranch.divide(divisor);
-                            BigDecimal commissionByBranch = percentage.multiply(new BigDecimal(branchsAcumulateAmount));
+                            BigDecimal commissionByBranch = percentage.multiply(new BigDecimal(branchsAcumulateGlobalAmount));
                             commissionAmountGroups.setCommission(commissionByBranch);
                             commissionAmountGroupDao.update(commissionAmountGroups);
                         }
                     }
                 }
+
+
+//                for (CommissionAmountGroup commissionAmountGroups : distributorList){
+//                    if (commissionAmountGroups.getTabulator() == null){
+//                        List<CommissionAmountGroup> branchsList = commissionAmountGroupDao.obtainBranchByDistributorAndCondition(commissionAmountGroups.getIdDistributor(), groupCondition);
+//                        if (branchsList.size() >= 40){
+//                            Double branchsAcumulateAmount = 0.0;
+//                            for(CommissionAmountGroup amount : branchsList){
+//                                branchsAcumulateAmount += amount.getAmount().doubleValue();
+//                            }
+//                            commissionAmountGroups.setAmount(new BigDecimal(branchsAcumulateAmount));
+//                            BigDecimal defaultValue = new BigDecimal(40);
+//                            BigDecimal tabulator = groupCondition.getTabulator().multiply(defaultValue);
+//                            commissionAmountGroups.setTabulator(tabulator);
+//                            BigDecimal divisor = new BigDecimal(100);
+//                            BigDecimal percentage = tabulator.divide(divisor);
+//                            BigDecimal comission = percentage.multiply(new BigDecimal(branchsAcumulateAmount));
+//                            commissionAmountGroups.setCommission(comission);
+//                            commissionAmountGroupDao.update(commissionAmountGroups);
+//                        }else {
+//                            Double branchsAcumulateAmount = 0.0;
+//                            for(CommissionAmountGroup amount : branchsList){
+//                                branchsAcumulateAmount += amount.getAmount().doubleValue();
+//                            }
+//                            commissionAmountGroups.setAmount(new BigDecimal(branchsAcumulateAmount));
+//                            int size = branchsList.size();
+//                            BigDecimal value = new BigDecimal(size);
+//                            BigDecimal tabulatorBranch = groupCondition.getTabulator().multiply(value);
+//                            commissionAmountGroups.setTabulator(tabulatorBranch);
+//                            BigDecimal divisor = new BigDecimal(100);
+//                            BigDecimal percentage = tabulatorBranch.divide(divisor);
+//                            BigDecimal commissionByBranch = percentage.multiply(new BigDecimal(branchsAcumulateAmount));
+//                            commissionAmountGroups.setCommission(commissionByBranch);
+//                            commissionAmountGroupDao.update(commissionAmountGroups);
+//                        }
+//                    }
+//                }
             }
         }
 

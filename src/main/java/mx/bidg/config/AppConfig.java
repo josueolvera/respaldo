@@ -21,6 +21,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.castor.CastorMarshaller;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -39,6 +40,7 @@ import java.io.IOException;
 @Configuration
 @EnableWebMvc
 @EnableAsync
+@EnableScheduling
 @ComponentScan(basePackages = "mx.bidg")
 public class AppConfig extends WebMvcConfigurerAdapter {
     

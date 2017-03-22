@@ -37,4 +37,5 @@ public interface CommissionAmountGroupDao extends InterfaceDao<CommissionAmountG
     CommissionAmountGroup getGroupNineTeenAndConditons(Integer idEmployee, AgreementsGroupCondition agreementsGroupCondition);
     List findSupervisorOnlyClaveSapeByBuildingReport();
     List<CommissionAmountGroup> findSupervisorByBuildingReport();
+    List<CommissionAmountGroup> getBranchWithScopeGoalBetween(AgreementsGroupCondition agreementsGroupCondition);
 }

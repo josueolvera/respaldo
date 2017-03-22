@@ -16,4 +16,10 @@ public interface PolicyTruckdriverService  {
     List<PolicyTruckdriver> findByDStartValidity(LocalDate startdate);
     List<PolicyTruckdriver>findAll();
     boolean delete (PolicyTruckdriver policyTruckdriver);
+    void readCsvPolicya(String fileName);
+    List<PolicyTruckdriver> findDStartValidityBetween(LocalDate starDate, LocalDate finalDate);
+    List<String> findNoAutorizationByDStartValidityBetween(LocalDate starDate, LocalDate finalDate);
+    PolicyTruckdriver findByFolio(String folio);
+    List findFoliosCommissionIvaByDStartValidity(LocalDate startDate, LocalDate endDate);
+    List<String> getNoAutorizationByDStartValidityBetween(LocalDate starDate, LocalDate finalDate);
     }

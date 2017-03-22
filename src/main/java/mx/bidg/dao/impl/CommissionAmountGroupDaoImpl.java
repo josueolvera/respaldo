@@ -313,4 +313,13 @@ public class CommissionAmountGroupDaoImpl extends AbstractDao<Integer, Commissio
                 .add(Restrictions.eq("idAg",30))
                 .list();
     }
+
+    @Override
+    public List<CommissionAmountGroup> getBranchWithScopeGoalBetween(AgreementsGroupCondition agreementsGroupCondition) {
+        return createEntityCriteria().add(Restrictions.ne("idAg",18)).add(Restrictions.ne("idAg",21))
+                .add(Restrictions.isNotNull("idBranch"))
+                .add(Restrictions.between("scope",agreementsGroupCondition.getAmountMin(),
+                        agreementsGroupCondition.getAmountMax()))
+                .list();
+    }
 }

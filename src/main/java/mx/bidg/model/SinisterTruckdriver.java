@@ -8,12 +8,14 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateConverter;
 import mx.bidg.utils.DateTimeConverter;
 import mx.bidg.utils.TimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -33,13 +35,14 @@ import javax.validation.constraints.Size;
 public class SinisterTruckdriver implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_SINISTER")
     @JsonView(JsonViews.Root.class)
     private Integer idSinister;
 
+    @Size(max = 15)
     @Column(name = "NUM_LICENSE_PLATE")
     @JsonView(JsonViews.Root.class)
     private String numLicensePlate;
@@ -59,32 +62,6 @@ public class SinisterTruckdriver implements Serializable {
     private LocalDate dEndValidity;
 
     @Basic(optional = false)
-    @NotNull
-    @Column(name = "D_SINISTER")
-    @JsonView(JsonViews.Root.class)
-    @Convert(converter = DateConverter.class)
-    private LocalDate dSinister;
-
-    @Column(name = "H_SINISTER")
-    @Convert(converter = TimeConverter.class)
-    @JsonView(JsonViews.Root.class)
-    private LocalTime hSinister;
-
-    @Size(max = 30)
-    @Column(name = "LOCATION_SINISTER")
-    @JsonView(JsonViews.Root.class)
-    private String locationSinister;
-
-    @Column(name = "ID_TYPE_ASSISTANCE", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private int idTypeAssistance;
-
-    @JoinColumn(name = "ID_TYPE_ASSISTANCE", referencedColumnName = "ID_TYPE_ASSISTANCE")
-    @ManyToOne
-    @JsonView(JsonViews.Embedded.class)
-    private CTypeAssistance cTypeAssistance;
-
-    @Basic(optional = false)
     @Column(name = "CREATION_DATE")
     @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
@@ -95,6 +72,24 @@ public class SinisterTruckdriver implements Serializable {
     @JsonView (JsonViews.Root.class)
     private String authorizationNumber;
 
+    @Size(max = 15)
+    @Column(name = "NUM_FOLIO")
+    @JsonView (JsonViews.Root.class)
+    private String numFolio;
+
+    @Column(name = "AMOUNT_OF_COVERAGE")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal amountOfCoverage;
+
+    @Column(name = "ID_INSURANCE_PREMIUM", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idInsurancePremium;
+
+    @JoinColumn(name = "ID_INSURANCE_PREMIUM", referencedColumnName = "ID_INSURANCE_PREMIUM")
+    @ManyToOne(optional = true)
+    @JsonView (JsonViews.Embedded.class)
+    private InsurancePremium insurancePremium;
+
 
     public SinisterTruckdriver() {
     }
@@ -103,11 +98,10 @@ public class SinisterTruckdriver implements Serializable {
         this.idSinister = idSinister;
     }
 
-    public SinisterTruckdriver(Integer idSinister, LocalDate dStartValidity, LocalDate dEndValidity, LocalDate dSinister) {
+    public SinisterTruckdriver(Integer idSinister, LocalDate dStartValidity, LocalDate dEndValidity) {
         this.idSinister = idSinister;
         this.dStartValidity = dStartValidity;
         this.dEndValidity = dEndValidity;
-        this.dSinister = dSinister;
     }
 
     public Integer getIdSinister() {
@@ -126,30 +120,6 @@ public class SinisterTruckdriver implements Serializable {
         this.numLicensePlate = numLicensePlate;
     }
 
-    public String getLocationSinister() {
-        return locationSinister;
-    }
-
-    public void setLocationSinister(String locationSinister) {
-        this.locationSinister = locationSinister;
-    }
-
-    public int getIdTypeAssistance() {
-        return idTypeAssistance;
-    }
-
-    public void setIdTypeAssistance(int idTypeAssistance) {
-        this.idTypeAssistance = idTypeAssistance;
-    }
-
-    public CTypeAssistance getcTypeAssistance() {
-        return cTypeAssistance;
-    }
-
-    public void setcTypeAssistance(CTypeAssistance cTypeAssistance) {
-        this.cTypeAssistance = cTypeAssistance;
-    }
-
     public LocalDate getdStartValidity() {
         return dStartValidity;
     }
@@ -166,22 +136,6 @@ public class SinisterTruckdriver implements Serializable {
         this.dEndValidity = dEndValidity;
     }
 
-    public LocalDate getdSinister() {
-        return dSinister;
-    }
-
-    public void setdSinister(LocalDate dSinister) {
-        this.dSinister = dSinister;
-    }
-
-    public LocalTime gethSinister() {
-        return hSinister;
-    }
-
-    public void sethSinister(LocalTime hSinister) {
-        this.hSinister = hSinister;
-    }
-
     public LocalDateTime getCreationDate() {
         return creationDate;
     }
@@ -194,9 +148,56 @@ public class SinisterTruckdriver implements Serializable {
         return authorizationNumber;
     }
 
+    public String getNumFolio() {
+        return numFolio;
+    }
+
+    public void setNumFolio(String numFolio) {
+        this.numFolio = numFolio;
+    }
+
     public void setAuthorizationNumber(String authorizationNumber) {
         this.authorizationNumber = authorizationNumber;
     }
+
+    public BigDecimal getAmountOfCoverage() {
+        return amountOfCoverage;
+    }
+
+    public void setAmountOfCoverage(BigDecimal amountOfCoverage) {
+        this.amountOfCoverage = amountOfCoverage;
+    }
+
+    public Integer getIdInsurancePremium() {
+        return idInsurancePremium;
+    }
+
+    public void setIdInsurancePremium(Integer idInsurancePremium) {
+        this.idInsurancePremium = idInsurancePremium;
+    }
+
+    public InsurancePremium getInsurancePremium() {
+        return insurancePremium;
+    }
+
+    public void setInsurancePremium(InsurancePremium insurancePremium) {
+        this.insurancePremium = insurancePremium;
+    }
+
+    public DateFormatsPojo getStartDateFormats() {
+        if (dStartValidity == null) {
+            return null;
+        }
+        return new DateFormatsPojo(dStartValidity);
+    }
+
+    public DateFormatsPojo getEndDateFormats() {
+        if (dEndValidity == null) {
+            return null;
+        }
+        return new DateFormatsPojo(dEndValidity);
+    }
+
 
     @Override
     public int hashCode() {

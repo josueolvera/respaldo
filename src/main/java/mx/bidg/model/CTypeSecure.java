@@ -49,10 +49,6 @@ public class CTypeSecure implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String typeSecure;
 
-    @OneToMany(mappedBy = "idTypeSecure")
-    @JsonView(JsonViews.Embedded.class)
-    private List<PolicyTruckdriver> policyTruckdriverList;
-
     public CTypeSecure() {
     }
 
@@ -82,15 +78,6 @@ public class CTypeSecure implements Serializable {
 
     public void setTypeSecure(String typeSecure) {
         this.typeSecure = typeSecure;
-    }
-
-    @XmlTransient
-    public List<PolicyTruckdriver> getPolicyTruckdriverList() {
-        return policyTruckdriverList;
-    }
-
-    public void setPolicyTruckdriverList(List<PolicyTruckdriver> policyTruckdriverList) {
-        this.policyTruckdriverList = policyTruckdriverList;
     }
 
     @Override

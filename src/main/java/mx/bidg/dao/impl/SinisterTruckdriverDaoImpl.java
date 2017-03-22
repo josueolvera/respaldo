@@ -4,9 +4,13 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.SinisterTruckdriverDao;
 import mx.bidg.model.SinisterTruckdriver;
 import org.apache.xmlbeans.impl.xb.xsdschema.RestrictionDocument;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -49,5 +53,40 @@ public class SinisterTruckdriverDaoImpl extends AbstractDao<Integer,SinisterTruc
         return createEntityCriteria()
                 .add(Restrictions.eq("creationDate", creationDate))
                 .list();
+    }
+
+    @Override
+    public List<String> findNoAutizationByDStartValidity(LocalDate startDate, LocalDate endDate) {
+        Criteria criteria = createEntityCriteria();
+
+        return criteria
+                .setProjection(Projections.property("numFolio"))
+                .add(Restrictions.between("dStartValidity",startDate, endDate))
+                .list();
+    }
+
+    @Override
+    public List<SinisterTruckdriver> findByDStartValidity(LocalDate startDate, LocalDate endDate) {
+        Criteria criteria = createEntityCriteria();
+
+        return criteria
+                .add(Restrictions.between("dStartValidity",startDate, endDate))
+                .list();
+    }
+
+    @Override
+    public List getFoliosComisionIvaByDStartValidity(LocalDate startDate, LocalDate endDate) {
+        Criteria criteria = createEntityCriteria();
+        ProjectionList properties = Projections.projectionList();
+
+        properties.add(Projections.property("numFolio"));
+        properties.add(Projections.property("ip.commissionInterpro"));
+        properties.add(Projections.property("ip.ivaInterpro"));
+
+        criteria.createAlias("insurancePremium", "ip");
+        criteria.setProjection(properties);
+        criteria.add(Restrictions.between("dStartValidity",startDate, endDate));
+
+        return criteria.list();
     }
 }

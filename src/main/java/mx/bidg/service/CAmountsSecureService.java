@@ -2,6 +2,7 @@ package mx.bidg.service;
 
 import mx.bidg.model.CAmountsSecure;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -10,4 +11,5 @@ import java.util.List;
 public interface CAmountsSecureService {
     List<CAmountsSecure>findAll();
     CAmountsSecure findById(Integer id);
+    CAmountsSecure  findByRode(BigDecimal rode);
 }
