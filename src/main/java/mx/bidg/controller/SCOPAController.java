@@ -18,4 +18,18 @@ public class SCOPAController {
         model.setViewName("truckDriver");
         return model;
     }
+
+    @RequestMapping(value = "/sinister-drivers", method = RequestMethod.GET,produces = "text/html;charset=UTF-8")
+    public ModelAndView sinisterTruckdriver(){
+        ModelAndView model= new ModelAndView();
+        model.setViewName("sinisterTruckDriver");
+        return model;
+    }
+
+    @RequestMapping(value = "/aterna-drivers", method = RequestMethod.GET,produces = "text/html;charset=UTF-8")
+    public ModelAndView aternaTruckdriver(){
+        ModelAndView model= new ModelAndView();
+        model.setViewName("aternaDrivers");
+        return model;
+    }
 }
