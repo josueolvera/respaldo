@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -26,5 +27,10 @@ public class CAmountsSecureServiceImpl implements CAmountsSecureService{
     @Override
     public CAmountsSecure findById(Integer id) {
         return cAmountsSecureDao.findById(id);
+    }
+
+    @Override
+    public CAmountsSecure findByRode(BigDecimal rode) {
+        return cAmountsSecureDao.findByRode(rode);
     }
 }
