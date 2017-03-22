@@ -42,13 +42,21 @@ public class InsurancePremium implements Serializable {
     private Integer idTypeSecure;
 
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "COMMISSION")
+    @Column(name = "COMMISSION_ALTERNA")
     @JsonView(JsonViews.Root.class)
-    private BigDecimal commission;
+    private BigDecimal commissionAlterna;
 
-    @Column(name = "COMMISSION_ROAD_AID")
+    @Column(name = "COMMISSION_INTERPRO")
     @JsonView(JsonViews.Root.class)
-    private BigDecimal commissionRoadAid;
+    private BigDecimal commissionInterpro;
+
+    @Column(name = "IVA_ALTERNA")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal ivaAlterna;
+
+    @Column(name = "IVA_INTERPRO")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal ivaInterpro;
 
     @JoinColumn(name = "ID_AMOUNTS_SECURE", referencedColumnName = "ID_AMOUNTS_SECURE")
     @ManyToOne(optional = false)
@@ -91,22 +99,6 @@ public class InsurancePremium implements Serializable {
         this.idTypeSecure = idTypeSecure;
     }
 
-    public BigDecimal getCommission() {
-        return commission;
-    }
-
-    public void setCommission(BigDecimal commission) {
-        this.commission = commission;
-    }
-
-    public BigDecimal getCommissionRoadAid() {
-        return commissionRoadAid;
-    }
-
-    public void setCommissionRoadAid(BigDecimal commissionRoadAid) {
-        this.commissionRoadAid = commissionRoadAid;
-    }
-
     public CAmountsSecure getAmountsSecure() {
         return amountsSecure;
     }
@@ -121,6 +113,38 @@ public class InsurancePremium implements Serializable {
 
     public void setTypeSecure(CTypeSecure typeSecure) {
         this.typeSecure = typeSecure;
+    }
+
+    public BigDecimal getCommissionAlterna() {
+        return commissionAlterna;
+    }
+
+    public void setCommissionAlterna(BigDecimal commissionAlterna) {
+        this.commissionAlterna = commissionAlterna;
+    }
+
+    public BigDecimal getCommissionInterpro() {
+        return commissionInterpro;
+    }
+
+    public void setCommissionInterpro(BigDecimal commissionInterpro) {
+        this.commissionInterpro = commissionInterpro;
+    }
+
+    public BigDecimal getIvaAlterna() {
+        return ivaAlterna;
+    }
+
+    public void setIvaAlterna(BigDecimal ivaAlterna) {
+        this.ivaAlterna = ivaAlterna;
+    }
+
+    public BigDecimal getIvaInterpro() {
+        return ivaInterpro;
+    }
+
+    public void setIvaInterpro(BigDecimal ivaInterpro) {
+        this.ivaInterpro = ivaInterpro;
     }
 
     @Override
