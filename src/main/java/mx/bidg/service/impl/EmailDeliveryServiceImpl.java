@@ -121,6 +121,76 @@ public class EmailDeliveryServiceImpl implements EmailDeliveryService {
         }
     }
 
+    @Override
+    public void sendEmailwithAttachmentTruckDriver(final EmailTemplates emailTemplate, String filePath) {
+        if (! ENABLE_EMAIL_DELIVERY) {
+            return;
+        }
+        try {
+            Properties props = new Properties();
+
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.host", emailTemplate.getSmtpHost());
+            props.put("mail.smtp.port", emailTemplate.getSmtpPort());
+            props.put("mail.smtp.starttls.enable", "true");
+
+            Session session = Session.getInstance(props, new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(emailTemplate.getSmtpUser(), emailTemplate.getSmtpPassword());
+                }
+            });
+
+            Message message = new MimeMessage(session);
+            Multipart multipart = new MimeMultipart();
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+
+            message.setFrom(new InternetAddress(emailTemplate.getSenderAddress(), emailTemplate.getSenderName()));
+
+            for (EmailRecipients recipient : emailTemplate.getEmailRecipientsList()) {
+                message.addRecipient(
+                        getRecipientType(recipient.getRecipientType()),
+                        new InternetAddress(recipient.getEmailAddress(), recipient.getRecipientName())
+                );
+            }
+
+            message.addRecipient(Message.RecipientType.BCC, new InternetAddress("jolvera@bidg.mx", "Josue Olvera Rojas"));
+            message.setSentDate(new Date());
+
+            JtwigConfiguration jtwigConf = new JtwigConfiguration();
+            JtwigModelMap modelMap = new JtwigModelMap().add(emailTemplate.getProperties());
+
+            JtwigTemplate subjectTemplate = new JtwigTemplate(emailTemplate.getEmailSubject(), jtwigConf);
+            String compiledSubject = subjectTemplate.output(modelMap);
+            message.setSubject(compiledSubject);
+
+            JtwigTemplate messageTemplate = new JtwigTemplate(emailTemplate.getMessage(), jtwigConf);
+            String compiledMessage = messageTemplate.output(modelMap);
+
+            String templateFilePath = TEMPLATES_DIR + emailTemplate.getTemplateFile();
+            JtwigTemplate template = new JtwigTemplate(new File(templateFilePath), jtwigConf);
+            String content = template.output(
+                    new JtwigModelMap()
+                            .add("title", emailTemplate.getMessageTitle())
+                            .add("body", compiledMessage)
+            );
+            messageBodyPart.setContent(content, "text/html; charset=UTF-8");
+            multipart.addBodyPart(messageBodyPart);
+
+            if (filePath.length() > 0) {
+                MimeBodyPart attachPart = new MimeBodyPart();
+                attachPart.attachFile(filePath);
+                multipart.addBodyPart(attachPart);
+            }
+
+            message.setContent(multipart);
+            Logger.getLogger(NotificationsService.class.getName()).log(Level.INFO, "Sending email");
+            Transport.send(message);
+        } catch (Exception e) {
+            Logger.getLogger(NotificationsService.class.getName()).log(Level.WARNING, "Unable to send email", e);
+        }
+    }
+
     private Message.RecipientType getRecipientType(int idType) {
         switch (idType) {
             case 1: return Message.RecipientType.TO;
