@@ -3,6 +3,8 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CTypeSecureDao;
 import mx.bidg.model.CTypeSecure;
+import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,5 +41,10 @@ public class CTypeSecureDaoImpl extends AbstractDao<Integer, CTypeSecure> implem
     public boolean delete(CTypeSecure entity) {
         remove(entity);
         return true;
+    }
+
+    @Override
+    public CTypeSecure findByName(String name) {
+        return (CTypeSecure) createEntityCriteria().add(Restrictions.ilike("typeSecure",name,MatchMode.ANYWHERE)).uniqueResult();
     }
 }
