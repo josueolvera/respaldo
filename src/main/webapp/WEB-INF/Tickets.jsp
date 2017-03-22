@@ -257,12 +257,12 @@
                     <div class="modal-content modal-lg">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title" id="">Catalogo de solicitudes de diseño</h4>
+                            <h4 class="modal-title" id="">Catalogo de solicitudes de soporte</h4>
                         </div>
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-xs-12 text-center">
-                                    <img :src="rutaimagen + '/assets/img/imagendiseno.png'"/>
+                                    <img :src="rutaimagen + '/assets/img/catalogoSolicitudes.png'"/>
                                 </div>
                             </div>
                         </div>
