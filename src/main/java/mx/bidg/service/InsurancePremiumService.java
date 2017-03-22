@@ -13,4 +13,5 @@ public interface InsurancePremiumService {
     InsurancePremium save(InsurancePremium insurancePremium);
     InsurancePremium update(InsurancePremium insurancePremium);
     boolean delete(InsurancePremium insurancePremium);
+    InsurancePremium findByTypeSecureAndAmountSecure (Integer idTypeSecure, Integer idAmountsSecure);
 }
