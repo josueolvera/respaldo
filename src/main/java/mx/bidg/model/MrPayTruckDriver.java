@@ -9,12 +9,15 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
+import mx.bidg.utils.DateConverter;
 import mx.bidg.utils.DateTimeConverter;
 import mx.bidg.utils.TimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
@@ -33,6 +36,7 @@ import javax.validation.constraints.Size;
 public class MrPayTruckDriver implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -40,38 +44,53 @@ public class MrPayTruckDriver implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idPayTruckDriver;
 
-    @Size(max = 30)
-    @Column(name = "AUTHORIZATION_NUMBER")
+    @Size(max = 100)
+    @Column(name = "PAYMENT_TYPE")
     @JsonView(JsonViews.Root.class)
-    private String authorizationNumber;
-
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "AMMOUNT_COST")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal ammountCost;
-
-    @Column(name = "COMMISSION_TRANSACTION")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal commissionTransaction;
-
-    @Column(name = "ID_METHOD_PAY", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idMethodPay;
+    private String paymentType;
 
     @Column(name = "PAYMENT_DATE")
     @JsonView(JsonViews.Root.class)
-    @Convert(converter = DateTimeConverter.class)
-    private LocalDateTime paymentDate;
+    @Convert(converter = DateConverter.class)
+    private LocalDate paymentDate;
 
     @Column(name = "PAYMENT_HOUR")
     @JsonView(JsonViews.Root.class)
     @Convert(converter = TimeConverter.class)
     private LocalTime paymentHour;
 
-    @JoinColumn(name = "ID_METHOD_PAY", referencedColumnName = "ID_METHOD_PAY")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private CTypeMethodPay typeMethodPay;
+    @Size(max = 100)
+    @Column(name = "REFERENCE")
+    @JsonView(JsonViews.Root.class)
+    private String refrence;
+
+    @Size(max = 100)
+    @Column(name = "DETAILS")
+    @JsonView(JsonViews.Root.class)
+    private String details;
+
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "AMOUNT_COST")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal amountCost;
+
+    @Column(name = "COMMISSION_TRANSACTION")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal commissionTransaction;
+
+    @Column(name = "IVA")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal Iva;
+
+    @Size(max = 30)
+    @Column(name = "AUTHORIZATION_NUMBER")
+    @JsonView(JsonViews.Root.class)
+    private String authorizationNumber;
+
+    @Column(name = "CREATION_DATE")
+    @Convert(converter = DateTimeConverter.class)
+    @JsonView(JsonViews.Root.class)
+    private LocalDateTime creationDate;
 
     public MrPayTruckDriver() {
     }
@@ -80,7 +99,7 @@ public class MrPayTruckDriver implements Serializable {
         this.idPayTruckDriver = idPayTruckDriver;
     }
 
-    public MrPayTruckDriver(Integer idPayTruckDriver, LocalDateTime paymentDate, LocalTime paymentHour) {
+    public MrPayTruckDriver(Integer idPayTruckDriver, LocalDate paymentDate, LocalTime paymentHour) {
         this.idPayTruckDriver = idPayTruckDriver;
         this.paymentDate = paymentDate;
         this.paymentHour = paymentHour;
@@ -102,12 +121,12 @@ public class MrPayTruckDriver implements Serializable {
         this.authorizationNumber = authorizationNumber;
     }
 
-    public BigDecimal getAmmountCost() {
-        return ammountCost;
+    public BigDecimal getAmountCost() {
+        return amountCost;
     }
 
-    public void setAmmountCost(BigDecimal ammountCost) {
-        this.ammountCost = ammountCost;
+    public void setAmountCost(BigDecimal ammountCost) {
+        this.amountCost = ammountCost;
     }
 
     public BigDecimal getCommissionTransaction() {
@@ -118,19 +137,11 @@ public class MrPayTruckDriver implements Serializable {
         this.commissionTransaction = commissionTransaction;
     }
 
-    public Integer getIdMethodPay() {
-        return idMethodPay;
-    }
-
-    public void setIdMethodPay(Integer idMethodPay) {
-        this.idMethodPay = idMethodPay;
-    }
-
-    public LocalDateTime getPaymentDate() {
+    public LocalDate getPaymentDate() {
         return paymentDate;
     }
 
-    public void setPaymentDate(LocalDateTime paymentDate) {
+    public void setPaymentDate(LocalDate paymentDate) {
         this.paymentDate = paymentDate;
     }
 
@@ -142,12 +153,58 @@ public class MrPayTruckDriver implements Serializable {
         this.paymentHour = paymentHour;
     }
 
-    public CTypeMethodPay getTypeMethodPay() {
-        return typeMethodPay;
+    public LocalDateTime getCreationDate() {
+        return creationDate;
     }
 
-    public void setTypeMethodPay(CTypeMethodPay typeMethodPay) {
-        this.typeMethodPay = typeMethodPay;
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(String paymentType) {
+        this.paymentType = paymentType;
+    }
+
+    public String getRefrence() {
+        return refrence;
+    }
+
+    public void setRefrence(String refrence) {
+        this.refrence = refrence;
+    }
+
+    public String getDetails() {
+        return details;
+    }
+
+    public void setDetails(String details) {
+        this.details = details;
+    }
+
+    public BigDecimal getIva() {
+        return Iva;
+    }
+
+    public void setIva(BigDecimal iva) {
+        Iva = iva;
+    }
+
+    public DateFormatsPojo getPaymentDateFormats() {
+        if (paymentDate == null) {
+            return null;
+        }
+        return new DateFormatsPojo(paymentDate);
+    }
+
+    public DateFormatsPojo getPaymentHourFormats() {
+        if (paymentHour == null) {
+            return null;
+        }
+        return new DateFormatsPojo(paymentHour);
     }
 
     @Override
