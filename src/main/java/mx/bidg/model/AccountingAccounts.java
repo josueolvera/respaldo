@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -23,28 +25,9 @@ public class AccountingAccounts implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_ACCOUNTING_ACCOUNT")
     @JsonView(JsonViews.Root.class)
     private Integer idAccountingAccount;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "FIRST_LEVEL")
-    @JsonView(JsonViews.Root.class)
-    private int firstLevel;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "SECOND_LEVEL")
-    @JsonView(JsonViews.Root.class)
-    private int secondLevel;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "THIRD_LEVEL")
-    @JsonView(JsonViews.Root.class)
-    private int thirdLevel;
 
     @Column(name = "ID_ACCOUNTING_TYPE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -58,18 +41,34 @@ public class AccountingAccounts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idAccountingCategory;
 
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "AVAILABLE")
+    @Column(name = "ID_BUDGET_CATEGORY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private boolean available;
+    private Integer idBudgetCategory;
+
+    @Column(name = "ID_BUDGET_SUBCATEGORY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idBudgetSubcategory;
+
+    @Column(name = "ID_SUB_SUBCATEGORIES", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private int idSubSubcategoies;
 
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 255)
-    @Column(name = "DESCRIPTION")
+    @Column(name = "CREATION_DATE")
+    @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
-    private String description;
+    private LocalDateTime creationDate;
+
+    @Size(max = 30)
+    @Column(name = "USERNAME")
+    @JsonView(JsonViews.Root.class)
+    private String username;
+
+    @Size(max = 45)
+    @Column(name = "ACRONYMS")
+    @JsonView(JsonViews.Root.class)
+    private String acronyms;
 
     @JoinColumn(name = "ID_ACCOUNTING_CATEGORY", referencedColumnName = "ID_ACCOUNTING_CATEGORY")
     @ManyToOne
@@ -96,37 +95,23 @@ public class AccountingAccounts implements Serializable {
     @JsonView({JsonViews.Embedded.class})
     private CBudgetSubcategories budgetSubcategory;
 
-    @Column(name = "ID_BUDGET_CATEGORY", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idBudgetCategory;
+    @JoinColumn(name = "ID_SUB_SUBCATEGORIES", referencedColumnName = "ID_SUB_SUBCATEGORIES")
+    @ManyToOne
+    @JsonView({JsonViews.Embedded.class})
+    private CBudgetSubSubcategories cBudgetSubSubcategories;
 
-    @Column(name = "ID_BUDGET_SUBCATEGORY", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idBudgetSubcategory;
-    
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "IS_OF_REQUEST")
-    @JsonView(JsonViews.Root.class)
-    private Integer isOfRequest;
-    
     public AccountingAccounts() {
     }
 
-    public AccountingAccounts(Integer idAccountingAccount) {
-        this.idAccountingAccount = idAccountingAccount;
-    }
+    public AccountingAccounts(Integer idAccountingAccount){this.idAccountingAccount=idAccountingAccount;}
 
-    public AccountingAccounts(Integer idAccountingAccount, int firstLevel, int secondLevel, int thirdLevel, int idAccountingType, int idAccountingNature, int idAccountingCategory, boolean available, String description) {
-        this.idAccountingAccount = idAccountingAccount;
-        this.firstLevel = firstLevel;
-        this.secondLevel = secondLevel;
-        this.thirdLevel = thirdLevel;
+    public AccountingAccounts(int idAccountingType, int idAccountingNature, int idAccountingCategory, Integer idBudgetCategory, Integer idBudgetSubcategory, int idSubSubcategoies) {
         this.idAccountingType = idAccountingType;
         this.idAccountingNature = idAccountingNature;
         this.idAccountingCategory = idAccountingCategory;
-        this.available = available;
-        this.description = description;
+        this.idBudgetCategory = idBudgetCategory;
+        this.idBudgetSubcategory = idBudgetSubcategory;
+        this.idSubSubcategoies = idSubSubcategoies;
     }
 
     public Integer getIdAccountingAccount() {
@@ -135,30 +120,6 @@ public class AccountingAccounts implements Serializable {
 
     public void setIdAccountingAccount(Integer idAccountingAccount) {
         this.idAccountingAccount = idAccountingAccount;
-    }
-
-    public int getFirstLevel() {
-        return firstLevel;
-    }
-
-    public void setFirstLevel(int firstLevel) {
-        this.firstLevel = firstLevel;
-    }
-
-    public int getSecondLevel() {
-        return secondLevel;
-    }
-
-    public void setSecondLevel(int secondLevel) {
-        this.secondLevel = secondLevel;
-    }
-
-    public int getThirdLevel() {
-        return thirdLevel;
-    }
-
-    public void setThirdLevel(int thirdLevel) {
-        this.thirdLevel = thirdLevel;
     }
 
     public int getIdAccountingType() {
@@ -185,20 +146,44 @@ public class AccountingAccounts implements Serializable {
         this.idAccountingCategory = idAccountingCategory;
     }
 
-    public boolean isAvailable() {
-        return available;
+    public Integer getIdBudgetCategory() {
+        return idBudgetCategory;
     }
 
-    public void setAvailable(boolean available) {
-        this.available = available;
+    public void setIdBudgetCategory(Integer idBudgetCategory) {
+        this.idBudgetCategory = idBudgetCategory;
     }
 
-    public String getDescription() {
-        return description;
+    public Integer getIdBudgetSubcategory() {
+        return idBudgetSubcategory;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setIdBudgetSubcategory(Integer idBudgetSubcategory) {
+        this.idBudgetSubcategory = idBudgetSubcategory;
+    }
+
+    public int getIdSubSubcategoies() {
+        return idSubSubcategoies;
+    }
+
+    public void setIdSubSubcategoies(int idSubSubcategoies) {
+        this.idSubSubcategoies = idSubSubcategoies;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public CAccountingAccountCategory getcAccountingAccountCategory() {
@@ -241,30 +226,21 @@ public class AccountingAccounts implements Serializable {
         this.budgetSubcategory = budgetSubcategory;
     }
 
-    public Integer getIdBudgetCategory() {
-        return idBudgetCategory;
+    public CBudgetSubSubcategories getcBudgetSubSubcategories() {
+        return cBudgetSubSubcategories;
     }
 
-    public void setIdBudgetCategory(Integer idBudgetCategory) {
-        this.idBudgetCategory = idBudgetCategory;
+    public void setcBudgetSubSubcategories(CBudgetSubSubcategories cBudgetSubSubcategories) {
+        this.cBudgetSubSubcategories = cBudgetSubSubcategories;
     }
 
-    public Integer getIdBudgetSubcategory() {
-        return idBudgetSubcategory;
+    public String getAcronyms() {
+        return acronyms;
     }
 
-    public void setIdBudgetSubcategory(Integer idBudgetSubcategory) {
-        this.idBudgetSubcategory = idBudgetSubcategory;
+    public void setAcronyms(String acronyms) {
+        this.acronyms = acronyms;
     }
-    
-        public Integer getIsOfRequest() {
-        return isOfRequest;
-    }
-
-    public void setIsOfRequest(Integer isOfRequest) {
-        this.isOfRequest = isOfRequest;
-    }
-    
 
     @Override
     public int hashCode() {
@@ -272,7 +248,7 @@ public class AccountingAccounts implements Serializable {
         hash += (idAccountingAccount != null ? idAccountingAccount.hashCode() : 0);
         return hash;
     }
-    
+
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set

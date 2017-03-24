@@ -23,4 +23,9 @@ public class CAccountingAccountNatureServiceImpl implements CAccountingAccountNa
     public List<CAccountingAccountNature> findAll() {
         return cAccountingAccountNatureDao.findAll();
     }
+
+    @Override
+    public CAccountingAccountNature findById(Integer idCAccountingAccountNature) {
+        return cAccountingAccountNatureDao.findById(idCAccountingAccountNature);
+    }
 }

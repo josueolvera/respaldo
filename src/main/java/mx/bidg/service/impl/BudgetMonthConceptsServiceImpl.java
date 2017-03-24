@@ -6,16 +6,14 @@
 package mx.bidg.service.impl;
 
 import mx.bidg.model.*;
-import mx.bidg.service.CBudgetConceptsService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import mx.bidg.dao.BudgetYearConceptDao;
+import mx.bidg.dao.RealBudgetSpendingDao;
 import mx.bidg.dao.BudgetMonthConceptsDao;
 import mx.bidg.dao.BudgetsDao;
-import mx.bidg.exceptions.ValidationException;
 import mx.bidg.service.BudgetMonthConceptsService;
 import mx.bidg.service.DwEnterprisesService;
 import mx.bidg.utils.MoneyConverter;
@@ -34,11 +32,8 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
     private DwEnterprisesService dwEnterprisesService;
 
     @Autowired
-    private CBudgetConceptsService cBudgetConceptsService;
+    private RealBudgetSpendingDao budgetYearConceptDao;
 
-    @Autowired
-    private BudgetYearConceptDao budgetYearConceptDao;
-    
     @Autowired
     private BudgetsDao budgetsDao;
 
@@ -49,7 +44,6 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
     public List<BudgetMonthConcepts> saveList(String data, Users user) throws Exception {
 
         List<BudgetMonthConcepts> list = new ArrayList<>();
-        CBudgetConcepts concept;
         JsonNode jsonConcepts = mapper.readTree(data);
 
         for (JsonNode jsonRequest : jsonConcepts) {
@@ -58,52 +52,43 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
             String conceptName = jsonRequest.get("conceptName").asText();
             Budgets budget = new Budgets(jsonRequest.get("idBudget").asInt());
             Integer year = jsonRequest.get("year").asInt();
-            BudgetYearConcept budgetYearConcept;
+            RealBudgetSpending realBudgetSpending;
             BigDecimal amountConcept;
             BigDecimal amount;
             CMonths month;
 
             if (idConcept > 0) {
-                
-                concept = new CBudgetConcepts(idConcept);
-                concept.setBudgetConcept(conceptName);
-                concept.setIdAccessLevel(1);
-                list = budgetMonthConceptsDao.findByConcept(concept);
-                
+
                 for (JsonNode conceptMonth : jsonRequest.get("conceptMonth")) {
-                    
+
                     amountConcept = MoneyConverter.obtainNumber(conceptMonth.get("amountConcept").asText());
                     month = new CMonths(conceptMonth.get("month").asInt());
-                    
+
                     for(BudgetMonthConcepts budgetMonthConcepts : list) {
 
-//                        budgetYearConcept = budgetMonthConcepts.getBudgetYearConcept();
-                        
-//                        if(budgetYearConcept.getAuthorized())
+//                        realBudgetSpending = budgetMonthConcepts.getBudgetYearConcept();
+
+//                        if(realBudgetSpending.getAuthorized())
 //                            throw new ValidationException("El presupuesto ya esta autorizado!",
 //                                    "No puede modificarse un presupuesto ya autorizado");
-                        
-//                        if(budgetYearConcept.getBudget().getIdBudget().equals(budget.getIdBudget()) &&
-//                                budgetYearConcept.getMonth().getIdMonth().equals(month.getIdMonth()) &&
-//                                budgetYearConcept.getYear() == year) {
-                            
+
+//                        if(realBudgetSpending.getBudget().getIdBudget().equals(budget.getIdBudget()) &&
+//                                realBudgetSpending.getMonth().getIdMonth().equals(month.getIdMonth()) &&
+//                                realBudgetSpending.getYear() == year) {
+
 //                            BigDecimal amountConceptActual = budgetMonthConcepts.getAmount();
-//                            BigDecimal amountActual = budgetYearConcept.getAmount();
-//                            budgetYearConcept.setAmount(amountActual.subtract(amountConceptActual).add(amountConcept));
+//                            BigDecimal amountActual = realBudgetSpending.getAmount();
+//                            realBudgetSpending.setAmount(amountActual.subtract(amountConceptActual).add(amountConcept));
 //                            budgetMonthConcepts.setAmount(amountConcept);
-//                            budgetYearConcept.setUsername(user.getUsername());
+//                            realBudgetSpending.setUsername(user.getUsername());
 //                        }
 
                     }
-                    
+
                 }
-                cBudgetConceptsService.update(concept);
 
             } else {
 
-                concept = new CBudgetConcepts();
-                concept.setBudgetConcept(conceptName);
-                concept.setIdAccessLevel(1);
 
                 for (JsonNode conceptMonth : jsonRequest.get("conceptMonth")) {
 
@@ -111,38 +96,38 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
                     amountConcept = MoneyConverter.obtainNumber(conceptMonth.get("amountConcept").asText());
                     month = new CMonths(conceptMonth.get("month").asInt());
 
-                    budgetYearConcept = budgetYearConceptDao.findByCombination(budget, month, year);
+                    realBudgetSpending = budgetYearConceptDao.findByCombination(budget, month, year);
 
-                    if (budgetYearConcept == null) {
+                    if (realBudgetSpending == null) {
 
-                        budgetYearConcept = new BudgetYearConcept();
-//                        budgetYearConcept.setAmount(amountConcept);
-//                        budgetYearConcept.setExpendedAmount(new BigDecimal(0));
-                        budgetYearConcept.setIdAccessLevel(1);
-                        budgetYearConcept.setCurrency(new CCurrencies(1));
-                        budgetYearConcept.setBudget(budget);
-//                        budgetYearConcept.setMonth(month);
-                        budgetYearConcept.setYear(year);
-                        budgetYearConcept.setAuthorized(false);
-                        budgetYearConcept.setUsername(user.getUsername());
-                        budgetYearConcept = budgetYearConceptDao.save(budgetYearConcept);
+                        //realBudgetSpending = new RealBudgetSpending();
+//                        realBudgetSpending.setAmount(amountConcept);
+//                        realBudgetSpending.setExpendedAmount(new BigDecimal(0));
+                        //realBudgetSpending.setIdAccessLevel(1);
+                        realBudgetSpending.setCurrency(new CCurrencies(1));
+                        realBudgetSpending.setBudget(budget);
+//                        realBudgetSpending.setMonth(month);
+                        realBudgetSpending.setYear(year);
+                        //realBudgetSpending.setAuthorized(false);
+                        realBudgetSpending.setUsername(user.getUsername());
+                        realBudgetSpending = budgetYearConceptDao.save(realBudgetSpending);
 
                     } else {
-                        
-                        if(budgetYearConcept.getAuthorized())
-                            throw new ValidationException("El presupuesto ya esta autorizado!", 
-                                    "No puede modificarse un presupuesto ya autorizado");
 
-//                        amount = budgetYearConcept.getAmount();
-//                        budgetYearConcept.setAmount(amount.add(amountConcept));
-                        budgetYearConcept.setUsername(user.getUsername());
-                        budgetYearConcept = budgetYearConceptDao.update(budgetYearConcept);
+                       /* if(realBudgetSpending.getAuthorized())
+                            throw new ValidationException("El presupuesto ya esta autorizado!",
+                                    "No puede modificarse un presupuesto ya autorizado");*/
+
+//                        amount = realBudgetSpending.getAmount();
+//                        realBudgetSpending.setAmount(amount.add(amountConcept));
+                        realBudgetSpending.setUsername(user.getUsername());
+                        realBudgetSpending = budgetYearConceptDao.update(realBudgetSpending);
 
                     }
 
-                    concept = cBudgetConceptsService.save(concept);
-//                    budgetMonthConcepts.setBudgetYearConcept(budgetYearConcept);
-                    budgetMonthConcepts.setBudgetConcept(concept);
+
+//                    budgetMonthConcepts.setBudgetYearConcept(realBudgetSpending);
+
                     budgetMonthConcepts.setIdAccessLevel(1);
                     budgetMonthConcepts.setCurrency(new CCurrencies(1));
                     budgetMonthConcepts.setAmount(amountConcept);
@@ -156,16 +141,11 @@ public class BudgetMonthConceptsServiceImpl implements BudgetMonthConceptsServic
 
         return list;
     }
-    
+
 
     @Override
     public boolean delete(BudgetMonthConcepts budgetMonthConcepts) {
         return budgetMonthConceptsDao.delete(budgetMonthConcepts);
-    }
-
-    @Override
-    public List<BudgetMonthConcepts> findByConcept(CBudgetConcepts budgetConcept) {
-        return budgetMonthConceptsDao.findByConcept(budgetConcept);
     }
 
     @Override

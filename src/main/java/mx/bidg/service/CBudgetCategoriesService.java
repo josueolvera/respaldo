@@ -13,12 +13,15 @@ import mx.bidg.model.CBudgetCategories;
  * @author sistemask
  */
 public interface CBudgetCategoriesService {
-    
+
     List<CBudgetCategories> findAll();
 
     List<CBudgetCategories> findAllRequest();
 
+    CBudgetCategories findById (int idCbudgetCategories);
+
     CBudgetCategories save(CBudgetCategories budgetCategory);
 
     List<CBudgetCategories> getRequestCategories(Integer idCostCenter, Integer idRequestCategory);
+
 }

@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.util.List;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.BudgetMonthConcepts;
-import mx.bidg.model.CBudgetConcepts;
 import mx.bidg.model.Users;
 import mx.bidg.service.BudgetMonthConceptsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,26 +29,18 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/budget-month-concepts")
 public class BudgetMonthConceptsController {
-    
+
     @Autowired
     private BudgetMonthConceptsService budgetMonthConceptsService;
-    
+
     @Autowired
     private ObjectMapper mapper;
 
-    @RequestMapping(value = "/{idConcept}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findByConcept(@PathVariable int idConcept) throws IOException {
-        List<BudgetMonthConcepts> list = budgetMonthConceptsService.findByConcept(new CBudgetConcepts(idConcept));
-        return new ResponseEntity<>(
-                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(list), HttpStatus.OK
-        );
-    }
-    
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> saveBudgetMonthConceptsList(@RequestBody String data, HttpSession httpSession) throws Exception {
         Users user = (Users) httpSession.getAttribute("user");
         List<BudgetMonthConcepts> list = budgetMonthConceptsService.saveList(data, user);
         return ResponseEntity.ok("Concepto(s) guardado(s) con éxito");
     }
-    
+
 }

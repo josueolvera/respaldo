@@ -29,9 +29,10 @@ public class CBudgetCategoriesDaoImpl extends AbstractDao<Integer, CBudgetCatego
     }
 
     @Override
-    public CBudgetCategories findById(int id) {
-        return getByKey(id);
+    public CBudgetCategories findById(int idBudgetCategory) {
+        return getByKey(idBudgetCategory);
     }
+
 
     @Override
     public List<CBudgetCategories> findAll() {
@@ -57,5 +58,11 @@ public class CBudgetCategoriesDaoImpl extends AbstractDao<Integer, CBudgetCatego
                 .add(Restrictions.eq("isRequest", 1));
         return criteria.list();
     }
-    
+
+    @Override
+    public CBudgetCategories findByFirstLevel(String firstLevel) {
+        return (CBudgetCategories) createEntityCriteria()
+                .add(Restrictions.eq("firstLevel",firstLevel)).uniqueResult();
+    }
+
 }

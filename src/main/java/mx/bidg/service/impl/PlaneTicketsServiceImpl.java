@@ -41,9 +41,6 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
     private BudgetsDao budgetsDao;
 
     @Autowired
-    private BudgetYearDao budgetYearDao;
-
-    @Autowired
     private RolesCostCenterDao rolesCostCenterDao;
 
     @Autowired
@@ -85,7 +82,7 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
 
         if (budget != null) {
 
-            BudgetYear budgetYear = budgetYearDao.findByBudgetAndYear(budget.getIdBudget(), year);
+            /*BudgetYear budgetYear = budgetYearDao.findByBudgetAndYear(budget.getIdBudget(), year);
 
             if (budgetYear != null) {
 
@@ -120,7 +117,8 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
             }
         } else {
             throw new ValidationException("Sin presupuesto","No tiene presupuesto asignado para este tipo de solicitud");
-        }
+        */}
+        throw new ValidationException("Sin presupuesto","No tiene presupuesto asignado para este tipo de solicitud");
     }
 
     @Override

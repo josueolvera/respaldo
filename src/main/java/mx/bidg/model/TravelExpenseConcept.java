@@ -74,10 +74,7 @@ public class TravelExpenseConcept implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetConcept;
 
-    @JoinColumn(name = "ID_BUDGET_CONCEPT", referencedColumnName = "ID_BUDGET_CONCEPT")
-    @ManyToOne
-    @JsonView(JsonViews.Embedded.class)
-    private CBudgetConcepts budgetConcept;
+
 
     public TravelExpenseConcept() {
     }
@@ -156,14 +153,6 @@ public class TravelExpenseConcept implements Serializable {
         this.idBudgetConcept = idBudgetConcept;
     }
 
-    public CBudgetConcepts getBudgetConcept() {
-        return budgetConcept;
-    }
-
-    public void setBudgetConcept(CBudgetConcepts budgetConcept) {
-        this.budgetConcept = budgetConcept;
-    }
-
     public DateFormatsPojo getCreationDateFormats() {
         return (creationDate == null) ? null : new DateFormatsPojo(creationDate);
     }
@@ -195,7 +184,6 @@ public class TravelExpenseConcept implements Serializable {
                 ", idCurrency=" + idCurrency +
                 ", currency=" + currency +
                 ", idBudgetConcept=" + idBudgetConcept +
-                ", budgetConcept=" + budgetConcept +
                 '}';
     }
 }

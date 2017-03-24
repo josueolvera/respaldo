@@ -7,10 +7,14 @@ package mx.bidg.dao;
 
 import mx.bidg.model.CBudgetSubcategories;
 
+import java.util.List;
+
 /**
  *
  * @author sistemask
  */
 public interface CBudgetSubcategoriesDao extends InterfaceDao<CBudgetSubcategories> {
-    
+
+    List <CBudgetSubcategories> findBySecondLevel (String secondLevel);
+
 }

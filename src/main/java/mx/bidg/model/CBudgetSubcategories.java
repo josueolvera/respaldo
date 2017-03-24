@@ -35,14 +35,12 @@ public class CBudgetSubcategories implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_BUDGET_SUBCATEGORY")
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetSubcategory;
 
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 45)
     @Column(name = "BUDGET_SUBCATEGORY")
     @JsonView(JsonViews.Root.class)
     private String budgetSubcategory;
@@ -53,6 +51,14 @@ public class CBudgetSubcategories implements Serializable {
     @Column(name = "CREATION_DATE", updatable = false)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
+
+    @Column(name = "USERNAME", nullable=true)
+    @JsonView(JsonViews.Root.class)
+    private String username;
+
+    @Column(name = "SECOND_LEVEL", nullable=true)
+    @JsonView(JsonViews.Root.class)
+    private String secondLevel;
 
     @Basic(optional = false)
     @NotNull
@@ -122,6 +128,18 @@ public class CBudgetSubcategories implements Serializable {
         this.products = products;
     }
 
+    public String getUsername() {return username;}
+
+    public void setUsername(String username) {this.username = username;}
+
+    public String getSecondLevel() {
+        return secondLevel;
+    }
+
+    public void setSecondLevel(String secondLevel) {
+        this.secondLevel = secondLevel;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -146,5 +164,8 @@ public class CBudgetSubcategories implements Serializable {
     public String toString() {
         return "mx.bidg.model.CBudgetSubcategories[ idBudgetSubcategory=" + idBudgetSubcategory + " ]";
     }
+
+
+
 
 }

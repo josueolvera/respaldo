@@ -23,4 +23,9 @@ public class CAccountingAccountTypeServiceImpl implements CAccountingAccountType
     public List<CAccountingAccountType> findAll() {
         return cAccountingAccountTypeDao.findAll();
     }
+
+    @Override
+    public CAccountingAccountType findById(Integer idCAccountingAccountType) {
+        return cAccountingAccountTypeDao.findById(idCAccountingAccountType);
+    }
 }

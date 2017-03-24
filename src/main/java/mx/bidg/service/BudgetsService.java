@@ -18,7 +18,7 @@ import mx.bidg.pojos.BudgetCategory;
  * @author sistemask
  */
 public interface BudgetsService {
-    
+
     Budgets saveBudget(Budgets budgets);
     Budgets findById(Integer idBudget);
     Budgets findByCombination(Integer idDistributor, Integer idArea, Integer idAccountingAccount);
@@ -30,4 +30,10 @@ public interface BudgetsService {
     List<Budgets> findByDistributor(Integer idDistributor);
     void createReport(List<BudgetCategory> budgetCategories, CCostCenter costCenter, Integer year, OutputStream outputStream) throws IOException;
     ArrayList<Budgets> findByCostCenter(Integer idCostCenter);
+    List<Budgets> getBudgetsfindNatureTypeAndCostCenter(Integer idCostCenter,Integer idBudgetType, Integer idBudgetNature);
+    Budgets getBudgetByNatureAndCostAndTypeAndConcept(Integer idCostCenter,Integer idBudgetType, Integer idBudgetNature, Integer idConceptBudget);
+    Budgets update(Budgets budgets);
+    List<Budgets> findByIdDistributorCostCenter(Integer idDistributorCostCenter, Integer idBudgetType, Integer idBudgetNature);
+    Budgets findByNatureTypeAndDistributor(Integer idBudgetNature, Integer idBudgetType, Integer idDistributorCostCenter);
+    List<Budgets> findByIdDistributor(Integer idDistributorCostCenter);
 }

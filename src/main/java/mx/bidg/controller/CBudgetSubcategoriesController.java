@@ -26,13 +26,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/budget-subcategories")
 public class CBudgetSubcategoriesController {
-    
+
     @Autowired
     CBudgetSubcategoriesService cBudgetSubcategoriesService;
 
     @Autowired
     private ObjectMapper mapper;
-    
+
     @RequestMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody String getCBudgetSubcategories() throws Exception {
         List<CBudgetSubcategories> list = cBudgetSubcategoriesService.findAll();

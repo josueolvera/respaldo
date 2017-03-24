@@ -63,11 +63,6 @@ public class RefundConcepts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetConcept;
 
-    @JoinColumn(name = "ID_BUDGET_CONCEPT", referencedColumnName = "ID_BUDGET_CONCEPT")
-    @ManyToOne
-    @JsonView(JsonViews.Embedded.class)
-    private CBudgetConcepts budgetConcept;
-
     @OneToMany(mappedBy = "refundConcept")
     @JsonView(JsonViews.Embedded.class)
     private List<RefundConceptDocuments> refundConceptDocuments;
@@ -83,12 +78,11 @@ public class RefundConcepts implements Serializable {
         this.idRefundConcept = idRefundConcept;
     }
 
-    public RefundConcepts(Refunds refund, CVoucherTypes voucherType, String voucherFolio, BigDecimal voucherTotal, CBudgetConcepts budgetConcept) {
+    public RefundConcepts(Refunds refund, CVoucherTypes voucherType, String voucherFolio, BigDecimal voucherTotal) {
         this.refund = refund;
         this.voucherType = voucherType;
         this.voucherFolio = voucherFolio;
         this.voucherTotal = voucherTotal;
-        this.budgetConcept = budgetConcept;
     }
 
     public Integer getIdRefundConcept() {
@@ -158,14 +152,6 @@ public class RefundConcepts implements Serializable {
 
     public void setIdBudgetConcept(Integer idBudgetConcept) {
         this.idBudgetConcept = idBudgetConcept;
-    }
-
-    public CBudgetConcepts getBudgetConcept() {
-        return budgetConcept;
-    }
-
-    public void setBudgetConcept(CBudgetConcepts budgetConcept) {
-        this.budgetConcept = budgetConcept;
     }
 
     public List<RefundConceptDocuments> getRefundConceptDocuments() {

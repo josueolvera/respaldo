@@ -31,13 +31,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/distributors")
 public class CDistributorsController {
-    
+
     @Autowired
     private CDistributorsService cDistributorsService;
 
     @Autowired
     private ObjectMapper mapper;
-    
+
+    @RequestMapping(value = "/find-budget",method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String>findAll()throws Exception{
+        List<CDistributors> cDistributorsList = cDistributorsService.findAll();
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(cDistributorsList),HttpStatus.OK);
+    }
+
     @RequestMapping(method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
     public @ResponseBody String getCDistributors(
             @RequestParam(name = "forStock", required = false) Boolean forStock,

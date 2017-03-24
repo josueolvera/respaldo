@@ -53,9 +53,6 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
     private RequestTypesProductDao requestTypesProductDao;
 
     @Autowired
-    private BudgetYearDao budgetYearDao;
-
-    @Autowired
     private RolesCostCenterDao rolesCostCenterDao;
 
     @Autowired
@@ -94,9 +91,7 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
 
         if (budget != null) {
 
-            BudgetYear budgetYear = budgetYearDao.findByBudgetAndYear(budget.getIdBudget(), year);
-
-            if (budgetYear != null) {
+           /* if (budgetYear != null) {
                 Double total = 0D;
                 JsonNode currencyNode = jsonNode.get("currency");
                 CCurrencies currency = mapper.treeToValue(currencyNode, CCurrencies.class);
@@ -110,7 +105,7 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
                     total *= (currency.getRate().doubleValue()/10);
                 }
 
-                if (budgetHelper.checkWhetherIsOutOfBudget(budgetYear, month, total)) {
+               /* if (budgetHelper.checkWhetherIsOutOfBudget(budgetYear, month, total)) {
 
                     LocalDateTime startDate = LocalDateTime.parse(travelExpenseNode.get("startDate").asText() + " 00:00",formatter);
                     LocalDateTime endDate = LocalDateTime.parse(travelExpenseNode.get("endDate").asText() + " 00:00",formatter);
@@ -163,7 +158,9 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
             }
         } else {
             throw new ValidationException("Sin presupuesto","No tiene presupuesto asignado para este tipo de solicitud");
+        }*/
         }
+        throw new ValidationException("Sin presupuesto","No tiene presupuesto asignado para este tipo de solicitud");
     }
 
     @Override

@@ -9,9 +9,12 @@ import com.fasterxml.jackson.annotation.JsonView;
 import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 /**
@@ -22,9 +25,9 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicUpdate
 @Table(name = "C_REQUESTS_CATEGORIES")
 public class CRequestsCategories implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     public static final CRequestsCategories SOLICITUD = new CRequestsCategories(1);
     public static final CRequestsCategories PAGO_PROVEEDORES = new CRequestsCategories(2);
     public static final CRequestsCategories VIATICOS = new CRequestsCategories(4);
@@ -45,12 +48,12 @@ public class CRequestsCategories implements Serializable {
     @Column(name = "PERIODIC")
     @JsonView(JsonViews.Root.class)
     private Integer periodic;
-    
+
     @Size(max = 1000)
     @Column(name = "INFORMATION")
     @JsonView(JsonViews.Root.class)
     private String information;
-    
+
     @Column(name = "ID_VIEW", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idView;
@@ -62,7 +65,7 @@ public class CRequestsCategories implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
-    
+
     @JoinColumn(name = "ID_VIEW", referencedColumnName = "ID_VIEW")
     @ManyToOne
     @JsonView(JsonViews.EmbeddedRequestCategory.class)
@@ -73,14 +76,6 @@ public class CRequestsCategories implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private ResourcesTasks resourcesTasks;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "BUDGET_CONCEPT_REQUEST_CATEGORY",
-            joinColumns = @JoinColumn(name = "ID_REQUEST_CATEGORY"),
-            inverseJoinColumns = @JoinColumn(name = "ID_BUDGET_CONCEPT")
-    )
-    @JsonView(JsonViews.Embedded.class)
-    private Set<CBudgetConcepts> budgetConceptList;
 
     public CRequestsCategories() {
     }
@@ -159,14 +154,6 @@ public class CRequestsCategories implements Serializable {
 
     public void setInformation(String information) {
         this.information = information;
-    }
-
-    public Set<CBudgetConcepts> getBudgetConceptList() {
-        return budgetConceptList;
-    }
-
-    public void setBudgetConceptList(Set<CBudgetConcepts> budgetConceptList) {
-        this.budgetConceptList = budgetConceptList;
     }
 
     @Override

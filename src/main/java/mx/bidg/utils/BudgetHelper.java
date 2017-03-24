@@ -1,18 +1,15 @@
 package mx.bidg.utils;
 
-import mx.bidg.model.BudgetYear;
-import mx.bidg.model.BudgetYearConcept;
-import mx.bidg.model.Budgets;
+import mx.bidg.model.*;
 import mx.bidg.pojos.BudgetCategory;
 import mx.bidg.pojos.BudgetSubcategory;
-import mx.bidg.service.BudgetYearConceptService;
-import mx.bidg.service.BudgetsService;
+import mx.bidg.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by gerardo8 on 15/09/16.
@@ -24,46 +21,39 @@ public class BudgetHelper {
     private BudgetsService budgetsService;
 
     @Autowired
-    private BudgetYearConceptService budgetYearConceptService;
+    private RealBudgetSpendingService realBudgetSpendingService;
 
-    public List<BudgetCategory> getOrderedBudget(Integer idCostCenter,Integer  idBudgetType,Integer  idBudgetNature,Integer  idBudgetCategory,Integer  year) {
+    @Autowired
+    private CCostCenterService cCostCenterService;
+
+    @Autowired
+    private AuthorizationCostCenterService authorizationCostCenterService;
+
+    @Autowired
+    private BudgetAccountingAccountsService budgetAccountingAccountsService;
+
+    @Autowired
+    private DistributorCostCenterService distributorCostCenterService;
+
+    /*public List<BudgetCategory> getOrderedBudget(Integer idCostCenter,Integer  idBudgetType,Integer  idBudgetNature,Integer  idBudgetCategory,Integer  year) {
 
         List<Budgets> budgets = budgetsService.getBudgets(idCostCenter, idBudgetType, idBudgetNature, idBudgetCategory);
         List<BudgetCategory> budgetCategories = new ArrayList<>();
 
         for (Budgets budget : budgets) {
             BudgetCategory budgetCategory = new BudgetCategory();
-            budgetCategory.setName(budget.getAccountingAccount().getBudgetCategory().getBudgetCategory());
-            budgetCategory.setIdBudgetCategory(budget.getAccountingAccount().getIdBudgetCategory());
+            //budgetCategory.setName(budget.getAccountingAccount().getBudgetCategory().getBudgetCategory());
+            //budgetCategory.setIdBudgetCategory(budget.getAccountingAccount().getIdBudgetCategory());
 
-            List<BudgetYearConcept> budgetYearConceptList = budgetYearConceptService.findByBudgetAndYear(budget.getIdBudget(), year);
-
-            BudgetSubcategory budgetSubcategory = new BudgetSubcategory();
-            budgetSubcategory.setName(budget.getAccountingAccount().getBudgetSubcategory().getBudgetSubcategory());
-            budgetSubcategory.setIdBudgetSubcategory(budget.getAccountingAccount().getIdBudgetSubcategory());
-            budgetSubcategory.setIdBudget(budget.getIdBudget());
-            budgetSubcategory.setBudgetNature(budget.getBudgetNature());
-            budgetSubcategory.setCostCenter(budget.getCostCenter());
-            budgetSubcategory.setBudgetType(budget.getBudgetType());
-            budgetSubcategory.setBudgetYearConceptList(budgetYearConceptList);
-
-            if (!budgetCategories.contains(budgetCategory)) {
-                List<BudgetSubcategory> budgetSubcategories = new ArrayList<>();
-                budgetSubcategories.add(budgetSubcategory);
-                budgetCategory.setBudgetSubcategories(budgetSubcategories);
-                budgetCategories.add(budgetCategory);
-            } else {
-                BudgetCategory oldBudgetCategory = budgetCategories.get(budgetCategories.indexOf(budgetCategory));
-                oldBudgetCategory.getBudgetSubcategories().add(budgetSubcategory);
-                budgetCategories.set(budgetCategories.indexOf(oldBudgetCategory), oldBudgetCategory);
-            }
-
+            List<RealBudgetSpending> realBudgetSpendingList = realBudgetSpendingService.findByBudgetAndYear(budget.getIdBudget(), year);
+            budgetCategory.setRealBudgetSpendings(realBudgetSpendingList);
+            budgetCategories.add(budgetCategory);
         }
 
         return budgetCategories;
-    }
+    }*/
 
-    public Boolean checkWhetherIsOutOfBudget(BudgetYear budgetYear, Integer month, Double amount) {
+    /*public Boolean checkWhetherIsOutOfBudget(BudgetYear budgetYear, Integer month, Double amount) {
 
         Double budgetAmount = 0D;
         Double budgetExpendedAmount = 0D;
@@ -119,6 +109,165 @@ public class BudgetHelper {
         }
 
         return amount <= (budgetAmount - budgetExpendedAmount);
+    }*/
+    public List<Budgets> findIdCostCneter(Integer idCostCenter){
+        //List<Budgets> budgets = budgetsService.findByIdCostCenter(idCostCenter);
+        return null;
+    }
+
+    public List<RealBudgetSpending> getOrderedBudget(Integer idCostCenter,Integer  idBudgetType,Integer  idBudgetNature,Integer  year) {
+        List<RealBudgetSpending>realBudgetSpendings = new ArrayList<>();
+        List<DistributorCostCenter> distributorCostCenters = distributorCostCenterService.findByCostCenter(idCostCenter);
+        for (DistributorCostCenter d: distributorCostCenters){
+            BudgetCategory budgetCategory = new BudgetCategory();
+            List<Budgets> budgets = budgetsService.findByIdDistributorCostCenter(d.getIdDistributorCostCenter(),idBudgetType,idBudgetNature);
+            for (Budgets budget: budgets){
+                budgetCategory.setName(budget.getConceptBudget().getNameConcept());
+                budgetCategory.setIdBudgetCategory(budget.getIdConceptBudget());
+                RealBudgetSpending r = realBudgetSpendingService.findByIdBudgetAndYear(budget.getIdBudget(),year);
+                realBudgetSpendings.add(r);
+            }
+        }
+        return realBudgetSpendings;
+    }
+
+    public List<RealBudgetSpending> getOrderBudget(Integer idCostCenter,Integer  year) {
+        List<RealBudgetSpending>realBudgetSpendings = new ArrayList<>();
+        List<DistributorCostCenter> distributorCostCenters = distributorCostCenterService.findByCostCenter(idCostCenter);
+        for (DistributorCostCenter d: distributorCostCenters){
+            List<Budgets> budgets = budgetsService.findByIdDistributor(d.getIdDistributorCostCenter());
+            for (Budgets budget: budgets){
+                RealBudgetSpending r = realBudgetSpendingService.findByIdBudgetAndYear(budget.getIdBudget(),year);
+                realBudgetSpendings.add(r);
+            }
+        }
+        return realBudgetSpendings;
+    }
+
+    public List<BudgetCategory> getModifyOrderBudget(Integer idCostCenter,Integer  year) {
+        /*List<Budgets> budgets = budgetsService.findByIdCostCenter(idCostCenter);
+        List<BudgetCategory> budgetCategories = new ArrayList<>();
+        for (Budgets budget: budgets){
+            budgetsService.update(budget);
+            BudgetCategory budgetCategory = new BudgetCategory();
+            budgetCategory.setName(budget.getConceptBudget().getNameConcept());
+            budgetCategory.setIdBudgetCategory(budget.getIdConceptBudget());
+            List<RealBudgetSpending>realBudgetSpendingList = realBudgetSpendingService.findByBudgetAndYear(budget.getIdBudget(), year);
+            //for(RealBudgetSpending r: realBudgetSpendingList){
+              //  r.setAuthorized(false);
+                //realBudgetSpendingService.update(r);
+            //}
+            //budgetCategory.setRealBudgetSpendings(realBudgetSpendingList);
+            budgetCategories.add(budgetCategory);
+        }*/
+        return null;
+    }
+
+    public List<BudgetCategory> getOrderBudgetAuthorized(Integer idCostCenter,Integer  year) {
+        /*List<Budgets> budgets = budgetsService.findByIdCostCenter(idCostCenter);
+        List<BudgetCategory> budgetCategories = new ArrayList<>();
+        for (Budgets budget: budgets){
+            //if(budget.isValidation()){
+
+            //}else {
+              //  budget.setValidation(true);
+            //}
+            BudgetCategory budgetCategory = new BudgetCategory();
+            budgetCategory.setName(budget.getConceptBudget().getNameConcept());
+            budgetCategory.setIdBudgetCategory(budget.getIdConceptBudget());
+            List<RealBudgetSpending>realBudgetSpendingList = realBudgetSpendingService.findByBudgetAndYear(budget.getIdBudget(), year);
+            /*for(RealBudgetSpending r: realBudgetSpendingList){
+                r.setAuthorized(true);
+                realBudgetSpendingService.update(r);
+            }
+            //budgetCategory.setRealBudgetSpendings(realBudgetSpendingList);
+            budgetsService.update(budget);
+            budgetCategories.add(budgetCategory);
+        }*/
+        return null;
+    }
+
+    /*public List<BudgetCategory> modifyOrderedBudget(Integer idCostCenter, Integer  year, Users user) {
+        List<Budgets> budgets = budgetsService.findByIdCostCenter(idCostCenter);
+        CCostCenter c = cCostCenterService.findById(idCostCenter);
+        AuthorizationCostCenter a = new AuthorizationCostCenter();
+        a.setCostCenter(c);
+        a.setValidation(true);
+        a.setYear(year);
+        a.setUsers(user);
+        authorizationCostCenterService.save(a);
+        List<BudgetCategory> budgetCategories = new ArrayList<>();
+        for (Budgets budget: budgets){
+            BudgetCategory budgetCategory = new BudgetCategory();
+            budgetCategory.setName(budget.getConceptBudget().getNameConcept());
+            budgetCategory.setIdBudgetCategory(budget.getIdConceptBudget());
+            List<RealBudgetSpending>realBudgetSpendingList = realBudgetSpendingService.findByBudgetAndYear(budget.getIdBudget(), year);
+            budgetCategory.setRealBudgetSpendings(realBudgetSpendingList);
+            budgetCategories.add(budgetCategory);
+            budgetsService.update(budget);
+        }
+        return budgetCategories;
+    }*/
+
+    public List<BudgetCategory> getOrderedBudgetNoAuthorized(Integer idCostCenter,Integer  idBudgetType,Integer  idBudgetNature,Integer  year, boolean authorized) {
+        List<Budgets> budgets = budgetsService.getBudgetsfindNatureTypeAndCostCenter(idCostCenter,idBudgetType,idBudgetNature);
+        List<BudgetCategory> budgetCategories = new ArrayList<>();
+        for (Budgets budget: budgets){
+            BudgetCategory budgetCategory = new BudgetCategory();
+            budgetCategory.setName(budget.getConceptBudget().getNameConcept());
+            budgetCategory.setIdBudgetCategory(budget.getIdConceptBudget());
+            List<RealBudgetSpending>realBudgetSpendingList = realBudgetSpendingService.findByBudgetAndYearAndNoAuthorized(budget.getIdBudget(), year, authorized);
+            // budgetCategory.setRealBudgetSpendings(realBudgetSpendingList);
+            budgetCategories.add(budgetCategory);
+        }
+        return budgetCategories;
+    }
+
+    public List<BudgetCategory> getAuthorizationBudget(Integer idBussinessLine,Integer idDistributor,Integer idCostCenter, Integer year){
+        System.out.println("Bussiness line: "+idBussinessLine+" Distributor: "+idDistributor+" CostCenter: "+idCostCenter+"year "+year);
+        List<DistributorCostCenter> dcc = distributorCostCenterService.findByIdBussinessAndDistributorAndCostCenter(idBussinessLine,idDistributor,idCostCenter);
+        System.out.println("Tamaño de la lista distributor: "+ dcc.size());
+        List<BudgetCategory> categories = new ArrayList<>();
+        for(DistributorCostCenter distributorCostCenter: dcc){
+            if(distributorCostCenter.getAccountingAccounts()!=null){
+                //En este momento la cuenta contable es primer nivel del año ingresado
+                if(distributorCostCenter.getAccountingAccounts().getIdBudgetSubcategory()==0){
+                    System.out.println("ES primer nivel");
+                    BudgetCategory budgetCategory = new BudgetCategory();
+                    List<Budgets> budgetsList = budgetsService.findByIdDistributor(distributorCostCenter.getIdDistributorCostCenter());
+                    List<RealBudgetSpending> realBudgetSpendingList = new ArrayList<>();
+                    for(Budgets b: budgetsList){
+                        RealBudgetSpending r = realBudgetSpendingService.findByIdBudgetAndYear(b.getIdBudget(),year);
+                        realBudgetSpendingList.add(r);
+                    }
+                    budgetCategory.setLevelOne(realBudgetSpendingList);
+                    //budgetCategory.setSecondLevel(new ArrayList<>());
+                    categories.add(budgetCategory);
+                    break;
+                }
+                //En este momento la cuenta contable es segundo nivel del año ingresado
+                if(distributorCostCenter.getAccountingAccounts().getIdSubSubcategoies()==0){
+                    System.out.println("Es segundo nivel");
+                    BudgetCategory budgetCategory = new BudgetCategory();
+                    BudgetSubcategory bs = new BudgetSubcategory();
+                    List<BudgetSubcategory> budgetSubcategoryList = new ArrayList<>();
+                    List<RealBudgetSpending> realBudgetSpendingList = new ArrayList<>();
+                    List<Budgets> budgetsList = budgetsService.findByIdDistributor(distributorCostCenter.getIdDistributorCostCenter());
+                    for(Budgets b: budgetsList){
+                        RealBudgetSpending r = realBudgetSpendingService.findByIdBudgetAndYear(b.getIdBudget(),year);
+                        realBudgetSpendingList.add(r);
+                        bs.setSecondLevel(realBudgetSpendingList);
+                        bs.setThirdLevel(new ArrayList<>());
+                        budgetSubcategoryList.add(bs);
+                    }
+                    //budgetCategory.setLevelOne(new ArrayList<>());
+                    budgetCategory.setSecondLevel(budgetSubcategoryList);
+                    categories.add(budgetCategory);
+                    break;
+                }
+            }
+        }
+        return categories;
     }
 
 }

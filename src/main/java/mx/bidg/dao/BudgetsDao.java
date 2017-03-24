@@ -7,12 +7,8 @@ package mx.bidg.dao;
 
 import java.util.ArrayList;
 import java.util.List;
-import mx.bidg.model.AccountingAccounts;
 
-import mx.bidg.model.Budgets;
-import mx.bidg.model.CAreas;
-import mx.bidg.model.CDistributors;
-import mx.bidg.model.CGroups;
+import mx.bidg.model.*;
 
 /**
  *
@@ -35,10 +31,20 @@ public interface BudgetsDao extends InterfaceDao<Budgets> {
     ArrayList<Budgets> findByGroupAreaEnterprise(CGroups idGroup, CAreas idArea, Integer idDwEnterprise);
 
     Budgets findByAccountingAccountAndCostCenter(Integer idAccountingAccount, Integer idCostCenter);
-    
+
     ArrayList<Budgets> findByCostCenter(Integer idCostCenter);
 
     List<Budgets> getBudgetsByCostCenterAndRequestCategory(Integer idCostCenter, Integer idRequestCategory);
 
     Budgets getBudgetForRequest(int idCostCenter, int idBudgetCategory, int idBudgetSubcategory, int idRequestCategory);
+
+    List<Budgets> getBudgetsfindNatureTypeAndCostCenter(Integer idCostCenter,Integer idBudgetType, Integer idBudgetNature);
+
+    Budgets getBudgetByNatureAndCostAndTypeAndConcept(Integer idCostCenter,Integer idBudgetType, Integer idBudgetNature, Integer idConceptBudget);
+
+    List<Budgets> findByIdDistributorCostCenter(Integer idDistributorCostCenter, Integer idBudgetType, Integer idBudgetNature);
+
+    Budgets findByNatureTypeAndDistributor(Integer idBudgetNature, Integer idBudgetType, Integer idDistributorCostCenter);
+
+    List<Budgets> findByIdDistributor(Integer idDistributorCostCenter);
 }

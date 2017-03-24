@@ -7,10 +7,7 @@ package mx.bidg.service.impl;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.time.Year;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import mx.bidg.dao.BudgetsDao;
@@ -47,7 +44,7 @@ public class BudgetsServiceImpl implements BudgetsService {
 
     @Override
     public Budgets findByCombination(Integer idDistributor, Integer idArea, Integer idAccountingAccount) {
-        return budgetsDao.findByCombination(new CDistributors(idDistributor), new CAreas(idArea), 
+        return budgetsDao.findByCombination(new CDistributors(idDistributor), new CAreas(idArea),
                 new AccountingAccounts(idAccountingAccount));
     }
 
@@ -78,61 +75,68 @@ public class BudgetsServiceImpl implements BudgetsService {
 
     @Override
     public void createReport(List<BudgetCategory> budgetCategories, CCostCenter costCenter, Integer year, OutputStream outputStream) throws IOException {
-        
         Workbook wb = new XSSFWorkbook();
-        
         Font font1 = wb.createFont();
         font1.setBold(true);
         font1.setFontHeightInPoints((short) 11);
         font1.setFontName("Arial");
-
+        font1.setColor(IndexedColors.WHITE.getIndex());
         Font font2 = wb.createFont();
         font2.setBold(true);
         font2.setFontHeightInPoints((short) 10);
         font2.setFontName("Arial");
-        font2.setColor(IndexedColors.WHITE.getIndex());
-
-        Font font3 = wb.createFont();
-        font3.setFontHeightInPoints((short) 10);
-        font3.setFontName("Arial");
-        font3.setColor(IndexedColors.WHITE.getIndex());
-
+        font2.setColor(IndexedColors.BLACK.getIndex());
         CellStyle style1 = wb.createCellStyle();
-        
         style1.setFont(font1);
-
+        style1.setFillForegroundColor(IndexedColors.BLACK.getIndex());
+        style1.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        style1.setBorderBottom(CellStyle.BORDER_THIN);
+        style1.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        style1.setBorderRight(CellStyle.BORDER_THIN);
+        style1.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style1.setBorderLeft(CellStyle.BORDER_THIN);
+        style1.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style1.setBorderTop(CellStyle.BORDER_THIN);
+        style1.setTopBorderColor(IndexedColors.BLACK.getIndex());
         CellStyle style2 = wb.createCellStyle();
-
         style2.setFont(font2);
-        style2.setFillForegroundColor(IndexedColors.BLACK.getIndex());
+        style2.setFillForegroundColor(IndexedColors.GREY_80_PERCENT.getIndex());
         style2.setFillPattern(CellStyle.SOLID_FOREGROUND);
         style2.setBorderBottom(CellStyle.BORDER_THIN);
-        style2.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        style2.setBottomBorderColor(IndexedColors.GREY_80_PERCENT.getIndex());
         style2.setBorderRight(CellStyle.BORDER_THIN);
-        style2.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style2.setRightBorderColor(IndexedColors.GREY_80_PERCENT.getIndex());
         style2.setBorderLeft(CellStyle.BORDER_THIN);
-        style2.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style2.setLeftBorderColor(IndexedColors.GREY_80_PERCENT.getIndex());
         style2.setBorderTop(CellStyle.BORDER_THIN);
-        style2.setTopBorderColor(IndexedColors.BLACK.getIndex());
-
+        style2.setTopBorderColor(IndexedColors.GREY_80_PERCENT.getIndex());
         CellStyle style3 = wb.createCellStyle();
-
-        style3.setFont(font3);
-        style3.setFillForegroundColor(IndexedColors.BLACK.getIndex());
+        style3.setFont(font2);
+        style3.setFillForegroundColor(IndexedColors.GREY_50_PERCENT.getIndex());
         style3.setFillPattern(CellStyle.SOLID_FOREGROUND);
         style3.setBorderBottom(CellStyle.BORDER_THIN);
-        style3.setBottomBorderColor(IndexedColors.BLACK.getIndex());
+        style3.setBottomBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
         style3.setBorderRight(CellStyle.BORDER_THIN);
-        style3.setRightBorderColor(IndexedColors.BLACK.getIndex());
+        style3.setRightBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
         style3.setBorderLeft(CellStyle.BORDER_THIN);
-        style3.setLeftBorderColor(IndexedColors.BLACK.getIndex());
+        style3.setLeftBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
         style3.setBorderTop(CellStyle.BORDER_THIN);
-        style3.setTopBorderColor(IndexedColors.BLACK.getIndex());
+        style3.setTopBorderColor(IndexedColors.GREY_50_PERCENT.getIndex());
+        CellStyle style4 = wb.createCellStyle();
+        style4.setFont(font2);
+        style4.setFillForegroundColor(IndexedColors.GREY_40_PERCENT.getIndex());
+        style4.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        style4.setBorderBottom(CellStyle.BORDER_THIN);
+        style4.setBottomBorderColor(IndexedColors.GREY_40_PERCENT.getIndex());
+        style4.setBorderRight(CellStyle.BORDER_THIN);
+        style4.setRightBorderColor(IndexedColors.GREY_40_PERCENT.getIndex());
+        style4.setBorderLeft(CellStyle.BORDER_THIN);
+        style4.setLeftBorderColor(IndexedColors.GREY_40_PERCENT.getIndex());
+        style4.setBorderTop(CellStyle.BORDER_THIN);
+        style4.setTopBorderColor(IndexedColors.GREY_40_PERCENT.getIndex());
 
         Sheet sheet = wb.createSheet();
-
         Row row = sheet.createRow(0);
-
         row.createCell(0).setCellValue(costCenter.getName());
         row.createCell(1).setCellValue("ENERO");
         row.createCell(2).setCellValue("FEBRERO");
@@ -147,20 +151,14 @@ public class BudgetsServiceImpl implements BudgetsService {
         row.createCell(11).setCellValue("NOVIEMBRE");
         row.createCell(12).setCellValue("DICIEMBRE");
         row.createCell(13).setCellValue("ACUMULADO PPTO " + year);
-
         for (Cell celda : row) {
             celda.setCellStyle(style1);
         }
-        
-
         int aux = 1;
-
         for (BudgetCategory budgetCategory : budgetCategories) {
-
             Row row1 = sheet.createRow(aux);
-
             row1.createCell(0).setCellValue("    " + budgetCategory.getName());
-            row1.createCell(1).setCellValue(budgetCategory.getJanuaryCategoryAmount().doubleValue());
+            /*row1.createCell(1).setCellValue(budgetCategory.getJanuaryCategoryAmount().doubleValue());
             row1.createCell(2).setCellValue(budgetCategory.getFebruaryCategoryAmount().doubleValue());
             row1.createCell(3).setCellValue(budgetCategory.getMarchCategoryAmount().doubleValue());
             row1.createCell(4).setCellValue(budgetCategory.getAprilCategoryAmount().doubleValue());
@@ -172,66 +170,55 @@ public class BudgetsServiceImpl implements BudgetsService {
             row1.createCell(10).setCellValue(budgetCategory.getOctoberCategoryAmount().doubleValue());
             row1.createCell(11).setCellValue(budgetCategory.getNovemberCategoryAmount().doubleValue());
             row1.createCell(12).setCellValue(budgetCategory.getDecemberCategoryAmount().doubleValue());
-            row1.createCell(13).setCellValue(budgetCategory.getTotalCategoryAmount().doubleValue());
-
+            row1.createCell(13).setCellValue(budgetCategory.getTotalCategoryAmount().doubleValue());*/
             for (Cell celda : row1) {
                 celda.setCellStyle(style2);
             }
-
             aux++;
-            
-            for (BudgetSubcategory budgetSubcategory : budgetCategory.getBudgetSubcategories()) {
-
+            /*for (RealBudgetSpending realBudgetSpending : budgetCategory.getRealBudgetSpendings()) {
                 Row row2 = sheet.createRow(aux);
-
-                row2.createCell(0).setCellValue("       " + budgetSubcategory.getName());
-                row2.createCell(1).setCellValue(budgetSubcategory.getJanuarySubcategoryAmount().doubleValue());
-                row2.createCell(2).setCellValue(budgetSubcategory.getFebruarySubcategoryAmount().doubleValue());
-                row2.createCell(3).setCellValue(budgetSubcategory.getMarchSubcategoryAmount().doubleValue());
-                row2.createCell(4).setCellValue(budgetSubcategory.getAprilSubcategoryAmount().doubleValue());
-                row2.createCell(5).setCellValue(budgetSubcategory.getMaySubcategoryAmount().doubleValue());
-                row2.createCell(6).setCellValue(budgetSubcategory.getJuneSubcategoryAmount().doubleValue());
-                row2.createCell(7).setCellValue(budgetSubcategory.getJulySubcategoryAmount().doubleValue());
-                row2.createCell(8).setCellValue(budgetSubcategory.getAugustSubcategoryAmount().doubleValue());
-                row2.createCell(9).setCellValue(budgetSubcategory.getSeptemberSubcategoryAmount().doubleValue());
-                row2.createCell(10).setCellValue(budgetSubcategory.getOctoberSubcategoryAmount().doubleValue());
-                row2.createCell(11).setCellValue(budgetSubcategory.getNovemberSubcategoryAmount().doubleValue());
-                row2.createCell(12).setCellValue(budgetSubcategory.getDecemberSubcategoryAmount().doubleValue());
-                row2.createCell(13).setCellValue(budgetSubcategory.getTotalSubcategoryAmount().doubleValue());
-
+                //row2.createCell(0).setCellValue("       " + realBudgetSpending.getBudget().getAccountingAccount().getBudgetSubcategory().getBudgetSubcategory());
+                row2.createCell(1).setCellValue(realBudgetSpending.getJanuaryBudgetAmount().doubleValue());
+                row2.createCell(2).setCellValue(realBudgetSpending.getFebruaryBudgetAmount().doubleValue());
+                row2.createCell(3).setCellValue(realBudgetSpending.getMarchBudgetAmount().doubleValue());
+                row2.createCell(4).setCellValue(realBudgetSpending.getAprilBudgetAmount().doubleValue());
+                row2.createCell(5).setCellValue(realBudgetSpending.getMayBudgetAmount().doubleValue());
+                row2.createCell(6).setCellValue(realBudgetSpending.getJuneBudgetAmount().doubleValue());
+                row2.createCell(7).setCellValue(realBudgetSpending.getJulyBudgetAmount().doubleValue());
+                row2.createCell(8).setCellValue(realBudgetSpending.getAugustBudgetAmount().doubleValue());
+                row2.createCell(9).setCellValue(realBudgetSpending.getSeptemberBudgetAmount().doubleValue());
+                row2.createCell(10).setCellValue(realBudgetSpending.getOctoberBudgetAmount().doubleValue());
+                row2.createCell(11).setCellValue(realBudgetSpending.getNovemberBudgetAmount().doubleValue());
+                row2.createCell(12).setCellValue(realBudgetSpending.getDecemberBudgetAmount().doubleValue());
+                row2.createCell(13).setCellValue(realBudgetSpending.getTotalBudgetAmount().doubleValue());
                 for (Cell celda : row2) {
                     celda.setCellStyle(style3);
                 }
-
                 aux++;
-                
-                for (BudgetYearConcept budgetYearConcept : budgetSubcategory.getBudgetYearConceptList()) {
-
+                /*for (RealBudgetSpending realBudgetSpendings : budgetCategory.getRealBudgetSpendings()) {
                     Row row3 = sheet.createRow(aux);
-
-                    row3.createCell(0).setCellValue("           " + budgetYearConcept.getBudgetConcept().getBudgetConcept());
-                    row3.createCell(1).setCellValue(budgetYearConcept.getJanuaryAmount().doubleValue());
-                    row3.createCell(2).setCellValue(budgetYearConcept.getFebruaryAmount().doubleValue());
-                    row3.createCell(3).setCellValue(budgetYearConcept.getMarchAmount().doubleValue());
-                    row3.createCell(4).setCellValue(budgetYearConcept.getAprilAmount().doubleValue());
-                    row3.createCell(5).setCellValue(budgetYearConcept.getMayAmount().doubleValue());
-                    row3.createCell(6).setCellValue(budgetYearConcept.getJuneAmount().doubleValue());
-                    row3.createCell(7).setCellValue(budgetYearConcept.getJulyAmount().doubleValue());
-                    row3.createCell(8).setCellValue(budgetYearConcept.getAugustAmount().doubleValue());
-                    row3.createCell(9).setCellValue(budgetYearConcept.getSeptemberAmount().doubleValue());
-                    row3.createCell(10).setCellValue(budgetYearConcept.getOctoberAmount().doubleValue());
-                    row3.createCell(11).setCellValue(budgetYearConcept.getNovemberAmount().doubleValue());
-                    row3.createCell(12).setCellValue(budgetYearConcept.getDecemberAmount().doubleValue());
-                    row3.createCell(13).setCellValue(budgetYearConcept.getTotalAmount().doubleValue());
-
+                    //row3.createCell(0).setCellValue("       " + realBudgetSpendings.getBudget().getAccountingAccount().getcBudgetSubSubcategories().getName());
+                    row3.createCell(1).setCellValue(realBudgetSpendings.getJanuaryBudgetAmount().doubleValue());
+                    row3.createCell(2).setCellValue(realBudgetSpendings.getFebruaryBudgetAmount().doubleValue());
+                    row3.createCell(3).setCellValue(realBudgetSpendings.getMarchBudgetAmount().doubleValue());
+                    row3.createCell(4).setCellValue(realBudgetSpendings.getAprilBudgetAmount().doubleValue());
+                    row3.createCell(5).setCellValue(realBudgetSpendings.getMayBudgetAmount().doubleValue());
+                    row3.createCell(6).setCellValue(realBudgetSpendings.getJuneBudgetAmount().doubleValue());
+                    row3.createCell(7).setCellValue(realBudgetSpendings.getJulyBudgetAmount().doubleValue());
+                    row3.createCell(8).setCellValue(realBudgetSpendings.getAugustBudgetAmount().doubleValue());
+                    row3.createCell(9).setCellValue(realBudgetSpendings.getSeptemberBudgetAmount().doubleValue());
+                    row3.createCell(10).setCellValue(realBudgetSpendings.getOctoberBudgetAmount().doubleValue());
+                    row3.createCell(11).setCellValue(realBudgetSpendings.getNovemberBudgetAmount().doubleValue());
+                    row3.createCell(12).setCellValue(realBudgetSpendings.getDecemberBudgetAmount().doubleValue());
+                    row3.createCell(13).setCellValue(realBudgetSpendings.getTotalBudgetAmount().doubleValue());
+                    for (Cell celda : row3) {
+                        celda.setCellStyle(style4);
+                    }
                     aux++;
-                    
                 }
-            }
-
+            }*/
         }
-
-        sheet.autoSizeColumn(0, true);
+        /*sheet.autoSizeColumn(0, true);
         sheet.autoSizeColumn(1, true);
         sheet.autoSizeColumn(2, true);
         sheet.autoSizeColumn(3, true);
@@ -245,8 +232,7 @@ public class BudgetsServiceImpl implements BudgetsService {
         sheet.autoSizeColumn(11, true);
         sheet.autoSizeColumn(12, true);
         sheet.autoSizeColumn(13, true);
-
-        wb.write(outputStream);
+        wb.write(outputStream);*/
     }
 
     @Override
@@ -258,5 +244,35 @@ public class BudgetsServiceImpl implements BudgetsService {
     public ArrayList<Budgets> findByCostCenter(Integer idCostCenter) {
         return budgetsDao.findByCostCenter(idCostCenter);
     }
-    
+
+    @Override
+    public List<Budgets> getBudgetsfindNatureTypeAndCostCenter(Integer idCostCenter,Integer idBudgetType, Integer idBudgetNature) {
+        return budgetsDao.getBudgetsfindNatureTypeAndCostCenter(idCostCenter,idBudgetType,idBudgetNature);
+    }
+
+    @Override
+    public Budgets getBudgetByNatureAndCostAndTypeAndConcept(Integer idCostCenter, Integer idBudgetType, Integer idBudgetNature, Integer idConceptBudget) {
+        return budgetsDao.getBudgetByNatureAndCostAndTypeAndConcept(idCostCenter, idBudgetType, idBudgetNature, idConceptBudget);
+    }
+
+    @Override
+    public Budgets update(Budgets budgets) {
+        return budgetsDao.update(budgets);
+    }
+
+    @Override
+    public List<Budgets> findByIdDistributorCostCenter(Integer idDistributorCostCenter, Integer idBudgetType, Integer idBudgetNature) {
+        return budgetsDao.findByIdDistributorCostCenter(idDistributorCostCenter, idBudgetType, idBudgetNature);
+    }
+
+    @Override
+    public Budgets findByNatureTypeAndDistributor(Integer idBudgetNature, Integer idBudgetType, Integer idDistributorCostCenter) {
+        return budgetsDao.findByNatureTypeAndDistributor(idBudgetNature,idBudgetType,idDistributorCostCenter);
+    }
+
+    @Override
+    public List<Budgets> findByIdDistributor(Integer idDistributorCostCenter) {
+        return budgetsDao.findByIdDistributor(idDistributorCostCenter);
+    }
+
 }

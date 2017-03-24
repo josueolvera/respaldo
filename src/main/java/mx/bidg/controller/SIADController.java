@@ -28,6 +28,14 @@ public class SIADController {
         return model;
     }
 
+    @RequestMapping(value = "/authorization-budget", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView authorizationBudget(){
+        ModelAndView model = new ModelAndView();
+        model.addObject("now", LocalDateTime.now());
+        model.setViewName("Authorization-Budget");
+        return model;
+    }
+
     @RequestMapping(value = "/budget-report", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public ModelAndView individualBudget() {
         ModelAndView model = new ModelAndView();
@@ -110,24 +118,24 @@ public class SIADController {
         return "SearchRequest";
     }
 
-        @RequestMapping(value = "/suppliers", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public ModelAndView suppliersView( ) 
+    @RequestMapping(value = "/suppliers", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView suppliersView( )
     {
         ModelAndView model = new ModelAndView();
         model.setViewName("Suppliers");
         return model;
     }
-    
+
     @RequestMapping(value = "/accounts-payables", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public ModelAndView accountsPayablesView( ) 
+    public ModelAndView accountsPayablesView( )
     {
         ModelAndView model = new ModelAndView();
         model.setViewName("accounts-payables");
         return model;
     }
-    
+
     @RequestMapping(value = "/accounts-payable-info/{idRequest}/{idAccountPayable}", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public ModelAndView accountsPayablesinfoView(@PathVariable int idRequest, @PathVariable int idAccountPayable) 
+    public ModelAndView accountsPayablesinfoView(@PathVariable int idRequest, @PathVariable int idAccountPayable)
     {
         ModelAndView model = new ModelAndView();
         model.addObject("idRequest", idRequest);
@@ -233,6 +241,12 @@ public class SIADController {
     public ModelAndView siadCostReport(){
         ModelAndView model = new ModelAndView();
         model.setViewName("report-cost");
+        return model;
+    }
+    @RequestMapping(value = "/budget-automatic",method = RequestMethod.GET,produces = "text/html;charset=UTF-8")
+    public ModelAndView budgetAssignable(){
+        ModelAndView model = new ModelAndView();
+        model.setViewName("BudgetAutomatic");
         return model;
     }
 }

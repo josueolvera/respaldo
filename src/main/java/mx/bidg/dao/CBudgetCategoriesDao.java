@@ -15,5 +15,6 @@ import mx.bidg.model.CBudgetCategories;
 public interface CBudgetCategoriesDao extends InterfaceDao<CBudgetCategories> {
 
     List<CBudgetCategories> findAllRequest();
+    CBudgetCategories findByFirstLevel (String firstLevel);
 
 }

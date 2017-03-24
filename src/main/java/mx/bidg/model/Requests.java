@@ -31,7 +31,7 @@ import org.hibernate.annotations.Type;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Requests implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -39,7 +39,7 @@ public class Requests implements Serializable {
     @Column(name = "ID_REQUEST")
     @JsonView(JsonViews.Root.class)
     private Integer idRequest;
-    
+
     @Basic
     @NotNull
     @Size(min = 1, max = 40)
@@ -52,13 +52,13 @@ public class Requests implements Serializable {
     @Column(name = "DESCRIPTION")
     @JsonView(JsonViews.Root.class)
     private String description;
-    
+
     @Lob
     @Size(max = 65535)
     @Column(name = "PURPOSE")
     @JsonView(JsonViews.Root.class)
     private String purpose;
-    
+
     @Basic
     @NotNull
     @Column(name = "CREATION_DATE", updatable = false)
@@ -70,57 +70,52 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime applyingDate;
-    
+
     @Basic
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
-    
+
     @Column(name = "USER_REQUEST", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idUserRequest;
-    
+
     @Column(name = "USER_RESPONSIBLE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idUserResponsible;
-    
+
     @Column(name = "ID_BUDGET_YEAR", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetYear;
-    
+
     @Column(name = "ID_MONTH", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idMonth;
-    
+
     @Column(name = "ID_REQUEST_STATUS", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idRequestStatus;
-    
+
     @JoinColumn(name = "USER_REQUEST", referencedColumnName = "ID_USER")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private Users userRequest;
-    
+
     @JoinColumn(name = "USER_RESPONSIBLE", referencedColumnName = "ID_USER")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private Users userResponsible;
-    
-    @JoinColumn(name = "ID_BUDGET_YEAR", referencedColumnName = "ID_BUDGET_YEAR")
-    @ManyToOne
-    @JsonView(JsonViews.Embedded.class)
-    private BudgetYear budgetYear;
 
     @JoinColumn(name = "ID_REQUEST_STATUS", referencedColumnName = "ID_REQUEST_STATUS")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private CRequestStatus requestStatus;
-    
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "request")
     @JsonView(JsonViews.Embedded.class)
     private List<PriceEstimations> priceEstimationsList;
-    
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "request")
     @JsonView(JsonViews.Embedded.class)
     private List<RequestProducts> requestProductsList;
@@ -259,14 +254,6 @@ public class Requests implements Serializable {
         this.userResponsible = userResponsible;
     }
 
-    public BudgetYear getBudgetYear() {
-        return budgetYear;
-    }
-
-    public void setBudgetYear(BudgetYear budgetYear) {
-        this.budgetYear = budgetYear;
-    }
-
     public CRequestStatus getRequestStatus() {
         return requestStatus;
     }
@@ -340,7 +327,6 @@ public class Requests implements Serializable {
                 ", idRequestStatus=" + idRequestStatus +
                 ", userRequest=" + userRequest +
                 ", userResponsible=" + userResponsible +
-                ", budgetYear=" + budgetYear +
                 ", requestStatus=" + requestStatus +
                 ", priceEstimationsList=" + priceEstimationsList +
                 ", requestProductsList=" + requestProductsList +

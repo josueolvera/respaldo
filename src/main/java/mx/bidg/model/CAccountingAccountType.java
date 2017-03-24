@@ -105,5 +105,5 @@ public class CAccountingAccountType implements Serializable {
     public String toString() {
         return "mx.bidg.model.CAccountingAccountType[ idAccountingType=" + idAccountingType + " ]";
     }
-    
+
 }

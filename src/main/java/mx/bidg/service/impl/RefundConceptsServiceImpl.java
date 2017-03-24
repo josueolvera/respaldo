@@ -3,7 +3,6 @@ package mx.bidg.service.impl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.dao.RefundConceptsDao;
-import mx.bidg.model.CBudgetConcepts;
 import mx.bidg.model.CVoucherTypes;
 import mx.bidg.model.RefundConcepts;
 import mx.bidg.model.Refunds;
@@ -59,12 +58,10 @@ public class RefundConceptsServiceImpl implements RefundConceptsService {
         Refunds refund = refundsService.findById(idRefund);
 
         JsonNode jsonNode = mapper.readTree(data);
-        CBudgetConcepts concept = mapper.treeToValue(jsonNode.get("concept"),CBudgetConcepts.class);
         CVoucherTypes voucherType = mapper.treeToValue(jsonNode.get("voucherType"),CVoucherTypes.class);
 
         RefundConcepts refundConcept = new RefundConcepts();
         refundConcept.setRefund(refund);
-        refundConcept.setBudgetConcept(concept);
         refundConcept.setVoucherType(voucherType);
         refundConcept.setVoucherFolio(jsonNode.get("voucherFolio").asText());
         refundConcept.setVoucherTotal(jsonNode.get("voucherTotal").decimalValue());

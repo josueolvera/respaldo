@@ -10,6 +10,7 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CBudgetSubcategoriesDao;
 import mx.bidg.model.CBudgetSubcategories;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -48,5 +49,10 @@ public class CBudgetSubcategoriesDaoImpl extends AbstractDao<Integer, CBudgetSub
         remove(entity);
         return true;
     }
-    
+
+    @Override
+    public List <CBudgetSubcategories> findBySecondLevel(String secondLevel) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("secondLevel",secondLevel)).list();
+    }
 }

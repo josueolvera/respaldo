@@ -1,8 +1,7 @@
 package mx.bidg.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import mx.bidg.model.AccountingAccounts;
-import mx.bidg.model.CDistributors;
+import mx.bidg.model.Users;
 
 import java.io.IOException;
 import java.util.List;
@@ -12,14 +11,16 @@ import java.util.List;
  * Created on 6/06/16.
  */
 public interface AccountingAccountsService {
-    AccountingAccounts findByThreeLevels(Integer firstLevel, Integer secondLevel, Integer thirdLevel);
-    List<AccountingAccounts> findByFirstLevel(Integer firstLevel);
-    List<AccountingAccounts> findBySecondLevel(Integer secondLevel);
-    List<AccountingAccounts> findByThirdLevel(Integer thirdLevel);
-    List<AccountingAccounts> findByFirstAndSecondLevel(Integer firstLevel, Integer secondLevel);
+    AccountingAccounts findByThreeLevels(Integer idBudgetCategory, Integer idBudgetSubcategory, Integer idSubSubcategoies);
+    List<AccountingAccounts> findByFirstLevel(Integer idBudgetCategory);
+    List<AccountingAccounts> findBySecondLevel(Integer idBudgetSubcategory);
+    List<AccountingAccounts> findByThirdLevel(Integer idSubSubcategoies);
+    List<AccountingAccounts> findByFirstAndSecondLevel(Integer idBudgetCategory, Integer idBudgetSubcategory);
     List<AccountingAccounts> findAll();
-    AccountingAccounts save(String data) throws IOException;
+    AccountingAccounts save(String data, Users user) throws IOException;
     AccountingAccounts update(AccountingAccounts accountingAccounts);
     AccountingAccounts findById(Integer idAccountingAccount);
     List<AccountingAccounts> findAllCategories();
+    AccountingAccounts findByAcronym(String acronym);
+    List<AccountingAccounts>findByLikeAcronyms(String acronyms);
 }

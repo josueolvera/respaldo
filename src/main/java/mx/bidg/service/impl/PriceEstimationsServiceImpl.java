@@ -45,7 +45,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
     @Autowired
     private AccountsDao accountsDao;
-    
+
     @Autowired
     private ProvidersAccountsDao providersAcountsdao;
 
@@ -82,9 +82,9 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             priceEstimation.setRate(mapper.treeToValue(node.get("rate"), BigDecimal.class));
             priceEstimation.setProvider(mapper.treeToValue(node.get("provider"), Providers.class));
 
-            BudgetYear budgetYear = request.getBudgetYear();
 
-            priceEstimation.setOutOfBudget(budgetHelper.checkWhetherIsOutOfBudget(budgetYear, LocalDateTime.now().getMonthValue(), priceEstimation.getAmount().doubleValue()));
+
+            //priceEstimation.setOutOfBudget(budgetHelper.checkWhetherIsOutOfBudget(budgetYear, LocalDateTime.now().getMonthValue(), priceEstimation.getAmount().doubleValue()));
 
             FilePojo file = mapper.treeToValue(node.get("file"), FilePojo.class);
 
@@ -158,11 +158,11 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             estimation.setUserEstimation(user);
             //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
 //            estimation.setOutOfBudget((residualAmount.compareTo(tempAmount) == -1)? 1 : 0);
-            
+
             return estimation;
         } else {
-            throw new ValidationException("No se puede modificar una cotizacion ya autorizada", 
-            "No se puede modificar una solicitud ya autorizada");
+            throw new ValidationException("No se puede modificar una cotizacion ya autorizada",
+                    "No se puede modificar una solicitud ya autorizada");
         }
     }
 
@@ -183,12 +183,12 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         } else {
             String folio = request.getFolio();
             PeriodicsPayments periodicPayment = periodicPaymentsDao.findByFolio(folio);
-                if ((periodicPayment != null) &&
-                        (periodicPayment.getIdPeriodicPaymentStatus().equals(CPeriodicPaymentsStatus.INACTIVO))) {
-                    if(!periodicPaymentsDao.delete(periodicPayment))
-                        throw new ValidationException("No se pudo eliminar el PeriodicPayment: " + periodicPayment);
-                }
-            
+            if ((periodicPayment != null) &&
+                    (periodicPayment.getIdPeriodicPaymentStatus().equals(CPeriodicPaymentsStatus.INACTIVO))) {
+                if(!periodicPaymentsDao.delete(periodicPayment))
+                    throw new ValidationException("No se pudo eliminar el PeriodicPayment: " + periodicPayment);
+            }
+
             List<AccountsPayable> accountsPayable = accountsPayableDao.findByFolio(folio);
             for(AccountsPayable account : accountsPayable) {
                 if(account.getAccountPayableStatus().getIdAccountPayableStatus().equals(CAccountsPayableStatus.INACTIVA)) {

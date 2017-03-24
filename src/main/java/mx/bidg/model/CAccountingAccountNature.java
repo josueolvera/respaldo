@@ -96,5 +96,5 @@ public class CAccountingAccountNature implements Serializable {
     public String toString() {
         return "mx.bidg.model.CAccountingAccountNature[ idAccountingNature=" + idAccountingNature + " ]";
     }
-    
+
 }

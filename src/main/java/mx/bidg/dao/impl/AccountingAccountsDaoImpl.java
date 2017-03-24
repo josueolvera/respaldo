@@ -3,8 +3,8 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.AccountingAccountsDao;
 import mx.bidg.model.AccountingAccounts;
-import mx.bidg.model.CDistributors;
-import org.hibernate.criterion.Order;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -19,41 +19,41 @@ import org.hibernate.criterion.Projections;
 @SuppressWarnings("unchecked")
 public class AccountingAccountsDaoImpl extends AbstractDao<Integer, AccountingAccounts> implements AccountingAccountsDao {
     @Override
-    public AccountingAccounts findByThreeLevels(Integer firstLevel, Integer secondLevel, Integer thirdLevel) {
+    public AccountingAccounts findByThreeLevels(Integer idBudgetCategory, Integer idBudgetSubcategory, Integer idSubSubcategoies) {
         return (AccountingAccounts) createEntityCriteria()
-                .add(Restrictions.eq("firstLevel", firstLevel))
-                .add(Restrictions.eq("secondLevel", secondLevel))
-                .add(Restrictions.eq("thirdLevel", thirdLevel))
+                .add(Restrictions.eq("idBudgetCategory", idBudgetCategory))
+                .add(Restrictions.eq("idBudgetSubcategory", idBudgetSubcategory))
+                .add(Restrictions.eq("idSubSubcategoies", idSubSubcategoies))
                 .uniqueResult();
     }
 
     @Override
-    public List<AccountingAccounts> findByFirstLevel(Integer firstLevel) {
+    public List<AccountingAccounts> findByFirstLevel(Integer idBudgetCategory) {
         return createEntityCriteria()
-                .add(Restrictions.eq("firstLevel", firstLevel))
+                .add(Restrictions.eq("idBudgetCategory", idBudgetCategory))
                 .list();
     }
 
     @Override
-    public List<AccountingAccounts> findBySecondLevel(Integer secondLevel) {
+    public List<AccountingAccounts> findBySecondLevel(Integer idBudgetSubcategory) {
         return createEntityCriteria()
-                .add(Restrictions.eq("secondLevel", secondLevel))
+                .add(Restrictions.eq("idBudgetSubcategory", idBudgetSubcategory))
                 .list();
     }
 
     @Override
-    public List<AccountingAccounts> findByThirdLevel(Integer thirdLevel) {
+    public List<AccountingAccounts> findByThirdLevel(Integer idSubSubcategoies) {
         return createEntityCriteria()
-                .add(Restrictions.eq("thirdLevel", thirdLevel))
+                .add(Restrictions.eq("idSubSubcategoies", idSubSubcategoies))
                 .list();
     }
 
     @Override
-    public List<AccountingAccounts> findByFirstAndSecondLevel(Integer firstLevel, Integer secondLevel) {
+    public List<AccountingAccounts> findByFirstAndSecondLevel(Integer idBudgetCategory, Integer idBudgetSubcategory) {
         return createEntityCriteria()
-                .add(Restrictions.eq("firstLevel", firstLevel))
-                .add(Restrictions.eq("secondLevel", secondLevel))
-                .add(Restrictions.ne("secondLevel", 0))
+                .add(Restrictions.eq("idBudgetCategory", idBudgetCategory))
+                .add(Restrictions.eq("idBudgetSubcategory", idBudgetSubcategory))
+                .add(Restrictions.ne("idBudgetSubcategory", 0))
                 .list();
     }
 
@@ -72,12 +72,9 @@ public class AccountingAccountsDaoImpl extends AbstractDao<Integer, AccountingAc
 
     @Override
     public List<AccountingAccounts> findAll() {
-        return createEntityCriteria()
-                .addOrder(Order.asc("firstLevel"))
-                .addOrder(Order.asc("secondLevel"))
-                .addOrder(Order.asc("thirdLevel"))
-                .list();
+        return createEntityCriteria().list();
     }
+
 
     @Override
     public AccountingAccounts update(AccountingAccounts entity) {
@@ -97,7 +94,6 @@ public class AccountingAccountsDaoImpl extends AbstractDao<Integer, AccountingAc
                 .setProjection(Projections.distinct(Projections.property("budgetCategory")))
                 .list();
     }
-
     @Override
     public List<AccountingAccounts> findByBudgetCategory(Integer idBudgetCategory) {
         return createEntityCriteria()
@@ -106,10 +102,22 @@ public class AccountingAccountsDaoImpl extends AbstractDao<Integer, AccountingAc
     }
 
     @Override
+    public AccountingAccounts findByAcronym(String acronyms) {
+        Criteria criteria = createEntityCriteria();
+        return (AccountingAccounts) criteria.add(Restrictions.eq("acronyms",acronyms)).uniqueResult();
+    }
+
+    @Override
     public AccountingAccounts findByCategoryAndSubcategory(Integer idBudgetCategory, Integer idBudgetSubcategory) {
         return (AccountingAccounts) createEntityCriteria()
                 .add(Restrictions.eq("idBudgetCategory", idBudgetCategory))
                 .add(Restrictions.eq("idBudgetSubcategory", idBudgetSubcategory))
                 .uniqueResult();
+    }
+
+    @Override
+    public List<AccountingAccounts> findByLikeAcronyms(String acronyms) {
+        Criteria criteria = createEntityCriteria();
+        return criteria.add(Restrictions.ilike("acronyms",acronyms, MatchMode.ANYWHERE)).list();
     }
 }

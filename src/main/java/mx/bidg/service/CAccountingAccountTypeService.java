@@ -9,4 +9,5 @@ import java.util.List;
  */
 public interface CAccountingAccountTypeService {
     List <CAccountingAccountType> findAll();
+    CAccountingAccountType findById(Integer idCAccountingAccountType);
 }

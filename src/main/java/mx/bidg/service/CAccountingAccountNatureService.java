@@ -9,4 +9,5 @@ import java.util.List;
  */
 public interface CAccountingAccountNatureService {
     List<CAccountingAccountNature> findAll();
+    CAccountingAccountNature findById(Integer idCAccountingAccountNature);
 }

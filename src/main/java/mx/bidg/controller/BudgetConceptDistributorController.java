@@ -2,10 +2,8 @@ package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.BudgetConceptDistributor;
-import mx.bidg.model.CBudgetConcepts;
 import mx.bidg.service.BudgetConceptDistributorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,15 +32,6 @@ public class BudgetConceptDistributorController {
 
     @Autowired
     private ObjectMapper mapper;
-
-    @RequestMapping(value = "/concept/{idConcept}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findByConcept(@PathVariable int idConcept) throws IOException {
-        ArrayList<ArrayList<BudgetConceptDistributor>> list = budgetConceptDistributorService.findByConcept(new CBudgetConcepts(idConcept));
-        return new ResponseEntity<>(
-                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(list),
-                HttpStatus.OK
-        );
-    }
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> save(@RequestBody String data) throws IOException {

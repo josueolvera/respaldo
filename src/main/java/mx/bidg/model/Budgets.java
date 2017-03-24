@@ -9,62 +9,37 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
-
-import java.io.Serializable;
-import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.io.Serializable;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  *
- * @author sistemask
+ * @author Kevin Salvador
  */
 @Entity
 @DynamicUpdate
 @Table(name = "BUDGETS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Budgets implements Serializable {
-        
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_BUDGET")
     @JsonView(JsonViews.Root.class)
     private Integer idBudget;
-    
-    @Column(name = "ID_COST_CENTER", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idCostCenter;
-    
-    @Column(name = "ID_ACCOUNTING_ACCOUNT", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idAccountingAccount;
-
-    @Column(name = "ID_BUDGET_TYPE", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idBudgetType;
 
     @Column(name = "ID_BUDGET_NATURE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetNature;
 
-    @Column(name = "ID_REQUEST_CATEGORY", insertable = false, updatable = false)
+    @Column(name = "ID_BUDGET_TYPE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private Integer idRequestCategory;
+    private Integer idBudgetType;
 
     @Basic(optional = false)
     @NotNull
@@ -72,34 +47,46 @@ public class Budgets implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
 
-    @JoinColumn(name = "ID_COST_CENTER", referencedColumnName = "ID_COST_CENTER")
-    @ManyToOne
-    @JsonView({JsonViews.Embedded.class})
-    private CCostCenter costCenter;
-    
-    @JoinColumn(name = "ID_ACCOUNTING_ACCOUNT", referencedColumnName = "ID_ACCOUNTING_ACCOUNT")
-    @ManyToOne
-    @JsonView({JsonViews.Embedded.class})
-    private AccountingAccounts accountingAccount;
+    @Column(name = "ID_REQUEST_CATEGORY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRequestCategory;
 
-    @JoinColumn(name = "ID_BUDGET_TYPE", referencedColumnName = "ID_BUDGET_TYPE")
-    @ManyToOne
-    @JsonView({JsonViews.Embedded.class})
-    private CBudgetTypes budgetType;
+    @Column(name = "ID_DISTRIBUTOR_COST_CENTER", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idDistributorCostCenter;
+
+    @Column(name = "ID_CONCEPT_BUDGET", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idConceptBudget;
 
     @JoinColumn(name = "ID_BUDGET_NATURE", referencedColumnName = "ID_BUDGET_NATURE")
     @ManyToOne
     @JsonView({JsonViews.Embedded.class})
     private CBudgetNature budgetNature;
 
+    @JoinColumn(name = "ID_BUDGET_TYPE", referencedColumnName = "ID_BUDGET_TYPE")
+    @ManyToOne
+    @JsonView({JsonViews.Embedded.class})
+    private CBudgetTypes budgetType;
+
     @JoinColumn(name = "ID_REQUEST_CATEGORY", referencedColumnName = "ID_REQUEST_CATEGORY")
     @ManyToOne
     @JsonView({JsonViews.Embedded.class})
     private CRequestsCategories requestsCategory;
-    
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "budget")
-    @JsonView(JsonViews.Embedded.class)
-    private List<BudgetYearConcept> budgetYearConceptList;
+
+    @JoinColumn(name = "ID_DISTRIBUTOR_COST_CENTER", referencedColumnName = "ID_DISTRIBUTOR_COST_CENTER")
+    @ManyToOne
+    @JsonView({JsonViews.Embedded.class})
+    private DistributorCostCenter distributorCostCenter;
+
+    //@OneToMany(cascade = CascadeType.ALL, mappedBy = "budget")
+    //@JsonView(JsonViews.Embedded.class)
+    //private List<RealBudgetSpending> realBudgetSpendingList;
+
+    @JoinColumn(name = "ID_CONCEPT_BUDGET", referencedColumnName = "ID_CONCEPT_BUDGET")
+    @ManyToOne
+    @JsonView({JsonViews.Embedded.class})
+    private CConceptBudget conceptBudget;
 
     public Budgets() {
     }
@@ -108,12 +95,9 @@ public class Budgets implements Serializable {
         this.idBudget = idBudget;
     }
 
-    public Budgets(int idAccessLevel, CCostCenter costCenter, AccountingAccounts accountingAccount, CBudgetTypes budgetType, CBudgetNature budgetNature) {
+    public Budgets(Integer idBudget, int idAccessLevel) {
+        this.idBudget = idBudget;
         this.idAccessLevel = idAccessLevel;
-        this.costCenter = costCenter;
-        this.accountingAccount = accountingAccount;
-        this.budgetType = budgetType;
-        this.budgetNature = budgetNature;
     }
 
     public Integer getIdBudget() {
@@ -124,20 +108,12 @@ public class Budgets implements Serializable {
         this.idBudget = idBudget;
     }
 
-    public Integer getIdCostCenter() {
-        return idCostCenter;
+    public Integer getIdBudgetNature() {
+        return idBudgetNature;
     }
 
-    public void setIdCostCenter(Integer idCostCenter) {
-        this.idCostCenter = idCostCenter;
-    }
-
-    public Integer getIdAccountingAccount() {
-        return idAccountingAccount;
-    }
-
-    public void setIdAccountingAccount(Integer idAccountingAccount) {
-        this.idAccountingAccount = idAccountingAccount;
+    public void setIdBudgetNature(Integer idBudgetNature) {
+        this.idBudgetNature = idBudgetNature;
     }
 
     public Integer getIdBudgetType() {
@@ -148,60 +124,12 @@ public class Budgets implements Serializable {
         this.idBudgetType = idBudgetType;
     }
 
-    public Integer getIdBudgetNature() {
-        return idBudgetNature;
-    }
-
-    public void setIdBudgetNature(Integer idBudgetNature) {
-        this.idBudgetNature = idBudgetNature;
-    }
-
     public int getIdAccessLevel() {
         return idAccessLevel;
     }
 
     public void setIdAccessLevel(int idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
-    }
-
-    public CCostCenter getCostCenter() {
-        return costCenter;
-    }
-
-    public void setCostCenter(CCostCenter costCenter) {
-        this.costCenter = costCenter;
-    }
-
-    public AccountingAccounts getAccountingAccount() {
-        return accountingAccount;
-    }
-
-    public void setAccountingAccount(AccountingAccounts accountingAccount) {
-        this.accountingAccount = accountingAccount;
-    }
-
-    public CBudgetTypes getBudgetType() {
-        return budgetType;
-    }
-
-    public void setBudgetType(CBudgetTypes budgetType) {
-        this.budgetType = budgetType;
-    }
-
-    public CBudgetNature getBudgetNature() {
-        return budgetNature;
-    }
-
-    public void setBudgetNature(CBudgetNature budgetNature) {
-        this.budgetNature = budgetNature;
-    }
-
-    public List<BudgetYearConcept> getBudgetYearConceptList() {
-        return budgetYearConceptList;
-    }
-
-    public void setBudgetYearConceptList(List<BudgetYearConcept> budgetYearConceptList) {
-        this.budgetYearConceptList = budgetYearConceptList;
     }
 
     public Integer getIdRequestCategory() {
@@ -212,6 +140,38 @@ public class Budgets implements Serializable {
         this.idRequestCategory = idRequestCategory;
     }
 
+    public Integer getIdDistributorCostCenter() {
+        return idDistributorCostCenter;
+    }
+
+    public void setIdDistributorCostCenter(Integer idDistributorCostCenter) {
+        this.idDistributorCostCenter = idDistributorCostCenter;
+    }
+
+    public Integer getIdConceptBudget() {
+        return idConceptBudget;
+    }
+
+    public void setIdConceptBudget(Integer idConceptBudget) {
+        this.idConceptBudget = idConceptBudget;
+    }
+
+    public CBudgetNature getBudgetNature() {
+        return budgetNature;
+    }
+
+    public void setBudgetNature(CBudgetNature budgetNature) {
+        this.budgetNature = budgetNature;
+    }
+
+    public CBudgetTypes getBudgetType() {
+        return budgetType;
+    }
+
+    public void setBudgetType(CBudgetTypes budgetType) {
+        this.budgetType = budgetType;
+    }
+
     public CRequestsCategories getRequestsCategory() {
         return requestsCategory;
     }
@@ -220,43 +180,45 @@ public class Budgets implements Serializable {
         this.requestsCategory = requestsCategory;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public DistributorCostCenter getDistributorCostCenter() {
+        return distributorCostCenter;
+    }
 
-        Budgets budgets1 = (Budgets) o;
+    public void setDistributorCostCenter(DistributorCostCenter distributorCostCenter) {
+        this.distributorCostCenter = distributorCostCenter;
+    }
 
-        if (!idCostCenter.equals(budgets1.idCostCenter)) return false;
-        if (!idAccountingAccount.equals(budgets1.idAccountingAccount)) return false;
-        if (!idBudgetType.equals(budgets1.idBudgetType)) return false;
-        return idBudgetNature.equals(budgets1.idBudgetNature);
+    public CConceptBudget getConceptBudget() {
+        return conceptBudget;
+    }
 
+    public void setConceptBudget(CConceptBudget conceptBudget) {
+        this.conceptBudget = conceptBudget;
     }
 
     @Override
     public int hashCode() {
-        int result = idCostCenter.hashCode();
-        result = 31 * result + idAccountingAccount.hashCode();
-        result = 31 * result + idBudgetType.hashCode();
-        result = 31 * result + idBudgetNature.hashCode();
-        return result;
+        int hash = 0;
+        hash += (idBudget != null ? idBudget.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof Budgets)) {
+            return false;
+        }
+        Budgets other = (Budgets) object;
+        if ((this.idBudget == null && other.idBudget != null) || (this.idBudget != null && !this.idBudget.equals(other.idBudget))) {
+            return false;
+        }
+        return true;
     }
 
     @Override
     public String toString() {
-        return "Budgets{" +
-                "idBudget=" + idBudget +
-                ", idCostCenter=" + idCostCenter +
-                ", idAccountingAccount=" + idAccountingAccount +
-                ", idBudgetType=" + idBudgetType +
-                ", idBudgetNature=" + idBudgetNature +
-                ", idAccessLevel=" + idAccessLevel +
-                ", costCenter=" + costCenter +
-                ", accountingAccount=" + accountingAccount +
-                ", budgetType=" + budgetType +
-                ", budgetNature=" + budgetNature +
-                ", budgetYearConceptList=" + budgetYearConceptList +
-                '}';
+        return "mx.bidg.model.Budgets[ idBudget=" + idBudget + " ]";
     }
+
 }

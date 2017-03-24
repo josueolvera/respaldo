@@ -35,7 +35,7 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
 
     @Override
     public Budgets findById(int id) {
-       return getByKey(id);
+        return getByKey(id);
     }
 
     @Override
@@ -45,7 +45,8 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
 
     @Override
     public Budgets update(Budgets entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        modify(entity); //To change body of generated methods, choose Tools | Templates.
+        return entity;
     }
 
     @Override
@@ -54,15 +55,15 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
     }
 
     @Override
-    public Budgets findByCombination(CDistributors cDistributors, CAreas cArea, 
-            AccountingAccounts accountingAccounts) {
-        
+    public Budgets findByCombination(CDistributors cDistributors, CAreas cArea,
+                                     AccountingAccounts accountingAccounts) {
+
         Criteria criteria = createEntityCriteria();
         HashMap<String, Object> map = new HashMap<>();
         map.put("distributor", cDistributors);
         map.put("area", cArea);
         map.put("accountingAccount", accountingAccounts);
-        
+
         Budgets budget = (Budgets) criteria.add(Restrictions.allEq(map)).uniqueResult();
         return budget;
     }
@@ -163,7 +164,7 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
         DetachedCriteria accountingOfCostCenter = DetachedCriteria.forClass(Budgets.class);
         accountingOfCostCenter.setProjection(Property.forName("idAccountingAccount"));
         accountingOfCostCenter.add(Restrictions.allEq(map));
-        
+
         Criteria criteria = getSession().createCriteria(RequestTypesProduct.class);
         ArrayList<Budgets> list = (ArrayList<Budgets>) criteria.add(Property.forName("idAccountingAccount").in(accountingOfCostCenter))
                 .list();
@@ -195,6 +196,56 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
                 .add(Restrictions.eq("aa.idBudgetSubcategory", idBudgetSubcategory))
                 .add(Restrictions.eq("idRequestCategory", idRequestCategory))
                 .uniqueResult();
+    }
+
+    @Override
+    public List<Budgets> getBudgetsfindNatureTypeAndCostCenter(Integer idCostCenter,Integer idBudgetType, Integer idBudgetNature) {
+        Criteria criteria = createEntityCriteria();
+        return criteria.add(Restrictions.eq("idBudgetNature",idBudgetNature))
+                .add(Restrictions.eq("idBudgetType",idBudgetType))
+                .add(Restrictions.eq("idCostCenter",idCostCenter)).list();
+    }
+
+    @Override
+    public Budgets getBudgetByNatureAndCostAndTypeAndConcept(Integer idCostCenter, Integer idBudgetType, Integer idBudgetNature, Integer idConceptBudget) {
+        Criteria criteria = createEntityCriteria();
+        return (Budgets) criteria.add(Restrictions.eq("idBudgetNature",idBudgetNature))
+                .add(Restrictions.eq("idBudgetType",idBudgetType))
+                .add(Restrictions.eq("idCostCenter",idCostCenter))
+                .add(Restrictions.eq("idConceptBudget", idConceptBudget))
+                .uniqueResult();
+    }
+
+    @Override
+    public List<Budgets> findByIdDistributorCostCenter(Integer idDistributorCostCenter, Integer idBudgetType, Integer idBudgetNature) {
+        Criteria criteria = createEntityCriteria();
+
+        if (idDistributorCostCenter != null){
+            criteria.add(Restrictions.eq("idDistributorCostCenter", idDistributorCostCenter));
+        }
+
+        if (idBudgetType != null){
+            criteria.add(Restrictions.eq("idBudgetType", idBudgetType));
+        }
+
+        if (idBudgetNature != null){
+            criteria.add(Restrictions.eq("idBudgetNature", idBudgetNature));
+        }
+        return criteria.list();
+    }
+
+    @Override
+    public Budgets findByNatureTypeAndDistributor(Integer idBudgetNature, Integer idBudgetType, Integer idDistributorCostCenter) {
+        Criteria criteria = createEntityCriteria();
+        return (Budgets) criteria.add(Restrictions.eq("idBudgetNature",idBudgetNature)).
+                add(Restrictions.eq("idBudgetType",idBudgetType)).
+                add(Restrictions.eq("idDistributorCostCenter",idDistributorCostCenter)).uniqueResult();
+    }
+
+    @Override
+    public List<Budgets> findByIdDistributor(Integer idDistributorCostCenter) {
+        Criteria criteria = createEntityCriteria();
+        return criteria.add(Restrictions.eq("idDistributorCostCenter",idDistributorCostCenter)).list();
     }
 
 }

@@ -35,13 +35,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class AccountsPayableServiceImpl implements AccountsPayableService {
-    
+
     @Value("${notification.email_account_payable_template}")
     private String EMAIL_TEMPLATE_NAME;
 
     @Autowired
     private AccountsPayableDao accountsPayableDao;
-    
+
     @Autowired
     private RequestsDao requestsDao;
 
@@ -49,7 +49,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
     private CPeriodsDao periodsDao;
 
     @Autowired
-    private BudgetYearConceptDao budgetYearConceptDao;
+    private RealBudgetSpendingDao budgetYearConceptDao;
 
     @Autowired
     private BalancesDao balancesDao;
@@ -183,7 +183,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
     }
 
     @Override
-        public List<AccountsPayable> findAccountsNow() {
+    public List<AccountsPayable> findAccountsNow() {
         return accountsPayableDao.findAccountsofDay();
     }
 
@@ -303,7 +303,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
                 }
                 //RequestTypesProduct requestTypesProduct = requests.getRequestTypeProduct();
                 //CProductTypes productType = requestTypesProduct.getProductType();
-//                BudgetYearConcept budgetYearConcept = requests.getBudgetYearConcept();
+//                RealBudgetSpending budgetYearConcept = requests.getBudgetYearConcept();
 //                DwEnterprises dwEnterprise = budgetYearConcept.getDwEnterprise();
 //                CDistributors cDistributors = dwEnterprise.getDistributor();
 //                CRegions cRegions = dwEnterprise.getRegion();
@@ -315,7 +315,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
 
                 row = hoja.createRow(aux);
                 // Create a cell and put a value in it.
-              //  row.createCell(0).setCellValue(productType.getProductType());
+                //  row.createCell(0).setCellValue(productType.getProductType());
                 row.createCell(1).setCellValue(accountsPayable.getAmount().toString());
 //                row.createCell(2).setCellValue(cDistributors.getAcronyms());
 //                row.createCell(3).setCellValue(cRegions.getRegionName());
@@ -369,7 +369,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
 
     @Override
     public List<AccountsPayable> sendEmail() {
-      ArrayList<AccountsPayable> accountsPayables = (ArrayList<AccountsPayable>) accountsPayableDao.findNow();
+        ArrayList<AccountsPayable> accountsPayables = (ArrayList<AccountsPayable>) accountsPayableDao.findNow();
         if(accountsPayables.size()>0){
             for (AccountsPayable accountsPayable : accountsPayables){
                 Requests requests = requestsDao.findByFolio(accountsPayable.getFolio());

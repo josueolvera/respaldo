@@ -33,7 +33,6 @@ public class CBudgetCategories implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_BUDGET_CATEGORY")
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetCategory;
@@ -49,6 +48,14 @@ public class CBudgetCategories implements Serializable {
     @Column(name = "CREATION_DATE", updatable = false)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
+
+    @Column(name = "USERNAME", nullable=true)
+    @JsonView(JsonViews.Root.class)
+    private String username;
+
+    @Column(name = "FIRST_LEVEL", nullable=true)
+    @JsonView(JsonViews.Root.class)
+    private String firstLevel;
 
     @Basic(optional = false)
     @NotNull
@@ -100,6 +107,21 @@ public class CBudgetCategories implements Serializable {
         this.creationDate = creationDate;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getFirstLevel() {
+        return firstLevel;
+    }
+
+    public void setFirstLevel(String firstLevel) {
+        this.firstLevel = firstLevel;
+    }
 
     @Override
     public int hashCode() {

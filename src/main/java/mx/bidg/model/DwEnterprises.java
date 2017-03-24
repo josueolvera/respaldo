@@ -38,6 +38,11 @@ import org.hibernate.annotations.DynamicUpdate;
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class DwEnterprises implements Serializable {
 
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "ID_SUBAREA")
+    private int idSubarea;
+
     private static final long serialVersionUID = 1L;
 
     public static final DwEnterprises DEFAULT_DW_ENTERPRISES = new DwEnterprises(113);
@@ -117,10 +122,23 @@ public class DwEnterprises implements Serializable {
     @JsonView(JsonViews.Root.class)
     private boolean status;
 
+    @Column(name = "ID_BUSINESS_LINE", insertable = false, updatable = false)
+    @JsonView({JsonViews.Root.class, JsonViews.IdsEnterprises.class})
+    private Integer idBusinessLine;
+
     @JoinColumn(name = "ID_ZONA", referencedColumnName = "ID_ZONAS")
     @ManyToOne(optional = false)
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private CZonas zona;
+
+    @JoinColumn(name = "ID_BUSINESS_LINE", referencedColumnName = "ID_BUSINESS_LINE")
+    @ManyToOne(optional = true)
+    @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
+    private CBussinessLine businessLine;
+
+
+
+
 
     public DwEnterprises() {
     }
@@ -254,6 +272,14 @@ public class DwEnterprises implements Serializable {
         this.status = status;
     }
 
+    public Integer getIdBusinessLine() {
+        return idBusinessLine;
+    }
+
+    public void setIdBusinessLine(Integer idBusinessLine) {
+        this.idBusinessLine = idBusinessLine;
+    }
+
     public int getIdZona() {
         return idZona;
     }
@@ -268,6 +294,14 @@ public class DwEnterprises implements Serializable {
 
     public void setZona(CZonas zona) {
         this.zona = zona;
+    }
+
+    public CBussinessLine getBusinessLine() {
+        return businessLine;
+    }
+
+    public void setBussinessLine(CBussinessLine businessLine) {
+        this.businessLine = businessLine;
     }
 
     @Override
@@ -311,5 +345,13 @@ public class DwEnterprises implements Serializable {
                 ", status=" + status +
                 ", zona=" + zona +
                 '}';
+    }
+
+    public int getIdSubarea() {
+        return idSubarea;
+    }
+
+    public void setIdSubarea(int idSubarea) {
+        this.idSubarea = idSubarea;
     }
 }

@@ -67,11 +67,6 @@ public class RoleConcept implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CTravelTypes travelType;
 
-    @JoinColumn(name = "ID_BUDGET_CONCEPT", referencedColumnName = "ID_BUDGET_CONCEPT")
-    @ManyToOne
-    @JsonView(JsonViews.Embedded.class)
-    private CBudgetConcepts budgetConcept;
-
     @Column(name = "ID_ROLE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idRole;
@@ -155,14 +150,6 @@ public class RoleConcept implements Serializable {
         this.idBudgetConcept = idBudgetConcept;
     }
 
-    public CBudgetConcepts getBudgetConcept() {
-        return budgetConcept;
-    }
-
-    public void setBudgetConcept(CBudgetConcepts budgetConcept) {
-        this.budgetConcept = budgetConcept;
-    }
-
     public Integer getIdRole() {
         return idRole;
     }
@@ -224,5 +211,5 @@ public class RoleConcept implements Serializable {
     public String toString() {
         return "mx.bidg.model.RoleConcept[ idRoleConcept=" + idRoleConcept + " ]";
     }
-    
+
 }

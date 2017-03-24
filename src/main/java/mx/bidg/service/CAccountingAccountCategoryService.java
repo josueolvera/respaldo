@@ -9,4 +9,5 @@ import java.util.List;
  */
 public interface CAccountingAccountCategoryService {
     List<CAccountingAccountCategory> findAll();
+    CAccountingAccountCategory findById(Integer idAccountingAccountCategory);
 }

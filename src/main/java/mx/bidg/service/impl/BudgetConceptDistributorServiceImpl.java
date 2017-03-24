@@ -6,7 +6,6 @@ import mx.bidg.dao.BudgetMonthConceptsDao;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.BudgetConceptDistributor;
 import mx.bidg.model.BudgetMonthConcepts;
-import mx.bidg.model.CBudgetConcepts;
 import mx.bidg.model.CDistributors;
 import mx.bidg.service.BudgetConceptDistributorService;
 import mx.bidg.utils.GroupArrays;
@@ -59,20 +58,6 @@ public class BudgetConceptDistributorServiceImpl implements BudgetConceptDistrib
     }
 
     @Override
-    public ArrayList<ArrayList<BudgetConceptDistributor>> findByConcept(CBudgetConcepts concept) {
-        ArrayList<BudgetConceptDistributor> distributionList = (ArrayList) budgetConceptDistributorDao.findByConcept(concept);
-        GroupArrays<BudgetConceptDistributor> grouper = new GroupArrays<>();
-        ArrayList<ArrayList<BudgetConceptDistributor>> distributionGroups = grouper.groupInArray(
-                distributionList, new GroupArrays.Filter<BudgetConceptDistributor>() {
-                    @Override
-                    public String filter(BudgetConceptDistributor item) {
-                        return item.getBudgetMonthConcept().toString();
-                    }
-        });
-        return distributionGroups;
-    }
-
-    @Override
     public List<BudgetConceptDistributor> saveJsonNode(JsonNode node) {
         List<BudgetConceptDistributor> response = new ArrayList<>();
         for (JsonNode arrayNode : node) {
@@ -81,7 +66,6 @@ public class BudgetConceptDistributorServiceImpl implements BudgetConceptDistrib
             BigDecimal totalAmount = BigDecimal.ZERO;
             BigDecimal totalPercent = BigDecimal.ZERO;
 
-            budgetConceptDistributorDao.deleteByBudgetMonthConcept(budgetMonthConcept);
             for (JsonNode budgetPart : arrayNode) {
                 BigDecimal percent = budgetPart.get("percent").decimalValue();
                 totalPercent = totalPercent.add(percent);

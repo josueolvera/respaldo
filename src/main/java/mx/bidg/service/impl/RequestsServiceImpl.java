@@ -10,7 +10,6 @@ import java.util.List;
 import mx.bidg.dao.*;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
-import mx.bidg.service.BudgetYearService;
 import mx.bidg.service.EmailDeliveryService;
 import mx.bidg.service.EmailTemplatesService;
 import mx.bidg.service.FoliosService;
@@ -23,34 +22,34 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class RequestsServiceImpl implements RequestsService {
-    
+
     @Autowired
     RequestsDao requestsDao;
-    
+
     @Autowired
     AccountingAccountsDao accountingAccountsDao;
-    
+
     @Autowired
     RequestTypesProductDao requestTypesProductDao;
-    
+
     @Autowired
     CRequestCategoriesDao cRequestCategoriesDao;
-    
+
     @Autowired
     UsersDao usersDao;
-    
+
     @Autowired
     BudgetsDao budgetsDao;
-    
+
     @Autowired
-    BudgetYearConceptDao budgetYearConceptDao;
-    
+    RealBudgetSpendingDao budgetYearConceptDao;
+
     @Autowired
     CMonthsDao cMonthsDao;
-    
+
     @Autowired
     FoliosService foliosService;
-    
+
     @Autowired
     RequestProductsDao requestProductsDao;
 
@@ -62,7 +61,7 @@ public class RequestsServiceImpl implements RequestsService {
 
     @Autowired
     AccountsPayableDao accountsPayableDao;
-    
+
     @Autowired
     private EmailDeliveryService emailDeliveryService;
 
@@ -71,65 +70,62 @@ public class RequestsServiceImpl implements RequestsService {
 
     @Autowired
     private ObjectMapper mapper;
-    
-    @Autowired
-    private BudgetYearService budgetYearService;
-    
+
     @Override
     public HashMap<String, Object> getBudgetMonthProductType(String data) throws Exception {
-        
+
         JsonNode jsonRequest = mapper.readTree(data);
         HashMap<String, Object> hashMap = new HashMap<>();
-        
+
         CRequestsCategories cRequestsCategory = cRequestCategoriesDao
-        .findById(jsonRequest.get("idRequestCategory").asInt());
-        
+                .findById(jsonRequest.get("idRequestCategory").asInt());
+
         AccountingAccounts accountingAccounts = accountingAccountsDao.findById(jsonRequest.get("idProductType").asInt());
-             
+
         Users userResponsable = usersDao.findByIdFetchDwEmployee(jsonRequest.get("idUserResponsable").asInt());
         LocalDateTime date = LocalDateTime.now();
-        
+
         CMonths month = cMonthsDao.findById(date.getMonthValue());
         Integer year = date.getYear();
-        
+
         if(month == null) {
             throw new ValidationException("No existe el mes", "Error al obtener el mes");
         }
-        
-        DwEnterprises dwEnterprise = userResponsable.getDwEmployee().getDwEnterprise();        
-        
-        Budgets budget = budgetsDao.findByCombination(dwEnterprise.getDistributor(), dwEnterprise.getArea(), 
+
+        DwEnterprises dwEnterprise = userResponsable.getDwEmployee().getDwEnterprise();
+
+        Budgets budget = budgetsDao.findByCombination(dwEnterprise.getDistributor(), dwEnterprise.getArea(),
                 accountingAccounts);
-        
+
         if(budget == null) {
             throw new ValidationException("No existe el Presupuesto", "No existe un presupuesto para esta solicitud");
         }
-        
-        RequestTypesProduct requestTypesProduct = requestTypesProductDao.findByCombination(cRequestsCategory, 
+
+        RequestTypesProduct requestTypesProduct = requestTypesProductDao.findByCombination(cRequestsCategory,
                 accountingAccounts);
-        
+
         if(requestTypesProduct == null) {
             throw new ValidationException("No existe el RequestTypesProduct", "No existe un tipo de producto "
                     + "asociado a esta solicitud");
         }
-        
+
         hashMap.put("requestTypesProduct", requestTypesProduct);
-        BudgetYearConcept budgetYearConcept = budgetYearConceptDao.findByCombination(budget, month, dwEnterprise, year);
-        
-        if(budgetYearConcept == null) {
+        RealBudgetSpending realBudgetSpending = budgetYearConceptDao.findByCombination(budget, month, dwEnterprise, year);
+
+        if(realBudgetSpending == null) {
             throw new ValidationException("No existe Presupuesto para la fecha solicitada", "No existe Presupuesto para la fecha solicitada");
         }
-        
-        hashMap.put("budgetYearConcept", budgetYearConcept);
-          
+
+        hashMap.put("realBudgetSpending", realBudgetSpending);
+
         return hashMap;
     }
-    
+
 
     @Override
     public Requests saveData(String data, Users user) throws Exception {
-        
-        JsonNode jsonRequest = mapper.readTree(data);        
+
+        JsonNode jsonRequest = mapper.readTree(data);
         Requests request = new Requests();
         request.setDescription(jsonRequest.get("request").get("description").asText());
         request.setPurpose(jsonRequest.get("request").get("purpose").asText());
@@ -144,14 +140,6 @@ public class RequestsServiceImpl implements RequestsService {
         request.setcMonths(months);
 
         AccountingAccounts accountingAccounts=accountingAccountsDao.findByCategoryAndSubcategory(idBudgetCategory,idBudgetSubcategory);
-        BudgetYear budgetYear = null;
-        if (accountingAccounts != null && idCostCenter != 0) {
-            Budgets budget = budgetsDao.findByAccountingAccountAndCostCenter(accountingAccounts.getIdAccountingAccount(), idCostCenter);
-            budgetYear =  budgetYearService.findByBudgetAndYear(budget.getIdBudget(), year);
-        }
-        if (budgetYear != null){
-            request.setBudgetYear(budgetYear);
-        }
 
         //51 es el id de Requests en CTables
         request.setFolio(foliosService.createNew(new CTables(51)));
@@ -164,7 +152,7 @@ public class RequestsServiceImpl implements RequestsService {
         request.setApplyingDate(LocalDateTime.now());
         request.setIdAccessLevel(1);
         List<RequestProducts> requestProducts = new ArrayList<>();
-        
+
         for(JsonNode jsonProducts : jsonRequest.get("products")) {
             CProducts product = new CProducts(jsonProducts.get("idProduct").asInt());
             RequestProducts requestProduct = new RequestProducts();
@@ -173,10 +161,10 @@ public class RequestsServiceImpl implements RequestsService {
             requestProduct.setIdAccessLevel(1);
             requestProducts.add(requestProduct);
         }
-        
+
         request.setRequestProductsList(requestProducts);
         request = requestsDao.save(request);
-        
+
         return request;
     }
 
@@ -221,13 +209,13 @@ public class RequestsServiceImpl implements RequestsService {
 //            throw new ValidationException("No hay CXP referentes a esta solicitud", "Necesita agregar informacion de pago para esta " +
 //                    "solicitud", HttpStatus.CONFLICT);
 //        }
-        
+
         if (accountslist.size() > 0) {
             for ( AccountsPayable accountPayable : accountslist) {
                 accountPayable.setAccountPayableStatus(CAccountsPayableStatus.PENDIENTE);
             }
         }
-        
+
         if (periodicsPayment != null) {
             periodicsPayment.setPeriodicPaymentStatus(CPeriodicPaymentsStatus.ACTIVO);
         }

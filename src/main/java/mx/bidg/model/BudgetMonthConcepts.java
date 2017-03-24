@@ -33,48 +33,43 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "BUDGET_MONTH_CONCEPTS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class BudgetMonthConcepts implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "ID_BUDGET_MONTH_CONCEPT")
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetMonthConcept;
-    
+
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "AMOUNT")
     @JsonView(JsonViews.Root.class)
     private BigDecimal amount;
-    
+
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
-    
+
     @Column(name = "ID_BUDGET_MONTH_BRANCH", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetMonthBranch;
-    
+
 //    @Column(name = "ID_BUDGET_CONCEPT", insertable = false, updatable = false)
 //    @JsonView(JsonViews.Root.class)
 //    private Integer idBudgetConcept;
-    
+
     @Column(name = "ID_CURRENCY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idCurrency;
-    
+
 //    @JoinColumn(name = "ID_BUDGET_MONTH_BRANCH", referencedColumnName = "ID_BUDGET_MONTH_BRANCH")
 //    @ManyToOne(optional = false)
 //    @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
-//    private BudgetYearConcept budgetYearConcept;
-    
-    @JoinColumn(name = "ID_BUDGET_CONCEPT", referencedColumnName = "ID_BUDGET_CONCEPT")
-    @ManyToOne(optional = false)
-    @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
-    private CBudgetConcepts budgetConcept;
-    
+//    private RealBudgetSpending budgetYearConcept;
+
     @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
     @ManyToOne(optional = false)
     @JsonView({JsonViews.Embedded.class, JsonViews.EmbeddedBudget.class})
@@ -135,21 +130,13 @@ public class BudgetMonthConcepts implements Serializable {
         this.idCurrency = idCurrency;
     }
 
-//    public BudgetYearConcept getBudgetYearConcept() {
+//    public RealBudgetSpending getBudgetYearConcept() {
 //        return budgetYearConcept;
 //    }
 
-//    public void setBudgetYearConcept(BudgetYearConcept budgetYearConcept) {
+//    public void setBudgetYearConcept(RealBudgetSpending budgetYearConcept) {
 //        this.budgetYearConcept = budgetYearConcept;
 //    }
-
-    public CBudgetConcepts getBudgetConcept() {
-        return budgetConcept;
-    }
-
-    public void setBudgetConcept(CBudgetConcepts budgetConcept) {
-        this.budgetConcept = budgetConcept;
-    }
 
     public CCurrencies getCurrency() {
         return currency;
@@ -183,5 +170,5 @@ public class BudgetMonthConcepts implements Serializable {
     public String toString() {
         return "mx.bidg.model.BudgetMonthConcepts[ idBudgetMonthConcept=" + idBudgetMonthConcept + " ]";
     }
-    
+
 }
