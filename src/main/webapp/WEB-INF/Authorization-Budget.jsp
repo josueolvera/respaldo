@@ -69,13 +69,16 @@
                     this.getUserInSession();
                     this.getBussinessLine();
                     this.getDistributors();
+                    this.getMonths();
                 },
                 data: {
                     now: "${now}",
                     minYear: null,
                     maxYear: null,
                     totalCostCenter: null,
+                    months:[],
                     years: [],
+                    yearbefore: null,
                     budgets: [],
                     concepts: [],
                     user: {},
@@ -113,6 +116,15 @@
                             })
                             .error(function (data) {
                                 showAlert("Ha habido un error al obtener al usuario en sesion", {type: 3});
+                            });
+                    },
+                    getMonths: function () {
+                        this.$http.get(ROOT_URL + '/months')
+                            .success(function (data) {
+                                this.months = data;
+                            })
+                            .error(function (data) {
+
                             });
                     },
                     getBussinessLine: function () {
@@ -164,8 +176,8 @@
                         this.getBudgets(bussinessline,distributor,costCenter,year);
                     },
                     getBudgets: function (bussinessline,distributor,costCenter,year) {
-                        console.log(this.selected.bussiness);
-                        console.log(this.selected.distributor);
+                        var anioanterior= this.selected.year;
+                        this.yearbefore= anioanterior-1;
                         var url = ROOT_URL +
                             '/budgets/authorized?bussinessline='+this.selected.bussiness.idBusinessLine+'&distributor='
                             + this.selected.distributor.idDistributor+'&cost_center=' + this.selected.costCenter.idCostCenter
@@ -182,7 +194,7 @@
                                 this.getTotalCostCenter();
                             })
                             .error(function (data) {
-                                showAlert('Error en la solicitud', {type: 3});
+                                showAlert('Error en la solicitud del budget', {type: 3});
                             });
                     },
                     getAuthorizationBudget:function () {
@@ -278,6 +290,18 @@
             });
         </script>
     </jsp:attribute>
+    <jsp:attribute name="styles">
+        <style>
+            @media (min-width: 992px) {
+                .container-scroll {
+                    overflow-x: auto;
+                }
+                .container-scroll > .row {
+                    width: 2025px;
+                }
+            }
+        </style>
+    </jsp:attribute>
     <jsp:body>
         <div id="content">
             <div class="container-fluid">
@@ -286,6 +310,7 @@
                         <h2>VALIDACIÓN DE PRESUPUESTO</h2>
                     </div>
                 </div>
+
                 <div class="row">
                     <form v-on:submit.prevent="searchBudget(selected.bussiness,selected.distributor,selected.costCenter,selected.year)">
                         <div class="row">
@@ -327,29 +352,9 @@
                                 <button style="margin-top: 25px" class="btn btn-info">Buscar</button>
                             </div>
                         </div>
-                        <!--<div class="row">
-                            <div class="col-md-5" v-if="budgets.length > 0 && authoriza==false">
-                                <h2 style="color: #d58512">
-                                    <span class="glyphicon glyphicon-info-sign ">Presupuesto no autorizado</span></h2>
-                            </div>
-                            <div class="col-md-4" v-if="budgets.length > 0 && authoriza">
-                                <h2 style="color: #449d44">
-                                    <span class="glyphicon glyphicon-ok-sign">Presupuesto autorizado</span></h2>
-                            </div>
-                            <div class="col-md-2 pull-right" v-if="budgets.length > 0 && modifica==1">
-                                <button style="margin-top: 25px" class="btn btn-warning" @click="showSendAuthorizationOrDenies" >Autorizar modificacion</button>
-                            </div>
-                            <div class="col-md-2 pull-right" v-if="budgets.length > 0 && valida && authoriza==false">
-                                <button style="margin-top: 25px" class="btn btn-success" @click="showSendAuthorizationOrDenies" >Autorizar o Rechazar</button>
-                            </div>
-                        </div>-->
-                        <!--<div class="row">
-                            <div class="col-md-8 text-right" v-if="budgets.length > 0">
-                                <h3>Total centro de costo: <b class="text-primary">{{totalCostCenter | currency}}</b></h3>
-                            </div>
-                        </div>-->
                     </form>
                 </div>
+
                 <div class="row">
                     <div class="col-md-5" v-if="budgets.length > 0 && authoriza==false">
                         <h2 style="color: #d58512">
@@ -366,15 +371,38 @@
                         <button style="margin-top: 25px" class="btn btn-success" @click="showSendAuthorizationOrDenies" >Autorizar o Rechazar</button>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="col-md-8 text-right" v-if="budgets.length > 0">
                         <h3>Total centro de costo: <b class="text-primary">{{totalCostCenter | currency}}</b></h3>
                     </div>
                 </div>
+
                 <div v-if="searching" class="col-md-12" style="height: 6rem; padding: 2rem 0;">
                     <div class="loader">Cargando...</div>
                 </div>
-                <div v-else="!searching">
+
+                <div class="container-fluid container-scroll">
+                    <div class="row" style="background-color: #bfbfbf">
+                        <div class="row" style="height: 50px">
+                            <div class="col-md-2 text-center">
+                                <h5><b class="text-primary">{{selected.bussiness.name}}</b></h5>
+                            </div>
+                            <div class="col-md-1 text-center">
+                                <h5><b>Total de: {{yearbefore}}</b></h5>
+                            </div>
+                            <div class="col-md-8 text-center">
+                                <div class="col-md-1" v-for="month in months">
+                                    <h5><b>{{month.month | uppercase}}</b></h5>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <h5><b>Total de: {{selected.year}}</b></h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--<div v-else="!searching">
                     <div v-if="budget.name != null" class="row" v-for="(indexOfBudget, budget) in budgets"
                          style="margin-left: 0px; margin-right: 0px">
                         <div class="bs-callout bs-callout-default" style="background: #204d74">
@@ -443,7 +471,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
                 </div>
                 <br>
                 <!--dialogs-->
