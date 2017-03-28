@@ -9,21 +9,21 @@ import java.util.List;
  * Created by gerardo8 on 30/08/16.
  */
 public class BudgetCategory {
-    private Integer idBudgetCategory;
-    private String name;
-    private String bussinessLine;
+    //private Integer idBudgetCategory;
+    //private String name;
+    //private String bussinessLine;
     private List<BudgetSubcategory> secondLevel;
     private List<RealBudgetSpending>levelOne;
 
     public BudgetCategory() {
     }
 
-    public BudgetCategory(Integer idBudgetCategory, String name) {
+    /*public BudgetCategory(Integer idBudgetCategory, String name) {
         this.idBudgetCategory = idBudgetCategory;
         this.name = name;
-    }
+    }*/
 
-    public Integer getIdBudgetCategory() {
+    /*public Integer getIdBudgetCategory() {
         return idBudgetCategory;
     }
 
@@ -45,7 +45,7 @@ public class BudgetCategory {
 
     public void setBussinessLine(String bussinessLine) {
         this.bussinessLine = bussinessLine;
-    }
+    }*/
 
     public List<BudgetSubcategory> getSecondLevel() {
         return secondLevel;
@@ -64,6 +64,21 @@ public class BudgetCategory {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
+    /*@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -85,5 +100,5 @@ public class BudgetCategory {
                 "idBudgetCategory=" + idBudgetCategory +
                 ", name='" + name + '\'' +
                 '}';
-    }
+    }*/
 }
