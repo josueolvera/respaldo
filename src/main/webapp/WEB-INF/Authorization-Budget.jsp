@@ -76,7 +76,7 @@
                     minYear: null,
                     maxYear: null,
                     totalCostCenter: null,
-                    months:[],
+                    months: [],
                     years: [],
                     yearbefore: null,
                     budgets: [],
@@ -91,8 +91,8 @@
                         budget: null,
                         subbudget: null,
                     },
-                    bussinessLines:{},
-                    distributors:{},
+                    bussinessLines: {},
+                    distributors: {},
                     searching: false,
                     rolesCostCenter: [],
                     costCenterList: [],
@@ -100,7 +100,7 @@
                     budgetCategories: [],
                     role: null,
                     errorMessage: '',
-                    coment:'',
+                    coment: '',
                     authorizationBudget: {},
                     valida: false,
                     authoriza: false,
@@ -171,42 +171,40 @@
                             this.years.push(i)
                         }
                     },
-                    searchBudget: function (bussinessline,distributor,costCenter,year) {
+                    searchBudget: function () {
                         this.searching = true;
-                        this.getBudgets(bussinessline,distributor,costCenter,year);
+                        this.getBudgets();
                     },
-                    getBudgets: function (bussinessline,distributor,costCenter,year) {
-                        var anioanterior= this.selected.year;
-                        this.yearbefore= anioanterior-1;
+                    getBudgets: function () {
+                        var anioanterior = this.selected.year;
+                        this.yearbefore = anioanterior - 1;
                         var url = ROOT_URL +
-                            '/budgets/authorized?bussinessline='+this.selected.bussiness.idBusinessLine+'&distributor='
-                            + this.selected.distributor.idDistributor+'&cost_center=' + this.selected.costCenter.idCostCenter
-                            +'&year=' + this.selected.year;
-                        this.$http.get(url)
-                            .success(function (data) {
-                                var self = this;
-                                this.budgets = data;
-                                this.searching = false;
-                                this.getAuthorizationBudget();
-                                if (data.length <= 0) {
-                                    showAlert('No existen presupuestos por autorizar');
-                                }
-                                this.getTotalCostCenter();
-                            })
-                            .error(function (data) {
-                                showAlert('Error en la solicitud del budget', {type: 3});
-                            });
+                            '/budgets/authorized?bussinessline=' + this.selected.bussiness.idBusinessLine + '&distributor='
+                            + this.selected.distributor.idDistributor + '&cost_center=' + this.selected.costCenter.idCostCenter
+                            + '&year=' + this.selected.year;
+                        this.$http.get(url).success(function (data) {
+                            var self = this;
+                            this.budgets = data;
+                            this.searching = false;
+                            this.getAuthorizationBudget();
+                            if (data.length <= 0) {
+                                showAlert('No existen presupuestos por autorizar');
+                            }
+                            //this.getTotalCostCenter();
+                        }).error(function (data) {
+                            showAlert("Hola");
+                        });
                     },
-                    getAuthorizationBudget:function () {
-                        this.$http.get(ROOT_URL + '/authorizathion-costcenter/cost?cost_center='+this.selected.costCenter.idCostCenter+ '&year='+this.selected.year).success(function (data) {
+                    getAuthorizationBudget: function () {
+                        this.$http.get(ROOT_URL + '/authorizathion-costcenter/cost?cost_center=' + this.selected.costCenter.idCostCenter + '&year=' + this.selected.year).success(function (data) {
                             this.authorizationBudget = data;
-                            if(this.authorizationBudget.validation){
+                            if (this.authorizationBudget.validation) {
                                 this.valida = true;
                             }
-                            if(this.authorizationBudget.authorization){
-                                this.authoriza= true;
+                            if (this.authorizationBudget.authorization) {
+                                this.authoriza = true;
                             }
-                            if(this.authorizationBudget.modify){
+                            if (this.authorizationBudget.modify) {
                                 this.modifica = true;
                             }
                         }).error(function (data) {
@@ -268,7 +266,7 @@
                     },
                     confirmAuthorization: function () {
                         this.closeAuthorizationBudget();
-                        this.$http.post(ROOT_URL + '/budgets/validated?cost_center='+ this.selected.costCenter.idCostCenter + '&year=' + this.selected.year).success(function (data) {
+                        this.$http.post(ROOT_URL + '/budgets/validated?cost_center=' + this.selected.costCenter.idCostCenter + '&year=' + this.selected.year).success(function (data) {
                             this.getBudgets(this.selected.year);
                             showAlert('Presupuesto autorizado');
                         }).error(function (data) {
@@ -296,6 +294,7 @@
                 .container-scroll {
                     overflow-x: auto;
                 }
+
                 .container-scroll > .row {
                     width: 2025px;
                 }
@@ -304,57 +303,56 @@
     </jsp:attribute>
     <jsp:body>
         <div id="content">
-            <div class="container-fluid">
+            <div class="container">
                 <div class="row">
                     <div class="col-md-6">
                         <h2>VALIDACIÓN DE PRESUPUESTO</h2>
                     </div>
                 </div>
-
-                <div class="row">
-                    <form v-on:submit.prevent="searchBudget(selected.bussiness,selected.distributor,selected.costCenter,selected.year)">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <label>Linea de negocio</label>
-                                <select v-model="selected.bussiness" class="form-control" @change="onChangeFilter" required>
-                                    <option v-for="bussiness in bussinessLines" :value="bussiness">
-                                        {{bussiness.name}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <label>Empresa</label>
-                                <select v-model="selected.distributor" class="form-control" @change="onChangeFilter" required>
-                                    <option v-for="distributor in distributors" :value="distributor">
-                                        {{distributor.distributorName}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <label>Centro de costos</label>
-                                <select v-model="selected.costCenter" class="form-control" @change="onChangeFilter"
-                                        required>
-                                    <option v-for="costCenter in costCenterList" :value="costCenter">
-                                        {{costCenter.name}}
-                                    </option>
-                                </select>
-                            </div>
-
-                            <div class="col-md-2">
-                                <label>Año</label>
-                                <select v-model="selected.year" class="form-control" @change="onChangeFilter" required>
-                                    <option v-for="year in years" :value="year">
-                                        {{year}}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-md-1">
-                                <button style="margin-top: 25px" class="btn btn-info">Buscar</button>
-                            </div>
+                <br>
+                <form v-on:submit.prevent="searchBudget()">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>Linea de negocio</label>
+                            <select v-model="selected.bussiness" class="form-control" @change="onChangeFilter"
+                                    required>
+                                <option v-for="bussiness in bussinessLines" :value="bussiness">
+                                    {{bussiness.name}}
+                                </option>
+                            </select>
                         </div>
-                    </form>
-                </div>
-
+                        <div class="col-md-3">
+                            <label>Empresa</label>
+                            <select v-model="selected.distributor" class="form-control" @change="onChangeFilter"
+                                    required>
+                                <option v-for="distributor in distributors" :value="distributor">
+                                    {{distributor.distributorName}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Centro de costos</label>
+                            <select v-model="selected.costCenter" class="form-control" @change="onChangeFilter"
+                                    required>
+                                <option v-for="costCenter in costCenterList" :value="costCenter">
+                                    {{costCenter.name}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label>Año</label>
+                            <select v-model="selected.year" class="form-control" @change="onChangeFilter" required>
+                                <option v-for="year in years" :value="year">
+                                    {{year}}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-1">
+                            <button style="margin-top: 25px" class="btn btn-info">Buscar</button>
+                        </div>
+                    </div>
+                </form>
+                <br>
                 <div class="row">
                     <div class="col-md-5" v-if="budgets.length > 0 && authoriza==false">
                         <h2 style="color: #d58512">
@@ -365,121 +363,533 @@
                             <span class="glyphicon glyphicon-ok-sign">Presupuesto autorizado</span></h2>
                     </div>
                     <div class="col-md-2 pull-right" v-if="budgets.length > 0 && modifica==1">
-                        <button style="margin-top: 25px" class="btn btn-warning" @click="showSendAuthorizationOrDenies" >Autorizar modificacion</button>
+                        <button style="margin-top: 25px" class="btn btn-warning" @click="showSendAuthorizationOrDenies">
+                            Autorizar modificacion
+                        </button>
                     </div>
                     <div class="col-md-2 pull-right" v-if="budgets.length > 0 && valida && authoriza==false">
-                        <button style="margin-top: 25px" class="btn btn-success" @click="showSendAuthorizationOrDenies" >Autorizar o Rechazar</button>
+                        <button style="margin-top: 25px" class="btn btn-success" @click="showSendAuthorizationOrDenies">
+                            Autorizar o Rechazar
+                        </button>
                     </div>
                 </div>
-
-                <div class="row">
+                <br>
+                <!--<div class="row">
                     <div class="col-md-8 text-right" v-if="budgets.length > 0">
                         <h3>Total centro de costo: <b class="text-primary">{{totalCostCenter | currency}}</b></h3>
                     </div>
-                </div>
-
-                <div v-if="searching" class="col-md-12" style="height: 6rem; padding: 2rem 0;">
+                </div>-->
+                <!--<div v-if="searching" class="col-md-12" style="height: 6rem; padding: 2rem 0;">
                     <div class="loader">Cargando...</div>
-                </div>
+                </div>-->
 
-                <div class="container-fluid container-scroll">
-                    <div class="row" style="background-color: #bfbfbf">
-                        <div class="row" style="height: 50px">
-                            <div class="col-md-2 text-center">
-                                <h5><b class="text-primary">{{selected.bussiness.name}}</b></h5>
-                            </div>
-                            <div class="col-md-1 text-center">
-                                <h5><b>Total de: {{yearbefore}}</b></h5>
-                            </div>
-                            <div class="col-md-8 text-center">
-                                <div class="col-md-1" v-for="month in months">
-                                    <h5><b>{{month.month | uppercase}}</b></h5>
+                <div class="container-fluid container-scroll" v-if="budgets.length > 0">
+                    <div class="row" style="background-color: darkslategrey">
+                        <div class="col-md-12" style="color: black">
+                            <div class="row" style="height: 50px">
+                                <div class="col-md-2 text-center">
+                                    <h5><b class="text-primary">{{selected.bussiness.name}}</b></h5>
+                                </div>
+                                <div class="col-md-1 text-center">
+                                    <h5><b>Total de: {{yearbefore}}</b></h5>
+                                </div>
+                                <div class="col-md-8 text-center">
+                                    <div class="col-md-1" v-for="month in months">
+                                        <h5><b>{{month.month | uppercase}}</b></h5>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <h5><b>Total de: {{selected.year}}</b></h5>
                                 </div>
                             </div>
-                            <div class="col-md-1">
-                                <h5><b>Total de: {{selected.year}}</b></h5>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--<div v-else="!searching">
-                    <div v-if="budget.name != null" class="row" v-for="(indexOfBudget, budget) in budgets"
-                         style="margin-left: 0px; margin-right: 0px">
-                        <div class="bs-callout bs-callout-default" style="background: #204d74">
-                            <div class="row">
-                                <div class="col-md-7">
-                                    <h4><b>{{budget.name}}</b></h4>
-                                </div>
-                                <div class="col-md-5 text-right">
-                                    <h4>Total rubro: <b class="text-primary" style="color: black">{{budget.totalCategoryAmount
-                                        |currency}}</b></h4>
-                                </div>
-                            </div>
-                            <div class="row" v-for="(indexOfSubBudget,subbudget) in budget.realBudgetSpendings"
-                                 style="margin-left: 0px; margin-right: 0px">
-                                <div class="well">
-                                    <div class="row" style="margin-left: 0px">
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Ene</label>
-                                            <label class="form-control">{{subbudget.januaryBudgetAmount}}</label>
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Feb</label>
-                                            <label class="form-control">{{subbudget.februaryBudgetAmount}}</label>
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Mar</label>
-                                            <label class="form-control">{{subbudget.marchBudgetAmount}}</label>
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Abr</label>
-                                            <label class="form-control">{{subbudget.aprilBudgetAmount}}</label>
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>May</label>
-                                            <label class="form-control">{{subbudget.mayBudgetAmount}}</label>
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Jun</label>
-                                            <label class="form-control">{{subbudget.juneBudgetAmount}}</label>
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Jul</label>
-                                            <label class="form-control">{{subbudget.julyBudgetAmount}}</label>
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Ago</label>
-                                            <label class="form-control">{{subbudget.augustBudgetAmount}}</label>
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Sep</label>
-                                            <label class="form-control">{{subbudget.septemberBudgetAmount}}</label>
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Oct</label>
-                                            <label class="form-control">{{subbudget.octoberBudgetAmount}}</label>
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Nov</label>
-                                            <label class="form-control">{{subbudget.novemberBudgetAmount}}</label>
-                                        </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
-                                            <label>Dic</label>
-                                            <label class="form-control">{{subbudget.decemberBudgetAmount}}</label>
-                                        </div>
+                            <div class="row" style="background-color: #cfcfcf">
+                                <div class="col-md-12">
+                                    <div class="col-md-2">
+                                        <h5><b>{{selected.distributor.distributorName}}</b></h5>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>-->
+
+                        <div class="col-md-12" style="height:70%;overflow-y: auto;">
+                            <div class="row" v-for="budget in budgets" style="background-color: #dfdfdf">
+                                <div class="col-md-12" v-for="subBudget in budget.levelOne">
+                                    <div class="col-md-12" style="background: #333333; color: white">
+                                        <div class="col-md-2">
+                                            <h5><b>{{subBudget.budget.distributorCostCenter.accountingAccounts.budgetCategory.budgetCategory}}</b>
+                                            </h5>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <!--Aqui va el año anterior -->
+                                        </div>
+                                        <div class="col-md-8 text-center">
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.januaryBudgetAmount | currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.februaryBudgetAmount | currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.marchBudgetAmount | currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.aprilBudgetAmount | currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.mayBudgetAmount | currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.juneBudgetAmount | currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.julyBudgetAmount | currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.augustBudgetAmount | currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.septemberBudgetAmount | currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.octoberBudgetAmount | currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.novemberBudgetAmount | currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.decemberBudgetAmount | currency}}</b>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1 text-center">
+                                            <b>{{subBudget.totalBudgetAmount | currency}}</b>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12" style="background: white">
+                                        <div class="col-md-2">
+                                            <h5><b><span class="pull-right">{{subBudget.budget.conceptBudget.nameConcept}}</span></b></h5>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <!--Aqui va el año anterior -->
+                                        </div>
+                                        <div class="col-md-8 text-center">
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.januaryBudgetAmount| currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.februaryBudgetAmount| currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.marchBudgetAmount| currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.aprilBudgetAmount| currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.mayBudgetAmount| currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.juneBudgetAmount| currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.julyBudgetAmount| currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.augustBudgetAmount| currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.septemberBudgetAmount| currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.octoberBudgetAmount| currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.novemberBudgetAmount| currency}}</b>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.decemberBudgetAmount| currency}}</b>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <b>{{subBudget.totalBudgetAmount | currency}}</b>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12" v-for="subBudget in budget.secondLevel">
+                                    <div v-for="subBudgetSecond in subBudget.secondLevel">
+                                        <div class="col-md-12" style="background: #333333; color: white">
+                                            <div class="col-md-2 align-right">
+                                                <h5><b>{{subBudgetSecond.budget.distributorCostCenter.accountingAccounts.budgetCategory.budgetCategory}}</b>
+                                                </h5>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <!-- Aqui va el año anterior-->
+                                            </div>
+                                            <div class="col-md-8 text-center">
+                                                <div class="col-md-1">
+                                                    <b>{{subBudget.januaryBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudget.februaryBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudget.marchBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudget.aprilBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudget.mayBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudget.juneBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudget.julyBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudget.augustBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudget.septemberBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudget.octoberBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudget.novemberBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudget.decemberBudgetAmount | currency}}</b>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1 text-center">
+                                                <b>{{subBudget.totalBudgetAmount | currency}}</b>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12" style="background: #666666; color: white">
+                                            <div class="col-md-2 text-center">
+                                                <h5><b>{{subBudgetSecond.budget.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</b>
+                                                </h5>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <!-- Aqui va el año anterior-->
+                                            </div>
+                                            <div class="col-md-8 text-center">
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.januaryBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.februaryBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.marchBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.aprilBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.mayBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.juneBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.julyBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.augustBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.septemberBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.octoberBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.novemberBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.decemberBudgetAmount | currency}}</b>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.totalBudgetAmount | currency}}</b>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12" style="background: white">
+                                            <div class="col-md-2 text-center">
+                                                <h5><b><span class="pull-right">{{subBudgetSecond.budget.conceptBudget.nameConcept}}</span></b></h5>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <!-- Aqui va el año anterior-->
+                                            </div>
+                                            <div class="col-md-8 text-center">
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.januaryBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.februaryBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.marchBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.aprilBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.mayBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.juneBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.julyBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.augustBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.septemberBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.octoberBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.novemberBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecond.decemberBudgetAmount | currency}}</b>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.totalBudgetAmount | currency}}</b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-12" v-for="subBudget in budget.secondLevel">
+                                    <div v-for="subBudgetThird in subBudget.thirdLevel">
+                                        <div class="col-md-12" v-for="thirdLevel in subBudgetThird.findLevel" style="background: #333333; color: white">
+                                            <div class="col-md-2">
+                                                <h5><b>{{thirdLevel.budget.distributorCostCenter.accountingAccounts.budgetCategory.budgetCategory}}</b></h5>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <!-- Aqui va el año anterior-->
+                                            </div>
+                                            <div class="col-md-8 text-center">
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.januaryBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.februaryBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.marchBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.aprilBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.mayBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.juneBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.julyBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.augustBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.septemberBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.octoberBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.novemberBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.decemberBudgetAmount | currency}}</b>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudget.totalBudgetAmount | currency}}</b>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12" v-for="thirdLevel in subBudgetThird.findLevel" style="background: #666666; color: white">
+                                            <div class="col-md-2 text-center">
+                                                <h5><b>{{thirdLevel.budget.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</b></h5>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <!--Aqui va el año anterior -->
+                                            </div>
+                                            <div class="col-md-8 text-center">
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetThird.januaryBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetThird.februaryBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetThird.marchBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetThird.aprilBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetThird.mayBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetThird.juneBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetThird.julyBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetThird.augustBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetThird.septemberBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetThird.octoberBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetThird.novemberBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetThird.decemberBudgetAmount | currency}}</b>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{subBudgetThird.totalBudgetAmount | currency}}</b>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12" v-for="thirdLevel in subBudgetThird.findLevel" style="background: #999999; color: black">
+                                            <div class="col-md-2 text-center">
+                                                <h5><b>{{thirdLevel.budget.distributorCostCenter.accountingAccounts.cBudgetSubSubcategories.name}}</b></h5>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <!--Aqui va el año anterior -->
+                                            </div>
+                                            <div class="col-md-8 text-center">
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.januaryBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.februaryBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.marchBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.aprilBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.mayBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.juneBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.julyBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.augustBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.septemberBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.octoberBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.novemberBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.decemberBudgetAmount | currency}}</b>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{thirdLevel.totalBudgetAmount | currency}}</b>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12" v-for="thirdLevel in subBudgetThird.findLevel" style="background: white; color: black">
+                                            <div class="col-md-2 text-rigth">
+                                                <h5><b><span class="pull-right">{{thirdLevel.budget.conceptBudget.nameConcept}}</span></b></h5>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <!--Aqui va el año anterior -->
+                                            </div>
+                                            <div class="col-md-8 text-center">
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.januaryBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.februaryBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.marchBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.aprilBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.mayBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.juneBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.julyBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.augustBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.septemberBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.octoberBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.novemberBudgetAmount | currency}}</b>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <b>{{thirdLevel.decemberBudgetAmount | currency}}</b>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <b>{{thirdLevel.totalBudgetAmount | currency}}</b>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <br>
                 <!--dialogs-->
-                <div class="modal fade" id="sendAuthorizationOrDenies" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal fade" id="sendAuthorizationOrDenies" tabindex="-1" role="dialog"
+                     aria-labelledby="myModalLabel">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header" style="background: darkslategrey; color: black">
-                                <button type="button" class="close" aria-label="Close" @click="closeSendAuthorizationOrDenies">
+                                <button type="button" class="close" aria-label="Close"
+                                        @click="closeSendAuthorizationOrDenies">
                                     <span aria-hidden="true">&times;</span></button>
                                 <h4 class="modal-title" id="sendValidationLabel"><b>Añadir un comentario</b></h4>
                             </div>
@@ -493,7 +903,8 @@
                             <div class="modal-footer">
                                 <button class="btn btn-success" @click="showAuthorizationBudget">Autorizar</button>
                                 <button class="btn btn-warning" @click="showDeniesBudget">Rechazar</button>
-                                <button class="btn btn-default" @click="closeSendAuthorizationOrDenies">Cancelar</button>
+                                <button class="btn btn-default" @click="closeSendAuthorizationOrDenies">Cancelar
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -510,62 +921,75 @@
                             <div class="modal-body">
                                 <div class="row">
                                     <div>
-                                        <p>&nbsp El presupuesto para el centro de costos {{selected.costCenter.name}} será modificado y se</p>
-                                        <p>&nbsp notificará a  a kjuarez@bidg.com</p>
+                                        <p>&nbsp El presupuesto para el centro de costos {{selected.costCenter.name}}
+                                            será
+                                            modificado y se</p>
+                                        <p>&nbsp notificará a a kjuarez@bidg.com</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button class="btn btn-success" @click="confirmDenisAuthorization">Aceptar</button>
-                                <button type="button" class="btn btn-default" @click="closeDeniesBudget">Cancelar</button>
+                                <button type="button" class="btn btn-default" @click="closeDeniesBudget">Cancelar
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="modal fade" id="authorizationBudget" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal fade" id="authorizationBudget" tabindex="-1" role="dialog"
+                     aria-labelledby="myModalLabel">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header" style="background: darkslategrey; color: black">
-                                <button type="button" class="close" aria-label="Close" @click="closeAuthorizationBudget">
+                                <button type="button" class="close" aria-label="Close"
+                                        @click="closeAuthorizationBudget">
                                     <span aria-hidden="true">&times;</span></button>
                                 <h4 class="modal-title" id="authorizationBudgetLabel"><b>Autorizar presupuesto</b></h4>
                             </div>
                             <div class="modal-body">
                                 <div class="row">
                                     <div>
-                                        <p>&nbsp El presupuesto para el centro de costos {{selected.costCenter.name}} será autorizado y se</p>
-                                        <p>&nbsp notificará a  a kjuarez@bidg.com</p>
+                                        <p>&nbsp El presupuesto para el centro de costos {{selected.costCenter.name}}
+                                            será
+                                            autorizado y se</p>
+                                        <p>&nbsp notificará a a kjuarez@bidg.com</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button class="btn btn-success" @click="confirmAuthorization">Aceptar</button>
-                                <button type="button" class="btn btn-default" @click="closeAuthorizationBudget">Cancelar</button>
+                                <button type="button" class="btn btn-default" @click="closeAuthorizationBudget">Cancelar
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="modal fade" id="authorizationModify" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal fade" id="authorizationModify" tabindex="-1" role="dialog"
+                     aria-labelledby="myModalLabel">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header" style="background: darkslategrey; color: black">
-                                <button type="button" class="close" aria-label="Close" @click="closeAuthorizationBudget">
+                                <button type="button" class="close" aria-label="Close"
+                                        @click="closeAuthorizationBudget">
                                     <span aria-hidden="true">&times;</span></button>
                                 <h4 class="modal-title" id="authorizationModifyLabel"><b>Realizar modificación</b></h4>
                             </div>
                             <div class="modal-body">
                                 <div class="row">
                                     <div>
-                                        <p>&nbsp El presupuesto para el centro de costos {{selected.costCenter.name}} será autorizado y se</p>
-                                        <p>&nbsp notificará a  a kjuarez@bidg.com</p>
+                                        <p>&nbsp El presupuesto para el centro de costos {{selected.costCenter.name}}
+                                            será
+                                            autorizado y se</p>
+                                        <p>&nbsp notificará a a kjuarez@bidg.com</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button class="btn btn-success" @click="confirmAuthorization">Aceptar</button>
-                                <button type="button" class="btn btn-default" @click="closeAuthorizationBudget">Cancelar</button>
+                                <button type="button" class="btn btn-default" @click="closeAuthorizationBudget">Cancelar
+                                </button>
                             </div>
                         </div>
                     </div>
