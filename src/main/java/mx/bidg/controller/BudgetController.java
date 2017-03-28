@@ -255,11 +255,10 @@ public class BudgetController {
             @RequestParam(name = "bussinessline")Integer idBussinessline,
             @RequestParam(name = "distributor") Integer idDistributor,
             @RequestParam(name = "cost_center") Integer idCostCenter,
-            @RequestParam(name = "year", required = false) Integer year,
-            HttpServletResponse response
+            @RequestParam(name = "year", required = false) Integer year
     ) throws Exception {
         List<BudgetCategory> budgetCategories = budgetHelper.getAuthorizationBudget(idBussinessline,idDistributor,idCostCenter,year);
-        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(budgetCategories));
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(budgetCategories),HttpStatus.OK);
     }
 
     @RequestMapping(value = "/cost-center/{idCostCenter}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
