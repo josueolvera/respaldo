@@ -453,21 +453,21 @@
                                     </option>
                                 </select>
                             </div>
-                            <div class="col-md-3">
-                                <label>Tipo de gasto</label>
-                                <select v-model="selected.budgetNature" class="form-control" @change="onChangeFilter"
-                                        required>
-                                    <option v-for="budgetNature in budgetNatureList" :value="budgetNature">
-                                        {{budgetNature.budgetNature}}
-                                    </option>
-                                </select>
-                            </div>
                             <div class="col-md-2">
                                 <label>Clasificación</label>
                                 <select v-model="selected.budgetType" class="form-control multiselect-ui" @change="onChangeFilter"
                                         required>
                                     <option v-for="budgetType in budgetTypes" :value="budgetType">
                                         {{budgetType.budgetType}}
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Tipo de gasto</label>
+                                <select v-model="selected.budgetNature" class="form-control" @change="onChangeFilter"
+                                        required>
+                                    <option v-for="budgetNature in budgetNatureList" :value="budgetNature">
+                                        {{budgetNature.budgetNature}}
                                     </option>
                                 </select>
                             </div>
@@ -480,7 +480,7 @@
                                 </select>
                             </div>
                             <div class="col-md-2">
-                                <button style="margin-top: 25px" class="btn btn-info">Capturar</button>
+                                <button style="margin-top: 25px" class="btn btn-info">Seleccionar</button>
                             </div>
                         </div>
                         <br>
