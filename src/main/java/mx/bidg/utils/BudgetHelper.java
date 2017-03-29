@@ -225,6 +225,7 @@ public class BudgetHelper {
     }
 
     public List<BudgetCategory> getAuthorizationBudget(Integer idBussinessLine,Integer idDistributor,Integer idCostCenter, Integer year){
+        Integer anioAnterior = year-1;
         List<DistributorCostCenter> dcc = distributorCostCenterService.findByIdBussinessAndDistributorAndCostCenter(idBussinessLine,idDistributor,idCostCenter);
         List<BudgetCategory> categories = new ArrayList<>();
         System.out.println("Tamaño de la lista: "+ dcc.size());
@@ -239,11 +240,19 @@ public class BudgetHelper {
                     BudgetCategory budgetCategory = new BudgetCategory();
                     BudgetSubcategory bs = new BudgetSubcategory();
                     List<Budgets> budgetsList = budgetsService.findByIdDistributor(distributorCostCenter.getIdDistributorCostCenter());
+                    List<RealBudgetSpending> realBudgetSpendingYearBeforeList = new ArrayList<>();
                     List<RealBudgetSpending> realBudgetSpendingList = new ArrayList<>();
                     for(Budgets b: budgetsList){
                         RealBudgetSpending r = realBudgetSpendingService.findByIdBudgetAndYear(b.getIdBudget(),year);
+                        RealBudgetSpending rAnterior = realBudgetSpendingService.findByIdBudgetAndYear(b.getIdBudget(),anioAnterior);
                         realBudgetSpendingList.add(r);
+                        if(rAnterior!=null) {
+                            realBudgetSpendingYearBeforeList.add(rAnterior);
+                        }else {
+                            realBudgetSpendingYearBeforeList.add(null);
+                        }
                     }
+                    budgetCategory.setLevelOneYearBefore(realBudgetSpendingYearBeforeList);
                     budgetCategory.setLevelOne(realBudgetSpendingList);
                     budgetCategory.setSecondLevel(new ArrayList<>());
                     bs.setSecondLevel(new ArrayList<>());
@@ -257,10 +266,20 @@ public class BudgetHelper {
                     BudgetSubcategory bs = new BudgetSubcategory();
                     List<BudgetSubcategory> budgetSubcategoryList = new ArrayList<>();
                     List<RealBudgetSpending> realBudgetSpendingList = new ArrayList<>();
+                    List<RealBudgetSpending> realBudgetSpendingYearBeforeList = new ArrayList<>();
                     List<Budgets> budgetsList = budgetsService.findByIdDistributor(distributorCostCenter.getIdDistributorCostCenter());
                     for(Budgets b: budgetsList){
                         RealBudgetSpending r = realBudgetSpendingService.findByIdBudgetAndYear(b.getIdBudget(),year);
+                        RealBudgetSpending rAnterior = realBudgetSpendingService.findByIdBudgetAndYear(b.getIdBudget(),anioAnterior);
                         realBudgetSpendingList.add(r);
+                        if(rAnterior!=null) {
+                            realBudgetSpendingYearBeforeList.add(rAnterior);
+                        }
+                    }
+                    if(!realBudgetSpendingYearBeforeList.isEmpty()) {
+                        bs.setSecondLevelBeforeYear(realBudgetSpendingYearBeforeList);
+                    }else{
+                        bs.setSecondLevelBeforeYear(new ArrayList<>());
                     }
                     bs.setSecondLevel(realBudgetSpendingList);
                     bs.setThirdLevel(new ArrayList<>());
@@ -276,11 +295,17 @@ public class BudgetHelper {
                     List<BudgetSubSubcategory> budgetSubSubcategoryList = new ArrayList<>();
                     List<BudgetSubcategory> budgetSubcategoryList = new ArrayList<>();
                     List<RealBudgetSpending> realBudgetSpendingList = new ArrayList<>();
+                    List<RealBudgetSpending> realBudgetSpendingYearBeforeList = new ArrayList<>();
                     List<Budgets> budgetsList = budgetsService.findByIdDistributor(distributorCostCenter.getIdDistributorCostCenter());
                     for(Budgets b: budgetsList){
                         RealBudgetSpending r = realBudgetSpendingService.findByIdBudgetAndYear(b.getIdBudget(),year);
+                        RealBudgetSpending rAnterior = realBudgetSpendingService.findByIdBudgetAndYear(b.getIdBudget(),anioAnterior);
                         realBudgetSpendingList.add(r);
+                        if(rAnterior!=null) {
+                            realBudgetSpendingYearBeforeList.add(rAnterior);
+                        }
                         bss.setFindLevel(realBudgetSpendingList);
+                        bss.setFindLevelBeforeYear(realBudgetSpendingYearBeforeList);
                         budgetSubSubcategoryList.add(bss);
                         bs.setThirdLevel(budgetSubSubcategoryList);
                         bs.setSecondLevel(new ArrayList<>());

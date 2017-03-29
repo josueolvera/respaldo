@@ -22,7 +22,21 @@ public class BudgetSubSubcategory {
     private BigDecimal novemberBudgetAmount;
     private BigDecimal decemberBudgetAmount;
     private BigDecimal totalBudgetAmount;
+    private BigDecimal januaryBeforeAmount;
+    private BigDecimal februaryBeforeAmount;
+    private BigDecimal marchBeforeAmount;
+    private BigDecimal aprilBeforeAmount;
+    private BigDecimal mayBeforeAmount;
+    private BigDecimal juneBeforeAmount;
+    private BigDecimal julyBeforeAmount;
+    private BigDecimal augustBeforeAmount;
+    private BigDecimal septemberBeforeAmount;
+    private BigDecimal octoberBeforeAmount;
+    private BigDecimal novemberBeforeAmount;
+    private BigDecimal decemberBeforeAmount;
+    private BigDecimal totalBeforeAmount;
     private List<RealBudgetSpending> findLevel;
+    private List<RealBudgetSpending> findLevelBeforeYear;
 
     public BigDecimal getJanuaryBudgetAmount() {
         double zero=0;
@@ -193,12 +207,189 @@ public class BudgetSubSubcategory {
         this.totalBudgetAmount = totalBudgetAmount;
     }
 
+    public BigDecimal getJanuaryBeforeAmount() {
+        double zero=0;
+        for(RealBudgetSpending r: getFindLevelBeforeYear()){
+            zero += r.getJanuaryBudgetAmount().doubleValue();
+        }
+        this.januaryBeforeAmount = new BigDecimal(zero);
+        return januaryBeforeAmount;
+    }
+
+    public void setJanuaryBeforeAmount(BigDecimal januaryBeforeAmount) {
+        this.januaryBeforeAmount = januaryBeforeAmount;
+    }
+
+    public BigDecimal getFebruaryBeforeAmount() {
+        double zero=0;
+        for(RealBudgetSpending r: getFindLevelBeforeYear()){
+            zero += r.getFebruaryBudgetAmount().doubleValue();
+        }
+        this.februaryBeforeAmount = new BigDecimal(zero);
+        return februaryBeforeAmount;
+    }
+
+    public void setFebruaryBeforeAmount(BigDecimal februaryBeforeAmount) {
+        this.februaryBeforeAmount = februaryBeforeAmount;
+    }
+
+    public BigDecimal getMarchBeforeAmount() {
+        double zero=0;
+        for(RealBudgetSpending r: getFindLevelBeforeYear()){
+            zero += r.getMarchBudgetAmount().doubleValue();
+        }
+        this.marchBeforeAmount = new BigDecimal(zero);
+        return marchBeforeAmount;
+    }
+
+    public void setMarchBeforeAmount(BigDecimal marchBeforeAmount) {
+        this.marchBeforeAmount = marchBeforeAmount;
+    }
+
+    public BigDecimal getAprilBeforeAmount() {
+        double zero=0;
+        for(RealBudgetSpending r: getFindLevelBeforeYear()){
+            zero += r.getAprilBudgetAmount().doubleValue();
+        }
+        this.aprilBeforeAmount = new BigDecimal(zero);
+        return aprilBeforeAmount;
+    }
+
+    public void setAprilBeforeAmount(BigDecimal aprilBeforeAmount) {
+        this.aprilBeforeAmount = aprilBeforeAmount;
+    }
+
+    public BigDecimal getMayBeforeAmount() {
+        double zero=0;
+        for(RealBudgetSpending r: getFindLevelBeforeYear()){
+            zero += r.getMayBudgetAmount().doubleValue();
+        }
+        this.mayBeforeAmount = new BigDecimal(zero);
+        return mayBeforeAmount;
+    }
+
+    public void setMayBeforeAmount(BigDecimal mayBeforeAmount) {
+        this.mayBeforeAmount = mayBeforeAmount;
+    }
+
+    public BigDecimal getJuneBeforeAmount() {
+        double zero=0;
+        for(RealBudgetSpending r: getFindLevelBeforeYear()){
+            zero += r.getJuneBudgetAmount().doubleValue();
+        }
+        this.juneBeforeAmount = new BigDecimal(zero);
+        return juneBeforeAmount;
+    }
+
+    public void setJuneBeforeAmount(BigDecimal juneBeforeAmount) {
+        this.juneBeforeAmount = juneBeforeAmount;
+    }
+
+    public BigDecimal getJulyBeforeAmount() {
+        double zero=0;
+        for(RealBudgetSpending r: getFindLevelBeforeYear()){
+            zero += r.getJulyBudgetAmount().doubleValue();
+        }
+        this.julyBeforeAmount = new BigDecimal(zero);
+        return julyBeforeAmount;
+    }
+
+    public void setJulyBeforeAmount(BigDecimal julyBeforeAmount) {
+        this.julyBeforeAmount = julyBeforeAmount;
+    }
+
+    public BigDecimal getAugustBeforeAmount() {
+        double zero=0;
+        for(RealBudgetSpending r: getFindLevelBeforeYear()){
+            zero += r.getAugustBudgetAmount().doubleValue();
+        }
+        this.augustBeforeAmount = new BigDecimal(zero);
+        return augustBeforeAmount;
+    }
+
+    public void setAugustBeforeAmount(BigDecimal augustBeforeAmount) {
+        this.augustBeforeAmount = augustBeforeAmount;
+    }
+
+    public BigDecimal getSeptemberBeforeAmount() {
+        double zero=0;
+        for(RealBudgetSpending r: getFindLevelBeforeYear()){
+            zero += r.getSeptemberBudgetAmount().doubleValue();
+        }
+        this.septemberBeforeAmount = new BigDecimal(zero);
+        return septemberBeforeAmount;
+    }
+
+    public void setSeptemberBeforeAmount(BigDecimal septemberBeforeAmount) {
+        this.septemberBeforeAmount = septemberBeforeAmount;
+    }
+
+    public BigDecimal getOctoberBeforeAmount() {
+        double zero=0;
+        for(RealBudgetSpending r: getFindLevelBeforeYear()){
+            zero += r.getOctoberBudgetAmount().doubleValue();
+        }
+        this.octoberBeforeAmount = new BigDecimal(zero);
+        return octoberBeforeAmount;
+    }
+
+    public void setOctoberBeforeAmount(BigDecimal octoberBeforeAmount) {
+        this.octoberBeforeAmount = octoberBeforeAmount;
+    }
+
+    public BigDecimal getNovemberBeforeAmount() {
+        double zero=0;
+        for(RealBudgetSpending r: getFindLevelBeforeYear()){
+            zero += r.getNovemberBudgetAmount().doubleValue();
+        }
+        this.novemberBeforeAmount = new BigDecimal(zero);
+        return novemberBeforeAmount;
+    }
+
+    public void setNovemberBeforeAmount(BigDecimal novemberBeforeAmount) {
+        this.novemberBeforeAmount = novemberBeforeAmount;
+    }
+
+    public BigDecimal getDecemberBeforeAmount() {
+        double zero=0;
+        for(RealBudgetSpending r: getFindLevelBeforeYear()){
+            zero += r.getDecemberBudgetAmount().doubleValue();
+        }
+        this.decemberBeforeAmount = new BigDecimal(zero);
+        return decemberBeforeAmount;
+    }
+
+    public void setDecemberBeforeAmount(BigDecimal decemberBeforeAmount) {
+        this.decemberBeforeAmount = decemberBeforeAmount;
+    }
+
+    public BigDecimal getTotalBeforeAmount() {
+        double zero=0;
+        for(RealBudgetSpending r: getFindLevelBeforeYear()){
+            zero += r.getTotalBudgetAmount().doubleValue();
+        }
+        this.totalBeforeAmount = new BigDecimal(zero);
+        return totalBeforeAmount;
+    }
+
+    public void setTotalBeforeAmount(BigDecimal totalBeforeAmount) {
+        this.totalBeforeAmount = totalBeforeAmount;
+    }
+
     public List<RealBudgetSpending> getFindLevel() {
         return findLevel;
     }
 
     public void setFindLevel(List<RealBudgetSpending> findLevel) {
         this.findLevel = findLevel;
+    }
+
+    public List<RealBudgetSpending> getFindLevelBeforeYear() {
+        return findLevelBeforeYear;
+    }
+
+    public void setFindLevelBeforeYear(List<RealBudgetSpending> findLevelBeforeYear) {
+        this.findLevelBeforeYear = findLevelBeforeYear;
     }
 
     public BudgetSubSubcategory(){
