@@ -104,7 +104,8 @@
                     authorizationBudget: {},
                     valida: false,
                     authoriza: false,
-                    modifica: false
+                    modifica: false,
+                    secondLevel: 0
                 },
                 methods: {
                     getUserInSession: function () {
@@ -405,22 +406,29 @@
                             <div class="row" style="background-color: #cfcfcf">
                                 <div class="col-md-12">
                                     <div class="col-md-2">
-                                        <h5><b>{{selected.distributor.distributorName}}</b></h5>
+                                        <h5><b>Empresa: {{selected.distributor.distributorName}}</b></h5>
                                     </div>
+                                    <div class="col-md-3">
+                                        <b>Centro de costos: {{selected.costCenter.name}}</b>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-md-12" style="height:70%;overflow-y: auto;">
                             <div class="row" v-for="budget in budgets" style="background-color: #dfdfdf">
+                                <!--Cuenta contable Nivel Uno-->
                                 <div class="col-md-12" v-for="subBudget in budget.levelOne">
                                     <div class="col-md-12" style="background: #333333; color: white">
                                         <div class="col-md-2">
                                             <h5><b>{{subBudget.budget.distributorCostCenter.accountingAccounts.budgetCategory.budgetCategory}}</b>
                                             </h5>
                                         </div>
-                                        <div class="col-md-1">
-                                            <!--Aqui va el año anterior -->
+                                        <div v-for="subBudgetBefore in budget.levelOneYearBefore">
+                                            <div class="col-md-1">
+                                                <b>{{subBudgetBefore.totalBudgetAmount | currency}}</b>
+                                            </div>
                                         </div>
                                         <div class="col-md-8 text-center">
                                             <div class="col-md-1">
@@ -460,13 +468,14 @@
                                                 <b>{{subBudget.decemberBudgetAmount | currency}}</b>
                                             </div>
                                         </div>
-                                        <div class="col-md-1 text-center">
+                                        <div class="col-md-1">
                                             <b>{{subBudget.totalBudgetAmount | currency}}</b>
                                         </div>
                                     </div>
-                                    <div class="col-md-12" style="background: white">
+                                    <div class="col-md-12" style="background: white; color: black">
                                         <div class="col-md-2">
-                                            <h5><b><span class="pull-right">{{subBudget.budget.conceptBudget.nameConcept}}</span></b></h5>
+                                            <h5><b><span class="pull-right">{{subBudget.budget.conceptBudget.nameConcept}}</span></b>
+                                            </h5>
                                         </div>
                                         <div class="col-md-1">
                                             <!--Aqui va el año anterior -->
@@ -514,7 +523,7 @@
                                         </div>
                                     </div>
                                 </div>
-
+                                <!--Cuenta contable nivel dos-->
                                 <div class="col-md-12" v-for="subBudget in budget.secondLevel">
                                     <div v-for="subBudgetSecond in subBudget.secondLevel">
                                         <div class="col-md-12" style="background: #333333; color: white">
@@ -523,7 +532,7 @@
                                                 </h5>
                                             </div>
                                             <div class="col-md-1">
-                                                <!-- Aqui va el año anterior-->
+                                                <b>{{subBudget.totalBudgetBeforeYear | currency}}</b>
                                             </div>
                                             <div class="col-md-8 text-center">
                                                 <div class="col-md-1">
@@ -563,7 +572,7 @@
                                                     <b>{{subBudget.decemberBudgetAmount | currency}}</b>
                                                 </div>
                                             </div>
-                                            <div class="col-md-1 text-center">
+                                            <div class="col-md-1">
                                                 <b>{{subBudget.totalBudgetAmount | currency}}</b>
                                             </div>
                                         </div>
@@ -573,8 +582,11 @@
                                                 <h5><b>{{subBudgetSecond.budget.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</b>
                                                 </h5>
                                             </div>
-                                            <div class="col-md-1">
-                                                <!-- Aqui va el año anterior-->
+                                            <div class="col-md-1"
+                                                 v-for="subBudgetSecondYearBefore in subBudget.secondLevelBeforeYear">
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecondYearBefore.totalBudgetAmount | currency}}</b>
+                                                </div>
                                             </div>
                                             <div class="col-md-8 text-center">
                                                 <div class="col-md-1">
@@ -619,12 +631,16 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-12" style="background: white">
+                                        <div class="col-md-12" style="background: white; color: black">
                                             <div class="col-md-2 text-center">
-                                                <h5><b><span class="pull-right">{{subBudgetSecond.budget.conceptBudget.nameConcept}}</span></b></h5>
+                                                <h5><b><span class="pull-right">{{subBudgetSecond.budget.conceptBudget.nameConcept}}</span></b>
+                                                </h5>
                                             </div>
-                                            <div class="col-md-1">
-                                                <!-- Aqui va el año anterior-->
+                                            <div class="col-md-1"
+                                                 v-for="subBudgetSecondYearBefore in subBudget.secondLevelBeforeYear">
+                                                <div class="col-md-1">
+                                                    <b>{{subBudgetSecondYearBefore.totalBudgetAmount | currency}}</b>
+                                                </div>
                                             </div>
                                             <div class="col-md-8 text-center">
                                                 <div class="col-md-1">
@@ -671,15 +687,17 @@
                                     </div>
                                 </div>
 
-
+                                <!--Cuenta contable nivel tres -->
                                 <div class="col-md-12" v-for="subBudget in budget.secondLevel">
                                     <div v-for="subBudgetThird in subBudget.thirdLevel">
-                                        <div class="col-md-12" v-for="thirdLevel in subBudgetThird.findLevel" style="background: #333333; color: white">
+                                        <div class="col-md-12" v-for="thirdLevel in subBudgetThird.findLevel"
+                                             style="background: #333333; color: white">
                                             <div class="col-md-2">
-                                                <h5><b>{{thirdLevel.budget.distributorCostCenter.accountingAccounts.budgetCategory.budgetCategory}}</b></h5>
+                                                <h5><b>{{thirdLevel.budget.distributorCostCenter.accountingAccounts.budgetCategory.budgetCategory}}</b>
+                                                </h5>
                                             </div>
                                             <div class="col-md-1">
-                                                <!-- Aqui va el año anterior-->
+                                                <b>{{subBudget.totalBeforeAmount| currency}}</b>
                                             </div>
                                             <div class="col-md-8 text-center">
                                                 <div class="col-md-1">
@@ -724,12 +742,17 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-12" v-for="thirdLevel in subBudgetThird.findLevel" style="background: #666666; color: white">
+                                        <div class="col-md-12" v-for="thirdLevel in subBudgetThird.findLevel"
+                                             style="background: #666666; color: white">
                                             <div class="col-md-2 text-center">
-                                                <h5><b>{{thirdLevel.budget.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</b></h5>
+                                                <h5><b>{{thirdLevel.budget.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</b>
+                                                </h5>
                                             </div>
-                                            <div class="col-md-1">
-                                                <!--Aqui va el año anterior -->
+                                            <div class="col-md-1"
+                                                 v-for="thirdLevelBefore in subBudgetThird.findLevelBeforeYear">
+                                                <div class="col-md-1">
+                                                    <b>{{}}</b>
+                                                </div>
                                             </div>
                                             <div class="col-md-8 text-center">
                                                 <div class="col-md-1">
@@ -774,9 +797,11 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-12" v-for="thirdLevel in subBudgetThird.findLevel" style="background: #999999; color: black">
+                                        <div class="col-md-12" v-for="thirdLevel in subBudgetThird.findLevel"
+                                             style="background: #999999; color: black">
                                             <div class="col-md-2 text-center">
-                                                <h5><b>{{thirdLevel.budget.distributorCostCenter.accountingAccounts.cBudgetSubSubcategories.name}}</b></h5>
+                                                <h5><b>{{thirdLevel.budget.distributorCostCenter.accountingAccounts.cBudgetSubSubcategories.name}}</b>
+                                                </h5>
                                             </div>
                                             <div class="col-md-1">
                                                 <!--Aqui va el año anterior -->
@@ -824,9 +849,11 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-12" v-for="thirdLevel in subBudgetThird.findLevel" style="background: white; color: black">
+                                        <div class="col-md-12" v-for="thirdLevel in subBudgetThird.findLevel"
+                                             style="background: white; color: black">
                                             <div class="col-md-2 text-rigth">
-                                                <h5><b><span class="pull-right">{{thirdLevel.budget.conceptBudget.nameConcept}}</span></b></h5>
+                                                <h5><b><span class="pull-right">{{thirdLevel.budget.conceptBudget.nameConcept}}</span></b>
+                                                </h5>
                                             </div>
                                             <div class="col-md-1">
                                                 <!--Aqui va el año anterior -->
