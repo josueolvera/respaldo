@@ -320,4 +320,17 @@ public class BudgetHelper {
         return categories;
     }
 
+    public List<RealBudgetSpending> getBudgetReport(Integer idCostCenter,Integer  year) {
+        List<RealBudgetSpending>realBudgetSpendings = new ArrayList<>();
+        List<DistributorCostCenter> distributorCostCenters = distributorCostCenterService.findByCostCenter(idCostCenter);
+        for (DistributorCostCenter d: distributorCostCenters){
+            List<Budgets> budgets = budgetsService.findByIdDistributor(d.getIdDistributorCostCenter());
+            for (Budgets budget: budgets){
+                RealBudgetSpending r = realBudgetSpendingService.findByIdBudgetAndYear(budget.getIdBudget(),year);
+                realBudgetSpendings.add(r);
+            }
+        }
+        return realBudgetSpendings;
+    }
+
 }
