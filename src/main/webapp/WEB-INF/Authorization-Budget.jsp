@@ -180,7 +180,7 @@
                         var anioanterior = this.selected.year;
                         this.yearbefore = anioanterior - 1;
                         var url = ROOT_URL +
-                            '/budgets/authorized?bussinessline=' + this.selected.bussiness.idBusinessLine + '&distributor='
+                            '/budgets/get-budget-levels?bussinessline=' + this.selected.bussiness.idBusinessLine + '&distributor='
                             + this.selected.distributor.idDistributor + '&cost_center=' + this.selected.costCenter.idCostCenter
                             + '&year=' + this.selected.year;
                         this.$http.get(url).success(function (data) {
