@@ -11,10 +11,15 @@
             .table-header {
                 padding: 1rem;
                 margin-top: 2rem;
+                background: black;
+                color: white;
+
             }
 
             .table-body .table-row:nth-child(2n+1) {
-                background: #ddd;
+                background: white;
+                overflow: auto;
+                border: solid 1px;
             }
 
             .table-row {
@@ -24,9 +29,12 @@
             .flex-content {
                 overflow-x: hidden;
             }
+
+            .table-hover {
+                background-color: #2ba6cb;
+            }
         </style>
     </jsp:attribute>
-
     <jsp:attribute name="scripts">
         <script type="text/javascript">
             function isNumberKey(evt) {
@@ -41,10 +49,10 @@
             function isLetterKey(evt) {
                 var charCode = (evt.which) ? evt.which : event.keyCode;
                 if (charCode === 32 ||
-                        charCode === 13 ||
-                        (charCode > 64 && charCode < 91) ||
-                        (charCode > 96 && charCode < 123) ||
-                        charCode === 8
+                    charCode === 13 ||
+                    (charCode > 64 && charCode < 91) ||
+                    (charCode > 96 && charCode < 123) ||
+                    charCode === 8
                 ) {
                     return true;
                 }
@@ -55,10 +63,10 @@
             function isNumberKeyAndLetterKey(evt) {
                 var charCode = (evt.which) ? evt.which : event.keyCode;
                 if (charCode === 13 ||
-                        (charCode > 64 && charCode < 91) ||
-                        (charCode > 47 && charCode < 58) ||
-                        (charCode > 96 && charCode < 123) ||
-                        charCode === 8
+                    (charCode > 64 && charCode < 91) ||
+                    (charCode > 47 && charCode < 58) ||
+                    (charCode > 96 && charCode < 123) ||
+                    charCode === 8
                 ) {
                     return true;
                 }
@@ -87,57 +95,169 @@
                         firstLevel: '',
                         secondLevel: '',
                         thirdLevel: '',
-                        description: '',
+                        descriptionFirst: '',
+                        descriptionSecond: '',
+                        descriptionThird: '',
+                        acronyms: '',
                         accountingAccountType: {},
                         accountingAccountNature: {},
                         accountingAccountCategory: {}
                     },
+                    acronyms:'',
                     accountingCategorys: [],
                     accountingNatures: [],
                     accountingTypes: [],
-                    accountingAccount: {}
+                    accountingAccount: {
+                        description:'',
+                        accountingAccountType: {},
+                        accountingAccountNature: {},
+                        accountingAccountCategory: {}
+                    },
+                    field1: false,
+                    field2: false,
+                    field3: false,
+                    secondLevel: false,
+                    thirdLevel: false,
+                    existAccount: []
                 },
                 methods: {
+                    findAccountingAccount: function () {
+                        this.accountingAccounts = null;
+                        this.$http.get(ROOT_URL + "/accounting-accounts/accounting?acronyms=" + this.acronyms).success(function (data) {
+                            this.accountingAccounts = data;
+                        })
+                    },
+                    validateFirstLevel: function () {
+                        if (this.accounting.firstLevel.length == 4) {
+                            var fisrtLevel = this.accounting.firstLevel + "-000-0000";
+                            this.$http.get(ROOT_URL + "/accounting-accounts/validate?acronym=" + fisrtLevel).success(function (data) {
+                                if (data == null) {
+                                    showAlert("No existe");
+                                    this.field1 = true;
+                                    this.secondLevel = false;
+                                    this.accounting.secondLevel = "";
+                                    this.accounting.thirdLevel = "";
+                                } else {
+                                    this.field1 = false;
+                                    this.secondLevel = true;
+                                    this.field3 = false;
+                                    showAlert("Ya existe la cuenta contable");
+                                }
+                            }).error(function () {
+                                showAlert("Error al generar la solicitud", {type: 3});
+                            });
+                        }
+                    },
+
+                    validateSecondLevel: function () {
+                        if (this.accounting.secondLevel.length == 3) {
+                            var secondLevel = this.accounting.firstLevel + "-" + this.accounting.secondLevel + "-0000";
+                            var self = this;
+                            this.$http.get(ROOT_URL + "/accounting-accounts/validate?acronym=" + secondLevel).success(function (data) {
+                                if (data == null) {
+                                    showAlert("No existe");
+                                    this.field2 = true;
+                                    this.thirdLevel = false;
+                                    this.accounting.thirdLevel = "";
+                                } else {
+                                    var firstLevel = this.accounting.firstLevel + "-000-0000";
+                                    if (firstLevel == secondLevel) {
+                                        this.accounting = {
+                                            firstLevel: '',
+                                            secondLevel: '',
+                                            thirdLevel: '',
+                                            descriptionFirst: '',
+                                            descriptionSecond: '',
+                                            descriptionThird: '',
+                                            acronyms: '',
+                                            accountingAccountType: {},
+                                            accountingAccountNature: {},
+                                            accountingAccountCategory: {}
+                                        };
+                                        this.field1 = false;
+                                        this.secondLevel = false;
+                                        this.field2 = false;
+                                        this.thirdLevel = false;
+                                        showAlert("Error al crear una cuenta contable que es primer nivel", {type: 3});
+                                    } else {
+                                        this.field2 = false;
+                                        this.thirdLevel = true;
+                                        this.accounting.descriptionSecond = "";
+                                    }
+                                }
+                            }).error(function () {
+                                showAlert("Error al generar la solicitud", {type: 3});
+                            });
+
+                        }
+
+                    },
+
+                    validateThirdLevel: function () {
+                        if (this.accounting.thirdLevel.length == 4) {
+                            var thirdLevel = this.accounting.firstLevel + "-" + this.accounting.secondLevel + "-" + this.accounting.thirdLevel;
+                            this.$http.get(ROOT_URL + "/accounting-accounts/validate?acronym=" + thirdLevel).success(function (data) {
+                                if (data == null) {
+                                    showAlert("No existe");
+                                    this.field3 = true;
+
+                                } else {
+                                    this.field3 = false;
+                                    this.accountingAccount.descriptionThird = "";
+                                    showAlert("Ya existe la cuenta contable");
+                                }
+
+                            }).error(function () {
+                                showAlert("Error al generar la solicitud", {type: 3})
+                            });
+
+                        }
+                    },
+
                     getAccountingAccounts: function () {
                         this.$http.get(ROOT_URL + '/accounting-accounts')
-                                .success(function (data) {
-                                    this.accountingAccounts = data;
-                                });
+                            .success(function (data) {
+                                this.accountingAccounts = data;
+                            });
                     },
+
                     getAccountigCategorys: function () {
                         this.$http.get(ROOT_URL + '/accounting-category')
-                                .success(function (data) {
-                                    this.accountingCategorys = data;
-                                });
+                            .success(function (data) {
+                                this.accountingCategorys = data;
+                            });
                     },
                     getAccountigNatures: function () {
                         this.$http.get(ROOT_URL + '/accounting-nature')
-                                .success(function (data) {
-                                    this.accountingNatures = data;
-                                });
+                            .success(function (data) {
+                                this.accountingNatures = data;
+                            });
                     },
                     getAccountingTypes: function () {
                         this.$http.get(ROOT_URL + '/accounting-type')
-                                .success(function (data) {
-                                    this.accountingTypes = data;
-                                });
+                            .success(function (data) {
+                                this.accountingTypes = data;
+                            });
                     },
                     saveAccountingAccount: function () {
                         this.$http.post(ROOT_URL + '/accounting-accounts', JSON.stringify(this.accounting))
-                                .success(function (data) {
-                                    this.getAccountingAccounts();
-                                    showAlert('Registro guardado con éxito');
-                                    $('#modalAlta').modal('hide');
-                                    this.accounting = {
-                                        firstLevel: '',
-                                                secondLevel: '',
-                                                thirdLevel: '',
-                                                description: '',
-                                                accountingAccountType: {},
-                                        accountingAccountNature: {},
-                                        accountingAccountCategory: {}
-                                    };
-                                }).error(function (data) {
+                            .success(function (data) {
+                                this.getAccountingAccounts();
+                                showAlert('Registro guardado con éxito');
+                                $('#modalAlta').modal('hide');
+                                this.accounting = {
+                                    firstLevel: '',
+                                    secondLevel: '',
+                                    thirdLevel: '',
+                                    descriptionFirst: '',
+                                    descriptionSecond: '',
+                                    descriptionThird: '',
+                                    acronyms: '',
+                                    accountingAccountType: {},
+                                    accountingAccountNature: {},
+                                    accountingAccountCategory: {}
+                                };
+                            }).error(function (data) {
                             showAlert(data.error.message, {type: 3});
                         });
                     },
@@ -147,11 +267,11 @@
                     },
                     updateAccountingAccount: function (accountingAccount) {
                         this.$http.post(ROOT_URL + '/accounting-accounts/' + accountingAccount.idAccountingAccount, accountingAccount)
-                                .success(function (data) {
-                                    this.getAccountingAccounts();
-                                    showAlert('Cuenta contable actualizada');
-                                    $('#modalModificar').modal('hide');
-                                }).error(function (data) {
+                            .success(function (data) {
+                                this.getAccountingAccounts();
+                                showAlert('Cuenta contable actualizada');
+                                $('#modalModificar').modal('hide');
+                            }).error(function (data) {
                             showAlert('Error en la solicitud', {type: 3});
                         });
                     },
@@ -192,37 +312,37 @@
 
         </script>
     </jsp:attribute>
-
     <jsp:body>
         <div id="contenidos" class="flex-box container-fluid">
-        <br>
         <div>
             <div class="row">
                 <div class="col-xs-7 text-header">
                     <h2>Cuentas contables</h2>
                 </div>
-
-                <div class="col-xs-5 text-right" style="padding: 0px">
-                    <div class="col-xs-7 text-left" style="padding: 0px">
-                        <label>Buscar por Descripción</label>
-                        <input class="form-control" v-model="search">
-                    </div>
-
-
+            </div>
+            <br>
+            <div class="col-md-12">
+                <div class="col-md-3">
+                    <label>Buscar por cuenta contable</label>
+                    <input class="form-control" v-model="acronyms">
+                </div>
+                <div class="col-md-2">
+                    <button style="margin-top: 25px" class="btn btn-info" @click="findAccountingAccount()">
+                        Buscar
+                    </button>
+                </div>
+                <div class="col-lg-6 pull-right" style="text-align: right;">
                     <button type="button" class="btn btn-default" name="button"
                             style="margin-top: 25px" data-toggle="modal" data-target="#modalAlta">
                         Nueva cuenta contable
                     </button>
                 </div>
             </div>
-
-
-            <div>
+            <br><br><br>
+            <div v-if="accountingAccounts!=null">
                 <div class="row table-header">
-                    <div class="col-xs-1"><b>Primer nivel</b></div>
-                    <div class="col-xs-1"><b>Segundo nivel</b></div>
-                    <div class="col-xs-1"><b>Tercer nivel</b></div>
-                    <div class="col-xs-4"><b>Descripción</b></div>
+                    <div class="col-xs-2"><b>Cuenta contable</b></div>
+                    <div class="col-xs-4"><b>Nombre de la cuenta</b></div>
                     <div class="col-xs-2"><b>Tipo</b></div>
                     <div class="col-xs-1"><b>Naturaleza</b></div>
                     <div class="col-xs-1"><b>Clasificación</b></div>
@@ -231,12 +351,10 @@
             </div>
         </div>
         <br>
-        <div class="table-body flex-row flex-content">
+        <div class="table-body flex-row flex-content" style="color: black">
             <div class="row table-row" v-for="accounting in accountingAccounts | filterBy search in 'description'">
-                <div class="col-xs-1">{{accounting.firstLevel}}</div>
-                <div class="col-xs-1">{{accounting.secondLevel | numbersSecondLevelPadding}}</div>
-                <div class="col-xs-1">{{accounting.thirdLevel | numbersPadding}}</div>
-                <div class="col-xs-4">{{accounting.description}}</div>
+                <div class="col-xs-2">{{accounting.acronyms}}</div>
+                <div class="col-xs-4">{{accounting.budgetCategory.budgetCategory}}</div>
                 <div class="col-xs-2">{{accounting.cAccountingAccountType.name}}</div>
                 <div class="col-xs-1">{{accounting.cAccountingAccountNature.nature}}</div>
                 <div class="col-xs-1">{{accounting.cAccountingAccountCategory.classification}}</div>
@@ -259,10 +377,6 @@
                         </div>
                         <div class="modal-body">
                             <div class="row">
-                                <div class="col-xs-4">
-                                    <label>Descripción</label>
-                                    <input class="form-control"  v-model="accounting.description" required>
-                                </div>
                                 <div class="col-xs-3">
                                     <label>Tipo</label>
                                     <select class="form-control" v-model="accounting.accountingAccountType" required>
@@ -283,7 +397,8 @@
                                 </div>
                                 <div class="col-xs-2">
                                     <label>Clasificación</label>
-                                    <select class="form-control" v-model="accounting.accountingAccountCategory" required>
+                                    <select class="form-control" v-model="accounting.accountingAccountCategory"
+                                            required>
                                         <option v-for="category in accountingCategorys"
                                                 value="{{category}}">
                                             {{category.classification}}
@@ -302,25 +417,52 @@
                                 <div class="row">
                                     <div class="col-xs-2">
                                         <label>Primer nivel</label>
-                                        <input maxlength="4" class="form-control text-center" v-model="accounting.firstLevel"
-                                               onkeypress="return isNumberKey(event)"  required>
-                                    </div>
-                                    <div class="col-xs-2">
-                                        <label>Segundo nivel</label>
-                                        <input maxlength="3" class="form-control text-center" v-model="accounting.secondLevel"
+                                        <input maxlength="4" class="form-control text-center"
+                                               @input="validateFirstLevel()" v-model="accounting.firstLevel"
                                                onkeypress="return isNumberKey(event)" required>
                                     </div>
-                                    <div class="col-xs-2">
-                                        <label>Tercer nivel</label>
-                                        <input maxlength="4" class="form-control text-center" v-model="accounting.thirdLevel"
-                                               onkeypress="return isNumberKey(event)" required>
+                                    <div class="col-xs-5" v-if="field1">
+                                        <label>Descripción</label>
+                                        <input class="form-control text-center" v-model="accounting.descriptionFirst"
+                                               required>
                                     </div>
                                 </div>
-                                <br>
+                                <div class="row" v-if="secondLevel">
+                                    <div class="col-xs-2">
+                                        <label>Segundo nivel</label>
+                                        <input maxlength="3" class="form-control text-center"
+                                               @input="validateSecondLevel()" v-model="accounting.secondLevel"
+                                               onkeypress="return isNumberKey(event)" required>
+                                    </div>
+                                    <div class="col-xs-5" v-if="field2">
+                                        <label>Descripción</label>
+                                        <input class="form-control text-center" v-model="accounting.descriptionSecond"
+                                               required>
+                                    </div>
+                                </div>
+                                <div class="row" v-if="thirdLevel">
+                                    <div class="col-xs-2">
+                                        <label>Tercer nivel</label>
+                                        <input maxlength="4" class="form-control text-center"
+                                               @input="validateThirdLevel()" v-model="accounting.thirdLevel"
+                                               onkeypress="return isNumberKey(event)" required>
+                                    </div>
+                                    <div class="col-xs-5" v-if="field3">
+                                        <label>Descripción</label>
+                                        <input class="form-control text-center" v-model="accounting.descriptionThird"
+                                               required>
+                                    </div>
+                                </div>
                             </div>
+                            <br>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-success">Guardar</button>
+                            <button class="btn btn-success" v-if="accounting.descriptionFirst.length > 0">Guardar
+                            </button>
+                            <button class="btn btn-success" v-if="accounting.descriptionSecond.length > 0">Guardar
+                            </button>
+                            <button class="btn btn-success" v-if="accounting.descriptionThird.length > 0">Guardar
+                            </button>
                             <button type="button" class="btn btn-default" @click="cancelar">Cancelar</button>
                         </div>
                     </form>
@@ -339,11 +481,12 @@
                             <div class="row">
                                 <div class="col-xs-4">
                                     <label>Descripción</label>
-                                    <input class="form-control"  v-model="accountingAccount.description" required>
+                                    <input class="form-control" v-model="accountingAccount.description" required>
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Tipo</label>
-                                    <select class="form-control" v-model="accountingAccount.accountingAccountType" required>
+                                    <select class="form-control" v-model="accountingAccount.accountingAccountType"
+                                            required>
                                         <option v-for="type in accountingTypes"
                                                 value="{{type}}">
                                             {{type.name}}
@@ -352,7 +495,8 @@
                                 </div>
                                 <div class="col-xs-3">
                                     <label>Naturaleza</label>
-                                    <select class="form-control" v-model="accountingAccount.accountingAccountNature" required>
+                                    <select class="form-control" v-model="accountingAccount.accountingAccountNature"
+                                            required>
                                         <option v-for="nature in accountingNatures"
                                                 value="{{nature}}">
                                             {{nature.nature}}
@@ -361,7 +505,8 @@
                                 </div>
                                 <div class="col-xs-2">
                                     <label>Clasificación</label>
-                                    <select class="form-control" v-model="accountingAccount.accountingAccountCategory" required>
+                                    <select class="form-control" v-model="accountingAccount.accountingAccountCategory"
+                                            required>
                                         <option v-for="category in accountingCategorys"
                                                 value="{{category}}">
                                             {{category.classification}}
@@ -380,7 +525,6 @@
             </div>
         </div>
         <!-- #contenidos -->
-
         <!-- Fecha de Termino- Agregar fecha dia de solicitud-->
     </jsp:body>
 </t:template>
