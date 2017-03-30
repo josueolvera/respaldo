@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import mx.bidg.config.JsonViews;
+import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
 import mx.bidg.model.RealBudgetSpending;
 import mx.bidg.pojos.BudgetCategory;
@@ -50,6 +51,9 @@ public class BudgetYearConceptController {
 
     @Autowired
     private DistributorCostCenterService distributorCostCenterService;
+
+    @Autowired
+    private AuthorizationCostCenterService authorizationCostCenterService;
 
     @Autowired
     private ObjectMapper mapper;
@@ -115,97 +119,89 @@ public class BudgetYearConceptController {
     ) throws Exception {
         Users user = (Users) httpSession.getAttribute("user");
         List<DistributorCostCenter> distributorCostCenters = distributorCostCenterService.findByCostCenter(idCostCenter);
-        for (DistributorCostCenter d: distributorCostCenters){
-            List<Budgets> budgets = budgetsService.findByIdDistributorCostCenter(d.getIdDistributorCostCenter(),idBudgetType,idBudgetNature);
-            for (Budgets budget: budgets){
-                RealBudgetSpending r = realBudgetSpendingService.findByIdBudgetAndYear(budget.getIdBudget(),yearFromCopy);
-                RealBudgetSpending realBudgetSpending = new RealBudgetSpending();
-                if(r == null) {
-                    break;
-                }else{
-                    realBudgetSpending.setBudget(budget);
-                    realBudgetSpending.setJanuaryBudgetAmount(r.getJanuaryBudgetAmount());
-                    realBudgetSpending.setJanuaryExpendedAmount(BigDecimal.ZERO);
-                    realBudgetSpending.setFebruaryBudgetAmount(r.getFebruaryBudgetAmount());
-                    realBudgetSpending.setFebruaryExpendedAmount(BigDecimal.ZERO);
-                    realBudgetSpending.setMarchBudgetAmount(r.getMarchBudgetAmount());
-                    realBudgetSpending.setMarchExpendedAmount(BigDecimal.ZERO);
-                    realBudgetSpending.setAprilBudgetAmount(r.getAprilBudgetAmount());
-                    realBudgetSpending.setAprilExpendedAmount(BigDecimal.ZERO);
-                    realBudgetSpending.setMayBudgetAmount(r.getMayBudgetAmount());
-                    realBudgetSpending.setMayExpendedAmount(BigDecimal.ZERO);
-                    realBudgetSpending.setJuneBudgetAmount(r.getJuneBudgetAmount());
-                    realBudgetSpending.setJuneExpendedAmount(BigDecimal.ZERO);
-                    realBudgetSpending.setJulyBudgetAmount(r.getJulyBudgetAmount());
-                    realBudgetSpending.setJulyExpendedAmount(BigDecimal.ZERO);
-                    realBudgetSpending.setAugustBudgetAmount(r.getAugustBudgetAmount());
-                    realBudgetSpending.setAugustExpendedAmount(BigDecimal.ZERO);
-                    realBudgetSpending.setSeptemberBudgetAmount(r.getSeptemberBudgetAmount());
-                    realBudgetSpending.setSeptemberExpendedAmount(BigDecimal.ZERO);
-                    realBudgetSpending.setOctoberBudgetAmount(r.getOctoberBudgetAmount());
-                    realBudgetSpending.setOctoberExpendedAmount(BigDecimal.ZERO);
-                    realBudgetSpending.setNovemberBudgetAmount(r.getNovemberBudgetAmount());
-                    realBudgetSpending.setNovemberExpendedAmount(BigDecimal.ZERO);
-                    realBudgetSpending.setDecemberBudgetAmount(r.getDecemberBudgetAmount());
-                    realBudgetSpending.setDecemberExpendedAmount(BigDecimal.ZERO);
-                    realBudgetSpending.setTotalBudgetAmount(r.getTotalBudgetAmount());
-                    realBudgetSpending.setTotalExpendedAmount(BigDecimal.ZERO);
-                    realBudgetSpending.setCurrency(r.getCurrency());
-                    realBudgetSpending.setYear(yearToCopy);
-                    realBudgetSpending.setUsername(user.getUsername());
-                    realBudgetSpendingService.save(realBudgetSpending);
+        AuthorizationCostCenter a = authorizationCostCenterService.findByIdCostCenterAndYear(idCostCenter, yearToCopy);
+        if (a == null) {
+            System.out.print("La authorization esta nula");
+            for (DistributorCostCenter d : distributorCostCenters) {
+                List<Budgets> budgets = budgetsService.findByIdDistributorCostCenter(d.getIdDistributorCostCenter(), idBudgetType, idBudgetNature);
+                for (Budgets budget : budgets) {
+                    //Objeto del año que se obtendra la informacion
+                    RealBudgetSpending real = realBudgetSpendingService.findByIdBudgetAndYear(budget.getIdBudget(), yearFromCopy);
+                    RealBudgetSpending r = realBudgetSpendingService.findByIdBudgetAndYear(budget.getIdBudget(), yearToCopy);
+                    RealBudgetSpending realBudgetSpending = new RealBudgetSpending();
+                    if (r == null) {
+                        realBudgetSpending.setBudget(budget);
+                        realBudgetSpending.setJanuaryBudgetAmount(real.getJanuaryBudgetAmount());
+                        realBudgetSpending.setJanuaryExpendedAmount(BigDecimal.ZERO);
+                        realBudgetSpending.setFebruaryBudgetAmount(real.getFebruaryBudgetAmount());
+                        realBudgetSpending.setFebruaryExpendedAmount(BigDecimal.ZERO);
+                        realBudgetSpending.setMarchBudgetAmount(real.getMarchBudgetAmount());
+                        realBudgetSpending.setMarchExpendedAmount(BigDecimal.ZERO);
+                        realBudgetSpending.setAprilBudgetAmount(real.getAprilBudgetAmount());
+                        realBudgetSpending.setAprilExpendedAmount(BigDecimal.ZERO);
+                        realBudgetSpending.setMayBudgetAmount(real.getMayBudgetAmount());
+                        realBudgetSpending.setMayExpendedAmount(BigDecimal.ZERO);
+                        realBudgetSpending.setJuneBudgetAmount(real.getJuneBudgetAmount());
+                        realBudgetSpending.setJuneExpendedAmount(BigDecimal.ZERO);
+                        realBudgetSpending.setJulyBudgetAmount(real.getJulyBudgetAmount());
+                        realBudgetSpending.setJulyExpendedAmount(BigDecimal.ZERO);
+                        realBudgetSpending.setAugustBudgetAmount(real.getAugustBudgetAmount());
+                        realBudgetSpending.setAugustExpendedAmount(BigDecimal.ZERO);
+                        realBudgetSpending.setSeptemberBudgetAmount(real.getSeptemberBudgetAmount());
+                        realBudgetSpending.setSeptemberExpendedAmount(BigDecimal.ZERO);
+                        realBudgetSpending.setOctoberBudgetAmount(real.getOctoberBudgetAmount());
+                        realBudgetSpending.setOctoberExpendedAmount(BigDecimal.ZERO);
+                        realBudgetSpending.setNovemberBudgetAmount(real.getNovemberBudgetAmount());
+                        realBudgetSpending.setNovemberExpendedAmount(BigDecimal.ZERO);
+                        realBudgetSpending.setDecemberBudgetAmount(real.getDecemberBudgetAmount());
+                        realBudgetSpending.setDecemberExpendedAmount(BigDecimal.ZERO);
+                        realBudgetSpending.setTotalBudgetAmount(real.getTotalBudgetAmount());
+                        realBudgetSpending.setTotalExpendedAmount(BigDecimal.ZERO);
+                        realBudgetSpending.setCurrency(real.getCurrency());
+                        realBudgetSpending.setYear(yearToCopy);
+                        realBudgetSpending.setUsername(user.getUsername());
+                        realBudgetSpendingService.save(realBudgetSpending);
+                    } else {
+                        r.setBudget(budget);
+                        r.setJanuaryBudgetAmount(real.getJanuaryBudgetAmount());
+                        r.setJanuaryExpendedAmount(BigDecimal.ZERO);
+                        r.setFebruaryBudgetAmount(real.getFebruaryBudgetAmount());
+                        r.setFebruaryExpendedAmount(BigDecimal.ZERO);
+                        r.setMarchBudgetAmount(real.getMarchBudgetAmount());
+                        r.setMarchExpendedAmount(BigDecimal.ZERO);
+                        r.setAprilBudgetAmount(real.getAprilBudgetAmount());
+                        r.setAprilExpendedAmount(BigDecimal.ZERO);
+                        r.setMayBudgetAmount(real.getMayBudgetAmount());
+                        r.setMayExpendedAmount(BigDecimal.ZERO);
+                        r.setJuneBudgetAmount(real.getJuneBudgetAmount());
+                        r.setJuneExpendedAmount(BigDecimal.ZERO);
+                        r.setJulyBudgetAmount(real.getJulyBudgetAmount());
+                        r.setJulyExpendedAmount(BigDecimal.ZERO);
+                        r.setAugustBudgetAmount(real.getAugustBudgetAmount());
+                        r.setAugustExpendedAmount(BigDecimal.ZERO);
+                        r.setSeptemberBudgetAmount(real.getSeptemberBudgetAmount());
+                        r.setSeptemberExpendedAmount(BigDecimal.ZERO);
+                        r.setOctoberBudgetAmount(real.getOctoberBudgetAmount());
+                        r.setOctoberExpendedAmount(BigDecimal.ZERO);
+                        r.setNovemberBudgetAmount(real.getNovemberBudgetAmount());
+                        r.setNovemberExpendedAmount(BigDecimal.ZERO);
+                        r.setDecemberBudgetAmount(real.getDecemberBudgetAmount());
+                        r.setDecemberExpendedAmount(BigDecimal.ZERO);
+                        r.setTotalBudgetAmount(real.getTotalBudgetAmount());
+                        r.setTotalExpendedAmount(BigDecimal.ZERO);
+                        r.setCurrency(real.getCurrency());
+                        r.setYear(yearToCopy);
+                        r.setUsername(user.getUsername());
+                        realBudgetSpendingService.update(r);
+                    }
                 }
             }
+        } else if(a.getAuthorization()){
+            throw new ValidationException("El centro de costos a copiar ya se encuentra autorizado", "El centro de costos a copiar ya se encuentra autorizado");
+                //return new ResponseEntity<>("El centro de costos a copiar ya se encuentra autorizado", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Ha ocurrido un error, intentelo nuevamente", HttpStatus.OK);
         }
-        //List<Budgets> budgets = budgetsService.getBudgetsfindNatureTypeAndCostCenter(idCostCenter, idBudgetType, idBudgetNature);
-        /*if (!budgets.isEmpty()) {
-            for (Budgets b : budgets){
-                if (b.getIdBudget() != null){
-                    List<RealBudgetSpending> rbs = realBudgetSpendingService.findByBudgetAndYear(b.getIdBudget(),yearFromCopy);
-                    if (!rbs.isEmpty()){
-                        for (RealBudgetSpending rbd : rbs){
-                            RealBudgetSpending real = new RealBudgetSpending();
-                            if (rbd.getBudget() != null){
-                                real.setBudget(rbd.getBudget());
-                            }
-                            if (rbd.getCurrency() != null){
-                                real.setCurrency(rbd.getCurrency());
-                            }
-                            real.setJanuaryBudgetAmount(rbd.getJanuaryBudgetAmount());
-                            real.setJanuaryExpendedAmount(rbd.getJanuaryExpendedAmount());
-                            real.setFebruaryBudgetAmount(rbd.getFebruaryBudgetAmount());
-                            real.setFebruaryExpendedAmount(rbd.getFebruaryExpendedAmount());
-                            real.setMarchBudgetAmount(rbd.getMarchBudgetAmount());
-                            real.setMarchExpendedAmount(rbd.getMarchExpendedAmount());
-                            real.setAprilBudgetAmount(rbd.getAprilBudgetAmount());
-                            real.setAprilExpendedAmount(rbd.getAprilExpendedAmount());
-                            real.setMayBudgetAmount(rbd.getMayBudgetAmount());
-                            real.setMayExpendedAmount(rbd.getMayExpendedAmount());
-                            real.setJuneBudgetAmount(rbd.getJuneBudgetAmount());
-                            real.setJuneExpendedAmount(rbd.getJuneExpendedAmount());
-                            real.setJulyBudgetAmount(rbd.getJulyBudgetAmount());
-                            real.setJulyExpendedAmount(rbd.getJulyExpendedAmount());
-                            real.setAugustBudgetAmount(rbd.getAugustBudgetAmount());
-                            real.setAugustExpendedAmount(rbd.getAugustExpendedAmount());
-                            real.setSeptemberBudgetAmount(rbd.getSeptemberBudgetAmount());
-                            real.setSeptemberExpendedAmount(rbd.getSeptemberExpendedAmount());
-                            real.setOctoberBudgetAmount(rbd.getOctoberBudgetAmount());
-                            real.setOctoberExpendedAmount(rbd.getOctoberExpendedAmount());
-                            real.setNovemberBudgetAmount(rbd.getNovemberBudgetAmount());
-                            real.setNovemberExpendedAmount(rbd.getNovemberExpendedAmount());
-                            real.setDecemberBudgetAmount(rbd.getDecemberBudgetAmount());
-                            real.setDecemberExpendedAmount(rbd.getDecemberExpendedAmount());
-                            real.setTotalBudgetAmount(rbd.getTotalBudgetAmount());
-                            real.setTotalExpendedAmount(rbd.getTotalExpendedAmount());
-                            real.setYear(yearToCopy);
-                            real.setUsername(user.getUsername());
-                            realBudgetSpendingService.save(real);
-                        }
-                    }
-                }*/
-
-
-
         return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(realBudgetSpendingService.findAll()));
     }
 

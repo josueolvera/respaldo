@@ -157,7 +157,7 @@ public class BudgetsServiceImpl implements BudgetsService {
         int aux = 1;
         for (BudgetCategory budgetCategory : budgetCategories) {
             Row row1 = sheet.createRow(aux);
-            row1.createCell(0).setCellValue("    " + budgetCategory.getName());
+            //row1.createCell(0).setCellValue("    " + budgetCategory.getName());
             /*row1.createCell(1).setCellValue(budgetCategory.getJanuaryCategoryAmount().doubleValue());
             row1.createCell(2).setCellValue(budgetCategory.getFebruaryCategoryAmount().doubleValue());
             row1.createCell(3).setCellValue(budgetCategory.getMarchCategoryAmount().doubleValue());

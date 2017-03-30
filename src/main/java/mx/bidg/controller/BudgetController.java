@@ -226,7 +226,6 @@ public class BudgetController {
     public ResponseEntity<String> updateBudgetByCostcenterAndYear(
             @RequestParam(name = "cost_center", required = false) Integer idCostCenter,
             @RequestParam(name = "year", required = false) Integer year) throws Exception {
-        //List<Budgets> budgets = budgetsService.findByIdCostCenter(idCostCenter);
         CCostCenter c = cCostCenterService.findById(idCostCenter);
         AuthorizationCostCenter a = authorizationCostCenterService.findByIdCostCenterAndYear(idCostCenter,year);
         a.setAuthorization(true);
@@ -244,6 +243,8 @@ public class BudgetController {
         AuthorizationCostCenter a = new AuthorizationCostCenter();
         a.setCostCenter(c);
         a.setValidation(true);
+        a.setAuthorization(false);
+        a.setModify(0);
         a.setYear(year);
         a.setUsers(user);
         authorizationCostCenterService.save(a);
@@ -252,12 +253,21 @@ public class BudgetController {
 
     @RequestMapping(value = "/authorized", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> getBudgetByCategory(
-            @RequestParam(name = "bussinessline")Integer idBussinessline,
-            @RequestParam(name = "distributor") Integer idDistributor,
             @RequestParam(name = "cost_center") Integer idCostCenter,
             @RequestParam(name = "year", required = false) Integer year
     ) throws Exception {
-        List<BudgetCategory> budgetCategories = budgetHelper.getAuthorizationBudget(idBussinessline,idDistributor,idCostCenter,year);
+        List<RealBudgetSpending> budgetCategories = budgetHelper.getBudgetReport(idCostCenter,year);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(budgetCategories),HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/get-budget-levels", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getBudgetByCategoryLevels(
+            @RequestParam(name = "bussinessline")Integer idBussinessLine,
+            @RequestParam(name = "distributor")Integer idDistributor,
+            @RequestParam(name = "cost_center") Integer idCostCenter,
+            @RequestParam(name = "year", required = false) Integer year
+    ) throws Exception {
+        List<BudgetCategory> budgetCategories = budgetHelper.getAuthorizationBudget(idBussinessLine,idDistributor,idCostCenter,year);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(budgetCategories),HttpStatus.OK);
     }
 
