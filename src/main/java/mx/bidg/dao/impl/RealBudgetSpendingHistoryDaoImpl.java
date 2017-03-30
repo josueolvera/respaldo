@@ -43,9 +43,9 @@ public class RealBudgetSpendingHistoryDaoImpl extends AbstractDao<Integer,RealBu
     }
 
     @Override
-    public List<RealBudgetSpendingHistory> findByIdBudgetandYear(Integer idBudget, Integer year) {
+    public RealBudgetSpendingHistory findByIdBudgetandYear(Integer idBudget, Integer year) {
         Criteria criteria= createEntityCriteria();
-        return criteria.add(Restrictions.eq("idBudget",idBudget)).
-                add(Restrictions.eq("year",year)).list();
+        return (RealBudgetSpendingHistory) criteria.add(Restrictions.eq("idBudget",idBudget)).
+                add(Restrictions.eq("year",year)).uniqueResult();
     }
 }

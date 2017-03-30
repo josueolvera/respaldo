@@ -28,7 +28,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 @SuppressWarnings("unchecked")
-public class RealRealBudgetSpendingDaoImpl extends AbstractDao<Integer, RealBudgetSpending> implements RealBudgetSpendingDao {
+public class RealBudgetSpendingDaoImpl extends AbstractDao<Integer, RealBudgetSpending> implements RealBudgetSpendingDao {
 
     @Override
     public RealBudgetSpending save(RealBudgetSpending entity) {

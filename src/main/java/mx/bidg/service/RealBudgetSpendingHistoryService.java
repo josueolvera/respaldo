@@ -13,5 +13,5 @@ public interface RealBudgetSpendingHistoryService {
     RealBudgetSpendingHistory update(RealBudgetSpendingHistory realBudgetSpendingHistory);
     RealBudgetSpendingHistory save(RealBudgetSpendingHistory realBudgetSpendingHistory);
     boolean delete(RealBudgetSpendingHistory realBudgetSpendingHistory);
-    List<RealBudgetSpendingHistory> findByIdBudgetandYear(Integer idBudget, Integer year);
+    RealBudgetSpendingHistory findByIdBudgetandYear(Integer idBudget, Integer year);
 }

@@ -49,7 +49,7 @@ public class RealBudgetSpendingHistoryServiceImpl implements RealBudgetSpendingH
     }
 
     @Override
-    public List<RealBudgetSpendingHistory> findByIdBudgetandYear(Integer idBudget, Integer year) {
+    public RealBudgetSpendingHistory findByIdBudgetandYear(Integer idBudget, Integer year) {
         return realBudgetSpendingHistoryDao.findByIdBudgetandYear(idBudget,year);
     }
 }
