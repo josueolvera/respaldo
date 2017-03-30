@@ -2,8 +2,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <link rel="stylesheet" href="../assets/css/barralateral.css">
-<link rel="stylesheet" href="../assets/css/multiselect.css">
-<script src = "//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
 <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users"/>
 
 <t:template pageTitle="BID Group: Presupuestos">
@@ -80,7 +79,7 @@
                     totalCostCenter: null,
                     years: [],
                     budgets: [],
-                    budgetsReports:[],
+                    budgetsReports: [],
                     concepts: [],
                     budgetTypes: [],
                     user: {},
@@ -93,7 +92,8 @@
                         yearFromCopy: null,
                         yearToCopy: null,
                         budget: null,
-                        subbudget: null
+                        subbudget: null,
+                        concept: ''
                     },
                     searching: false,
                     rolesCostCenter: [],
@@ -101,7 +101,7 @@
                     budgetNatureList: [],
                     budgetCategories: [],
                     role: null,
-                    authorizationBudget:{},
+                    authorizationBudget: {},
                     errorMessage: '',
                     validation: false,
                     authorization: false,
@@ -186,24 +186,21 @@
                             .error(function (data) {
                             });
                     },
-                    getAuthorizationBudget:function () {
-                        this.$http.get(ROOT_URL + '/authorizathion-costcenter/cost?cost_center='+this.selected.costCenter.idCostCenter+ '&year='+this.selected.year).success(function (data) {
+                    getAuthorizationBudget: function () {
+                        this.$http.get(ROOT_URL + '/authorizathion-costcenter/cost?cost_center=' + this.selected.costCenter.idCostCenter + '&year=' + this.selected.year).success(function (data) {
                             this.authorizationBudget = data;
-                            if(this.authorizationBudget.validation){
+                            if (this.authorizationBudget.validation) {
                                 this.validation = true;
                             }
-                            if(this.authorizationBudget.authorization){
-                                this.authorization= true;
-                            }
-                            if(this.authorizationBudget.modify){
-                                this.annual = true;
+                            if (this.authorizationBudget.authorization) {
+                                this.authorization = true;
                             }
                         }).error(function (data) {
                         });
                     },
                     getBudgetsReport: function () {
-                        this.$http.get(ROOT_URL + '/budgets/authorized?cost_center=' + this.selected.costCenter.idCostCenter+'&year=' + this.selected.year).success(function (data) {
-                            this.budgetsReports=data;
+                        this.$http.get(ROOT_URL + '/budgets/authorized?cost_center=' + this.selected.costCenter.idCostCenter + '&year=' + this.selected.year).success(function (data) {
+                            this.budgetsReports = data;
                         });
                     },
                     arrayObjectIndexOf: function (myArray, searchTerm, property) {
@@ -294,12 +291,17 @@
                             '&year_from_copy=' + this.selected.yearFromCopy + '&budget_type=' + this.selected.budgetType.idBudgetType +
                             '&budget_nature=' + this.selected.budgetNature.idBudgetNature +
                             '&year_to_copy=' + this.selected.yearToCopy;
-                        self.$http.post(ROOT_URL + url).success(function (element) {
-                            this.closeCopyBudgetModal();
-                            showAlert('Presupuesto copiado');
-                        }).error(function (data) {
-                            this.errorMessage = data.error.message;
-                        });
+                        if(this.selected.yearFromCopy == this.selected.yearToCopy){
+                            showAlert("No se puede copiar presupesto en el mismo año",{type: 3});
+                        }else {
+                            self.$http.post(ROOT_URL + url).success(function (element) {
+                                this.closeCopyBudgetModal();
+                                showAlert('Transaccion exitosa');
+                                showAlert(data.success.message);
+                            }).error(function (data) {
+                                showAlert(data.error.message, {type:3});
+                            });
+                        }
                     },
                     onClickAcept: function () {
                         this.copyBudget(false);
@@ -387,8 +389,9 @@
                     },
                     sendModifyBudget: function () {
                         this.closeRequestModification();
-                        this.$http.post(ROOT_URL + '/authorizathion-costcenter/modify?cost_center='+this.selected.costCenter.idCostCenter+ '&year='+this.selected.year).success(function (data) {
+                        this.$http.post(ROOT_URL + '/authorizathion-costcenter/modify?cost_center=' + this.selected.costCenter.idCostCenter + '&year=' + this.selected.year).success(function (data) {
                             showAlert('Solicitud de modificacion enviada');
+                            this.getBudgets();
                         }).error(function (data) {
                             showAlert('Ha habido un error con la solicitud, intente nuevamente');
                         });
@@ -414,13 +417,14 @@
                 .container-scroll {
                     overflow-x: auto;
                 }
+
                 .container-scroll > .row {
                     width: 2025px;
                 }
             }
         </style>
         <script>
-            $(function() {
+            $(function () {
                 $('.multiselect-ui').multiselect({
                     includeSelectAllOption: true
                 });
@@ -434,20 +438,25 @@
                     <div class="col-md-5">
                         <h2>CAPTURA DE PRESUPUESTO</h2>
                     </div>
-                    <div class="col-md-2" v-if="annual==false && budgets.length > 0">
-                        <h2>Anual</h2>
+                    <div class="col-md-2 text-center" v-if="authorizationBudget.modify<=1 && budgets.length > 0" style="color: #1b6d85">
+                        <h2>ANUAL</h2>
                     </div>
-                    <div class="col-md-2" v-if="annual && budgets.length > 0">
-                        <h2>Ajustado</h2>
+                    <div class="col-md-2 text-center" v-if="authorizationBudget.modify == 2 && budgets.length > 0" style="color: #1b6d85">
+                        <h2>AJUSTADO</h2>
+                    </div>
+                    <div class="col-md-3 pull-right" v-if="budgets.length > 0">
+                        <label>Buscar por concepto</label>
+                        <input class="form-control" v-model="selected.concept" required >
                     </div>
                 </div>
                 <br>
                 <div class="row">
-                    <form v-on:submit.prevent="searchBudget(selected.year, selected.budgetType, selected.budgetNature)">
+                    <form v-on:submit.prevent="getBudgets">
                         <div class="row">
                             <div class="col-md-3">
                                 <label>Centro de costos</label>
-                                <select v-model="selected.costCenter" class="form-control" @change="onChangeFilter" required>
+                                <select v-model="selected.costCenter" class="form-control" @change="onChangeFilter"
+                                        required>
                                     <option v-for="costCenter in costCenterList" :value="costCenter">
                                         {{costCenter.name}}
                                     </option>
@@ -455,7 +464,8 @@
                             </div>
                             <div class="col-md-2">
                                 <label>Clasificación</label>
-                                <select v-model="selected.budgetType" class="form-control multiselect-ui" @change="onChangeFilter"
+                                <select v-model="selected.budgetType" class="form-control multiselect-ui"
+                                        @change="onChangeFilter"
                                         required>
                                     <option v-for="budgetType in budgetTypes" :value="budgetType">
                                         {{budgetType.budgetType}}
@@ -493,24 +503,26 @@
                                 <h2 style="color: #449d44">
                                     <span class="glyphicon glyphicon-ok-sign">Presupuesto autorizado</span></h2>
                             </div>
-                            <div class="col-md-2 pull-right" v-if="budgets.length > 0 && authorization && validation">
-                                <button style="margin-top: 25px" class="btn btn-success" @click="showRequestModification">
+                            <div class="col-md-2 pull-right" v-if="budgets.length > 0 && authorization && validation && authorizationBudget.modify==0">
+                                <button style="margin-top: 25px" class="btn btn-success"
+                                        @click="showRequestModification">
                                     Solicitar modificación
                                 </button>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-8 text-right" v-if="budgets.length > 0">
-                                <h3>Total centro de costo: <b class="text-primary">{{totalCostCenter | currency}}</b></h3>
+                            <div class="col-md-8" v-if="budgets.length > 0">
+                                <h3>Total centro de costo: <b class="text-primary">{{totalCostCenter | currency}}</b>
+                                </h3>
+                            </div>
+                            <div class="col-md-2" v-if="budgets.length > 0 && authorization">
+                                <button style="margin-top: 25px" class="btn btn-default" @click="showCopyBudgetModal">
+                                    Copiar presupuesto
+                                </button>
                             </div>
                             <div class="col-md-2" v-if="budgets.length > 0 && validation==false">
                                 <button style="margin-top: 25px" class="btn btn-success" @click="showSendValidation">
                                     Enviar a validación
-                                </button>
-                            </div>
-                            <div class="col-md-2" v-if="budgets.length > 0">
-                                <button style="margin-top: 25px" class="btn btn-default" @click="showCopyBudgetModal">
-                                    Copiar presupuesto
                                 </button>
                             </div>
                         </div>
@@ -522,8 +534,9 @@
                     <div class="loader">Cargando...</div>
                 </div>
                 <div v-else="!searching">
-                    <div class="row" v-for="(indexOfBudget, budget) in budgets" style="margin-left: 0px; margin-right: 0px" v-if="budgets.length > 0 && budget!=null">
-                        <div class="bs-callout bs-callout-default"  style="background: darkslategrey">
+                    <div class="row" v-for="(indexOfBudget, budget) in budgets | filterBy selected.concept in 'budget'"
+                         style="margin-left: 0px; margin-right: 0px" v-if="budgets.length > 0 && budget!=null">
+                        <div class="bs-callout bs-callout-default" style="background: darkslategrey">
                             <div class="row">
                                 <div class="col-md-7">
                                     <h4><b>{{budget.budget.conceptBudget.nameConcept}}</b></h4>
@@ -537,7 +550,8 @@
                                  style="margin-left: 0px; margin-right: 0px">
                                 <div class="well">
                                     <div class="row" style="margin-left: 0px">
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation==false">
                                             <label>Ene</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.januaryBudgetAmount"
@@ -545,7 +559,17 @@
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
                                                    onkeypress="return validateFloatKeyPress(this,event)">
                                         </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation">
+                                            <label>Ene</label>
+                                            <input type="text" class="form-control"
+                                                   v-model="budget.januaryBudgetAmount"
+                                                   disabled
+                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)">
+                                        </div>
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation==false">
                                             <label>Feb</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.februaryBudgetAmount"
@@ -553,49 +577,113 @@
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
                                                    onkeypress="return validateFloatKeyPress(this,event)">
                                         </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation">
+                                            <label>Feb</label>
+                                            <input type="text" class="form-control"
+                                                   v-model="budget.februaryBudgetAmount"
+                                                   disabled
+                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)">
+                                        </div>
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation==false">
                                             <label>Mar</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.marchBudgetAmount" required
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
                                                    onkeypress="return validateFloatKeyPress(this,event)">
                                         </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation">
+                                            <label>Mar</label>
+                                            <input type="text" class="form-control"
+                                                   v-model="budget.marchBudgetAmount" disabled
+                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)">
+                                        </div>
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation==false">
                                             <label>Abr</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.aprilBudgetAmount" required
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
                                                    onkeypress="return validateFloatKeyPress(this,event)">
                                         </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation">
+                                            <label>Abr</label>
+                                            <input type="text" class="form-control"
+                                                   v-model="budget.aprilBudgetAmount" disabled
+                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)">
+                                        </div>
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation==false">
                                             <label>May</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.mayBudgetAmount" required
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
                                                    onkeypress="return validateFloatKeyPress(this,event)">
                                         </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation">
+                                            <label>May</label>
+                                            <input type="text" class="form-control"
+                                                   v-model="budget.mayBudgetAmount" disabled
+                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)">
+                                        </div>
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation==false">
                                             <label>Jun</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.juneBudgetAmount" required
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
                                                    onkeypress="return validateFloatKeyPress(this,event)">
                                         </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation">
+                                            <label>Jun</label>
+                                            <input type="text" class="form-control"
+                                                   v-model="budget.juneBudgetAmount" disabled
+                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)">
+                                        </div>
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation==false">
                                             <label>Jul</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.julyBudgetAmount" required
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
                                                    onkeypress="return validateFloatKeyPress(this,event)">
                                         </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation">
+                                            <label>Jul</label>
+                                            <input type="text" class="form-control"
+                                                   v-model="budget.julyBudgetAmount" disabled
+                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)">
+                                        </div>
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation==false">
                                             <label>Ago</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.augustBudgetAmount" required
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
                                                    onkeypress="return validateFloatKeyPress(this,event)">
                                         </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation">
+                                            <label>Ago</label>
+                                            <input type="text" class="form-control"
+                                                   v-model="budget.augustBudgetAmount" disabled
+                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)">
+                                        </div>
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation==false">
                                             <label>Sep</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.septemberBudgetAmount"
@@ -603,14 +691,33 @@
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
                                                    onkeypress="return validateFloatKeyPress(this,event)">
                                         </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation">
+                                            <label>Sep</label>
+                                            <input type="text" class="form-control"
+                                                   v-model="budget.septemberBudgetAmount"
+                                                   disabled
+                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)">
+                                        </div>
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation==false">
                                             <label>Oct</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.octoberBudgetAmount" required
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
                                                    onkeypress="return validateFloatKeyPress(this,event)">
                                         </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation">
+                                            <label>Oct</label>
+                                            <input type="text" class="form-control"
+                                                   v-model="budget.octoberBudgetAmount" disabled
+                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)">
+                                        </div>
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation==false">
                                             <label>Nov</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.novemberBudgetAmount"
@@ -618,11 +725,30 @@
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
                                                    onkeypress="return validateFloatKeyPress(this,event)">
                                         </div>
-                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation">
+                                            <label>Nov</label>
+                                            <input type="text" class="form-control"
+                                                   v-model="budget.novemberBudgetAmount"
+                                                   disabled
+                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)">
+                                        </div>
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation==false">
                                             <label>Dic</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.decemberBudgetAmount"
                                                    required
+                                                   @change="getBudgetYearConcept(indexOfBudget,budget)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)">
+                                        </div>
+                                        <div class="col-md-1" style="padding-left: 0px; padding-right: 1px"
+                                             v-if="validation">
+                                            <label>Dic</label>
+                                            <input type="text" class="form-control"
+                                                   v-model="budget.decemberBudgetAmount"
+                                                   disabled
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
                                                    onkeypress="return validateFloatKeyPress(this,event)">
                                         </div>
@@ -643,7 +769,8 @@
                                                 Borrar datos
                                             </button>
                                         </div>
-                                        <div class="col-md-2" aria-hidden="true" v-if="budgets.length > 0 && validation==false">
+                                        <div class="col-md-2" aria-hidden="true"
+                                             v-if="budgets.length > 0 && validation==false">
                                             <button style="margin-top: 27px" type="button" class="btn btn-success"
                                                     @click="saveBudget(budget, budget.budget.idBudget)">
                                                 Guardar
@@ -763,9 +890,11 @@
                             <div class="modal-body">
                                 <div class="container-fluid container-scroll">
                                     <div class="row table-header">
-                                        <div class="col-md-4"><b>Centro de costos: {{selected.costCenter.name}}</b></div>
+                                        <div class="col-md-4"><b>Centro de costos: {{selected.costCenter.name}}</b>
+                                        </div>
                                         <div class="col-md-1"><b>Año: {{selected.year}}</b></div>
-                                        <div class="col-md-5"><b>TOTAL CENTRO DE COSTOS: {{totalCostCenter |currency}}</b></div>
+                                        <div class="col-md-5"><b>TOTAL CENTRO DE COSTOS: {{totalCostCenter
+                                            |currency}}</b></div>
                                         <div class="col-md-1"><b></b></div>
                                         <div class="col-md-1"><b></b></div>
                                     </div>
@@ -790,24 +919,35 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row table-header" v-for="(indexOfBudgetReport, budgetsReport) in budgetsReports" style="background: #31708f; color: white">
+                                    <div class="row table-header"
+                                         v-for="(indexOfBudgetReport, budgetsReport) in budgetsReports"
+                                         style="background: #31708f; color: white">
                                         <div class="col-md-12">
-                                            <div class="col-md-2">{{budgetsReport.budget.conceptBudget.nameConcept}}</div>
-                                            <div class="col-md-1">{{budgetsReport.budget.budgetNature.budgetNature}}</div>
+                                            <div class="col-md-2">{{budgetsReport.budget.conceptBudget.nameConcept}}
+                                            </div>
+                                            <div class="col-md-1">{{budgetsReport.budget.budgetNature.budgetNature}}
+                                            </div>
                                             <div class="col-md-1">{{budgetsReport.budget.budgetType.budgetType}}</div>
                                             <div class="col-md-8 text-center">
-                                                <div class="col-xs-1">{{budgetsReport.januaryBudgetAmount|currency}}</div>
-                                                <div class="col-xs-1">{{budgetsReport.februaryBudgetAmount|currency}}</div>
+                                                <div class="col-xs-1">{{budgetsReport.januaryBudgetAmount|currency}}
+                                                </div>
+                                                <div class="col-xs-1">{{budgetsReport.februaryBudgetAmount|currency}}
+                                                </div>
                                                 <div class="col-xs-1">{{budgetsReport.marchBudgetAmount|currency}}</div>
                                                 <div class="col-xs-1">{{budgetsReport.aprilBudgetAmount|currency}}</div>
                                                 <div class="col-xs-1">{{budgetsReport.mayBudgetAmount|currency}}</div>
                                                 <div class="col-xs-1">{{budgetsReport.juneBudgetAmount|currency}}</div>
                                                 <div class="col-xs-1">{{budgetsReport.julyBudgetAmount|currency}}</div>
-                                                <div class="col-xs-1">{{budgetsReport.augustBudgetAmount|currency}}</div>
-                                                <div class="col-xs-1">{{budgetsReport.septemberBudgetAmount|currency}}</div>
-                                                <div class="col-xs-1">{{budgetsReport.octoberBudgetAmount|currency}}</div>
-                                                <div class="col-xs-1">{{budgetsReport.novemberBudgetAmount|currency}}</div>
-                                                <div class="col-xs-1">{{budgetsReport.decemberBudgetAmount|currency}}</div>
+                                                <div class="col-xs-1">{{budgetsReport.augustBudgetAmount|currency}}
+                                                </div>
+                                                <div class="col-xs-1">{{budgetsReport.septemberBudgetAmount|currency}}
+                                                </div>
+                                                <div class="col-xs-1">{{budgetsReport.octoberBudgetAmount|currency}}
+                                                </div>
+                                                <div class="col-xs-1">{{budgetsReport.novemberBudgetAmount|currency}}
+                                                </div>
+                                                <div class="col-xs-1">{{budgetsReport.decemberBudgetAmount|currency}}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -816,10 +956,8 @@
                             <br>
                             <br>
                             <div class="modal-footer">
-                                <!--<button class="btn btn-success" @click="submitValidation">Guardar</button>-->
-                                <button class="btn btn-success" @click="showConfirm">Enviar</button>
+                                <button class="btn btn-success" @click="showConfirm">Aceptar</button>
                                 <button class="btn btn-warning" @click="closeBudget">Modificar</button>
-                                <!--<button type="button" class="btn btn-default" @click="closeSendValidation">Cancelar</button>-->
                             </div>
                         </div>
                     </div>
@@ -829,15 +967,16 @@
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header" style="background: darkslategrey; color: black">
-                                <button type="button" class="close" aria-label="Close" @click="closeSendValidation">
+                                <button type="button" class="close" aria-label="Close" @click="closeConfirm">
                                     <span aria-hidden="true">&times;</span></button>
                                 <h4 class="modal-title" id="confirmBudgetLabel"><b>Enviar presupuesto</b></h4>
                             </div>
                             <div class="modal-body">
                                 <div class="row">
                                     <div>
-                                        <p>&nbsp El presupuesto para elcentro de costos {{costCenter.name}}</p>
-                                        <p>&nbsp será enviado a kjuarez@bidg.mx para su validación</p>
+                                        <p>&nbsp El presupuesto para el centro de costos {{selected.costCenter.name}}
+                                            será enviado a:</p>
+                                        <p>&nbsp kjuarez@bidg.mx para su validación</p>
                                     </div>
                                 </div>
                             </div>
@@ -849,18 +988,21 @@
                     </div>
                 </div>
 
-                <div class="modal fade" id="requestModification" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal fade" id="requestModification" tabindex="-1" role="dialog"
+                     aria-labelledby="myModalLabel">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header" style="background: darkslategrey; color: black">
-                                <button type="button" class="close" aria-label="Close" @click="closeRequestModification">
+                                <button type="button" class="close" aria-label="Close"
+                                        @click="closeRequestModification">
                                     <span aria-hidden="true">&times;</span></button>
                                 <h4 class="modal-title" id="requestModificationLabel"><b>Modificar presupuesto</b></h4>
                             </div>
                             <div class="modal-body">
                                 <div class="row">
                                     <div>
-                                        <p>&nbsp El presupuesto para el centro de costos {{selected.costCenter.name}}</p>
+                                        <p>&nbsp El presupuesto para el centro de costos
+                                            {{selected.costCenter.name}}</p>
                                         <p>&nbsp será enviado a kjuarez@bidg.mx para autorización de modificación</p>
                                     </div>
                                 </div>
