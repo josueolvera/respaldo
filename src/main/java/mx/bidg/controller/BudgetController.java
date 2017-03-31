@@ -56,6 +56,18 @@ public class BudgetController {
     private BudgetsService budgetsService;
 
     @Autowired
+    private  DistributorCostCenterService distributorCostCenterService;
+
+    @Autowired
+    private RealBudgetSpendingHistoryService realBudgetSpendingHistoryService;
+
+    @Autowired
+    private EmailTemplatesService emailTemplatesService;
+
+    @Autowired
+    private EmailDeliveryService emailDeliveryService;
+
+    @Autowired
     private ObjectMapper mapper;
 
     @Autowired
@@ -225,11 +237,105 @@ public class BudgetController {
     @RequestMapping(value = "/validated",produces = MediaType.APPLICATION_JSON_UTF8_VALUE, method = RequestMethod.POST)
     public ResponseEntity<String> updateBudgetByCostcenterAndYear(
             @RequestParam(name = "cost_center", required = false) Integer idCostCenter,
-            @RequestParam(name = "year", required = false) Integer year) throws Exception {
+            @RequestParam(name = "year", required = false) Integer year,
+            HttpSession session)throws Exception {
+        Users user = (Users) session.getAttribute("user");
         CCostCenter c = cCostCenterService.findById(idCostCenter);
         AuthorizationCostCenter a = authorizationCostCenterService.findByIdCostCenterAndYear(idCostCenter,year);
         a.setAuthorization(true);
         authorizationCostCenterService.update(a);
+        List<DistributorCostCenter> distributorCostCenterListHistory = distributorCostCenterService.findByCostCenter(idCostCenter);
+        List<RealBudgetSpending> realBudgetSpendingList= null;
+        List<RealBudgetSpendingHistory>realBudgetSpendingHistoryList = null;
+        for(DistributorCostCenter d: distributorCostCenterListHistory){
+            List<Budgets> budgetsList = budgetsService.findByIdDistributor(d.getIdDistributorCostCenter());
+            System.out.println("Tamaño de la lista de budgets: "+ budgetsList.size());
+            for(Budgets b: budgetsList) {
+                RealBudgetSpending realBudgetSpending = realBudgetSpendingService.findByIdBudgetAndYear(b.getIdBudget(), year);
+                RealBudgetSpendingHistory realBudgetSpendingHistory = realBudgetSpendingHistoryService.findByIdBudgetandYear(b.getIdBudget(), year);
+                if(realBudgetSpending!=null) {
+                    realBudgetSpendingList.add(realBudgetSpending);
+                }else {
+
+                }
+                if(realBudgetSpendingHistory!=null){
+                    realBudgetSpendingHistoryList.add(realBudgetSpendingHistory);
+                }else{
+
+                }
+            }
+        }
+        if(realBudgetSpendingHistoryList==null){
+            for(RealBudgetSpending r: realBudgetSpendingList){
+                RealBudgetSpendingHistory real = new RealBudgetSpendingHistory();
+                if(r.getJanuaryBudgetAmount()!=null) {
+                    real.setJanuaryBudgetAmount(r.getJanuaryBudgetAmount());
+                    real.setJanuaryExpendedAmount(r.getJanuaryBudgetAmount());
+                }
+                if(r.getFebruaryBudgetAmount()!=null) {
+                    real.setFebruaryBudgetAmount(r.getFebruaryBudgetAmount());
+                    real.setFebruaryExpendedAmount(r.getFebruaryExpendedAmount());
+                }
+                if(r.getMarchBudgetAmount()!=null){
+                    real.setMarchBudgetAmount(r.getMarchBudgetAmount());
+                    real.setMarchExpendedAmount(r.getMarchExpendedAmount());
+                }
+                if(r.getAprilBudgetAmount()!=null){
+                    real.setAprilBudgetAmount(r.getAprilBudgetAmount());
+                    real.setAprilExpendedAmount(r.getAprilExpendedAmount());
+                }
+                if(r.getMayBudgetAmount()!=null){
+                    real.setMayBudgetAmount(r.getMayBudgetAmount());
+                    real.setMayExpendedAmount(r.getMayExpendedAmount());
+                }
+                if(r.getJuneBudgetAmount()!=null){
+                    real.setJuneBudgetAmount(r.getJuneBudgetAmount());
+                    real.setJuneExpendedAmount(r.getJuneExpendedAmount());
+                }
+                if(r.getJulyBudgetAmount()!=null){
+                    real.setJulyBudgetAmount(r.getJulyBudgetAmount());
+                    real.setJulyExpendedAmount(r.getJulyExpendedAmount());
+                }
+                if(r.getAugustBudgetAmount()!=null){
+                    real.setAugustBudgetAmount(r.getAugustBudgetAmount());
+                    real.setAugustExpendedAmount(r.getAugustExpendedAmount());
+                }
+                if(r.getSeptemberBudgetAmount()!=null){
+                    real.setSeptemberBudgetAmount(r.getSeptemberBudgetAmount());
+                    real.setSeptemberExpendedAmount(r.getSeptemberExpendedAmount());
+                }
+                if(r.getOctoberBudgetAmount()!=null){
+                    real.setOctoberBudgetAmount(r.getOctoberBudgetAmount());
+                    real.setOctoberExpendedAmount(r.getOctoberExpendedAmount());
+                }
+                if(r.getNovemberBudgetAmount()!=null){
+                    real.setNovemberBudgetAmount(r.getNovemberBudgetAmount());
+                    real.setNovemberExpendedAmount(r.getNovemberExpendedAmount());
+                }
+                if(r.getDecemberBudgetAmount()!=null){
+                    real.setDecemberBudgetAmount(r.getDecemberBudgetAmount());
+                    real.setDecemberExpendedAmount(r.getDecemberExpendedAmount());
+                }
+                if(r.getTotalBudgetAmount()!=null){
+                    real.setTotalBudgetAmount(r.getTotalBudgetAmount());
+                    real.setTotalExpendedAmount(r.getTotalExpendedAmount());
+                }
+                if(r.getYear()!=null){
+                    real.setYear(r.getYear());
+                }
+                if(r.getBudget()!=null){
+                    real.setBudget(r.getBudget());
+                }
+                if(r.getCurrency()!=null){
+                    real.setCurrency(r.getCurrency());
+                    real.setUsername(user.getUsername());
+                    realBudgetSpendingHistoryService.save(real);
+                }
+
+            }
+        }else{
+            System.out.print("El historico ya tiene registros");
+        }
         return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(null));
     }
 
@@ -248,6 +354,10 @@ public class BudgetController {
         a.setYear(year);
         a.setUsers(user);
         authorizationCostCenterService.save(a);
+        EmailTemplates emailTemplate = emailTemplatesService.findByName("budget_validation_required");
+        emailTemplate.addProperty("costCenter",c);
+        emailTemplate.addProperty("user",user);
+        emailDeliveryService.deliverEmail(emailTemplate);
         return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(a));
     }
 
@@ -282,4 +392,24 @@ public class BudgetController {
         //List<Budgets> budgets = budgetsService.findByIdCostCenter(idCostCenter);
         return  ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(null));
     }
+    /*EmailTemplates emailTemplate = emailTemplatesService.findByName("budget_validation_required");
+        emailTemplate.addProperty("costCenter",c);*/
+
+    @RequestMapping(value = "/get-emails",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getEmail(@RequestParam(name = "cost_center") Integer idCostCenter) throws  Exception {
+        //List<Budgets> budgets = budgetsService.findByIdCostCenter(idCostCenter);
+        CCostCenter c = cCostCenterService.findById(idCostCenter);
+        EmailTemplates emailTemplate = emailTemplatesService.findByName("budget_validation_required");
+        emailTemplate.addProperty("costCenter",c);
+        return  ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(emailTemplate));
+    }
+
+    @RequestMapping(value = "/get-emails-modify",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getEmailModify(@RequestParam(name = "cost_center") Integer idCostCenter) throws  Exception {
+        CCostCenter c = cCostCenterService.findById(idCostCenter);
+        EmailTemplates emailTemplate = emailTemplatesService.findByName("budget_modify_required");
+        emailTemplate.addProperty("costCenter",c);
+        return  ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(emailTemplate));
+    }
+
 }

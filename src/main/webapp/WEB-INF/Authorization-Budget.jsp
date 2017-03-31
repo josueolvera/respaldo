@@ -90,6 +90,7 @@
                         budgetCategory: null,
                         budget: null,
                         subbudget: null,
+                        coment: ''
                     },
                     bussinessLines: {},
                     distributors: {},
@@ -100,7 +101,6 @@
                     budgetCategories: [],
                     role: null,
                     errorMessage: '',
-                    coment: '',
                     authorizationBudget: {},
                     valida: false,
                     authoriza: false,
@@ -903,38 +903,38 @@
                                     </div>
                                 </div>
 
-
                             </div>
                         </div>
                     </div>
                 </div>
                 <br>
                 <!--dialogs-->
-                <div class="modal fade" id="sendAuthorizationOrDenies" tabindex="-1" role="dialog"
-                     aria-labelledby="myModalLabel">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header" style="background: darkslategrey; color: black">
-                                <button type="button" class="close" aria-label="Close"
-                                        @click="closeSendAuthorizationOrDenies">
-                                    <span aria-hidden="true">&times;</span></button>
-                                <h4 class="modal-title" id="sendValidationLabel"><b>Añadir un comentario</b></h4>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <textarea class="form-control" rows="5" v-model="coment"></textarea>
+                <div class="modal fade" id="sendAuthorizationOrDenies" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <form v-on:submit.prevent="showAuthorizationBudget">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header" style="background: darkslategrey; color: black">
+                                    <button type="button" class="close" aria-label="Close"
+                                            @click="closeSendAuthorizationOrDenies">
+                                        <span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="sendValidationLabel"><b>Añadir un comentario</b></h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <textarea class="form-control" rows="5" v-model="selected.coment" required></textarea>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-success" @click="showAuthorizationBudget">Autorizar</button>
-                                <button class="btn btn-warning" @click="showDeniesBudget">Rechazar</button>
-                                <button class="btn btn-default" @click="closeSendAuthorizationOrDenies">Cancelar
-                                </button>
+                                <div class="modal-footer">
+                                    <button class="btn btn-success" @click="showAuthorizationBudget">Autorizar</button>
+                                    <button class="btn btn-warning" @click="showDeniesBudget">Rechazar</button>
+                                    <button class="btn btn-default" @click="closeSendAuthorizationOrDenies">Cancelar
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
 
                 <div class="modal fade" id="deniesBudget" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">

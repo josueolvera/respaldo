@@ -95,6 +95,7 @@
                         subbudget: null,
                         concept: ''
                     },
+                    emails: {},
                     searching: false,
                     rolesCostCenter: [],
                     costCenterList: [],
@@ -291,17 +292,32 @@
                             '&year_from_copy=' + this.selected.yearFromCopy + '&budget_type=' + this.selected.budgetType.idBudgetType +
                             '&budget_nature=' + this.selected.budgetNature.idBudgetNature +
                             '&year_to_copy=' + this.selected.yearToCopy;
-                        if(this.selected.yearFromCopy == this.selected.yearToCopy){
-                            showAlert("No se puede copiar presupesto en el mismo año",{type: 3});
-                        }else {
+                        if (this.selected.yearFromCopy == this.selected.yearToCopy) {
+                            showAlert("No se puede copiar presupesto en el mismo año", {type: 3});
+                        } else {
                             self.$http.post(ROOT_URL + url).success(function (element) {
                                 this.closeCopyBudgetModal();
                                 showAlert('Transaccion exitosa');
                                 showAlert(data.success.message);
                             }).error(function (data) {
-                                showAlert(data.error.message, {type:3});
+                                showAlert(data.error.message, {type: 3});
                             });
                         }
+                    },
+                    getEmails: function () {
+                        this.$http.get(ROOT_URL + '/budgets/get-emails?cost_center=' + this.selected.costCenter.idCostCenter).success(function (data) {
+                            this.emails = data;
+                        }).error(function (data) {
+                            showAlert(data.error.message, {type: 3});
+                        });
+                    },
+                    getEmailsModify: function () {
+                        this.emails= '';
+                        this.$http.get(ROOT_URL + '/budgets/get-emails-modify?cost_center=' + this.selected.costCenter.idCostCenter).success(function (data) {
+                            this.emails = data;
+                        }).error(function (data) {
+                            showAlert(data.error.message, {type: 3});
+                        });
                     },
                     onClickAcept: function () {
                         this.copyBudget(false);
@@ -316,6 +332,7 @@
                         $('#copyBudgetModal').modal('hide');
                     },
                     showSendValidation: function () {
+                        this.getEmails();
                         $('#sendValidation').modal('show');
                     },
                     closeSendValidation: function () {
@@ -340,6 +357,7 @@
                         $('#confirmBudget').modal('show');
                     },
                     showRequestModification: function () {
+                        this.getEmailsModify();
                         $('#requestModification').modal('show');
                     },
                     closeRequestModification: function () {
@@ -438,15 +456,17 @@
                     <div class="col-md-5">
                         <h2>CAPTURA DE PRESUPUESTO</h2>
                     </div>
-                    <div class="col-md-2 text-center" v-if="authorizationBudget.modify<=1 && budgets.length > 0" style="color: #1b6d85">
+                    <div class="col-md-2 text-center" v-if="authorizationBudget.modify<=1 && budgets.length > 0"
+                         style="color: #1b6d85">
                         <h2>ANUAL</h2>
                     </div>
-                    <div class="col-md-2 text-center" v-if="authorizationBudget.modify == 2 && budgets.length > 0" style="color: #1b6d85">
+                    <div class="col-md-2 text-center" v-if="authorizationBudget.modify == 2 && budgets.length > 0"
+                         style="color: #1b6d85">
                         <h2>AJUSTADO</h2>
                     </div>
                     <div class="col-md-3 pull-right" v-if="budgets.length > 0">
                         <label>Buscar por concepto</label>
-                        <input class="form-control" v-model="selected.concept" required >
+                        <input class="form-control" v-model="selected.concept" required>
                     </div>
                 </div>
                 <br>
@@ -503,7 +523,8 @@
                                 <h2 style="color: #449d44">
                                     <span class="glyphicon glyphicon-ok-sign">Presupuesto autorizado</span></h2>
                             </div>
-                            <div class="col-md-2 pull-right" v-if="budgets.length > 0 && authorization && validation && authorizationBudget.modify==0">
+                            <div class="col-md-2 pull-right"
+                                 v-if="budgets.length > 0 && authorization && validation && authorizationBudget.modify==0">
                                 <button style="margin-top: 25px" class="btn btn-success"
                                         @click="showRequestModification">
                                     Solicitar modificación
@@ -974,10 +995,12 @@
                             <div class="modal-body">
                                 <div class="row">
                                     <div>
-                                        <p>&nbsp El presupuesto para el centro de costos {{selected.costCenter.name}}
-                                            será enviado a:</p>
-                                        <p>&nbsp kjuarez@bidg.mx para su validación</p>
+                                        <p>&nbsp El presupuesto para el centro de costos
+                                            {{selected.costCenter.name}} será enviado a:</p>
                                     </div>
+                                </div>
+                                <div class="row" v-for="email in emails.emailRecipientsList">
+                                    <p>&nbsp &nbsp{{email.emailAddress}}</p>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -1001,9 +1024,10 @@
                             <div class="modal-body">
                                 <div class="row">
                                     <div>
-                                        <p>&nbsp El presupuesto para el centro de costos
-                                            {{selected.costCenter.name}}</p>
-                                        <p>&nbsp será enviado a kjuarez@bidg.mx para autorización de modificación</p>
+                                        <p>&nbsp El presupuesto para el centro de costos {{selected.costCenter.name}}será enviado a: </p>
+                                        <div class="row" v-for="email in emails.emailRecipientsList">
+                                            <p>&nbsp &nbsp &nbsp &nbsp{{email.emailAddress}}</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

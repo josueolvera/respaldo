@@ -478,6 +478,42 @@ public class RealBudgetSpendingHistory implements Serializable {
         this.creationDate = creationDate;
     }
 
+    public void setYear(Integer year) {
+        this.year = year;
+    }
+
+    public Budgets getBudget() {
+        return budget;
+    }
+
+    public void setBudget(Budgets budget) {
+        this.budget = budget;
+    }
+
+    public Integer getIdBudget() {
+        return idBudget;
+    }
+
+    public void setIdBudget(Integer idBudget) {
+        this.idBudget = idBudget;
+    }
+
+    public CCurrencies getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(CCurrencies currency) {
+        this.currency = currency;
+    }
+
+    public Integer getIdCurrency() {
+        return idCurrency;
+    }
+
+    public void setIdCurrency(Integer idCurrency) {
+        this.idCurrency = idCurrency;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;

@@ -228,12 +228,8 @@ public class BudgetHelper {
         Integer anioAnterior = year-1;
         List<DistributorCostCenter> dcc = distributorCostCenterService.findByIdBussinessAndDistributorAndCostCenter(idBussinessLine,idDistributor,idCostCenter);
         List<BudgetCategory> categories = new ArrayList<>();
-        System.out.println("Tamaño de la lista: "+ dcc.size());
-        Integer var=0;
         for(DistributorCostCenter distributorCostCenter: dcc){
             if(distributorCostCenter.getAccountingAccounts()!=null){
-                var++;
-                System.out.print("Se itero la lista"+var);
                 //En este momento la cuenta contable es primer nivel del año ingresado
                 if(distributorCostCenter.getAccountingAccounts().getIdBudgetSubcategory()==0){
                     System.out.println("ES primer nivel");
