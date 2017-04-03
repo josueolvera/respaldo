@@ -71,6 +71,7 @@
                 ready: function () {
                     this.getUserInSession();
                     this.getBudgetTypes();
+                    this.getNature();
                 },
                 data: {
                     now: "${now}",
@@ -133,13 +134,18 @@
                                     index = self.arrayObjectIndexOf(self.costCenterList, item.costCenter.idCostCenter, 'idCostCenter');
                                     if (index == -1) self.costCenterList.push(item.costCenter);
                                 });
-                                data.forEach(function (item) {
+                                /*data.forEach(function (item) {
                                     index = self.arrayObjectIndexOf(self.budgetNatureList, item.budgetNature.idBudgetNature, 'idBudgetNature');
                                     if (index == -1) self.budgetNatureList.push(item.budgetNature);
-                                });
+                                });*/
                             })
                             .error(function (data) {
                             });
+                    },
+                    getNature: function () {
+                      this.$http.get(ROOT_URL + '/c-budget-nature').success(function (data) {
+                          this.budgetNatureList=data;
+                      });
                     },
                     getBudgetTypes: function () {
                         this.$http.get(ROOT_URL + '/budget-types')
@@ -922,9 +928,10 @@
                                     <div class="row table-header" style="background: #23527c ; color: white">
                                         <div class="col-md-12">
                                             <div class="col-md-2"></div>
+                                            <div class="col-md-1">Año anterior</div>
                                             <div class="col-md-1">Tipo de Gasto</div>
                                             <div class="col-md-1">Clasificación</div>
-                                            <div class="col-md-8 text-center">
+                                            <div class="col-md-7 text-center">
                                                 <div class="col-xs-1">Enero</div>
                                                 <div class="col-xs-1">Febrero</div>
                                                 <div class="col-xs-1">Marzo</div>
@@ -940,16 +947,17 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row table-header"
-                                         v-for="(indexOfBudgetReport, budgetsReport) in budgetsReports"
-                                         style="background: #31708f; color: white">
-                                        <div class="col-md-12">
+                                    <div class="row table-header" style="background: #31708f; color: white">
+                                        <div class="col-md-12" v-for="(indexOfBudgetReport, budgetsReport) in budgetsReports.currentYear">
                                             <div class="col-md-2">{{budgetsReport.budget.conceptBudget.nameConcept}}
+                                            </div>
+                                            <div class="col-md-1" v-for="(indexOfBudgetReport,budgetLastYear) in budgetsReports.lastYear">
+                                                <div class="col-md-1">{{budgetLastYear.totalBudgetAmount}}</div>
                                             </div>
                                             <div class="col-md-1">{{budgetsReport.budget.budgetNature.budgetNature}}
                                             </div>
                                             <div class="col-md-1">{{budgetsReport.budget.budgetType.budgetType}}</div>
-                                            <div class="col-md-8 text-center">
+                                            <div class="col-md-7 text-center">
                                                 <div class="col-xs-1">{{budgetsReport.januaryBudgetAmount|currency}}
                                                 </div>
                                                 <div class="col-xs-1">{{budgetsReport.februaryBudgetAmount|currency}}
