@@ -19,6 +19,7 @@ import mx.bidg.model.*;
 import mx.bidg.pojos.*;
 import mx.bidg.service.*;
 import mx.bidg.utils.BudgetHelper;
+import mx.bidg.utils.BudgetReport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -48,6 +49,9 @@ public class BudgetController {
 
     @Autowired
     private BudgetHelper budgetHelper;
+
+    @Autowired
+    private BudgetReport budgetReport;
 
     @Autowired
     private AccountingAccountsService accountingAccountsService;
@@ -366,8 +370,9 @@ public class BudgetController {
             @RequestParam(name = "cost_center") Integer idCostCenter,
             @RequestParam(name = "year", required = false) Integer year
     ) throws Exception {
-        List<RealBudgetSpending> budgetCategories = budgetHelper.getBudgetReport(idCostCenter,year);
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(budgetCategories),HttpStatus.OK);
+        //List<RealBudgetSpending> budgetCategories = budgetHelper.getBudgetReport(idCostCenter,year);
+        ReportsRealBudgetSpending budgetReportList = budgetReport.getReportBudget(idCostCenter,year);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(budgetReportList),HttpStatus.OK);
     }
 
     @RequestMapping(value = "/get-budget-levels", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
