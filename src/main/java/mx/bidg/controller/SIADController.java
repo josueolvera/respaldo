@@ -224,12 +224,14 @@ public class SIADController {
         model.setViewName("accountingAccount");
         return model;
     }
+    
     @RequestMapping(value = "/cost-allocation", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ModelAndView costAllocation(){
         ModelAndView model = new ModelAndView();
         model.setViewName("cost-allocation");
         return model;
     }
+    
     @RequestMapping(value = "/cost-client", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public ModelAndView costClient(@RequestParam(name = "idDwEmployee") Integer idDwEmployee) {
         ModelAndView model = new ModelAndView();
@@ -237,16 +239,25 @@ public class SIADController {
         model.setViewName("costClient");
         return model;
     }
+    
     @RequestMapping(value = "/report-cost", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public ModelAndView siadCostReport(){
         ModelAndView model = new ModelAndView();
         model.setViewName("report-cost");
         return model;
     }
+    
     @RequestMapping(value = "/budget-automatic",method = RequestMethod.GET,produces = "text/html;charset=UTF-8")
     public ModelAndView budgetAssignable(){
         ModelAndView model = new ModelAndView();
         model.setViewName("BudgetAutomatic");
+        return model;
+    }
+    
+    @RequestMapping(value = "/c-bussines-line", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView bussinesLineView() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("c-bussines-line");
         return model;
     }
 }
