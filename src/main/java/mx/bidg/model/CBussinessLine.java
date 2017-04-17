@@ -38,12 +38,12 @@ public class CBussinessLine implements Serializable {
     @Column(name = "ID_BUSINESS_LINE")
     private Integer idBusinessLine;
 
-    @Size(max = 50)
+    @Size(max = 100)
     @Column(name = "NAME")
     @JsonView(JsonViews.Root.class)
     private String name;
 
-    @Size(max = 20)
+    @Size(max = 50)
     @JsonView(JsonViews.Root.class)
     @Column(name = "ACRONYM")
     private String acronym;
@@ -51,6 +51,7 @@ public class CBussinessLine implements Serializable {
     @Basic(optional = false)
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
+    @Column(name = "CREATION_DATE")
     private LocalDateTime creationDate;
 
     @Size(max = 20)
