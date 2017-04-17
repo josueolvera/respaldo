@@ -1,6 +1,7 @@
 package mx.bidg.service;
 
 import mx.bidg.model.EmailTemplates;
+import mx.bidg.model.Users;
 
 /**
  * @author Rafael Viveros
@@ -8,5 +9,6 @@ import mx.bidg.model.EmailTemplates;
  */
 public interface EmailDeliveryService {
     void deliverEmail(EmailTemplates emailTemplate);
+    void deliverEmailWithUser(EmailTemplates emailTemplate, Users users);
     void sendEmailwithAttachmentTruckDriver(EmailTemplates emailTemplate, String filePath);
 }
