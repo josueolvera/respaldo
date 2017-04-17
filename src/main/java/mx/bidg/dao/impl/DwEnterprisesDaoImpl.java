@@ -15,6 +15,7 @@ import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -327,5 +328,10 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
         map.put("area", area);
         map.put("budgetable", 1);
         return (DwEnterprises) criteria.add(Restrictions.allEq(map)).uniqueResult();
+    }
+
+    @Override
+    public List<Integer> getDistributorsByBussinessLine(Integer idBusinessLine) {
+        return createEntityCriteria().setProjection(Projections.distinct(Projections.property("idDistributor"))).add(Restrictions.eq("idBusinessLine", idBusinessLine)).add(Restrictions.eq("status", true)).list();
     }
 }
