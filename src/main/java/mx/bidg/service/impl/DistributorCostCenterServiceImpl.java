@@ -58,4 +58,24 @@ public class DistributorCostCenterServiceImpl implements DistributorCostCenterSe
     public List<DistributorCostCenter> findByIdBussinessAndDistributorAndCostCenter(Integer idBussinessLine,  Integer idDistributor,Integer idCostCenter) {
         return distributorCostCenterDao.findByIdBussinessAndDistributorAndCostCenter(idBussinessLine,idDistributor,idCostCenter);
     }
+
+    @Override
+    public List<Integer> getIdsDistributorByBusinessLine(Integer idBusinessLine) {
+        return distributorCostCenterDao.getIdsDistributorsByBusinessLine(idBusinessLine);
+    }
+
+    @Override
+    public List<Integer> getIdsCostCentersByBDistributor(Integer idDistributor, List<Integer> idsBussinessLines) {
+        return distributorCostCenterDao.getIdsCostCentersByBDistributor(idDistributor, idsBussinessLines);
+    }
+
+    @Override
+    public List<DistributorCostCenter> getAllByBusinessLineDistributorCC(List<Integer> idsBussinessLines, List<Integer> idsDistributors, List<Integer> idsCC) {
+        return distributorCostCenterDao.getAllByBusinessLineDistributorCC(idsBussinessLines, idsDistributors, idsCC);
+    }
+
+    @Override
+    public List<Integer> getIdsCostCentersByBusinessLineDistributorCC(List<Integer> idsBussinessLines, List<Integer> idsDistributors, List<Integer> idsCC) {
+        return distributorCostCenterDao.getIdsCostCentersByBusinessLineDistributorCC(idsBussinessLines, idsDistributors, idsCC);
+    }
 }

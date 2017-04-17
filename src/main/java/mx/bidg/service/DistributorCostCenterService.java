@@ -16,4 +16,8 @@ public interface DistributorCostCenterService {
     List<DistributorCostCenter> findByCostCenter(Integer idCostCenter);
     DistributorCostCenter findByIdCostCenter(Integer idCostCenter);
     List<DistributorCostCenter>findByIdBussinessAndDistributorAndCostCenter(Integer idBussinessLine, Integer idDistributor,Integer idCostCenter);
+    List<Integer> getIdsDistributorByBusinessLine(Integer idBusinessLine);
+    List<Integer> getIdsCostCentersByBDistributor(Integer idDistributor, List<Integer> idsBussinessLines);
+    List<DistributorCostCenter> getAllByBusinessLineDistributorCC(List<Integer> idsBussinessLines, List<Integer> idsDistributors, List<Integer> idsCC);
+    List<Integer> getIdsCostCentersByBusinessLineDistributorCC(List<Integer> idsBussinessLines, List<Integer> idsDistributors, List<Integer> idsCC);
 }
