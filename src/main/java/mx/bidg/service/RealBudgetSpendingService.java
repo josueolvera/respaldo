@@ -5,6 +5,7 @@
  */
 package mx.bidg.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import mx.bidg.model.Budgets;
@@ -52,4 +53,6 @@ public interface RealBudgetSpendingService {
     List<RealBudgetSpending> findByBudgetAndYearAndNoAuthorized(Integer idBudget, Integer year, boolean authorized);
 
     RealBudgetSpending findByIdBudgetAndYear(Integer idBudget, Integer year);
+
+    BigDecimal getTotalBudgetAmount (Integer idBudget, Integer year);
 }

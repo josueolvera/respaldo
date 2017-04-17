@@ -48,6 +48,9 @@ public class RealBudgetSpendingServiceImpl implements RealBudgetSpendingService 
     @Autowired
     private ObjectMapper mapper;
 
+    @Autowired
+    RealBudgetSpendingDao realBudgetSpendingDao;
+
     @Override
     public List<RealBudgetSpending> saveList(String data, Integer idBudget, Users user) throws Exception {
         JsonNode budgetYearConceptListNode = mapper.readTree(data);
@@ -328,6 +331,11 @@ public class RealBudgetSpendingServiceImpl implements RealBudgetSpendingService 
     @Override
     public RealBudgetSpending findByIdBudgetAndYear(Integer idBudget, Integer year) {
         return budgetYearConceptDao.findByIdBudgetAndYear(idBudget, year);
+    }
+
+    @Override
+    public BigDecimal getTotalBudgetAmount(Integer idBudget, Integer year) {
+        return realBudgetSpendingDao.getTotalBudgetAmount(idBudget, year);
     }
 
 }
