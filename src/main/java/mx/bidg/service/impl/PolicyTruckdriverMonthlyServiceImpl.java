@@ -173,7 +173,7 @@ public class PolicyTruckdriverMonthlyServiceImpl implements PolicyTruckdriverMon
     public void readCsvAlterna(String fileName) {
         String [] FILE_HEADER_MAPPING = {"Placas","Folio","Hora","Inicio","Fin","Suma Asegurada","Usuario","Edad","Email","Beneficiario","Edad Beneficiario","Dias","Pago Id","No. Autorizacion"};
 
-        String READ_PATH = env.getRequiredProperty("policy_truckDriver.documents_dir");
+        String READ_PATH = env.getRequiredProperty("aterna_truckDriver.documents_dir");
 
         FileReader fileReader = null;
 
