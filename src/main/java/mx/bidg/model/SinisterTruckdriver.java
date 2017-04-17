@@ -38,6 +38,7 @@ public class SinisterTruckdriver implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
     @Column(name = "ID_SINISTER")
     @JsonView(JsonViews.Root.class)
     private Integer idSinister;
