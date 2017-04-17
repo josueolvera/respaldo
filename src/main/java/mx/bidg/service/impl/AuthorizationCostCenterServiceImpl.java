@@ -48,4 +48,9 @@ public class AuthorizationCostCenterServiceImpl implements AuthorizationCostCent
     public AuthorizationCostCenter findByIdCostCenterAndYear(Integer idCostCenter, Integer year) {
         return authorizationCostCenterDao.findByIdCostCenterAndYear(idCostCenter,year);
     }
+
+    @Override
+    public List<Integer> getAllCostCentersRNAByIdsCostCenters(List<Integer> idsCostCenters) {
+        return authorizationCostCenterDao.getAllCostCentersRNAByIdsCostCenters(idsCostCenters);
+    }
 }
