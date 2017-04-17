@@ -102,7 +102,7 @@ public class SinisterTruckdriverController {
         name = name+año;
         File file = new File(env.getRequiredProperty("sinister_truckDriver.documents_dir")+name+".csv");
         if (file.exists()){
-            sinisterTruckdriverService.readCsv(name);
+            sinisterTruckdriverService.readCsv(name+".csv");
 
 
 
