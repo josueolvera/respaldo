@@ -120,7 +120,7 @@ public class BudgetYearConceptController {
         Users user = (Users) httpSession.getAttribute("user");
         List<DistributorCostCenter> distributorCostCenters = distributorCostCenterService.findByCostCenter(idCostCenter);
         AuthorizationCostCenter a = authorizationCostCenterService.findByIdCostCenterAndYear(idCostCenter, yearToCopy);
-        if (a == null) {
+        if (a.getcCostCenterStatus().getIdCostCenterStatus() != 4 && a.getcCostCenterStatus().getIdCostCenterStatus() != 5) {
             System.out.print("La authorization esta nula");
             for (DistributorCostCenter d : distributorCostCenters) {
                 List<Budgets> budgets = budgetsService.findByIdDistributorCostCenter(d.getIdDistributorCostCenter(), idBudgetType, idBudgetNature);
@@ -196,11 +196,8 @@ public class BudgetYearConceptController {
                     }
                 }
             }
-        } else if(a.getAuthorization()){
-            throw new ValidationException("El centro de costos a copiar ya se encuentra autorizado", "El centro de costos a copiar ya se encuentra autorizado");
-                //return new ResponseEntity<>("El centro de costos a copiar ya se encuentra autorizado", HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Ha ocurrido un error, intentelo nuevamente", HttpStatus.OK);
+            throw new ValidationException("El centro de costos a copiar ya se encuentra autorizado", "El centro de costos a copiar ya se encuentra autorizado");
         }
         return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(realBudgetSpendingService.findAll()));
     }
