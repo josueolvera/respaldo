@@ -4,6 +4,8 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.DistributorCostCenterDao;
 import mx.bidg.model.DistributorCostCenter;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Disjunction;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -59,5 +61,112 @@ public class DistributorCostCenterDaoImpl extends AbstractDao<Integer, Distribut
         return criteria.add(Restrictions.eq("idBussinessLine",idBussinessLine)).
                 add(Restrictions.eq("idDistributor",idDistributor)).
                 add(Restrictions.eq("idCostCenter",idCostCenter)).list();
+    }
+
+    @Override
+    public List<DistributorCostCenter> findByCostCenterAndDistributors(Integer idCostCenter, List<Integer> idDistributors) {
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjunctionDistributors = Restrictions.disjunction();
+
+        if (!idDistributors.isEmpty()){
+            for (Integer idDistributor : idDistributors){
+                disjunctionDistributors.add(Restrictions.eq("idDistributor", idDistributor));
+            }
+        }
+
+        if (idCostCenter != null){
+            criteria.add(Restrictions.eq("idCostCenter",idCostCenter));
+        }
+
+        criteria.add(Restrictions.disjunction(disjunctionDistributors));
+        return criteria.list();
+    }
+
+    @Override
+    public List<Integer> getIdsDistributorsByBusinessLine(Integer idBusinessLine) {
+        return createEntityCriteria().add(Restrictions.eq("idBussinessLine", idBusinessLine))
+                .setProjection(Projections.distinct(Projections.property("idDistributor")))
+                .list();
+    }
+
+    @Override
+    public List<Integer> getIdsCostCentersByBDistributor(Integer idDistributor, List<Integer> idsBussinessLines) {
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjunctionIdsDistributor = Restrictions.disjunction();
+
+        if (!idsBussinessLines.isEmpty()){
+            for (Integer idBussinessLine : idsBussinessLines){
+                disjunctionIdsDistributor.add(Restrictions.eq("idBussinessLine", idBussinessLine));
+            }
+        }
+        return criteria.add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.disjunction(disjunctionIdsDistributor))
+                .setProjection(Projections.distinct(Projections.property("idCostCenter")))
+                .list();
+    }
+
+    @Override
+    public List<DistributorCostCenter> getAllByBusinessLineDistributorCC(List<Integer> idsBussinessLines, List<Integer> idsDistributors, List<Integer> idsCC) {
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjunctionIdsBussinessLines = Restrictions.disjunction();
+        Disjunction disjunctionIdsDistributors = Restrictions.disjunction();
+        Disjunction disjunctionIdsCCs = Restrictions.disjunction();
+
+        if (!idsBussinessLines.isEmpty()){
+            for (Integer idBussinessLine : idsBussinessLines){
+                disjunctionIdsBussinessLines.add(Restrictions.eq("idBussinessLine", idBussinessLine));
+            }
+        }
+
+        if (!idsDistributors.isEmpty()){
+            for (Integer idDistributor : idsDistributors){
+                disjunctionIdsDistributors.add(Restrictions.eq("idDistributor", idDistributor));
+            }
+        }
+
+        if (!idsCC.isEmpty()){
+            for (Integer idCostCenter : idsCC){
+                disjunctionIdsCCs.add(Restrictions.eq("idCostCenter", idCostCenter));
+            }
+        }
+
+        return criteria
+                .add(Restrictions.disjunction(disjunctionIdsBussinessLines))
+                .add(Restrictions.disjunction(disjunctionIdsDistributors))
+                .add(Restrictions.disjunction(disjunctionIdsCCs))
+                .list();
+    }
+
+    @Override
+    public List<Integer> getIdsCostCentersByBusinessLineDistributorCC(List<Integer> idsBussinessLines, List<Integer> idsDistributors, List<Integer> idsCC) {
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjunctionIdsBussinessLines = Restrictions.disjunction();
+        Disjunction disjunctionIdsDistributors = Restrictions.disjunction();
+        Disjunction disjunctionIdsCCs = Restrictions.disjunction();
+
+        if (!idsBussinessLines.isEmpty()){
+            for (Integer idBussinessLine : idsBussinessLines){
+                disjunctionIdsBussinessLines.add(Restrictions.eq("idBussinessLine", idBussinessLine));
+            }
+        }
+
+        if (!idsDistributors.isEmpty()){
+            for (Integer idDistributor : idsDistributors){
+                disjunctionIdsDistributors.add(Restrictions.eq("idDistributor", idDistributor));
+            }
+        }
+
+        if (!idsCC.isEmpty()){
+            for (Integer idCostCenter : idsCC){
+                disjunctionIdsCCs.add(Restrictions.eq("idCostCenter", idCostCenter));
+            }
+        }
+
+        return criteria
+                .add(Restrictions.disjunction(disjunctionIdsBussinessLines))
+                .add(Restrictions.disjunction(disjunctionIdsDistributors))
+                .add(Restrictions.disjunction(disjunctionIdsCCs))
+                .setProjection(Projections.distinct(Projections.property("idCostCenter")))
+                .list();
     }
 }
