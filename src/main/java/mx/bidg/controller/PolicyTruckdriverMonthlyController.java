@@ -100,7 +100,7 @@ public class PolicyTruckdriverMonthlyController {
         File file = new File(env.getRequiredProperty("aterna_truckDriver.documents_dir")+name+".csv");
         if (file.exists()){
 
-            policyTruckdriverMonthlyService.readCsvAlterna(name);
+            policyTruckdriverMonthlyService.readCsvAlterna(name+".csv");
 
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/MM/yyyy");
