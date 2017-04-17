@@ -412,4 +412,9 @@ public class DwEnterprisesServiceImpl implements DwEnterprisesService {
     public List<DwEnterprises> findByDistributorRegionZonaBranchAndArea(Integer idDistributor, Integer idRegion, Integer idZona, Integer idBranch, Integer idArea) {
         return dwEnterprisesDao.findByDistributorRegionZonaBranchAndArea(idDistributor, idRegion, idZona, idBranch, idArea);
     }
+
+    @Override
+    public List<Integer> getDistributorsByBussinessLine(Integer idBusinessLine) {
+        return dwEnterprisesDao.getDistributorsByBussinessLine(idBusinessLine);
+    }
 }

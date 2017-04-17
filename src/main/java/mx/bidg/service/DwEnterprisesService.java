@@ -47,4 +47,5 @@ public interface DwEnterprisesService {
     List<DwEnterprises> findDwEnterprisesByZonaSaem(Integer idZonas, Integer idReporte);
     List<DwEnterprises> findDwEnterprisesByBranchSaem(Integer idBranch, Integer idReporte);
     List<DwEnterprises> findDwEnterprisesByAreaSaem (Integer idArea, Integer idReporte);
+    List<Integer> getDistributorsByBussinessLine (Integer idBusinessLine);
 }
