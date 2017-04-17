@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 import org.hibernate.annotations.DynamicUpdate;
+import org.supercsv.cellprocessor.Optional;
 
 import java.io.Serializable;
 import javax.persistence.*;
@@ -41,6 +42,10 @@ public class AuthorizationCostCenter implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idUser;
 
+    @Column(name = "ID_COST_CENTER_STATUS", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idCCostCenterStatus;
+
     @Size(max = 255)
     @Column(name = "REASON")
     @JsonView(JsonViews.Root.class)
@@ -50,17 +55,9 @@ public class AuthorizationCostCenter implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer year;
 
-    @Column(name = "VALIDATION")
+    @Column(name = "ADJUSTMENT")
     @JsonView(JsonViews.Root.class)
-    private Boolean validation;
-
-    @Column(name = "AUTHORIZATION")
-    @JsonView(JsonViews.Root.class)
-    private Boolean authorization;
-
-    @Column(name = "MODIFY")
-    @JsonView(JsonViews.Root.class)
-    private Integer modify;
+    private Integer adjustment;
 
     @JoinColumn(name = "ID_COST_CENTER", referencedColumnName = "ID_COST_CENTER")
     @ManyToOne
@@ -71,6 +68,11 @@ public class AuthorizationCostCenter implements Serializable {
     @ManyToOne
     @JsonView({JsonViews.Embedded.class})
     private Users users;
+
+    @JoinColumn(name = "ID_COST_CENTER_STATUS", referencedColumnName = "ID_COST_CENTER_STATUS")
+    @ManyToOne(optional = true)
+    @JsonView({JsonViews.Embedded.class})
+    private CCostCenterStatus cCostCenterStatus;
 
     public AuthorizationCostCenter() {
     }
@@ -119,30 +121,6 @@ public class AuthorizationCostCenter implements Serializable {
         this.year = year;
     }
 
-    public Boolean getValidation() {
-        return validation;
-    }
-
-    public void setValidation(Boolean validation) {
-        this.validation = validation;
-    }
-
-    public Boolean getAuthorization() {
-        return authorization;
-    }
-
-    public void setAuthorization(Boolean authorization) {
-        this.authorization = authorization;
-    }
-
-    public Integer getModify() {
-        return modify;
-    }
-
-    public void setModify(Integer modify) {
-        this.modify = modify;
-    }
-
     public CCostCenter getCostCenter() {
         return costCenter;
     }
@@ -157,6 +135,30 @@ public class AuthorizationCostCenter implements Serializable {
 
     public void setUsers(Users users) {
         this.users = users;
+    }
+
+    public Integer getIdCCostCenterStatus() {
+        return idCCostCenterStatus;
+    }
+
+    public void setIdCCostCenterStatus(Integer idCCostCenterStatus) {
+        this.idCCostCenterStatus = idCCostCenterStatus;
+    }
+
+    public Integer getAdjustment() {
+        return adjustment;
+    }
+
+    public void setAdjustment(Integer adjustment) {
+        this.adjustment = adjustment;
+    }
+
+    public CCostCenterStatus getcCostCenterStatus() {
+        return cCostCenterStatus;
+    }
+
+    public void setcCostCenterStatus(CCostCenterStatus cCostCenterStatus) {
+        this.cCostCenterStatus = cCostCenterStatus;
     }
 
     @Override
