@@ -227,6 +227,10 @@ public class RealBudgetSpending implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
 
+    @Transient
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal totalLastYearAmount;
+
     public RealBudgetSpending() {
     }
 
@@ -530,6 +534,14 @@ public class RealBudgetSpending implements Serializable {
 
     public void setIdCurrency(Integer idCurrency) {
         this.idCurrency = idCurrency;
+    }
+
+    public BigDecimal getTotalLastYearAmount() {
+        return totalLastYearAmount;
+    }
+
+    public void setTotalLastYearAmount(BigDecimal totalLastYearAmount) {
+        this.totalLastYearAmount = totalLastYearAmount;
     }
 
     @Override
