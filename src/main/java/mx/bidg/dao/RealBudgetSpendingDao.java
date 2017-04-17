@@ -5,6 +5,7 @@
  */
 package mx.bidg.dao;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import mx.bidg.model.Budgets;
@@ -29,4 +30,5 @@ public interface RealBudgetSpendingDao extends InterfaceDao<RealBudgetSpending> 
     RealBudgetSpending findByAccountingAccountAndCostCenter(int idCostCenter, int idAccountingAccount);
     List<RealBudgetSpending> findByBudgetAndYearAndNoAuthorized(Integer idBudget, Integer year, boolean authorized);
     RealBudgetSpending findByIdBudgetAndYear(Integer idBudget, Integer year);
+    BigDecimal getTotalBudgetAmount(Integer idBuget, int year);
 }

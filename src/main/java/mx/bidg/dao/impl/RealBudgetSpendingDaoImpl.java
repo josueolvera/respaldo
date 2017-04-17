@@ -5,6 +5,7 @@
  */
 package mx.bidg.dao.impl;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import mx.bidg.dao.AbstractDao;
@@ -15,11 +16,7 @@ import mx.bidg.model.CMonths;
 import mx.bidg.model.DwEnterprises;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Property;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -180,6 +177,15 @@ public class RealBudgetSpendingDaoImpl extends AbstractDao<Integer, RealBudgetSp
         Criteria criteria = createEntityCriteria();
         return (RealBudgetSpending) criteria.add(Restrictions.eq("idBudget",idBudget)).
                 add(Restrictions.eq("year",year)).uniqueResult();
+    }
+
+    @Override
+    public BigDecimal getTotalBudgetAmount(Integer idBuget, int year) {
+        return (BigDecimal) createEntityCriteria()
+                .add(Restrictions.eq("idBudget", idBuget))
+                .add(Restrictions.eq("year", year))
+                .setProjection(Projections.property("totalBudgetAmount"))
+                .uniqueResult();
     }
 
 }
