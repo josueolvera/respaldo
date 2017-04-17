@@ -242,7 +242,7 @@
                 </div>
                 <div class="panel-group ticket-list">
                     <div class="ticket panel panel-default"
-                         v-for="ticket in tickets | filterBy solicitante">
+                         v-for="ticket in tickets | filterBy solicitante" v-if="ticket.incidence.ticketCategory.idTicketCategory == ticketCategory">
                         <div class="panel-heading" v-if="tickets">
                             <div class="row table-header">
                                 <div class="col-xs-2"><strong>Folio</strong></div>
@@ -252,7 +252,7 @@
                             </div>
                             <div class="row table-row">
                                 <div class="col-xs-2"><p>{{ ticket.folio }}</p></div>
-                                <div class="col-xs-3"><p>{{ ticket.user.dwEmployee.employee.fullName }}</p></div>
+                                <div class="col-xs-3"><p>{{ ticket.user.dwEmployee.employee.fullName }} {{ticket.user.mail}}</p></div>
                                 <div class="col-xs-5"><p>{{ ticket.descripcionProblema }}</p></div>
                                 <div class="col-xs-2" v-if="ticket.ticketStatus.idTicketStatus != 4">
                                     <select v-model="selectedTicketStatus" class="form-control" @change="acceptAction(ticket)">
