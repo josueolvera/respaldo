@@ -112,6 +112,12 @@
                         var diaIn = fecha.getDate()+1;
                         var fechaIngresa = fecha.getFullYear()+"-"+mesIn+"-"+diaIn;
                         var fechaDeHoy = new Date();
+                        //var horaActual = actual.getHours();
+                        //var minutoActual = actual.getMinutes();
+                        //var horaReservar = moment(this.startHour, 'HH:mm a').format('HH');
+                        //var minReservar = moment(this.startHour, 'HH:mm a').format('mm');
+                        var var4 = moment(this.startHour, 'HH:mm a').format('HH:mm');
+                        var var5 = moment(actual).format('HH:mm');
                         var mes;
                         mes = fechaDeHoy.getMonth()+1;
                         if (mes < 10){
@@ -127,12 +133,8 @@
                         if (var2.length < 5) {
                             var2 = '0' + var2;
                         }
-                        console.log(var1);
-                        console.log(var2);
-                        console.log(var3);
                         if((fecha.getFullYear()== fechaDeHoy.getFullYear()) &&(mesIn== mes) && (diaIn== fechaDeHoy.getDate())){
-                            console.log("Fechas iguales");
-                            if(var1 >= var3){
+                            if(var4>=var5){
                                 var event = {};
                                 event.title = this.title,
                                     event.start = this.selectedDay + 'T' + var1,
@@ -152,7 +154,6 @@
                             }
                         }
                         else if((fecha.getFullYear()>= fechaDeHoy.getFullYear()) &&(mesIn >= mes) && (diaIn>= fechaDeHoy.getDate())){
-                            console.log("El dia a reservar es mayor al actual");
                             var event = {};
                             event.title = this.title,
                                 event.start = this.selectedDay + 'T' + var1,
@@ -212,7 +213,7 @@
                                 var myDate = new Date();
 
                                 //How many days to add from today?
-                                var daysToAdd = -1;
+                                var daysToAdd = -2;
 
                                 myDate.setDate(myDate.getDate() + daysToAdd);
 
