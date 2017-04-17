@@ -92,7 +92,6 @@
                             locale: 'es',
                             format: 'YYYY-MM-DD',
                             useCurrent: false,
-                            maxDate: currentDate
                         }).data();
                     },
                     activateDateTimePickerEnd: function (startDate) {

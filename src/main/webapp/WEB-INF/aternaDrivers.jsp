@@ -87,8 +87,7 @@
                         this.dateTimePickerStart = $('#startDate').datetimepicker({
                             locale: 'es',
                             format: 'YYYY-MM-DD',
-                            useCurrent: false,
-                            maxDate: currentDate
+                            useCurrent: false
                         }).data();
                     },
                     activateDateTimePickerEnd: function (startDate) {
