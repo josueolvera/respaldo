@@ -53,4 +53,19 @@ public class CDistributorsServiceImpl implements CDistributorsService {
     public CDistributors findById(Integer idDistributor) {
         return cDistributorsDao.findById(idDistributor);
     }
+
+    @Override
+    public CDistributors save(CDistributors cDistributors) {
+        return cDistributorsDao.save(cDistributors);
+    }
+
+    @Override
+    public CDistributors update(CDistributors cDistributors) {
+        return cDistributorsDao.update(cDistributors);
+    }
+
+    @Override
+    public boolean delete(CDistributors cDistributors) {
+        return cDistributorsDao.delete(cDistributors);
+    }
 }

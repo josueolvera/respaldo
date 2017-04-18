@@ -20,4 +20,7 @@ public interface CDistributorsService {
     List<CDistributors> getDistributors(Boolean forStock, Boolean forBudget, Boolean forAgreement);
     List<CDistributors> getDistributorForSaem (Integer idDistributor,Boolean saemFlag);
     CDistributors findById(Integer idDistributor);
+    CDistributors save(CDistributors cDistributors);
+    CDistributors update(CDistributors cDistributors);
+    boolean delete(CDistributors cDistributors);
 }
