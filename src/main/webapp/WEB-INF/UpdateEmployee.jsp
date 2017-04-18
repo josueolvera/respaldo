@@ -314,6 +314,7 @@
 
                         this.$http.post(ROOT_URL + "/dw-employees/update", requestBody).success(function (data) {
                             showAlert("Actualización de empleado exitoso");
+                            $("#modalConfirmation").modal("hide");
                             if (this.newEmployeeDocuments.length > 0) {
                                 this.newEmployeeDocuments.forEach(function (document) {
                                     self.updateEmployeeDocument(document);
@@ -322,6 +323,9 @@
                         }).error(function (data) {
                             showAlert("Ha habido un error con la solicitud, intente nuevamente", {type: 3});
                         });
+                    },
+                    openUpdateModalConfirmation: function () {
+                        $("#modalConfirmation").modal("show");
                     },
                     validateFile: function (file) {
                         if (!file.name.match(/(\.jpg|\.jpeg|\.pdf|\.png)$/i)) {
@@ -780,7 +784,7 @@
                 </div>
             </div>
             <br>
-            <form v-on:submit.prevent="updateEmployee">
+            <form v-on:submit.prevent="openUpdateModalConfirmation">
                 <div class="panel panel-default">
                     <!-- Default panel contents -->
                     <div class="panel-heading">Datos de la empresa</div>
@@ -1564,6 +1568,31 @@
             </form>
             <br>
             <br>
+            <!-- container-fluid -->
+            <div class="modal fade" id="modalConfirmation" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title"><b>Guardar cambios</b></h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <p style="font-size: 150%">¿Estas seguro que deseas guardar los cambios?</p>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-success" @click="updateEmployee()">
+                                Guardar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </jsp:body>
 </t:template>
