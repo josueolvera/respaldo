@@ -3,16 +3,14 @@ package mx.bidg.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.time.LocalDateTime;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
+import mx.bidg.utils.DateTimeConverter;
+import org.apache.commons.net.ntp.TimeStamp;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Type;
 
@@ -66,6 +64,16 @@ public class CDistributors implements Serializable {
     @Type(type = "org.hibernate.type.NumericBooleanType")
     @JsonView(JsonViews.Root.class)
     private Boolean saemFlag;
+
+    @Column(name = "USERNAME")
+    @Size(max = 70)
+    @JsonView(JsonViews.Root.class)
+    private String username;
+
+    @Column(name = "CREATION_DATE")
+    @Convert(converter = DateTimeConverter.class)
+    @JsonView(JsonViews.Root.class)
+    private LocalDateTime creationDate;
 
     public CDistributors() {
     }
@@ -133,6 +141,26 @@ public class CDistributors implements Serializable {
 
     public void setSaemFlag(Boolean saemFlag) {
         this.saemFlag = saemFlag;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public DateFormatsPojo creationDateFormats (){
+        return new DateFormatsPojo(creationDate);
     }
 
     @JsonProperty("nameSql")
