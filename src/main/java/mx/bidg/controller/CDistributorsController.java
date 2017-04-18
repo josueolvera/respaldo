@@ -5,24 +5,26 @@
  */
 package mx.bidg.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.CDistributors;
+import mx.bidg.model.Users;
 import mx.bidg.service.CDistributorsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -65,5 +67,31 @@ public class CDistributorsController {
     public ResponseEntity<String> getDistributorByStock() throws IOException{
         List<CDistributors> cDistributorses = cDistributorsService.findAllForStock();
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(cDistributorses), HttpStatus.OK);
+    }
+
+    @RequestMapping(value= "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> save(@RequestBody String data, HttpSession session) throws IOException{
+
+        Users users = (Users) session.getAttribute("user");
+
+        JsonNode node = mapper.readTree(data);
+
+        CDistributors distributors = new CDistributors();
+        distributors.setDistributorName(node.get("name").asText());
+        distributors.setAcronyms(node.get("acronyms").asText());
+        distributors.setHasStock(true);
+        distributors.setCreationDate(LocalDateTime.now());
+
+        if (users != null) {
+            distributors.setUsername(users.getUsername());
+        }
+
+        distributors.setSaemFlag(false);
+        distributors.setHasAgreement(false);
+        distributors.setBudgetShare(0);
+
+        cDistributorsService.save(distributors);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(cDistributorsService.getDistributors(null, null, null)), HttpStatus.OK);
     }
 }
