@@ -124,12 +124,12 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     public List<DwEmployees> findByDistributorRegionZonaBranchAndArea(Integer idDistributor, Integer idRegion, Integer idZona,Integer idBranch, Integer idArea) {
         List<DwEnterprises> dwEnterprises =
                 dwEnterprisesDao.findByDistributorRegionZonaBranchAndArea(
-                                idDistributor,
-                                idRegion,
-                                idZona,
-                                idBranch,
-                                idArea
-                        );
+                        idDistributor,
+                        idRegion,
+                        idZona,
+                        idBranch,
+                        idArea
+                );
         return dwEmployeesDao.findByDwEnterprises(dwEnterprises);
     }
 
@@ -544,7 +544,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
                 Employees employee = employeesDao.findById(eH.getIdEmployee());
                 EmployeesAccounts employeeAccount = employeesAccountsService.findEmployeeAccountActive(employee.getIdEmployee());
             }
-                if(eH.getIdDwEnterprise() != null){
+            if(eH.getIdDwEnterprise() != null){
                 DwEnterprises dwEnterprise = dwEnterprisesDao.findById(eH.getIdDwEnterprise());
                 CDistributors distributor = distributorsDao.findById(eH.getIdDistributor());
                 CAreas area = areasDao.findById(eH.getIdArea());
@@ -663,6 +663,14 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
         row.createCell(21).setCellValue("CUENTA");
         row.createCell(22).setCellValue("CLABE");
         row.createCell(23).setCellValue("BANCO");
+        row.createCell(24).setCellValue("SUELDO MENSUAL");
+        row.createCell(25).setCellValue("EMPRESA");
+        row.createCell(26).setCellValue("AREA");
+        row.createCell(27).setCellValue("ZONA");
+        row.createCell(28).setCellValue("SUCURSAL");
+        row.createCell(29).setCellValue("CORREO PERSONAL");
+        row.createCell(30).setCellValue("FECHA DE BAJA");
+        row.createCell(31).setCellValue("FECHA DE CAMBIO O PROMOCION");
 
 
         //Implementacion del estilo
@@ -780,6 +788,46 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
                 row.createCell(5).setCellValue(employee.getFirstName().replace("_", " ")+" "+employee.getMiddleName().replace("_", " "));
                 row.createCell(6).setCellValue(employee.getImss());
                 row.createCell(11).setCellValue(employee.getBirthplace());
+
+                if (employee.getSalary() != null){
+                    row.createCell(24).setCellValue(employee.getSalary().doubleValue());
+                }
+
+                if (employee.getMail() != null){
+                    row.createCell(29).setCellValue(employee.getMail());
+                }
+            }
+
+            if (eHistorys.getIdDwEnterprise() != null){
+                DwEnterprises dwEnterprise = dwEnterprisesDao.findById(eHistorys.getIdDwEnterprise());
+                if (dwEnterprise != null){
+                    if (dwEnterprise.getDistributor() != null){
+                        row.createCell(25).setCellValue(dwEnterprise.getDistributor().getAcronyms());
+                    }
+                    if (dwEnterprise.getArea() != null){
+                        row.createCell(26).setCellValue(dwEnterprise.getArea().getAreaName());
+                    }
+                    if (dwEnterprise.getZona() != null){
+                        row.createCell(27).setCellValue(dwEnterprise.getZona().getName());
+                    }
+                    if (dwEnterprise.getBranch() != null){
+                        row.createCell(28).setCellValue(dwEnterprise.getBranch().getBranchShort());
+                    }
+                }
+            }
+
+            if(eHistorys.getIdActionType() != null){
+                if (eHistorys.getIdActionType() == 2){
+                    Date lowDate = Date.from(eHistorys.getCreationDate().atZone(ZoneId.systemDefault()).toInstant());
+                    row.createCell(30);
+                    row.getCell(30).setCellValue(lowDate);
+                    row.getCell(30).setCellStyle(cellDateStyle);
+                }else {
+                    Date modificationDate = Date.from(eHistorys.getCreationDate().atZone(ZoneId.systemDefault()).toInstant());
+                    row.createCell(31);
+                    row.getCell(31).setCellValue(modificationDate);
+                    row.getCell(31).setCellStyle(cellDateStyle);
+                }
             }
 
             aux++;
