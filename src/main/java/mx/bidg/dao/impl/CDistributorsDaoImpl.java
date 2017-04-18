@@ -24,7 +24,8 @@ public class CDistributorsDaoImpl extends AbstractDao<Integer, CDistributors> im
 
     @Override
     public CDistributors save(CDistributors entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        persist(entity);
+        return entity;
     }
 
     @Override
@@ -40,12 +41,14 @@ public class CDistributorsDaoImpl extends AbstractDao<Integer, CDistributors> im
 
     @Override
     public CDistributors update(CDistributors entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        modify(entity);
+        return entity;
     }
 
     @Override
     public boolean delete(CDistributors entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        remove(entity);
+        return true;
     }
 
     @Override
