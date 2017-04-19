@@ -42,7 +42,7 @@ public class CAreas implements Serializable {
     
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 100)
     @Column(name = "AREA_NAME")
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private String areaName;

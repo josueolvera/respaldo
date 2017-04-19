@@ -50,14 +50,14 @@ public class CBranchs implements Serializable {
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private Integer idBranch;
     
-    @Size(max = 50)
+    @Size(max = 100)
     @Column(name = "BRANCH_NAME")
     @JsonView(JsonViews.Root.class)
     private String branchName;
     
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 30)
+    @Size(min = 1, max = 50)
     @Column(name = "BRANCH_SHORT")
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private String branchShort;
@@ -90,7 +90,7 @@ public class CBranchs implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime lowDate;
 
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 100)
     @Column(name = "BRANCH_NAME_CLEAN")
     @JsonView(JsonViews.Root.class)
     private String branchNameClean;
