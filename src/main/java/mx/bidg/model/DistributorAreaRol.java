@@ -36,6 +36,10 @@ public class DistributorAreaRol implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idRole;
 
+    @Column(name = "ID_SUBAREA", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idSubarea;
+
     @JoinColumn(name = "ID_DISTRIBUTOR", referencedColumnName = "ID_DISTRIBUTOR")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
@@ -50,6 +54,11 @@ public class DistributorAreaRol implements Serializable {
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private CRoles role;
+
+    @JoinColumn(name = "ID_SUBAREA", referencedColumnName = "ID_SUBAREA")
+    @ManyToOne(optional = true)
+    @JsonView(JsonViews.Embedded.class)
+    private CSubareas cSubareas;
 
     public DistributorAreaRol() {
     }
@@ -121,6 +130,22 @@ public class DistributorAreaRol implements Serializable {
 
     public void setRole(CRoles role) {
         this.role = role;
+    }
+
+    public Integer getIdSubarea() {
+        return idSubarea;
+    }
+
+    public void setIdSubarea(Integer idSubarea) {
+        this.idSubarea = idSubarea;
+    }
+
+    public CSubareas getcSubareas() {
+        return cSubareas;
+    }
+
+    public void setcSubareas(CSubareas cSubareas) {
+        this.cSubareas = cSubareas;
     }
 
     @Override
