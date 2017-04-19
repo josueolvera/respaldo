@@ -7,6 +7,7 @@ package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateConverter;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 
@@ -55,7 +58,17 @@ public class CAreas implements Serializable {
     @Column(name = "SAEM_FLAG")
     @JsonView(JsonViews.Root.class)
     private int saemFlag;
-    
+
+    @Column(name = "CREATION_DATE")
+    @Convert(converter = DateTimeConverter.class)
+    @JsonView(JsonViews.Root.class)
+    private LocalDateTime creationDate;
+
+    @Column(name = "USERNAME")
+    @Size(max = 100)
+    @JsonView(JsonViews.Root.class)
+    private String username;
+
     public CAreas() {
     }
 
@@ -98,6 +111,22 @@ public class CAreas implements Serializable {
 
     public void setSaemFlag(int saemFlag) {
         this.saemFlag = saemFlag;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
