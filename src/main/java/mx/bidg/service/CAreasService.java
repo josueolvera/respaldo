@@ -18,5 +18,8 @@ public interface CAreasService {
     CAreas findById(Integer idArea);
     CAreas findAreaWhitRole(Integer idArea);
     List<CAreas> findBySaemFlag(Integer idArea, Integer saemFlag);
+    CAreas save(CAreas area);
+    CAreas update(CAreas area);
+    boolean delete(CAreas area);
     
 }

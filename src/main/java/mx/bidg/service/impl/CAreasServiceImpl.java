@@ -44,4 +44,19 @@ public class CAreasServiceImpl implements CAreasService {
         return dao.findBySaemFlag(idArea, saemFlag);
     }
 
+    @Override
+    public CAreas save(CAreas area) {
+        return dao.save(area);
+    }
+
+    @Override
+    public CAreas update(CAreas area) {
+        return dao.update(area);
+    }
+
+    @Override
+    public boolean delete(CAreas area) {
+        return dao.delete(area);
+    }
+
 }
