@@ -23,7 +23,8 @@ public class CAreasDaoImpl extends AbstractDao<Integer, CAreas> implements CArea
 
     @Override
     public CAreas save(CAreas entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        persist(entity);
+        return entity;
     }
 
     @Override
@@ -39,12 +40,14 @@ public class CAreasDaoImpl extends AbstractDao<Integer, CAreas> implements CArea
 
     @Override
     public CAreas update(CAreas entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        modify(entity);
+        return entity;
     }
 
     @Override
     public boolean delete(CAreas entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        remove(entity);
+        return true;
     }
 
     @Override
