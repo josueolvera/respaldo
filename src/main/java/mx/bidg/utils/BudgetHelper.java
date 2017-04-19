@@ -256,7 +256,12 @@ public class BudgetHelper {
                                         BudgetCategory oldBudgetCategory = oldCostCenter.getBudgetCategories().get(oldCostCenter.getBudgetCategories().indexOf(budgetCategory));
                                         if (!realBudgetSpendingList.isEmpty()){
                                             for (RealBudgetSpending realBudgetSpending : realBudgetSpendingList){
-                                                oldBudgetCategory.getRealBudgetSpendings().add(realBudgetSpending);
+                                                if (oldBudgetCategory.getRealBudgetSpendings() != null){
+                                                    oldBudgetCategory.getRealBudgetSpendings().add(realBudgetSpending);
+                                                }else {
+                                                    oldBudgetCategory.setRealBudgetSpendings(new ArrayList<>());
+                                                    oldBudgetCategory.getRealBudgetSpendings().add(realBudgetSpending);
+                                                }
                                             }
                                         }
                                         oldCostCenter.getBudgetCategories().set(oldCostCenter.getBudgetCategories().indexOf(oldBudgetCategory), oldBudgetCategory);
@@ -349,7 +354,12 @@ public class BudgetHelper {
                                             BudgetSubcategory oldBudgetSubcategory = oldBudgetCategory.getBudgetSubcategories().get(oldBudgetCategory.getBudgetSubcategories().indexOf(budgetSubcategory));
                                             if (!realBudgetSpendingList.isEmpty()){
                                                 for(RealBudgetSpending realBudgetSpending : realBudgetSpendingList){
-                                                    oldBudgetSubcategory.getRealBudgetSpendings().add(realBudgetSpending);
+                                                    if (oldBudgetSubcategory.getRealBudgetSpendings() != null) {
+                                                        oldBudgetSubcategory.getRealBudgetSpendings().add(realBudgetSpending);
+                                                    }else {
+                                                        oldBudgetSubcategory.setRealBudgetSpendings(new ArrayList<>());
+                                                        oldBudgetSubcategory.getRealBudgetSpendings().add(realBudgetSpending);
+                                                    }
                                                 }
                                             }
                                             oldBudgetCategory.getBudgetSubcategories().set(oldBudgetCategory.getBudgetSubcategories().indexOf(oldBudgetSubcategory), oldBudgetSubcategory);
@@ -358,13 +368,20 @@ public class BudgetHelper {
                                             oldBussinessLine.getDistributorList().set(oldBussinessLine.getDistributorList().indexOf(oldDistributor), oldDistributor);
                                             bussinessLines.set(bussinessLines.indexOf(oldBussinessLine),oldBussinessLine);
                                         }else {
-                                            oldBudgetCategory.getBudgetSubcategories().add(budgetSubcategory);
+                                            if (oldBudgetCategory.getBudgetSubcategories() != null){
+                                                oldBudgetCategory.getBudgetSubcategories().add(budgetSubcategory);
+                                            }else {
+                                                List<BudgetSubcategory> budgetSubcategories = new ArrayList<>();
+                                                budgetSubcategories.add(budgetSubcategory);
+                                                oldBudgetCategory.setBudgetSubcategories(budgetSubcategories);
+                                            }
                                             oldCostCenter.getBudgetCategories().set(oldCostCenter.getBudgetCategories().indexOf(oldBudgetCategory), oldBudgetCategory);
                                             oldDistributor.getCostCenterList().set(oldDistributor.getCostCenterList().indexOf(oldCostCenter), oldCostCenter);
                                             oldBussinessLine.getDistributorList().set(oldBussinessLine.getDistributorList().indexOf(oldDistributor), oldDistributor);
                                             bussinessLines.set(bussinessLines.indexOf(oldBussinessLine),oldBussinessLine);
                                         }
                                     }else {
+                                        budgetCategory.setBudgetSubcategories(new ArrayList<>());
                                         budgetCategory.getBudgetSubcategories().add(budgetSubcategory);
                                         oldCostCenter.getBudgetCategories().add(budgetCategory);
                                         oldDistributor.getCostCenterList().set(oldDistributor.getCostCenterList().indexOf(oldCostCenter), oldCostCenter);
@@ -372,6 +389,7 @@ public class BudgetHelper {
                                         bussinessLines.set(bussinessLines.indexOf(oldBussinessLine),oldBussinessLine);
                                     }
                                 }else {
+                                    budgetCategory.setBudgetSubcategories(new ArrayList<>());
                                     budgetCategory.getBudgetSubcategories().add(budgetSubcategory);
                                     costCenter.getBudgetCategories().add(budgetCategory);
                                     oldDistributor.getCostCenterList().add(costCenter);
@@ -379,6 +397,7 @@ public class BudgetHelper {
                                     bussinessLines.set(bussinessLines.indexOf(oldBussinessLine),oldBussinessLine);
                                 }
                             }else {
+                                budgetCategory.setBudgetSubcategories(new ArrayList<>());
                                 budgetCategory.getBudgetSubcategories().add(budgetSubcategory);
                                 costCenter.getBudgetCategories().add(budgetCategory);
                                 distributor.getCostCenterList().add(costCenter);
@@ -451,22 +470,36 @@ public class BudgetHelper {
                                         BudgetCategory oldBudgetCategory = oldCostCenter.getBudgetCategories().get(oldCostCenter.getBudgetCategories().indexOf(budgetCategory));
                                         if (oldBudgetCategory.getBudgetSubcategories().contains(budgetSubcategory)){
                                             BudgetSubcategory oldBudgetSubcategory = oldBudgetCategory.getBudgetSubcategories().get(oldBudgetCategory.getBudgetSubcategories().indexOf(budgetSubcategory));
-                                            oldBudgetSubcategory.getBudgetSubSubCategories().add(budgetSubSubCategory);
+                                            if (oldBudgetSubcategory.getBudgetSubSubCategories() != null){
+                                                oldBudgetSubcategory.getBudgetSubSubCategories().add(budgetSubSubCategory);
+                                            }else {
+                                                oldBudgetSubcategory.setBudgetSubSubCategories(new ArrayList<>());
+                                                oldBudgetSubcategory.getBudgetSubSubCategories().add(budgetSubSubCategory);
+                                            }
+
                                             oldBudgetCategory.getBudgetSubcategories().set(oldBudgetCategory.getBudgetSubcategories().indexOf(oldBudgetSubcategory), oldBudgetSubcategory);
                                             oldCostCenter.getBudgetCategories().set(oldCostCenter.getBudgetCategories().indexOf(oldBudgetCategory), oldBudgetCategory);
                                             oldDistributor.getCostCenterList().set(oldDistributor.getCostCenterList().indexOf(oldCostCenter), oldCostCenter);
                                             oldBussinessLine.getDistributorList().set(oldBussinessLine.getDistributorList().indexOf(oldDistributor), oldDistributor);
                                             bussinessLines.set(bussinessLines.indexOf(oldBussinessLine),oldBussinessLine);
                                         }else {
+                                            budgetSubcategory.setBudgetSubSubCategories(new ArrayList<>());
                                             budgetSubcategory.getBudgetSubSubCategories().add(budgetSubSubCategory);
-                                            oldBudgetCategory.getBudgetSubcategories().add(budgetSubcategory);
+                                            if (oldBudgetCategory.getBudgetSubcategories() != null){
+                                                oldBudgetCategory.getBudgetSubcategories().add(budgetSubcategory);
+                                            }else {
+                                                oldBudgetCategory.setBudgetSubcategories(new ArrayList<>());
+                                                oldBudgetCategory.getBudgetSubcategories().add(budgetSubcategory);
+                                            }
                                             oldCostCenter.getBudgetCategories().set(oldCostCenter.getBudgetCategories().indexOf(oldBudgetCategory), oldBudgetCategory);
                                             oldDistributor.getCostCenterList().set(oldDistributor.getCostCenterList().indexOf(oldCostCenter), oldCostCenter);
                                             oldBussinessLine.getDistributorList().set(oldBussinessLine.getDistributorList().indexOf(oldDistributor), oldDistributor);
                                             bussinessLines.set(bussinessLines.indexOf(oldBussinessLine),oldBussinessLine);
                                         }
                                     }else {
+                                        budgetSubcategory.setBudgetSubSubCategories(new ArrayList<>());
                                         budgetSubcategory.getBudgetSubSubCategories().add(budgetSubSubCategory);
+                                        budgetCategory.setBudgetSubcategories(new ArrayList<>());
                                         budgetCategory.getBudgetSubcategories().add(budgetSubcategory);
                                         oldCostCenter.getBudgetCategories().add(budgetCategory);
                                         oldDistributor.getCostCenterList().set(oldDistributor.getCostCenterList().indexOf(oldCostCenter), oldCostCenter);
@@ -474,7 +507,9 @@ public class BudgetHelper {
                                         bussinessLines.set(bussinessLines.indexOf(oldBussinessLine),oldBussinessLine);
                                     }
                                 }else {
+                                    budgetSubcategory.setBudgetSubSubCategories(new ArrayList<>());
                                     budgetSubcategory.getBudgetSubSubCategories().add(budgetSubSubCategory);
+                                    budgetCategory.setBudgetSubcategories(new ArrayList<>());
                                     budgetCategory.getBudgetSubcategories().add(budgetSubcategory);
                                     costCenter.getBudgetCategories().add(budgetCategory);
                                     oldDistributor.getCostCenterList().add(costCenter);
@@ -482,7 +517,9 @@ public class BudgetHelper {
                                     bussinessLines.set(bussinessLines.indexOf(oldBussinessLine),oldBussinessLine);
                                 }
                             }else {
+                                budgetSubcategory.setBudgetSubSubCategories(new ArrayList<>());
                                 budgetSubcategory.getBudgetSubSubCategories().add(budgetSubSubCategory);
+                                budgetCategory.setBudgetSubcategories(new ArrayList<>());
                                 budgetCategory.getBudgetSubcategories().add(budgetSubcategory);
                                 costCenter.getBudgetCategories().add(budgetCategory);
                                 distributor.getCostCenterList().add(costCenter);
