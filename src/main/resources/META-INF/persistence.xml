@@ -49,6 +49,7 @@
     <class>mx.bidg.model.DistributorPerceptionDeduction</class>
     <class>mx.bidg.model.CDateCalculation</class>
     <class>mx.bidg.model.Payroll</class>
+    <class>mx.bidg.model.CSubareas</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties/>
   </persistence-unit>
