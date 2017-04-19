@@ -38,11 +38,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class DwEnterprises implements Serializable {
 
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "ID_SUBAREA")
-    private int idSubarea;
-
     private static final long serialVersionUID = 1L;
 
     public static final DwEnterprises DEFAULT_DW_ENTERPRISES = new DwEnterprises(113);
@@ -345,13 +340,5 @@ public class DwEnterprises implements Serializable {
                 ", status=" + status +
                 ", zona=" + zona +
                 '}';
-    }
-
-    public int getIdSubarea() {
-        return idSubarea;
-    }
-
-    public void setIdSubarea(int idSubarea) {
-        this.idSubarea = idSubarea;
     }
 }
