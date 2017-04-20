@@ -38,4 +38,5 @@ public interface DwEnterprisesDao extends InterfaceDao<DwEnterprises> {
     List<DwEnterprises> findOnlyCorporate();
     List<DwEnterprises> findByDistributorForCalculation (Integer idDistributor);
     List<Integer> getDistributorsByBussinessLine (Integer idBusinessLine);
+    Integer getIdBussinessLineByDistributor(Integer idDistributor);
 }

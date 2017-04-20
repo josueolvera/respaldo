@@ -13,10 +13,7 @@ import mx.bidg.dao.DwEnterprisesDao;
 import mx.bidg.model.*;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
-import org.hibernate.criterion.Disjunction;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -333,5 +330,15 @@ public class DwEnterprisesDaoImpl extends AbstractDao<Integer, DwEnterprises> im
     @Override
     public List<Integer> getDistributorsByBussinessLine(Integer idBusinessLine) {
         return createEntityCriteria().setProjection(Projections.distinct(Projections.property("idDistributor"))).add(Restrictions.eq("idBusinessLine", idBusinessLine)).add(Restrictions.eq("status", true)).list();
+    }
+
+    @Override
+    public Integer getIdBussinessLineByDistributor(Integer idDistributor) {
+        Criteria criteria = createEntityCriteria();
+
+        return (Integer) criteria
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .setProjection(Projections.distinct(Projections.property("idBusinessLine")))
+                .uniqueResult();
     }
 }
