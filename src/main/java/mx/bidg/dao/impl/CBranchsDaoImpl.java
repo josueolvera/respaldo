@@ -40,6 +40,7 @@ public class CBranchsDaoImpl extends AbstractDao<Integer, CBranchs> implements C
     public List<CBranchs> findAll() {
         Criteria criteria = createEntityCriteria();
         return criteria
+                .add(Restrictions.ne("idBranch", 0))
                 .setFetchMode("dwEnterprises", FetchMode.JOIN)
                 .setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY)
                 .list();
@@ -71,7 +72,7 @@ public class CBranchsDaoImpl extends AbstractDao<Integer, CBranchs> implements C
             criteria.add(Restrictions.eq("idBranch",idBranch));
         }
 
-        criteria.add(Restrictions.eq("saemFlag", saemFlag));
+        criteria.add(Restrictions.eq("saemFlag", saemFlag)).add(Restrictions.ne("idBranch", 0));
 
         return criteria.setFetchMode("dwEnterprises", FetchMode.JOIN).addOrder(Order.asc("branchName")).list();
     }
