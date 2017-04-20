@@ -49,9 +49,9 @@ public class AccountingAccounts implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetSubcategory;
 
-    @Column(name = "ID_SUB_SUBCATEGORIES", insertable = false, updatable = false)
+    @Column(name = "ID_BUDGET_SUB_SUBCATEGORY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private int idSubSubcategoies;
+    private Integer idBudgetSubSubcategories;
 
     @Basic(optional = false)
     @NotNull
@@ -95,7 +95,7 @@ public class AccountingAccounts implements Serializable {
     @JsonView({JsonViews.Embedded.class})
     private CBudgetSubcategories budgetSubcategory;
 
-    @JoinColumn(name = "ID_SUB_SUBCATEGORIES", referencedColumnName = "ID_SUB_SUBCATEGORIES")
+    @JoinColumn(name = "ID_BUDGET_SUB_SUBCATEGORY", referencedColumnName = "ID_BUDGET_SUB_SUBCATEGORY")
     @ManyToOne
     @JsonView({JsonViews.Embedded.class})
     private CBudgetSubSubcategories cBudgetSubSubcategories;
@@ -105,13 +105,13 @@ public class AccountingAccounts implements Serializable {
 
     public AccountingAccounts(Integer idAccountingAccount){this.idAccountingAccount=idAccountingAccount;}
 
-    public AccountingAccounts(int idAccountingType, int idAccountingNature, int idAccountingCategory, Integer idBudgetCategory, Integer idBudgetSubcategory, int idSubSubcategoies) {
+    public AccountingAccounts(int idAccountingType, int idAccountingNature, int idAccountingCategory, Integer idBudgetCategory, Integer idBudgetSubcategory, int idBudgetSubSubcategories) {
         this.idAccountingType = idAccountingType;
         this.idAccountingNature = idAccountingNature;
         this.idAccountingCategory = idAccountingCategory;
         this.idBudgetCategory = idBudgetCategory;
         this.idBudgetSubcategory = idBudgetSubcategory;
-        this.idSubSubcategoies = idSubSubcategoies;
+        this.idBudgetSubSubcategories = idBudgetSubSubcategories;
     }
 
     public Integer getIdAccountingAccount() {
@@ -162,12 +162,12 @@ public class AccountingAccounts implements Serializable {
         this.idBudgetSubcategory = idBudgetSubcategory;
     }
 
-    public int getIdSubSubcategoies() {
-        return idSubSubcategoies;
+    public Integer getIdBudgetSubSubcategories() {
+        return idBudgetSubSubcategories;
     }
 
-    public void setIdSubSubcategoies(int idSubSubcategoies) {
-        this.idSubSubcategoies = idSubSubcategoies;
+    public void setIdBudgetSubSubcategories(Integer idBudgetSubSubcategories) {
+        this.idBudgetSubSubcategories = idBudgetSubSubcategories;
     }
 
     public LocalDateTime getCreationDate() {
