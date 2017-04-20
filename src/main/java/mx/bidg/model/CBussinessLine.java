@@ -35,7 +35,9 @@ public class CBussinessLine implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
     @Column(name = "ID_BUSINESS_LINE")
+    @JsonView(JsonViews.Root.class)
     private Integer idBusinessLine;
 
     @Size(max = 100)

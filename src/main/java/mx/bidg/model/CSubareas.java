@@ -11,6 +11,7 @@ import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -52,7 +53,7 @@ public class CSubareas implements Serializable {
     @Column(name = "CREATION_DATE")
     @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
-    private Date creationDate;
+    private LocalDateTime creationDate;
 
     @Size(max = 50)
     @Column(name = "USERNAME")
@@ -66,7 +67,7 @@ public class CSubareas implements Serializable {
         this.idSubarea = idSubarea;
     }
 
-    public CSubareas(Integer idSubarea, String subareaName, Date creationDate) {
+    public CSubareas(Integer idSubarea, String subareaName, LocalDateTime creationDate) {
         this.idSubarea = idSubarea;
         this.subareaName = subareaName;
         this.creationDate = creationDate;
@@ -96,11 +97,11 @@ public class CSubareas implements Serializable {
         this.acronym = acronym;
     }
 
-    public Date getCreationDate() {
+    public LocalDateTime getCreationDate() {
         return creationDate;
     }
 
-    public void setCreationDate(Date creationDate) {
+    public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
     }
 
