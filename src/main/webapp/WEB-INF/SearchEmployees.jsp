@@ -1477,7 +1477,7 @@
                                     <select v-model="selectedOptions.region" class="form-control"
                                             required @change="regionChanged"
                                             :disabled="selectedOptions.distributor.idDistributor == 0">
-                                        <option v-for="region in regions"
+                                        <option v-for="region in regions"  v-if="region.idRegion != 0"
                                                 :value="region">
                                             {{ region.regionName }}
                                         </option>
@@ -1488,7 +1488,7 @@
                                     <select v-model="selectedOptions.zona" class="form-control"
                                             required @change="zonaChanged"
                                             :disabled="selectedOptions.region.idRegion == 0">
-                                        <option v-for="zona in zonas"
+                                        <option v-for="zona in zonas"  v-if="zona.idZonas != 0"
                                                 :value="zona">
                                             {{ zona.name }}
                                         </option>
@@ -1499,7 +1499,7 @@
                                     <select v-model="selectedOptions.branch" class="form-control"
                                             required
                                             :disabled="selectedOptions.zona.idZonas == 0">
-                                        <option v-for="branch in branchch"
+                                        <option v-for="branch in branchch"  v-if="branch.idBranch != 0"
                                                 :value="branch">
                                             {{ branch.branchShort }}
                                         </option>
@@ -1513,7 +1513,7 @@
                                     <select v-model="selectedOptions.region" class="form-control"
                                             required @change="regionChanged"
                                             :disabled="selectedOptions.distributor.idDistributor == 0">
-                                        <option v-for="region in regions"
+                                        <option v-for="region in regions"  v-if="region.idRegion != 0"
                                                 :value="region">
                                             {{ region.regionName }}
                                         </option>
@@ -1524,7 +1524,7 @@
                                     <select v-model="selectedOptions.zona" class="form-control"
                                             required @change="zonaChanged"
                                             :disabled="selectedOptions.region.idRegion == 0">
-                                        <option v-for="zona in zonas"
+                                        <option v-for="zona in zonas"  v-if="zona.idZonas != 0"
                                                 :value="zona">
                                             {{ zona.name }}
                                         </option>
@@ -1535,7 +1535,7 @@
                                     <select v-model="selectedOptions.branch" class="form-control"
                                             required @change="validateRoleBranch()"
                                             :disabled="selectedOptions.zona.idZonas == 0">
-                                        <option v-for="branch in branchch"
+                                        <option v-for="branch in branchch"  v-if="branch.idBranch != 0"
                                                 :value="branch">
                                             {{ branch.branchShort }}
                                         </option>
@@ -1548,7 +1548,7 @@
                                     <select v-model="selectedOptions.region" class="form-control"
                                             required @change="regionChanged"
                                             :disabled="selectedOptions.distributor.idDistributor == 0">
-                                        <option v-for="region in regions"
+                                        <option v-for="region in regions"  v-if="region.idRegion != 0"
                                                 :value="region">
                                             {{ region.regionName }}
                                         </option>
@@ -1559,7 +1559,7 @@
                                     <select v-model="selectedOptions.zona" class="form-control"
                                             required @change="validateRoleZona()"
                                             :disabled="selectedOptions.region.idRegion == 0">
-                                        <option v-for="zona in zonas"
+                                        <option v-for="zona in zonas"  v-if="zona.idZonas != 0"
                                                 :value="zona">
                                             {{ zona.name }}
                                         </option>
@@ -1572,7 +1572,7 @@
                                     <select v-model="selectedOptions.region" class="form-control"
                                             required @change="validateRoleRegion()"
                                             :disabled="selectedOptions.distributor.idDistributor == 0">
-                                        <option v-for="region in regions"
+                                        <option v-for="region in regions"  v-if="region.idRegion != 0"
                                                 :value="region">
                                             {{ region.regionName }}
                                         </option>
@@ -1585,7 +1585,7 @@
                                     <select v-model="selectedOptions.branch" class="form-control"
                                             :required="selectedOptions.distributor.idDistributor > 0"
                                             :disabled="selectedOptions.area.idArea == 0">
-                                        <option v-for="branch in branchch"
+                                        <option v-for="branch in branchch"  v-if="branch.idBranch != 0"
                                                 :value="branch">
                                             {{ branch.branchShort }}
                                         </option>

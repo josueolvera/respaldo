@@ -865,7 +865,7 @@
                                             :disabled="searchSelectedOptions.distributor.idDistributor < 0">
                                         <option selected :value="defaultRegion">{{defaultRegion.name}}</option>
                                         <option v-for="region in regions"
-                                                :value="region" v-if="region.saemFlag == 1">
+                                                :value="region" v-if="region.saemFlag == 1 && region.idRegion != 0">
                                             {{ region.regionName }}
                                         </option>
                                     </select>
@@ -877,7 +877,7 @@
                                             :disabled="searchSelectedOptions.distributor.idDistributor < 0">
                                         <option selected :value="defaultZona">{{defaultZona.name}}</option>
                                         <option v-for="zona in zonas"
-                                                :value="zona" v-if="zona.saemFlag == 1">
+                                                :value="zona" v-if="zona.saemFlag == 1 && zona.idZonas != 0">
                                             {{ zona.name }}
                                         </option>
                                     </select>
@@ -889,7 +889,7 @@
                                             :disabled="searchSelectedOptions.distributor.idDistributor < 0">
                                         <option selected :value="defaultBranch">{{defaultBranch.name}}</option>
                                         <option v-for="branch in branchch"
-                                                :value="branch" v-if="branch.saemFlag == 1">
+                                                :value="branch" v-if="branch.saemFlag == 1 && branch.idBranch != 0">
                                             {{ branch.branchShort }}
                                         </option>
                                     </select>
@@ -901,7 +901,7 @@
                                             :disabled="searchSelectedOptions.distributor.idDistributor < 0">
                                         <option selected :value="defaultArea">{{defaultArea.name}}</option>
                                         <option v-for="area in areas"
-                                                :value="area" v-if="area.saemFlag == 1">
+                                                :value="area" v-if="area.saemFlag == 1 && area.idArea != 0">
                                             {{ area.areaName }}
                                         </option>
                                     </select>
@@ -911,7 +911,7 @@
                                     <select v-model="searchSelectedOptions.role" class="form-control"
                                             :disabled="searchSelectedOptions.area.idArea == 0">
                                         <option selected :value="defaultRole">{{defaultRole.roleName}}</option>
-                                        <option v-for="role in selectedArea"
+                                        <option v-for="role in selectedArea" v-if="role.role.idRole != 0"
                                                 :value="role.role">
                                             {{ role.role.roleName }}
                                         </option>
@@ -998,7 +998,7 @@
                                             :disabled="searchSelectedOptions.distributor.idDistributor < 0">
                                         <option selected :value="defaultBranch">{{defaultBranch.name}}</option>
                                         <option v-for="branch in branchch"
-                                                :value="branch" v-if="branch.saemFlag == 0">
+                                                :value="branch" v-if="branch.saemFlag == 0 && branch.idBranch != 0">
                                             {{ branch.branchShort }}
                                         </option>
                                     </select>
@@ -1010,7 +1010,7 @@
                                             :disabled="searchSelectedOptions.distributor.idDistributor < 0">
                                         <option selected :value="defaultArea">{{defaultArea.name}}</option>
                                         <option v-for="area in areas"
-                                                :value="area" v-if="area.saemFlag == 0">
+                                                :value="area" v-if="area.saemFlag == 0 && area.idArea != 0">
                                             {{ area.areaName }}
                                         </option>
                                     </select>
@@ -1020,7 +1020,7 @@
                                     <select v-model="searchSelectedOptions.role" class="form-control"
                                             :disabled="searchSelectedOptions.area.idArea == 0">
                                         <option selected :value="defaultRole">{{defaultRole.roleName}}</option>
-                                        <option v-for="role in selectedArea"
+                                        <option v-for="role in selectedArea" v-if="role.role.idRole != 0"
                                                 :value="role.role">
                                             {{ role.role.roleName }}
                                         </option>
