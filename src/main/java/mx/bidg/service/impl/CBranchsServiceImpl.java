@@ -86,6 +86,7 @@ public class CBranchsServiceImpl implements CBranchsService {
 
     @Override
     public CBranchs save(CBranchs cBranchs, int idDistributor ,int idRegion, int idZona) {
+        Integer idBussinesLine = dwEnterprisesDao.getIdBussinessLineByDistributor(idDistributor);
         cBranchs.setUploadedDate(LocalDateTime.now());
         cBranchs.setBranchName(cBranchs.getBranchName().toUpperCase());
         cBranchs.setBranchShort(cBranchs.getBranchShort().toUpperCase());
@@ -96,6 +97,9 @@ public class CBranchsServiceImpl implements CBranchsService {
         cBranchs.setSaemFlag(1);
         cBranchs = cBranchsDao.save(cBranchs);
         DwEnterprises dwEnterprises = new DwEnterprises();
+        if (idBussinesLine != null){
+            dwEnterprises.setBussinessLine(new CBussinessLine(idBussinesLine));
+        }
         dwEnterprises.setBranch(cBranchs);
         dwEnterprises.setDistributor(new CDistributors(idDistributor));
         dwEnterprises.setRegion(new CRegions(idRegion));
