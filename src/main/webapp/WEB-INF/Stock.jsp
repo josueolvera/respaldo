@@ -941,7 +941,7 @@
                         <select v-model="searchSelectedOptions.branch" class="form-control"
                                 @change="branchChanged" :disabled="searchSelectedOptions.area.idArea == 0">
                             <option selected :value="defaultBranch">{{defaultBranch.name}}</option>
-                            <option v-for="branch in branchs"
+                            <option v-for="branch in branchs" v-if="branch.idBranch !=0"
                                     :value="branch">
                                 {{ branch.branchShort }}
                             </option>
@@ -1337,7 +1337,7 @@
                                     <label>Sucursal</label>
                                     <select v-model="selectedOptions.branch" class="form-control"
                                             @change="modalBranchChanged(selectedOptions.distributor.idDistributor, selectedOptions.branch.idBranch, selectedOptions.area.idArea)" :disabled="selectedOptions.area == null">
-                                        <option v-for="branch in branchs"
+                                        <option v-for="branch in branchs" v-if="branch.idBranch !=0"
                                                 :value="branch">
                                             {{ branch.branchShort }}
                                         </option>
@@ -1621,7 +1621,7 @@
                                                 <label>Sucursal</label>
                                                 <select v-model="selectedOptions.branch" class="form-control"
                                                         @change="modalBranchChanged(selectedOptions.distributor.idDistributor, selectedOptions.branch.idBranch, selectedOptions.area.idArea)" :disabled="selectedOptions.area == null">
-                                                    <option v-for="branch in branchs"
+                                                    <option v-for="branch in branchs" v-if="branch.idBranch !=0"
                                                             :value="branch">
                                                         {{ branch.branchShort }}
                                                     </option>
