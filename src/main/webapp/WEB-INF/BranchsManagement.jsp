@@ -17,8 +17,8 @@
             var vm = new Vue({
                 el: '#content',
                 ready: function () {
-                    this.getBranchs();
                     this.getDistributors();
+                    this.allDistributors();
                 },
                 data: {
                     branchs:'',
@@ -38,16 +38,22 @@
                         zona: null
                     },
                     branchFilter:'',
-                    selectedBranch:{},
+                    selectedDwEnterprise:{},
                     selectOptions:{
                         distributors:[],
                         regions:[],
                         zonas:[]
                     },
                     branchName: '',
-                    name: ''
+                    name: '',
+                    distributors: []
                 },
                 methods: {
+                    allDistributors: function () {
+                        this.$http.get(ROOT_URL + "/distributors").success(function (data) {
+                           this.distributors = data;
+                        });
+                    },
                     arrayObjectIndexOf : function(myArray, searchTerm, property) {
                         for(var i = 0, len = myArray.length; i < len; i++) {
                             if (myArray[i][property] === searchTerm) return i;
@@ -60,22 +66,39 @@
                         });
                     },
                     getBranchs : function () {
-                        this.$http.get(ROOT_URL + "/branchs")
-                                .success(function (data) {
-                                    this.branchs = data;
-                                })
-                                .error(function (data) {
+                        var self = this;
+                        this.$http.get(ROOT_URL + "/dw-enterprises/distributor/"+this.selected.distributor.idDistributor).success(function (data) {
+                            this.branchs = [];
+
+                                var index;
+                                data.forEach(function (branch) {
+                                    index = self.arrayObjectIndexOf(self.branchs, branch.branch.idBranch, 'idBranch');
+                                    if (index == -1) self.branchs.push(branch);
+                                });
+                        }).error(function () {
 
                         });
                     },
                     changeFormIsActive : function () {
-                        this.selected.distributor = null;
                         this.selected.region = null;
                         this.selected.zona = null;
                         this.newBranchForm.isActive = (this.newBranchForm.isActive !== true);
                     },
                     newBranchFormValidation: function () {
-                        if (
+                        if (this.selected.distributor.saemFlag == false){
+                            if (
+                                this.newBranchForm.data.branch.branchName != ''
+                                &&
+                                this.newBranchForm.data.branch.branchShort != ''
+                                &&
+                                this.selected.distributor != null
+                            ) {
+                                this.selected.region.idRegion = 0;
+                                this.selected.zona.idZonas = 0;
+                                this.newBranchForm.isValid = true;
+                            }
+                        }else {
+                            if (
                                 this.newBranchForm.data.branch.branchName != ''
                                 &&
                                 this.newBranchForm.data.branch.branchShort != ''
@@ -85,8 +108,9 @@
                                 this.selected.region != null
                                 &&
                                 this.selected.zona != null
-                        ) {
-                            this.newBranchForm.isValid = true;
+                            ) {
+                                this.newBranchForm.isValid = true;
+                            }
                         }
                     },
                     saveNewBranch : function () {
@@ -117,8 +141,8 @@
                                 };
 
                                 this.selected = {
-                                    distributor:null,
-                                    region:null
+                                    region:null,
+                                    zona: null
                                 };
 
                                 this.newBranchForm.isValid = false;
@@ -134,8 +158,8 @@
                                 };
 
                                 this.selected = {
-                                    distributor:null,
-                                    region:null
+                                    region:null,
+                                    zona: null
                                 };
 
                                 this.newBranchForm.isValid = false;
@@ -148,6 +172,7 @@
                         this.selected.region = null;
                         this.selected.zona = null;
                         this.getRegionByDistributor(this.selected.distributor.idDistributor);
+                        this.getBranchs();
                     },
                     onChangeRegion : function () {
                         this.selected.zona = null;
@@ -184,7 +209,7 @@
                     changeBranchStatus : function () {
                         this.$http.post(
                                 ROOT_URL + "/branchs/change-branch-status"
-                                ,this.selectedBranch.idBranch
+                                ,this.selectedDwEnterprise.branch.idBranch
                         ).success(function (data) {
                             this.getBranchs();
                             this.clearSelectedBranch();
@@ -200,8 +225,8 @@
                                     idDistributor : this.selected.distributor.idDistributor,
                                     idRegion : this.selected.region.idRegion,
                                     idZona : this.selected.zona.idZonas,
-                                    idBranch : this.selectedBranch.idBranch,
-                                    idDwEnterprise : this.selectedBranch.dwEnterprises[0].idDwEnterprise,
+                                    idBranch : this.selectedDwEnterprise.branch.idBranch,
+                                    idDwEnterprise : this.selectedDwEnterprise.idDwEnterprise,
                                     branchName: this.branchName,
                                     edit: 1
                                 };
@@ -211,25 +236,24 @@
                                         ,requestBody
                                 ).success(function (data) {
                                     this.selected = {
-                                        distributor:null,
                                         region:null,
                                         zona:null
                                     };
 
+                                    this.hideModal("#editModal");
+                                    showAlert('Sucursal reasignada');
                                     this.getBranchs();
                                     this.clearSelectedBranch();
-                                    this.hideModal("#editModal");
-                                    showAlert('Sucursal reasignada')
                                 }).error(function (data) {
                                 });
                         } else {
-                            if (this.branchName.length != this.selectedBranch.branchName.length && this.branchName.length > 0){
+                            if (this.branchName.length != this.selectedDwEnterprise.branch.branchName.length && this.branchName.length > 0){
                                 var requestBody2 = {
                                     idDistributor : 0,
                                     idRegion : 0,
                                     idZona : 0,
-                                    idBranch : this.selectedBranch.idBranch,
-                                    idDwEnterprise : this.selectedBranch.dwEnterprises[0].idDwEnterprise,
+                                    idBranch : this.selectedDwEnterprise.branch.idBranch,
+                                    idDwEnterprise : this.selectedDwEnterprise.idDwEnterprise,
                                     branchName: this.branchName,
                                     edit: 0
                                 };
@@ -239,43 +263,65 @@
                                         ,requestBody2
                                 ).success(function (data) {
                                     this.selected = {
-                                        distributor:null,
                                         region:null,
                                         zona:null
                                     };
 
+                                    this.hideModal("#editModal");
+                                    showAlert('Sucursal reasignada');
                                     this.getBranchs();
                                     this.clearSelectedBranch();
-                                    this.hideModal("#editModal");
-                                    showAlert('Sucursal reasignada')
                                 }).error(function (data) {
                                 });
                             } else {
-                                showAlert("Es necesario llenar los campos: Nombre de la sucursal, Distribudor, Region y Zona", {type: 3});
+                                var requestBody3 = {
+                                    idDistributor : this.selected.distributor.idDistributor,
+                                    idRegion : 0,
+                                    idZona : 0,
+                                    idBranch : this.selectedDwEnterprise.branch.idBranch,
+                                    idDwEnterprise : this.selectedDwEnterprise.idDwEnterprise,
+                                    branchName: this.branchName,
+                                    edit: 1
+                                };
+
+                                this.$http.post(
+                                    ROOT_URL + "/branchs/update"
+                                    ,requestBody3
+                                ).success(function (data) {
+                                    this.selected = {
+                                        region:null,
+                                        zona:null
+                                    };
+
+                                    this.hideModal("#editModal");
+                                    showAlert('Sucursal reasignada');
+                                    this.getBranchs();
+                                    this.clearSelectedBranch();
+                                }).error(function (data) {
+                                });
                             }
                         }
                     },
-                    onDeleteBranch : function (branch) {
-                        this.setSelectedBranch(branch);
+                    onDeleteBranch : function (dwEnterprise) {
+                        this.setSelectedBranch(dwEnterprise);
                         this.showModal("#deleteModal");
                     },
                     hideEditModal : function () {
                         this.hideModal("#editModal");
                     },
-                    onEditBranch : function (branch) {
-                        this.selected.distributor = null;
+                    onEditBranch : function (dwEnterpirse) {
                         this.selected.region = null;
                         this.selected.zona = null;
                         this.newBranchForm.isActive = false;
-                        this.setSelectedBranch(branch);
+                        this.setSelectedBranch(dwEnterpirse);
                         this.showModal("#editModal");
                     },
-                    setSelectedBranch : function (branch) {
-                        this.selectedBranch = branch;
-                        this.branchName = branch.branchName;
+                    setSelectedBranch : function (dwEnterpirse) {
+                        this.selectedDwEnterprise = dwEnterpirse;
+                        this.branchName = dwEnterpirse.branch.branchName;
                     },
                     clearSelectedBranch : function () {
-                        this.selectedBranch = {};
+                        this.selectedDwEnterprise = {};
                     },
                     showModal : function (idModal) {
                         $(idModal).modal("show");
@@ -307,7 +353,19 @@
             <div class="col-md-8">
                 <h2>Gestión de sucursales</h2>
             </div>
+            <br>
             <div class="col-md-12">
+                <div class="col-md-3">
+                    <label>Seleccione un distribuidor</label>
+                    <select class="form-control" v-model="selected.distributor" @change = "onChangeDistributor()">
+                        <option v-for="distributor in distributors" :value="distributor">{{distributor.distributorName}}</option>
+                    </select>
+                </div>
+            </div>
+            <br>
+            <div class="col-md-12" v-if="selected.distributor.idDistributor > 0">
+                <br>
+                <br>
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <div class="row">
@@ -386,9 +444,9 @@
                                         <div class="form-group">
                                             <label class="sr-only">Distribuidor</label>
                                             <select v-model="selected.distributor" class="form-control"
-                                                    @change="onChangeDistributor" required>
+                                                     required disabled>
                                                 <option v-for="distributor in selectOptions.distributors"
-                                                        :value="distributor" v-if="distributor.saemFlag == true">
+                                                        :value="distributor">
                                                     {{ distributor.distributorName }}
                                                 </option>
                                             </select>
@@ -398,7 +456,7 @@
                                         <div class="form-group">
                                             <label class="sr-only">Region</label>
                                             <select v-model="selected.region" class="form-control" required
-                                                    :disabled="selected.distributor == null" @change="onChangeRegion">
+                                                    :disabled="selected.distributor == null || selected.distributor.saemFlag == false" @change="onChangeRegion">
                                                 <option v-for="region in selectOptions.regions"
                                                         :value="region">
                                                     {{ region.regionName }}
@@ -410,7 +468,7 @@
                                         <div class="form-group">
                                             <label class="sr-only">Zona</label>
                                             <select v-model="selected.zona" class="form-control" required
-                                                    :disabled="selected.region == null">
+                                                    :disabled="selected.region == null || selected.distributor.saemFlag == false">
                                                 <option v-for="zona in selectOptions.zonas"
                                                         :value="zona">
                                                     {{ zona.name }}
@@ -427,24 +485,24 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <tr v-for="branch in branchs | filterBy branchFilter | orderBy 'branchName'" v-if="branch.status == 1 && branch.saemFlag == 1">
+                                <tr v-for="branch in branchs | filterBy branchFilter | orderBy 'branchName'" v-if="branch.branch.idBranch != 0">
                                     <td>
-                                        {{branch.idBranch}}
+                                        {{branch.branch.idBranch}}
                                     </td>
                                     <td>
-                                        {{branch.branchName}}
+                                        {{branch.branch.branchName}}
                                     </td>
                                     <td>
-                                        {{branch.branchShort}}
+                                        {{branch.branch.branchShort}}
                                     </td>
                                     <td>
-                                        {{branch.dwEnterprises[0].distributor.distributorName}}
+                                        {{branch.distributor.distributorName}}
                                     </td>
                                     <td>
-                                        {{branch.dwEnterprises[0].region.regionName}}
+                                        {{branch.region.regionName}}
                                     </td>
                                     <td>
-                                        {{branch.dwEnterprises[0].zona.name}}
+                                        {{branch.zona.name}}
                                     </td>
                                     <td class="text-center">
                                         <div>
@@ -475,7 +533,7 @@
                             <h4 class="modal-title" id="deleteModalLabel">Confirmación</h4>
                         </div>
                         <div class="modal-body">
-                            La sucursal <b>{{selectedBranch.branchName}}</b> será dada de baja.
+                            La sucursal <b>{{selectedDwEnterprise.branch.branchName}}</b> será dada de baja.
                             <br>
                             (Los empleados asignados a esta sucursal serán dados de baja).
                         </div>
@@ -506,7 +564,7 @@
                                     <div class="col-md-4">
                                         <label>Nombre corto</label>
                                         <p>
-                                            {{selectedBranch.branchShort}}
+                                            {{selectedDwEnterprise.branch.branchShort}}
                                         </p>
                                     </div>
                                 </div>
@@ -515,9 +573,9 @@
                                     <div class="col-md-4">
                                         <label>Distribuidor</label>
                                         <select v-model="selected.distributor" class="form-control"
-                                                @change="onChangeDistributor">
-                                            <option v-for="distributor in selectOptions.distributors"
-                                                    :value="distributor" v-if="distributor.saemFlag == true">
+                                                @change="onChangeDistributor" :disabled="selected.distributor != null">
+                                            <option v-for="distributor in distributors"
+                                                    :value="distributor">
                                                 {{ distributor.distributorName }}
                                             </option>
                                         </select>
@@ -525,7 +583,7 @@
                                     <div class="col-md-4">
                                         <label>Region</label>
                                         <select v-model="selected.region" class="form-control"
-                                                :disabled="selected.distributor == null" @change="onChangeRegion">
+                                                :disabled="selected.distributor == null || selected.distributor.saemFlag == false" @change="onChangeRegion">
                                             <option v-for="region in selectOptions.regions"
                                                     :value="region">
                                                 {{ region.regionName }}
