@@ -3,6 +3,7 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CSubareasDao;
 import mx.bidg.model.CSubareas;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class CSubareasDaoImpl extends AbstractDao<Integer, CSubareas> implements
 
     @Override
     public List<CSubareas> findAll() {
-        return createEntityCriteria().list();
+        return createEntityCriteria().add(Restrictions.ne("idSubarea", 0)).list();
     }
 
     @Override
