@@ -136,7 +136,7 @@ public class AccountingAccountsServiceImpl implements AccountingAccountsService 
         } else {
             accounting = accountingAccountsDao.findByAcronym(firstLevel + "-" + secondLevel + "-" + thirdLevel);
             if (accounting == null) {
-                cBudgetSubSubcategories.setName(descriptionThird);
+                cBudgetSubSubcategories.setBudgetSubSubcategory(descriptionThird);
                 cBudgetSubSubcategories.setCreationDate(now);
                 cBudgetSubSubcategories.setUsername(user.getUsername());
                 cBudgetSubSubcategories.setThirdLevel(thirdLevel);
