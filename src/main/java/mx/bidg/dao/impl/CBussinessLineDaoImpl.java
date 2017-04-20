@@ -3,6 +3,7 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.CBussinessLineDao;
 import mx.bidg.model.CBussinessLine;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class CBussinessLineDaoImpl extends AbstractDao<Integer, CBussinessLine> 
 
     @Override
     public List<CBussinessLine> findAll() {
-        return createEntityCriteria().list();
+        return createEntityCriteria().add(Restrictions.ne("idBusinessLine",0)).list();
     }
 
     @Override
