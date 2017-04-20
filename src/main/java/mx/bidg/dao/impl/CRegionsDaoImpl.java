@@ -28,7 +28,7 @@ public class CRegionsDaoImpl extends AbstractDao<Integer, CRegions> implements C
 
     @Override
     public List<CRegions> findAll() {
-        return (List<CRegions>) createEntityCriteria().list();
+        return (List<CRegions>) createEntityCriteria().add(Restrictions.ne("idRegion", 0)).list();
         
     }
 
@@ -50,7 +50,7 @@ public class CRegionsDaoImpl extends AbstractDao<Integer, CRegions> implements C
             criteria.add(Restrictions.eq("idRegion",idRegion));
         }
 
-        criteria.add(Restrictions.eq("saemFlag", saemFlag));
+        criteria.add(Restrictions.eq("saemFlag", saemFlag)).add(Restrictions.ne("idRegion", 0));
 
         return criteria.list();
     }
