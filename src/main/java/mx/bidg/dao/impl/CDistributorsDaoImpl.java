@@ -36,7 +36,7 @@ public class CDistributorsDaoImpl extends AbstractDao<Integer, CDistributors> im
     @Override
     public List<CDistributors> findAll() {
         Criteria criteria = createEntityCriteria();
-        return (List<CDistributors>) criteria.list();
+        return (List<CDistributors>) criteria.add(Restrictions.ne("idDistributor", 0)).list();
     }
 
     @Override
@@ -55,6 +55,7 @@ public class CDistributorsDaoImpl extends AbstractDao<Integer, CDistributors> im
     public List<CDistributors> findAllForStock() {
         return (List<CDistributors>) createEntityCriteria()
                 .add(Restrictions.eq("hasStock", 1))
+                .add(Restrictions.ne("idDistributor", 0))
                 .list();
     }
 
@@ -62,6 +63,7 @@ public class CDistributorsDaoImpl extends AbstractDao<Integer, CDistributors> im
     public List<CDistributors> findAllForAgreement() {
         return (List<CDistributors>) createEntityCriteria()
                 .add(Restrictions.eq("hasAgreement", 1))
+                .add(Restrictions.ne("idDistributor", 0))
                 .list();
     }
 
@@ -84,6 +86,7 @@ public class CDistributorsDaoImpl extends AbstractDao<Integer, CDistributors> im
         }
 
         criteria.add(disjunction);
+        criteria.add(Restrictions.ne("idDistributor", 0));
 
         return criteria.list();
     }
@@ -96,7 +99,7 @@ public class CDistributorsDaoImpl extends AbstractDao<Integer, CDistributors> im
             criteria.add(Restrictions.eq("idDistributor",idDistributor));
         }
 
-        criteria.add(Restrictions.eq("saemFlag", saemFlag));
+        criteria.add(Restrictions.eq("saemFlag", saemFlag)).add(Restrictions.ne("idDistributor", 0));
 
         return criteria.list();
     }
