@@ -31,13 +31,13 @@ public class CBudgetSubSubcategories implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @JsonView(JsonViews.Root.class)
-    @Column(name = "ID_SUB_SUBCATEGORIES")
-    private Integer idSubSubcategories;
+    @Column(name = "ID_BUDGET_SUB_SUBCATEGORY")
+    private Integer idBudgetSubSubcategories;
 
-    @Size(max = 40)
-    @Column(name = "NAME")
+    @Size(max = 100)
+    @Column(name = "BUDGET_SUB_SUBCATEGORY")
     @JsonView(JsonViews.Root.class)
-    private String name;
+    private String budgetSubSubcategory;
 
     @Basic(optional = false)
     @NotNull
@@ -58,29 +58,29 @@ public class CBudgetSubSubcategories implements Serializable {
     public CBudgetSubSubcategories() {
     }
 
-    public CBudgetSubSubcategories(Integer idSubSubcategories) {
-        this.idSubSubcategories = idSubSubcategories;
+    public CBudgetSubSubcategories(Integer idBudgetSubSubcategories){
+        this.idBudgetSubSubcategories = idBudgetSubSubcategories;
     }
 
-    public CBudgetSubSubcategories(Integer idSubSubcategories, LocalDateTime creationDate) {
-        this.idSubSubcategories = idSubSubcategories;
+    public CBudgetSubSubcategories(String budgetSubSubcategory, LocalDateTime creationDate) {
+        this.budgetSubSubcategory = budgetSubSubcategory;
         this.creationDate = creationDate;
     }
 
-    public Integer getIdSubSubcategories() {
-        return idSubSubcategories;
+    public Integer getIdBudgetSubSubcategories() {
+        return idBudgetSubSubcategories;
     }
 
-    public void setIdSubSubcategories(Integer idSubSubcategories) {
-        this.idSubSubcategories = idSubSubcategories;
+    public void setIdBudgetSubSubcategories(Integer idBudgetSubSubcategories) {
+        this.idBudgetSubSubcategories = idBudgetSubSubcategories;
     }
 
-    public String getName() {
-        return name;
+    public String getBudgetSubSubcategory() {
+        return budgetSubSubcategory;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setBudgetSubSubcategory(String budgetSubSubcategory) {
+        this.budgetSubSubcategory = budgetSubSubcategory;
     }
 
     public LocalDateTime getCreationDate() {
@@ -108,28 +108,35 @@ public class CBudgetSubSubcategories implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idSubSubcategories != null ? idSubSubcategories.hashCode() : 0);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CBudgetSubSubcategories that = (CBudgetSubSubcategories) o;
+
+        if (idBudgetSubSubcategories != null ? !idBudgetSubSubcategories.equals(that.idBudgetSubSubcategories) : that.idBudgetSubSubcategories != null)
+            return false;
+        if (budgetSubSubcategory != null ? !budgetSubSubcategory.equals(that.budgetSubSubcategory) : that.budgetSubSubcategory != null)
+            return false;
+        return thirdLevel != null ? thirdLevel.equals(that.thirdLevel) : that.thirdLevel == null;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CBudgetSubSubcategories)) {
-            return false;
-        }
-        CBudgetSubSubcategories other = (CBudgetSubSubcategories) object;
-        if ((this.idSubSubcategories == null && other.idSubSubcategories != null) || (this.idSubSubcategories != null && !this.idSubSubcategories.equals(other.idSubSubcategories))) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        int result = idBudgetSubSubcategories != null ? idBudgetSubSubcategories.hashCode() : 0;
+        result = 31 * result + (budgetSubSubcategory != null ? budgetSubSubcategory.hashCode() : 0);
+        result = 31 * result + (thirdLevel != null ? thirdLevel.hashCode() : 0);
+        return result;
     }
 
     @Override
     public String toString() {
-        return "mx.bidg.model.CBudgetSubSubcategories[ idSubSubcategories=" + idSubSubcategories + " ]";
+        return "CBudgetSubSubcategories{" +
+                "idBudgetSubSubcategories=" + idBudgetSubSubcategories +
+                ", budgetSubSubcategory='" + budgetSubSubcategory + '\'' +
+                ", creationDate=" + creationDate +
+                ", username='" + username + '\'' +
+                ", thirdLevel='" + thirdLevel + '\'' +
+                '}';
     }
-
 }
