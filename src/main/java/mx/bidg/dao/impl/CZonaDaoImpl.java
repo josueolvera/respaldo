@@ -28,7 +28,7 @@ public class CZonaDaoImpl extends AbstractDao <Integer, CZonas> implements CZona
 
     @Override
     public List<CZonas> findAll() {
-        return (List<CZonas>) createEntityCriteria().list();
+        return (List<CZonas>) createEntityCriteria().add(Restrictions.ne("idZonas", 0)).list();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class CZonaDaoImpl extends AbstractDao <Integer, CZonas> implements CZona
             criteria.add(Restrictions.eq("idZonas",idZonas));
         }
 
-        criteria.add(Restrictions.eq("saemFlag", saemFlag));
+        criteria.add(Restrictions.eq("saemFlag", saemFlag)).add(Restrictions.ne("idZonas", 0));
 
         return criteria.list();
     }
