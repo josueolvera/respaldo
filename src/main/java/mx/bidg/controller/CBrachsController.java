@@ -98,6 +98,7 @@ public class CBrachsController {
             CZonas oldZona = currentDwEnterprises.getZona();
             CGroups oldGroup = currentDwEnterprises.getGroup();
             CAreas oldArea = currentDwEnterprises.getArea();
+            CBussinessLine oldBussinessLine = currentDwEnterprises.getBusinessLine();
             Integer oldBudgetable = currentDwEnterprises.getBudgetable();
 
             currentDwEnterprises.setDistributor(new CDistributors(idDistributor));
@@ -106,6 +107,7 @@ public class CBrachsController {
             dwEnterprisesService.update(currentDwEnterprises);
 
             DwEnterprises dwEnterprises = new DwEnterprises();
+            dwEnterprises.setBussinessLine(oldBussinessLine);
             dwEnterprises.setBranch(oldBranch);
             dwEnterprises.setDistributor(oldDistributor);
             dwEnterprises.setRegion(oldRegion);
