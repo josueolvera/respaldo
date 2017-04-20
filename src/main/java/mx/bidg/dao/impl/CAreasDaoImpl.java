@@ -35,7 +35,7 @@ public class CAreasDaoImpl extends AbstractDao<Integer, CAreas> implements CArea
     @Override
     public List<CAreas> findAll() {
         Criteria criteria = createEntityCriteria();
-        return (List<CAreas>) criteria.list();
+        return (List<CAreas>) criteria.add(Restrictions.ne("idArea", 0)).list();
     }
 
     @Override
@@ -66,7 +66,7 @@ public class CAreasDaoImpl extends AbstractDao<Integer, CAreas> implements CArea
             criteria.add(Restrictions.eq("idArea",idArea));
         }
 
-        criteria.add(Restrictions.eq("saemFlag", saemFlag));
+        criteria.add(Restrictions.eq("saemFlag", saemFlag)).add(Restrictions.ne("idArea", 0));
 
         return criteria.list();
     }
