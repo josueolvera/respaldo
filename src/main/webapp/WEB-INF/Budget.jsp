@@ -200,13 +200,13 @@
                     getBudgets: function (year, budgetType, budgetNature, budgetCategory) {
                         var url = ROOT_URL +
                             '/budgets?cost_center=' + this.selected.costCenter.idCostCenter;
-                        if (year != null) {
+                        if (this.selected.year != null) {
                             url += '&year=' + this.selected.year;
                         }
-                        if (budgetType != null) {
+                        if (this.selected.budgetType != null) {
                             url += '&budget_type=' + this.selected.budgetType.idBudgetType;
                         }
-                        if (budgetNature != null) {
+                        if (this.selected.budgetNature.idBudgetNature != null) {
                             url += '&budget_nature=' + this.selected.budgetNature.idBudgetNature;
                         }
                         this.$http.get(url)
@@ -612,27 +612,27 @@
                         </div>
                         <br>
                         <div class="row">
-                            <div class="col-md-10" v-if="authorizationBudget.idCCostCenterStatus == 1">
+                            <div class="col-md-10" v-if="authorizationBudget.idCCostCenterStatus == 1 && budgets.length > 0">
                                 <h2 style="color: dimgray">
                                     <span class="glyphicon glyphicon-info-sign">{{authorizationBudget.cCostCenterStatus.costCenterStatus}}</span>
                                 </h2>
                             </div>
-                            <div class="col-md-10" v-if="authorizationBudget.idCCostCenterStatus == 2">
+                            <div class="col-md-10" v-if="authorizationBudget.idCCostCenterStatus == 2 && budgets.length > 0">
                                 <h2 style="color: orange">
                                     <span class="glyphicon glyphicon-question-sign">{{authorizationBudget.cCostCenterStatus.costCenterStatus}}</span>
                                 </h2>
                             </div>
-                            <div class="col-md-10" v-if="authorizationBudget.idCCostCenterStatus == 3">
+                            <div class="col-md-10" v-if="authorizationBudget.idCCostCenterStatus == 3 && budgets.length > 0">
                                 <h2 style="color: firebrick">
                                     <span class="glyphicon glyphicon-remove-sign">{{authorizationBudget.cCostCenterStatus.costCenterStatus}}</span>
                                 </h2>
                             </div>
-                            <div class="col-md-10" v-if="authorizationBudget.idCCostCenterStatus == 4">
+                            <div class="col-md-10" v-if="authorizationBudget.idCCostCenterStatus == 4 && budgets.length > 0">
                                 <h2 style="color: green">
                                     <span class="glyphicon glyphicon-ok-sign">{{authorizationBudget.cCostCenterStatus.costCenterStatus}}</span>
                                 </h2>
                             </div>
-                            <div class="col-md-10" v-if="authorizationBudget.idCCostCenterStatus == 5">
+                            <div class="col-md-10" v-if="authorizationBudget.idCCostCenterStatus == 5 && budgets.length > 0">
                                 <h2 style="color: orangered">
                                     <span class="glyphicon glyphicon-edit">{{authorizationBudget.cCostCenterStatus.costCenterStatus}}</span>
                                 </h2>
@@ -655,7 +655,7 @@
                                     Copiar presupuesto
                                 </button>
                             </div>
-                            <div class="col-md-2" v-if="authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 1">
+                            <div class="col-md-2" v-if="(authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 1) && budgets.length > 0">
                                 <button style="margin-top: 25px" class="btn btn-success" @click="showSendValidation">
                                     Enviar a validación
                                 </button>
