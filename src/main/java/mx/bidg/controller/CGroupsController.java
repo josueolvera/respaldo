@@ -5,20 +5,24 @@
  */
 package mx.bidg.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 import mx.bidg.config.JsonViews;
 import mx.bidg.model.CGroups;
+import mx.bidg.model.CRegions;
 import mx.bidg.model.Users;
 import mx.bidg.service.CGroupsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *
@@ -55,5 +59,19 @@ public class CGroupsController {
                 user.getDwEmployee().getDwEnterprise().getIdArea());
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.EmbeddedBudget.class).writeValueAsString(cGroup), HttpStatus.OK);
     }
-    
+
+    @RequestMapping(value = "/save-groups", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> save(@RequestBody String data, HttpSession session)throws IOException {
+        JsonNode node = mapper.readTree(data);
+        Users user = (Users) session.getAttribute("user");
+        CGroups cGroups = new CGroups();
+        cGroups.setGroupName(node.get("name").asText());
+        cGroups.setAcronyms(node.get("acronym").asText());
+        cGroups.setCreationDate(LocalDateTime.now());
+        cGroups.setUsername(user.getUsername());
+
+        cGroupsService.save(cGroups);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(cGroupsService.findAll())
+                ,HttpStatus.OK);
+    }
 }
