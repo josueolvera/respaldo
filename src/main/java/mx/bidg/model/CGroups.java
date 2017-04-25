@@ -9,19 +9,13 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 /**
@@ -58,6 +52,18 @@ public class CGroups implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "group")
     @JsonView(JsonViews.Embedded.class)
     private List<DwEnterprises> dwEnterprisesList;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "CREATION_DATE")
+    @Convert(converter = DateTimeConverter.class)
+    @JsonView(JsonViews.Root.class)
+    private LocalDateTime creationDate;
+
+    @Size(max = 50)
+    @Column(name = "USERNAME")
+    @JsonView(JsonViews.Root.class)
+    private String username;
 
     public CGroups() {
     }
@@ -101,6 +107,22 @@ public class CGroups implements Serializable {
 
     public void setDwEnterprisesList(List<DwEnterprises> dwEnterprisesList) {
         this.dwEnterprisesList = dwEnterprisesList;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
