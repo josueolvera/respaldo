@@ -18,7 +18,10 @@ public class CRegionsDaoImpl extends AbstractDao<Integer, CRegions> implements C
 
     @Override
     public CRegions save(CRegions entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        persist(entity);
+        return entity;
+        //throw new UnsupportedOperationException("Not supported yet.");
+        //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -34,12 +37,18 @@ public class CRegionsDaoImpl extends AbstractDao<Integer, CRegions> implements C
 
     @Override
     public CRegions update(CRegions entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        modify(entity);
+        return entity;
+        //throw new UnsupportedOperationException("Not supported yet.");
+        //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public boolean delete(CRegions entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        delete(entity);
+        return true;
+        //throw new UnsupportedOperationException("Not supported yet.");
+        //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
