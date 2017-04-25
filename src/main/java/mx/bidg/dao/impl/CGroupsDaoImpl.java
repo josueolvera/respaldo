@@ -24,7 +24,10 @@ public class CGroupsDaoImpl extends AbstractDao<Integer, CGroups> implements CGr
 
     @Override
     public CGroups save(CGroups entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        persist(entity);
+        return entity;
+        //throw new UnsupportedOperationException("Not supported yet.");
+        //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -40,12 +43,18 @@ public class CGroupsDaoImpl extends AbstractDao<Integer, CGroups> implements CGr
 
     @Override
     public CGroups update(CGroups entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        modify(entity);
+        return entity;
+        //throw new UnsupportedOperationException("Not supported yet.");
+        //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public boolean delete(CGroups entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        delete(entity);
+        return true;
+        //throw new UnsupportedOperationException("Not supported yet.");
+        //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
