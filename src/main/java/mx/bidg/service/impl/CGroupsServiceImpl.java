@@ -48,5 +48,15 @@ public class CGroupsServiceImpl implements CGroupsService {
 //        group.setBudgetsList(budgets);
         return group;
     }
-    
+
+    @Override
+    public CGroups save(CGroups cGroups) {
+        return dao.save(cGroups) ;
+    }
+
+    @Override
+    public CGroups update(CGroups cGroups) {
+        return dao.update(cGroups);
+    }
+
 }
