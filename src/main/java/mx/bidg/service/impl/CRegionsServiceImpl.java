@@ -25,4 +25,14 @@ public class CRegionsServiceImpl implements CRegionsService {
         return cRegionsDao.findRegionsBySaemFlag(idRegion, saemFlag);
     }
 
+    @Override
+    public CRegions save(CRegions cregions) {
+        return cRegionsDao.save(cregions);
+    }
+
+    @Override
+    public CRegions update(CRegions cregions) {
+        return cRegionsDao.save(cregions);
+    }
+
 }
