@@ -29,4 +29,20 @@ public class CRolesServiceImpl implements CRolesService {
     public CRoles findById(Integer idRol) {
         return cRolesDao.findById(idRol);
     }
+
+    @Override
+    public CRoles save(CRoles cRoles) {
+        return cRolesDao.save(cRoles);
+    }
+
+    @Override
+    public CRoles update(CRoles cRoles) {
+        return cRolesDao.update(cRoles);
+    }
+
+    @Override
+    public boolean delete(CRoles cRoles) {
+        return cRolesDao.delete(cRoles);
+    }
+
 }

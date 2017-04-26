@@ -5,14 +5,19 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 
@@ -23,7 +28,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "C_ROLES")
-
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CRoles implements Serializable {
     
     private static final long serialVersionUID = 1L;
@@ -45,7 +50,19 @@ public class CRoles implements Serializable {
     @ManyToMany(mappedBy = "roles")
     @JsonView(JsonViews.Embedded.class)
     private Set<CAreas> areas;
-    
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "CREATION_DATE")
+    @Convert(converter = DateTimeConverter.class)
+    @JsonView(JsonViews.Root.class)
+    private LocalDateTime creationDate;
+
+    @Size(max = 50)
+    @Column(name = "USERNAME")
+    @JsonView(JsonViews.Root.class)
+    private String username;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "ROLE_ROOM",
@@ -88,6 +105,22 @@ public class CRoles implements Serializable {
 
     public void setAreas(Set<CAreas> areas) {
         this.areas = areas;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Set<CRooms> getRooms() {

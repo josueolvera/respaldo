@@ -15,12 +15,6 @@ import java.util.List;
 public class CSubareasDaoImpl extends AbstractDao<Integer, CSubareas> implements CSubareasDao {
 
     @Override
-    public CSubareas save(CSubareas entity) {
-        persist(entity);
-        return entity;
-    }
-
-    @Override
     public CSubareas findById(int id) {
         return getByKey(id);
     }
@@ -31,6 +25,11 @@ public class CSubareasDaoImpl extends AbstractDao<Integer, CSubareas> implements
     }
 
     @Override
+    public CSubareas save(CSubareas entity) {
+        persist(entity);
+        return entity;
+    }
+    @Override
     public CSubareas update(CSubareas entity) {
         modify(entity);
         return entity;
@@ -38,7 +37,14 @@ public class CSubareasDaoImpl extends AbstractDao<Integer, CSubareas> implements
 
     @Override
     public boolean delete(CSubareas entity) {
-        remove(entity);
+        delete(entity);
         return true;
+    }
+
+    @Override
+    public CSubareas findByIdSubarea(Integer idSubarea) {
+        return (CSubareas) createEntityCriteria()
+                .add(Restrictions.eq("idSubarea",idSubarea))
+                .uniqueResult();
     }
 }

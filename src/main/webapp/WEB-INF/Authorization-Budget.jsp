@@ -1490,6 +1490,7 @@
                                             v-if="costCenter.idCCostCenterStatus != 1">
                                             <td class="col-xs-2"><label style="margin-top: 10px">{{costCenter.costCenter.name}}</label>
                                             </td>
+                                            <td class="col-xs-1"><label style="margin-top: 10px">{{costCenter.year}}</label></td>
                                             <td class="col-xs-1"></td>
                                             <td class="col-xs-1" style="margin-top: 12px">
                                                 <span class="glyphicon glyphicon-triangle-bottom"
