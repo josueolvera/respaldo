@@ -32,7 +32,7 @@ public class CRegionsServiceImpl implements CRegionsService {
 
     @Override
     public CRegions update(CRegions cregions) {
-        return cRegionsDao.save(cregions);
+        return cRegionsDao.update(cregions);
     }
 
 }
