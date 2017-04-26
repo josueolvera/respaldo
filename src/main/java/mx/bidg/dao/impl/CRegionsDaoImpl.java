@@ -17,14 +17,6 @@ import org.springframework.stereotype.Repository;
 public class CRegionsDaoImpl extends AbstractDao<Integer, CRegions> implements CRegionsDao {
 
     @Override
-    public CRegions save(CRegions entity) {
-        persist(entity);
-        return entity;
-        //throw new UnsupportedOperationException("Not supported yet.");
-        //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public CRegions findById(int id) {
         return getByKey(id);
     }
@@ -36,19 +28,20 @@ public class CRegionsDaoImpl extends AbstractDao<Integer, CRegions> implements C
     }
 
     @Override
+    public CRegions save(CRegions entity) {
+        persist(entity);
+        return entity;
+    }
+    @Override
     public CRegions update(CRegions entity) {
         modify(entity);
         return entity;
-        //throw new UnsupportedOperationException("Not supported yet.");
-        //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public boolean delete(CRegions entity) {
         delete(entity);
         return true;
-        //throw new UnsupportedOperationException("Not supported yet.");
-        //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
