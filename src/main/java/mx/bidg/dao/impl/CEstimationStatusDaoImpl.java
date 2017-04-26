@@ -16,7 +16,8 @@ public class CEstimationStatusDaoImpl extends AbstractDao<Integer, CEstimationSt
 
     @Override
     public CEstimationStatus save(CEstimationStatus entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
+        //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -26,17 +27,20 @@ public class CEstimationStatusDaoImpl extends AbstractDao<Integer, CEstimationSt
 
     @Override
     public List<CEstimationStatus> findAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
+        //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public CEstimationStatus update(CEstimationStatus entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
+        //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public boolean delete(CEstimationStatus entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet.");
+        //To change body of generated methods, choose Tools | Templates.
     }
     
 }
