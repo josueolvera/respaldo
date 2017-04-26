@@ -217,7 +217,7 @@
                                 this.getAuthorizationBudget();
                                 this.getTotalCostCenter();
                                 if (data.length <= 0) {
-                                    showAlert('Sin rubros asignados');
+                                    showAlert('Sin rubros asignados', {type: 3});
                                 }
                             })
                             .error(function (data) {
@@ -671,7 +671,7 @@
                 <div v-else="!searching">
                     <div class="row" v-for="(indexOfBudget, budget) in budgets | filterBy selected.concept in 'budget'"
                          style="margin-left: 0px; margin-right: 0px" v-if="budgets.length > 0 && budget!=null">
-                        <div class="bs-callout bs-callout-default" style="background: darkslategrey">
+                        <div class="col-xs-12" style="background: darkgray">
                             <div class="row">
                                 <div class="col-md-7">
                                     <h4><b>{{budget.budget.conceptBudget.nameConcept}}</b></h4>
