@@ -31,7 +31,6 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "C_REGIONS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CRegions implements Serializable {
-    
     private static final long serialVersionUID = 1L;
     
     @Id
