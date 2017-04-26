@@ -14,10 +14,6 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 @Repository
 public class CRolesDaoImpl extends AbstractDao<Integer,CRoles> implements CRolesDao {
-    @Override
-    public CRoles save(CRoles entity) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 
     @Override
     public CRoles findById(int id) {
@@ -26,17 +22,25 @@ public class CRolesDaoImpl extends AbstractDao<Integer,CRoles> implements CRoles
 
     @Override
     public List<CRoles> findAll() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return createEntityCriteria().add(Restrictions.ne("idRole", 0)).list();
+    }
+
+    @Override
+    public CRoles save(CRoles entity) {
+        persist(entity);
+        return entity;
     }
 
     @Override
     public CRoles update(CRoles entity) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        update(entity);
+        return entity;
     }
 
     @Override
     public boolean delete(CRoles entity) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        delete(entity);
+        return true;
     }
 
     @Override
