@@ -28,12 +28,20 @@ public class BudgetHelper {
     public List<RealBudgetSpending> getOrderedBudget(Integer idCostCenter,Integer  idBudgetType,Integer  idBudgetNature,Integer  year) {
         List<RealBudgetSpending>realBudgetSpendings = new ArrayList<>();
         List<DistributorCostCenter> distributorCostCenters = distributorCostCenterService.findByCostCenter(idCostCenter);
-        for (DistributorCostCenter d: distributorCostCenters){
-            List<Budgets> budgets = budgetsService.findByIdDistributorCostCenter(d.getIdDistributorCostCenter(),idBudgetType,idBudgetNature);
-            if (!budgets.isEmpty()) {
-                for (Budgets budget : budgets) {
-                    RealBudgetSpending r = realBudgetSpendingService.findByIdBudgetAndYear(budget.getIdBudget(), year);
-                    realBudgetSpendings.add(r);
+        if (!distributorCostCenters.isEmpty()){
+            for (DistributorCostCenter d: distributorCostCenters){
+                if (d != null){
+                    List<Budgets> budgets = budgetsService.findByIdDistributorCostCenter(d.getIdDistributorCostCenter(),idBudgetType,idBudgetNature);
+                    if (!budgets.isEmpty()) {
+                        for (Budgets budget : budgets) {
+                            if (budget != null){
+                                RealBudgetSpending r = realBudgetSpendingService.findByIdBudgetAndYear(budget.getIdBudget(), year);
+                                if (r != null){
+                                    realBudgetSpendings.add(r);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
