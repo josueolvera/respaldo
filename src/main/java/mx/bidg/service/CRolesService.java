@@ -11,4 +11,7 @@ public interface CRolesService {
 
     List<CRoles> findAll();
     CRoles findById(Integer idRol);
+    CRoles save(CRoles cRoles);
+    CRoles update(CRoles cRoles);
+    boolean delete(CRoles cRoles);
 }
