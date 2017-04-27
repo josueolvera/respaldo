@@ -60,19 +60,15 @@ public class CAreasController {
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(areas),HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/save-areas", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> saveAreas (@RequestBody String data, HttpSession session) throws IOException{
         Users user = (Users) session.getAttribute("user");
-
         JsonNode node = mapper.readTree(data);
-
         CAreas area = new CAreas();
-
-        area.setAreaName(node.get("areaName").asText());
+        area.setAreaName(node.get("name").asText());
         area.setCreationDate(LocalDateTime.now());
         area.setSaemFlag(0);
         area.setUsername(user.getUsername());
-
         cAreasService.save(area);
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(cAreasService.findAll()), HttpStatus.OK);
