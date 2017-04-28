@@ -1,3 +1,8 @@
+<%--
+  User: lEONARDO
+  Date: 27/04/17
+  Time: 05:08 PM
+--%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -8,6 +13,10 @@
 
     <jsp:attribute name="styles">
         <style>
+            .table-striped th {
+                background: #122b40;
+                color: white;
+            }
             .table-header {
                 padding: 1rem;
                 margin-top: 2rem;
@@ -122,7 +131,7 @@
                         <h2>Catalogo de lineas de negocio</h2>
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-info" style="margin-top: 15px" @click="showModalAlta()">Agregar linea de
+                        <button class="btn btn-primary" style="margin-top: 15px" @click="showModalAlta()">Agregar linea de
                             negocio
                         </button>
                     </div>
@@ -133,7 +142,7 @@
                 <div class="col-md-12">
                     <table class="table table-striped">
                         <thead>
-                        <th class="col-md-4">id Linea de negocio</th>
+                        <th class="col-md-4">Id linea de negocio</th>
                         <th class="col-md-4">Nombre</th>
                         <th class="col-md-4">Acronimo</th>
                         </thead>
@@ -147,38 +156,37 @@
                     </table>
                 </div>
             </div>
-            <div class="modal fade" id="modalAlta" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content modal-lg">
+            <div class="modal fade"  id="modalAlta" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+                <div class="modal-dialog modal-ms">
+                    <div class="modal-content modal-ms">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title" id=""><label>Catalogo de lineas de negocio</label></h4>
+                            <div class="alert alert-info">
+                                <h4 class="modal-title" id="" style="text-align: center"><label>Catalogo de lineas de negocio</label></h4>
+                            </div>
                         </div>
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="col-md-6">
                                         <label>Nombre</label>
-                                        <input class="form-control" type="text" v-model="bussinessLine.name" onkeypress="return isLetterKey(event)">
+                                        <input class="form-control" type="text" name="Nombre" onpaste="alert('Acceso Denegado');return false" v-model="bussinessLine.name" onkeypress="return isLetterKey(event)">
                                     </div>
                                     <div class="col-md-6">
                                         <label>Acronimo</label>
-                                        <input class="form-control" type="text" v-model="bussinessLine.acronym" onkeypress="return isLetterKey(event)">
+                                        <input class="form-control" type="text" name="Acronimo" onpaste="alert('Acceso Denegado');return false" v-model="bussinessLine.acronym" onkeypress="return isLetterKey(event)">
                                     </div>
                                 </div>
                             </div>
-                            <br>
                         </div>
+                        <br>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-success" @click="saveBussinessLine()">Guardar</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- #contenidos -->
-
-        <!-- Fecha de Termino- Agregar fecha dia de solicitud-->
     </jsp:body>
 </t:template>
