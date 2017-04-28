@@ -5,6 +5,7 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -15,6 +16,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlTransient;
+
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateConverter;
 import mx.bidg.utils.DateTimeConverter;
@@ -28,7 +31,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "C_AREAS")
-
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CAreas implements Serializable {
         
     private static final long serialVersionUID = 1L;
