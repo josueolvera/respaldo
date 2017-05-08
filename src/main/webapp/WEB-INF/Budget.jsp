@@ -703,9 +703,14 @@
                             </div>
                             <div class="col-md-2 pull-right"
                                  v-if="budgets.length > 0 && authorizationBudget.idCCostCenterStatus == 4">
-                                <button style="margin-top: 25px" class="btn btn-success"
-                                        @click="showRequestModification">
+                                <button style="margin-top: 25px" class="btn btn-success" @click="showRequestModification">
                                     Solicitar modificación
+                                </button>
+                            </div>
+                            <div class="col-md-2 pull-right"
+                                 v-if="(authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 1) && budgets.length > 0">
+                                <button style="margin-top: 25px; margin-left: 13px" class="btn btn-success" @click="showSendValidation">
+                                    Enviar a validación
                                 </button>
                             </div>
                         </div>
@@ -714,12 +719,7 @@
                                 <h3 align="right">Total centro de costo: <b class="text-primary">{{totalCostCenter | currency}}</b>
                                 </h3>
                             </div>
-                            <div class="col-md-5" align="right" style="width: 40%"
-                                 v-if="(authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 1) && budgets.length > 0">
-                                <button style="margin-top: 25px" class="btn btn-success" @click="showSendValidation">
-                                    Enviar a validación
-                                </button>
-                            </div>
+
                            <!-- <div class="col-md-2"
                                  v-if="budgets.length > 0 && authorizationBudget.idCCostCenterStatus == 4">
                                 <button style="margin-top: 25px" class="btn btn-default" @click="showCopyBudgetModal">
