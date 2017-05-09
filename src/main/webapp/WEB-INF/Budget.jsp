@@ -109,7 +109,7 @@
                     authorization: false,
                     annual: false,
                     disableNature: false,
-                    sumTotals:{
+                    sumTotals: {
                         januaryBudgetAmount: 0.00,
                         februaryBudgetAmount: 0.00,
                         marchBudgetAmount: 0.00,
@@ -124,7 +124,7 @@
                         decemberBudgetAmount: 0.00,
                         totalLastYearAmount: 0.00
                     },
-                    budgetTotals:{
+                    budgetTotals: {
                         januaryBudgetAmount: 0.00,
                         februaryBudgetAmount: 0.00,
                         marchBudgetAmount: 0.00,
@@ -149,7 +149,7 @@
                                 this.getRolesCostCenter(this.role);
                             })
                             .error(function (data) {
-                                showAlert("Ha habido un error al obtener al usuario en sesion", {type: 3});
+                                showAlert("Ha habido un error al obtener al usuario en sesión", {type: 3});
                             });
                     },
                     getRolesCostCenter: function (idRole) {
@@ -166,17 +166,17 @@
                                     if (index == -1) self.costCenterList.push(item.costCenter);
                                 });
                                 /*data.forEach(function (item) {
-                                    index = self.arrayObjectIndexOf(self.budgetNatureList, item.budgetNature.idBudgetNature, 'idBudgetNature');
-                                    if (index == -1) self.budgetNatureList.push(item.budgetNature);
-                                });*/
+                                 index = self.arrayObjectIndexOf(self.budgetNatureList, item.budgetNature.idBudgetNature, 'idBudgetNature');
+                                 if (index == -1) self.budgetNatureList.push(item.budgetNature);
+                                 });*/
                             })
                             .error(function (data) {
                             });
                     },
                     getNature: function () {
-                      this.$http.get(ROOT_URL + '/c-budget-nature').success(function (data) {
-                          this.budgetNatureList=data;
-                      });
+                        this.$http.get(ROOT_URL + '/c-budget-nature').success(function (data) {
+                            this.budgetNatureList = data;
+                        });
                     },
                     getBudgetTypes: function () {
                         this.$http.get(ROOT_URL + '/budget-types')
@@ -187,8 +187,8 @@
                     setYears: function () {
                         var now = new Date(this.now);
                         this.selected.year = now.getFullYear();
-                        this.minYear = this.selected.year - 3;
-                        this.maxYear = this.selected.year + 5;
+                        this.minYear = this.selected.year - 2;
+                        this.maxYear = this.selected.year + 0;
                         for (var i = this.minYear; i <= this.maxYear; i++) {
                             this.years.push(i)
                         }
@@ -365,7 +365,7 @@
                         } else {
                             self.$http.post(ROOT_URL + url).success(function (element) {
                                 this.closeCopyBudgetModal();
-                                showAlert('Transaccion exitosa');
+                                showAlert('Transacción exitosa');
                                 showAlert(data.success.message);
                             }).error(function (data) {
                                 showAlert(data.error.message, {type: 3});
@@ -380,7 +380,7 @@
                         });
                     },
                     getEmailsModify: function () {
-                        this.emails= '';
+                        this.emails = '';
                         this.$http.get(ROOT_URL + '/budgets/get-emails-modify?cost_center=' + this.selected.costCenter.idCostCenter).success(function (data) {
                             this.emails = data;
                         }).error(function (data) {
@@ -469,11 +469,11 @@
                         this.budgets = [];
                     },
                     onChangeFilterClassification: function () {
-                        if(this.selected.budgetType.idBudgetType == 2){
+                        if (this.selected.budgetType.idBudgetType == 2) {
                             this.disableNature = true;
                             this.selected.budgetNature = {};
 
-                        }else {
+                        } else {
                             this.disableNature = false;
                             this.selected.budgetNature = {};
                         }
@@ -491,7 +491,7 @@
                     sendModifyBudget: function () {
                         this.closeRequestModification();
                         this.$http.post(ROOT_URL + '/authorizathion-costcenter/modify?cost_center=' + this.selected.costCenter.idCostCenter + '&year=' + this.selected.year).success(function (data) {
-                            showAlert('Solicitud de modificacion enviada');
+                            showAlert('Solicitud de modificación enviada');
                             this.getBudgets(this.selected.year, this.selected.budgetType, this.selected.budgetNature, this.selected.budgetCategory);
                         }).error(function (data) {
                             showAlert('Ha habido un error con la solicitud, intente nuevamente');
@@ -526,6 +526,58 @@
                 }
             });
         </script>
+
+        <script type="text/javascript">
+            function format(input)
+            {
+                var num = input.value.replace(/\,/g,'');
+                if(!isNaN(num)){
+                    num = num.toString().split('').reverse().join('').replace(/(?=\d*\.?)(\d{3})/g,'$1,');
+                    num = num.split('').reverse().join('').replace(/^[\,]/,'');
+                    num = num.split('').join('').replace(/^[\,]/,'');
+                    var inicio = num.substring(0, 1);
+                    if (inicio == '0') {
+                        alert('Corregir cantidad');
+                        input.value = '';
+                    }else{
+                        input.value = num.split('').join('').replace(/^[\,]/,'');
+                    }
+                }
+
+                else{
+                    alert('Sólo se permiten números');
+                    input.value = '';
+                }
+            }
+            function ponerCeros(obj) {
+                var contar = obj.value;
+                var min = contar.length - 3;
+                var max = contar.length;
+
+                if(obj.value == "" || obj.value == null)
+                {
+                    obj.value = "";
+                }else{
+                    if (max >= 1 && max < 50) {
+                        var extraer = contar.substring(min, max);
+                        if (extraer == '.00') {
+                            contar = contar.replace('.,', ',');
+                            contar = contar.replace(',.', ',');
+                            contar = contar.replace('.00', '');
+                            obj.value = contar;
+                            format(input);
+                        }else
+                        {
+                            contar = contar.replace('.,', ',');
+                            contar = contar.replace(',.', ',');
+                            contar = contar.replace('.00', '');
+                            obj.value = contar + '.00';
+                            format(input);
+                        }
+                    }
+                }
+            }
+        </script>
     </jsp:attribute>
     <jsp:attribute name="styles">
         <style>
@@ -535,7 +587,7 @@
                 }
 
                 .container-scroll > .row {
-                    width: 2025px;
+                    width: 1500px;
                 }
             }
         </style>
@@ -554,7 +606,8 @@
                     <div class="col-md-5">
                         <h2>CAPTURA DE PRESUPUESTO</h2>
                     </div>
-                    <div class="col-md-2 text-center" v-if="(authorizationBudget.idCCostCenterStatus == 5 || authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 4) && authorizationBudget.adjustment != 1"
+                    <div class="col-md-2 text-center"
+                         v-if="(authorizationBudget.idCCostCenterStatus == 5 || authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 4) && authorizationBudget.adjustment != 1"
                          style="color: #1b6d85">
                         <h2>ANUAL</h2>
                     </div>
@@ -574,7 +627,7 @@
                             <div class="col-md-3">
                                 <label>Centro de costos</label>
                                 <select v-model="selected.costCenter" class="form-control" @change="onChangeFilter"
-                                        required>
+                                        data-live-search="true" required>
                                     <option v-for="costCenter in costCenterList" :value="costCenter">
                                         {{costCenter.name}}
                                     </option>
@@ -592,7 +645,8 @@
                             </div>
                             <div class="col-md-3">
                                 <label>Tipo de gasto</label>
-                                <select v-model="selected.budgetNature" class="form-control" @change="onChangeFilter" :disabled="disableNature">
+                                <select v-model="selected.budgetNature" class="form-control" @change="onChangeFilter"
+                                        :disabled="disableNature">
                                     <option v-for="budgetNature in budgetNatureList" :value="budgetNature">
                                         {{budgetNature.budgetNature}}
                                     </option>
@@ -601,7 +655,7 @@
                             <div class="col-md-2">
                                 <label>Año</label>
                                 <select v-model="selected.year" class="form-control" @change="onChangeFilter" required>
-                                    <option v-for="year in years" :value="year">
+                                    <option v-for="year in years" :value="year" selected>
                                         {{year}}
                                     </option>
                                 </select>
@@ -612,29 +666,39 @@
                         </div>
                         <br>
                         <div class="row">
-                            <div class="col-md-10" v-if="authorizationBudget.idCCostCenterStatus == 1 && budgets.length > 0">
+                            <div class="col-md-10"
+                                 v-if="authorizationBudget.idCCostCenterStatus == 1 && budgets.length > 0">
                                 <h2 style="color: dimgray">
-                                    <span class="glyphicon glyphicon-info-sign">{{authorizationBudget.cCostCenterStatus.costCenterStatus}}</span>
+                                    <span class="glyphicon glyphicon-info-sign">{{authorizationBudget.cCostCenterStatus.costCenterStatus}}
+                                        </span>
                                 </h2>
                             </div>
-                            <div class="col-md-10" v-if="authorizationBudget.idCCostCenterStatus == 2 && budgets.length > 0">
+                            <div class="col-md-10"
+                                 v-if="authorizationBudget.idCCostCenterStatus == 2 && budgets.length > 0">
                                 <h2 style="color: orange">
-                                    <span class="glyphicon glyphicon-question-sign">{{authorizationBudget.cCostCenterStatus.costCenterStatus}}</span>
+                                    <span class="glyphicon glyphicon-question-sign">{{authorizationBudget.cCostCenterStatus.costCenterStatus}}
+                                    </span>
                                 </h2>
                             </div>
-                            <div class="col-md-10" v-if="authorizationBudget.idCCostCenterStatus == 3 && budgets.length > 0">
+                            <div class="col-md-10"
+                                 v-if="authorizationBudget.idCCostCenterStatus == 3 && budgets.length > 0">
                                 <h2 style="color: firebrick">
-                                    <span class="glyphicon glyphicon-remove-sign">{{authorizationBudget.cCostCenterStatus.costCenterStatus}}</span>
+                                    <span class="glyphicon glyphicon-remove-sign">{{authorizationBudget.cCostCenterStatus.costCenterStatus}}
+                                    </span>
                                 </h2>
                             </div>
-                            <div class="col-md-10" v-if="authorizationBudget.idCCostCenterStatus == 4 && budgets.length > 0">
+                            <div class="col-md-10"
+                                 v-if="authorizationBudget.idCCostCenterStatus == 4 && budgets.length > 0">
                                 <h2 style="color: green">
-                                    <span class="glyphicon glyphicon-ok-sign">{{authorizationBudget.cCostCenterStatus.costCenterStatus}}</span>
+                                    <span class="glyphicon glyphicon-ok-sign">{{authorizationBudget.cCostCenterStatus.costCenterStatus}}
+                                    </span>
                                 </h2>
                             </div>
-                            <div class="col-md-10" v-if="authorizationBudget.idCCostCenterStatus == 5 && budgets.length > 0">
+                            <div class="col-md-10"
+                                 v-if="authorizationBudget.idCCostCenterStatus == 5 && budgets.length > 0">
                                 <h2 style="color: orangered">
-                                    <span class="glyphicon glyphicon-edit">{{authorizationBudget.cCostCenterStatus.costCenterStatus}}</span>
+                                    <span class="glyphicon glyphicon-edit">{{authorizationBudget.cCostCenterStatus.costCenterStatus}}
+                                    </span>
                                 </h2>
                             </div>
                             <div class="col-md-2 pull-right"
@@ -646,20 +710,22 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-8" v-if="budgets.length > 0">
-                                <h3>Total centro de costo: <b class="text-primary">{{totalCostCenter | currency}}</b>
+                            <div class="col-md-7" v-if="budgets.length > 0">
+                                <h3 align="right">Total centro de costo: <b class="text-primary">{{totalCostCenter | currency}}</b>
                                 </h3>
                             </div>
-                            <div class="col-md-2" v-if="budgets.length > 0 && authorizationBudget.idCCostCenterStatus == 4">
-                                <button style="margin-top: 25px" class="btn btn-default" @click="showCopyBudgetModal">
-                                    Copiar presupuesto
-                                </button>
-                            </div>
-                            <div class="col-md-2" v-if="(authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 1) && budgets.length > 0">
+                            <div class="col-md-5" align="right" style="width: 40%"
+                                 v-if="(authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 1) && budgets.length > 0">
                                 <button style="margin-top: 25px" class="btn btn-success" @click="showSendValidation">
                                     Enviar a validación
                                 </button>
                             </div>
+                           <!-- <div class="col-md-2"
+                                 v-if="budgets.length > 0 && authorizationBudget.idCCostCenterStatus == 4">
+                                <button style="margin-top: 25px" class="btn btn-default" @click="showCopyBudgetModal">
+                                    Copiar presupuesto
+                                </button>
+                            </div>-->
                         </div>
                     </form>
                 </div>
@@ -690,103 +756,130 @@
                                             <input style="border-color: #61c4b8" type="text" class="form-control"
                                                    v-model="budget.januaryBudgetAmount"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)" :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
                                             <label>Feb</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.februaryBudgetAmount"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)" :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
                                             <label>Mar</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.marchBudgetAmount"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)" :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
                                             <label>Abr</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.aprilBudgetAmount"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)" :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
                                             <label>May</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.mayBudgetAmount"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)" :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
                                             <label>Jun</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.juneBudgetAmount"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)" :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
                                             <label>Jul</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.julyBudgetAmount"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)" :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
                                             <label>Ago</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.augustBudgetAmount"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)" :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
                                             <label>Sep</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.septemberBudgetAmount"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)" :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
                                             <label>Oct</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.octoberBudgetAmount"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)" :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
                                             <label>Nov</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.novemberBudgetAmount"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)" :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
                                             <label>Dic</label>
                                             <input type="text" class="form-control"
                                                    v-model="budget.decemberBudgetAmount"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)" :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <br>
-                                        <div class="col-md-8" v-if="authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 1">
+                                        <div class="col-md-8"
+                                             v-if="authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 1">
                                             <div class="checkbox">
                                                 <label style="margin-top: 27px">
-                                                    <input style="border-color: #61c4b8" type="checkbox" v-model="budget.equals"
+                                                    <input style="border-color: #61c4b8" type="checkbox"
+                                                           v-model="budget.equals"
                                                            @change="equalsImport(indexOfBudget,budget)"> Aplicar a
                                                     todos
                                                 </label>
                                             </div>
                                         </div>
-                                        <div class="col-md-2" v-if="authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 1">
+                                        <div class="col-md-2" align="right" style="width: 25%"
+                                             v-if="authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 1">
                                             <button style="margin-top: 27px" type="button" class="btn btn-warning"
                                                     @click="deleteBudget(budget, budget.budget.idBudget)">
                                                 <!--@click="deleteBudget(subbudget, subbudget.budget.idBudget)">-->
                                                 Borrar datos
                                             </button>
                                         </div>
-                                        <div class="col-md-2" aria-hidden="true"
+                                        <div class="col-md-1" aria-hidden="true" align="right" style="width: 5%"
                                              v-if="authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 1">
                                             <button style="margin-top: 27px" type="button" class="btn btn-success"
                                                     @click="saveBudget(budget, budget.budget.idBudget)">
@@ -801,8 +894,8 @@
                 </div>
                 <br>
                 <!--Dialogs-->
-                <div class="modal fade" id="copyBudgetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                    <div class="modal-dialog" role="document">
+                <div class="modal fade bd-example-modal-lg" id="copyBudgetModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                    <div class="modal-dialog modal-lg" role="document">
                         <div class="modal-content">
                             <form v-on:submit.prevent="onClickAcept">
                                 <div class="modal-header">
@@ -873,7 +966,7 @@
                 <div class="modal fade" id="sendValidation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                            <div class="modal-header" >
+                            <div class="modal-header">
                                 <button type="button" class="close" aria-label="Close" @click="closeSendValidation">
                                     <span aria-hidden="true">&times;</span></button>
                                 <h4 class="modal-title" id="sendValidationLabel"><b>Revisar presupuesto</b></h4>
@@ -900,22 +993,25 @@
                      aria-labelledby="myModalLabel">
                     <div class="modal-dialog modal-lg" role="document">
                         <div class="modal-content">
-                            <div class="modal-header" >
+                            <div class="modal-header">
                                 <button type="button" class="close" aria-label="Close" @click="closeBudget">
                                     <span aria-hidden="true">&times;</span></button>
                             </div>
                             <div class="modal-body">
-                                <div class="container-fluid container-scroll">
-                                    <div class="row table-header">
-                                        <div class="col-md-4"><b>Centro de costos: {{selected.costCenter.name}}</b>
+                                <div class="container-fluid container-scroll" style="font-size: 11px;">
+                                    <div class="row table-header col-md-12">
+                                        <div class="col-md-12">
+                                            <div class="col-md-3"><b>Centro de costos: {{selected.costCenter.name}}</b>
+                                            </div>
+                                            <div class="col-md-1"><b>Año: {{selected.year}}</b></div>
+                                            <div class="col-md-3"><b>TOTAL CENTRO DE COSTOS: {{totalCostCenter
+                                                |currency}}</b></div>
+                                            <div class="col-md-1"><b></b></div>
+                                            <div class="col-md-1"><b></b></div>
+                                            <div class="col-md-1"><b></b></div>
                                         </div>
-                                        <div class="col-md-1"><b>Año: {{selected.year}}</b></div>
-                                        <div class="col-md-5"><b>TOTAL CENTRO DE COSTOS: {{totalCostCenter
-                                            |currency}}</b></div>
-                                        <div class="col-md-1"><b></b></div>
-                                        <div class="col-md-1"><b></b></div>
                                     </div>
-                                    <div class="row table-header" style="background: #23527c ; color: white">
+                                    <div class="row table-header col-md-12" style="background: #23527c ; color: white;">
                                         <div class="col-md-12">
                                             <div class="col-md-2"></div>
                                             <div class="col-md-1">Total Año Anterior</div>
@@ -937,8 +1033,9 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row table-header" style="background: #31708f; color: white">
-                                        <div class="col-md-12" v-for="(indexOfBudgetReport, budgetsReport) in budgetsReports">
+                                    <div class="row table-header col-md-12" style="background: #31708f; color: white">
+                                        <div class="col-md-12"
+                                             v-for="(indexOfBudgetReport, budgetsReport) in budgetsReports">
                                             <div class="col-md-2">{{budgetsReport.budget.conceptBudget.nameConcept}}
                                             </div>
                                             <div class="col-md-1">{{budgetsReport.totalLastYearAmount | currency}}</div>
@@ -981,18 +1078,25 @@
                                             <div class="col-md-1"></div>
                                             <div class="col-md-1"></div>
                                             <div class="col-md-7 text-center">
-                                                <div class="col-xs-1">{{budgetTotals.januaryBudgetAmount |currency}}</div>
-                                                <div class="col-xs-1">{{budgetTotals.februaryBudgetAmount |currency}}</div>
+                                                <div class="col-xs-1">{{budgetTotals.januaryBudgetAmount |currency}}
+                                                </div>
+                                                <div class="col-xs-1">{{budgetTotals.februaryBudgetAmount |currency}}
+                                                </div>
                                                 <div class="col-xs-1">{{budgetTotals.marchBudgetAmount |currency}}</div>
                                                 <div class="col-xs-1">{{budgetTotals.aprilBudgetAmount |currency}}</div>
                                                 <div class="col-xs-1">{{budgetTotals.mayBudgetAmount |currency}}</div>
                                                 <div class="col-xs-1">{{budgetTotals.juneBudgetAmount |currency}}</div>
                                                 <div class="col-xs-1">{{budgetTotals.julyBudgetAmount |currency}}</div>
-                                                <div class="col-xs-1">{{budgetTotals.augustBudgetAmount |currency}}</div>
-                                                <div class="col-xs-1">{{budgetTotals.septemberBudgetAmount |currency}}</div>
-                                                <div class="col-xs-1">{{budgetTotals.octoberBudgetAmount |currency}}</div>
-                                                <div class="col-xs-1">{{budgetTotals.novemberBudgetAmount |currency}}</div>
-                                                <div class="col-xs-1">{{budgetTotals.decemberBudgetAmount |currency}}</div>
+                                                <div class="col-xs-1">{{budgetTotals.augustBudgetAmount |currency}}
+                                                </div>
+                                                <div class="col-xs-1">{{budgetTotals.septemberBudgetAmount |currency}}
+                                                </div>
+                                                <div class="col-xs-1">{{budgetTotals.octoberBudgetAmount |currency}}
+                                                </div>
+                                                <div class="col-xs-1">{{budgetTotals.novemberBudgetAmount |currency}}
+                                                </div>
+                                                <div class="col-xs-1">{{budgetTotals.decemberBudgetAmount |currency}}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1048,7 +1152,8 @@
                             <div class="modal-body">
                                 <div class="row">
                                     <div>
-                                        <p>&nbsp El presupuesto para el centro de costos {{selected.costCenter.name}} será enviado a: </p>
+                                        <p>&nbsp Se enviará una solicitud de modificación del centro de costos {{selected.costCenter.name}}
+                                            será enviado a: </p>
                                         <div class="row" v-for="email in emails.emailRecipientsList">
                                             <label>&nbsp &nbsp &nbsp &nbsp{{email.emailAddress}}</label>
                                         </div>
