@@ -260,4 +260,32 @@ public class SIADController {
         model.setViewName("c-bussines-line");
         return model;
     }
+
+    @RequestMapping(value = "/c-distributors", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView siadDistributors() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("c-distributors");
+        return model;
+    }
+
+    @RequestMapping(value = "/c-regions", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView siadRegions() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("c-regions");
+        return model;
+    }
+
+    @RequestMapping(value = "/c-zonas", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView siadZonas() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("c-zonas");
+        return model;
+    }
+
+    @RequestMapping(value = "/c-groups", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView siadGroups() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("c-groups");
+        return model;
+    }
 }
