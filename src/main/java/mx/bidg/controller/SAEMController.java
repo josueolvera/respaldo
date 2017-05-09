@@ -98,4 +98,28 @@ public class SAEMController {
     return model;
 
     }
+
+    @RequestMapping(value = "/c-areas",method = RequestMethod.GET, produces ="text/html;charset=UTF-8")
+    public ModelAndView saemAreas(){
+        ModelAndView model = new ModelAndView();
+        model.setViewName("c-areas");
+        return model;
+
+    }
+
+    @RequestMapping(value = "/c-roles",method = RequestMethod.GET, produces ="text/html;charset=UTF-8")
+    public ModelAndView saemRoles(){
+        ModelAndView model = new ModelAndView();
+        model.setViewName("c-roles");
+        return model;
+
+    }
+
+    @RequestMapping(value = "/c-subareas",method = RequestMethod.GET, produces ="text/html;charset=UTF-8")
+    public ModelAndView saemSubareas(){
+        ModelAndView model = new ModelAndView();
+        model.setViewName("c-subareas");
+        return model;
+
+    }
 }
