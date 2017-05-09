@@ -1,7 +1,7 @@
 <%--
   User: lEONARDO
   Date: 27/04/17
-  Time: 05:08 PM
+  Time: 06:55 PM
 --%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
@@ -9,20 +9,20 @@
 <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users"/>
 
 
-<t:template pageTitle="BID Group: Catalogo linea de negocio">
+<t:template pageTitle="BID Group: Catalogo de empresas">
 
     <jsp:attribute name="styles">
         <style>
             .table-striped th {
-                background: #122b40;
-                color: white;
+                background: mediumaquamarine;
+                color: black;
             }
             .table-header {
                 padding: 1rem;
                 margin-top: 2rem;
             }
             .table-body .table-row:nth-child(2n+1) {
-                background: #ddd;
+                background: #d9edf7;
             }
             .table-row {
                 padding: 1rem;
@@ -81,31 +81,31 @@
                 created: function () {
                 },
                 ready: function () {
-                    this.getBussinessLines();
+                    this.getdistributos();
                 },
                 data: {
-                    bussinessLines: [],
-                    bussinessLine: {
+                    distributos: [],
+                    distributo: {
                         name: '',
-                        acronym: ''
+                        acronyms: ''
                     }
                 },
                 methods: {
-                    getBussinessLines: function () {
-                        this.$http.get(ROOT_URL + "/bussiness-line").success(function (data) {
-                            this.bussinessLines = data;
+                    getdistributos: function () {
+                        this.$http.get(ROOT_URL + "/distributors").success(function (data) {
+                            this.distributos = data;
                         })
                     },
                     showModalAlta: function () {
-                        this.bussinessLine.name = '';
-                        this.bussinessLine.acronym = '';
+                        this.distributo.name = '';
+                        this.distributo.acronyms = '';
                         $("#modalAlta").modal("show");
                     },
-                    saveBussinessLine: function () {
-                        if(this.bussinessLine.name.length > 0 && this.bussinessLine.acronym.length > 0){
-                            this.$http.post(ROOT_URL + "/bussiness-line/save", JSON.stringify(this.bussinessLine)).success(function (data) {
-                                this.bussinessLines = [];
-                                this.bussinessLines = data;
+                    savedistributo: function () {
+                        if(this.distributo.name.length > 0 && this.distributo.acronyms.length > 0){
+                            this.$http.post(ROOT_URL + "/distributors/save", JSON.stringify(this.distributo)).success(function (data) {
+                                this.distributos = [];
+                                this.distributos = data;
                                 $("#modalAlta").modal("hide");
                                 showAlert("Registro guardado con exito");
                             }).error(function () {
@@ -128,11 +128,10 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="col-md-10">
-                        <h2>Catalogo de lineas de negocio</h2>
+                        <h2>Catalogo de Empresa</h2>
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-primary" style="margin-top: 15px" @click="showModalAlta()">Agregar linea de
-                            negocio
+                        <button class="btn btn-success" style="margin-top: 15px" @click="showModalAlta()">Agregar Empresas
                         </button>
                     </div>
                 </div>
@@ -142,46 +141,46 @@
                 <div class="col-md-12">
                     <table class="table table-striped">
                         <thead>
-                        <th class="col-md-4">Id linea de negocio</th>
-                        <th class="col-md-4">Nombre</th>
-                        <th class="col-md-4">Acronimo</th>
+                        <th class="col-md-4">Id de empresa</th>
+                        <th class="col-md-4">Nombre de empresa</th>
+                        <th class="col-md-4">Acronimo de empresa</th>
                         </thead>
                         <tbody>
-                        <tr v-for="bussinessLine in bussinessLines">
-                            <td class="col-md-4">{{bussinessLine.idBusinessLine}}</td>
-                            <td class="col-md-4">{{bussinessLine.name}}</td>
-                            <td class="col-md-4">{{bussinessLine.acronym}}</td>
+                        <tr v-for="distributo in distributos" v-if="distributo.idDistributor !=1000">
+                            <td class="col-md-4">{{distributo.idDistributor}}</td>
+                            <td class="col-md-4">{{distributo.distributorName}}</td>
+                            <td class="col-md-4">{{distributo.acronyms}}</td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div class="modal fade"  id="modalAlta" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-                <div class="modal-dialog modal-ms">
-                    <div class="modal-content modal-ms">
+            <div class="modal fade" id="modalAlta" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                             <div class="alert alert-info">
-                                <h4 class="modal-title" id="" style="text-align: center"><label>Catalogo de lineas de negocio</label></h4>
+                            <h4 class="modal-title" id="" style="text-align: center"><label>Catalogo de empresas</label></h4>
                             </div>
                         </div>
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="col-md-6">
-                                        <label>Nombre</label>
-                                        <input class="form-control" type="text" name="Nombre" onpaste="alert('Acceso Denegado');return false" v-model="bussinessLine.name" onkeypress="return isLetterKey(event)">
+                                        <label>Nombre de empresa</label>
+                                        <input class="form-control" type="text" name="Nombre" onpaste="alert('Acceso Denegado');return false" v-model="distributo.name" onkeypress="return isLetterKey(event)">
                                     </div>
                                     <div class="col-md-6">
-                                        <label>Acronimo</label>
-                                        <input class="form-control" type="text" name="Acronimo" onpaste="alert('Acceso Denegado');return false" v-model="bussinessLine.acronym" onkeypress="return isLetterKey(event)">
+                                        <label>Acronimo de empresa</label>
+                                        <input class="form-control" type="text" name="Acronimo" onpaste="alert('Acceso Denegado');return false" v-model="distributo.acronyms" onkeypress="return isLetterKey(event)">
                                     </div>
                                 </div>
                             </div>
+                            <br>
                         </div>
-                        <br>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-success" @click="saveBussinessLine()">Guardar</button>
+                            <button type="button" class="btn btn-info" @click="savedistributo()">Guardar</button>
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
                         </div>
                     </div>

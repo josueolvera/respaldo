@@ -1,7 +1,7 @@
 <%--
-  User: lEONARDO
-  Date: 27/04/17
-  Time: 05:08 PM
+  User: leonardo
+  Date: 28/04/17
+  Time: 10:40 AM
 --%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
@@ -9,12 +9,12 @@
 <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users"/>
 
 
-<t:template pageTitle="BID Group: Catalogo linea de negocio">
+<t:template pageTitle="BID Group: Catalogo de areas">
 
     <jsp:attribute name="styles">
         <style>
             .table-striped th {
-                background: #122b40;
+                background: #204d74;
                 color: white;
             }
             .table-header {
@@ -81,31 +81,31 @@
                 created: function () {
                 },
                 ready: function () {
-                    this.getBussinessLines();
+                    this.getsubareases();
                 },
                 data: {
-                    bussinessLines: [],
-                    bussinessLine: {
+                    subareases: [],
+                    subarease: {
                         name: '',
                         acronym: ''
                     }
                 },
                 methods: {
-                    getBussinessLines: function () {
-                        this.$http.get(ROOT_URL + "/bussiness-line").success(function (data) {
-                            this.bussinessLines = data;
+                    getsubareases: function () {
+                        this.$http.get(ROOT_URL + "/subareas").success(function (data) {
+                            this.subareases = data;
                         })
                     },
                     showModalAlta: function () {
-                        this.bussinessLine.name = '';
-                        this.bussinessLine.acronym = '';
+                        this.subarease.name = '';
+                        this.subarease.acronym = '';
                         $("#modalAlta").modal("show");
                     },
-                    saveBussinessLine: function () {
-                        if(this.bussinessLine.name.length > 0 && this.bussinessLine.acronym.length > 0){
-                            this.$http.post(ROOT_URL + "/bussiness-line/save", JSON.stringify(this.bussinessLine)).success(function (data) {
-                                this.bussinessLines = [];
-                                this.bussinessLines = data;
+                    savesubarease: function () {
+                        if(this.subarease.name.length > 0 && this.subarease.acronym.length > 0){
+                            this.$http.post(ROOT_URL + "/subareas/save-subareas", JSON.stringify(this.subarease)).success(function (data) {
+                                this.subareases = [];
+                                this.subareases = data;
                                 $("#modalAlta").modal("hide");
                                 showAlert("Registro guardado con exito");
                             }).error(function () {
@@ -128,11 +128,10 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="col-md-10">
-                        <h2>Catalogo de lineas de negocio</h2>
+                        <h2>Catalogo de subarea</h2>
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-primary" style="margin-top: 15px" @click="showModalAlta()">Agregar linea de
-                            negocio
+                        <button class="btn btn-primary" style="margin-top: 15px" @click="showModalAlta()">Agregar subarea
                         </button>
                     </div>
                 </div>
@@ -142,15 +141,15 @@
                 <div class="col-md-12">
                     <table class="table table-striped">
                         <thead>
-                        <th class="col-md-4">Id linea de negocio</th>
-                        <th class="col-md-4">Nombre</th>
-                        <th class="col-md-4">Acronimo</th>
+                        <th class="col-md-4">Id de subarea</th>
+                        <th class="col-md-4">Nombre de subarea</th>
+                        <th class="col-md-4">Acronimo de subarea</th>
                         </thead>
                         <tbody>
-                        <tr v-for="bussinessLine in bussinessLines">
-                            <td class="col-md-4">{{bussinessLine.idBusinessLine}}</td>
-                            <td class="col-md-4">{{bussinessLine.name}}</td>
-                            <td class="col-md-4">{{bussinessLine.acronym}}</td>
+                        <tr v-for="subarease in subareases">
+                            <td class="col-md-4">{{subarease.idSubarea}}</td>
+                            <td class="col-md-4">{{subarease.subareaName}}</td>
+                            <td class="col-md-4">{{subarease.acronym}}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -162,7 +161,7 @@
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                             <div class="alert alert-info">
-                                <h4 class="modal-title" id="" style="text-align: center"><label>Catalogo de lineas de negocio</label></h4>
+                                <h4 class="modal-title" id="" style="text-align: center"><label>Catalogo de Subarea</label></h4>
                             </div>
                         </div>
                         <div class="modal-body">
@@ -170,18 +169,18 @@
                                 <div class="col-md-12">
                                     <div class="col-md-6">
                                         <label>Nombre</label>
-                                        <input class="form-control" type="text" name="Nombre" onpaste="alert('Acceso Denegado');return false" v-model="bussinessLine.name" onkeypress="return isLetterKey(event)">
+                                        <input class="form-control" type="text" name="Nombre" onpaste="alert('Acceso Denegado');return false" v-model="subarease.name" onkeypress="return isLetterKey(event)">
                                     </div>
                                     <div class="col-md-6">
                                         <label>Acronimo</label>
-                                        <input class="form-control" type="text" name="Acronimo" onpaste="alert('Acceso Denegado');return false" v-model="bussinessLine.acronym" onkeypress="return isLetterKey(event)">
+                                        <input class="form-control" type="text" name="Acronimo" onpaste="alert('Acceso Denegado');return false" v-model="subarease.acronym" onkeypress="return isLetterKey(event)">
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <br>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-success" @click="saveBussinessLine()">Guardar</button>
+                            <button type="button" class="btn btn-success" @click="savesubarease()">Guardar</button>
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
                         </div>
                     </div>

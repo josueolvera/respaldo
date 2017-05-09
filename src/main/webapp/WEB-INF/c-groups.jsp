@@ -1,7 +1,7 @@
 <%--
-  User: lEONARDO
-  Date: 27/04/17
-  Time: 05:08 PM
+  User: Leonardo
+  Date: 28/04/17
+  Time: 08:43 PM
 --%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
@@ -9,12 +9,12 @@
 <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users"/>
 
 
-<t:template pageTitle="BID Group: Catalogo linea de negocio">
+<t:template pageTitle="BID Group: Catalogo de Grupos">
 
     <jsp:attribute name="styles">
         <style>
             .table-striped th {
-                background: #122b40;
+                background: saddlebrown;
                 color: white;
             }
             .table-header {
@@ -81,31 +81,31 @@
                 created: function () {
                 },
                 ready: function () {
-                    this.getBussinessLines();
+                    this.getgruposos();
                 },
                 data: {
-                    bussinessLines: [],
-                    bussinessLine: {
+                    gruposos: [],
+                    gruposo: {
                         name: '',
                         acronym: ''
                     }
                 },
                 methods: {
-                    getBussinessLines: function () {
-                        this.$http.get(ROOT_URL + "/bussiness-line").success(function (data) {
-                            this.bussinessLines = data;
+                    getgruposos: function () {
+                        this.$http.get(ROOT_URL + "/groups").success(function (data) {
+                            this.gruposos = data;
                         })
                     },
                     showModalAlta: function () {
-                        this.bussinessLine.name = '';
-                        this.bussinessLine.acronym = '';
+                        this.gruposo.name = '';
+                        this.gruposo.acronym = '';
                         $("#modalAlta").modal("show");
                     },
-                    saveBussinessLine: function () {
-                        if(this.bussinessLine.name.length > 0 && this.bussinessLine.acronym.length > 0){
-                            this.$http.post(ROOT_URL + "/bussiness-line/save", JSON.stringify(this.bussinessLine)).success(function (data) {
-                                this.bussinessLines = [];
-                                this.bussinessLines = data;
+                    savegruposo: function () {
+                        if(this.gruposo.name.length > 0 && this.gruposo.acronym.length > 0){
+                            this.$http.post(ROOT_URL + "/groups/save-groups", JSON.stringify(this.gruposo)).success(function (data) {
+                                this.gruposos = [];
+                                this.gruposos = data;
                                 $("#modalAlta").modal("hide");
                                 showAlert("Registro guardado con exito");
                             }).error(function () {
@@ -128,11 +128,10 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="col-md-10">
-                        <h2>Catalogo de lineas de negocio</h2>
+                        <h2>Catalogo de Grupos</h2>
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-primary" style="margin-top: 15px" @click="showModalAlta()">Agregar linea de
-                            negocio
+                        <button class="btn btn-info" style="margin-top: 15px" @click="showModalAlta()">Agregar Grupos
                         </button>
                     </div>
                 </div>
@@ -142,46 +141,45 @@
                 <div class="col-md-12">
                     <table class="table table-striped">
                         <thead>
-                        <th class="col-md-4">Id linea de negocio</th>
-                        <th class="col-md-4">Nombre</th>
-                        <th class="col-md-4">Acronimo</th>
+                        <th class="col-md-4">Id de grupo</th>
+                        <th class="col-md-4">Nombre de grupo</th>
+                        <th class="col-md-4">Acronimo de grupo</th>
                         </thead>
                         <tbody>
-                        <tr v-for="bussinessLine in bussinessLines">
-                            <td class="col-md-4">{{bussinessLine.idBusinessLine}}</td>
-                            <td class="col-md-4">{{bussinessLine.name}}</td>
-                            <td class="col-md-4">{{bussinessLine.acronym}}</td>
+                        <tr v-for="gruposo in gruposos">
+                            <td class="col-md-4">{{gruposo.idGroup}}</td>
+                            <td class="col-md-4">{{gruposo.groupName}}</td>
+                            <td class="col-md-4">{{gruposo.acronyms}}</td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div class="modal fade"  id="modalAlta" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-                <div class="modal-dialog modal-ms">
-                    <div class="modal-content modal-ms">
+            <div class="modal fade" id="modalAlta" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content modal-lg">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <div class="alert alert-info">
-                                <h4 class="modal-title" id="" style="text-align: center"><label>Catalogo de lineas de negocio</label></h4>
-                            </div>
+                            <div class="alert alert-success">
+                            <h4 class="modal-title" style="text-align: center" id=""><label>Catalogo de grupos</label></h4>
                         </div>
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="col-md-6">
-                                        <label>Nombre</label>
-                                        <input class="form-control" type="text" name="Nombre" onpaste="alert('Acceso Denegado');return false" v-model="bussinessLine.name" onkeypress="return isLetterKey(event)">
+                                        <label>Nombre de grupo</label>
+                                        <input class="form-control" type="text" name="Nombre" onpaste="alert('Acceso Denegado');return false" v-model="gruposo.name" onkeypress="return isLetterKey(event)">
                                     </div>
                                     <div class="col-md-6">
-                                        <label>Acronimo</label>
-                                        <input class="form-control" type="text" name="Acronimo" onpaste="alert('Acceso Denegado');return false" v-model="bussinessLine.acronym" onkeypress="return isLetterKey(event)">
+                                        <label>Acronimo de grupo</label>
+                                        <input class="form-control" type="text" name="Acronimo" onpaste="alert('Acceso Denegado');return false"  v-model="gruposo.acronym" onkeypress="return isLetterKey(event)">
                                     </div>
                                 </div>
                             </div>
+                            <br>
                         </div>
-                        <br>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-success" @click="saveBussinessLine()">Guardar</button>
+                            <button type="button" class="btn btn-info" @click="savegruposo()">Guardar</button>
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
                         </div>
                     </div>
