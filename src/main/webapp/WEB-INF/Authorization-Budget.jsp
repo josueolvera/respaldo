@@ -1925,27 +1925,31 @@
                                                 </div>
                                             </td>
                                             <td class="col-xs-1" style="margin-top: 12px">
-                                                <div class="col-xs-1" style=" margin-right: 50px; margin-left: 50px">
-                                                    <button class="label btn-success" @click="modalAR(costCenter)"
-                                                            v-if="costCenter.idCCostCenterStatus == 2">Autorizar
-                                                    </button>
-                                                </div>
-                                            </td>
-                                            <td class="col-xs-1" style="margin-top: 12px">
-                                                <button class="label btn-danger" @click="modalARec(costCenter)"
-                                                        :value="costCenter.costCenter.name"
-                                                        v-if="costCenter.idCCostCenterStatus == 2">Rechazar
-                                                </button>
-                                            </td>
-
-                                            <td class="col-xs-3" style="margin-top: 10px">
-                                                <div v-if="costCenter.idCCostCenterStatus == 5">
+                                                <div v-if="costCenter.idCCostCenterStatus == 5" style="margin-right: -110px">
                                                     <button class="btn btn-info" @click="openModalModify(costCenter)">
                                                         Autorizar/Rechazar Modificación
                                                     </button>
                                                 </div>
-                                                <div v-else>&nbsp;&nbsp;&nbsp;</div>
+                                                <div class="col-xs-1">
+                                                    <button class="label btn-success" @click="modalAR(costCenter)"
+                                                            v-if="costCenter.idCCostCenterStatus == 2">Autorizar
+                                                    </button>
+                                                </div>
+
+
                                             </td>
+                                            <td class="col-xs-1">
+                                                <button class="label btn-danger" @click="modalARec(costCenter)"
+                                                        :value="costCenter.costCenter.name"
+                                                        v-if="costCenter.idCCostCenterStatus == 2">Rechazar
+                                                </button>
+
+                                            </td>
+
+                                            <%--<td class="col-xs-3" style="margin-top: 10px">--%>
+
+                                                <%--<div v-else>&nbsp;&nbsp;&nbsp;</div>--%>
+                                            <%--</td>--%>
                                             <td class="col-xs-2"></td>
                                         </tr>
                                         </tbody>
