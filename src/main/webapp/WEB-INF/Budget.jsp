@@ -12,7 +12,7 @@
             function validateFloatKeyPress(el, evt) {
                 var charCode = (evt.which) ? evt.which : event.keyCode;
                 var number = el.value.split('.');
-                if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+                if (charCode != 46 && charCode > 31 && ( charCode < 48 || charCode > 57)) {
                     return false;
                 }
                 //just one dot
@@ -558,7 +558,7 @@
                 {
                     obj.value = "";
                 }else{
-                    if (max >= 1 && max < 50) {
+                    if (max >= 1 && max < 40) {
                         var extraer = contar.substring(min, max);
                         if (extraer == '.00') {
                             contar = contar.replace('.,', ',');
@@ -582,7 +582,7 @@
                 if (obj.value == '0' || obj.value == '0.00'){
                     obj.value = '';
                 }else {
-                    obj.value = inicial;
+                    return false;
                 }
             }
         </script>
@@ -766,7 +766,7 @@
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
                                                    onclick="return cleanField(this)"
                                                    onkeypress="return validateFloatKeyPress(this,event)"
-                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   onInput="format(this)" onblur="ponerCeros(this)"
                                                    :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
@@ -774,9 +774,9 @@
                                             <input style="font-size: 11px" type="text" class="form-control"
                                                    v-model="budget.februaryBudgetAmount | currencyDisplay"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
                                                    onclick="return cleanField(this)"
-                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onInput="format(this)" onblur="ponerCeros(this)"
                                                    :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
@@ -784,9 +784,9 @@
                                             <input style="font-size: 11px" type="text" class="form-control"
                                                    v-model="budget.marchBudgetAmount | currencyDisplay"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
                                                    onclick="return cleanField(this)"
-                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onInput="format(this)" onblur="ponerCeros(this)"
                                                    :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
@@ -794,9 +794,9 @@
                                             <input style="font-size: 11px" type="text" class="form-control"
                                                    v-model="budget.aprilBudgetAmount | currencyDisplay"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
                                                    onclick="return cleanField(this)"
-                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onInput="format(this)" onblur="ponerCeros(this)"
                                                    :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
@@ -804,9 +804,9 @@
                                             <input style="font-size: 11px" type="text" class="form-control"
                                                    v-model="budget.mayBudgetAmount | currencyDisplay"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
                                                    onclick="return cleanField(this)"
-                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onInput="format(this)" onblur="ponerCeros(this)"
                                                    :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
@@ -814,9 +814,9 @@
                                             <input style="font-size: 11px" type="text" class="form-control"
                                                    v-model="budget.juneBudgetAmount | currencyDisplay"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
                                                    onclick="return cleanField(this)"
-                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onInput="format(this)" onblur="ponerCeros(this)"
                                                    :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
@@ -824,9 +824,9 @@
                                             <input style="font-size: 11px" type="text" class="form-control"
                                                    v-model="budget.julyBudgetAmount | currencyDisplay"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
                                                    onclick="return cleanField(this)"
-                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onInput="format(this)" onblur="ponerCeros(this)"
                                                    :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
@@ -834,9 +834,9 @@
                                             <input style="font-size: 11px" type="text" class="form-control"
                                                    v-model="budget.augustBudgetAmount | currencyDisplay"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
                                                    onclick="return cleanField(this)"
-                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onInput="format(this)" onblur="ponerCeros(this)"
                                                    :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
@@ -844,9 +844,9 @@
                                             <input style="font-size: 11px" type="text" class="form-control"
                                                    v-model="budget.septemberBudgetAmount | currencyDisplay"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
                                                    onclick="return cleanField(this)"
-                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onInput="format(this)" onblur="ponerCeros(this)"
                                                    :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
@@ -854,9 +854,9 @@
                                             <input style="font-size: 11px" type="text" class="form-control"
                                                    v-model="budget.octoberBudgetAmount | currencyDisplay"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
                                                    onclick="return cleanField(this)"
-                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onInput="format(this)" onblur="ponerCeros(this)"
                                                    :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
@@ -864,9 +864,9 @@
                                             <input style="font-size: 11px" type="text" class="form-control"
                                                    v-model="budget.novemberBudgetAmount | currencyDisplay"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
                                                    onclick="return cleanField(this)"
-                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onInput="format(this)" onblur="ponerCeros(this)"
                                                    :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <div class="col-md-1" style="padding-left: 0px; padding-right: 1px">
@@ -874,9 +874,9 @@
                                             <input style="font-size: 11px" type="text" class="form-control"
                                                    v-model="budget.decemberBudgetAmount | currencyDisplay"
                                                    @change="getBudgetYearConcept(indexOfBudget,budget)"
-                                                   onkeypress="return validateFloatKeyPress(this,event)"
                                                    onclick="return cleanField(this)"
-                                                   onkeyup="format(this)" onchange="format(this)" onblur="ponerCeros(this)"
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onInput="format(this)" onblur="ponerCeros(this)"
                                                    :disabled="authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 4 || authorizationBudget.idCCostCenterStatus == 5">
                                         </div>
                                         <br>
