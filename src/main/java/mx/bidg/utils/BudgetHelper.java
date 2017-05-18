@@ -25,6 +25,9 @@ public class BudgetHelper {
     @Autowired
     private DistributorCostCenterService distributorCostCenterService;
 
+    @Autowired
+    private  RealBudgetSpendingHistoryService realBudgetSpendingHistoryService;
+
     public List<RealBudgetSpending> getOrderedBudget(Integer idCostCenter,Integer  idBudgetType,Integer  idBudgetNature,Integer  year) {
         List<RealBudgetSpending>realBudgetSpendings = new ArrayList<>();
         List<DistributorCostCenter> distributorCostCenters = distributorCostCenterService.findByCostCenter(idCostCenter);
@@ -242,6 +245,12 @@ public class BudgetHelper {
                                 }else {
                                     realBudgetSpending.setTotalLastYearAmount(new BigDecimal(0.00));
                                 }
+                                BigDecimal realTotalBudgetAmount = realBudgetSpendingHistoryService.getRealTotalBudgetAmount(realBudgetSpending.getIdBudget(),year);
+                                if (realTotalBudgetAmount != null){
+                                    realBudgetSpending.setRealTotalBudgetAmount(realTotalBudgetAmount);
+                                }else {
+                                    realBudgetSpending.setRealTotalBudgetAmount(new BigDecimal(0.00));
+                                }
                                 realBudgetSpendingList.add(realBudgetSpending);
                             }
                         }
@@ -331,6 +340,12 @@ public class BudgetHelper {
                                     realBudgetSpending.setTotalLastYearAmount(totalAmountLastYear);
                                 }else {
                                     realBudgetSpending.setTotalLastYearAmount(new BigDecimal(0.00));
+                                }
+                                BigDecimal realTotalBudgetAmount = realBudgetSpendingHistoryService.getRealTotalBudgetAmount(realBudgetSpending.getIdBudget(),year);
+                                if (realTotalBudgetAmount != null){
+                                    realBudgetSpending.setRealTotalBudgetAmount(realTotalBudgetAmount);
+                                }else {
+                                    realBudgetSpending.setRealTotalBudgetAmount(new BigDecimal(0.00));
                                 }
                                 realBudgetSpendingList.add(realBudgetSpending);
                             }
@@ -445,6 +460,12 @@ public class BudgetHelper {
                                     realBudgetSpending.setTotalLastYearAmount(totalAmountLastYear);
                                 }else {
                                     realBudgetSpending.setTotalLastYearAmount(new BigDecimal(0.00));
+                                }
+                                BigDecimal realTotalBudgetAmount = realBudgetSpendingHistoryService.getRealTotalBudgetAmount(realBudgetSpending.getIdBudget(),year);
+                                if (realTotalBudgetAmount != null){
+                                    realBudgetSpending.setRealTotalBudgetAmount(realTotalBudgetAmount);
+                                }else {
+                                    realBudgetSpending.setRealTotalBudgetAmount(new BigDecimal(0.00));
                                 }
                                 realBudgetSpendingList.add(realBudgetSpending);
                             }
