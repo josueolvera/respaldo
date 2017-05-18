@@ -27,6 +27,7 @@ public class CostCenter {
     private BigDecimal decemberAmount;
     private BigDecimal totalAmount;
     private BigDecimal totalBudgetAmountLastYear;
+    private BigDecimal realTotalBudgetAmount;
     private List<BudgetCategory> budgetCategories;
 
     public CostCenter() {
@@ -284,6 +285,27 @@ public class CostCenter {
 
     public void setShow(boolean show) {
         this.show = show;
+    }
+
+    public BigDecimal getRealTotalBudgetAmount() {
+        double zero = 0;
+
+        if (!getBudgetCategories().isEmpty()){
+            for (BudgetCategory budgetCategory : getBudgetCategories()){
+                if (budgetCategory != null) {
+                    if (budgetCategory.getRealTotalBudgetAmount() != null){
+                        zero += budgetCategory.getRealTotalBudgetAmount().doubleValue();
+                    }
+                }
+            }
+        }
+
+        this.realTotalBudgetAmount = new BigDecimal(zero);
+        return realTotalBudgetAmount;
+    }
+
+    public void setRealTotalBudgetAmount(BigDecimal realTotalBudgetAmount) {
+        this.realTotalBudgetAmount = realTotalBudgetAmount;
     }
 
     @Override
