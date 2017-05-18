@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface RolesCostCenterDao extends InterfaceDao<RolesCostCenter> {
     List<RolesCostCenter> findByRole(Integer idRole);
+    List<Integer> findOnlyDifferentIdCostCentersByRole(Integer idRole);
 }

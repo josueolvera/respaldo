@@ -4,6 +4,7 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.RolesCostCenterDao;
 import mx.bidg.model.RolesCostCenter;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -50,6 +51,14 @@ public class RolesCostCenterDaoImpl extends AbstractDao<Integer, RolesCostCenter
                 .add(Restrictions.eq("idRole", idRole))
                 .createCriteria("costCenter")
                 .addOrder( Order.asc("name"))
+                .list();
+    }
+
+    @Override
+    public List<Integer> findOnlyDifferentIdCostCentersByRole(Integer idRole) {
+        return createEntityCriteria()
+                .setProjection(Projections.distinct(Projections.property("idCostCenter")))
+                .add(Restrictions.eq("idRole", idRole))
                 .list();
     }
 }
