@@ -28,6 +28,7 @@ public class BudgetCategory {
     private BigDecimal decemberCategoryAmount;
     private BigDecimal totalCategoryAmount;
     private BigDecimal totalBudgetAmountLastYear;
+    private BigDecimal realTotalBudgetAmount;
     private List<RealBudgetSpending> realBudgetSpendings;
     private List<BudgetSubcategory> budgetSubcategories;
 
@@ -400,6 +401,39 @@ public class BudgetCategory {
 
     public void setShow(boolean show) {
         this.show = show;
+    }
+
+    public BigDecimal getRealTotalBudgetAmount() {
+        double zero = 0;
+
+        if (getRealBudgetSpendings() != null) {
+            if (!getRealBudgetSpendings().isEmpty()) {
+                for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
+                    if (realBudgetSpending != null) {
+                        if (realBudgetSpending.getRealTotalBudgetAmount() != null) {
+                            zero += realBudgetSpending.getRealTotalBudgetAmount().doubleValue();
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!getBudgetSubcategories().isEmpty()){
+            for (BudgetSubcategory budgetSubcategory : getBudgetSubcategories()){
+                if (budgetSubcategory != null) {
+                    if (budgetSubcategory.getRealTotalBudgetAmount() != null){
+                        zero += budgetSubcategory.getRealTotalBudgetAmount().doubleValue();
+                    }
+                }
+            }
+        }
+
+        this.realTotalBudgetAmount = new BigDecimal(zero);
+        return realTotalBudgetAmount;
+    }
+
+    public void setRealTotalBudgetAmount(BigDecimal realTotalBudgetAmount) {
+        this.realTotalBudgetAmount = realTotalBudgetAmount;
     }
 
     @Override
