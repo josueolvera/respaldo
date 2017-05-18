@@ -48,6 +48,22 @@ public class AuthorizationCostCenterDaoImpl extends AbstractDao<Integer,Authoriz
     }
 
     @Override
+    public List<AuthorizationCostCenter> getAllCostCentersByIdsCostCenters(List<Integer> idsCostCenters) {
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjunctionCC = Restrictions.disjunction();
+
+        if (!idsCostCenters.isEmpty()){
+            for(Integer idCostCenter : idsCostCenters){
+                disjunctionCC.add(Restrictions.eq("idCostCenter", idCostCenter));
+            }
+        }
+
+        return criteria
+                .add(Restrictions.disjunction(disjunctionCC))
+                .list();
+    }
+
+    @Override
     public AuthorizationCostCenter save(AuthorizationCostCenter entity) {
         persist(entity);
         return entity;

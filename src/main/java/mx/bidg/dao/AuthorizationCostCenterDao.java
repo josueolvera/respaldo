@@ -11,4 +11,5 @@ public interface AuthorizationCostCenterDao extends InterfaceDao<AuthorizationCo
     List<AuthorizationCostCenter>findByCostCenter(Integer idCostCenter);
     AuthorizationCostCenter findByIdCostCenterAndYear(Integer idCostCenter, Integer year);
     List<Integer> getAllCostCentersRNAByIdsCostCenters(List<Integer> idsCostCenters);
+    List<AuthorizationCostCenter> getAllCostCentersByIdsCostCenters(List<Integer> idsCostCenters);
 }
