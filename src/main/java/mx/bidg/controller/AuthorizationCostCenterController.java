@@ -143,4 +143,10 @@ public class AuthorizationCostCenterController {
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(authorizationCostCenter), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/role/{idRole}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    private ResponseEntity<String> findByRole(@PathVariable Integer idRole) throws IOException{
+        List<AuthorizationCostCenter> authorizationCostCenters = authorizationCostCenterService.findByRoleCostCenter(idRole);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(authorizationCostCenters), HttpStatus.OK);
+    }
+
 }
