@@ -27,6 +27,7 @@ public class BussinessLine {
     private BigDecimal decemberAmount;
     private BigDecimal totalAmount;
     private BigDecimal totalBudgetAmountLastYear;
+    private BigDecimal realTotalBudgetAmount;
     private List<Distributor> distributorList;
 
     public BussinessLine() {
@@ -285,6 +286,27 @@ public class BussinessLine {
 
     public void setShow(boolean show) {
         this.show = show;
+    }
+
+    public BigDecimal getRealTotalBudgetAmount() {
+        double zero = 0;
+
+        if (!getDistributorList().isEmpty()){
+            for (Distributor distributor : getDistributorList()){
+                if (distributor != null) {
+                    if (distributor.getRealTotalBudgetAmount() != null){
+                        zero += distributor.getRealTotalBudgetAmount().doubleValue();
+                    }
+                }
+            }
+        }
+
+        this.realTotalBudgetAmount = new BigDecimal(zero);
+        return realTotalBudgetAmount;
+    }
+
+    public void setRealTotalBudgetAmount(BigDecimal realTotalBudgetAmount) {
+        this.realTotalBudgetAmount = realTotalBudgetAmount;
     }
 
     @Override
