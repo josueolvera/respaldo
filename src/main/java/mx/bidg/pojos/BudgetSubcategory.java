@@ -32,6 +32,7 @@ public class BudgetSubcategory {
     private BigDecimal decemberSubcategoryAmount;
     private BigDecimal totalSubcategoryAmount;
     private BigDecimal totalBudgetAmountLastYear;
+    private BigDecimal realTotalBudgetAmount;
     private List<RealBudgetSpending> realBudgetSpendings;
     private List<BudgetSubSubCategory> budgetSubSubCategories;
 
@@ -409,11 +410,13 @@ public class BudgetSubcategory {
 
     public BigDecimal getTotalSubcategoryAmount() {
         double zero = 0;
-        if (!getRealBudgetSpendings().isEmpty()) {
-            for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
-                if (realBudgetSpending != null) {
-                    if (realBudgetSpending.getTotalBudgetAmount() != null) {
-                        zero += realBudgetSpending.getTotalBudgetAmount().doubleValue();
+        if (getRealBudgetSpendings() != null) {
+            if (!getRealBudgetSpendings().isEmpty()) {
+                for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
+                    if (realBudgetSpending != null) {
+                        if (realBudgetSpending.getTotalBudgetAmount() != null) {
+                            zero += realBudgetSpending.getTotalBudgetAmount().doubleValue();
+                        }
                     }
                 }
             }
@@ -487,6 +490,37 @@ public class BudgetSubcategory {
 
     public void setShow(boolean show) {
         this.show = show;
+    }
+
+    public BigDecimal getRealTotalBudgetAmount() {
+        double zero = 0;
+
+        if (!getRealBudgetSpendings().isEmpty()) {
+            for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
+                if (realBudgetSpending != null) {
+                    if (realBudgetSpending.getRealTotalBudgetAmount() != null){
+                        zero += realBudgetSpending.getRealTotalBudgetAmount().doubleValue();
+                    }
+                }
+            }
+        }
+
+        if (!getBudgetSubSubCategories().isEmpty()){
+            for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()){
+                if (budgetSubSubCategory != null) {
+                    if (budgetSubSubCategory.getRealTotalBudgetAmount() != null){
+                        zero += budgetSubSubCategory.getRealTotalBudgetAmount().doubleValue();
+                    }
+                }
+            }
+        }
+
+        this.realTotalBudgetAmount = new BigDecimal(zero);
+        return realTotalBudgetAmount;
+    }
+
+    public void setRealTotalBudgetAmount(BigDecimal realTotalBudgetAmount) {
+        this.realTotalBudgetAmount = realTotalBudgetAmount;
     }
 
     @Override
