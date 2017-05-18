@@ -2,6 +2,7 @@ package mx.bidg.service;
 
 import mx.bidg.model.RealBudgetSpendingHistory;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -14,4 +15,5 @@ public interface RealBudgetSpendingHistoryService {
     RealBudgetSpendingHistory save(RealBudgetSpendingHistory realBudgetSpendingHistory);
     boolean delete(RealBudgetSpendingHistory realBudgetSpendingHistory);
     RealBudgetSpendingHistory findByIdBudgetandYear(Integer idBudget, Integer year);
+    BigDecimal getRealTotalBudgetAmount(Integer idBuget, int year);
 }
