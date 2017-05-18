@@ -158,7 +158,8 @@
                         octoberBudgetAmount: 0.00,
                         novemberBudgetAmount: 0.00,
                         decemberBudgetAmount: 0.00,
-                        totalLastYearAmount: 0.00
+                        totalLastYearAmount: 0.00,
+                        totalCurrentYear: 0.00
                     },
                     budgetsReports: [],
                     sumTotals: {
@@ -174,7 +175,8 @@
                         octoberBudgetAmount: 0.00,
                         novemberBudgetAmount: 0.00,
                         decemberBudgetAmount: 0.00,
-                        totalLastYearAmount: 0.00
+                        totalLastYearAmount: 0.00,
+                        totalCurrentYear: 0.00
                     },
                     costCenter: {},
                     year: {}
@@ -675,6 +677,7 @@
                                 this.costCenterByAuthorizeOrReject.costCenter = {};
                                 this.costCenterByAuthorizeOrReject.reason = '';
                                 this.costCenterByAuthorizeOrReject.status = '';
+                                this.costCenterNotAutorizhed.$remove(costCenterAR.costCenter);
                             } else {
                                 this.costCenterByAuthorizeOrReject.costCenter = {};
                                 this.costCenterByAuthorizeOrReject.reason = '';
@@ -741,6 +744,7 @@
                             this.budgetTotals.novemberBudgetAmount = this.sumTotals.novemberBudgetAmount.toFixed(2);
                             this.budgetTotals.decemberBudgetAmount = this.sumTotals.decemberBudgetAmount.toFixed(2);
                             this.budgetTotals.totalLastYearAmount = this.sumTotals.totalLastYearAmount.toFixed(2);
+                            this.budgetTotals.totalCurrentYear = this.sumTotals.totalCurrentYear.toFixed(2);
                         });
                         this.costCenter = JSON.parse(JSON.stringify(costCenter));
                         this.year = year;
@@ -763,6 +767,7 @@
                             self.sumTotals.novemberBudgetAmount += concept.novemberBudgetAmount;
                             self.sumTotals.decemberBudgetAmount += concept.decemberBudgetAmount;
                             self.sumTotals.totalLastYearAmount += concept.totalLastYearAmount;
+                            self.sumTotals.totalCurrentYear += concept.totalBudgetAmount;
                         });
                     },
                     closeInformationCostCenter: function () {
@@ -1637,21 +1642,7 @@
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <div class="col-md-4">
-                                        <label>Centro de Costos</label>
-                                        <select class="form-control" v-model="costCenterByAuthorizeOrReject.costCenter">
-                                            <option v-for="costCenter in costCenterNotAutorizhed" :value="costCenter">
-                                                {{costCenter.name}}
-                                            </option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <button class="btn btn-default" style="margin-top: 25px"
-                                                @click="addCostCenterByAuthorizeOrReject()"><span
-                                                class="glyphicon glyphicon-plus"></span></button>
-                                    </div>
-                                    <div class="col-md-1"></div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <input type="radio" id="one" value="1"
                                                v-model="costCenterByAuthorizeOrReject.status"><label for="one">&nbsp;
                                         Autorizar
@@ -1664,6 +1655,19 @@
                                         <span class="glyphicon glyphicon-triangle-bottom"
                                               style="color: #EE0909; font-size: 100%"></span>
                                     </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Centro de Costos</label>
+                                        <select class="form-control" v-model="costCenterByAuthorizeOrReject.costCenter">
+                                            <option v-for="costCenter in costCenterNotAutorizhed" :value="costCenter">
+                                                {{costCenter.name}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <button class="btn btn-default" style="margin-top: 25px"
+                                                @click="addCostCenterByAuthorizeOrReject()"><span
+                                                class="glyphicon glyphicon-plus"></span></button>
                                     </div>
                                 </div>
                             </div>
@@ -2016,10 +2020,10 @@
                                 </div>
                                 <div class="row table-header col-md-12" style="background: #23527c ; color: white;">
                                     <div class="col-md-12">
-                                        <div class="col-md-2"></div>
-                                        <div class="col-md-1">Total Año Anterior</div>
-                                        <div class="col-md-1">Tipo de Gasto</div>
                                         <div class="col-md-1">Clasificación</div>
+                                        <div class="col-md-1">Tipo de Gasto</div>
+                                        <div class="col-md-1"></div>
+                                        <div class="col-md-1">Total Año Anterior</div>
                                         <div class="col-md-7 text-center">
                                             <div class="col-xs-1">Enero</div>
                                             <div class="col-xs-1">Febrero</div>
@@ -2034,17 +2038,18 @@
                                             <div class="col-xs-1">Noviembre</div>
                                             <div class="col-xs-1">Diciembre</div>
                                         </div>
+                                        <div class="col-md-1">Total Año Actual</div>
                                     </div>
                                 </div>
                                 <div class="row table-header col-md-12" style="background: #31708f; color: white">
                                     <div class="col-md-12"
                                          v-for="(indexOfBudgetReport, budgetsReport) in budgetsReports">
-                                        <div class="col-md-2">{{budgetsReport.budget.conceptBudget.nameConcept}}
-                                        </div>
-                                        <div class="col-md-1">{{budgetsReport.totalLastYearAmount | currency}}</div>
                                         <div class="col-md-1">{{budgetsReport.budget.budgetNature.budgetNature}}
                                         </div>
                                         <div class="col-md-1">{{budgetsReport.budget.budgetType.budgetType}}</div>
+                                        <div class="col-md-1">{{budgetsReport.budget.conceptBudget.nameConcept}}
+                                        </div>
+                                        <div class="col-md-1">{{budgetsReport.totalLastYearAmount | currency}}</div>
                                         <div class="col-md-7 text-center">
                                             <div class="col-xs-1">{{budgetsReport.januaryBudgetAmount|currency}}
                                             </div>
@@ -2066,6 +2071,7 @@
                                             <div class="col-xs-1">{{budgetsReport.decemberBudgetAmount|currency}}
                                             </div>
                                         </div>
+                                        <div class="col-md-1">{{budgetsReport.totalBudgetAmount | currency}}</div>
                                     </div>
                                     <div class="col-md-12">
                                     </div>
@@ -2076,10 +2082,10 @@
                                     <div class="col-md-12">
                                     </div>
                                     <div class="col-md-12">
-                                        <div class="col-md-2">TOTALES:</div>
+                                        <div class="col-md-1"></div>
+                                        <div class="col-md-1"></div>
+                                        <div class="col-md-1">TOTALES:</div>
                                         <div class="col-md-1">{{budgetTotals.totalLastYearAmount | currency}}</div>
-                                        <div class="col-md-1"></div>
-                                        <div class="col-md-1"></div>
                                         <div class="col-md-7 text-center">
                                             <div class="col-xs-1">{{budgetTotals.januaryBudgetAmount |currency}}
                                             </div>
@@ -2101,6 +2107,7 @@
                                             <div class="col-xs-1">{{budgetTotals.decemberBudgetAmount |currency}}
                                             </div>
                                         </div>
+                                        <div class="col-md-1">{{budgetTotals.totalCurrentYear | currency}}</div>
                                     </div>
                                 </div>
                             </div>
