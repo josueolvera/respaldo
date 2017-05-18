@@ -231,6 +231,10 @@ public class RealBudgetSpending implements Serializable {
     @JsonView(JsonViews.Root.class)
     private BigDecimal totalLastYearAmount;
 
+    @Transient
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal realTotalBudgetAmount;
+
     public RealBudgetSpending() {
     }
 
@@ -542,6 +546,14 @@ public class RealBudgetSpending implements Serializable {
 
     public void setTotalLastYearAmount(BigDecimal totalLastYearAmount) {
         this.totalLastYearAmount = totalLastYearAmount;
+    }
+
+    public BigDecimal getRealTotalBudgetAmount() {
+        return realTotalBudgetAmount;
+    }
+
+    public void setRealTotalBudgetAmount(BigDecimal realTotalBudgetAmount) {
+        this.realTotalBudgetAmount = realTotalBudgetAmount;
     }
 
     @Override
