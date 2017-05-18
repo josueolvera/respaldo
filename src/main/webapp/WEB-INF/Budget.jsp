@@ -122,7 +122,8 @@
                         octoberBudgetAmount: 0.00,
                         novemberBudgetAmount: 0.00,
                         decemberBudgetAmount: 0.00,
-                        totalLastYearAmount: 0.00
+                        totalLastYearAmount: 0.00,
+                        totalCurrentYear: 0.00
                     },
                     budgetTotals: {
                         januaryBudgetAmount: 0.00,
@@ -137,8 +138,13 @@
                         octoberBudgetAmount: 0.00,
                         novemberBudgetAmount: 0.00,
                         decemberBudgetAmount: 0.00,
-                        totalLastYearAmount: 0.00
-                    }
+                        totalLastYearAmount: 0.00,
+                        totalCurrentYear: 0.00
+                    },
+                    costCenterStatus: [],
+                    flag: false,
+                    costCenter: null,
+                    year: null
                 },
                 methods: {
                     getUserInSession: function () {
@@ -235,8 +241,8 @@
                         }).error(function (data) {
                         });
                     },
-                    getBudgetsReport: function () {
-                        this.$http.get(ROOT_URL + '/budgets/authorized?cost_center=' + this.selected.costCenter.idCostCenter + '&year=' + this.selected.year).success(function (data) {
+                    getBudgetsReport: function (costCenter, year) {
+                        this.$http.get(ROOT_URL + '/budgets/authorized?cost_center=' + costCenter.idCostCenter + '&year=' + year).success(function (data) {
                             this.budgetsReports = data;
                             this.sumTotalsByMonth();
                             this.budgetTotals.januaryBudgetAmount = this.sumTotals.januaryBudgetAmount.toFixed(2);
@@ -252,6 +258,7 @@
                             this.budgetTotals.novemberBudgetAmount = this.sumTotals.novemberBudgetAmount.toFixed(2);
                             this.budgetTotals.decemberBudgetAmount = this.sumTotals.decemberBudgetAmount.toFixed(2);
                             this.budgetTotals.totalLastYearAmount = this.sumTotals.totalLastYearAmount.toFixed(2);
+                            this.budgetTotals.totalCurrentYear = this.sumTotals.totalCurrentYear.toFixed(2);
                         });
                     },
                     sumTotalsByMonth: function () {
@@ -270,6 +277,7 @@
                             self.sumTotals.novemberBudgetAmount += concept.novemberBudgetAmount;
                             self.sumTotals.decemberBudgetAmount += concept.decemberBudgetAmount;
                             self.sumTotals.totalLastYearAmount += concept.totalLastYearAmount;
+                            self.sumTotals.totalCurrentYear += concept.totalBudgetAmount;
                         });
                     },
                     arrayObjectIndexOf: function (myArray, searchTerm, property) {
@@ -401,7 +409,8 @@
                     },
                     showSendValidation: function () {
                         this.cleanFieldsSum();
-                        this.getBudgetsReport();
+                        this.flag = true;
+                        this.getBudgetsReport(this.selected.costCenter, this.selected.year);
                         this.getEmails();
                         $('#sendValidation').modal('show');
                     },
@@ -511,6 +520,54 @@
                         this.sumTotals.novemberBudgetAmount = 0.00;
                         this.sumTotals.decemberBudgetAmount = 0.00;
                         this.sumTotals.totalLastYearAmount = 0.00;
+                        this.sumTotals.totalCurrentYear = 0.00;
+                    },
+                    getAllBudgetsStatusByRole: function () {
+                        this.$http.get(ROOT_URL + "/authorizathion-costcenter/role/" +  this.role).success(function (data) {
+                            var jsonObjectIndex = {};
+                            data.forEach(function (costCenter) {
+                                if (isNaN(costCenter.costCenter)) {
+                                    jsonObjectIndex[costCenter.costCenter._id] = costCenter.costCenter;
+                                } else {
+                                    costCenter.costCenter = jsonObjectIndex[costCenter.costCenter];
+                                }
+                            });
+
+                            data.forEach(function (cCostCenterStatus) {
+                                if (isNaN(cCostCenterStatus.cCostCenterStatus)) {
+                                    jsonObjectIndex[cCostCenterStatus.cCostCenterStatus._id] = cCostCenterStatus.cCostCenterStatus;
+                                } else {
+                                    cCostCenterStatus.cCostCenterStatus = jsonObjectIndex[cCostCenterStatus.cCostCenterStatus];
+                                }
+                            });
+
+                            data.forEach(function (user) {
+                                if (isNaN(user.users)) {
+                                    jsonObjectIndex[user.users._id] = user.users;
+                                } else {
+                                    user.users = jsonObjectIndex[user.users];
+                                }
+                            });
+
+                            this.costCenterStatus = data;
+                        }).error(function () {
+                            showAlert("Error al realizar la solicitud", {type: 3});
+                        });
+                    },
+                    getAllBudgetsStatus: function () {
+                        this.getAllBudgetsStatusByRole();
+                        $("#budgetsStatus").modal("show");
+                    },
+                    cancelBudgetStatus: function () {
+                        $("#budgetsStatus").modal("hide");
+                    },
+                    getReportModal: function (costCenter, year) {
+                        this.costCenter = costCenter;
+                        this.year = year;
+                        this.getBudgetsReport(costCenter, year);
+                        this.flag = false;
+                        $("#budgetsStatus").modal("hide");
+                        $("#budgetInformation").modal("show");
                     }
                 },
                 filters: {
@@ -614,20 +671,26 @@
                     <div class="col-md-5">
                         <h2>CAPTURA DE PRESUPUESTO</h2>
                     </div>
-                    <div class="col-md-2 text-center"
-                         v-if="(authorizationBudget.idCCostCenterStatus == 5 || authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 4) && authorizationBudget.adjustment != 1"
-                         style="color: #1b6d85">
-                        <h2>ANUAL</h2>
+                    <div class="col-md-3">
+                        <h2 v-if="(authorizationBudget.idCCostCenterStatus == 5 || authorizationBudget.idCCostCenterStatus == 2 || authorizationBudget.idCCostCenterStatus == 3 || authorizationBudget.idCCostCenterStatus == 4) && authorizationBudget.adjustment != 1"
+                                              style="color: #1b6d85">ANUAL</h2>
+                        <h2 v-if="authorizationBudget.adjustment == 1"
+                            style="color: #1b6d85">AJUSTADO</h2>
                     </div>
-                    <div class="col-md-2 text-center" v-if="authorizationBudget.adjustment == 1"
-                         style="color: #1b6d85">
-                        <h2>AJUSTADO</h2>
+                    <div class="col-md-2">
+                        <div v-if="budgets.length > 0">
+                            <label>Buscar por concepto</label>
+                            <input class="form-control" v-model="selected.concept" required>
+                        </div>
                     </div>
-                    <div class="col-md-3 pull-right" v-if="budgets.length > 0">
-                        <label>Buscar por concepto</label>
-                        <input class="form-control" v-model="selected.concept" required>
+                    <div class="col-md-2">
+                        <button style="margin-top: 25px" class="btn btn-warning"
+                                @click="getAllBudgetsStatus()">
+                            Estatus Presupuesto
+                        </button>
                     </div>
                 </div>
+                <br>
                 <br>
                 <div class="row">
                     <form v-on:submit.prevent="getBudgets">
@@ -1019,7 +1082,7 @@
                             </div>
                             <div class="modal-body">
                                 <div class="container-fluid container-scroll" style="font-size: 11px;">
-                                    <div class="row table-header col-md-12">
+                                    <div class="row table-header col-md-12" v-if="flag == true">
                                         <div class="col-md-12">
                                             <div class="col-md-3"><b>Centro de costos: {{selected.costCenter.name}}</b>
                                             </div>
@@ -1031,12 +1094,23 @@
                                             <div class="col-md-1"><b></b></div>
                                         </div>
                                     </div>
+                                    <div class="row table-header col-md-12" v-if="flag == false">
+                                        <div class="col-md-12">
+                                            <div class="col-md-3"><b>Centro de costos: {{costCenter.name}}</b>
+                                            </div>
+                                            <div class="col-md-1"><b>Año: {{year}}</b></div>
+                                            <div class="col-md-3"><b></b></div>
+                                            <div class="col-md-1"><b></b></div>
+                                            <div class="col-md-1"><b></b></div>
+                                            <div class="col-md-1"><b></b></div>
+                                        </div>
+                                    </div>
                                     <div class="row table-header col-md-12" style="background: #23527c ; color: white;">
                                         <div class="col-md-12">
-                                            <div class="col-md-2"></div>
-                                            <div class="col-md-1">Total Año Anterior</div>
-                                            <div class="col-md-1">Tipo de Gasto</div>
                                             <div class="col-md-1">Clasificación</div>
+                                            <div class="col-md-1">Tipo de Gasto</div>
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-1">Total Año Anterior</div>
                                             <div class="col-md-7 text-center">
                                                 <div class="col-xs-1">Enero</div>
                                                 <div class="col-xs-1">Febrero</div>
@@ -1051,17 +1125,18 @@
                                                 <div class="col-xs-1">Noviembre</div>
                                                 <div class="col-xs-1">Diciembre</div>
                                             </div>
+                                            <div class="col-md-1">Total Año Actual</div>
                                         </div>
                                     </div>
                                     <div class="row table-header col-md-12" style="background: #31708f; color: white">
                                         <div class="col-md-12"
                                              v-for="(indexOfBudgetReport, budgetsReport) in budgetsReports">
-                                            <div class="col-md-2">{{budgetsReport.budget.conceptBudget.nameConcept}}
-                                            </div>
-                                            <div class="col-md-1">{{budgetsReport.totalLastYearAmount | currency}}</div>
                                             <div class="col-md-1">{{budgetsReport.budget.budgetNature.budgetNature}}
                                             </div>
                                             <div class="col-md-1">{{budgetsReport.budget.budgetType.budgetType}}</div>
+                                            <div class="col-md-1">{{budgetsReport.budget.conceptBudget.nameConcept}}
+                                            </div>
+                                            <div class="col-md-1">{{budgetsReport.totalLastYearAmount | currency}}</div>
                                             <div class="col-md-7 text-center">
                                                 <div class="col-xs-1">{{budgetsReport.januaryBudgetAmount|currency}}
                                                 </div>
@@ -1083,6 +1158,7 @@
                                                 <div class="col-xs-1">{{budgetsReport.decemberBudgetAmount|currency}}
                                                 </div>
                                             </div>
+                                            <div class="col-md-1">{{budgetsReport.totalBudgetAmount | currency}}</div>
                                         </div>
                                         <div class="col-md-12">
                                         </div>
@@ -1093,10 +1169,10 @@
                                         <div class="col-md-12">
                                         </div>
                                         <div class="col-md-12">
-                                            <div class="col-md-2">TOTALES:</div>
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-1"></div>
+                                            <div class="col-md-1">TOTALES:</div>
                                             <div class="col-md-1">{{budgetTotals.totalLastYearAmount | currency}}</div>
-                                            <div class="col-md-1"></div>
-                                            <div class="col-md-1"></div>
                                             <div class="col-md-7 text-center">
                                                 <div class="col-xs-1">{{budgetTotals.januaryBudgetAmount |currency}}
                                                 </div>
@@ -1118,6 +1194,7 @@
                                                 <div class="col-xs-1">{{budgetTotals.decemberBudgetAmount |currency}}
                                                 </div>
                                             </div>
+                                            <div class="col-md-1">{{budgetTotals.totalCurrentYear | currency}}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -1125,8 +1202,13 @@
                             <br>
                             <br>
                             <div class="modal-footer">
-                                <button class="btn btn-success" @click="showConfirm">Aceptar</button>
-                                <button class="btn btn-warning" @click="closeBudget">Modificar</button>
+                                <div v-if="flag == true">
+                                    <button class="btn btn-success" @click="showConfirm">Aceptar</button>
+                                    <button class="btn btn-warning" @click="closeBudget">Modificar</button>
+                                </div>
+                                <div v-if="flag == false">
+                                    <button class="btn btn-danger" @click="closeBudget">Salir</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1183,6 +1265,86 @@
                             <div class="modal-footer">
                                 <button class="btn btn-success" @click="sendModifyBudget">Aceptar</button>
                                 <button class="btn btn-default" @click="closeRequestModification">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade bd-example-modal-lg" id="budgetsStatus" tabindex="-1" role="dialog"
+                     aria-labelledby="myModalLabel">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" aria-label="Close"
+                                        @click="cancelBudgetStatus()">
+                                    <span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title" id="budgetsStatusLabel"><b>Estatus Presupuesto</b></h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table class="table table-striped">
+                                            <thead>
+                                            </thead>
+                                            <tbody>
+                                            <tr v-for="costCenter in costCenterStatus"
+                                                v-if="costCenter.idCCostCenterStatus != 1">
+                                                <td class="col-xs-2"></td>
+                                                <td class="col-xs-1"><label style="margin-top: 10px">{{costCenter.costCenter.name}}</label>
+                                                </td>
+                                                <td class="col-xs-1"><label
+                                                        style="margin-top: 10px">{{costCenter.year}}</label></td>
+                                                <td class="col-xs-1"></td>
+                                                <td class="col-xs-1" style="margin-top: 12px">
+                                                <span class="glyphicon glyphicon-triangle-bottom"
+                                                      style="color: #7A7A7A; font-size: 200%"
+                                                      v-if="costCenter.idCCostCenterStatus == 1"></span>
+                                                    <span class="glyphicon glyphicon-triangle-bottom"
+                                                          style="color: #DF9A1B; font-size: 200%"
+                                                          v-if="costCenter.idCCostCenterStatus == 2"></span>
+                                                    <span class="glyphicon glyphicon-triangle-bottom"
+                                                          style="color: #EE0909; font-size: 200%"
+                                                          v-if="costCenter.idCCostCenterStatus == 3"></span>
+                                                    <span class="glyphicon glyphicon-triangle-bottom"
+                                                          style="color: #457a1a; font-size: 200%"
+                                                          v-if="costCenter.idCCostCenterStatus == 4"></span>
+                                                    <span class="glyphicon glyphicon-triangle-bottom"
+                                                          style="color: #457a1a;  font-size: 200%"
+                                                          v-if="costCenter.idCCostCenterStatus == 5"></span>
+                                                </td>
+                                                <td class="col-xs-1"></td>
+                                                <td class="col-xs-1" style="margin-top: 12px">
+                                                    <div class="col-xs-1" style="margin-right: 50px; margin-left: 50px">
+                                                        <button class="label btn-default"
+                                                                v-if="costCenter.idCCostCenterStatus == 1" @click="getReportModal(costCenter.costCenter,costCenter.year)">Sin enviar
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-xs-1" style="margin-right: 50px; margin-left: 50px">
+                                                        <button class="label btn-warning"
+                                                                v-if="costCenter.idCCostCenterStatus == 2" @click="getReportModal(costCenter.costCenter,costCenter.year)">Sin autorizar</button>
+                                                    </div>
+                                                    <div class="col-xs-1" style="margin-right: 50px; margin-left: 50px">
+                                                        <button class="label btn-danger"
+                                                                v-if="costCenter.idCCostCenterStatus == 3" @click="getReportModal(costCenter.costCenter,costCenter.year)">Rechazado
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-xs-1" style=" margin-right: 50px; margin-left: 50px">
+                                                        <button class="label btn-success"
+                                                                v-if="costCenter.idCCostCenterStatus == 4 || costCenter.idCCostCenterStatus == 5" @click="getReportModal(costCenter.costCenter,costCenter.year)">
+                                                            Autorizado
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                                <td class="col-xs-2"></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" @click="cancelBudgetStatus()">Cancelar
+                                </button>
                             </div>
                         </div>
                     </div>
