@@ -15,4 +15,5 @@ public interface AuthorizationCostCenterService {
     boolean delete(AuthorizationCostCenter authorizationCostCenter);
     AuthorizationCostCenter findByIdCostCenterAndYear(Integer idCostCenter, Integer year);
     List<Integer> getAllCostCentersRNAByIdsCostCenters(List<Integer> idsCostCenters);
+    List<AuthorizationCostCenter> findByRoleCostCenter(Integer idRole);
 }

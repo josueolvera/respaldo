@@ -1,6 +1,7 @@
 package mx.bidg.service.impl;
 
 import mx.bidg.dao.AuthorizationCostCenterDao;
+import mx.bidg.dao.RolesCostCenterDao;
 import mx.bidg.model.AuthorizationCostCenter;
 import mx.bidg.service.AuthorizationCostCenterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class AuthorizationCostCenterServiceImpl implements AuthorizationCostCent
 
     @Autowired
     private AuthorizationCostCenterDao authorizationCostCenterDao;
+
+    @Autowired
+    private RolesCostCenterDao rolesCostCenterDao;
 
     @Override
     public List<AuthorizationCostCenter> findByCostCenter(Integer idCostCenter) {
@@ -52,5 +56,18 @@ public class AuthorizationCostCenterServiceImpl implements AuthorizationCostCent
     @Override
     public List<Integer> getAllCostCentersRNAByIdsCostCenters(List<Integer> idsCostCenters) {
         return authorizationCostCenterDao.getAllCostCentersRNAByIdsCostCenters(idsCostCenters);
+    }
+
+    @Override
+    public List<AuthorizationCostCenter> findByRoleCostCenter(Integer idRole) {
+
+        List<AuthorizationCostCenter> authorizationCostCenters = null;
+        if (idRole != null){
+            List<Integer> idsCostCenters = rolesCostCenterDao.findOnlyDifferentIdCostCentersByRole(idRole);
+            if (!idsCostCenters.isEmpty()){
+                authorizationCostCenters = authorizationCostCenterDao.getAllCostCentersByIdsCostCenters(idsCostCenters);
+            }
+        }
+        return authorizationCostCenters;
     }
 }
