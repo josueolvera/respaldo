@@ -30,6 +30,7 @@ public class BudgetSubSubCategory {
     private BigDecimal decemberSubSubcategoryAmount;
     private BigDecimal totalSubSubcategoryAmount;
     private BigDecimal totalBudgetAmountLastYear;
+    private BigDecimal realTotalBudgetAmount;
     private List<RealBudgetSpending> realBudgetSpendingList;
 
     public BudgetSubSubCategory() {
@@ -302,6 +303,20 @@ public class BudgetSubSubCategory {
 
     public void setTotalBudgetAmountLastYear(BigDecimal totalBudgetAmountLastYear) {
         this.totalBudgetAmountLastYear = totalBudgetAmountLastYear;
+    }
+
+    public BigDecimal getRealTotalBudgetAmount() {
+        double zero = 0;
+
+        for (RealBudgetSpending r : getRealBudgetSpendingList()) {
+            zero += r.getRealTotalBudgetAmount().doubleValue();
+        }
+        this.realTotalBudgetAmount = new BigDecimal(zero);
+        return realTotalBudgetAmount;
+    }
+
+    public void setRealTotalBudgetAmount(BigDecimal realTotalBudgetAmount) {
+        this.realTotalBudgetAmount = realTotalBudgetAmount;
     }
 
     public boolean isShow() {
