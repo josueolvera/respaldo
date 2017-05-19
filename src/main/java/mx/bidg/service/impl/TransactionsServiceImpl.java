@@ -255,9 +255,9 @@ public class TransactionsServiceImpl implements TransactionsService {
 //                CDistributors cDistributors = dwEnterprise.getDistributor();
 //                CRegions cRegions = dwEnterprise.getRegion();
 //                CBranchs cBranchs = dwEnterprise.getBranch();
-                Accounts account = priceEstimationsAutorized.getAccount();
-                ProvidersAccounts providersAccounts = providersAccountsService.findByAccountsProvider(account);
-                Providers provider = providersAccounts.getProvider();
+//                Accounts account = priceEstimationsAutorized.getAccount();
+//                ProvidersAccounts providersAccounts = providersAccountsService.findByAccountsProvider(account);
+//                Providers provider = providersAccounts.getProvider();
 
                 row = hoja.createRow(aux);
                 // Create a cell and put a value in it.
@@ -266,7 +266,7 @@ public class TransactionsServiceImpl implements TransactionsService {
 //                row.createCell(2).setCellValue(cDistributors.getAcronyms());
 //                row.createCell(3).setCellValue(cRegions.getRegionName());
 //                row.createCell(4).setCellValue(cBranchs.getBranchShort());
-                row.createCell(5).setCellValue(provider.getProviderName().replace(':', ' '));
+//                row.createCell(5).setCellValue(provider.getProviderName().replace(':', ' '));
                 row.createCell(6).setCellValue(accountsPayable.getCreationDateFormats().getDateNumber());
                 row.createCell(7).setCellValue(transaction.getCreationDateFormats().getDateNumber());
                 row.createCell(8).setCellValue(requests.getUserRequest().getDwEmployee().getEmployee().getFullName());

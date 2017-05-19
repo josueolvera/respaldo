@@ -72,15 +72,15 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             PriceEstimations priceEstimation = new PriceEstimations();
 
             priceEstimation.setAmount(mapper.treeToValue(node.get("amount"), BigDecimal.class));
-            priceEstimation.setAccount(mapper.treeToValue(node.get("account"), Accounts.class));
+//            priceEstimation.setAccount(mapper.treeToValue(node.get("account"), Accounts.class));
             priceEstimation.setCreationDate(LocalDateTime.now());
             priceEstimation.setCurrency(mapper.treeToValue(node.get("currency"), CCurrencies.class));
-            priceEstimation.setEstimationStatus(CEstimationStatus.PENDIENTE);
+//            priceEstimation.setEstimationStatus(CEstimationStatus.PENDIENTE);
             priceEstimation.setIdAccessLevel(1);
             priceEstimation.setRequest(request);
-            priceEstimation.setUserEstimation(user);
-            priceEstimation.setRate(mapper.treeToValue(node.get("rate"), BigDecimal.class));
-            priceEstimation.setProvider(mapper.treeToValue(node.get("provider"), Providers.class));
+//            priceEstimation.setUserEstimation(user);
+//            priceEstimation.setRate(mapper.treeToValue(node.get("rate"), BigDecimal.class));
+//            priceEstimation.setProvider(mapper.treeToValue(node.get("provider"), Providers.class));
 
 
 
@@ -106,23 +106,23 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
                 throw new ValidationException("Tipo de archivo no admitido", "Tipo de archivo no admitido");
             }
 
-            String destDir = "/estimation_" + priceEstimation.getIdEstimation();
-            String destFile = destDir + "/Documento." + priceEstimation.getCreationDate().toInstant(ZoneOffset.UTC).getEpochSecond();
+//            String destDir = "/estimation_" + priceEstimation.getIdEstimation();
+//            String destFile = destDir + "/Documento." + priceEstimation.getCreationDate().toInstant(ZoneOffset.UTC).getEpochSecond();
 
-            priceEstimation.setFilePath(destFile);
+//            priceEstimation.setFilePath(destFile);
 
-            File dir = new File(SAVE_PATH + destDir);
-            if (! dir.exists()) {
-                dir.mkdir();
-            }
+//            File dir = new File(SAVE_PATH + destDir);
+//            if (! dir.exists()) {
+//                dir.mkdir();
+//            }
 
             String encodingPrefix = "base64,";
             int contentStartIndex = file.getDataUrl().indexOf(encodingPrefix) + encodingPrefix.length();
             byte[] byteArreyData = Base64.decodeBase64(file.getDataUrl().substring(contentStartIndex));
 
-            FileOutputStream out = new FileOutputStream(new File(SAVE_PATH + destFile));
-            out.write(byteArreyData);
-            out.close();
+//            FileOutputStream out = new FileOutputStream(new File(SAVE_PATH + destFile));
+//            out.write(byteArreyData);
+//            out.close();
 
             priceEstimation = priceEstimationsDao.save(priceEstimation);
 
@@ -141,7 +141,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     public PriceEstimations update(Integer idEstimation, String data, Users user) throws Exception{
         PriceEstimations estimation = priceEstimationsDao.findByIdFetchRequestStatus(idEstimation);
         JsonNode json = mapper.readTree(data);
-        if(estimation.getEstimationStatus().getIdEstimationStatus().equals(CEstimationStatus.PENDIENTE)) {
+//        if(estimation.getEstimationStatus().getIdEstimationStatus().equals(CEstimationStatus.PENDIENTE)) {
             Requests request = requestsDao.findByIdFetchBudgetMonthBranch(estimation.getIdRequest());
 //            BigDecimal budgetAmount = request.getBudgetYearConcept().getAmount();
 //            BigDecimal expendedAmount = request.getBudgetYearConcept().getExpendedAmount();
@@ -151,19 +151,19 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
                     json.get("amount").decimalValue() : BigDecimal.ZERO;
             BigDecimal tempAmount = amount.multiply(rate);
 
-            estimation.setAccount(new Accounts(json.get("idAccount").asInt()));
+//            estimation.setAccount(new Accounts(json.get("idAccount").asInt()));
             estimation.setAmount(amount);
             estimation.setCurrency(new CCurrencies(json.get("idCurrency").asInt()));
-            estimation.setRate(rate);
-            estimation.setUserEstimation(user);
+//            estimation.setRate(rate);
+//            estimation.setUserEstimation(user);
             //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
 //            estimation.setOutOfBudget((residualAmount.compareTo(tempAmount) == -1)? 1 : 0);
 
             return estimation;
-        } else {
-            throw new ValidationException("No se puede modificar una cotizacion ya autorizada",
-                    "No se puede modificar una solicitud ya autorizada");
-        }
+//        } else {
+//            throw new ValidationException("No se puede modificar una cotizacion ya autorizada",
+//                    "No se puede modificar una solicitud ya autorizada");
+//        }
     }
 
     @Override
@@ -200,14 +200,14 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
             List<PriceEstimations> list = priceEstimationsDao.findByIdRequest(request.getIdRequest());
 
             for (PriceEstimations e : list) {
-                e.setUserAuthorization(user);
+//                e.setUserAuthorization(user);
                 e.setAuthorizationDate(LocalDateTime.now());
 
-                if (e.getIdEstimation().equals(idEstimation)) {
-                    e.setEstimationStatus(CEstimationStatus.APROBADA);
-                } else {
-                    e.setEstimationStatus(CEstimationStatus.RECHAZADA);
-                }
+//                if (e.getIdEstimation().equals(idEstimation)) {
+//                    e.setEstimationStatus(CEstimationStatus.APROBADA);
+//                } else {
+//                    e.setEstimationStatus(CEstimationStatus.RECHAZADA);
+//                }
             }
         }
 
@@ -221,7 +221,7 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         List<PriceEstimations> estimations = priceEstimationsDao.findByIdRequest(request.getIdRequest());
 
         for (PriceEstimations e : estimations) {
-            e.setEstimationStatus(CEstimationStatus.PENDIENTE);
+//            e.setEstimationStatus(CEstimationStatus.PENDIENTE);
         }
         accountsPayableDao.deleteByFolio(request.getFolio());
         return true;
@@ -249,10 +249,10 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     @Override
     public PriceEstimations findAuthorized(Integer idRequest) {
         PriceEstimations estimation = priceEstimationsDao.findAuthorized(idRequest);
-        ProvidersAccounts providersAccounts = providersAcountsdao.findByAccount(estimation.getAccount());
+//        ProvidersAccounts providersAccounts = providersAcountsdao.findByAccount(estimation.getAccount());
         ArrayList<ProvidersAccounts> providers = new ArrayList<>();
-        providers.add(providersAccounts);
-        estimation.getAccount().setProvidersAccountsList(providers);
+//        providers.add(providersAccounts);
+//        estimation.getAccount().setProvidersAccountsList(providers);
         return estimation;
     }
 }

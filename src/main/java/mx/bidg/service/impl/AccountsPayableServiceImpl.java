@@ -308,9 +308,9 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
 //                CDistributors cDistributors = dwEnterprise.getDistributor();
 //                CRegions cRegions = dwEnterprise.getRegion();
 //                CBranchs cBranchs = dwEnterprise.getBranch();
-                Accounts account = priceEstimationsAutorized.getAccount();
-                ProvidersAccounts providersAccounts = providersAccountsService.findByAccountsProvider(account);
-                Providers provider = providersAccounts.getProvider();
+//                Accounts account = priceEstimationsAutorized.getAccount();
+//                ProvidersAccounts providersAccounts = providersAccountsService.findByAccountsProvider(account);
+//                Providers provider = providersAccounts.getProvider();
 
 
                 row = hoja.createRow(aux);
@@ -320,7 +320,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
 //                row.createCell(2).setCellValue(cDistributors.getAcronyms());
 //                row.createCell(3).setCellValue(cRegions.getRegionName());
 //                row.createCell(4).setCellValue(cBranchs.getBranchShort());
-                row.createCell(5).setCellValue(provider.getProviderName().replace(':', ' '));
+//                row.createCell(5).setCellValue(provider.getProviderName().replace(':', ' '));
                 row.createCell(6).setCellValue(accountsPayable.getDueDateFormats().getDateNumber());
                 row.createCell(7).setCellValue(requests.getUserRequest().getDwEmployee().getEmployee().getFullName());
 

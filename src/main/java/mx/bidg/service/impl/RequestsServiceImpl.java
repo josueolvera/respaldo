@@ -156,7 +156,7 @@ public class RequestsServiceImpl implements RequestsService {
         for(JsonNode jsonProducts : jsonRequest.get("products")) {
             CProducts product = new CProducts(jsonProducts.get("idProduct").asInt());
             RequestProducts requestProduct = new RequestProducts();
-            requestProduct.setProduct(product);
+           // requestProduct.setProduct(product);
             requestProduct.setRequest(request);
             requestProduct.setIdAccessLevel(1);
             requestProducts.add(requestProduct);
