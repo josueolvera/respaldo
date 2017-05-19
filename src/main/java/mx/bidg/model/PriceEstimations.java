@@ -45,12 +45,26 @@ public class PriceEstimations implements Serializable {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "ID_ESTIMATION")
+    @Column(name = "ID_PRICE_ESTIMATION")
     @JsonView(JsonViews.Root.class)
-    private Integer idEstimation;
-    
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    private Integer idPriceEstimation;
+
+    @Column(name = "ID_REQUEST", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRequest;
+
+    @Column(name = "ID_ACCOUNT", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private int idAccount;
+
+    @Column(name = "ID_ESTIMATION_STATUS", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idEstimationStatus;
+
+    @Column(name = "ID_CURRENCY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private int idCurrency;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "AMOUNT")
@@ -66,84 +80,23 @@ public class PriceEstimations implements Serializable {
     @Column(name = "FILE_NAME")
     @JsonView(JsonViews.Root.class)
     private String fileName;
-    
-    @Size(max = 45)
-    @Column(name = "SKU")
+
+    @Column(name = "AUTHORIZATION_DATE")
     @JsonView(JsonViews.Root.class)
-    private String sku;
-    
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime authorizationDate;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
-    
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "OUT_OF_BUDGET", columnDefinition = "TINYINT", nullable = false)
-    @Type(type = "org.hibernate.type.NumericBooleanType")
-    @JsonView(JsonViews.Root.class)
-    private Boolean outOfBudget;
-    
-    @Column(name = "ID_REQUEST", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idRequest;
-    
-    @Column(name = "ID_ESTIMATION_STATUS", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idEstimationStatus;
-    
-    @Column(name = "ID_PROVIDER", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private int idProvider;
 
-    @Column(name = "ID_ACCOUNT", insertable = false, updatable = false)
+    @Size(max = 50)
+    @Column(name = "USERNAME")
     @JsonView(JsonViews.Root.class)
-    private int idAccount;
+    private String username;
 
-    @Column(name = "ID_CURRENCY", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private int idCurrency;
-    
-    @Column(name = "USER_AUTHORIZATION", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idUserAuthorization;
-    
-    @Column(name = "USER_ESTIMATION", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idUserEstimation;
-
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "RATE")
-    @JsonView(JsonViews.Root.class)
-    private BigDecimal rate;
-    
-    @JoinColumn(name = "ID_REQUEST", referencedColumnName = "ID_REQUEST")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private Requests request;
-    
-    @JoinColumn(name = "ID_ESTIMATION_STATUS", referencedColumnName = "ID_ESTIMATION_STATUS")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private CEstimationStatus estimationStatus;
-
-    @JoinColumn(name = "ID_PROVIDER", referencedColumnName = "ID_PROVIDER")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private Providers provider;
-    
-    @JoinColumn(name = "ID_ACCOUNT", referencedColumnName = "ID_ACCOUNT")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private Accounts account;
-    
-    @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private CCurrencies currency;
-    
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_DATE", updatable = false)
@@ -151,40 +104,30 @@ public class PriceEstimations implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
     
-    @Column(name = "AUTHORIZATION_DATE")
-    @JsonView(JsonViews.Root.class)
-    @Convert(converter = DateTimeConverter.class)
-    private LocalDateTime authorizationDate;
-    
-    @JoinColumn(name = "USER_AUTHORIZATION", referencedColumnName = "ID_USER")
-    @ManyToOne
-    @JsonView(JsonViews.Embedded.class)
-    private Users userAuthorization;
-    
-    @JoinColumn(name = "USER_ESTIMATION", referencedColumnName = "ID_USER")
+    @JoinColumn(name = "ID_REQUEST", referencedColumnName = "ID_REQUEST")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
-    private Users userEstimation;
+    private Requests request;
+
+    @JoinColumn(name = "ID_ESTIMATION_STATUS", referencedColumnName = "ID_ESTIMATION_STATUS")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private CEstimationStatus cEstimationStatus;
+    
+    @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private CCurrencies currency;
 
     public PriceEstimations() {
     }
 
-    public PriceEstimations(Integer idEstimation) {
-        this.idEstimation = idEstimation;
+    public Integer getIdPriceEstimation() {
+        return idPriceEstimation;
     }
 
-    public PriceEstimations(Integer idEstimation, BigDecimal amount, int idAccessLevel) {
-        this.idEstimation = idEstimation;
-        this.amount = amount;
-        this.idAccessLevel = idAccessLevel;
-    }
-
-    public Integer getIdEstimation() {
-        return idEstimation;
-    }
-
-    public void setIdEstimation(Integer idEstimation) {
-        this.idEstimation = idEstimation;
+    public void setIdPriceEstimation(Integer idPriceEstimations) {
+        this.idPriceEstimation = idPriceEstimations;
     }
 
     public BigDecimal getAmount() {
@@ -211,13 +154,6 @@ public class PriceEstimations implements Serializable {
         this.fileName = fileName;
     }
 
-    public String getSku() {
-        return sku;
-    }
-
-    public void setSku(String sku) {
-        this.sku = sku;
-    }
 
     public int getIdAccessLevel() {
         return idAccessLevel;
@@ -225,14 +161,6 @@ public class PriceEstimations implements Serializable {
 
     public void setIdAccessLevel(int idAccessLevel) {
         this.idAccessLevel = idAccessLevel;
-    }
-
-    public Boolean getOutOfBudget() {
-        return outOfBudget;
-    }
-
-    public void setOutOfBudget(Boolean outOfBudget) {
-        this.outOfBudget = outOfBudget;
     }
 
     public Integer getIdRequest() {
@@ -275,22 +203,6 @@ public class PriceEstimations implements Serializable {
         this.request = request;
     }
 
-    public CEstimationStatus getEstimationStatus() {
-        return estimationStatus;
-    }
-
-    public void setEstimationStatus(CEstimationStatus estimationStatus) {
-        this.estimationStatus = estimationStatus;
-    }
-
-    public Accounts getAccount() {
-        return account;
-    }
-
-    public void setAccount(Accounts account) {
-        this.account = account;
-    }
-
     public CCurrencies getCurrency() {
         return currency;
     }
@@ -323,92 +235,69 @@ public class PriceEstimations implements Serializable {
         return (authorizationDate != null) ? new DateFormatsPojo(authorizationDate) : null;
     }
 
-    public Users getUserAuthorization() {
-        return userAuthorization;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserAuthorization(Users userAuthorization) {
-        this.userAuthorization = userAuthorization;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public Users getUserEstimation() {
-        return userEstimation;
+    public CEstimationStatus getcEstimationStatus() {
+        return cEstimationStatus;
     }
 
-    public void setUserEstimation(Users userEstimation) {
-        this.userEstimation = userEstimation;
+    public void setcEstimationStatus(CEstimationStatus cEstimationStatus) {
+        this.cEstimationStatus = cEstimationStatus;
     }
 
-    public Integer getIdUserAuthorization() {
-        return idUserAuthorization;
-    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PriceEstimations)) return false;
 
-    public void setIdUserAuthorization(Integer idUserAuthorization) {
-        this.idUserAuthorization = idUserAuthorization;
-    }
+        PriceEstimations that = (PriceEstimations) o;
 
-    public Integer getIdUserEstimation() {
-        return idUserEstimation;
-    }
-
-    public void setIdUserEstimation(Integer idUserEstimation) {
-        this.idUserEstimation = idUserEstimation;
-    }
-
-    public BigDecimal getRate() {
-        return rate;
-    }
-
-    public void setRate(BigDecimal rate) {
-        this.rate = rate;
-    }
-
-    public int getIdProvider() {
-        return idProvider;
-    }
-
-    public void setIdProvider(int idProvider) {
-        this.idProvider = idProvider;
-    }
-
-    public Providers getProvider() {
-        return provider;
-    }
-
-    public void setProvider(Providers provider) {
-        this.provider = provider;
-    }
-
-    public BigDecimal getAmountMXN() {
-        if (amount == null) return null;
-        if (rate == null || rate.compareTo(BigDecimal.ZERO) == 0) return null;
-        if (rate.compareTo(BigDecimal.ONE) == 0) return null;
-        return amount.multiply(rate).setScale(2);
+        if (getIdAccount() != that.getIdAccount()) return false;
+        if (getIdCurrency() != that.getIdCurrency()) return false;
+        if (getIdAccessLevel() != that.getIdAccessLevel()) return false;
+        if (!getIdPriceEstimation().equals(that.getIdPriceEstimation())) return false;
+        if (!getIdRequest().equals(that.getIdRequest())) return false;
+        if (!getIdEstimationStatus().equals(that.getIdEstimationStatus())) return false;
+        if (!getAmount().equals(that.getAmount())) return false;
+        if (!getFilePath().equals(that.getFilePath())) return false;
+        if (!getFileName().equals(that.getFileName())) return false;
+        if (!getAuthorizationDate().equals(that.getAuthorizationDate())) return false;
+        if (!getUsername().equals(that.getUsername())) return false;
+        if (!getCreationDate().equals(that.getCreationDate())) return false;
+        if (!getRequest().equals(that.getRequest())) return false;
+        if (!getcEstimationStatus().equals(that.getcEstimationStatus())) return false;
+        return getCurrency().equals(that.getCurrency());
     }
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (idEstimation != null ? idEstimation.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof PriceEstimations)) {
-            return false;
-        }
-        PriceEstimations other = (PriceEstimations) object;
-        if ((this.idEstimation == null && other.idEstimation != null) || (this.idEstimation != null && !this.idEstimation.equals(other.idEstimation))) {
-            return false;
-        }
-        return true;
+        int result = getIdPriceEstimation().hashCode();
+        result = 31 * result + getIdRequest().hashCode();
+        result = 31 * result + getIdAccount();
+        result = 31 * result + getIdEstimationStatus().hashCode();
+        result = 31 * result + getIdCurrency();
+        result = 31 * result + getAmount().hashCode();
+        result = 31 * result + getFilePath().hashCode();
+        result = 31 * result + getFileName().hashCode();
+        result = 31 * result + getAuthorizationDate().hashCode();
+        result = 31 * result + getIdAccessLevel();
+        result = 31 * result + getUsername().hashCode();
+        result = 31 * result + getCreationDate().hashCode();
+        result = 31 * result + getRequest().hashCode();
+        result = 31 * result + getcEstimationStatus().hashCode();
+        result = 31 * result + getCurrency().hashCode();
+        return result;
     }
 
     @Override
     public String toString() {
-        return "mx.bidg.config.PriceEstimations[ idEstimation=" + idEstimation + " ]";
+        return "mx.bidg.config.PriceEstimations[ idEstimation=" + idPriceEstimation + " ]";
     }
     
 }
