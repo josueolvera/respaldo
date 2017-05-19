@@ -288,4 +288,18 @@ public class SIADController {
         model.setViewName("c-groups");
         return model;
     }
+
+    @RequestMapping(value = "/request-spending", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView siadRequestSpending() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("request-spending");
+        return model;
+    }
+
+    @RequestMapping(value = "/request-managment-spending", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView siadRequestManagmentSpending() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("request-managment-spending");
+        return model;
+    }
 }
