@@ -5,19 +5,18 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;import javax.persistence.Table;
+import java.time.LocalDateTime;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 
@@ -28,7 +27,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "C_REQUEST_TYPES")
-
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CRequestTypes implements Serializable { 
     
     private static final long serialVersionUID = 1L;
@@ -43,28 +42,35 @@ public class CRequestTypes implements Serializable {
     private Integer idRequestType;
 
     @Size(max = 100)
-    @Column(name = "REQUEST_TYPE")
+    @Column(name = "REQUEST_TYPE_NAME")
     @JsonView(JsonViews.Root.class)
-    private String requestType;
+    private String requestTypeName;
 
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
-    
-    @Column(name = "ID_BUDGET_CATEGORY", insertable = false, updatable = false)
+
+    @Size(max = 30)
+    @Column(name = "USERNAME")
     @JsonView(JsonViews.Root.class)
-    private Integer idBudgetCategory;
-    
-    @JoinColumn(name = "ID_BUDGET_CATEGORY", referencedColumnName = "ID_BUDGET_CATEGORY")
-    @ManyToOne(optional = false)
-    @JsonView(JsonViews.Embedded.class)
-    private CBudgetCategories budgetCategory;
+    private String username;
+
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "CREATION_DATE")
+    @Convert(converter = DateTimeConverter.class)
+    @JsonView(JsonViews.Root.class)
+    private LocalDateTime creationDate;
 
     public CRequestTypes() {
     }
 
     public CRequestTypes(Integer idRequestType) {
         this.idRequestType = idRequestType;
+    }
+
+    public static CRequestTypes getGastosDeViaje() {
+        return GASTOS_DE_VIAJE;
     }
 
     public Integer getIdRequestType() {
@@ -75,12 +81,12 @@ public class CRequestTypes implements Serializable {
         this.idRequestType = idRequestType;
     }
 
-    public String getRequestType() {
-        return requestType;
+    public String getRequestTypeName() {
+        return requestTypeName;
     }
 
-    public void setRequestType(String requestType) {
-        this.requestType = requestType;
+    public void setRequestTypeName(String requestTypeName) {
+        this.requestTypeName = requestTypeName;
     }
 
     public Integer getIdAccessLevel() {
@@ -91,45 +97,56 @@ public class CRequestTypes implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public Integer getIdBudgetCategory() {
-        return idBudgetCategory;
+    public String getUsername() {
+        return username;
     }
 
-    public void setIdBudgetCategory(Integer idBudgetCategory) {
-        this.idBudgetCategory = idBudgetCategory;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public CBudgetCategories getBudgetCategory() {
-        return budgetCategory;
+    public LocalDateTime getCreationDate() {
+        return creationDate;
     }
 
-    public void setBudgetCategory(CBudgetCategories budgetCategory) {
-        this.budgetCategory = budgetCategory;
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CRequestTypes that = (CRequestTypes) o;
+
+        if (!idRequestType.equals(that.idRequestType)) return false;
+        if (requestTypeName != null ? !requestTypeName.equals(that.requestTypeName) : that.requestTypeName != null)
+            return false;
+        if (idAccessLevel != null ? !idAccessLevel.equals(that.idAccessLevel) : that.idAccessLevel != null)
+            return false;
+        if (username != null ? !username.equals(that.username) : that.username != null) return false;
+        return creationDate != null ? creationDate.equals(that.creationDate) : that.creationDate == null;
     }
 
     @Override
     public int hashCode() {
-        int hash = 0;
-        hash += (idRequestType != null ? idRequestType.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CRequestTypes)) {
-            return false;
-        }
-        CRequestTypes other = (CRequestTypes) object;
-        if ((this.idRequestType == null && other.idRequestType != null) || (this.idRequestType != null && !this.idRequestType.equals(other.idRequestType))) {
-            return false;
-        }
-        return true;
+        int result = idRequestType.hashCode();
+        result = 31 * result + (requestTypeName != null ? requestTypeName.hashCode() : 0);
+        result = 31 * result + (idAccessLevel != null ? idAccessLevel.hashCode() : 0);
+        result = 31 * result + (username != null ? username.hashCode() : 0);
+        result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
+        return result;
     }
 
     @Override
     public String toString() {
-        return "mx.bidg.model.CRequestTypes[ idRequestType=" + idRequestType + " ]";
+        return "CRequestTypes{" +
+                "idRequestType=" + idRequestType +
+                ", requestTypeName='" + requestTypeName + '\'' +
+                ", idAccessLevel=" + idAccessLevel +
+                ", username='" + username + '\'' +
+                ", creationDate=" + creationDate +
+                '}';
     }
-    
 }
