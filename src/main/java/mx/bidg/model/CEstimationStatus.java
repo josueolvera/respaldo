@@ -7,16 +7,12 @@ package mx.bidg.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.time.LocalDateTime;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 /**
@@ -44,7 +40,7 @@ public class CEstimationStatus implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
-    @Column(name = "ESTIMATION_STATUS")
+    @Column(name = "ESTIMATION_STATUS_NAME")
     @JsonView(JsonViews.Root.class)
     private String estimationStatus;
     
@@ -53,6 +49,18 @@ public class CEstimationStatus implements Serializable {
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
+
+    @Size(max = 50)
+    @Column(name = "USERNAME")
+    @JsonView(JsonViews.Root.class)
+    private String userName;
+
+    @Basic
+    @NotNull
+    @Column(name = "CREATION_DATE", updatable = false)
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime creationDate;
 
     public CEstimationStatus() {
     }
@@ -91,24 +99,46 @@ public class CEstimationStatus implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idEstimationStatus != null ? idEstimationStatus.hashCode() : 0);
-        return hash;
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CEstimationStatus)) {
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CEstimationStatus)) return false;
+
+        CEstimationStatus that = (CEstimationStatus) o;
+
+        if (getIdAccessLevel() != that.getIdAccessLevel()) return false;
+        if (!getIdEstimationStatus().equals(that.getIdEstimationStatus())) return false;
+        if (getEstimationStatus() != null ? !getEstimationStatus().equals(that.getEstimationStatus()) : that.getEstimationStatus() != null)
             return false;
-        }
-        CEstimationStatus other = (CEstimationStatus) object;
-        if ((this.idEstimationStatus == null && other.idEstimationStatus != null) || (this.idEstimationStatus != null && !this.idEstimationStatus.equals(other.idEstimationStatus))) {
+        if (getUserName() != null ? !getUserName().equals(that.getUserName()) : that.getUserName() != null)
             return false;
-        }
-        return true;
+        return getCreationDate() != null ? getCreationDate().equals(that.getCreationDate()) : that.getCreationDate() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getIdEstimationStatus().hashCode();
+        result = 31 * result + (getEstimationStatus() != null ? getEstimationStatus().hashCode() : 0);
+        result = 31 * result + getIdAccessLevel();
+        result = 31 * result + (getUserName() != null ? getUserName().hashCode() : 0);
+        result = 31 * result + (getCreationDate() != null ? getCreationDate().hashCode() : 0);
+        return result;
     }
 
     @Override

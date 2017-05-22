@@ -5,13 +5,16 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import mx.bidg.utils.DateTimeConverter;
@@ -24,6 +27,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "C_REQUESTS_CATEGORIES")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class CRequestsCategories implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -40,42 +44,52 @@ public class CRequestsCategories implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idRequestCategory;
 
-    @Size(max = 100)
-    @Column(name = "CATEGORY")
+    @Basic(optional = false)
+    @NotNull
+    @Size(min = 1, max = 40)
+    @Column(name = "REQUEST_CATEGORY_NAME")
     @JsonView(JsonViews.Root.class)
-    private String category;
-
-    @Column(name = "PERIODIC")
-    @JsonView(JsonViews.Root.class)
-    private Integer periodic;
-
-    @Size(max = 1000)
-    @Column(name = "INFORMATION")
-    @JsonView(JsonViews.Root.class)
-    private String information;
-
-    @Column(name = "ID_VIEW", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idView;
-
-    @Column(name = "ID_RESOURCE_TASK", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idResourceTask;
+    private String requestCategoryName;
 
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private Integer idAccessLevel;
 
-    @JoinColumn(name = "ID_VIEW", referencedColumnName = "ID_VIEW")
-    @ManyToOne
-    @JsonView(JsonViews.EmbeddedRequestCategory.class)
-    private CViews view;
+    @Size(max = 50)
+    @Column(name = "USERNAME")
+    @JsonView(JsonViews.Root.class)
+    private String username;
 
-    @JoinColumn(name = "ID_RESOURCE_TASK", referencedColumnName = "ID_RESOURCE_TASK")
-    @ManyToOne
-    @JsonView(JsonViews.Embedded.class)
-    private ResourcesTasks resourcesTasks;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "CREATION_DATE")
+    @Convert(converter = DateTimeConverter.class)
+    @JsonView(JsonViews.Root.class)
+    private LocalDateTime creationDate;
 
+    public String getRequestCategoryName() {
+        return requestCategoryName;
+    }
+
+    public void setRequestCategoryName(String requestCategoryName) {
+        this.requestCategoryName = requestCategoryName;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
+    }
 
     public CRequestsCategories() {
     }
@@ -92,22 +106,6 @@ public class CRequestsCategories implements Serializable {
         this.idRequestCategory = idRequestCategory;
     }
 
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public Integer getPeriodic() {
-        return periodic;
-    }
-
-    public void setPeriodic(Integer periodic) {
-        this.periodic = periodic;
-    }
-
     public Integer getIdAccessLevel() {
         return idAccessLevel;
     }
@@ -116,74 +114,38 @@ public class CRequestsCategories implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public Integer getIdView() {
-        return idView;
-    }
-
-    public void setIdView(Integer idView) {
-        this.idView = idView;
-    }
-
-    public CViews getView() {
-        return view;
-    }
-
-    public void setView(CViews view) {
-        this.view = view;
-    }
-
-    public Integer getIdResourceTask() {
-        return idResourceTask;
-    }
-
-    public void setIdResourceTask(Integer idResourceTask) {
-        this.idResourceTask = idResourceTask;
-    }
-
-    public ResourcesTasks getResourcesTasks() {
-        return resourcesTasks;
-    }
-
-    public void setResourcesTasks(ResourcesTasks resourcesTasks) {
-        this.resourcesTasks = resourcesTasks;
-    }
-
-    public String getInformation() {
-        return information;
-    }
-
-    public void setInformation(String information) {
-        this.information = information;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof CRequestsCategories)) return false;
 
         CRequestsCategories that = (CRequestsCategories) o;
 
-        return idRequestCategory != null ? idRequestCategory.equals(that.idRequestCategory) : that.idRequestCategory == null;
-
+        if (!getIdRequestCategory().equals(that.getIdRequestCategory())) return false;
+        if (getRequestCategoryName() != null ? !getRequestCategoryName().equals(that.getRequestCategoryName()) : that.getRequestCategoryName() != null)
+            return false;
+        if (getIdAccessLevel() != null ? !getIdAccessLevel().equals(that.getIdAccessLevel()) : that.getIdAccessLevel() != null)
+            return false;
+        if (getUsername() != null ? !getUsername().equals(that.getUsername()) : that.getUsername() != null)
+            return false;
+        return getCreationDate() != null ? getCreationDate().equals(that.getCreationDate()) : that.getCreationDate() == null;
     }
 
     @Override
     public int hashCode() {
-        return idRequestCategory != null ? idRequestCategory.hashCode() : 0;
+        int result = getIdRequestCategory().hashCode();
+        result = 31 * result + (getRequestCategoryName() != null ? getRequestCategoryName().hashCode() : 0);
+        result = 31 * result + (getIdAccessLevel() != null ? getIdAccessLevel().hashCode() : 0);
+        result = 31 * result + (getUsername() != null ? getUsername().hashCode() : 0);
+        result = 31 * result + (getCreationDate() != null ? getCreationDate().hashCode() : 0);
+        return result;
     }
 
     @Override
     public String toString() {
         return "CRequestsCategories{" +
                 "idRequestCategory=" + idRequestCategory +
-                ", category='" + category + '\'' +
-                ", periodic=" + periodic +
-                ", information='" + information + '\'' +
-                ", idView=" + idView +
-                ", idResourceTask=" + idResourceTask +
                 ", idAccessLevel=" + idAccessLevel +
-                ", view=" + view +
-                ", resourcesTasks=" + resourcesTasks +
                 '}';
     }
 }

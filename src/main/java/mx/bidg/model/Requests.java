@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.*;
@@ -40,6 +41,26 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idRequest;
 
+    @Column(name = "ID_DISTRIBUTOR_COST_CENTER", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idDistributorCostCenter;
+
+    @Column(name = "ID_REQUEST_STATUS", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRequestStatus;
+
+    @Column(name = "ID_REQUEST_CATEGORY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRequestCategory;
+
+    @Column(name = "ID_REQUEST_TYPE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRequestType;
+
+    @Column(name = "ID_EMPLOYEE", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idEmployee;
+
     @Basic
     @NotNull
     @Size(min = 1, max = 40)
@@ -47,17 +68,28 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String folio;
 
-    @Lob
-    @Size(min = 1, max = 65535)
-    @Column(name = "DESCRIPTION")
+    @Basic
+    @NotNull
+    @Size(min = 1, max = 200)
+    @Column(name = "REASON")
     @JsonView(JsonViews.Root.class)
-    private String description;
+    private String reason;
 
-    @Lob
-    @Size(max = 65535)
-    @Column(name = "PURPOSE")
+    @Column(name = "TOTAL_EXPENDED")
     @JsonView(JsonViews.Root.class)
-    private String purpose;
+    private BigDecimal totalExpended;
+
+    @Basic
+    @NotNull
+    @Column(name = "ID_ACCESS_LEVEL")
+    @JsonView(JsonViews.Root.class)
+    private int idAccessLevel;
+
+    @Basic
+    @NotNull
+    @Column(name = "USERNAME")
+    @JsonView(JsonViews.Root.class)
+    private String userName;
 
     @Basic
     @NotNull
@@ -66,51 +98,30 @@ public class Requests implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
 
-    @Column(name = "APPLYING_DATE", updatable = false)
-    @JsonView(JsonViews.Root.class)
-    @Convert(converter = DateTimeConverter.class)
-    private LocalDateTime applyingDate;
-
-    @Basic
-    @NotNull
-    @Column(name = "ID_ACCESS_LEVEL")
-    @JsonView(JsonViews.Root.class)
-    private int idAccessLevel;
-
-    @Column(name = "USER_REQUEST", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idUserRequest;
-
-    @Column(name = "USER_RESPONSIBLE", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idUserResponsible;
-
-    @Column(name = "ID_BUDGET_YEAR", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idBudgetYear;
-
-    @Column(name = "ID_MONTH", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idMonth;
-
-    @Column(name = "ID_REQUEST_STATUS", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idRequestStatus;
-
-    @JoinColumn(name = "USER_REQUEST", referencedColumnName = "ID_USER")
-    @ManyToOne
-    @JsonView(JsonViews.Embedded.class)
-    private Users userRequest;
-
-    @JoinColumn(name = "USER_RESPONSIBLE", referencedColumnName = "ID_USER")
-    @ManyToOne
-    @JsonView(JsonViews.Embedded.class)
-    private Users userResponsible;
-
     @JoinColumn(name = "ID_REQUEST_STATUS", referencedColumnName = "ID_REQUEST_STATUS")
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private CRequestStatus requestStatus;
+
+    @JoinColumn(name = "ID_REQUEST_CATEGORY", referencedColumnName = "ID_REQUEST_CATEGORY")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private CRequestsCategories requestCategory;
+
+    @JoinColumn(name = "ID_REQUEST_TYPE", referencedColumnName = "ID_REQUEST_TYPE")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private CRequestTypes requestType;
+
+    @JoinColumn(name = "ID_EMPLOYEE", referencedColumnName = "ID_EMPLOYEE")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private Employees employees;
+
+    @JoinColumn(name = "ID_DISTRIBUTOR_COST_CENTER", referencedColumnName = "ID_DISTRIBUTOR_COST_CENTER")
+    @ManyToOne(optional = false)
+    @JsonView(JsonViews.Embedded.class)
+    private DistributorCostCenter distributorCostCenter;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "request")
     @JsonView(JsonViews.Embedded.class)
@@ -119,28 +130,6 @@ public class Requests implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "request")
     @JsonView(JsonViews.Embedded.class)
     private List<RequestProducts> requestProductsList;
-
-    @Column(name = "ACTIVE", columnDefinition = "TINYINT", nullable = false)
-    @Type(type = "org.hibernate.type.NumericBooleanType")
-    @JsonView(JsonViews.Root.class)
-    private Boolean active;
-
-    @JoinColumn(name = "ID_MONTH", referencedColumnName = "ID_MONTH")
-    @ManyToOne
-    @JsonView(JsonViews.Embedded.class)
-    private CMonths cMonths;
-
-    public CMonths getcMonths() {
-        return cMonths;
-    }
-
-    public void setcMonths(CMonths cMonths) {
-        this.cMonths = cMonths;
-    }
-
-    public Requests() {
-        this.active = true;
-    }
 
     public Integer getIdRequest() {
         return idRequest;
@@ -158,20 +147,84 @@ public class Requests implements Serializable {
         this.folio = folio;
     }
 
-    public String getDescription() {
-        return description;
+    public Integer getIdDistributorCostCenter() {
+        return idDistributorCostCenter;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setIdDistributorCostCenter(Integer idDistributorCostCenter) {
+        this.idDistributorCostCenter = idDistributorCostCenter;
     }
 
-    public String getPurpose() {
-        return purpose;
+    public Integer getIdRequestCategory() {
+        return idRequestCategory;
     }
 
-    public void setPurpose(String purpose) {
-        this.purpose = purpose;
+    public void setIdRequestCategory(Integer idRequestCategory) {
+        this.idRequestCategory = idRequestCategory;
+    }
+
+    public Integer getIdRequestType() {
+        return idRequestType;
+    }
+
+    public void setIdRequestType(Integer idRequestType) {
+        this.idRequestType = idRequestType;
+    }
+
+    public Integer getIdEmployee() {
+        return idEmployee;
+    }
+
+    public void setIdEmployee(Integer idEmployee) {
+        this.idEmployee = idEmployee;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public BigDecimal getTotalExpended() {
+        return totalExpended;
+    }
+
+    public void setTotalExpended(BigDecimal totalExpended) {
+        this.totalExpended = totalExpended;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public CRequestStatus getRequestStatus() {
+        return requestStatus;
+    }
+
+    public void setRequestStatus(CRequestStatus requestStatus) {
+        this.requestStatus = requestStatus;
+    }
+
+    public CRequestsCategories getRequestCategory() {
+        return requestCategory;
+    }
+
+    public void setRequestCategory(CRequestsCategories requestCategory) {
+        this.requestCategory = requestCategory;
+    }
+
+    public CRequestTypes getRequestType() {
+        return requestType;
+    }
+
+    public void setRequestType(CRequestTypes requestType) {
+        this.requestType = requestType;
     }
 
     public LocalDateTime getCreationDate() {
@@ -182,14 +235,6 @@ public class Requests implements Serializable {
         this.creationDate = creationDate;
     }
 
-    public LocalDateTime getApplyingDate() {
-        return applyingDate;
-    }
-
-    public void setApplyingDate(LocalDateTime applyingDate) {
-        this.applyingDate = applyingDate;
-    }
-
     public int getIdAccessLevel() {
         return idAccessLevel;
     }
@@ -198,68 +243,12 @@ public class Requests implements Serializable {
         this.idAccessLevel = idAccessLevel;
     }
 
-    public Integer getIdUserRequest() {
-        return idUserRequest;
-    }
-
-    public void setIdUserRequest(Integer idUserRequest) {
-        this.idUserRequest = idUserRequest;
-    }
-
-    public Integer getIdUserResponsible() {
-        return idUserResponsible;
-    }
-
-    public void setIdUserResponsible(Integer idUserResponsible) {
-        this.idUserResponsible = idUserResponsible;
-    }
-
-    public Integer getIdBudgetYear() {
-        return idBudgetYear;
-    }
-
-    public void setIdBudgetYear(Integer idBudgetYear) {
-        this.idBudgetYear = idBudgetYear;
-    }
-
-    public Integer getIdMonth() {
-        return idMonth;
-    }
-
-    public void setIdMonth(Integer idMonth) {
-        this.idMonth = idMonth;
-    }
-
     public Integer getIdRequestStatus() {
         return idRequestStatus;
     }
 
     public void setIdRequestStatus(Integer idRequestStatus) {
         this.idRequestStatus = idRequestStatus;
-    }
-
-    public Users getUserRequest() {
-        return userRequest;
-    }
-
-    public void setUserRequest(Users userRequest) {
-        this.userRequest = userRequest;
-    }
-
-    public Users getUserResponsible() {
-        return userResponsible;
-    }
-
-    public void setUserResponsible(Users userResponsible) {
-        this.userResponsible = userResponsible;
-    }
-
-    public CRequestStatus getRequestStatus() {
-        return requestStatus;
-    }
-
-    public void setRequestStatus(CRequestStatus requestStatus) {
-        this.requestStatus = requestStatus;
     }
 
     public List<PriceEstimations> getPriceEstimationsList() {
@@ -278,36 +267,74 @@ public class Requests implements Serializable {
         this.requestProductsList = requestProductsList;
     }
 
-    public DateFormatsPojo getApplyingDateFormats() {
-        return (applyingDate == null) ? null : new DateFormatsPojo(applyingDate);
-    }
-
     public DateFormatsPojo getCreationDateFormats() {
         return (creationDate == null) ? null : new DateFormatsPojo(creationDate);
     }
 
-    public Boolean getActive() {
-        return active;
+    public Employees getEmployees() {
+        return employees;
     }
 
-    public void setActive(Boolean active) {
-        this.active = active;
+    public void setEmployees(Employees employees) {
+        this.employees = employees;
+    }
+
+    public DistributorCostCenter getDistributorCostCenter() {
+        return distributorCostCenter;
+    }
+
+    public void setDistributorCostCenter(DistributorCostCenter distributorCostCenter) {
+        this.distributorCostCenter = distributorCostCenter;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Requests)) return false;
 
         Requests requests = (Requests) o;
 
-        return idRequest != null ? idRequest.equals(requests.idRequest) : requests.idRequest == null;
-
+        if (getIdAccessLevel() != requests.getIdAccessLevel()) return false;
+        if (getUserName() != requests.getUserName()) return false;
+        if (!getIdRequest().equals(requests.getIdRequest())) return false;
+        if (getIdDistributorCostCenter() != null ? !getIdDistributorCostCenter().equals(requests.getIdDistributorCostCenter()) : requests.getIdDistributorCostCenter() != null)
+            return false;
+        if (getIdRequestStatus() != null ? !getIdRequestStatus().equals(requests.getIdRequestStatus()) : requests.getIdRequestStatus() != null)
+            return false;
+        if (getIdRequestCategory() != null ? !getIdRequestCategory().equals(requests.getIdRequestCategory()) : requests.getIdRequestCategory() != null)
+            return false;
+        if (getIdRequestType() != null ? !getIdRequestType().equals(requests.getIdRequestType()) : requests.getIdRequestType() != null)
+            return false;
+        if (getIdEmployee() != null ? !getIdEmployee().equals(requests.getIdEmployee()) : requests.getIdEmployee() != null)
+            return false;
+        if (getFolio() != null ? !getFolio().equals(requests.getFolio()) : requests.getFolio() != null) return false;
+        if (getReason() != null ? !getReason().equals(requests.getReason()) : requests.getReason() != null)
+            return false;
+        if (getTotalExpended() != null ? !getTotalExpended().equals(requests.getTotalExpended()) : requests.getTotalExpended() != null)
+            return false;
+        if (getCreationDate() != null ? !getCreationDate().equals(requests.getCreationDate()) : requests.getCreationDate() != null)
+            return false;
+        if (getPriceEstimationsList() != null ? !getPriceEstimationsList().equals(requests.getPriceEstimationsList()) : requests.getPriceEstimationsList() != null)
+            return false;
+        return getRequestProductsList() != null ? getRequestProductsList().equals(requests.getRequestProductsList()) : requests.getRequestProductsList() == null;
     }
 
     @Override
     public int hashCode() {
-        return idRequest != null ? idRequest.hashCode() : 0;
+        int result = getIdRequest().hashCode();
+        result = 31 * result + (getIdDistributorCostCenter() != null ? getIdDistributorCostCenter().hashCode() : 0);
+        result = 31 * result + (getIdRequestStatus() != null ? getIdRequestStatus().hashCode() : 0);
+        result = 31 * result + (getIdRequestCategory() != null ? getIdRequestCategory().hashCode() : 0);
+        result = 31 * result + (getIdRequestType() != null ? getIdRequestType().hashCode() : 0);
+        result = 31 * result + (getIdEmployee() != null ? getIdEmployee().hashCode() : 0);
+        result = 31 * result + (getFolio() != null ? getFolio().hashCode() : 0);
+        result = 31 * result + (getReason() != null ? getReason().hashCode() : 0);
+        result = 31 * result + (getTotalExpended() != null ? getTotalExpended().hashCode() : 0);
+        result = 31 * result + getIdAccessLevel();
+        result = 31 * result + (getCreationDate() != null ? getCreationDate().hashCode() : 0);
+        result = 31 * result + (getPriceEstimationsList() != null ? getPriceEstimationsList().hashCode() : 0);
+        result = 31 * result + (getRequestProductsList() != null ? getRequestProductsList().hashCode() : 0);
+        return result;
     }
 
     @Override
@@ -315,19 +342,9 @@ public class Requests implements Serializable {
         return "Requests{" +
                 "idRequest=" + idRequest +
                 ", folio='" + folio + '\'' +
-                ", description='" + description + '\'' +
-                ", purpose='" + purpose + '\'' +
                 ", creationDate=" + creationDate +
-                ", applyingDate=" + applyingDate +
                 ", idAccessLevel=" + idAccessLevel +
-                ", idUserRequest=" + idUserRequest +
-                ", idUserResponsible=" + idUserResponsible +
-                ", idBudgetYear=" + idBudgetYear +
-                ", idMonth=" + idMonth +
                 ", idRequestStatus=" + idRequestStatus +
-                ", userRequest=" + userRequest +
-                ", userResponsible=" + userResponsible +
-                ", requestStatus=" + requestStatus +
                 ", priceEstimationsList=" + priceEstimationsList +
                 ", requestProductsList=" + requestProductsList +
                 '}';
