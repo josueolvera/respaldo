@@ -103,21 +103,28 @@ public class PriceEstimations implements Serializable {
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime creationDate;
-    
+
+
     @JoinColumn(name = "ID_REQUEST", referencedColumnName = "ID_REQUEST")
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private Requests request;
 
+    @JoinColumn(name = "ID_ACCOUNT", referencedColumnName = "ID_ACCOUNT")
+    @ManyToOne
+    @JsonView(JsonViews.Embedded.class)
+    private Accounts accounts;
+
     @JoinColumn(name = "ID_ESTIMATION_STATUS", referencedColumnName = "ID_ESTIMATION_STATUS")
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private CEstimationStatus cEstimationStatus;
     
     @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private CCurrencies currency;
+
 
     public PriceEstimations() {
     }

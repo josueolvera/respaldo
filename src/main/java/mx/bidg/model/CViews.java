@@ -80,11 +80,11 @@ public class CViews implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private List<ViewsComponent> viewsComponentList;
     
-    @OneToMany(mappedBy = "view")
+    /*@OneToMany(mappedBy = "view")
     @JsonView(JsonViews.Embedded.class)
     @JsonProperty("cRequestCategoriesList")
     private List<CRequestsCategories> cRequestsCategoriesList;
-
+    */
     public CViews() {
     }
 
@@ -170,14 +170,14 @@ public class CViews implements Serializable {
         this.cTasks = cTasks;
     }
     
-    @JsonProperty("cRequestCategoriesList")
+    /*@JsonProperty("cRequestCategoriesList")
     public List<CRequestsCategories> getCRequestsCategoriesList() {
         return cRequestsCategoriesList;
     }
 
     public void setCRequestsCategoriesList(List<CRequestsCategories> cRequestsCategoriesList) {
         this.cRequestsCategoriesList = cRequestsCategoriesList;
-    }
+    }*/
 
     @Override
     public int hashCode() {
