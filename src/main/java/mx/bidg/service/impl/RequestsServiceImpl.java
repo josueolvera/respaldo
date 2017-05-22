@@ -127,8 +127,8 @@ public class RequestsServiceImpl implements RequestsService {
 
         JsonNode jsonRequest = mapper.readTree(data);
         Requests request = new Requests();
-        request.setDescription(jsonRequest.get("request").get("description").asText());
-        request.setPurpose(jsonRequest.get("request").get("purpose").asText());
+//        request.setDescription(jsonRequest.get("request").get("description").asText());
+//        request.setPurpose(jsonRequest.get("request").get("purpose").asText());
         int idCostCenter = jsonRequest.get("request").get("idCostCenter").asInt();
         int idBudgetCategory = jsonRequest.get("request").get("idBudgetCategory").asInt();
         int idBudgetSubcategory = jsonRequest.get("request").get("idBudgetSubcategory").asInt();
@@ -137,19 +137,19 @@ public class RequestsServiceImpl implements RequestsService {
 
         int idMonth =LocalDateTime.now().getMonth().getValue();
         CMonths months=cMonthsDao.findById(idMonth);
-        request.setcMonths(months);
+//        request.setcMonths(months);
 
         AccountingAccounts accountingAccounts=accountingAccountsDao.findByCategoryAndSubcategory(idBudgetCategory,idBudgetSubcategory);
 
         //51 es el id de Requests en CTables
         request.setFolio(foliosService.createNew(new CTables(51)));
-        request.setUserRequest(user);
+//        request.setUserRequest(user);
         request.setRequestStatus(CRequestStatus.PENDIENTE);
         //request.setBudgetYear(budgetYear);
         //request.setUserResponsible(new Users(jsonRequest.get("request").get("idUserResponsible").asInt()));
-        request.setUserResponsible(user);
+//        request.setUserResponsible(user);
         request.setCreationDate(LocalDateTime.now());
-        request.setApplyingDate(LocalDateTime.now());
+//        request.setApplyingDate(LocalDateTime.now());
         request.setIdAccessLevel(1);
         List<RequestProducts> requestProducts = new ArrayList<>();
 
@@ -240,7 +240,7 @@ public class RequestsServiceImpl implements RequestsService {
 //        String typeRequestMinus = typeRequest.toLowerCase();
         emailTemplate.addProperty("request", request);
 //        emailTemplate.addProperty("typeRequest", typeRequestMinus);
-        emailTemplate.addRecipient(new EmailRecipients(request.getUserRequest().getMail(), request.getUserRequest().getUsername(), EmailRecipients.TO));
+//        emailTemplate.addRecipient(new EmailRecipients(request.getUserRequest().getMail(), request.getUserRequest().getUsername(), EmailRecipients.TO));
         emailDeliveryService.deliverEmail(emailTemplate);
         return emailTemplate;
     }
@@ -262,11 +262,11 @@ public class RequestsServiceImpl implements RequestsService {
 
         Requests request = requestsDao.findById(idRequest);
 
-        if (request != null) {
-            request.setActive(!request.getActive());
-
-            request = requestsDao.update(request);
-        }
+//        if (request != null) {
+//            request.setActive(!request.getActive());
+//
+//            request = requestsDao.update(request);
+//        }
 
         return request;
     }

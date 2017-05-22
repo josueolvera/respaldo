@@ -146,7 +146,7 @@ public class PlaneTicketsServiceImpl implements PlaneTicketsService {
             CRequestStatus cRequestStatus = cRequestStatusDao.findById(node.get("status").asInt());
 
             if (node.hasNonNull("justification")) {
-                planeTicket.getRequest().setPurpose(node.get("justification").asText());
+//                planeTicket.getRequest().setPurpose(node.get("justification").asText());
             }
 
             planeTicket.getRequest().setRequestStatus(cRequestStatus);

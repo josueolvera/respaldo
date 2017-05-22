@@ -28,6 +28,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicUpdate
 @Table(name = "C_REQUESTS_CATEGORIES")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
+
 public class CRequestsCategories implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -67,6 +68,29 @@ public class CRequestsCategories implements Serializable {
     @JsonView(JsonViews.Root.class)
     private LocalDateTime creationDate;
 
+    public CRequestsCategories() {
+    }
+
+    public CRequestsCategories(Integer idRequestCategory) {
+        this.idRequestCategory = idRequestCategory;
+    }
+
+    public Integer getIdRequestCategory() {
+        return idRequestCategory;
+    }
+
+    public void setIdRequestCategory(Integer idRequestCategory) {
+        this.idRequestCategory = idRequestCategory;
+    }
+
+    public Integer getIdAccessLevel() {
+        return idAccessLevel;
+    }
+
+    public void setIdAccessLevel(Integer idAccessLevel) {
+        this.idAccessLevel = idAccessLevel;
+    }
+
     public String getRequestCategoryName() {
         return requestCategoryName;
     }
@@ -89,29 +113,6 @@ public class CRequestsCategories implements Serializable {
 
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
-    }
-
-    public CRequestsCategories() {
-    }
-
-    public CRequestsCategories(Integer idRequestCategory) {
-        this.idRequestCategory = idRequestCategory;
-    }
-
-    public Integer getIdRequestCategory() {
-        return idRequestCategory;
-    }
-
-    public void setIdRequestCategory(Integer idRequestCategory) {
-        this.idRequestCategory = idRequestCategory;
-    }
-
-    public Integer getIdAccessLevel() {
-        return idAccessLevel;
-    }
-
-    public void setIdAccessLevel(Integer idAccessLevel) {
-        this.idAccessLevel = idAccessLevel;
     }
 
     @Override

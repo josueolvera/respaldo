@@ -5,12 +5,15 @@
  */
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
@@ -22,6 +25,8 @@ import org.hibernate.annotations.DynamicUpdate;
 @Entity
 @DynamicUpdate
 @Table(name = "C_ESTIMATION_STATUS")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
+
 public class CEstimationStatus implements Serializable {
 
     public static final CEstimationStatus PENDIENTE = new CEstimationStatus(1);
@@ -29,21 +34,20 @@ public class CEstimationStatus implements Serializable {
     public static final CEstimationStatus RECHAZADA = new CEstimationStatus(3);
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
     @Column(name = "ID_ESTIMATION_STATUS")
     @JsonView(JsonViews.Root.class)
     private Integer idEstimationStatus;
-    
+
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "ESTIMATION_STATUS_NAME")
     @JsonView(JsonViews.Root.class)
     private String estimationStatus;
-    
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
@@ -145,5 +149,5 @@ public class CEstimationStatus implements Serializable {
     public String toString() {
         return "mx.bidg.model.CEstimationStatus[ idEstimationStatus=" + idEstimationStatus + " ]";
     }
-    
+
 }

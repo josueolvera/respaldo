@@ -25,17 +25,17 @@ public class RequestPlaneTicketEmailNotificationServiceImpl implements RequestPl
     public EmailTemplates sendEmailToUser(PlaneTickets planeTicket) {
         EmailTemplates emailTemplate = emailTemplatesService.findByName("request_plane_ticket_user_notification");
 
-        if (planeTicket.getIsOutOfDateRequest()) {
-            emailTemplate.addProperty("outOfDateRequestMessage", "Fuera de fechas de solicitud.");
-        }
-        emailTemplate.addProperty("planeTicket", planeTicket);
-        emailTemplate.addRecipient(
-                new EmailRecipients(
-                        planeTicket.getRequest().getUserRequest().getMail(),
-                        planeTicket.getRequest().getUserRequest().getUsername(),
-                        EmailRecipients.TO
-                )
-        );
+//        if (planeTicket.getIsOutOfDateRequest()) {
+//            emailTemplate.addProperty("outOfDateRequestMessage", "Fuera de fechas de solicitud.");
+//        }
+//        emailTemplate.addProperty("planeTicket", planeTicket);
+//        emailTemplate.addRecipient(
+//                new EmailRecipients(
+//                        planeTicket.getRequest().getUserRequest().getMail(),
+//                        planeTicket.getRequest().getUserRequest().getUsername(),
+//                        EmailRecipients.TO
+//                )
+//        );
 
         emailDeliveryService.deliverEmail(emailTemplate);
         return emailTemplate;
@@ -45,11 +45,11 @@ public class RequestPlaneTicketEmailNotificationServiceImpl implements RequestPl
     public EmailTemplates sendEmailToAdminAux(PlaneTickets planeTicket) {
         EmailTemplates emailTemplate = emailTemplatesService.findByName("request_plane_ticket_admin_aux_notification");
 
-        if (planeTicket.getIsOutOfDateRequest()) {
-            emailTemplate.addProperty("outOfDateRequestMessage", "Fuera de fechas de solicitud.");
-        }
-
-        emailTemplate.addProperty("planeTicket", planeTicket);
+//        if (planeTicket.getIsOutOfDateRequest()) {
+//            emailTemplate.addProperty("outOfDateRequestMessage", "Fuera de fechas de solicitud.");
+//        }
+//
+//        emailTemplate.addProperty("planeTicket", planeTicket);
 
         emailDeliveryService.deliverEmail(emailTemplate);
         return emailTemplate;

@@ -261,6 +261,20 @@ public class SIADController {
         return model;
     }
 
+    @RequestMapping(value = "/request-spending-detail-current", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView siadRequestSpendingDetailCurrent() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("request-spending-detail-current");
+        return model;
+    }
+
+    @RequestMapping(value = "/buy", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView siadBuy() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("buy");
+        return model;
+    }
+
     @RequestMapping(value = "/c-distributors", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public ModelAndView siadDistributors() {
         ModelAndView model = new ModelAndView();

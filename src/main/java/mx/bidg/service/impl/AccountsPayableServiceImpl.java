@@ -322,7 +322,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
 //                row.createCell(4).setCellValue(cBranchs.getBranchShort());
 //                row.createCell(5).setCellValue(provider.getProviderName().replace(':', ' '));
                 row.createCell(6).setCellValue(accountsPayable.getDueDateFormats().getDateNumber());
-                row.createCell(7).setCellValue(requests.getUserRequest().getDwEmployee().getEmployee().getFullName());
+//                row.createCell(7).setCellValue(requests.getUserRequest().getDwEmployee().getEmployee().getFullName());
 
 
                 aux++;
@@ -374,7 +374,7 @@ public class AccountsPayableServiceImpl implements AccountsPayableService {
             for (AccountsPayable accountsPayable : accountsPayables){
                 Requests requests = requestsDao.findByFolio(accountsPayable.getFolio());
                 accountsPayable.setRequests(requests);
-                accountsPayable.setEmployee(requests.getUserRequest().getDwEmployee().getEmployee());
+//                accountsPayable.setEmployee(requests.getUserRequest().getDwEmployee().getEmployee());
             }
             EmailTemplates emailTemplate = emailTemplatesService.findByName(EMAIL_TEMPLATE_NAME);
             emailTemplate.addProperty("accountsPayables", accountsPayables);

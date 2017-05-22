@@ -269,7 +269,7 @@ public class TransactionsServiceImpl implements TransactionsService {
 //                row.createCell(5).setCellValue(provider.getProviderName().replace(':', ' '));
                 row.createCell(6).setCellValue(accountsPayable.getCreationDateFormats().getDateNumber());
                 row.createCell(7).setCellValue(transaction.getCreationDateFormats().getDateNumber());
-                row.createCell(8).setCellValue(requests.getUserRequest().getDwEmployee().getEmployee().getFullName());
+//                row.createCell(8).setCellValue(requests.getUserRequest().getDwEmployee().getEmployee().getFullName());
 
 
                 aux++;

@@ -29,7 +29,6 @@ import org.hibernate.annotations.Type;
 @Entity
 @DynamicUpdate
 @Table(name = "REQUESTS")
-
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class Requests implements Serializable {
 

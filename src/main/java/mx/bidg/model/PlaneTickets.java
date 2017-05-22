@@ -124,16 +124,16 @@ public class PlaneTickets implements Serializable {
         return request;
     }
 
-    public boolean getIsOutOfDateRequest() {
-
-        if (request.getApplyingDate() != null) {
-            long daysBetween = DAYS.between(LocalDateTime.now().toLocalDate(), request.getApplyingDate().toLocalDate());
-
-            return daysBetween < 5;
-        } else {
-            return false;
-        }
-    }
+//    public boolean getIsOutOfDateRequest() {
+//
+//        if (request.getApplyingDate() != null) {
+//            long daysBetween = DAYS.between(LocalDateTime.now().toLocalDate(), request.getApplyingDate().toLocalDate());
+//
+//            return daysBetween < 5;
+//        } else {
+//            return false;
+//        }
+//    }
 
     public void setRequest(Requests request) {
         this.request = request;

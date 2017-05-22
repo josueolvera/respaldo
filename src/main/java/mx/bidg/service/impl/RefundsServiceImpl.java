@@ -44,9 +44,9 @@ public class RefundsServiceImpl implements RefundsService {
         JsonNode requestNode = mapper.readTree(data);
 
         Requests request = new Requests();
-        request.setPurpose(requestNode.get("purpose").asText());
+//        request.setPurpose(requestNode.get("purpose").asText());
         request.setFolio(foliosService.createNew(new CTables(51)));
-        request.setUserRequest(user);
+//        request.setUserRequest(user);
         request.setCreationDate(now);
         request.setIdAccessLevel(1);
 

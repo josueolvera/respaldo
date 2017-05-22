@@ -62,7 +62,7 @@ public class RequestEventsListener {
     @EventListener
     public void createBaseNotifications(CreationEvent<Requests> event) {
         Requests request = event.getResource();
-        notificationsService.createNotification(request.getUserRequest(), request);
+//        notificationsService.createNotification(request.getUserRequest(), request);
         AuthorizationTreeRules rule = authorizationTreeRulesService.findByRuleName(ESTIMATION_CREATION_RULE_NAME);
         Integer idUser = evalRule(rule, request);
         notificationsService.createForEstimationCreation(new Users(idUser), request);
@@ -127,8 +127,8 @@ public class RequestEventsListener {
         requestsService.authorization(request.getIdRequest());
         // TODO: Notificar a usuario involucrados
         List<Users> users = new ArrayList<>();
-        users.add(request.getUserRequest());
-        users.add(request.getUserResponsible());
+//        users.add(request.getUserRequest());
+//        users.add(request.getUserResponsible());
     }
 
     private Integer evalRule(AuthorizationTreeRules rule, Requests request) {
