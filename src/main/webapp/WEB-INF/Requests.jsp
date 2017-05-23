@@ -414,6 +414,9 @@
                 var key = window.Event ? e.which : e.keyCode
                 return (key >= 48 && key <= 57)
             }
+            function backHistory() {
+                history.back();
+            }
         </script>
     </jsp:attribute>
 
@@ -429,7 +432,7 @@
         <div id="content">
             <div class="row">
                 <div class="col-md-8">
-                    <h2>Capturar solicitud de compra</h2>
+                    <h2>Capturar solicitud/compras</h2>
                 </div>
                 <div class="col-md-4 text-right" style="margin-top: 10px">
                     <label>Solicitante</label>
@@ -527,21 +530,21 @@
                                     <td class="col-md-2"><b>Cotización 1</b></td>
                                     <td class="col-md-5"></td>
                                     <td class="col-md-3">Monto cotización sin IVA</td>
-                                    <td class="col-md-2"><input class="form-control" type="text" placeholder="$"
+                                    <td class="col-md-2">
+                                        <input class="form-control" type="text" placeholder="$"
                                                                 onclick="return cleanField(this)"
                                                                 onkeypress="return validateFloatKeyPress(this,event)"
-                                                                onInput="format(this)" maxlength="14"
-                                    /></td>
+                                                                onInput="format(this)" maxlength="14" />
+                                    </td>
                                 </tr>
                                 <tr class="col-md-12">
                                     <td class="col-md-2">Documento</td>
                                     <td class="col-md-6">
-                                        <input v-if="docType.documentType.field == 0 && docType.documentType.required == 1"
-                                               @change="setFile($event, docType)" type="file"
+                                        <input @change="setFile($event, docType)" type="file"
                                                class="form-control"
                                                :disabled="isSaving"
                                                :name="'file-type-' + docType.documentType.idDocumentType"
-                                               accept="application/pdf" required>
+                                               accept="application/pdf" required />
                                     </td>
                                     <td class="col-md-4"></td>
                                 </tr>
@@ -557,12 +560,11 @@
                                 <tr class="col-md-12">
                                     <td class="col-md-2">Documento</td>
                                     <td class="col-md-6">
-                                        <input v-if="docType.documentType.field == 0 && docType.documentType.required == 1"
-                                               @change="setFile($event, docType)" type="file"
+                                        <input @change="setFile($event, docType)" type="file"
                                                class="form-control"
                                                :disabled="isSaving"
                                                :name="'file-type-' + docType.documentType.idDocumentType"
-                                               accept="application/pdf" required>
+                                               accept="application/pdf" required />
                                     </td>
                                     <td class="col-md-4"></td>
                                 </tr>
@@ -578,12 +580,11 @@
                                 <tr class="col-md-12">
                                     <td class="col-md-2">Documento</td>
                                     <td class="col-md-6">
-                                        <input v-if="docType.documentType.field == 0 && docType.documentType.required == 1"
-                                               @change="setFile($event, docType)" type="file"
+                                        <input @change="setFile($event, docType)" type="file"
                                                class="form-control"
                                                :disabled="isSaving"
                                                :name="'file-type-' + docType.documentType.idDocumentType"
-                                               accept="application/pdf" required>
+                                               accept="application/pdf" required />
                                     </td>
                                     <td class="col-md-4"></td>
                                 </tr>
@@ -593,7 +594,9 @@
                         </div>
                         <div style="margin-left: 84%">
                             <button @click="showModalSolicitud()" class="btn btn-success">Solicitar</button>
-                            <button @click="cleanFields()" class="btn btn-default">Cancelar</button>
+                            <a href="javascript:window.history.back();">
+                                <button type="button" class="btn btn-default" >Cancelar</button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -614,7 +617,7 @@
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <p>La solicitud será enviada a compras para continuar con el proceso de compra de
+                                    <p align="center" style="font-size: 16px">La solicitud será enviada a compras para continuar<br> con el proceso de compra de
                                         bienes.</p>
                                 </div>
                             </div>
@@ -622,7 +625,9 @@
                         <br>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-success" @click="saveBussinessLine()">Aceptar</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <a href="javascript:window.history.back();">
+                                <button type="button" class="btn btn-default" >Cancelar</button>
+                            </a>
                         </div>
                     </div>
                 </div>
