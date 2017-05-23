@@ -37,12 +37,11 @@ import org.hibernate.annotations.Type;
 @Entity
 @DynamicUpdate
 @Table(name = "PRICE_ESTIMATIONS")
-
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class PriceEstimations implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_PRICE_ESTIMATION")
@@ -55,7 +54,7 @@ public class PriceEstimations implements Serializable {
 
     @Column(name = "ID_ACCOUNT", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private int idAccount;
+    private Integer idAccount;
 
     @Column(name = "ID_ESTIMATION_STATUS", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -63,19 +62,19 @@ public class PriceEstimations implements Serializable {
 
     @Column(name = "ID_CURRENCY", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
-    private int idCurrency;
+    private Integer idCurrency;
 
     @Basic(optional = false)
     @NotNull
     @Column(name = "AMOUNT")
     @JsonView(JsonViews.Root.class)
     private BigDecimal amount;
-    
+
     @Size(max = 100)
     @Column(name = "FILE_PATH")
     @JsonView(JsonViews.Private.class)
     private String filePath;
-    
+
     @Size(max = 45)
     @Column(name = "FILE_NAME")
     @JsonView(JsonViews.Root.class)
@@ -90,7 +89,7 @@ public class PriceEstimations implements Serializable {
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
-    private int idAccessLevel;
+    private Integer idAccessLevel;
 
     @Size(max = 50)
     @Column(name = "USERNAME")
@@ -119,7 +118,7 @@ public class PriceEstimations implements Serializable {
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private CEstimationStatus cEstimationStatus;
-    
+
     @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
@@ -133,8 +132,8 @@ public class PriceEstimations implements Serializable {
         return idPriceEstimation;
     }
 
-    public void setIdPriceEstimation(Integer idPriceEstimations) {
-        this.idPriceEstimation = idPriceEstimations;
+    public void setIdPriceEstimation(Integer idPriceEstimation) {
+        this.idPriceEstimation = idPriceEstimation;
     }
 
     public BigDecimal getAmount() {
@@ -159,47 +158,6 @@ public class PriceEstimations implements Serializable {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
-    }
-
-
-    public int getIdAccessLevel() {
-        return idAccessLevel;
-    }
-
-    public void setIdAccessLevel(int idAccessLevel) {
-        this.idAccessLevel = idAccessLevel;
-    }
-
-    public Integer getIdRequest() {
-        return idRequest;
-    }
-
-    public void setIdRequest(Integer idRequest) {
-        this.idRequest = idRequest;
-    }
-
-    public Integer getIdEstimationStatus() {
-        return idEstimationStatus;
-    }
-
-    public void setIdEstimationStatus(Integer idEstimationStatus) {
-        this.idEstimationStatus = idEstimationStatus;
-    }
-
-    public int getIdAccount() {
-        return idAccount;
-    }
-
-    public void setIdAccount(int idAccount) {
-        this.idAccount = idAccount;
-    }
-
-    public int getIdCurrency() {
-        return idCurrency;
-    }
-
-    public void setIdCurrency(int idCurrency) {
-        this.idCurrency = idCurrency;
     }
 
     public Requests getRequest() {
@@ -240,6 +198,46 @@ public class PriceEstimations implements Serializable {
 
     public DateFormatsPojo getAuthorizationDateFormats() {
         return (authorizationDate != null) ? new DateFormatsPojo(authorizationDate) : null;
+    }
+
+    public Integer getIdEstimationStatus() {
+        return idEstimationStatus;
+    }
+
+    public void setIdEstimationStatus(Integer idEstimationStatus) {
+        this.idEstimationStatus = idEstimationStatus;
+    }
+
+    public Integer getIdCurrency() {
+        return idCurrency;
+    }
+
+    public void setIdCurrency(Integer idCurrency) {
+        this.idCurrency = idCurrency;
+    }
+
+    public Integer getIdAccessLevel() {
+        return idAccessLevel;
+    }
+
+    public void setIdAccessLevel(Integer idAccessLevel) {
+        this.idAccessLevel = idAccessLevel;
+    }
+
+    public Integer getIdRequest() {
+        return idRequest;
+    }
+
+    public void setIdRequest(Integer idRequest) {
+        this.idRequest = idRequest;
+    }
+
+    public Integer getIdAccount() {
+        return idAccount;
+    }
+
+    public void setIdAccount(Integer idAccount) {
+        this.idAccount = idAccount;
     }
 
     public String getUsername() {
@@ -306,5 +304,5 @@ public class PriceEstimations implements Serializable {
     public String toString() {
         return "mx.bidg.config.PriceEstimations[ idEstimation=" + idPriceEstimation + " ]";
     }
-    
+
 }
