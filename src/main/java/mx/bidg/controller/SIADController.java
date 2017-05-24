@@ -316,4 +316,11 @@ public class SIADController {
         model.setViewName("request-managment-spending");
         return model;
     }
+
+    @RequestMapping(value = "/capture-request-buy", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView siadCaptureRequestBuy() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("capture-request-buy");
+        return model;
+    }
 }
