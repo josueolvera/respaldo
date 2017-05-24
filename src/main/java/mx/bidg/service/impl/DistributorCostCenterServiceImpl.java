@@ -78,4 +78,9 @@ public class DistributorCostCenterServiceImpl implements DistributorCostCenterSe
     public List<Integer> getIdsCostCentersByBusinessLineDistributorCC(List<Integer> idsBussinessLines, List<Integer> idsDistributors, List<Integer> idsCC) {
         return distributorCostCenterDao.getIdsCostCentersByBusinessLineDistributorCC(idsBussinessLines, idsDistributors, idsCC);
     }
+
+    @Override
+    public List<Integer> getIdsAccountingAccountsByCostCenterAndModuleStatus(Integer idCostCenter, Integer idModuleStatus){
+        return distributorCostCenterDao.getIdsAccountingAccountsByCostCenterAndModuleStatus(idCostCenter, idModuleStatus);
+    }
 }

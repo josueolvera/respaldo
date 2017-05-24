@@ -78,14 +78,14 @@ public class RequestsController {
 
 
     @RequestMapping(value = "/month-branch-product-type", method = RequestMethod.POST, 
-            headers = {"Accept=application/json;charset=UTF-8"}, produces = "application/json;charset=UTF-8")
+                    headers = {"Accept=application/json;charset=UTF-8"}, produces = "application/json;charset=UTF-8")
     public @ResponseBody String getBudgetMonthProductType(@RequestBody String data) throws Exception {
         return mapper.writeValueAsString(requestsService.getBudgetMonthProductType(data));
     }
 
 
     @RequestMapping(value = "/period-payment", method = RequestMethod.POST, headers = "Accept=application/json; charset=UTF-8",
-            produces = "application/json;charset=UTF-8")
+                    produces = "application/json;charset=UTF-8")
     public @ResponseBody String savePeriodicPayment(@RequestBody String data) throws Exception {
         PeriodicsPayments periodicsPayment = periodicPaymentsService.saveData(data);
         eventPublisher.publishEvent(new RequestCompletedEvent(requestsService.findByFolio(periodicsPayment.getFolio())));

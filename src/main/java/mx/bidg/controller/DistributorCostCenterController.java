@@ -4,14 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.config.JsonViews;
 import mx.bidg.exceptions.ValidationException;
+import mx.bidg.model.AccountingAccounts;
 import mx.bidg.model.CCostCenter;
 import mx.bidg.model.CDistributors;
 import mx.bidg.model.DistributorCostCenter;
 import mx.bidg.pojos.BussinessLine;
-import mx.bidg.service.BudgetsService;
-import mx.bidg.service.CCostCenterService;
-import mx.bidg.service.CDistributorsService;
-import mx.bidg.service.DistributorCostCenterService;
+import mx.bidg.service.*;
 import mx.bidg.utils.BudgetHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -53,6 +51,9 @@ public class DistributorCostCenterController {
 
     @Autowired
     private Environment env;
+
+    @Autowired
+    private AccountingAccountsService accountingAccountsService;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findAll() throws IOException{
@@ -211,5 +212,16 @@ public class DistributorCostCenterController {
         if (file.exists()){
             file.delete();
         }
+    }
+
+    @RequestMapping(value = "/cost-center/{idCostCenter}/{idModuleStatus}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findIdsAccountingAccountsByCostCenterAndModuleStatus(@PathVariable Integer idCostCenter,@PathVariable Integer idModuleStatus) throws IOException{
+        List<Integer> idsAccountingAccounts =  distributorCostCenterService.getIdsAccountingAccountsByCostCenterAndModuleStatus(idCostCenter, idModuleStatus);
+        List<AccountingAccounts> accountingAccountsList = new ArrayList<>();
+        for (Integer idAccountingAccount : idsAccountingAccounts){
+            AccountingAccounts accountingAccount = accountingAccountsService.findById(idAccountingAccount);
+            accountingAccountsList.add(accountingAccount);
+        }
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(accountingAccountsList), HttpStatus.OK);
     }
 }
