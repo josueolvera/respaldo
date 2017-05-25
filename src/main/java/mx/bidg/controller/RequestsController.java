@@ -116,14 +116,12 @@ public class RequestsController {
         );
     }
 
-    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findByRequestStatus(@PathVariable int idRequest) throws IOException{
+    @RequestMapping(value = "/status/{idRequestStatus}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findByRequestStatus(@PathVariable Integer idRequestStatus) throws IOException{
 
-        List<Requests> requests = requestsService.findByRequestStatus(idRequest);
+        List<Requests> requests = requestsService.findByRequestStatus(idRequestStatus);
 
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requests),
-                HttpStatus.OK);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requests), HttpStatus.OK);
     }
-
 
 }
