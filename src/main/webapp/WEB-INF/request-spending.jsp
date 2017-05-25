@@ -462,7 +462,7 @@
                     </div>
 
                     <div class="col-md-2 text-right">
-                        <a href="../siad/cotizable">
+                        <a href="../siad/capture-request-buy">
                             <button class="btn btn-warning" style="margin-top: 25px">Capturar una solicitud</button>
                         </a>
                     </div>

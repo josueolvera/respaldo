@@ -6,6 +6,8 @@
 package mx.bidg.service;
 
 import java.util.HashMap;
+import java.util.List;
+
 import mx.bidg.model.EmailTemplates;
 import mx.bidg.model.Requests;
 import mx.bidg.model.Users;
@@ -31,4 +33,5 @@ public interface RequestsService {
     EmailTemplates sendEmailForNewRequestAuthorization(Requests request, Users user);
 
     Requests changeActiveStatus(Integer idRequest);
+    List<Requests> findByRequestStatus(Integer idRequestStatus);
 }

@@ -545,7 +545,7 @@
                                                class="form-control"
                                                :disabled="isSaving"
                                                :name="'file-type-' + docType.documentType.idDocumentType"
-                                               accept="text/xml" required />
+                                               accept="application/pdf" required />
                                     </td>
                                     <td class="col-md-4"></td>
                                 </tr>
@@ -565,7 +565,7 @@
                                                class="form-control"
                                                :disabled="isSaving"
                                                :name="'file-type-' + docType.documentType.idDocumentType"
-                                               accept=".xml" accept="application/pdf" required />
+                                               accept="application/pdf" required />
                                     </td>
                                     <td class="col-md-4"></td>
                                 </tr>

@@ -7,6 +7,8 @@ package mx.bidg.dao;
 
 import mx.bidg.model.Requests;
 
+import java.util.List;
+
 /**
  *
  * @author sistemask
@@ -17,4 +19,5 @@ public interface RequestsDao extends InterfaceDao<Requests> {
     Requests findByIdFetchStatus(Integer idRequest);
     Requests findByIdFetchCategory(Integer idRequest);
     Requests findByFolio(String folio);
+    List<Requests> findByRequestStatus(Integer idRequestStatus);
 }

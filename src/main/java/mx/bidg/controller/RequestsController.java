@@ -104,8 +104,7 @@ public class RequestsController {
         Requests requests = requestsService.findByFolio(folio);
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Embedded.class)
-                        .writeValueAsString(requests),
-                HttpStatus.OK
+                        .writeValueAsString(requests),HttpStatus.OK
         );
     }
 
@@ -113,8 +112,18 @@ public class RequestsController {
     public ResponseEntity<String> changeActiveStatus(@RequestParam(name = "request") Integer idRequest) throws IOException{
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Embedded.class)
-                        .writeValueAsString(requestsService.changeActiveStatus(idRequest)),
-                HttpStatus.OK
+                        .writeValueAsString(requestsService.changeActiveStatus(idRequest)),HttpStatus.OK
         );
     }
+
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findByRequestStatus(@PathVariable int idRequest) throws IOException{
+
+        List<Requests> requests = requestsService.findByRequestStatus(idRequest);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requests),
+                HttpStatus.OK);
+    }
+
+
 }

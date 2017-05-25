@@ -270,4 +270,9 @@ public class RequestsServiceImpl implements RequestsService {
 
         return request;
     }
+
+    @Override
+    public List<Requests> findByRequestStatus(Integer idRequestStatus) {
+        return requestsDao.findByRequestStatus(idRequestStatus);
+    }
 }

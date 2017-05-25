@@ -20,5 +20,6 @@ public interface PriceEstimationsDao extends InterfaceDao<PriceEstimations> {
     PriceEstimations findByIdFetchRequestStatus(int idEstimation);
     
     PriceEstimations findAuthorized(Integer idRequest);
-    
+
+
 }
