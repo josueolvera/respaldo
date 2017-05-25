@@ -12,7 +12,6 @@
 
 <t:template pageTitle="BID Group: Bandeja de entrada solicitante">
     <jsp:attribute name="scripts">
-
         <script type="text/javascript">
             function validateFloatKeyPress(el, evt) {
                 var charCode = (evt.which) ? evt.which : event.keyCode;
@@ -54,8 +53,8 @@
                     this.getCurrencies();
                 },
                 data: {
-                    requestCategory: ${cat},
-                    idRequest: ${idRequest},
+                    <%--requestCategory: ${cat},--%>
+                    <%--idRequest: ${idRequest},--%>
                     roleCostCenterList: [],
                     costCenterList: [],
                     budgetCategories: [],
@@ -486,7 +485,7 @@
             <br>
                 <%-- vigentes--%>
             <div id="accordion" role="tablist" aria-multiselectable="true">
-                <div class="panel panel-default" v-if="selectedOptions.role.idRole > 0">
+                <div class="panel panel-default">
                     <div class="card">
                         <div class="card-header" role="tab" id="headingThree">
                         <div class="panel-heading" style="background-color: #7AC5CD">
@@ -530,7 +529,7 @@
                      </div>
                    </div>
                 </div>
-                <div class="panel panel-default" v-if="selectedOptions.role.idRole > 0">
+                <div class="panel panel-default">
                     <div class="card">
                         <div class="card-header" role="tab" id="headingTwo">
                             <div class="panel-heading" style="background-color: #7AC5CD">
@@ -576,7 +575,7 @@
                     </div>
                  </div>
 
-                <div class="panel panel-default" v-if="selectedOptions.role.idRole > 0">
+                <div class="panel panel-default">
                     <div class="card">
                         <div class="card-header" role="tab" id="headingOne">
                             <div class="panel-heading" style="background-color: #7AC5CD">

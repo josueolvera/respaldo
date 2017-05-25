@@ -54,8 +54,6 @@
                     this.getCurrencies();
                 },
                 data: {
-                    requestCategory: ${cat},
-                    idRequest: ${idRequest},
                     roleCostCenterList: [],
                     costCenterList: [],
                     budgetCategories: [],
