@@ -71,27 +71,19 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         if (request != null) {
             PriceEstimations priceEstimation = new PriceEstimations();
 
-            priceEstimation.setAmount(mapper.treeToValue(node.get("amount"), BigDecimal.class));
-//            priceEstimation.setAccount(mapper.treeToValue(node.get("account"), Accounts.class));
-            priceEstimation.setCreationDate(LocalDateTime.now());
-            priceEstimation.setCurrency(mapper.treeToValue(node.get("currency"), CCurrencies.class));
-//            priceEstimation.setEstimationStatus(CEstimationStatus.PENDIENTE);
-            priceEstimation.setIdAccessLevel(1);
             priceEstimation.setRequest(request);
-//            priceEstimation.setUserEstimation(user);
-//            priceEstimation.setRate(mapper.treeToValue(node.get("rate"), BigDecimal.class));
-//            priceEstimation.setProvider(mapper.treeToValue(node.get("provider"), Providers.class));
-
-
-
-            //priceEstimation.setOutOfBudget(budgetHelper.checkWhetherIsOutOfBudget(budgetYear, LocalDateTime.now().getMonthValue(), priceEstimation.getAmount().doubleValue()));
-
+            priceEstimation.setAccounts(mapper.treeToValue(node.get("accounts"), Accounts.class));
+            priceEstimation.setcEstimationStatus(mapper.treeToValue(node.get("cEstimationsStatus"), CEstimationStatus.class));
+            priceEstimation.setCurrency(mapper.treeToValue(node.get("currency"), CCurrencies.class));
+            priceEstimation.setAmount(mapper.treeToValue(node.get("amount"), BigDecimal.class));
             FilePojo file = mapper.treeToValue(node.get("file"), FilePojo.class);
-
             priceEstimation.setFileName(file.getName());
+            priceEstimation.setAuthorizationDate(LocalDateTime.now());
+            priceEstimation.setIdAccessLevel(1);
+            priceEstimation.setUsername(user.getUsername());
+            priceEstimation.setCreationDate(LocalDateTime.now());
 
-            priceEstimation = priceEstimationsDao.save(priceEstimation);
-
+            //priceEstimation = priceEstimationsDao.save(priceEstimation);
 
             boolean isValidMediaType = false;
 
@@ -106,23 +98,23 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
                 throw new ValidationException("Tipo de archivo no admitido", "Tipo de archivo no admitido");
             }
 
-//            String destDir = "/estimation_" + priceEstimation.getIdEstimation();
-//            String destFile = destDir + "/Documento." + priceEstimation.getCreationDate().toInstant(ZoneOffset.UTC).getEpochSecond();
+            String destDir = "/estimation_" + priceEstimation.getIdPriceEstimation();
+            String destFile = destDir + "/Documento." + priceEstimation.getCreationDate().toInstant(ZoneOffset.UTC).getEpochSecond();
 
-//            priceEstimation.setFilePath(destFile);
+            priceEstimation.setFilePath(destFile);
 
-//            File dir = new File(SAVE_PATH + destDir);
-//            if (! dir.exists()) {
-//                dir.mkdir();
-//            }
+            File dir = new File(SAVE_PATH + destDir);
+            if (! dir.exists()) {
+                dir.mkdir();
+            }
 
             String encodingPrefix = "base64,";
             int contentStartIndex = file.getDataUrl().indexOf(encodingPrefix) + encodingPrefix.length();
             byte[] byteArreyData = Base64.decodeBase64(file.getDataUrl().substring(contentStartIndex));
 
-//            FileOutputStream out = new FileOutputStream(new File(SAVE_PATH + destFile));
-//            out.write(byteArreyData);
-//            out.close();
+            FileOutputStream out = new FileOutputStream(new File(SAVE_PATH + destFile));
+            out.write(byteArreyData);
+            out.close();
 
             priceEstimation = priceEstimationsDao.save(priceEstimation);
 

@@ -256,6 +256,14 @@ public class PriceEstimations implements Serializable {
         this.cEstimationStatus = cEstimationStatus;
     }
 
+    public Accounts getAccounts() {
+        return accounts;
+    }
+
+    public void setAccounts(Accounts accounts) {
+        this.accounts = accounts;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

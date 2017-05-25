@@ -220,7 +220,8 @@ public class DistributorCostCenterController {
         List<AccountingAccounts> accountingAccountsList = new ArrayList<>();
         for (Integer idAccountingAccount : idsAccountingAccounts){
             AccountingAccounts accountingAccount = accountingAccountsService.findById(idAccountingAccount);
-            accountingAccountsList.add(accountingAccount);
+            if(accountingAccount.getIdBudgetSubcategory() != 0 && accountingAccount.getIdBudgetSubSubcategories() == 0)
+                accountingAccountsList.add(accountingAccount);
         }
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(accountingAccountsList), HttpStatus.OK);
     }
