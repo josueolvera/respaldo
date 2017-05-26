@@ -7,5 +7,5 @@ import java.util.List;
  */
 public interface RoleProductRequestService {
 
-    List<Integer> getIdsProductsRequestByCostCenter(Integer idCostCenter);
+    List<Integer> getIdsProductsRequestByDistributorCostCenter(Integer idCostCenter);
 }

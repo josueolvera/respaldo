@@ -214,9 +214,9 @@ public class DistributorCostCenterController {
         }
     }
 
-    @RequestMapping(value = "/cost-center/{idCostCenter}/{idModuleStatus}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findIdsAccountingAccountsByCostCenterAndModuleStatus(@PathVariable Integer idCostCenter,@PathVariable Integer idModuleStatus) throws IOException{
-        List<Integer> idsAccountingAccounts =  distributorCostCenterService.getIdsAccountingAccountsByCostCenterAndModuleStatus(idCostCenter, idModuleStatus);
+    @RequestMapping(value = "/category/{idCostCenter}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findIdsAccountingAccountsByCostCenter(@PathVariable Integer idCostCenter) throws IOException{
+        List<Integer> idsAccountingAccounts =  distributorCostCenterService.getIdsAccountingAccountsByCostCenter(idCostCenter);
         List<AccountingAccounts> accountingAccountsList = new ArrayList<>();
         for (Integer idAccountingAccount : idsAccountingAccounts){
             AccountingAccounts accountingAccount = accountingAccountsService.findById(idAccountingAccount);

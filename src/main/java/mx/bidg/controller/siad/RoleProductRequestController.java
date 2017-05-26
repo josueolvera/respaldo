@@ -34,9 +34,9 @@ public class RoleProductRequestController {
     @Autowired
     private ObjectMapper mapper;
 
-    @RequestMapping(value = "/product/{idCostCenter}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findIdsProductsRequestByCostCenter(@PathVariable Integer idCostCenter) throws IOException {
-        List<Integer> idsProductsRequest =  roleProductRequestService.getIdsProductsRequestByCostCenter(idCostCenter);
+    @RequestMapping(value = "/product/{idDistributorCostCenter}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findIdsProductsRequestByDistributorCostCenter(@PathVariable Integer idDistributorCostCenter) throws IOException {
+        List<Integer> idsProductsRequest =  roleProductRequestService.getIdsProductsRequestByDistributorCostCenter(idDistributorCostCenter);
         List<CProductsRequest> productsRequestsList = new ArrayList<>();
         for (int idProductsRequest : idsProductsRequest){
             CProductsRequest productsRequest = productsRequestService.findById(idProductsRequest);

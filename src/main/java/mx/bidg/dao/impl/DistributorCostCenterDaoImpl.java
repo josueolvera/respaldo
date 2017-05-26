@@ -171,7 +171,7 @@ public class DistributorCostCenterDaoImpl extends AbstractDao<Integer, Distribut
     }
 
     @Override
-    public List<Integer> getIdsAccountingAccountsByCostCenterAndModuleStatus(Integer idCostCenter, Integer idModuleStatus){
+    public List<Integer> getIdsAccountingAccountsByCostCenter(Integer idCostCenter){
 
         Criteria criteria = createEntityCriteria();
 
@@ -179,9 +179,8 @@ public class DistributorCostCenterDaoImpl extends AbstractDao<Integer, Distribut
             criteria.add(Restrictions.eq("idCostCenter",idCostCenter));
         }
 
-        if (idModuleStatus != null){
-            criteria.add(Restrictions.eq("idModuleStatus",idModuleStatus));
-        }
+        criteria.add(Restrictions.eq("idModuleStatus",2));
+        criteria.add(Restrictions.eq("idModuleStatus", 3));
 
         return criteria.setProjection(Projections.distinct(Projections.property("idAccountingAccount"))).list();
     }

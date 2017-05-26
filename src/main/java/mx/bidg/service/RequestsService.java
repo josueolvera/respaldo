@@ -33,5 +33,6 @@ public interface RequestsService {
     EmailTemplates sendEmailForNewRequestAuthorization(Requests request, Users user);
 
     Requests changeActiveStatus(Integer idRequest);
-    List<Requests> findByRequestStatus(Integer idRequestStatus);
+
+    List<Requests> findByRequestCategory(Integer idRequestCategory);
 }

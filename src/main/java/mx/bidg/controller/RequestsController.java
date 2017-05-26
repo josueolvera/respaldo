@@ -117,9 +117,9 @@ public class RequestsController {
     }
 
     @RequestMapping(value = "/status/{idRequestStatus}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findByRequestStatus(@PathVariable Integer idRequestStatus) throws IOException{
+    public ResponseEntity<String> findByRequestCategory(@PathVariable Integer idRequestCategory) throws IOException{
 
-        List<Requests> requests = requestsService.findByRequestStatus(idRequestStatus);
+        List<Requests> requests = requestsService.findByRequestCategory(idRequestCategory);
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requests), HttpStatus.OK);
     }

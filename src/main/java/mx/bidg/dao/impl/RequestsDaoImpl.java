@@ -81,12 +81,12 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
     }    
 
     @Override
-    public List<Requests> findByRequestStatus(Integer idRequestStatus){
+    public List<Requests> findByRequestCategory(Integer idRequestCategory){
 
         Criteria criteria = createEntityCriteria();
 
-        if(idRequestStatus != null){
-            criteria.add(Restrictions.eq("idRequestStatus", idRequestStatus));
+        if(idRequestCategory != null){
+            criteria.add(Restrictions.eq("idRequestCategory", idRequestCategory));
         }
 
         return criteria.list();

@@ -19,5 +19,5 @@ public interface RequestsDao extends InterfaceDao<Requests> {
     Requests findByIdFetchStatus(Integer idRequest);
     Requests findByIdFetchCategory(Integer idRequest);
     Requests findByFolio(String folio);
-    List<Requests> findByRequestStatus(Integer idRequestStatus);
+    List<Requests> findByRequestCategory(Integer idRequestCategory);
 }

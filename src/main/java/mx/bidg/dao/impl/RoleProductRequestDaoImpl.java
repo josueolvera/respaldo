@@ -45,11 +45,11 @@ public class RoleProductRequestDaoImpl extends AbstractDao<Integer, RoleProductR
     }
 
     @Override
-    public List<Integer> getIdsProductsRequestByCostCenter(Integer idCostCenter){
+    public List<Integer> getIdsProductsRequestByDistributorCostCenter(Integer idDistributorCostCenter){
         Criteria criteria = createEntityCriteria();
 
-        if (idCostCenter != null){
-            criteria.add(Restrictions.eq("idCostCenter",idCostCenter));
+        if (idDistributorCostCenter != null){
+            criteria.add(Restrictions.eq("idDistributorCostCenter",idDistributorCostCenter));
         }
 
         return criteria.setProjection(Projections.distinct(Projections.property("idProductRequest"))).list();

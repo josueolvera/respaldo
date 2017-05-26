@@ -80,7 +80,7 @@ public class DistributorCostCenterServiceImpl implements DistributorCostCenterSe
     }
 
     @Override
-    public List<Integer> getIdsAccountingAccountsByCostCenterAndModuleStatus(Integer idCostCenter, Integer idModuleStatus){
-        return distributorCostCenterDao.getIdsAccountingAccountsByCostCenterAndModuleStatus(idCostCenter, idModuleStatus);
+    public List<Integer> getIdsAccountingAccountsByCostCenter(Integer idCostCenter){
+        return distributorCostCenterDao.getIdsAccountingAccountsByCostCenter(idCostCenter);
     }
 }

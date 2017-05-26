@@ -272,7 +272,7 @@ public class RequestsServiceImpl implements RequestsService {
     }
 
     @Override
-    public List<Requests> findByRequestStatus(Integer idRequestStatus) {
-        return requestsDao.findByRequestStatus(idRequestStatus);
+    public List<Requests> findByRequestCategory(Integer idRequestCategory) {
+        return requestsDao.findByRequestCategory(idRequestCategory);
     }
 }

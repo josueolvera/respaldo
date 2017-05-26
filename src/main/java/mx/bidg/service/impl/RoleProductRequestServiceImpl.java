@@ -19,7 +19,7 @@ public class RoleProductRequestServiceImpl implements RoleProductRequestService{
     private RoleProductRequestDao roleProductRequestDao;
 
     @Override
-    public List<Integer> getIdsProductsRequestByCostCenter(Integer idCostCenter){
-        return roleProductRequestDao.getIdsProductsRequestByCostCenter(idCostCenter);
+    public List<Integer> getIdsProductsRequestByDistributorCostCenter(Integer idDistributorCostCenter){
+        return roleProductRequestDao.getIdsProductsRequestByDistributorCostCenter(idDistributorCostCenter);
     }
 }
