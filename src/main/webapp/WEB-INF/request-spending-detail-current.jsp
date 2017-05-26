@@ -54,8 +54,6 @@
                     this.getCurrencies();
                 },
                 data: {
-                    requestCategory: ${cat},
-                    idRequest: ${idRequest},
                     roleCostCenterList: [],
                     costCenterList: [],
                     budgetCategories: [],
@@ -95,13 +93,6 @@
                         product: null
                     },
                     newEstimationFormActive: false
-                },
-                showModalSolicituddos: function () {
-                    $('#modalSolicituddos').modal('show');
-
-                },
-                hiddencotizacionUnoArticle: function () {
-                    document.getElementById('cotizacionUnoArticle').style.display ='block';
                 },
                 methods: {
                     arrayObjectIndexOf: function (myArray, searchTerm, property) {
@@ -287,32 +278,32 @@
                             showAlert("Error al agregar cotización", {type: 3});
                         })
                     },
-                    showModalSolicitud: function () {
-                        $('#modalSolicitud').modal('show');
+                    showModaljustificaruno: function () {
+                        $('#modaljustificaruno').modal('show');
                     },
-                    showFactura: function () {
-                        $('#modalFactura').modal('show');
+                    showModaljustificardos: function () {
+                        $('#modaljustificardos').modal('show');
                     },
-                    showEnviarsolicitudm: function () {
-                        $('#modalEnviarsolicitudm').modal('show');
+                    showModaljustificartres: function () {
+                        $('#modaljustificartres').modal('show');
                     },
-                    showNewEstimationModal: function () {
-                        this.newEstimationFormActive = true;
-                        $('#newEstimationModal').modal('show');
+                    showModaldetallemodal: function () {
+                        $('#modaldetallemodal').modal('show');
                     },
-                    showJustificarechazo: function () {
-                        $('#modalJustificarechazo').modal('show');
+                    showModalordendecompra: function () {
+                        $('#modalordendecompra').modal('show');
                     },
-                    showSolicitudmodaL: function () {
-                        $('#modalSolicitudmodaL').modal('show');
+                    showModaldetallesolicitudvista: function () {
+                        $('#modaldetallesolicitudvista').modal('show');
                     },
-                    showDetallemodal: function () {
-                        $('#modalDetallemodal').modal('show');
+                    showModalactivadatos: function () {
+                        $('#modalactivadatos').modal('show');
                     },
-                    hideNewEstimationModal: function () {
-                        this.clearEstimation();
-                        this.newEstimationFormActive = false;
-                        $('#newEstimationModal').modal('hide');
+                    showModalpdfyxml: function () {
+                        $('#modalpdfyxml').modal('show');
+                    },
+                    showModalfacturaenviar: function () {
+                        $('#modalfacturaenviar').modal('show');
                     },
                     getProviderAccounts: function () {
                         this.$http.get(ROOT_URL + '/providers-accounts/provider/' + this.estimation.provider.idProvider)
@@ -437,8 +428,8 @@
                 var key = window.Event ? e.which : e.keyCode
                 return (key >= 48 && key <= 57)
             }
-             function hiddencotizacionUnoArticle(obj) {
-                document.getElementById('xxx').style.display ='block';
+            function hiddencotizacionUnoArticle(obj) {
+                document.getElementById('xxx').style.display = 'block';
             }
         </script>
     </jsp:attribute>
@@ -467,71 +458,73 @@
 
         <div id="content">
         <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="col-md-4">
-                    <h4>DETALLE DE SOLICITUD/VIGENTE</h4>
-                </div>
-                <div class="col-md-2" style="margin: 1%">
-                    <label class="circleyel"></label>
-                </div>
-                <div class="col-md-5 text-right" style="margin-top: 10px">
-                    <label>Nombre de usuario</label>
-                    <p>
-                        <span class="label label-default">{{user.dwEmployee.employee.fullName}}</span>
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div  class="panel panel-default" v-if="selectedOptions.role.idRole > 0" style="background-color: #F2F2F2">
             <div class="row">
                 <div class="col-md-12">
-                   <div class="col-md-12">
-                       <h5><b style="color: black">Datos del solicitante</b></h5>
-                       <table class="table table-striped">
-                       <thead style="background-color: #aaaaaa">
-                       <th class="col-md-4">Nombre</th>
-                       <th class="col-md-4">Area</th>
-                       <th class="col-md-4">Fecha de solicitud</th>
-                       </thead>
-                       <tbody>
-                       <tr v-for="compra in compra">
-                           <td class="col-md-4">{{Name}}</td>
-                           <td class="col-md-4">{{Area}}</td>
-                           <td class="col-md-4">{{date}}</td>
-                       </tr>
-                       </tbody>
-                   </table>
-                   </div>
+                    <div class="col-md-4">
+                        <h4>DETALLE DE SOLICITUD/VIGENTE</h4>
+                    </div>
+                    <div class="col-md-2" style="margin: 1%">
+                        <label class="circleyel"></label>
+                    </div>
+                    <div class="col-md-5 text-right" style="margin-top: 10px">
+                        <label>Nombre de usuario</label>
+                        <p>
+                            <span class="label label-default">{{user.dwEmployee.employee.fullName}}</span>
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-            <div class="panel panel default" v-if="selectionOptions.role.idRole> 0" style="background-color: #F2F2F2">
+            <div class="panel panel-default" style="background-color: #F2F2F2">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            <h5><b style="color: black">Datos del solicitante</b></h5>
+                            <table class="table table-striped">
+                                <thead style="background-color: #BDBDBD">
+                                <th class="col-md-4">Nombre</th>
+                                <th class="col-md-4">Area</th>
+                                <th class="col-md-4">Fecha de solicitud</th>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td class="col-md-4">{Name}}</td>
+                                    <td class="col-md-4">{Area}}</td>
+                                    <td class="col-md-4">{date}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel default" style="background-color: #F2F2F2">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="col-md-12">
                             <h5><b style="color: black">Datos de solicitud</b></h5>
                             <table class="table table-striped">
-                                <thead>
-                                <th class="col-md-6" style="background-color: #aaaaaa">Centro de costos</th>
-                                <th class="col-md-6" style="background-color: #aaaaaa">Centro de concepto</th>
+                                <thead style="background-color: #BDBDBD">
+                                <th class="col-md-4">Centro de costos</th>
+                                <th class="col-md-4">Concepto</th>
+                                <th class="col-md-4"></th>
                                 </thead>
                                 <tbody>
-                                <tr v-for="compra in compra">
-                                    <td class="col-md-6">{{Centro de costos}}</td>
-                                    <td class="col-md-6">{{Centro de concepto</td>
+                                <tr>
+                                    <td class="col-md-6">Centro de costos}}</td>
+                                    <td class="col-md-6">Centro de concepto}}</td>
+                                    <td class="col-md-6"></td>
                                 </tr>
                                 </tbody>
-                                <thead style="background-color: #aaaaaa">
+                                <thead style="background-color: #BDBDBD">
                                 <th class="col-md-4">Lista de productos</th>
                                 <th class="col-md-4">Cantidad</th>
                                 <th class="col-md-4">Justificacion</th>
                                 </thead>
                                 <tbody>
-                                <tr v-for="compra in compra">
-                                    <td class="col-md-4">{{Computadoras}}</td>
-                                    <td class="col-md-4">{{Cantidad}}</td>
-                                    <td class="col-md-4">{{Justificacion}}</td>
+                                <tr>
+                                    <td class="col-md-4">Computadoras}}</td>
+                                    <td class="col-md-4">Cantidad}}</td>
+                                    <td class="col-md-4">Justificacion}}</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -540,149 +533,165 @@
                 </div>
             </div>
             <br>
-            <div class="panel panel-default" v-if="selectedOptions.role.idRole > 0" style="background-color: #F2F2F2">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="col-md-7"><br>
-                        <h5><b  style="color: black">Cotizacion 1</b></h5>
-                    </div>
-                    <form><br>
-                        <div class="col-md-5">
-                            <label>Monto cotizado sin IVA</label>
-                            <label>$<input type="number"></label>
+            <div class="panel panel-default" style="background-color: #F2F2F2">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-7"><br>
+                            <h5><b style="color: black">Cotizacion 1</b></h5>
                         </div>
-                    </form>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="col-md-12" style="background-color: #aaaaaa">
-                        <h7><b>Documento</b></h7><br><br>
+                        <form><br>
+                            <div class="col-md-5">
+                                <label>Monto cotizado sin IVA</label>
+                                <label>$<input type="number"></label>
+                            </div>
+                        </form>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="col-md-2"><br>
-                        <h6>Nombre del archivo</h6>
-                    </div>
-                    <div class="col-md-7"><br>
-                        <button class="btn btn-primary btn-sm">DESCARGAR</button>
-                    </div>
-                    <div class="col-md-3"><br>
-                        <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#justificaruno">ELEGIR</button></div><br>
-                    </div>
-                </div>
-            <br>
-            </div>
-            <div class="panel panel-default" v-if="selectedOptions.role.idRole > 0" style="background-color: #F2F2F2">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="col-md-7"><br>
-                        <h5><b style="color: black">Cotizacion 2</b></h5>
-                    </div>
-                    <form><br>
-                        <div class="col-md-5">
-                            <label>Monto cotizado sin IVA</label>
-                            <label>$<input type="number"></label>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12" style="background-color: #BDBDBD">
+                            <h6><b>Documento</b></h6>
+                            <br><br>
                         </div>
-                    </form>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="col-md-12" style="background-color: #aaaaaa">
-                        <h7><b>Documento</b></h7><br><br>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="col-md-2"><br>
-                        <h6>Nombre del archivo</h6>
-                    </div>
-                    <div class="col-md-7"><br>
-                        <button class="btn btn-primary btn-sm">DESCARGAR</button>
-                    </div>
-                    <div class="col-md-3"><br>
-                        <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#justificardos">ELEGIR</button>
-                    </div>
-                </div>
-            </div>
-            <br>
-            </div>
-            <div class="panel panel-default" v-if="selectedOptions.role.idRole > 0" style="background-color: #F2F2F2">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="col-md-7"><br>
-                        <h5><b  style="color: black">Cotizacion 3</b></h5>
-                    </div>
-                    <form><br>
-                        <div class="col-md-5">
-                            <label>Monto cotizado sin IVA</label>
-                            <label>$<input type="number"></label>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-2"><br>
+                            <h6>Nombre del archivo</h6>
                         </div>
-                    </form>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="col-md-12" style="background-color: #aaaaaa">
-                        <h7><b>Documento</b></h7><br><br>
+                        <div class="col-md-7"><br>
+                            <button class="btn btn-primary btn-sm">DESCARGAR</button>
+                        </div>
+                        <div class="col-md-3"><br>
+                            <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#justificaruno">
+                                ELEGIR
+                            </button>
+                        </div>
+                        <br>
                     </div>
                 </div>
+                <br>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="col-md-2"><br>
-                        <h6>Nombre del archivo</h6>
-                    </div>
-                    <div class="col-md-7"><br>
-                        <button class="btn btn-primary btn-sm">DESCARGAR</button>
-                    </div>
-                    <div class="col-md-3"><br>
-                        <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#justificartres">ELEGIR</button>
+            <div class="panel panel-default" style="background-color: #F2F2F2">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-7"><br>
+                            <h5><b style="color: black">Cotizacion 2</b></h5>
+                        </div>
+                        <form><br>
+                            <div class="col-md-5">
+                                <label>Monto cotizado sin IVA</label>
+                                <label>$<input type="number"></label>
+                            </div>
+                        </form>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12" style="background-color: #BDBDBD">
+                            <h6><b>Documento</b></h6>
+                            <br><br>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-2"><br>
+                            <h6>Nombre del archivo</h6>
+                        </div>
+                        <div class="col-md-7"><br>
+                            <button class="btn btn-primary btn-sm">DESCARGAR</button>
+                        </div>
+                        <div class="col-md-3"><br>
+                            <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#justificardos">
+                                ELEGIR
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <br>
             </div>
-            <br>
+            <div class="panel panel-default" style="background-color: #F2F2F2">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-7"><br>
+                            <h5><b style="color: black">Cotizacion 3</b></h5>
+                        </div>
+                        <form><br>
+                            <div class="col-md-5">
+                                <label>Monto cotizado sin IVA</label>
+                                <label>$<input type="number"></label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12" style="background-color: #BDBDBD">
+                            <h6><b>Documento</b></h6>
+                            <br><br>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-2"><br>
+                            <h6>Nombre del archivo</h6>
+                        </div>
+                        <div class="col-md-7"><br>
+                            <button class="btn btn-primary btn-sm">DESCARGAR</button>
+                        </div>
+                        <div class="col-md-3"><br>
+                            <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#justificartres">
+                                ELEGIR
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <br>
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <div class="col-md-10">
-                        <button type="button" class="btn btn-danger"data-toggle="modal" data-target="#Justificarechazo" style="margin-left: 800px">Rechazar </button>
+                        <button type="button" class="btn btn-danger btn lg-active" data-toggle="modal"
+                                data-target="#Justificarechazo" style="margin-left: 800px">Rechazar
+                        </button>
                     </div>
                     <div class="col-md-2">
                         <button type="button" class="btn btn-default">Cancelar</button>
                     </div>
                 </div>
-            </div> <br><br>
+            </div>
+            <br><br>
 
             <!--TERMINA PANTALLA DE SOLICITUD/VIGENTE PAGINA 25-->
 
             <!--EMPIEZA MODAL 1 PARA LA OPCION ELEGIR DE LA PANTALLA DE SOLICITUD/VIGENTE PAGINA 26-->
 
-                <div class="modal fade" id="justificaruno" role="dialog">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">Justificar</h4>
-                            </div>
-                            <div class="modal-body">
-                                <form>
-                                    <div class="form-group">
-                                        <textarea class="form-control" rows="3"></textarea>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" onclick="parent.location=' http://localhost:8080/BIDGroupLines/siad/request-spending-detail-current'">Aceptar</button>
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                            </div>
+            <div class="modal fade" id="justificaruno" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Justificar</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                    <textarea class="form-control" rows="3"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-toggle="modal"
+                                    data-target="#detallemodal">Aceptar
+                            </button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         </div>
                     </div>
                 </div>
+            </div>
 
             <!--TERMINA MODAL 1 PARA LA OPCION ELEGIR DE LA PANTALLA DE SOLICITUD/VIGENTE PAGINA 26-->
 
@@ -718,7 +727,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <button class="close" data-dismiss="modal">&times;</button>
                             <h4 class="modal-title">Justificar</h4>
                         </div>
                         <div class="modal-body">
@@ -729,7 +738,7 @@
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-success" data-dismiss="modal" >Aceptar</button>
+                            <button type="button" class="btn btn-success" data-dismiss="modal">Aceptar</button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         </div>
                     </div>
@@ -738,134 +747,161 @@
 
             <!--TERMINA MODAL 3 PARA LA OPCION ELEGIR DE LA PANTALLA DE SOLICITUD/VIGENTE PAGINA 26-->
 
-            <!--EMPIEZA VISTA DE COMPRA PAGINA 27-->
+            <!--EMPIEZA MODAL DE LA PAGINA 26 A LA PAGINA 27 AL PRESIONAR ACEPTAR-->
 
-
-            <div  class="panel panel-default" v-if="selectedOptions.role.idRole > 0" style="background-color: #F2F2F2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12">
-                            <h5><b style="color: black">Datos del solicitante</b></h5>
-                            <table class="table table-striped">
-                                <thead style="background-color: #aaaaaa">
-                                <th class="col-md-4">Nombre</th>
-                                <th class="col-md-4">Area</th>
-                                <th class="col-md-4">Fecha de solicitud</th>
-                                </thead>
-                                <tbody>
-                                <tr v-for="compra in compra">
-                                    <td class="col-md-4">{{Name}}</td>
-                                    <td class="col-md-4">{{Area}}</td>
-                                    <td class="col-md-4">{{date}}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel default" v-if="selectionOptions.role.idRole> 0" style="background-color: #F2F2F2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12">
-                            <h5><b style="color: black">Datos de solicitud</b></h5>
-                            <table class="table table-striped">
-                                <thead style="background-color: #aaaaaa">
-                                <th class="col-md-6">Centro de costos</th>
-                                <th class="col-md-6">Concepto</th>
-                                </thead>
-                                <tbody>
-                                <tr v-for="compra in compra">
-                                    <td class="col-md-6">{{Centro de costos}}</td>
-                                    <td class="col-md-6">{{Centro de concepto</td>
-                                </tr>
-                                </tbody>
-                                <thead style="background-color: #aaaaaa">
-                                <th class="col-md-4">Lista de productos</th>
-                                <th class="col-md-4">Cantidad</th>
-                                <th class="col-md-4">Justificacion</th>
-                                </thead>
-                                <tbody>
-                                <tr v-for="compra in compra">
-                                    <td class="col-md-4">{{Computadoras}}</td>
-                                    <td class="col-md-4">{{Cantidad}}</td>
-                                    <td class="col-md-4">{{Justificacion}}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default" v-if="selectedOptions.role.idRole > 0" style="background-color: #F2F2F2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-7"><br>
-                            <h5><b  style="color: black">Cotizacion 1</b></h5>
-                        </div>
-                        <form><br>
-                            <div class="col-md-5">
-                                <label>Monto cotizado sin IVA</label>
-                                <label>$<input type="number"></label>
+            <div class="modal fade" id="detallemodal" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="panel panel-default" style="background-color: #F2F2F2">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="col-md-12">
+                                            <h5><b style="color: black">Datos del solicitante</b></h5>
+                                            <table class="table table-striped">
+                                                <thead style="background-color: #BDBDBD">
+                                                <th class="col-md-4">Nombre</th>
+                                                <th class="col-md-4">Area</th>
+                                                <th class="col-md-4">Fecha de solicitud</th>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td class="col-md-4">{Name}}</td>
+                                                    <td class="col-md-4">{Area}}</td>
+                                                    <td class="col-md-4">{date}}</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12" style="background-color: #AFAFAF">
-                            <h7><b>Documento</b></h7><br><br>
+                        </div>
+                        <div class="modal-body">
+                            <div class="panel panel default"
+                                 style="background-color: #F2F2F2">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="col-md-12">
+                                            <h5><b style="color: black">Datos de solicitud</b></h5>
+                                            <table class="table table-striped">
+                                                <thead style="background-color: #BDBDBD">
+                                                <th class="col-md-4">Centro de costos</th>
+                                                <th class="col-md-4">Concepto</th>
+                                                <th class="col-md-4"></th>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td class="col-md-4">{{Centro de costos}}</td>
+                                                    <td class="col-md-4">{{Centro de concepto</td>
+                                                    <td class="col-md-4"></td>
+                                                </tr>
+                                                </tbody>
+                                                <thead style="background-color: #BDBDBD">
+                                                <th class="col-md-4">Lista de productos</th>
+                                                <th class="col-md-4">Cantidad</th>
+                                                <th class="col-md-4">Justificacion</th>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td class="col-md-4">{{Computadoras}}</td>
+                                                    <td class="col-md-4">{{Cantidad}}</td>
+                                                    <td class="col-md-4">{{Justificacion}}</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default" style="background-color: #F2F2F2">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="col-md-7"><br>
+                                        <h5><b style="color: black">Cotizacion 1</b></h5>
+                                    </div>
+                                    <form><br>
+                                        <div class="col-md-5">
+                                            <label>Monto cotizado sin IVA</label>
+                                            <label>$<input type="number"></label>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="col-md-12" style="background-color: #BDBDBD">
+                                        <h6><b>Documento</b></h6>
+                                        <br><br>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="col-md-2"><br>
+                                        <h6>Nombre del archivo</h6>
+                                    </div>
+                                    <div class="col-md-7"><br>
+                                        <button class="btn btn-primary btn-sm">DESCARGAR</button>
+                                    </div>
+                                    <div class="col-md-3"><br>
+                                        <button class="btn btn-success btn-sm"><span
+                                                class="glyphicon glyphicon-ok"></span></button>
+                                    </div>
+                                    <br>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="col-md-12" style="background-color: #BDBDBD">
+                                        <h6><b>Justificacion</b></h6>
+                                    </div>
+                                    <br>
+                                    <div class="col-md-12"><br>
+                                        <h6>
+                                            sjfhaskjldfhkjlsfhgsfkjgdfsasdkjagsfkjghjgfhjdgshjdgsfjhdgsfjhdgsfjsdgfjdfsgjf
+                                        </h6>
+                                    </div>
+                                    <br><br><br>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="col-md-8">
+                                        <button class="btn btn-primary btn-sm" data-toggle="modal"
+                                                data-target="#ordendecompra">Generar orden de compra
+                                        </button>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-danger btn-sm" style="margin-right: 100%">
+                                            Agregar Comprobante
+                                        </button>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-default btn-sm" style="margin-right: 20%"
+                                                onclick="parent.location='http://localhost:8080/BIDGroupLines/siad/request-spending-detail-current'">
+                                            Cancelar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-2"><br>
-                            <h6>Nombre del archivo</h6>
-                        </div>
-                        <div class="col-md-7"><br>
-                            <button class="btn btn-primary btn-sm">DESCARGAR</button>
-                        </div>
-                        <div class="col-md-3"><br>
-                            <button class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok"></span></button>
-                        </div><br>
-                    </div>
-                </div>
-                <br>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12" style="background-color: #AFAFAF">
-                            <h6><b>Justificacion</b></h6>
-                        </div><br>
-                        <div class="col-md-12"><br>
-                            <h7>sjfhaskjldfhkjlsfhgsfkjgdfsasdkjagsfkjghjgfhjdgshjdgsfjhdgsfjhdgsfjsdgfjdfsgjf</h7>
-                        </div><br><br><br>
-                    </div>
-                </div><br>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="col-md-9">
-                        <button class="btn btn-primary btn-sm" style="margin-left: 80%" data-toggle="modal" data-target="#modalFactura">
-                            Generar orden de compra</button>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="button" class="btn btn-danger btn-sm" style="margin-left: 10%">Agregar Comprobante</button>
-                    </div>
-                    <div class="col-md-1">
-                        <button type="button" class="btn btn-default btn-sm">Cancelar</button>
-                    </div>
-                </div>
-            </div>
 
-            <!--TERMINA VISTA DE COMPRA PAGINA 27-->
+            <!--TERMINA MODAL DE LA PAGINA 26 A LA PAGINA 27 AL PRESIONAR ACEPTAR-->
 
-            <!--EMPIEZA MODAL QUE AL PRESIONAR GENERAR ORDEN DE COMPRA SE MUESTRA LA ORDEN DE COMPRA PAGINA 28-->
+            <!--EMPIEZA MODAL DE LA PAGINA 27 A LA 28 ORDEN DE COMPRA-->
 
-            <div class="modal fade" id="modalFactura" tabindex="-1" role="dialog" aria-labelledby=""
-                 aria-hidden="true">
-                <div class="modal-dialog modal-ms">
-                    <div class="modal-content modal-ms">
+            <div class="modal fade" id="ordendecompra" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                             <div class="alert">
@@ -1097,9 +1133,6 @@
                                         </div>
                                         <div class="col-md-12">
                                             <div class="panel panel-default">
-                                                <div class="panel-heading">
-                                                    <h3 class="panel-title">Conceptos autorizados</h3>
-                                                </div>
                                                 <div class="panel-body">
                                                     <div class="row">
                                                         <div class="col-md-4"></div>
@@ -1108,13 +1141,15 @@
                                                                 <dt>IVA</dt>
                                                                 <dd>
                                                                     <p class="underline">
-                                                                        {{casetasAmount | currency}} {{currency.acronym}}
+                                                                        {{casetasAmount | currency}}
+                                                                        {{currency.acronym}}
                                                                     </p>
                                                                 </dd>
                                                                 <dt>Subtotal</dt>
                                                                 <dd>
                                                                     <p class="underline">
-                                                                        {{gasolinaAmount | currency}} {{currency.acronym}}
+                                                                        {{gasolinaAmount | currency}}
+                                                                        {{currency.acronym}}
                                                                     </p>
                                                                 </dd>
                                                             </dl>
@@ -1122,7 +1157,8 @@
                                                                 <dt>Total</dt>
                                                                 <dd>
                                                                     <p class="underline">
-                                                                        {{totalTravelExpenses | currency}} {{currency.acronym}}
+                                                                        {{totalTravelExpenses | currency}}
+                                                                        {{currency.acronym}}
                                                                     </p>
                                                                 </dd>
                                                             </dl>
@@ -1131,288 +1167,279 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-12">
-                                            <div class="row">
-                                                <div class="col-md-offset-6 col-md-6">
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <button type="submit" class="btn btn-success form-control">Guardar</button>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <button type="button" class="btn btn-default form-control" @click="">Cancelar
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                    <br>
-                                                    <br>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
-                        <br>
-                    </div>
-                </div>
-            </div>
-
-            <!--TERMINA MODAL QUE AL PRESIONAR GENERAR ORDEN DE COMPRA SE MUESTRA LA ORDEN DE COMPRA PAGINA 28-->
-
-
-
-            <!--EMPIEZA VISTA DE UNA ORDEN DE COMPRA PAGINA 29-->
-
-            <br><br>
-            <div  class="panel panel-default" v-if="selectedOptions.role.idRole > 0" style="background-color: #F2F2F2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12">
-                            <h5><b style="color: black">Datos del solicitante</b></h5>
-                            <table class="table table-striped">
-                                <thead style="background-color: #aaaaaa">
-                                <th class="col-md-4">Nombre</th>
-                                <th class="col-md-4">Area</th>
-                                <th class="col-md-4">Fecha de solicitud</th>
-                                </thead>
-                                <tbody>
-                                <tr v-for="compra in compra">
-                                    <td class="col-md-4">{{Name}}</td>
-                                    <td class="col-md-4">{{Area}}</td>
-                                    <td class="col-md-4">{{date}}</td>
-                                </tr>
-                                </tbody>
-                            </table>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#detallesolicitudvista">Guardar</button>
+                            <button type="button" class="btn btn-default" onclick="parent.location='http://localhost:8080/BIDGroupLines/siad/request-spending-detail-current'">
+                                Cancelar
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="panel panel default" v-if="selectionOptions.role.idRole> 0" style="background-color: #f2f2f2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12">
-                            <h5><b style="color: black">Datos de solicitud</b></h5>
-                            <table class="table table-striped">
-                                <thead>
-                                <th class="col-md-6" style="background-color: #aaaaaa">Centro de costos</th>
-                                <th class="col-md-6" style="background-color: #aaaaaa">Centro de concepto</th>
-                                </thead>
-                                <tbody>
-                                <tr v-for="compra in compra">
-                                    <td class="col-md-6">{{Centro de costos}}</td>
-                                    <td class="col-md-6">{{Centro de concepto</td>
-                                </tr>
-                                </tbody>
-                                <thead>
-                                <th class="col-md-4" style="background-color: #aaaaaa">Lista de productos</th>
-                                <th class="col-md-4" style="background-color: #aaaaaa">Cantidad</th>
-                                <th class="col-md-4" style="background-color: #aaaaaa">Justificacion</th>
-                                </thead>
-                                <tbody>
-                                <tr v-for="compra in compra">
-                                    <td class="col-md-4">{{Computadoras}}</td>
-                                    <td class="col-md-4">{{Cantidad}}</td>
-                                    <td class="col-md-4">{{Justificacion}}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default" v-if="selectedOptions.role.idRole > 0" style="background-color: #f2f2f2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-7"><br>
-                            <h5><b  style="color: black">Cotizacion 1</b></h5>
-                        </div>
-                        <form><br>
-                            <div class="col-md-5">
-                                <label>Monto cotizado sin IVA</label>
-                                <label>$<input type="number"></label>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12" style="background-color: #AFAFAF">
-                            <h7><b>Documento</b></h7><br><br>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-2"><br>
-                            <h6>Nombre del archivo</h6>
-                        </div>
-                        <div class="col-md-7"><br>
-                            <button class="btn btn-primary btn-sm">DESCARGAR</button>
-                        </div>
-                        <div class="col-md-3"><br>
-                            <button class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok"></span></button>
-                        </div><br>
-                    </div>
-                </div>
-                <br>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12" style="background-color: #AFAFAF">
-                            <h6><b>Justificacion</b></h6>
-                        </div><br>
-                        <div class="col-md-12"><br>
-                            <h7>sjfhaskjldfhkjlsfhgsfkjgdfsasdkjagsfkjghjgfhjdgshjdgsfjhdgsfjhdgsfjsdgfjdfsgjf</h7>
-                        </div><br><br><br>
-                    </div>
-                </div><br>
-            </div>
-            <div class="panel panel default" v-if="selectionOptions.role.idRole> 0" style="background-color: #f2f2f2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12">
-                            <h5><b style="color: black">Orden de compra</b></h5>
-                            <table class="table table-striped">
-                                <thead>
-                                <th class="col-md-4" style="background-color: #aaaaaa">Numero de orden de compra</th>
-                                <th class="col-md-4" style="background-color: #aaaaaa">Monto total</th>
-                                <th class="col-md-4" style="background-color: #aaaaaa">Fecha de generacion</th>
-                                </thead>
-                                <tbody>
-                                <tr v-for="compra in compra">
-                                    <td class="col-md-3">{{name}}</td>
-                                    <td class="col-md-3">{{Monto total}}</td>
-                                    <td class="col-md-3">{{fecha}}</td>
-                                    <div class="col-md-3">
-                                    <button type="button" class="btn btn-default btn-sm">Cancelar</button>
-                                    </div>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="col-md-11">
-                        <button type="button" class="btn btn-warning btn-sm" style="margin-left: 85%" data-toggle="modal" data-target="#Mimodal">Agregar Comprobante</button>
-                    </div>
-                    <div class="col-md-1">
-                        <button type="button" class="btn btn-default btn-sm">Cancelar</button>
-                    </div>
-                </div>
-            </div>
 
-            <!--TERMINA VISTA DE UNA ORDEN DE COMPRA PAGINA 29-->
+            <!--TERMINA MODAL DE LA PAGINA 27 A LA 28 ORDEN DE COMPRA-->
 
-            <!--EMPIEZA MODAL DE AGREGAR COMPROBANTE PAGINA 29-->
+            <!--EMPIEZA VISTA DETALLE DE SOLICITUD PAGINA 29-->
 
-                <div class="modal fade" id="Mimodal" role="dialog" style="background-color: #aaaaaa">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content" style="background-color: #f2f2f2">
-                            <div class="modal-body">
-                                <div class="panel panel-default" v-if="selectedOptions.role.idRole > 0" style="background-color: #f2f2f2">
-                                    <div class="row">
-                                        <div class="col-md-12"><br>
-                                        <div class="col-md-2">
-                                            <label>Concepto</label><br><br>
-                                            <p><b>Equipo computo</b></p>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label>Numero factura</label><br><br>
-                                            <input v-model="rfcSearch" type="text" class="form-control">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label>Concepto Factra</label><br><br>
-                                            <input v-model="numEmployeeSearch" type="text" class="form-control">
-                                        </div>
-                                            <div class="col-md-2">
-                                            <label>Monto con iva</label><br><br>
-                                            <input v-model="numEmployeeSearch" type="text" class="form-control">
-                                        </div>
-                                            <div class="col-md-2">
-                                            <label>Monto sin iva</label><br><br>
-                                            <input v-model="numEmployeeSearch" type="text" class="form-control">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label>Comprobante</label><br><br>
-                                            <button class="btn btn-primary btn-xs" @click="getEmployees" data-toggle="modal" data-target="#MImodal">Carga de documentos</button>
-                                        </div>
-                                    </div>
-                                        <br>
-                                        <br>
-                                        <br>
-                                        <div class="col-md-12"><br>
-                                        <div class="col-xs-2">
-                                            <label>Proveedor</label><br><br>
-                                            <select class="form-control" v-model="ticket.incidence">
-                                                <option></option>
-                                                <option v-for="incidence in incidences" value="{{incidence}}">
-                                                    {{incidence.incidenceName}}
-                                                </option>
-                                            </select>
-                                        </div>
-                                            <div class="col-xs-2">
-                                            <label>Cuenta bancaria</label><br><br>
-                                            <select class="form-control" v-model="ticket.incidence">
-                                                <option></option>
-                                                <option v-for="incidence in incidences" value="{{incidence}}">
-                                                    {{incidence.incidenceName}}
-                                                </option>
-                                            </select>
-                                        </div>
-                                            <div class="col-xs-2">
-                                                <label>Tipo de moneda</label><br><br>
-                                                <select class="form-control" v-model="ticket.incidence">
-                                                    <option></option>
-                                                    <option v-for="incidence in incidences" value="{{incidence}}">
-                                                        {{incidence.incidenceName}}
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div class="col-xs-3">
-                                                <label>Tipo de cambio</label><br><br>
-                                                <input class="form-control" type="number" placeholder="$" onpaste="alert('Acceso Denegado');return false">
-                                            </div>
-                                            <div class="col-xs-3">
-                                                <label>Monto total</label><br><br>
-                                                <input type="number" class="form-control" placeholder="$" onpaste="alert('Acceso Denegado');return false">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-success" data-dismiss="modal">Guardar</button>
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-            <!--TERMINA MODAL DE AGREGAR COMPROBANTE PAGINA 29-->
-
-            <!--EMPIEZA CARGA DE DOCUMENTOS EN (PDF Y XML)-->
-
-                <div class="modal fade" id="MImodal" role="dialog">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                                <div class="panel panel-default">
-                                    <div class="row">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                                            <div>
-                                                <h5 class="modal-title">Carga de documentos</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            <div class="panel panel-default" v-if="typeFile != ''">
-                                <div class="panel-body">
-                                    <div class="row">
+            <div class="modal fade" id="detallesolicitudvista" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div  class="panel panel-default" style="background-color: #F2F2F2">
+                                <div class="row">
+                                    <div class="col-md-12">
                                         <div class="col-md-12">
-                                            <div class="col-md-12">
-                                            <form class="form-inline" id="" enctype="multipart/form-data" v-on:submit.prevent="saveFile">
+                                            <h5><b style="color: black">Datos del solicitante</b></h5>
+                                            <table class="table table-striped">
+                                                <thead style="background-color: #BDBDBD">
+                                                <th class="col-md-4">Nombre</th>
+                                                <th class="col-md-4">Area</th>
+                                                <th class="col-md-4">Fecha de solicitud</th>
+                                                </thead>
+                                                <tbody>
+                                                <tr>
+                                                    <td class="col-md-4">{Name}}</td>
+                                                    <td class="col-md-4">{Area}}</td>
+                                                    <td class="col-md-4">{{date}}</td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel default" style="background-color: #f2f2f2">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="col-md-12">
+                                        <h5><b style="color: black">Datos de solicitud</b></h5>
+                                        <table class="table table-striped">
+                                            <thead style="background-color: #BDBDBD">
+                                            <th class="col-md-4">Centro de costos</th>
+                                            <th class="col-md-4">Centro de concepto</th>
+                                            <th class="col-md-4"></th>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td class="col-md-4">{{Centro de costos}}</td>
+                                                <td class="col-md-4">{{Centro de concepto</td>
+                                                <td class="col-md-4">{{Centro de concepto</td>
+                                            </tr>
+                                            </tbody>
+                                            <thead>
+                                            <th class="col-md-4" style="background-color: #aaaaaa">Lista de productos</th>
+                                            <th class="col-md-4" style="background-color: #aaaaaa">Cantidad</th>
+                                            <th class="col-md-4" style="background-color: #aaaaaa">Justificacion</th>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td class="col-md-4">{{Computadoras}}</td>
+                                                <td class="col-md-4">{{Cantidad}}</td>
+                                                <td class="col-md-4">{{Justificacion}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-default" style="background-color: #f2f2f2">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="col-md-7"><br>
+                                        <h5><b  style="color: black">Cotizacion 1</b></h5>
+                                    </div>
+                                    <form><br>
+                                        <div class="col-md-5">
+                                            <label>Monto cotizado sin IVA</label>
+                                            <label>$<input type="number"></label>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="col-md-12" style="background-color: #AFAFAF">
+                                        <h6><b>Documento</b></h6><br><br>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="col-md-2"><br>
+                                        <h6>Nombre del archivo</h6>
+                                    </div>
+                                    <div class="col-md-7"><br>
+                                        <button class="btn btn-primary btn-sm">DESCARGAR</button>
+                                    </div>
+                                    <div class="col-md-3"><br>
+                                        <button class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok"></span></button>
+                                    </div><br>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="col-md-12" style="background-color: #AFAFAF">
+                                        <h6><b>Justificacion</b></h6>
+                                    </div><br>
+                                    <div class="col-md-12"><br>
+                                        <h6>sjfhaskjldfhkjlsfhgsfkjgdfsasdkjagsfkjghjgfhjdgshjdgsfjhdgsfjhdgsfjsdgfjdfsgjf</h6>
+                                    </div><br><br><br>
+                                </div>
+                            </div><br>
+                        </div>
+                        <div class="panel panel default" style="background-color: #f2f2f2">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="col-md-12">
+                                        <h5><b style="color: black">Orden de compra</b></h5>
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <th class="col-md-4" style="background-color: #aaaaaa">Numero de orden de compra</th>
+                                            <th class="col-md-4" style="background-color: #aaaaaa">Monto total</th>
+                                            <th class="col-md-4" style="background-color: #aaaaaa">Fecha de generacion</th>
+                                            <th style="background-color: #aaaaaa"></th>
+                                            </thead>
+                                            <tbody>
+                                            <tr>
+                                                <td class="col-md-3">{{name}}</td>
+                                                <td class="col-md-3">{{Monto total}}</td>
+                                                <td class="col-md-3">{{fecha}}</td>
+                                                <td class="col-md-3">
+                                                    <button type="button" class="btn btn-danger btn-sm">Cancelar</button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="col-md-10">
+                                        <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#activadatos">Agregar Comprobante</button>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-default btn-sm" onclick="parent.location='http://localhost:8080/BIDGroupLines/siad/request-spending-detail-current'">Cancelar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--TERMINA VISTA DETALLE DE SOLICITUD PAGINA 29-->
+
+            <!--EMPIEZA MODAL DE ACTIVAR CAMPOS PAGINA 29-->
+
+            <div class="modal fade" id="activadatos" role="dialog">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="row">
+                                <div class="col-md-12"><br>
+                                    <div class="col-md-2">
+                                        <label>Concepto</label><br><br>
+                                        <p><b>Equipo computo</b></p>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label>Numero factura</label><br><br>
+                                        <input v-model="rfcSearch" type="text" class="form-control">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label>Concepto Factra</label><br><br>
+                                        <input v-model="numEmployeeSearch" type="text" class="form-control">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label>Monto con iva</label><br><br>
+                                        <input v-model="numEmployeeSearch" type="text" class="form-control">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label>Monto sin iva</label><br><br>
+                                        <input v-model="numEmployeeSearch" type="text" class="form-control">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label>Comprobante</label><br><br>
+                                        <button class="btn btn-primary btn-xs" @click="getEmployees" data-toggle="modal" data-target="#pdfyxml">Carga de documentos</button>
+                                    </div>
+                                </div>
+                            </div><br><br>
+                            <div class="modal-body">
+                                <div class="col-md-12"><br>
+                                    <div class="col-xs-2">
+                                        <label>Proveedor</label><br><br>
+                                        <select class="form-control">
+                                            <option></option>
+                                            <option value="{{incidence}}">
+                                                {{incidence.incidenceName}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Cuenta </label><br><br>
+                                        <select class="form-control">
+                                            <option></option>
+                                            <option value="{{incidence}}">
+                                                {{incidence.incidenceName}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <label>Tipo  moneda</label><br><br>
+                                        <select class="form-control" >
+                                            <option></option>
+                                            <option  value="{{incidence}}">
+                                                {{incidence.incidenceName}}
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Tipo  cambio</label><br><br>
+                                        <input class="form-control" type="number" placeholder="$" onpaste="alert('Acceso Denegado');return false">
+                                    </div>
+                                    <div class="col-xs-3">
+                                        <label>Monto total</label><br><br>
+                                        <input type="number" class="form-control" placeholder="$" onpaste="alert('Acceso Denegado');return false">
+                                    </div>
+                                </div>
+                            </div>
+                            <br><br>
+                            <div class="modal-footer"><br><br>
+                                <button type="button" class="btn btn-success">Guardar</button>
+                                <button type="button" class="btn btn-default" onclick="parent.location='http://localhost:8080/BIDGroupLines/siad/request-spending-detail-current'">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--TERMINA MODAL DE ACTIVAR CAMPOS PAGINA 29-->
+
+            <!--EMPIEZA MODAL CARGAR DOCUMENTOS PDF, XML, PAGINA 30-->
+
+            <div class="modal fade" id="pdfyxml" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <div>
+                                <h5 class="modal-title">Carga de documentos</h5>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="col-md-12">
+                                            <form class="form-inline"  enctype="multipart/form-data" v-on:submit.prevent="saveFile">
                                                 <div class="form-group">
                                                     <label>Factura PDF</label>
                                                     <input @change="setFile($event, docType)" type="file"
@@ -1422,745 +1449,198 @@
                                                            accept="application/pdf" required />
                                                 </div>
                                             </form>
-                                            </div><br><br><br>
+                                        </div><br><br><br>
+                                        <div class="col-md-12">
+                                            <form class="form-inline"  enctype="multipart/form-data" v-on:submit.prevent="saveFile">
+                                                <div class="form-group">
+                                                    <label>Factura XML</label>
+                                                    <input @change="setFile($event, docType)" type="file"
+                                                           class="form-control"
+                                                           :disabled="isSaving"
+                                                           :name="'file-type-' + docType.documentType.idDocumentType"
+                                                           accept=".xml" required />
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#facturaenviar">Guardar</button>
+                                <button type="button" class="btn btn-default" onclick="parent.location='http://localhost:8080/BIDGroupLines/siad/request-spending-detail-current'">Cancelar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--TERMINA MODAL CARGAR DOCUMENTOS PDF, XML, PAGINA 30-->
+
+            <!--EMPIEZA MODAL FACTURA PAGINA 31-->
+
+            <div class="modal fade" id="facturaenviar" role="dialog">
+                <div class="modal-dialog modal-lg" >
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="col-md-12">
+                                        <h5><b style="color: black">Datos del solicitante</b></h5>
+                                        <table class="table table-striped">
+                                            <thead style="background-color: #aaaaaa">
+                                            <th class="col-md-4">Nombre</th>
+                                            <th class="col-md-4">Area</th>
+                                            <th class="col-md-4">Fecha de solicitud</th>
+                                            </thead>
+                                            <tbody>
+                                            <tr >
+                                                <td class="col-md-4">{{Name}}</td>
+                                                <td class="col-md-4">{{Area}}</td>
+                                                <td class="col-md-4">{{date}}</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-body">
+                                <div class="panel panel default" style="background-color: #f2f2f2">
+                                    <div class="row">
+                                        <div class="col-md-12">
                                             <div class="col-md-12">
-                                                <form class="form-inline" id="" enctype="multipart/form-data" v-on:submit.prevent="saveFile">
-                                                    <div class="form-group">
-                                                        <label>Factura XML</label>
-                                                        <input @change="setFile($event, docType)" type="file"
-                                                               class="form-control"
-                                                               :disabled="isSaving"
-                                                               :name="'file-type-' + docType.documentType.idDocumentType"
-                                                               accept=".xml" required />
+                                                <h5><b style="color: black">Datos de solicitud</b></h5>
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                    <th class="col-md-6" style="background-color: #aaaaaa">Centro de costos</th>
+                                                    <th class="col-md-6" style="background-color: #aaaaaa">Centro de concepto</th>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td class="col-md-6">{{Centro de costos}}</td>
+                                                        <td class="col-md-6">{{Centro de concepto</td>
+                                                    </tr>
+                                                    </tbody>
+                                                    <thead>
+                                                    <th class="col-md-4" style="background-color: #aaaaaa">Lista de productos</th>
+                                                    <th class="col-md-4" style="background-color: #aaaaaa">Cantidad</th>
+                                                    <th class="col-md-4" style="background-color: #aaaaaa">Justificacion</th>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr>
+                                                        <td class="col-md-4">{{Computadoras}}</td>
+                                                        <td class="col-md-4">{{Cantidad}}</td>
+                                                        <td class="col-md-4">{{Justificacion}}</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default" style="background-color: #f2f2f2">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="col-md-7"><br>
+                                                <h5><b  style="color: black">Cotizacion 1</b></h5>
+                                            </div>
+                                            <form><br>
+                                                <div class="col-md-5">
+                                                    <label>Monto cotizado sin IVA</label>
+                                                    <label>$<input type="number"></label>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="col-md-12" style="background-color: #AFAFAF">
+                                                <h6><b>Documento</b></h6><br><br>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="col-md-2"><br>
+                                                <h6>Nombre del archivo</h6>
+                                            </div>
+                                            <div class="col-md-7"><br>
+                                                <button class="btn btn-primary btn-sm">DESCARGAR</button>
+                                            </div>
+                                            <div class="col-md-3"><br>
+                                                <button class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok"></span></button>
+                                            </div><br>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <br>
+                                </div>
+                                <div class="panel panel default" style="background-color: #f2f2f2">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="col-md-12">
+                                                <h5><b style="color: black">Orden de compra</b></h5>
+                                                <table class="table table-striped">
+                                                    <div class="col-md-12">
+                                                        <thead>
+                                                        <th class="col-md-4" style="background-color: #aaaaaa">Numero de orden de compra</th>
+                                                        <th class="col-md-4" style="background-color: #aaaaaa">Monto total</th>
+                                                        <th class="col-md-4" style="background-color: #aaaaaa">Fecha de generacion</th>
+                                                        </thead>
                                                     </div>
-                                                </form>
+                                                    <div class="col-md-12">
+                                                        <tbody>
+                                                        <tr >
+                                                            <td class="col-md-3">{{name}}</td>
+                                                            <td class="col-md-3">{{Monto total}}</td>
+                                                            <td class="col-md-3">{{fecha}}</td>
+                                                            <td class="col-md-3">
+                                                                <button class="btn btn-primary btn-sm">DESCARGAR</button>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </div>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="panel panel default" style="background-color: #f2f2f2">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="col-md-12">
+                                                    <h5><b style="color: black">Comprobante</b></h5>
+                                                    <div class="col-xs-6">
+                                                        <label>Proveedor</label><br><br>
+                                                        <select class="form-control">
+                                                            <option></option>
+                                                            <option value="{{incidence}}">
+                                                                {{incidence.incidenceName}}
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-xs-5">
+                                                        <label>Monto total</label><br><br>
+                                                        <input type="number" class="form-control" placeholder="$" onpaste="alert('Acceso Denegado');return false">
+                                                    </div>
+                                                    <div class="col-xs-1">
+                                                        <label></label><br><br>
+                                                        <button class="btn btn-danger btn-sm" style="margin-top: 10%">Eliminar</button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-success" data-dismiss="modal">Guardar</button>
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            <!--TERMINA CARGA DE DOCUMENTOS EN (PDF Y XML)-->
-
-            <!--EMPIEZA SOLICITUD VALORANDO LOS ARCHIVOS (PDF Y XML) PAGINA 31-->
-
-                <br><br>
-                <div  class="panel panel-default" v-if="selectedOptions.role.idRole > 0" style="background-color: #F2F2F2">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="col-md-12">
-                                <h5><b style="color: black">Datos del solicitante</b></h5>
-                                <table class="table table-striped">
-                                    <thead style="background-color: #aaaaaa">
-                                    <th class="col-md-4">Nombre</th>
-                                    <th class="col-md-4">Area</th>
-                                    <th class="col-md-4">Fecha de solicitud</th>
-                                    </thead>
-                                    <tbody>
-                                    <tr v-for="compra in compra">
-                                        <td class="col-md-4">{{Name}}</td>
-                                        <td class="col-md-4">{{Area}}</td>
-                                        <td class="col-md-4">{{date}}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel default" v-if="selectionOptions.role.idRole> 0" style="background-color: #f2f2f2">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="col-md-12">
-                                <h5><b style="color: black">Datos de solicitud</b></h5>
-                                <table class="table table-striped">
-                                    <thead>
-                                    <th class="col-md-6" style="background-color: #aaaaaa">Centro de costos</th>
-                                    <th class="col-md-6" style="background-color: #aaaaaa">Centro de concepto</th>
-                                    </thead>
-                                    <tbody>
-                                    <tr v-for="compra in compra">
-                                        <td class="col-md-6">{{Centro de costos}}</td>
-                                        <td class="col-md-6">{{Centro de concepto</td>
-                                    </tr>
-                                    </tbody>
-                                    <thead>
-                                    <th class="col-md-4" style="background-color: #aaaaaa">Lista de productos</th>
-                                    <th class="col-md-4" style="background-color: #aaaaaa">Cantidad</th>
-                                    <th class="col-md-4" style="background-color: #aaaaaa">Justificacion</th>
-                                    </thead>
-                                    <tbody>
-                                    <tr v-for="compra in compra">
-                                        <td class="col-md-4">{{Computadoras}}</td>
-                                        <td class="col-md-4">{{Cantidad}}</td>
-                                        <td class="col-md-4">{{Justificacion}}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-default" v-if="selectedOptions.role.idRole > 0" style="background-color: #f2f2f2">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="col-md-7"><br>
-                                <h5><b  style="color: black">Cotizacion 1</b></h5>
-                            </div>
-                            <form><br>
-                                <div class="col-md-5">
-                                    <label>Monto cotizado sin IVA</label>
-                                    <label>$<input type="number"></label>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="col-md-12" style="background-color: #AFAFAF">
-                                <h7><b>Documento</b></h7><br><br>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="col-md-2"><br>
-                                <h6>Nombre del archivo</h6>
-                            </div>
-                            <div class="col-md-7"><br>
-                                <button class="btn btn-primary btn-sm">DESCARGAR</button>
-                            </div>
-                            <div class="col-md-3"><br>
-                                <button class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok"></span></button>
-                            </div><br>
-                        </div>
-                    </div>
-                    <br>
-                    <br>
-                </div>
-                <div class="panel panel default" v-if="selectionOptions.role.idRole> 0" style="background-color: #f2f2f2">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="col-md-12">
-                                <h5><b style="color: black">Orden de compra</b></h5>
-                                <table class="table table-striped">
+                                <div class="row">
                                     <div class="col-md-12">
-                                    <thead>
-                                    <th class="col-md-4" style="background-color: #aaaaaa">Numero de orden de compra</th>
-                                    <th class="col-md-4" style="background-color: #aaaaaa">Monto total</th>
-                                    <th class="col-md-4" style="background-color: #aaaaaa">Fecha de generacion</th>
-                                    </thead>
-                                    </div>
-                                    <div class="col-md-12">
-                                    <tbody>
-                                    <tr v-for="compra in compra">
-                                        <td class="col-md-3">{{name}}</td>
-                                        <td class="col-md-3">{{Monto total}}</td>
-                                        <td class="col-md-3">{{fecha}}</td>
-                                        <td class="col-md-3">
-                                            <button class="btn btn-primary btn-sm">DESCARGAR</button>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                    </div>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div class="panel panel default" style="background-color: #f2f2f2">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="col-md-12">
-                                    <h5><b style="color: black">Comprobante</b></h5>
-                                    <div class="col-xs-6">
-                                            <label>Proveedor</label><br><br>
-                                            <select class="form-control" v-model="ticket.incidence">
-                                                <option></option>
-                                                <option v-for="incidence in incidences" value="{{incidence}}">
-                                                    {{incidence.incidenceName}}
-                                                </option>
-                                            </select>
+                                        <div class="col-md-10">
+                                            <button type="button" class="btn btn-success btn-sm" style="margin-left: 97%" data-toggle="modal" data-target="#facturaenviar">Enviar</button>
                                         </div>
-                                        <div class="col-xs-5">
-                                            <label>Monto total</label><br><br>
-                                            <input type="number" class="form-control" placeholder="$" onpaste="alert('Acceso Denegado');return false">
-                                        </div>
-                                    <div class="col-xs-1">
-                                        <label></label><br><br>
-                                        <button class="btn btn-danger btn-sm" style="margin-top: 10%">Eliminar</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-11">
-                            <button type="button" class="btn btn-success btn-sm" style="margin-left: 97%" data-toggle="modal" data-target="#Enviarsolicitudm">Enviar</button>
-                        </div>
-                        <div class="col-md-1">
-                            <button type="button" class="btn btn-default btn-sm">Cancelar</button>
-                        </div>
-                    </div>
-                </div>
-
-
-            <!--TERMINA SOLICITUD VALORANDO LOS ARCHIVOS (PDF Y XML) PAGINA 31-->
-
-            <!--EMPIEZA MODAL DEL BOTON DE ENVIAR SOLICITUD PAGINA 32-->
-
-            <div class="modal fade" id="Enviarsolicitudm" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">x</button>
-                            <h4 class="modal-title">Enviar solicitud</h4>
-                        </div>
-                        <div class="modal-body">
-                            <form>
-                                <div class="form-group">
-                                    <p>La solicitud sera enviada al administrador de pagos, para procesar el pago de la factura</p>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button"  onclick="parent.location='https://mail.google.com/mail/u/1/#inbox?compose=15c3be08b0b2647a'" class="btn btn-success">Aceptar</button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!--TERMINA MODAL DEL BOTON DE ENVIAR SOLICITUD PAGINA 32-->
-
-            <!--EMPIEZA MODAL DE JUSTIFICAR RECHAZO PAGINA 33-->
-
-            <div class="modal fade" id="Justificarechazo" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">x</button>
-                            <h4 class="modal-title">Justificar rechazo</h4>
-                        </div>
-                        <div class="modal-body">
-                            <form>
-                                <div class="form-group">
-                                    <textarea class="form-control" rows="3">{{rejected request}}</textarea>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-success" onclick="parent.location='https://mail.google.com/mail/u/1/?tab=wm#inbox?compose=15c3ce4fb65c6704'">Aceptar</button>
-                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#SolicitudmodaL">Cancelar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!--EMPIEZA MODAL DE JUSTIFICAR RECHAZO PAGINA 33-->
-
-            <!--EMPIEZA VENTANA MODAL DETALLE DE SOLLCITUD-->
-
-            <div class="modal fade" id="SolicitudmodaL" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">x</button>
-                            <h4 class="modal-title">Detalle de solicitud</h4>
-                        </div>
-                        <div class="modal-body">
-                            <form>
-                                <div class="form-group">
-                                    <p>Solicitud fuera de presupuesto</p>
-                                    <p>Se enviara a planeacion financiera para su validacion.</p>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-success" onclick="parent.location='https://mail.google.com/mail/u/1/?tab=wm#inbox?compose=15c3c687ca95b2dc'">Aceptar</button>
-                            <button type="button" class="btn btn-default">Cancelar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!--TERMINA VENTANA MODAL DETALLE DE SOLiCITUD-->
-
-            <!--EMPIEZA DETALLE DE SOLICITUD DE COMPRA PAGINA 35-->
-            <br><br>
-            <div  class="panel panel-default" v-if="selectedOptions.role.idRole > 0" style="background-color: #F2F2F2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12">
-                            <h5><b style="color: black">Datos del solicitante</b></h5>
-                            <table class="table table-striped">
-                                <thead style="background-color: #aaaaaa">
-                                <th class="col-md-4">Nombre</th>
-                                <th class="col-md-4">Area</th>
-                                <th class="col-md-4">Fecha de solicitud</th>
-                                </thead>
-                                <tbody>
-                                <tr v-for="compra in compra">
-                                    <td class="col-md-4">{{Name}}</td>
-                                    <td class="col-md-4">{{Area}}</td>
-                                    <td class="col-md-4">{{date}}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel default" v-if="selectionOptions.role.idRole> 0" style="background-color: #f2f2f2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12">
-                            <h5><b style="color: black">Datos de solicitud</b></h5>
-                            <table class="table table-striped">
-                                <thead>
-                                <th class="col-md-6" style="background-color: #aaaaaa">Centro de costos</th>
-                                <th class="col-md-6" style="background-color: #aaaaaa">Centro de concepto</th>
-                                </thead>
-                                <tbody>
-                                <tr v-for="compra in compra">
-                                    <td class="col-md-6">{{Centro de costos}}</td>
-                                    <td class="col-md-6">{{Centro de concepto</td>
-                                </tr>
-                                </tbody>
-                                <thead>
-                                <th class="col-md-4" style="background-color: #aaaaaa">Lista de productos</th>
-                                <th class="col-md-4" style="background-color: #aaaaaa">Cantidad</th>
-                                <th class="col-md-4" style="background-color: #aaaaaa">Justificacion</th>
-                                </thead>
-                                <tbody>
-                                <tr v-for="compra in compra">
-                                    <td class="col-md-4">{{Computadoras}}</td>
-                                    <td class="col-md-4">{{Cantidad}}</td>
-                                    <td class="col-md-4">{{Justificacion}}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel default" v-if="selectionOptions.role.idRole> 0" style="background-color: #f2f2f2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12">
-                            <h5><b style="color: black">Informacion</b></h5>
-                            <table class="table table-striped">
-                                <div class="col-md-12">
-                                    <thead>
-                                    <th class="col-md-4" style="background-color: #aaaaaa">Usuario</th>
-                                    <th class="col-md-4" style="background-color: #aaaaaa">Fecha</th>
-                                    <th class="col-md-4" style="background-color: #aaaaaa">Estado</th>
-                                    </thead>
-                                </div>
-                                <div class="col-md-12">
-                                    <tbody>
-                                    <tr v-for="compra in compra">
-                                        <td class="col-md-4">{{name}}</td>
-                                        <td class="col-md-4">{{Monto total}}</td>
-                                        <td class="col-md-4">{{fecha}}</td>
-                                    </tr>
-                                    </tbody>
-                                </div>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default" v-if="selectedOptions.role.idRole > 0" style="background-color: #f2f2f2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-7"><br>
-                            <h5><b  style="color: black">Cotizacion 1</b></h5>
-                        </div>
-                        <form><br>
-                            <div class="col-md-5">
-                                <label>Monto cotizado sin IVA</label>
-                                <label>$<input type="number"></label>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12" style="background-color: #AFAFAF">
-                            <h7><b>Documento</b></h7><br><br>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-2"><br>
-                            <h6>Nombre del archivo</h6>
-                        </div>
-                        <div class="col-md-7"><br>
-                            <button class="btn btn-primary btn-sm">DESCARGAR</button>
-                        </div>
-                        <div class="col-md-3"><br>
-                            <button class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok"></span></button>
-                        </div><br>
-                    </div>
-                </div>
-                <br>
-                <br>
-                <div class="row">
-            <div class="col-md-12">
-                <div class="col-md-12" style="background-color: #aaaaaa">
-                    <h6><b>Justificacion</b></h6>
-                </div><br>
-                <div class="col-md-12"><br>
-                    <h7>873465tg4573gf387fh48346d589347h6d5465347g5f87d5h3478888888888888888888888888888888888888888888888</h7>
-                </div>
-            </div>
-            </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="col-md-12">
-                        <button type="button" class="btn btn-default btn-sm" style="margin-left: 97%" onclick="parent.location='http://localhost:8080/BIDGroupLines/siad/request-spending-detail-current'">Salir</button>
-                    </div>
-                </div>
-            </div>
-
-            <!--TERMINA DETALLE DE SOLICITUD DE COMPRA PAGINA 35-->
-
-            <!--EMPIEZA PLANEACION FINANCIERA DE QUE AUTORIZO LA SOLICITUD PAGINA 35-->
-
-            <br><br>
-            <div  class="panel panel-default" v-if="selectedOptions.role.idRole > 0" style="background-color: #F2F2F2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12">
-                            <h5><b style="color: black">Datos del solicitante</b></h5>
-                            <table class="table table-striped">
-                                <thead style="background-color: #aaaaaa">
-                                <th class="col-md-4">Nombre</th>
-                                <th class="col-md-4">Area</th>
-                                <th class="col-md-4">Fecha de solicitud</th>
-                                </thead>
-                                <tbody>
-                                <tr v-for="compra in compra">
-                                    <td class="col-md-4">{{Name}}</td>
-                                    <td class="col-md-4">{{Area}}</td>
-                                    <td class="col-md-4">{{date}}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel default" v-if="selectionOptions.role.idRole> 0" style="background-color: #f2f2f2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12">
-                            <h5><b style="color: black">Datos de solicitud</b></h5>
-                            <table class="table table-striped">
-                                <thead>
-                                <th class="col-md-6" style="background-color: #aaaaaa">Centro de costos</th>
-                                <th class="col-md-6" style="background-color: #aaaaaa">Centro de concepto</th>
-                                </thead>
-                                <tbody>
-                                <tr v-for="compra in compra">
-                                    <td class="col-md-6">{{Centro de costos}}</td>
-                                    <td class="col-md-6">{{Centro de concepto</td>
-                                </tr>
-                                </tbody>
-                                <thead>
-                                <th class="col-md-4" style="background-color: #aaaaaa">Lista de productos</th>
-                                <th class="col-md-4" style="background-color: #aaaaaa">Cantidad</th>
-                                <th class="col-md-4" style="background-color: #aaaaaa">Justificacion</th>
-                                </thead>
-                                <tbody>
-                                <tr v-for="compra in compra">
-                                    <td class="col-md-4">{{Computadoras}}</td>
-                                    <td class="col-md-4">{{Cantidad}}</td>
-                                    <td class="col-md-4">{{Justificacion}}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel default" v-if="selectionOptions.role.idRole> 0" style="background-color: #f2f2f2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12">
-                            <h5><b style="color: black">Informacion</b></h5>
-                            <table class="table table-striped">
-                                <div class="col-md-12">
-                                    <thead>
-                                    <th class="col-md-4" style="background-color: #aaaaaa">Usuario</th>
-                                    <th class="col-md-4" style="background-color: #aaaaaa">Fecha</th>
-                                    <th class="col-md-4" style="background-color: #aaaaaa">Estado</th>
-                                    </thead>
-                                </div>
-                                <div class="col-md-12">
-                                    <tbody>
-                                    <tr v-for="compra in compra">
-                                        <td class="col-md-4">{{name}}</td>
-                                        <td class="col-md-4">{{Monto total}}</td>
-                                        <td class="col-md-4">{{fecha}}</td>
-                                    </tr>
-                                    </tbody>
-                                </div>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default" v-if="selectedOptions.role.idRole > 0" style="background-color: #f2f2f2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-7"><br>
-                            <h5><b  style="color: black">Cotizacion 1</b></h5>
-                        </div>
-                        <form><br>
-                            <div class="col-md-5">
-                                <label>Monto cotizado sin IVA</label>
-                                <label>$<input type="number"></label>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12" style="background-color: #AFAFAF">
-                            <h7><b>Documento</b></h7><br><br>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-2"><br>
-                            <h6>Nombre del archivo</h6>
-                        </div>
-                        <div class="col-md-7"><br>
-                            <button class="btn btn-primary btn-sm">DESCARGAR</button>
-                        </div>
-                        <div class="col-md-3"><br>
-                            <button class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok"></span></button>
-                        </div><br>
-                    </div>
-                </div>
-                <br>
-                <br>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12" style="background-color: #aaaaaa">
-                            <h6><b>Justificacion</b></h6>
-                        </div><br>
-                        <div class="col-md-12"><br>
-                            <h7>873465tg4573gf387fh48346d589347h6d5465347g5f87d5h3478888888888888888888888888888888888888888888888</h7>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default" style="background-color: #f2f2f2">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="col-md-12">
-                        <h5><b style="color: black">Orden de compra</b></h5>
-                        <table class="table table-striped">
-                            <div class="col-md-12">
-                                <thead>
-                                <th class="col-md-4" style="background-color: #aaaaaa">Numero de orden de compra</th>
-                                <th class="col-md-4" style="background-color: #aaaaaa">Monto total</th>
-                                <th class="col-md-4" style="background-color: #aaaaaa">Fecha de generacion</th>
-                                </thead>
-                            </div>
-                            <div class="col-md-12">
-                                <tbody>
-                                <tr v-for="compra in compra">
-                                    <td class="col-md-3">{{name}}</td>
-                                    <td class="col-md-3">{{Monto total}}</td>
-                                    <td class="col-md-3">{{fecha}}</td>
-                                    <td class="col-md-3">
-                                        <button class="btn btn-primary btn-sm">DESCARGAR</button>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </div>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            </div>
-            <div class="row">
-            <div class="col-md-12">
-                <div class="col-md-9">
-                    <button class="btn btn-primary btn-sm" style="margin-left: 80%" data-toggle="modal" data-target="#Detallemodal" >Generar orden de compra</button>
-                </div>
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-danger btn-sm" style="margin-left: 10%">Agregar Comprobante</button>
-                </div>
-                <div class="col-md-1">
-                    <button type="button" class="btn btn-default btn-sm">Cancelar</button>
-                </div>
-            </div>
-        </div>
-
-
-            <!--TERMINA PLANEACION FINANCIERA DE QUE AUTORIZO LA SOLICITUD PAGINA 35-->
-
-            <!--EMPIEZA VENTANA MODAL DETALLE DE SOLICITUD PAGINA 36-->
-
-            <div class="modal fade" id="Detallemodal" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">x</button>
-                            <h4 class="modal-title">Detalle de solicitud</h4>
-                        </div>
-                        <div class="modal-body">
-                            <form>
-                                <div class="form-group">
-                                    <p>Solicitud fuera del monto autorizado</p>
-                                    <p>Se enviara a "CORREO" para su validacion</p>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-success" onclick="parent.location='https://mail.google.com/mail/u/1/?tab=wm#inbox?compose=15c3cb6147788c11'">Aceptar</button>
-                            <button type="button" class="btn btn-default">Cancelar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!--TERMINA VENTANA MODAL DETALLE DE SOLICITUD PAGINA 36 -->
-
-            <!--EMPIEZA VENTANA DE FINALAZADAS PAGINA 40-->
-
-            <div  class="panel panel-default" v-if="selectedOptions.role.idRole > 0" style="background-color: #F2F2F2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12">
-                            <h5><b style="color: black">Datos del solicitante</b></h5>
-                            <table class="table table-striped">
-                                <thead style="background-color: #aaaaaa">
-                                <th class="col-md-4">Nombre</th>
-                                <th class="col-md-4">Area</th>
-                                <th class="col-md-4">Fecha de solicitud</th>
-                                </thead>
-                                <tbody>
-                                <tr v-for="compra in compra">
-                                    <td class="col-md-4">{{Name}}</td>
-                                    <td class="col-md-4">{{Area}}</td>
-                                    <td class="col-md-4">{{date}}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel default" v-if="selectionOptions.role.idRole> 0" style="background-color: #f2f2f2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12">
-                            <h5><b style="color: black">Datos de solicitud</b></h5>
-                            <table class="table table-striped">
-                                <thead>
-                                <th class="col-md-6" style="background-color: #aaaaaa">Centro de costos</th>
-                                <th class="col-md-6" style="background-color: #aaaaaa">Centro de concepto</th>
-                                </thead>
-                                <tbody>
-                                <tr v-for="compra in compra">
-                                    <td class="col-md-6">{{Centro de costos}}</td>
-                                    <td class="col-md-6">{{Centro de concepto</td>
-                                </tr>
-                                </tbody>
-                                <thead>
-                                <th class="col-md-4" style="background-color: #aaaaaa">Lista de productos</th>
-                                <th class="col-md-4" style="background-color: #aaaaaa">Cantidad</th>
-                                <th class="col-md-4" style="background-color: #aaaaaa">Justificacion</th>
-                                </thead>
-                                <tbody>
-                                <tr v-for="compra in compra">
-                                    <td class="col-md-4">{{Computadoras}}</td>
-                                    <td class="col-md-4">{{Cantidad}}</td>
-                                    <td class="col-md-4">{{Justificacion}}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel default" v-if="selectionOptions.role.idRole> 0" style="background-color: #f2f2f2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12">
-                            <h5><b style="color: black">Informacion</b></h5>
-                            <table class="table table-striped">
-                                <div class="col-md-12">
-                                    <thead>
-                                    <th class="col-md-4" style="background-color: #aaaaaa">Usuario</th>
-                                    <th class="col-md-4" style="background-color: #aaaaaa">Fecha</th>
-                                    <th class="col-md-4" style="background-color: #aaaaaa">Estado</th>
-                                    </thead>
-                                </div>
-                                <div class="col-md-12">
-                                    <tbody>
-                                    <tr v-for="compra in compra">
-                                        <td class="col-md-4">{{name}}</td>
-                                        <td class="col-md-4">{{Monto total}}</td>
-                                        <td class="col-md-4">{{fecha}}</td>
-                                    </tr>
-                                    </tbody>
-                                </div>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div><br>
-            <div id="accordion" role="tablist" aria-multiselectable="true">
-                <div class="panel panel-default" v-if="selectedOptions.role.idRole > 0">
-                    <div class="card">
-                        <div class="card-header" role="tab" id="headingThree">
-                            <div class="panel-heading" style="background-color: #f2f2f2">
-                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree"
-                                   aria-expanded="false" aria-controls="collapseThree">
-                                    <div class="col-md-11 text-center">
-                                        <b style="color: black"><span class=".glyphicon .glyphicon-chevron-down"></span>Detalle</b>
-                                    </div>
-                                </a>
-                                <br>
-                            </div>
-                        </div>
-                        <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree">
-                            <div class="card-block">
-                                <div class="panel-body">
-                                    <div class="col-md-12">
-                                        <div class="row">
-                                            <table class="table table-striped">
-                                                <tr>
-                                                    <td class="col-md-3 text-center"><b>Usuario</b></td>
-                                                    <td class="col-md-3 text-center"><b>Fecha</b></td>
-                                                    <td class="col-md-3 text-center"><b>Estado</b></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-md-3 text-center">{{leo}}</td>
-                                                    <td class="col-md-3 text-center">{{16-03-2017}}</td>
-                                                    <td class="col-md-3 text-center">{{pagada}}</td>
-                                                </tr>
-                                            </table>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-default btn-sm">Cancelar</button>
                                         </div>
                                     </div>
                                 </div>
@@ -2168,14 +1648,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12">
-                            <button type="button" class="btn btn-default btn-sm" style="margin-left: 97%">Salir</button>
-                        </div>
-                    </div>
-                </div>
-                <!--TERMINA VENTANA DE FINALAZADAS PAGINA 40-->
+
+                <!--TERMINA MODAL FACTURA PAGINA 31-->
+
+
             </div>
         </div>
     </jsp:body>

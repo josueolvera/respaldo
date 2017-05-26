@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Leonardo
-  Date: 18/05/2017
-  Time: 12:33 PM
-  To change this template use File | Settings | File Templates.
---%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -12,7 +5,6 @@
 
 <t:template pageTitle="BID Group: Bandeja de entrada solicitante">
     <jsp:attribute name="scripts">
-
         <script type="text/javascript">
             function validateFloatKeyPress(el, evt) {
                 var charCode = (evt.which) ? evt.which : event.keyCode;
@@ -54,25 +46,25 @@
                     this.getCurrencies();
                 },
                 data: {
-                    requestCategory: ${cat},
-                    idRequest: ${idRequest},
-                    roleCostCenterList: [],
-                    costCenterList: [],
-                    budgetCategories: [],
-                    budgetSubcategories: [],
-                    products: [],
-                    providers: [],
-                    providerAccounts: [],
-                    currencies: [],
-                    requestProducts: [],
+                    <%--requestCategory: ${cat},--%>
+                    <%--idRequest: ${idRequest},--%>
+//                    roleCostCenterList: [],
+//                    costCenterList: [],
+//                    budgetCategories: [],
+//                    budgetSubcategories: [],
+//                    products: [],
+//                    providers: [],
+//                    providerAccounts: [],
+//                    currencies: [],
+//                    requestProducts: [],
                     user: {},
                     estimation: {
                         amount: '',
                         provider: '',
-                        account: '',
-                        currency: '',
-                        rate: '',
-                        file: ''
+//                        account: '',
+//                        currency: '',
+//                        rate: '',
+//                        file: ''
                     },
                     requestBody: {
                         request: {
@@ -455,134 +447,170 @@
 
     <jsp:body>
         <div id="content">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="col-md-6">
-                        <h2>Compras</h2>
-                    </div>
-                    <form>
-                        <div class="col-md-3">
-                            <label>Búsqueda por folio</label>
-                            <input class="form-control"  type="text" placeholder="folio" maxlength="30" required/>
-                        </div>
-                    </form>
-                    <div class="col-md-3 text-right" style="margin-top: 10px">
-                        <label>Solicitante</label>
-                        <p>
-                            <span class="label label-default">{{user.dwEmployee.employee.fullName}}</span>
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <br>
-        </div>
-        <div class="panel panel-default" v-if="selectedOptions.role.idRole > 0">
-            <div class="panel-heading" style="background-color: #7AC5CD">
-                <div class="col-md-11 text-center">
-                    <b>Vigentes</b>
-                </div>
-                <div class="col-md-1 text-right">
-                    <label class="circleyel"></label>
-                </div>
-                <br>
-            </div>
-            <div class="panel-body">
-                <div class="col-md-12">
-                    <div class="row">
-                        <table class="table table-striped">
-                            <tr>
-                                <td class="col-md-3 text-center"><b>Concepto de solicitud 1</b></td>
-                                <td class="col-md-3 text-center"><b>Fecha de solicitud</b></td>
-                                <td class="col-md-4 text-center"><b>Folio</b></td>
-                                <td class="col-md-2 text-center"><b>Detalle</b></td>
-                            </tr>
-                            <tr v-for="compras in compras">
-                                <td class="col-md-3 text-center">{{Equipo de computo}}</td>
-                                <td class="col-md-3 text-center">{{16-03-2017}}</td>
-                                <td class="col-md-4 text-center">{{ABC123}}</td>
-                                <td class="col-md-2 text-center">
-                                    <a href="http://localhost:8080/BIDGroupLines/siad/request-spending-detail-current">
-                                    <button class="glyphicon glyphicon-new-window"></button>
-                                    </a>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="panel panel-default" v-if="selectedOptions.role.idRole > 0">
-            <div class="panel-heading" style="background-color: #7AC5CD">
-                <div class="col-md-11 text-center">
-                    <b>Finalizadas</b>
-                </div>
-                <div class="col-md-1 text-right">
-                    <label class="circlegre"></label>
-                </div>
-                <br>
-            </div>
-            <div class="panel-body">
-                <div class="col-md-12">
-                    <div class="row">
-
-                        <table class="table table-striped">
-                            <tr>
-                                <td class="col-md-3 text-center"><b>Concepto de solicitud 1</b></td>
-                                <td class="col-md-2 text-center"><b>Fecha de solicitud</b></td>
-                                <td class="col-md-3 text-center"><b>Folio</b></td>
-                                <td class="col-md-2 text-center"><b>Monto</b></td>
-                                <td class="col-md-2 text-center"><b>Detalle</b></td>
-                            </tr>
-                            <tr v-for="compras in compras">
-                                <td class="col-md-3 text-center">{{Equipo de computo}}</td>
-                                <td class="col-md-2 text-center">{{16-03-2017}}</td>
-                                <td class="col-md-3 text-center">{{ABC123}}</td>
-                                <td class="col-md-2 text-center">{{$200}}</td>
-                                <td class="col-md-2 text-center">
-                                    <a href="http://localhost:8080/BIDGroupLines/siad/request-spending-detail-current">
-                                    <button class="glyphicon glyphicon-new-window"></button>
-                                    </a>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        <div class="panel panel-default" v-if="selectedOptions.role.idRole > 0">
-        <div class="panel-heading" style="background-color: #7AC5CD">
-            <div class="col-md-11 text-center">
-                <b>Rechazadas</b>
-            </div>
-            <div class="col-md-1 text-right">
-                <label class="circlered"></label>
-            </div>
-            <br>
-        </div>
-        <div class="panel-body">
+        <div class="row">
             <div class="col-md-12">
-                <div class="row">
-                    <table class="table table-striped">
-                        <tr>
-                            <td class="col-md-3 text-center"><b>Concepto de solicitud 1</b></td>
-                            <td class="col-md-3 text-center"><b>Fecha de solicitud</b></td>
-                            <td class="col-md-4 text-center"><b>Folio</b></td>
-                            <td class="col-md-2 text-center"><b>Detalle</b></td>
-                        </tr>
-                        <tr v-for="compras in compras">
-                            <td class="col-md-3 text-center">{{Equipo de computo}}</td>
-                            <td class="col-md-3 text-center">{{16-03-2017}}</td>
-                            <td class="col-md-4 text-center">{{ABC123}}</td>
-                            <td class="col-md-2 text-center">
-                                <a href="http://localhost:8080/BIDGroupLines/siad/request-spending-detail-current">
-                                <button class="glyphicon glyphicon-new-window"></button>
-                                </a>
-                            </td>
-                        </tr>
-                    </table>
+                <div class="col-md-3">
+                    <h2>Compras</h2>
+                </div>
+
+                <div class="col-md-2 text-right">
+
+                </div>
+                <div class="col-md-4">
+                    <form>
+                        <div class="col-md-8">
+                            <label>Búsqueda por folio</label>
+                            <input class="form-control" type="text" placeholder="folio" maxlength="30" required/>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="col-md-3 text-right" style="margin-top: 10px">
+                    <label>Solicitante</label>
+                    <p>
+                        <span class="label label-default">{{user.dwEmployee.employee.fullName}}</span>
+                    </p>
                 </div>
             </div>
         </div>
+        <br>
+        <%-- vigentes--%>
+        <div id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="card">
+                    <div class="card-header" role="tab" id="headingThree">
+                        <div class="panel-heading" style="background-color: #7AC5CD">
+                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree"
+                               aria-expanded="false" aria-controls="collapseThree">
+                                <div class="col-md-11 text-center">
+                                    <b style="color: black">Vigentes</b>
+                                </div>
+                            </a>
+                            <div class="col-md-1 text-right">
+                                <label class="circleyel"></label>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                    <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree">
+                        <div class="card-block">
+                            <div class="panel-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <tr>
+                                                <td class="col-md-3 text-center"><b>Concepto de solicitud 1</b></td>
+                                                <td class="col-md-3 text-center"><b>Fecha de solicitud</b></td>
+                                                <td class="col-md-3 text-center"><b>Folio</b></td>
+                                                <td class="col-md-3 text-center"><b>Detalle</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="col-md-3 text-center">Equipo de computo</td>
+                                                <td class="col-md-3 text-center">16-03-2017</td>
+                                                <td class="col-md-3 text-center">ABC123</td>
+                                                <td class="col-md-3 text-center">
+                                                    <button class="glyphicon glyphicon-new-window"></button>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="card">
+                    <div class="card-header" role="tab" id="headingTwo">
+                        <div class="panel-heading" style="background-color: #7AC5CD">
+                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"
+                               aria-expanded="false" aria-controls="collapseThree">
+                                <div class="col-md-11 text-center">
+                                    <b style="color: black">Finalizadas</b>
+                                </div>
+                            </a>
+                            <div class="col-md-1 text-right">
+                                <label class="circlegre"></label>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                    <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
+                        <div class="card-block">
+                            <div class="panel-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <tr>
+                                                <td class="col-md-3 text-center"><b>Concepto de solicitud 1</b></td>
+                                                <td class="col-md-3 text-center"><b>Fecha de solicitud</b></td>
+                                                <td class="col-md-3 text-center"><b>Folio</b></td>
+                                                <td class="col-md-3 text-center"><b>Detalle</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="col-md-3 text-center">Equipo de computo</td>
+                                                <td class="col-md-3 text-center">16-03-2017</td>
+                                                <td class="col-md-3 text-center">ABC123</td>
+                                                <td class="col-md-3 text-center">
+                                                    <button class="glyphicon glyphicon-new-window"></button>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="card">
+                    <div class="card-header" role="tab" id="headingOne">
+                        <div class="panel-heading" style="background-color: #7AC5CD">
+                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
+                               aria-expanded="false" aria-controls="collapseOne">
+                                <div class="col-md-11 text-center">
+                                    <b style="color: black">Rechazadas</b>
+                                </div>
+                            </a>
+                            <div class="col-md-1 text-right">
+                                <label class="circlered"></label>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                    <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne">
+                        <div class="card-block">
+                            <div class="panel-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <tr>
+                                                <td class="col-md-3 text-center"><b>Concepto de solicitud 1</b></td>
+                                                <td class="col-md-3 text-center"><b>Fecha de solicitud</b></td>
+                                                <td class="col-md-3 text-center"><b>Folio</b></td>
+                                                <td class="col-md-3 text-center"><b>Detalle</b></td>
+                                            </tr>
+                                            <tr>
+                                                <td class="col-md-3 text-center">Equipo de computo</td>
+                                                <td class="col-md-3 text-center">16-03-2017</td>
+                                                <td class="col-md-3 text-center">ABC123</td>
+                                                <td class="col-md-3 text-center">
+                                                    <button class="glyphicon glyphicon-new-window"></button>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%--termina archivos de cotizacion--%>
     </jsp:body>
 </t:template>
