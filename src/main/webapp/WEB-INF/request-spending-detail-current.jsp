@@ -279,31 +279,23 @@
                         })
                     },
                     showModaljustificaruno: function () {
-                        $('#modaljustificaruno').modal('show');
+                        $('#justificaruno').modal('show');
                     },
-                    showModaljustificardos: function () {
-                        $('#modaljustificardos').modal('show');
+                    showModaljustificarDos: function () {
+                        $('#detallemodal').modal('show');
                     },
-                    showModaljustificartres: function () {
-                        $('#modaljustificartres').modal('show');
+                    showModaljustificarTres: function () {
+                        $('#ordendecompra').modal('show');
                     },
-                    showModaldetallemodal: function () {
-                        $('#modaldetallemodal').modal('show');
+                    showModaljustificarCuatro: function () {
+                        $('#detallesolicitudvista').modal('show');
                     },
-                    showModalordendecompra: function () {
-                        $('#modalordendecompra').modal('show');
-                    },
-                    showModaldetallesolicitudvista: function () {
-                        $('#modaldetallesolicitudvista').modal('show');
-                    },
-                    showModalactivadatos: function () {
-                        $('#modalactivadatos').modal('show');
-                    },
-                    showModalpdfyxml: function () {
-                        $('#modalpdfyxml').modal('show');
-                    },
-                    showModalfacturaenviar: function () {
-                        $('#modalfacturaenviar').modal('show');
+                    showModaljustificarCinco: function () {
+                        $('#activadatos').modal('show');
+                        $('#detallesolicitudvista').modal('hide');
+                        $('#ordendecompra').modal('hide');
+                        $('#detallemodal').modal('hide');
+                        $('#justificaruno').modal('hide');
                     },
                     getProviderAccounts: function () {
                         this.$http.get(ROOT_URL + '/providers-accounts/provider/' + this.estimation.provider.idProvider)
@@ -348,13 +340,13 @@
                         }
                     },
                     validateFile: function (file) {
-                        if (file.type !== 'application/pdf') {
+                        if (file.type == 'application/pdf' || file.type == 'text/xml') {
+                            return true;
+                        } else {
                             event.target.value = null;
                             showAlert("Tipo de archivo no admitido", {type: 3});
                             return false;
                         }
-
-                        return true;
                     },
                     clearEstimation: function () {
                         this.estimation = {
@@ -460,10 +452,12 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="col-md-4">
+                    <div class="col-md-4" style="margin-top: 30px">
+                        <p></p>
                         <h4>DETALLE DE SOLICITUD/VIGENTE</h4>
                     </div>
-                    <div class="col-md-2" style="margin: 1%">
+                    <div class="col-md-2" style="margin-top: 30px">
+                        <p></p>
                         <label class="circleyel"></label>
                     </div>
                     <div class="col-md-5 text-right" style="margin-top: 10px">
@@ -564,7 +558,7 @@
                             <button class="btn btn-primary btn-sm">DESCARGAR</button>
                         </div>
                         <div class="col-md-3"><br>
-                            <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#justificaruno">
+                            <button class="btn btn-success btn-sm" @click="showModaljustificaruno">
                                 ELEGIR
                             </button>
                         </div>
@@ -684,8 +678,7 @@
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-success" data-toggle="modal"
-                                    data-target="#detallemodal">Aceptar
+                            <button type="button" class="btn btn-success" @click="showModaljustificarDos">Aceptar
                             </button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         </div>
@@ -749,7 +742,8 @@
 
             <!--EMPIEZA MODAL DE LA PAGINA 26 A LA PAGINA 27 AL PRESIONAR ACEPTAR-->
 
-            <div class="modal fade" id="detallemodal" role="dialog">
+            <div class="modal fade" id="detallemodal" tabindex="-1" role="dialog" aria-labelledby=""
+                 aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -873,8 +867,8 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="col-md-8">
-                                        <button class="btn btn-primary btn-sm" data-toggle="modal"
-                                                data-target="#ordendecompra">Generar orden de compra
+                                        <button class="btn btn-primary btn-sm" @click="showModaljustificarTres">Generar
+                                            orden de compra
                                         </button>
                                     </div>
                                     <div class="col-md-2">
@@ -1172,8 +1166,10 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#detallesolicitudvista">Guardar</button>
-                            <button type="button" class="btn btn-default" onclick="parent.location='http://localhost:8080/BIDGroupLines/siad/request-spending-detail-current'">
+                            <button type="button" class="btn btn-success" @click="showModaljustificarCuatro">Guardar
+                            </button>
+                            <button type="button" class="btn btn-default"
+                                    onclick="parent.location='http://localhost:8080/BIDGroupLines/siad/request-spending-detail-current'">
                                 Cancelar
                             </button>
                         </div>
@@ -1190,7 +1186,7 @@
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <div  class="panel panel-default" style="background-color: #F2F2F2">
+                            <div class="panel panel-default" style="background-color: #F2F2F2">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="col-md-12">
@@ -1233,7 +1229,8 @@
                                             </tr>
                                             </tbody>
                                             <thead>
-                                            <th class="col-md-4" style="background-color: #aaaaaa">Lista de productos</th>
+                                            <th class="col-md-4" style="background-color: #aaaaaa">Lista de productos
+                                            </th>
                                             <th class="col-md-4" style="background-color: #aaaaaa">Cantidad</th>
                                             <th class="col-md-4" style="background-color: #aaaaaa">Justificacion</th>
                                             </thead>
@@ -1253,7 +1250,7 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="col-md-7"><br>
-                                        <h5><b  style="color: black">Cotizacion 1</b></h5>
+                                        <h5><b style="color: black">Cotizacion 1</b></h5>
                                     </div>
                                     <form><br>
                                         <div class="col-md-5">
@@ -1279,8 +1276,10 @@
                                         <button class="btn btn-primary btn-sm">DESCARGAR</button>
                                     </div>
                                     <div class="col-md-3"><br>
-                                        <button class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok"></span></button>
-                                    </div><br>
+                                        <button class="btn btn-success btn-sm"><span
+                                                class="glyphicon glyphicon-ok"></span></button>
+                                    </div>
+                                    <br>
                                 </div>
                             </div>
                             <br>
@@ -1288,12 +1287,16 @@
                                 <div class="col-md-12">
                                     <div class="col-md-12" style="background-color: #AFAFAF">
                                         <h6><b>Justificacion</b></h6>
-                                    </div><br>
+                                    </div>
+                                    <br>
                                     <div class="col-md-12"><br>
-                                        <h6>sjfhaskjldfhkjlsfhgsfkjgdfsasdkjagsfkjghjgfhjdgshjdgsfjhdgsfjhdgsfjsdgfjdfsgjf</h6>
-                                    </div><br><br><br>
+                                        <h6>
+                                            sjfhaskjldfhkjlsfhgsfkjgdfsasdkjagsfkjghjgfhjdgshjdgsfjhdgsfjhdgsfjsdgfjdfsgjf</h6>
+                                    </div>
+                                    <br><br><br>
                                 </div>
-                            </div><br>
+                            </div>
+                            <br>
                         </div>
                         <div class="panel panel default" style="background-color: #f2f2f2">
                             <div class="row">
@@ -1302,9 +1305,12 @@
                                         <h5><b style="color: black">Orden de compra</b></h5>
                                         <table class="table table-striped">
                                             <thead>
-                                            <th class="col-md-4" style="background-color: #aaaaaa">Numero de orden de compra</th>
+                                            <th class="col-md-4" style="background-color: #aaaaaa">Numero de orden de
+                                                compra
+                                            </th>
                                             <th class="col-md-4" style="background-color: #aaaaaa">Monto total</th>
-                                            <th class="col-md-4" style="background-color: #aaaaaa">Fecha de generacion</th>
+                                            <th class="col-md-4" style="background-color: #aaaaaa">Fecha de generacion
+                                            </th>
                                             <th style="background-color: #aaaaaa"></th>
                                             </thead>
                                             <tbody>
@@ -1313,7 +1319,8 @@
                                                 <td class="col-md-3">{{Monto total}}</td>
                                                 <td class="col-md-3">{{fecha}}</td>
                                                 <td class="col-md-3">
-                                                    <button type="button" class="btn btn-danger btn-sm">Cancelar</button>
+                                                    <button type="button" class="btn btn-danger btn-sm">Cancelar
+                                                    </button>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -1326,10 +1333,15 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="col-md-10">
-                                        <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#activadatos">Agregar Comprobante</button>
+                                        <button type="button" class="btn btn-warning btn-sm"
+                                                @click="showModaljustificarCinco">Agregar Comprobante
+                                        </button>
                                     </div>
                                     <div class="col-md-2">
-                                        <button type="button" class="btn btn-default btn-sm" onclick="parent.location='http://localhost:8080/BIDGroupLines/siad/request-spending-detail-current'">Cancelar</button>
+                                        <button type="button" class="btn btn-default btn-sm"
+                                                onclick="parent.location='http://localhost:8080/BIDGroupLines/siad/request-spending-detail-current'">
+                                            Cancelar
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -1370,10 +1382,13 @@
                                     </div>
                                     <div class="col-md-2">
                                         <label>Comprobante</label><br><br>
-                                        <button class="btn btn-primary btn-xs" @click="getEmployees" data-toggle="modal" data-target="#pdfyxml">Carga de documentos</button>
+                                        <button class="btn btn-primary btn-xs" @click="getEmployees" data-toggle="modal"
+                                                data-target="#pdfyxml">Carga de documentos
+                                        </button>
                                     </div>
                                 </div>
-                            </div><br><br>
+                            </div>
+                            <br><br>
                             <div class="modal-body">
                                 <div class="col-md-12"><br>
                                     <div class="col-xs-2">
@@ -1395,28 +1410,33 @@
                                         </select>
                                     </div>
                                     <div class="col-xs-2">
-                                        <label>Tipo  moneda</label><br><br>
-                                        <select class="form-control" >
+                                        <label>Tipo moneda</label><br><br>
+                                        <select class="form-control">
                                             <option></option>
-                                            <option  value="{{incidence}}">
+                                            <option value="{{incidence}}">
                                                 {{incidence.incidenceName}}
                                             </option>
                                         </select>
                                     </div>
                                     <div class="col-xs-3">
-                                        <label>Tipo  cambio</label><br><br>
-                                        <input class="form-control" type="number" placeholder="$" onpaste="alert('Acceso Denegado');return false">
+                                        <label>Tipo cambio</label><br><br>
+                                        <input class="form-control" type="number" placeholder="$"
+                                               onpaste="alert('Acceso Denegado');return false">
                                     </div>
                                     <div class="col-xs-3">
                                         <label>Monto total</label><br><br>
-                                        <input type="number" class="form-control" placeholder="$" onpaste="alert('Acceso Denegado');return false">
+                                        <input type="number" class="form-control" placeholder="$"
+                                               onpaste="alert('Acceso Denegado');return false">
                                     </div>
                                 </div>
                             </div>
                             <br><br>
                             <div class="modal-footer"><br><br>
                                 <button type="button" class="btn btn-success">Guardar</button>
-                                <button type="button" class="btn btn-default" onclick="parent.location='http://localhost:8080/BIDGroupLines/siad/request-spending-detail-current'">Cancelar</button>
+                                <button type="button" class="btn btn-default"
+                                        onclick="parent.location='http://localhost:8080/BIDGroupLines/siad/request-spending-detail-current'">
+                                    Cancelar
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1439,26 +1459,29 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="col-md-12">
-                                            <form class="form-inline"  enctype="multipart/form-data" v-on:submit.prevent="saveFile">
+                                            <form class="form-inline" enctype="multipart/form-data"
+                                                  v-on:submit.prevent="saveFile">
                                                 <div class="form-group">
                                                     <label>Factura PDF</label>
                                                     <input @change="setFile($event, docType)" type="file"
                                                            class="form-control"
                                                            :disabled="isSaving"
                                                            :name="'file-type-' + docType.documentType.idDocumentType"
-                                                           accept="application/pdf" required />
+                                                           accept="application/pdf" required/>
                                                 </div>
                                             </form>
-                                        </div><br><br><br>
+                                        </div>
+                                        <br><br><br>
                                         <div class="col-md-12">
-                                            <form class="form-inline"  enctype="multipart/form-data" v-on:submit.prevent="saveFile">
+                                            <form class="form-inline" enctype="multipart/form-data"
+                                                  v-on:submit.prevent="saveFile">
                                                 <div class="form-group">
                                                     <label>Factura XML</label>
                                                     <input @change="setFile($event, docType)" type="file"
                                                            class="form-control"
                                                            :disabled="isSaving"
                                                            :name="'file-type-' + docType.documentType.idDocumentType"
-                                                           accept=".xml" required />
+                                                           accept=".xml" required/>
                                                 </div>
                                             </form>
                                         </div>
@@ -1466,8 +1489,13 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#facturaenviar">Guardar</button>
-                                <button type="button" class="btn btn-default" onclick="parent.location='http://localhost:8080/BIDGroupLines/siad/request-spending-detail-current'">Cancelar</button>
+                                <button type="button" class="btn btn-success" data-toggle="modal"
+                                        data-target="#facturaenviar">Guardar
+                                </button>
+                                <button type="button" class="btn btn-default"
+                                        onclick="parent.location='http://localhost:8080/BIDGroupLines/siad/request-spending-detail-current'">
+                                    Cancelar
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1479,7 +1507,7 @@
             <!--EMPIEZA MODAL FACTURA PAGINA 31-->
 
             <div class="modal fade" id="facturaenviar" role="dialog">
-                <div class="modal-dialog modal-lg" >
+                <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
                             <div class="row">
@@ -1493,7 +1521,7 @@
                                             <th class="col-md-4">Fecha de solicitud</th>
                                             </thead>
                                             <tbody>
-                                            <tr >
+                                            <tr>
                                                 <td class="col-md-4">{{Name}}</td>
                                                 <td class="col-md-4">{{Area}}</td>
                                                 <td class="col-md-4">{{date}}</td>
@@ -1511,8 +1539,12 @@
                                                 <h5><b style="color: black">Datos de solicitud</b></h5>
                                                 <table class="table table-striped">
                                                     <thead>
-                                                    <th class="col-md-6" style="background-color: #aaaaaa">Centro de costos</th>
-                                                    <th class="col-md-6" style="background-color: #aaaaaa">Centro de concepto</th>
+                                                    <th class="col-md-6" style="background-color: #aaaaaa">Centro de
+                                                        costos
+                                                    </th>
+                                                    <th class="col-md-6" style="background-color: #aaaaaa">Centro de
+                                                        concepto
+                                                    </th>
                                                     </thead>
                                                     <tbody>
                                                     <tr>
@@ -1521,9 +1553,13 @@
                                                     </tr>
                                                     </tbody>
                                                     <thead>
-                                                    <th class="col-md-4" style="background-color: #aaaaaa">Lista de productos</th>
+                                                    <th class="col-md-4" style="background-color: #aaaaaa">Lista de
+                                                        productos
+                                                    </th>
                                                     <th class="col-md-4" style="background-color: #aaaaaa">Cantidad</th>
-                                                    <th class="col-md-4" style="background-color: #aaaaaa">Justificacion</th>
+                                                    <th class="col-md-4" style="background-color: #aaaaaa">
+                                                        Justificacion
+                                                    </th>
                                                     </thead>
                                                     <tbody>
                                                     <tr>
@@ -1541,7 +1577,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="col-md-7"><br>
-                                                <h5><b  style="color: black">Cotizacion 1</b></h5>
+                                                <h5><b style="color: black">Cotizacion 1</b></h5>
                                             </div>
                                             <form><br>
                                                 <div class="col-md-5">
@@ -1567,8 +1603,10 @@
                                                 <button class="btn btn-primary btn-sm">DESCARGAR</button>
                                             </div>
                                             <div class="col-md-3"><br>
-                                                <button class="btn btn-success btn-sm"><span class="glyphicon glyphicon-ok"></span></button>
-                                            </div><br>
+                                                <button class="btn btn-success btn-sm"><span
+                                                        class="glyphicon glyphicon-ok"></span></button>
+                                            </div>
+                                            <br>
                                         </div>
                                     </div>
                                     <br>
@@ -1582,19 +1620,26 @@
                                                 <table class="table table-striped">
                                                     <div class="col-md-12">
                                                         <thead>
-                                                        <th class="col-md-4" style="background-color: #aaaaaa">Numero de orden de compra</th>
-                                                        <th class="col-md-4" style="background-color: #aaaaaa">Monto total</th>
-                                                        <th class="col-md-4" style="background-color: #aaaaaa">Fecha de generacion</th>
+                                                        <th class="col-md-4" style="background-color: #aaaaaa">Numero de
+                                                            orden de compra
+                                                        </th>
+                                                        <th class="col-md-4" style="background-color: #aaaaaa">Monto
+                                                            total
+                                                        </th>
+                                                        <th class="col-md-4" style="background-color: #aaaaaa">Fecha de
+                                                            generacion
+                                                        </th>
                                                         </thead>
                                                     </div>
                                                     <div class="col-md-12">
                                                         <tbody>
-                                                        <tr >
+                                                        <tr>
                                                             <td class="col-md-3">{{name}}</td>
                                                             <td class="col-md-3">{{Monto total}}</td>
                                                             <td class="col-md-3">{{fecha}}</td>
                                                             <td class="col-md-3">
-                                                                <button class="btn btn-primary btn-sm">DESCARGAR</button>
+                                                                <button class="btn btn-primary btn-sm">DESCARGAR
+                                                                </button>
                                                             </td>
                                                         </tr>
                                                         </tbody>
@@ -1621,11 +1666,14 @@
                                                     </div>
                                                     <div class="col-xs-5">
                                                         <label>Monto total</label><br><br>
-                                                        <input type="number" class="form-control" placeholder="$" onpaste="alert('Acceso Denegado');return false">
+                                                        <input type="number" class="form-control" placeholder="$"
+                                                               onpaste="alert('Acceso Denegado');return false">
                                                     </div>
                                                     <div class="col-xs-1">
                                                         <label></label><br><br>
-                                                        <button class="btn btn-danger btn-sm" style="margin-top: 10%">Eliminar</button>
+                                                        <button class="btn btn-danger btn-sm" style="margin-top: 10%">
+                                                            Eliminar
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1637,7 +1685,10 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="col-md-10">
-                                            <button type="button" class="btn btn-success btn-sm" style="margin-left: 97%" data-toggle="modal" data-target="#facturaenviar">Enviar</button>
+                                            <button type="button" class="btn btn-success btn-sm"
+                                                    style="margin-left: 97%" data-toggle="modal"
+                                                    data-target="#facturaenviar">Enviar
+                                            </button>
                                         </div>
                                         <div class="col-md-2">
                                             <button type="button" class="btn btn-default btn-sm">Cancelar</button>
