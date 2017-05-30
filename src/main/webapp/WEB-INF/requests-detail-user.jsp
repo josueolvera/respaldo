@@ -263,11 +263,13 @@
                         </tr>
                         <tr v-for="productRequest in request.requestProductsList">
                             <td class="col-md-3">{{productRequest.roleProductRequest.cProductsRequest.productRequestName}}</td>
-                            <td class="col-md-1"><input class="form-control" maxlength="3" type="text"
-                                                        onclick="return cleanField(this)" disabled
-                                                        onkeypress="return validateFloatKeyPress(this,event)"
-                                                        onInput="format(this)" onblur="ponerCeros(this)"
-                                                        placeholder="0" v-model="productRequest.quantity" required/></td>
+                            <td class="col-md-1">
+                                <input class="form-control" maxlength="3" type="text"
+                                       onclick="return cleanField(this)" disabled
+                                       onkeypress="return validateFloatKeyPress(this,event)"
+                                       onInput="format(this)" onblur="ponerCeros(this)"
+                                       placeholder="0" v-model="productRequest.quantity" required/>
+                            </td>
                             <td class="col-md-2">
 
                             </td>
@@ -290,12 +292,31 @@
                             <table class="table table-striped">
                                 <tr>
                                     <td class="col-md-4"><b>Usuario</b></td>
-                                    <td class="col-md-4"><b>Fecha</b></td>
+                                    <td class="col-md-3"><b>Fecha</b></td>
+                                    <td class="col-md-1">
+                                    </td>
                                     <td class="col-md-4"><b>Estado</b></td>
                                 </tr>
                                 <tr>
                                     <td class="col-md-4">{{request.employees.fullName}}</td>
-                                    <td class="col-md-4">{{request.creationDateFormats.dateNumber}}</td>
+                                    <td class="col-md-3">{{request.creationDateFormats.dateNumber}}</td>
+                                    <td class="col-md-1">
+                                        <span class="glyphicon glyphicon-triangle-bottom"
+                                              style="color: #7A7A7A; font-size: 200%"
+                                              v-if="request.requestStatus == 1"></span>
+                                        <span class="glyphicon glyphicon-triangle-bottom"
+                                              style="color: #DF9A1B; font-size: 200%"
+                                              v-if="request.requestStatus == 2"></span>
+                                        <span class="glyphicon glyphicon-triangle-bottom"
+                                              style="color: #EE0909; font-size: 200%"
+                                              v-if="request.requestStatus == 3"></span>
+                                        <span class="glyphicon glyphicon-triangle-bottom"
+                                              style="color: #457a1a; font-size: 200%"
+                                              v-if="request.requestStatus == 4"></span>
+                                        <span class="glyphicon glyphicon-triangle-bottom"
+                                              style="color: #457a1a;  font-size: 200%"
+                                              v-if="request.requestStatus  == 5"></span>
+                                    </td>
                                     <td class="col-md-4">{{request.requestStatus.requestStatus}}</td>
                                 </tr>
                             </table>
@@ -347,7 +368,7 @@
                                                     <td class="col-md-4" align="center">
                                                         <input class="form-control" type="text"
                                                                placeholder="$" style="width: 40%" v-model="estimationsRequest.amount | currency"
-                                                               maxlength="14" readonly />
+                                                               maxlength="14" disabled />
                                                     </td>
                                                     <td class="col-md-4" align="right">
                                                         <a class="btn btn-default" :href="downloadUrl + estimationsRequest.idPriceEstimation"
