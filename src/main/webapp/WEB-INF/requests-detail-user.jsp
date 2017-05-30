@@ -46,7 +46,8 @@
                     this.getUserInSession();
                 },
                 data: {
-                    user: {}
+                    user: {},
+                    icon: false
                 },
                 methods: {
                     arrayObjectIndexOf: function (myArray, searchTerm, property) {
@@ -64,8 +65,12 @@
                             .error(function (data) {
                                 showAlert("Ha habido un error al obtener al usuario en sesion", {type: 3});
                             });
+                    },
+                    showModalSolicitud: function () {
+                        $('#modalSolicitud').modal('show');
                     }
                 },
+
                 filters: {
                     separate: function (value) {
                         return value.replace(/:/g, ' ');
@@ -127,18 +132,16 @@
                 var min = contar.length - 3;
                 var max = contar.length;
 
-                if(obj.value == "" || obj.value == null)
-                {
+                if (obj.value == "" || obj.value == null) {
                     obj.value = "";
-                }else{
+                } else {
                     if (max >= 1 && max < 40) {
                         var extraer = contar.substring(min, max);
                         if (extraer == '.00') {
                             contar = contar.replace('.,', ',');
                             contar = contar.replace(',.', ',');
                             format(input);
-                        }else
-                        {
+                        } else {
                             contar = contar.replace('.,', ',');
                             contar = contar.replace(',.', ',');
                             format(input);
@@ -193,7 +196,7 @@
         <div id="content">
             <div class="row">
                 <div class="col-md-8">
-                    <h2>Detalle de solicitu/vigente  <label class="circlegre"></label></h2>
+                    <h2>Detalle de solicitud/vigente <label class="circlegre"></label></h2>
                 </div>
                 <div class="col-md-4 text-right" style="margin-top: 10px">
                     <label>Solicitante</label>
@@ -206,41 +209,20 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="col-md-3">
-                        <label>Centro de costos</label>
-                        <select v-model="selected.costCenter" class="form-control"
-                                @change="getBudgetSubcategories()" :disabled="requestBody.products.length > 0"
-                                required>
-                            <option v-for="costCenter in costCenterList" :value="costCenter">
-                                {{costCenter.name}}
-                            </option>
-                        </select>
+                        <label>Centro de costos</label><br>
+                        <u>Administración</u>
                     </div>
                     <div class="col-md-4">
-                        <label>Concepto</label>
-                        <select v-model="selected.concept" class="form-control"
-                                @change="getProductCaptureBuy()" :disabled="requestBody.products.length > 0"
-                                required>
-                            <option v-for="concept in requestProductsBuy" :value="concept">
-                                {{concept.budgetSubcategory.budgetSubcategory}}
-                            </option>
-                        </select>
+                        <label>Concepto</label><br>
+                        <u>Equipo de cómputo</u>
                     </div>
                     <div class="col-md-4">
-                        <label>Producto</label>
-                        <select v-model="selected.productBuy" class="form-control"
-                                required>
-                            <option v-for="productBuy in requestCaptureProduct" :value="productBuy">
-                                {{productBuy.cProductsRequest.productRequestName}}
-                            </option>
-                        </select>
-                    </div>
-                    <div class="col-md-1">
-                        <button style="margin-top: 25px" class="btn btn-default" @click="addProduct()">Agregar</button>
+
                     </div>
                 </div>
             </div>
                 <%--tabla de cotenido de productos--%>
-            <div class="row" v-if="requestBody.products.length > 0">
+            <div class="row">
                 <div class="col-md-12">
                     <table class="table">
                         <thead>
@@ -256,7 +238,10 @@
                             <td class="col-md-2"></td>
                             <td class="col-md-2" rowspan="8">
                                 <div class="form-group">
-                                    <textarea class="form-control" rows="4" v-model="requestBody.request.purpose"></textarea>
+                                    <textarea class="form-control" rows="4" v-model="requestBody.request.purpose"
+                                              readonly>
+
+                                    </textarea>
                                 </div>
                             </td>
                         </tr>
@@ -268,105 +253,139 @@
                                                         onInput="format(this)" onblur="ponerCeros(this)"
                                                         placeholder="0" v-model="product.quantity" required/></td>
                             <td class="col-md-2">
-                                <center>
-                                    <button @click="removeProduct(product)" class="btn btn-danger">Eliminar
-                                    </button>
-                                </center>
+
                             </td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-
                 <%--tabla de contenidos de productos--%>
             <br>
-                <%-- subir arhivos de cotizacion--%>
-            <div class="panel panel-default" v-if="requestBody.products.length > 0">
-                <div class="panel-heading">Documentación</div>
+                <%-- informacion del usuario--%>
+            <div class="panel panel-default">
+                <div class="panel-heading">Información</div>
                 <div class="panel-body">
                     <div class="col-md-12">
                         <div class="row">
                             <table class="table table-striped">
-                                <tr class="col-md-12">
-                                    <td class="col-md-2"><b>Cotización 1</b></td>
-                                    <td class="col-md-5"></td>
-                                    <td class="col-md-3">Monto cotización sin IVA</td>
-                                    <td class="col-md-2">
-                                        <input v-model="amount1" class="form-control" type="text" placeholder="$"
-                                               onclick="return cleanField(this)"
-                                               onkeypress="return validateFloatKeyPress(this,event)"
-                                               maxlength="14" :disabled="button1 == true" />
-                                    </td>
+                                <tr>
+                                    <td class="col-md-4"><b>Usuario</b></td>
+                                    <td class="col-md-4"><b>Fecha</b></td>
+                                    <td class="col-md-4"><b>Estado</b></td>
                                 </tr>
-                                <tr class="col-md-12">
-                                    <td class="col-md-2">Documento</td>
-                                    <td class="col-md-6">
-                                        <input @change="setFile1($event)" type="file"
-                                               class="form-control" :disabled="amount1 == '' || button1 == true"
-                                               required />
-                                    </td>
-                                    <td class="col-md-3"></td>
-                                    <td class="col-md-1" v-if="button1 == true">
-                                        <button type="button" class="btn btn-warning" @click="removeDocument(1)">Cambiar factura</button>
-                                    </td>
+                                <tr>
+                                    <td class="col-md-4">Gustavo Ramirez</td>
+                                    <td class="col-md-4">16-03-2017</td>
+                                    <td class="col-md-4">Enviada y pendiente de autorización</td>
                                 </tr>
-                                <tr class="col-md-12">
-                                    <td class="col-md-2"><b>Cotización 2</b></td>
-                                    <td class="col-md-5"></td>
-                                    <td class="col-md-3">Monto cotización sin IVA</td>
-                                    <td class="col-md-2">
-                                        <input v-model="amount2" class="form-control" type="text" placeholder="$"
-                                               onclick="return cleanField(this)"
-                                               onkeypress="return validateFloatKeyPress(this,event)"
-                                               maxlength="14" :disabled="button2 == true"/></td>
-                                </tr>
-                                <tr class="col-md-12">
-                                    <td class="col-md-2">Documento</td>
-                                    <td class="col-md-6">
-                                        <input @change="setFile2($event)" type="file"
-                                               class="form-control" :disabled="amount2 == '' || button2 == true"
-                                               required />
-                                    </td>
-                                    <td class="col-md-3"></td>
-                                    <td class="col-md-1" v-if="button2 == true">
-                                        <button type="button" class="btn btn-warning" @click="removeDocument(2)">Cambiar factura</button>
-                                    </td>
-                                </tr>
-                                <tr class="col-md-12">
-                                    <td class="col-md-2"><b>Cotización 3</b></td>
-                                    <td class="col-md-5"></td>
-                                    <td class="col-md-3">Monto cotización sin IVA</td>
-                                    <td class="col-md-2">
-                                        <input v-model="amount3" class="form-control" type="text" placeholder="$"
-                                               onkeypress="return validateFloatKeyPress(this,event)"
-                                               maxlength="14" :disabled="button3 == true"/></td>
-                                </tr>
-                                <tr class="col-md-12">
-                                    <td class="col-md-2">Documento</td>
-                                    <td class="col-md-6">
-                                        <input @change="setFile3($event)" type="file"
-                                               class="form-control" :disabled="amount3 == '' || button3 == true"
-                                               required />
-                                    </td>
-                                    <td class="col-md-3"></td>
-                                    <td class="col-md-1" v-if="button3 == true">
-                                        <button type="button" class="btn btn-warning" @click="removeDocument(3)">Cambiar factura</button>
-                                    </td>
-                                </tr>
-
                             </table>
 
                         </div>
-                        <div style="margin-left: 84%">
-                            <button @click="showModalSolicitud()" class="btn btn-success">Solicitar</button>
+                        <div style="margin-left: 80%">
+                            <button @click="showModalSolicitud()" class="btn btn-danger">Cancelar Solicitud</button>
                             <a href="javascript:window.history.back();">
-                                <button type="button" class="btn btn-default" >Cancelar</button>
+                                <button type="button" class="btn btn-default">Salir</button>
+                            </a>
+                        </div>
+                        <br>
+
+                    </div>
+                </div>
+            </div>
+            <div id="accordion" role="tablist" aria-multiselectable="true">
+                <div class="card">
+                    <div class="card-header" role="tab" id="headingThree">
+                        <div style="margin-left: 45%">
+                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree"
+                               @click="icon = !icon"
+                               aria-expanded="false" aria-controls="collapseThree">
+                                <div>
+                                    <b>Detalle</b><br>
+                                    <span class="glyphicon glyphicon-chevron-down" v-if="icon == false"
+                                          style="margin-left: 2.5%"></span>
+                                    <span class="glyphicon glyphicon-chevron-up" v-if="icon == true"
+                                          style="margin-left: 2.5%"></span>
+                                </div>
                             </a>
                         </div>
                     </div>
-                </div>
+                    <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree">
+                        <div class="card-block">
+                                <%-- subir arhivos de cotizacion--%>
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <table class="table table-striped">
+                                                <tr>
+                                                    <td class="col-md-4" align="left"><b>Documento Cotización 1</b></td>
+                                                    <td class="col-md-4" align="center"><b>Monto cotización sin IVA</b></td>
+                                                    <td class="col-md-4" align="right"><b>Descargar</b></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="col-md-4" align="left">Nombre Documento</td>
+                                                    <td class="col-md-4" align="center">
+                                                        <input class="form-control" type="text"
+                                                               placeholder="$" style="width: 40%"
+                                                               maxlength="14" readonly />
+                                                    </td>
+                                                    <td class="col-md-4" align="right">
+                                                        <button class="btn btn-default">
+                                                            <span style="margin-left: 20%" class="glyphicon glyphicon-download-alt"></span>
+                                                        </button>
+                                                    </td>
 
+                                                </tr>
+                                                <tr>
+                                                    <td class="col-md-4" align="left"><b>Documento Cotización 2</b></td>
+                                                    <td class="col-md-4" align="center"><b>Monto cotización sin IVA</b></td>
+                                                    <td class="col-md-4" align="right"><b>Descargar</b></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="col-md-4" align="left">Nombre Documento</td>
+                                                    <td class="col-md-4" align="center">
+                                                        <input class="form-control" type="text"
+                                                               placeholder="$" style="width: 40%"
+                                                               maxlength="14" readonly />
+                                                    </td>
+                                                    <td class="col-md-4" align="right">
+                                                        <button class="btn btn-default">
+                                                            <span style="margin-left: 20%" class="glyphicon glyphicon-download-alt"></span>
+                                                        </button>
+                                                    </td>
+
+                                                </tr>
+                                                <tr>
+                                                    <td class="col-md-4" align="left"><b>Documento Cotización 3</b></td>
+                                                    <td class="col-md-4" align="center"><b>Monto cotización sin IVA</b></td>
+                                                    <td class="col-md-4" align="right"><b>Descargar</b></td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="col-md-4" align="left">Nombre Documento</td>
+                                                    <td class="col-md-4" align="center">
+                                                        <input class="form-control" type="text"
+                                                               placeholder="$" style="width: 40%"
+                                                               maxlength="14" readonly />
+                                                    </td>
+                                                    <td class="col-md-4" align="right">
+                                                        <button class="btn btn-default">
+                                                            <span style="margin-left: 20%" class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+                                                        </button>
+                                                    </td>
+
+                                                </tr>
+
+                                            </table>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
                 <%--modal solicitar--%>
             <div class="modal fade" id="modalSolicitud" tabindex="-1" role="dialog" aria-labelledby=""
@@ -383,15 +402,17 @@
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <p align="center" style="font-size: 16px">La solicitud será enviada a compras para continuar<br> con el proceso de compra de
-                                        bienes.</p>
+                                    <p align="center" style="font-size: 16px">Se cancelará la solicitud y se borrará<br>
+                                    el registro de la misma.</p>
                                 </div>
                             </div>
                         </div>
                         <br>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-success" @click="sendRequest()">Aceptar</button>
-                            <button type="button" class="btn btn-default" class="close" data-dismiss="modal" aria-hidden="true" >Cancelar</button>
+                            <button type="button" class="btn btn-default" class="close" data-dismiss="modal"
+                                    aria-hidden="true">Cancelar
+                            </button>
                         </div>
                     </div>
                 </div>
