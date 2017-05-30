@@ -211,7 +211,7 @@
         <div id="content">
             <div class="row">
                 <div class="col-md-8">
-                    <h2>Detalle de solicitud/vigente <label class="circlegre"></label></h2>
+                    <h2>Detalle de solicitud/vigente <label class="circleyel"></label></h2>
                 </div>
                 <div class="col-md-4 text-right" style="margin-top: 10px">
                     <label>Solicitante</label>
@@ -224,11 +224,11 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="col-md-3">
-                        <label>Centro de costos</label><br>
+                        <label>Centro de costos: </label>
                         <u>{{request.distributorCostCenter.costCenter.name}}</u>
                     </div>
                     <div class="col-md-4">
-                        <label>Concepto</label><br>
+                        <label>Concepto: </label>
                         <u>{{request.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</u>
                     </div>
                     <div class="col-md-4">
@@ -237,15 +237,18 @@
                 </div>
             </div>
                 <%--tabla de cotenido de productos--%>
+        <div class="panel panel-default">
+        <div class="panel-body">
+        <div class="col-md-12">
             <div class="row">
                 <div class="col-md-12">
-                    <table class="table">
-                        <thead>
+                    <table class="table table-striped">
+                        <tr>
                         <th class="col-md-3">Lista de productos</th>
                         <th class="col-md-1">Cantidad</th>
                         <th class="col-md-2"></th>
                         <th class="col-md-4">Justificación</th>
-                        </thead>
+                        </tr>
                         <tbody>
                         <tr>
                             <td class="col-md-3"></td>
@@ -253,9 +256,7 @@
                             <td class="col-md-2"></td>
                             <td class="col-md-2" rowspan="8">
                                 <div class="form-group">
-                                    <textarea class="form-control" rows="4" v-model="request.reason"
-                                              readonly>
-
+                                    <textarea class="form-control" rows="4" v-model="request.reason" disabled>
                                     </textarea>
                                 </div>
                             </td>
@@ -263,7 +264,7 @@
                         <tr v-for="productRequest in request.requestProductsList">
                             <td class="col-md-3">{{productRequest.roleProductRequest.cProductsRequest.productRequestName}}</td>
                             <td class="col-md-1"><input class="form-control" maxlength="3" type="text"
-                                                        onclick="return cleanField(this)"
+                                                        onclick="return cleanField(this)" disabled
                                                         onkeypress="return validateFloatKeyPress(this,event)"
                                                         onInput="format(this)" onblur="ponerCeros(this)"
                                                         placeholder="0" v-model="productRequest.quantity" required/></td>
@@ -275,6 +276,9 @@
                     </table>
                 </div>
             </div>
+           </div>
+          </div>
+        </div>
                 <%--tabla de contenidos de productos--%>
             <br>
                 <%-- informacion del usuario--%>
