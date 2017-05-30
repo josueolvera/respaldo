@@ -323,4 +323,13 @@ public class SIADController {
         model.setViewName("capture-request-buy");
         return model;
     }
+
+    @RequestMapping(value = "/requests-detail", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView updateEmployee(@RequestParam(name = "idRequest") Integer idRequest) {
+        ModelAndView model = new ModelAndView();
+        model.addObject("idRequest", idRequest);
+        model.setViewName("requests-detail-user");
+        return model;
+    }
+
 }
