@@ -44,10 +44,14 @@
                 },
                 ready: function () {
                     this.getUserInSession();
+                    this.getRequestInformation();
                 },
                 data: {
+                    idRequest: ${idRequest},
                     user: {},
-                    icon: false
+                    icon: false,
+                    request:{},
+                    downloadUrl: ROOT_URL + '/estimations/attachment/download/'
                 },
                 methods: {
                     arrayObjectIndexOf: function (myArray, searchTerm, property) {
@@ -60,7 +64,6 @@
                         this.$http.get(ROOT_URL + "/user")
                             .success(function (data) {
                                 this.user = data;
-                                this.getRolesCostCenter(this.user.dwEmployee.idRole);
                             })
                             .error(function (data) {
                                 showAlert("Ha habido un error al obtener al usuario en sesion", {type: 3});
@@ -68,6 +71,18 @@
                     },
                     showModalSolicitud: function () {
                         $('#modalSolicitud').modal('show');
+                    },
+                    getRequestInformation: function () {
+                        this.$http.get(ROOT_URL + "/requests/" + this.idRequest)
+                            .success(function (data) {
+                                this.request = data;
+                            })
+                            .error(function (data) {
+
+                            });
+                    },
+                    downloadEstimationDocument: function (idEstimation) {
+                        this.$http.get(ROOT_URL)
                     }
                 },
 
@@ -210,11 +225,11 @@
                 <div class="col-md-12">
                     <div class="col-md-3">
                         <label>Centro de costos</label><br>
-                        <u>Administración</u>
+                        <u>{{request.distributorCostCenter.costCenter.name}}</u>
                     </div>
                     <div class="col-md-4">
                         <label>Concepto</label><br>
-                        <u>Equipo de cómputo</u>
+                        <u>{{request.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</u>
                     </div>
                     <div class="col-md-4">
 
@@ -238,20 +253,20 @@
                             <td class="col-md-2"></td>
                             <td class="col-md-2" rowspan="8">
                                 <div class="form-group">
-                                    <textarea class="form-control" rows="4" v-model="requestBody.request.purpose"
+                                    <textarea class="form-control" rows="4" v-model="request.reason"
                                               readonly>
 
                                     </textarea>
                                 </div>
                             </td>
                         </tr>
-                        <tr v-for="product in requestBody.products">
-                            <td class="col-md-3">{{product.productBuy.cProductsRequest.productRequestName}}</td>
+                        <tr v-for="productRequest in request.requestProductsList">
+                            <td class="col-md-3">{{productRequest.roleProductRequest.cProductsRequest.productRequestName}}</td>
                             <td class="col-md-1"><input class="form-control" maxlength="3" type="text"
                                                         onclick="return cleanField(this)"
                                                         onkeypress="return validateFloatKeyPress(this,event)"
                                                         onInput="format(this)" onblur="ponerCeros(this)"
-                                                        placeholder="0" v-model="product.quantity" required/></td>
+                                                        placeholder="0" v-model="productRequest.quantity" required/></td>
                             <td class="col-md-2">
 
                             </td>
@@ -275,9 +290,9 @@
                                     <td class="col-md-4"><b>Estado</b></td>
                                 </tr>
                                 <tr>
-                                    <td class="col-md-4">Gustavo Ramirez</td>
-                                    <td class="col-md-4">16-03-2017</td>
-                                    <td class="col-md-4">Enviada y pendiente de autorización</td>
+                                    <td class="col-md-4">{{request.employees.fullName}}</td>
+                                    <td class="col-md-4">{{request.creationDateFormats.dateNumber}}</td>
+                                    <td class="col-md-4">{{request.requestStatus.requestStatus}}</td>
                                 </tr>
                             </table>
 
@@ -319,63 +334,25 @@
                                         <div class="row">
                                             <table class="table table-striped">
                                                 <tr>
-                                                    <td class="col-md-4" align="left"><b>Documento Cotización 1</b></td>
+                                                    <td class="col-md-4" align="left"><b>Documento Cotización</b></td>
                                                     <td class="col-md-4" align="center"><b>Monto cotización sin IVA</b></td>
                                                     <td class="col-md-4" align="right"><b>Descargar</b></td>
                                                 </tr>
-                                                <tr>
-                                                    <td class="col-md-4" align="left">Nombre Documento</td>
+                                                <tr v-for="estimationsRequest in request.priceEstimationsList">
+                                                    <td class="col-md-4" align="left">{{estimationsRequest.fileName}}</td>
                                                     <td class="col-md-4" align="center">
                                                         <input class="form-control" type="text"
-                                                               placeholder="$" style="width: 40%"
+                                                               placeholder="$" style="width: 40%" v-model="estimationsRequest.amount | currency"
                                                                maxlength="14" readonly />
                                                     </td>
                                                     <td class="col-md-4" align="right">
-                                                        <button class="btn btn-default">
+                                                        <a class="btn btn-default" :href="downloadUrl + estimationsRequest.idPriceEstimation"
+                                                           data-toggle="tooltip" data-placement="top" title="Descargar">
                                                             <span style="margin-left: 20%" class="glyphicon glyphicon-download-alt"></span>
-                                                        </button>
+                                                        </a>
                                                     </td>
 
                                                 </tr>
-                                                <tr>
-                                                    <td class="col-md-4" align="left"><b>Documento Cotización 2</b></td>
-                                                    <td class="col-md-4" align="center"><b>Monto cotización sin IVA</b></td>
-                                                    <td class="col-md-4" align="right"><b>Descargar</b></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-md-4" align="left">Nombre Documento</td>
-                                                    <td class="col-md-4" align="center">
-                                                        <input class="form-control" type="text"
-                                                               placeholder="$" style="width: 40%"
-                                                               maxlength="14" readonly />
-                                                    </td>
-                                                    <td class="col-md-4" align="right">
-                                                        <button class="btn btn-default">
-                                                            <span style="margin-left: 20%" class="glyphicon glyphicon-download-alt"></span>
-                                                        </button>
-                                                    </td>
-
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-md-4" align="left"><b>Documento Cotización 3</b></td>
-                                                    <td class="col-md-4" align="center"><b>Monto cotización sin IVA</b></td>
-                                                    <td class="col-md-4" align="right"><b>Descargar</b></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-md-4" align="left">Nombre Documento</td>
-                                                    <td class="col-md-4" align="center">
-                                                        <input class="form-control" type="text"
-                                                               placeholder="$" style="width: 40%"
-                                                               maxlength="14" readonly />
-                                                    </td>
-                                                    <td class="col-md-4" align="right">
-                                                        <button class="btn btn-default">
-                                                            <span style="margin-left: 20%" class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
-                                                        </button>
-                                                    </td>
-
-                                                </tr>
-
                                             </table>
 
                                         </div>
