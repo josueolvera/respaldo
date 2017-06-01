@@ -332,4 +332,10 @@ public class SIADController {
         return model;
     }
 
+    @RequestMapping(value = "/request-pending-autorization", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView siadRequestPendingAutorization() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("request-pending-autorization");
+        return model;
+    }
 }
