@@ -28,7 +28,7 @@ public class CCostCenter implements Serializable {
 
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 200)
     @Column(name = "NAME")
     @JsonView(JsonViews.Root.class)
     private String name;

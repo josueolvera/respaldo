@@ -36,12 +36,12 @@ public class CDistributors implements Serializable {
 
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 25)
+    @Size(min = 1, max = 150)
     @Column(name = "DISTRIBUTOR_NAME")
     @JsonView({JsonViews.Root.class, JsonViews.EmbeddedDwEnterprises.class})
     private String distributorName;
 
-    @Size(max = 15)
+    @Size(max = 50)
     @Column(name = "ACRONYMS")
     @JsonView(JsonViews.Root.class)
     private String acronyms;
