@@ -2,9 +2,8 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users"/>
-
 <t:template pageTitle="BID Group: Bandeja de entrada solicitante">
-    <jsp:attribute name="scripts">
+      <jsp:attribute name="scripts">
         <script type="text/javascript">
             function validateFloatKeyPress(el, evt) {
                 var charCode = (evt.which) ? evt.which : event.keyCode;
@@ -48,23 +47,23 @@
                 data: {
                     <%--requestCategory: ${cat},--%>
                     <%--idRequest: ${idRequest},--%>
-//                    roleCostCenterList: [],
-//                    costCenterList: [],
-//                    budgetCategories: [],
-//                    budgetSubcategories: [],
-//                    products: [],
-//                    providers: [],
-//                    providerAccounts: [],
-//                    currencies: [],
-//                    requestProducts: [],
+                    roleCostCenterList: [],
+                    costCenterList: [],
+                    budgetCategories: [],
+                    budgetSubcategories: [],
+                    products: [],
+                    providers: [],
+                    providerAccounts: [],
+                    currencies: [],
+                    requestProducts: [],
                     user: {},
                     estimation: {
                         amount: '',
                         provider: '',
-//                        account: '',
-//                        currency: '',
-//                        rate: '',
-//                        file: ''
+                        account: '',
+                        currency: '',
+                        rate: '',
+                        file: ''
                     },
                     requestBody: {
                         request: {
@@ -442,6 +441,7 @@
                 border-radius: 50%;
                 background: #00FF00;
             }
+
         </style>
     </jsp:attribute>
 
@@ -499,15 +499,15 @@
                                     <div class="row">
                                         <table class="table table-striped">
                                             <tr>
-                                                <td class="col-md-3 text-center"><b>Concepto de solicitud 1</b></td>
-                                                <td class="col-md-3 text-center"><b>Fecha de solicitud</b></td>
-                                                <td class="col-md-3 text-center"><b>Folio</b></td>
+                                                <td class="col-md-3"><b>Concepto de solicitud 1</b></td>
+                                                <td class="col-md-3"><b>Fecha de solicitud</b></td>
+                                                <td class="col-md-3"><b>Folio</b></td>
                                                 <td class="col-md-3 text-center"><b>Detalle</b></td>
                                             </tr>
                                             <tr>
-                                                <td class="col-md-3 text-center">Equipo de computo</td>
-                                                <td class="col-md-3 text-center">16-03-2017</td>
-                                                <td class="col-md-3 text-center">ABC123</td>
+                                                <td class="col-md-3">Equipo de Computo</td>
+                                                <td class="col-md-3">31/02/2017</td>
+                                                <td class="col-md-3">ABCD1234</td>
                                                 <td class="col-md-3 text-center">
                                                     <button class="glyphicon glyphicon-new-window"></button>
                                                 </td>
@@ -543,15 +543,17 @@
                                     <div class="row">
                                         <table class="table table-striped">
                                             <tr>
-                                                <td class="col-md-3 text-center"><b>Concepto de solicitud 1</b></td>
-                                                <td class="col-md-3 text-center"><b>Fecha de solicitud</b></td>
-                                                <td class="col-md-3 text-center"><b>Folio</b></td>
+                                                <td class="col-md-3"><b>Concepto de solicitud 1</b></td>
+                                                <td class="col-md-2"><b>Fecha de solicitud</b></td>
+                                                <td class="col-md-2"><b>Folio</b></td>
+                                                <td class="col-md-2"><b>Monto</b></td>
                                                 <td class="col-md-3 text-center"><b>Detalle</b></td>
                                             </tr>
                                             <tr>
-                                                <td class="col-md-3 text-center">Equipo de computo</td>
-                                                <td class="col-md-3 text-center">16-03-2017</td>
-                                                <td class="col-md-3 text-center">ABC123</td>
+                                                <td class="col-md-3">Equipo de Computo</td>
+                                                <td class="col-md-2">31/02/2017</td>
+                                                <td class="col-md-2">ABCD1234</td>
+                                                <td class="col-md-2">$200</td>
                                                 <td class="col-md-3 text-center">
                                                     <button class="glyphicon glyphicon-new-window"></button>
                                                 </td>
@@ -565,7 +567,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="panel panel-default">
                 <div class="card">
                     <div class="card-header" role="tab" id="headingOne">
@@ -589,15 +590,15 @@
                                     <div class="row">
                                         <table class="table table-striped">
                                             <tr>
-                                                <td class="col-md-3 text-center"><b>Concepto de solicitud 1</b></td>
-                                                <td class="col-md-3 text-center"><b>Fecha de solicitud</b></td>
-                                                <td class="col-md-3 text-center"><b>Folio</b></td>
+                                                <td class="col-md-3"><b>Concepto de solicitud 1</b></td>
+                                                <td class="col-md-3"><b>Fecha de solicitud</b></td>
+                                                <td class="col-md-3"><b>Folio</b></td>
                                                 <td class="col-md-3 text-center"><b>Detalle</b></td>
                                             </tr>
                                             <tr>
-                                                <td class="col-md-3 text-center">Equipo de computo</td>
-                                                <td class="col-md-3 text-center">16-03-2017</td>
-                                                <td class="col-md-3 text-center">ABC123</td>
+                                                <td class="col-md-3">Equipo de Computo</td>
+                                                <td class="col-md-3">31/02/2017</td>
+                                                <td class="col-md-3">ABCD1234</td>
                                                 <td class="col-md-3 text-center">
                                                     <button class="glyphicon glyphicon-new-window"></button>
                                                 </td>
