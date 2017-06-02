@@ -59,10 +59,13 @@
                     budgetCategories: [],
                     budgetSubcategories: [],
                     products: [],
+                    conceptBuys: [],
                     providers: [],
                     providerAccounts: [],
                     currencies: [],
-                    requestProducts: [],
+                    //PRUEBA
+                    requestProductsBuy: [],
+                    requestCaptureProduct: [],
                     user: {},
                     estimation: {
                         amount: '',
@@ -74,13 +77,10 @@
                     },
                     requestBody: {
                         request: {
-                            description: '',
                             purpose: '',
                             userResponsible: '',
                             idCostCenter: '',
-                            idBudgetCategory: '',
-                            idBudgetSubcategory: '',
-                            idRequestCategory: ''
+                            idAccountingAccount: ''
                         },
                         products: []
                     },
@@ -90,9 +90,18 @@
                         costCenter: null,
                         budgetCategory: null,
                         budgetSubcategory: null,
-                        product: null
+                        product: null,
+                        //PRUEBA
+                        concept: null,
+                        productBuy: null
                     },
-                    newEstimationFormActive: false
+                    newEstimationFormActive: false,
+                    amount1: '',
+                    amount2: '',
+                    amount3: '',
+                    button1: false,
+                    button2: false,
+                    button3: false
                 },
                 methods: {
                     arrayObjectIndexOf: function (myArray, searchTerm, property) {
@@ -116,7 +125,6 @@
                             .success(function (data) {
                                 var self = this;
                                 var index;
-                                this.rolesCostCenter = data;
 
                                 if (data.length < 2) {
                                     this.selected.budgetNature = data[0].budgetNature;
@@ -127,35 +135,23 @@
                                     if (index == -1) self.costCenterList.push(item.costCenter);
                                 });
 
-                                this.selected.costCenter = data[0].costCenter;
-
-                                this.getBudgetCategories();
-
                             })
                             .error(function (data) {
 
                             });
                     },
-                    onChangeCostCenter: function () {
-                        this.budgetCategories = [];
-                        this.budgetSubcategories = [];
-                        this.products = [];
-                        this.getBudgetCategories();
-                    },
-                    getBudgetCategories: function () {
-                        this.$http.get(
-                            ROOT_URL +
-                            '/budget-categories?cost_center=' +
-                            this.selected.costCenter.idCostCenter +
-                            '&request_category=1'
-                        ).success(function (data) {
-                            this.budgetCategories = data;
-                        });
-                    },
+                    //PRUEBA
                     getBudgetSubcategories: function () {
-                        this.$http.get(ROOT_URL + '/budget-subcategories/category/' + this.selected.budgetCategory.idBudgetCategory)
+                        this.$http.get(ROOT_URL + '/distributor-cost-center/category/' + this.selected.costCenter.idCostCenter)
                             .success(function (data) {
-                                this.budgetSubcategories = data;
+                                this.requestProductsBuy = data;
+                            });
+                    },
+                    getProductCaptureBuy: function () {
+                        this.$http.get(ROOT_URL + '/role-product-request/product/' +
+                            this.selected.costCenter.idCostCenter + '/' + this.selected.concept.idAccountingAccount)
+                            .success(function (data) {
+                                this.requestCaptureProduct = data;
                             });
                     },
                     getProducts: function () {
@@ -171,53 +167,32 @@
                                 this.providers = data;
                             });
                     },
-                    onChangeBudgetCategory: function () {
-                        this.budgetSubcategories = [];
-                        this.products = [];
-                        this.getBudgetSubcategories();
-                    },
-                    onChangeBudgetSubcategory: function () {
-                        this.products = [];
-                        this.getProducts();
-                        this.getProviders();
-                    },
-                    createSelectForConcept: function (products) {
+                    addProduct: function () {
                         var self = this;
-                        return $('#select-products').selectize({
-                            maxItems: 1,
-                            valueField: 'idProduct',
-                            labelField: 'product',
-                            searchField: 'product',
-                            options: products,
-                            create: function (input, callback) {
-                                self.$http.post(ROOT_URL + '/products/subcategory/' + self.selected.budgetSubcategory.idBudgetSubcategory, {
-                                    product: input
-                                }).success(function (data) {
-                                    showAlert('Producto guardado');
-                                    self.getProducts();
-                                    callback(data);
-                                }).error(function () {
-                                    callback();
-                                });
-                            },
-                            render: {
-                                option_create: function (data, escape) {
-                                    return '<div data-selectable class="create">' +
-                                        'Agregar <strong>' + escape(data.input) + '</strong>' +
-                                        '</div>'
-                                }
+                        console.log(this.selected.productBuy);
+                        var productQuantity = {
+                            productBuy: this.selected.productBuy,
+                            quantity: 1
+                        };
+                        var aux = this.requestBody.products.filter(function (product) {
+                            if(self.selected.productBuy.cProductsRequest.idProductRequest == product.productBuy.cProductsRequest.idProductRequest){
+                                return product;
                             }
                         });
-                    },
-                    addProduct: function () {
-                        var product = {};
-                        product.idProduct = this.selectProducts[0].selectize.getValue();
-                        product.product = this.selectProducts[0].selectize.getOption(product.idProduct).text();
 
-                        this.requestBody.products.push(product);
+                        if (aux == 0){
+                            this.requestBody.products.push(productQuantity);
+                            this.requestCaptureProduct.$remove(this.selected.productBuy);
+                        }
+                        console.log(this.requestBody.products);
                     },
                     removeProduct: function (product) {
                         this.requestBody.products.$remove(product);
+                        this.requestCaptureProduct.push(product.productBuy);
+
+                        if(this.requestBody.products.length == 0){
+                            this.requestBody.request.purpose = "";
+                        }
                     },
                     clearRequest: function () {
 
@@ -241,22 +216,22 @@
                     },
                     sendRequest: function () {
 
-                        if (this.requestBody.products.length == 0 || this.selected.costCenter == null || this.selected.budgetCategory == null || this.selected.budgetSubcategory == null) {
-                            showAlert("Debes agregar un producto", {type: 3});
-                            return;
-                        } else if (this.estimations.length < 3) {
-                            showAlert("Debes agregar al menos tres cotizaciones", {type: 3});
+
+                        if (this.requestBody.products.length == 0 || this.selected.costCenter == null || this.selected.concept == null || this.requestBody.request.purpose == "") {
+                            showAlert("Debes agregar un producto y llenar la justificación de la solicitud", {type: 3});
                             return;
                         }
 
                         this.requestBody.request.idCostCenter = this.selected.costCenter.idCostCenter;
-                        this.requestBody.request.idBudgetCategory = this.selected.budgetCategory.idBudgetCategory;
-                        this.requestBody.request.idBudgetSubcategory = this.selected.budgetSubcategory.idBudgetSubcategory;
-                        this.requestBody.request.idRequestCategory = 1;
+                        this.requestBody.request.idAccountingAccount = this.selected.concept.idAccountingAccount;
+                        this.requestBody.request.userResponsible = this.user;
+
+                        console.log(this.requestBody);
 
                         this.$http.post(ROOT_URL + '/requests', this.requestBody)
                             .success(function (data) {
                                 USER_VM.fetchApp();
+                                $("#modalSolicitud").modal("hide");
                                 this.saveEstimations(data);
                                 this.clearRequest();
                             })
@@ -268,9 +243,11 @@
                     saveEstimations: function (data) {
                         var self = this;
                         this.estimations.forEach(function (estimation) {
+                            console.log(estimation);
                             self.saveEstimation(estimation, data);
                         });
                         showAlert("Solicitud enviada");
+                        location.href = ROOT_URL + "/siad/request-spending";
                     },
                     saveEstimation: function (estimation, data) {
                         this.$http.post(ROOT_URL + '/estimations/request/' + data.idRequest, estimation).success(function (data) {
@@ -311,9 +288,15 @@
                     onChangeCurrency: function () {
                         this.estimation.rate = (this.estimation.currency.idCurrency == 1) ? 1 : '';
                     },
-                    setFile: function (event) {
+                    setFile1: function (event) {
+                        this.clearEstimation();
                         var self = this;
                         var file = event.target.files[0];
+                        var object = {
+                            identificador: '',
+                            file: "",
+                            amount: ""
+                        };
 
                         if (this.validateFile(file)) {
 
@@ -321,7 +304,7 @@
 
                             reader.onload = (function (theFile) {
                                 return function (e) {
-                                    self.estimation.file = {
+                                    object.file = {
                                         name: theFile.name,
                                         size: theFile.size,
                                         type: theFile.type,
@@ -330,6 +313,75 @@
                                 };
                             })(file);
                             reader.readAsDataURL(file);
+                            object.identificador = 1;
+                            object.amount = this.amount1;
+
+                            this.estimations.push(object);
+                            this.button1 = true;
+                        }
+                    },
+                    setFile2: function (event) {
+                        this.clearEstimation();
+                        var self = this;
+                        var file = event.target.files[0];
+                        var object = {
+                            identificador: '',
+                            file: "",
+                            amount: ""
+                        };
+
+                        if (this.validateFile(file)) {
+
+                            var reader = new FileReader();
+
+                            reader.onload = (function (theFile) {
+                                return function (e) {
+                                    object.file = {
+                                        name: theFile.name,
+                                        size: theFile.size,
+                                        type: theFile.type,
+                                        dataUrl: e.target.result
+                                    };
+                                };
+                            })(file);
+                            reader.readAsDataURL(file);
+                            object.identificador = 2;
+                            object.amount = this.amount2;
+
+                            this.estimations.push(object);
+                            this.button2 = true;
+                        }
+                    },
+                    setFile3: function (event) {
+                        this.clearEstimation();
+                        var self = this;
+                        var file = event.target.files[0];
+                        var object = {
+                            identificador: '',
+                            file: "",
+                            amount: ""
+                        };
+
+                        if (this.validateFile(file)) {
+
+                            var reader = new FileReader();
+
+                            reader.onload = (function (theFile) {
+                                return function (e) {
+                                    object.file = {
+                                        name: theFile.name,
+                                        size: theFile.size,
+                                        type: theFile.type,
+                                        dataUrl: e.target.result
+                                    };
+                                };
+                            })(file);
+                            reader.readAsDataURL(file);
+                            object.identificador = 3;
+                            object.amount = this.amount3;
+
+                            this.estimations.push(object);
+                            this.button3 = true;
                         }
                     },
                     validateFile: function (file) {
@@ -351,13 +403,25 @@
                             file: ''
                         };
                     },
-                    addEstimation: function () {
-                        var estimation = this.estimation;
-                        this.estimations.push(estimation);
-                        this.hideNewEstimationModal();
-                    },
-                    deleteEstimationFile: function (e) {
-                        this.estimation.file = '';
+                    removeDocument: function (id) {
+                        var self = this;
+                        this.estimations.forEach(function (fileEstimations) {
+                            if(id == fileEstimations.identificador){
+                                self.estimations.$remove(fileEstimations);
+                            }
+                        });
+
+                        switch (id){
+                            case 1:
+                                this.button1 =  false;
+                                break;
+                            case 2:
+                                this.button2 =  false;
+                                break;
+                            case 3:
+                                this.button3 =  false;
+                                break;
+                        }
                     }
                 },
                 filters: {
@@ -416,6 +480,30 @@
             function backHistory() {
                 history.back();
             }
+            function ponerCeros(obj) {
+                var contar = obj.value;
+                var min = contar.length - 3;
+                var max = contar.length;
+
+                if(obj.value == "" || obj.value == null)
+                {
+                    obj.value = "";
+                }else{
+                    if (max >= 1 && max < 40) {
+                        var extraer = contar.substring(min, max);
+                        if (extraer == '.00') {
+                            contar = contar.replace('.,', ',');
+                            contar = contar.replace(',.', ',');
+                            format(input);
+                        }else
+                        {
+                            contar = contar.replace('.,', ',');
+                            contar = contar.replace(',.', ',');
+                            format(input);
+                        }
+                    }
+                }
+            }
         </script>
     </jsp:attribute>
 
@@ -442,44 +530,43 @@
             </div>
             <br>
             <div class="row">
-                <center><h3>Presupuesto mensual: </h3></center>
-                <form class="col-md-12">
+                <div class="col-md-12">
                     <div class="col-md-3">
                         <label>Centro de costos</label>
-                        <select v-model="selected.costCenter" class="form-control selectpicker"
-                                @change="onChangeCostCenter"
-                                :disabled="requestBody.products.length > 0" required>
-                            <option v-for="costCenter in costCenterList" :value="costCenter">{{costCenter.name}}
+                        <select v-model="selected.costCenter" class="form-control"
+                                @change="getBudgetSubcategories()" :disabled="requestBody.products.length > 0"
+                                required>
+                            <option v-for="costCenter in costCenterList" :value="costCenter">
+                                {{costCenter.name}}
                             </option>
                         </select>
                     </div>
                     <div class="col-md-4">
                         <label>Concepto</label>
-                        <select v-model="selected.budgetCategory" class="form-control selectpicker"
-                                @change="onChangeBudgetCategory"
-                                :disabled="requestBody.products.length > 0" required>
-                            <option v-for="budgetCategory in budgetCategories" :value="budgetCategory">
-                                {{budgetCategory.budgetCategory}}
+                        <select v-model="selected.concept" class="form-control"
+                                @change="getProductCaptureBuy()" :disabled="requestBody.products.length > 0"
+                                required>
+                            <option v-for="concept in requestProductsBuy" :value="concept">
+                                {{concept.budgetSubcategory.budgetSubcategory}}
                             </option>
                         </select>
                     </div>
                     <div class="col-md-4">
                         <label>Producto</label>
-                        <select v-model="selected.budgetSubcategory" class="form-control"
-                                @change="onChangeBudgetSubcategory"
-                                :disabled="requestBody.products.length > 0" required>
-                            <option v-for="budgetSubcategory in budgetSubcategories" :value="budgetSubcategory">
-                                {{budgetSubcategory.budgetSubcategory}}
+                        <select v-model="selected.productBuy" class="form-control"
+                                required>
+                            <option v-for="productBuy in requestCaptureProduct" :value="productBuy">
+                                {{productBuy.cProductsRequest.productRequestName}}
                             </option>
                         </select>
                     </div>
                     <div class="col-md-1">
-                        <button style="margin-top: 25px" class="btn btn-default">Agregar</button>
+                        <button style="margin-top: 25px" class="btn btn-default" @click="addProduct()">Agregar</button>
                     </div>
-                </form>
+                </div>
             </div>
                 <%--tabla de cotenido de productos--%>
-            <div class="row">
+            <div class="row" v-if="requestBody.products.length > 0">
                 <div class="col-md-12">
                     <table class="table">
                         <thead>
@@ -495,18 +582,20 @@
                             <td class="col-md-2"></td>
                             <td class="col-md-2" rowspan="8">
                                 <div class="form-group">
-                                    <textarea class="form-control" rows="4"></textarea>
+                                    <textarea class="form-control" rows="4" v-model="requestBody.request.purpose"></textarea>
                                 </div>
                             </td>
                         </tr>
-                        <tr>
-                            <td class="col-md-3">computadora</td>
+                        <tr v-for="product in requestBody.products">
+                            <td class="col-md-3">{{product.productBuy.cProductsRequest.productRequestName}}</td>
                             <td class="col-md-1"><input class="form-control" maxlength="3" type="text"
-                                                        onKeyPress="return onlyNumbers(event)"
-                                                        placeholder="0" required/></td>
+                                                        onclick="return cleanField(this)"
+                                                        onkeypress="return validateFloatKeyPress(this,event)"
+                                                        onInput="format(this)" onblur="ponerCeros(this)"
+                                                        placeholder="0" v-model="product.quantity" required/></td>
                             <td class="col-md-2">
                                 <center>
-                                    <button @click="cleanFields()" class="btn btn-danger">Eliminar
+                                    <button @click="removeProduct(product)" class="btn btn-danger">Eliminar
                                     </button>
                                 </center>
                             </td>
@@ -519,7 +608,7 @@
                 <%--tabla de contenidos de productos--%>
             <br>
                 <%-- subir arhivos de cotizacion--%>
-            <div class="panel panel-default">
+            <div class="panel panel-default" v-if="requestBody.products.length > 0">
                 <div class="panel-heading">Documentación</div>
                 <div class="panel-body">
                     <div class="col-md-12">
@@ -530,62 +619,66 @@
                                     <td class="col-md-5"></td>
                                     <td class="col-md-3">Monto cotización sin IVA</td>
                                     <td class="col-md-2">
-                                        <input class="form-control" type="text" placeholder="$"
+                                        <input v-model="amount1" class="form-control" type="text" placeholder="$"
                                                onclick="return cleanField(this)"
                                                onkeypress="return validateFloatKeyPress(this,event)"
-                                               onInput="format(this)" maxlength="14" />
+                                               maxlength="14" :disabled="button1 == true" />
                                     </td>
                                 </tr>
                                 <tr class="col-md-12">
                                     <td class="col-md-2">Documento</td>
                                     <td class="col-md-6">
-                                        <input @change="setFile($event, docType)" type="file"
-                                               class="form-control"
-                                               :disabled="isSaving"
-                                               :name="'file-type-' + docType.documentType.idDocumentType"
-                                               accept="application/pdf" required />
+                                        <input @change="setFile1($event)" type="file"
+                                               class="form-control" :disabled="amount1 == '' || button1 == true"
+                                               required />
                                     </td>
-                                    <td class="col-md-4"></td>
+                                    <td class="col-md-3"></td>
+                                    <td class="col-md-1" v-if="button1 == true">
+                                        <button type="button" class="btn btn-warning" @click="removeDocument(1)">Cambiar factura</button>
+                                    </td>
                                 </tr>
                                 <tr class="col-md-12">
                                     <td class="col-md-2"><b>Cotización 2</b></td>
                                     <td class="col-md-5"></td>
                                     <td class="col-md-3">Monto cotización sin IVA</td>
-                                    <td class="col-md-2"><input class="form-control" type="text" placeholder="$"
-                                                                onclick="return cleanField(this)"
-                                                                onkeypress="return validateFloatKeyPress(this,event)"
-                                                                onInput="format(this)" maxlength="14"/></td>
+                                    <td class="col-md-2">
+                                        <input v-model="amount2" class="form-control" type="text" placeholder="$"
+                                               onclick="return cleanField(this)"
+                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                               maxlength="14" :disabled="button2 == true"/></td>
                                 </tr>
                                 <tr class="col-md-12">
                                     <td class="col-md-2">Documento</td>
                                     <td class="col-md-6">
-                                        <input @change="setFile($event, docType)" type="file"
-                                               class="form-control"
-                                               :disabled="isSaving"
-                                               :name="'file-type-' + docType.documentType.idDocumentType"
-                                               accept="application/pdf" required />
+                                        <input @change="setFile2($event)" type="file"
+                                               class="form-control" :disabled="amount2 == '' || button2 == true"
+                                               required />
                                     </td>
-                                    <td class="col-md-4"></td>
+                                    <td class="col-md-3"></td>
+                                    <td class="col-md-1" v-if="button2 == true">
+                                        <button type="button" class="btn btn-warning" @click="removeDocument(2)">Cambiar factura</button>
+                                    </td>
                                 </tr>
                                 <tr class="col-md-12">
                                     <td class="col-md-2"><b>Cotización 3</b></td>
                                     <td class="col-md-5"></td>
                                     <td class="col-md-3">Monto cotización sin IVA</td>
-                                    <td class="col-md-2"><input class="form-control" type="text" placeholder="$"
-                                                                onclick="return cleanField(this)"
-                                                                onkeypress="return validateFloatKeyPress(this,event)"
-                                                                onInput="format(this)" maxlength="14"/></td>
+                                    <td class="col-md-2">
+                                        <input v-model="amount3" class="form-control" type="text" placeholder="$"
+                                               onkeypress="return validateFloatKeyPress(this,event)"
+                                               maxlength="14" :disabled="button3 == true"/></td>
                                 </tr>
                                 <tr class="col-md-12">
                                     <td class="col-md-2">Documento</td>
                                     <td class="col-md-6">
-                                        <input @change="setFile($event, docType)" type="file"
-                                               class="form-control"
-                                               :disabled="isSaving"
-                                               :name="'file-type-' + docType.documentType.idDocumentType"
-                                               accept="application/pdf" required />
+                                        <input @change="setFile3($event)" type="file"
+                                               class="form-control" :disabled="amount3 == '' || button3 == true"
+                                               required />
                                     </td>
-                                    <td class="col-md-4"></td>
+                                    <td class="col-md-3"></td>
+                                    <td class="col-md-1" v-if="button3 == true">
+                                        <button type="button" class="btn btn-warning" @click="removeDocument(3)">Cambiar factura</button>
+                                    </td>
                                 </tr>
 
                             </table>
@@ -623,10 +716,8 @@
                         </div>
                         <br>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-success" @click="saveBussinessLine()">Aceptar</button>
-                            <a href="javascript:window.history.back();">
-                                <button type="button" class="btn btn-default" >Cancelar</button>
-                            </a>
+                            <button type="button" class="btn btn-success" @click="sendRequest()">Aceptar</button>
+                            <button type="button" class="btn btn-default" class="close" data-dismiss="modal" aria-hidden="true" >Cancelar</button>
                         </div>
                     </div>
                 </div>
