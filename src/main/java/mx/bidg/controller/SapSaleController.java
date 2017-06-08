@@ -1,5 +1,6 @@
 package mx.bidg.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import com.sun.org.apache.xpath.internal.SourceTree;
@@ -17,9 +18,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -64,6 +68,12 @@ public class SapSaleController {
 
     @Autowired
     private EmployeesHistoryService employeesHistoryService;
+
+    @Autowired
+    private EmailDeliveryService emailDeliveryService;
+
+    @Autowired
+    private EmailTemplatesService emailTemplatesService;
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody String findSapSales() throws Exception {
@@ -227,8 +237,7 @@ public class SapSaleController {
                             commissionAmountGroup.setPttoPromReal(dwBranchs.getPttoPromReal());
                             commissionAmountGroup.setPttoPromVta(dwBranchs.getPttoPromVta());
                             BigDecimal scope = commissionAmountGroup.getAmount().divide(dwBranchs.getBranchGoal(), 2, BigDecimal.ROUND_HALF_UP);
-                            BigDecimal multipica = new BigDecimal(100);
-                            commissionAmountGroup.setScope(scope.multiply(multipica));
+                            commissionAmountGroup.setScope(scope);
                             commissionAmountGroupService.update(commissionAmountGroup);
                         }
 
@@ -280,7 +289,7 @@ public class SapSaleController {
                     }
                     //ROLE 8 supervisor
                 }else if (role.getIdCalculationRole() == 8){
-                    List<CommissionAmountGroup> commissionBranchGoal = commissionAmountGroupService.getBranchWithScopeGoal();
+                    List<CommissionAmountGroup> commissionBranchGoal = commissionAmountGroupService.getBranchsWithScopeGoalAndTabulator();
                     List<RolesGroupAgreements> rolesGroupAgreementsList = rolesGroupAgreementsService.findByRole(role.getIdCalculationRole());
 
                     for (CommissionAmountGroup commissionAmountGroup : commissionBranchGoal){
@@ -325,4 +334,62 @@ public class SapSaleController {
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(commissionAmountGroupService.findAll()), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/send-to-validation", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> sendSalesToValidation(@RequestBody String data)throws IOException{
+        JsonNode node = mapper.readTree(data);
+
+        EmailTemplates template = emailTemplatesService.findByName("validation_sales");
+        template.addProperty("initial", node.get("initial").asText());
+        template.addProperty("final", node.get("final").asText());
+        emailDeliveryService.deliverEmail(template);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(template), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/get-status", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getAllSaleStatus() throws IOException{
+        List<String> saleStatus = sapSaleService.getAllSaleStatus();
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(saleStatus), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/get-sales", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getSalesByStatus(@RequestBody String data) throws Exception {
+        JsonNode node = mapper.readTree(data);
+
+        List<String> statusSelected = new ArrayList<>();
+
+        for (JsonNode jNode :  node.get("selectedStatus")){
+            statusSelected.add(jNode.asText());
+        }
+
+        List<SapSale> sapSales = sapSaleService.findAllSalesByStatusAndDates(statusSelected, node.get("startDate").asText(), node.get("endDate").asText());
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(sapSales), HttpStatus.OK);
+
+    }
+
+    @RequestMapping(value = "/assign-employee", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> assingEmployee(@RequestBody String data) throws IOException{
+
+        JsonNode node = mapper.readTree(data);
+        SapSale sapSale = sapSaleService.assignSaleToEmployee(node.get("idSale").asText(), node.get("claveSap").asText());
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(sapSale), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/reject-sales", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> rejectSales(@RequestBody String data, HttpSession session)throws IOException{
+        JsonNode node = mapper.readTree(data);
+
+        Users user = (Users) session.getAttribute("user");
+
+        EmailTemplates template = emailTemplatesService.findByName("reject_sales");
+        template.addProperty("reason", node.get("reason").asText());
+        template.addProperty("initialDate", node.get("startDate").asText());
+        template.addProperty("finalDate", node.get("endDate").asText());
+        template.addProperty("users", user);
+        emailDeliveryService.deliverEmail(template);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(template), HttpStatus.OK);
+    }
 }

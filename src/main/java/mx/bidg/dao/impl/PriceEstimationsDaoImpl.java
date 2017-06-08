@@ -10,7 +10,6 @@ import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.PriceEstimationsDao;
 import mx.bidg.model.CEstimationStatus;
 import mx.bidg.model.PriceEstimations;
-import mx.bidg.model.Requests;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.Order;
@@ -74,5 +73,16 @@ public class PriceEstimationsDaoImpl extends AbstractDao<Integer, PriceEstimatio
                 .add(Restrictions.eq("idEstimationStatus", CEstimationStatus.APROBADA))
                 .uniqueResult();
     }
-    
+
+    @Override
+    public List<PriceEstimations> findEstimationsNotSelectedByRequest(Integer idRequest, Integer idEstimation) {
+        Criteria criteria = createEntityCriteria();
+        return criteria
+                .add(Restrictions.ne("idPriceEstimation", idEstimation))
+                .add(Restrictions.eq("idRequest", idRequest))
+                .setFetchMode("request", FetchMode.JOIN)
+                .setFetchMode("request.requestStatus", FetchMode.JOIN)
+                .list();
+    }
+
 }

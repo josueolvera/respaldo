@@ -4,6 +4,7 @@ import mx.bidg.dao.*;
 import mx.bidg.model.*;
 import mx.bidg.service.CommissionAmountGroupBackupService;
 import mx.bidg.service.CommissionAmountGroupService;
+import mx.bidg.service.DwBranchsService;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +70,9 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
 
     @Autowired
     PerceptionsDeductionsDao perceptionsDeductionsDao;
+
+    @Autowired
+    DwBranchsDao dwBranchsDao;
 
     @Override
     public CommissionAmountGroup save(CommissionAmountGroup commissionAmountGroup) {
@@ -187,11 +191,11 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
             Integer idZonas = (Integer) projection[0];
             BigDecimal amount = (BigDecimal) projection[1];
             BigDecimal numRequest = new BigDecimal(projection[2].toString());
-//            Integer idDistributor = (Integer) projection[3];
+            Integer idDistributor = (Integer) projection[3];
 
             commissionAmountGroup.setAmount(amount);
             commissionAmountGroup.setIdZona(idZonas);
-//            commissionAmountGroup.setIdDistributor(idDistributor);
+            commissionAmountGroup.setIdDistributor(idDistributor);
             commissionAmountGroup.setIdAg(agreementsGroups.getIdAg());
             commissionAmountGroup.setGroupName(agreementsGroups.getAgreementGroupName());
             commissionAmountGroup.setCommission(BigDecimal.valueOf(0));
@@ -212,11 +216,11 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
             Integer idRegion = (Integer) projection[0];
             BigDecimal amount = (BigDecimal) projection[1];
             BigDecimal numRequest = new BigDecimal(projection[2].toString());
-//            Integer idDistributor = (Integer) projection[3];
+            Integer idDistributor = (Integer) projection[3];
 
             commissionAmountGroup.setAmount(amount);
             commissionAmountGroup.setIdRegion(idRegion);
-//            commissionAmountGroup.setIdDistributor(idDistributor);
+            commissionAmountGroup.setIdDistributor(idDistributor);
             commissionAmountGroup.setIdAg(agreementsGroups.getIdAg());
             commissionAmountGroup.setGroupName(agreementsGroups.getAgreementGroupName());
             commissionAmountGroup.setCommission(BigDecimal.valueOf(0));
@@ -1267,12 +1271,19 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
         Row row6 = hoja6.createRow(0);
 
         row6.createCell(0).setCellValue("ID SUCURSAL");
-        row6.createCell(1).setCellValue("NOMBRE SUCURSAL");
-        row6.createCell(2).setCellValue("META");
-        row6.createCell(3).setCellValue("MONTO");
-        row6.createCell(4).setCellValue("ALCANCE");
-        row6.createCell(5).setCellValue("TABULADOR");
-        row6.createCell(6).setCellValue("COMISION GERENTE");
+        row6.createCell(1).setCellValue("EMPRESA");
+        row6.createCell(2).setCellValue("REGION");
+        row6.createCell(3).setCellValue("ZONA");
+        row6.createCell(4).setCellValue("NOMBRE SUCURSAL");
+        row6.createCell(5).setCellValue("MONTO CONVENIOS");
+        row6.createCell(6).setCellValue("MONTO PEMEX");
+        row6.createCell(7).setCellValue("MONTO TOTAL");
+        row6.createCell(8).setCellValue("%MONTO TOTAL");
+        row6.createCell(9).setCellValue("META");
+        row6.createCell(10).setCellValue("%PROYECCION");
+        row6.createCell(11).setCellValue("COMISION CONVENIOS");
+        row6.createCell(12).setCellValue("COMISION PEMEX");
+        row6.createCell(13).setCellValue("COMISION TOTAL");
 
         //Implementacion del estilo
         for (Cell celda : row6) {
@@ -1283,120 +1294,555 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
 
         for (List listGeneric : commissionAmountBranchGroupStreamList){
             row6 = hoja6.createRow(aux6);
+            Double totalAmount = 0.00;
+            Double totalCommission = 0.00;
 
             for (Object object: listGeneric){
                 CommissionAmountGroup commissionAmountGroup = (CommissionAmountGroup) object;
 
                 row6.createCell(0).setCellValue(commissionAmountGroup.getIdBranch());
 
+                if (commissionAmountGroup.getIdDistributor() != null){
+                    CDistributors distributor = cDistributorsDao.findById(commissionAmountGroup.getIdDistributor());
+
+                    if (distributor != null){
+                        row6.createCell(1).setCellValue(distributor.getAcronyms());
+                    }
+                }
+
+                if (commissionAmountGroup.getIdRegion() != null){
+                    CRegions region = cRegionsDao.findById(commissionAmountGroup.getIdRegion());
+
+                    if (region != null){
+                        row6.createCell(2).setCellValue(region.getRegionName());
+                    }
+                }
+
+                if (commissionAmountGroup.getIdZona() != null){
+                    CZonas zonas = cZonaDao.findById(commissionAmountGroup.getIdZona());
+
+                    if (zonas != null){
+                        row6.createCell(3).setCellValue(zonas.getName());
+                    }
+                }
+
                 if(commissionAmountGroup.getIdBranch() != null){
                     CBranchs branchs = cBranchsDao.findById(commissionAmountGroup.getIdBranch());
 
                     if (branchs != null){
-                        row6.createCell(1).setCellValue(branchs.getBranchName());
+                        row6.createCell(4).setCellValue(branchs.getBranchName());
                     }
+
+                    DwBranchs dwBranchs = dwBranchsDao.findById(commissionAmountGroup.getIdBranch());
+
+                    if (dwBranchs != null){
+                        row6.createCell(10).setCellValue(dwBranchs.getScope().doubleValue());
+                    }
+
                 }
 
                 if(commissionAmountGroup.getIdAg() == 20){
-                    row6.createCell(2).setCellValue(commissionAmountGroup.getGoal().doubleValue());
-                    row6.createCell(3).setCellValue(commissionAmountGroup.getAmount().doubleValue());
+                    row6.createCell(5).setCellValue(commissionAmountGroup.getAmount().doubleValue());
+                    totalAmount += commissionAmountGroup.getAmount().doubleValue();
                     BigDecimal divisor = new BigDecimal(100);
                     BigDecimal scope = commissionAmountGroup.getScope().divide(divisor);
-                    row6.createCell(4).setCellValue(scope.doubleValue());
-                    row6.createCell(5).setCellValue(commissionAmountGroup.getTabulator().doubleValue());
-                    row6.createCell(6).setCellValue(commissionAmountGroup.getCommission().doubleValue());
+                    row6.createCell(8).setCellValue(scope.doubleValue());
+                    row6.createCell(9).setCellValue(commissionAmountGroup.getGoal().doubleValue());
+                    row6.createCell(11).setCellValue(commissionAmountGroup.getCommission().doubleValue());
+                    totalCommission += commissionAmountGroup.getCommission().doubleValue();
                 }
+
+                if(commissionAmountGroup.getIdAg() == 21){
+                    row6.createCell(6).setCellValue(commissionAmountGroup.getAmount().doubleValue());
+                    totalAmount += commissionAmountGroup.getAmount().doubleValue();
+                    row6.createCell(12).setCellValue(commissionAmountGroup.getCommission().doubleValue());
+                    totalCommission += commissionAmountGroup.getCommission().doubleValue();
+                }
+
+                row6.createCell(7).setCellValue(totalAmount);
+                row6.createCell(13).setCellValue(totalCommission);
             }
             aux6++;
         }
+
+//        Sheet hoja6 = wb.createSheet("Gerente de sucursal");
+//
+//        //Se crea la fila que contiene la cabecera
+//        Row row6 = hoja6.createRow(0);
+//
+//        row6.createCell(0).setCellValue("ID SUCURSAL");
+//        row6.createCell(1).setCellValue("NOMBRE SUCURSAL");
+//        row6.createCell(2).setCellValue("META");
+//        row6.createCell(3).setCellValue("MONTO");
+//        row6.createCell(4).setCellValue("ALCANCE");
+//        row6.createCell(5).setCellValue("TABULADOR");
+//        row6.createCell(6).setCellValue("COMISION GERENTE");
+//
+//        //Implementacion del estilo
+//        for (Cell celda : row6) {
+//            celda.setCellStyle(style);
+//        }
+//
+//        int aux6 = 1;
+//
+//        for (List listGeneric : commissionAmountBranchGroupStreamList){
+//            row6 = hoja6.createRow(aux6);
+//
+//            for (Object object: listGeneric){
+//                CommissionAmountGroup commissionAmountGroup = (CommissionAmountGroup) object;
+//
+//                row6.createCell(0).setCellValue(commissionAmountGroup.getIdBranch());
+//
+//                if(commissionAmountGroup.getIdBranch() != null){
+//                    CBranchs branchs = cBranchsDao.findById(commissionAmountGroup.getIdBranch());
+//
+//                    if (branchs != null){
+//                        row6.createCell(1).setCellValue(branchs.getBranchName());
+//                    }
+//                }
+//
+//                if(commissionAmountGroup.getIdAg() == 20){
+//                    row6.createCell(2).setCellValue(commissionAmountGroup.getGoal().doubleValue());
+//                    row6.createCell(3).setCellValue(commissionAmountGroup.getAmount().doubleValue());
+//                    BigDecimal divisor = new BigDecimal(100);
+//                    BigDecimal scope = commissionAmountGroup.getScope().divide(divisor);
+//                    row6.createCell(4).setCellValue(scope.doubleValue());
+//                    row6.createCell(5).setCellValue(commissionAmountGroup.getTabulator().doubleValue());
+//                    row6.createCell(6).setCellValue(commissionAmountGroup.getCommission().doubleValue());
+//                }
+//            }
+//            aux6++;
+//        }
+
 
         Sheet hoja3 = wb.createSheet("Gerente Zonal");
 
         //Se crea la fila que contiene la cabecera
         Row row3 = hoja3.createRow(0);
 
-//        row3.createCell(0).setCellValue("DISTRIBUIDOR");
-        row3.createCell(0).setCellValue("ZONA");
-        row3.createCell(1).setCellValue("MONTO");
-        row3.createCell(2).setCellValue("TABULADOR");
-        row3.createCell(3).setCellValue("COMISION");
+        row3.createCell(0).setCellValue("EMPRESA");
+        row3.createCell(1).setCellValue("ZONA");
+        row3.createCell(2).setCellValue("SUCURSALES");
+        row3.createCell(3).setCellValue("MONTO CONVENIOS");
+        row3.createCell(4).setCellValue("MONTO PEMEX");
+        row3.createCell(5).setCellValue("MONTO TOTAL");
+        row3.createCell(6).setCellValue("TABULADOR CONVENIOS");
+        row3.createCell(7).setCellValue("TABULADOR PEMEX");
+        row3.createCell(8).setCellValue("COMISION CONVENIOS");
+        row3.createCell(9).setCellValue("COMISION PEMEX");
+        row3.createCell(10).setCellValue("COMISION TOTAL");
 
         //Implementacion del estilo
         for (Cell celda : row3) {
             celda.setCellStyle(style);
         }
 
-        List<CommissionAmountGroup> zonalList = commissionAmountGroupDao.findByGroupZonalAndZona();
+        List<Integer> idZonas = commissionAmountGroupDao.getOnlyIdsZonasFromGroupZona();
 
         int aux2 = 1;
 
-        for (CommissionAmountGroup zonal: zonalList){
-            row3 = hoja3.createRow(aux2);
+        for (Integer idZona : idZonas){
 
-//            CDistributors distributors = cDistributorsDao.findById(zonal.getIdDistributor());
-//
-//            if (distributors != null){
-//                row3.createCell(0).setCellValue(distributors.getDistributorName());
-//            }
+            if (idZona != null){
+                CommissionAmountGroup zonaAmer = commissionAmountGroupDao.findZonaByBranchAndDistributorInGroupZonaGT(2, idZona);
+                Double totalMontoZonaAmer = 0.00;
+                Double comissionMontoZonaAmer = 0.00;
 
-            CZonas zonas = cZonaDao.findById(zonal.getIdZona());
+                CommissionAmountGroup zonaAmermedia = commissionAmountGroupDao.findZonaByBranchAndDistributorInGroupZonaGT(3, idZona);
+                Double totalMontoZonaAmermedia = 0.00;
+                Double comissionMontoZonaAmermedia = 0.00;
 
-            if (zonas != null){
-                row3.createCell(0).setCellValue(zonas.getName());
+                if (zonaAmer != null){
+                    row3 = hoja3.createRow(aux2);
+
+                    CDistributors distributor = cDistributorsDao.findById(zonaAmer.getIdDistributor());
+
+                    if (distributor != null){
+                        row3.createCell(0).setCellValue(distributor.getAcronyms());
+                    }
+
+                    CZonas zonas = cZonaDao.findById(zonaAmer.getIdZona());
+
+                    if (zonas != null){
+                        row3.createCell(1).setCellValue(zonas.getName());
+                    }
+
+                    List<CommissionAmountGroup> branchsList = commissionAmountGroupDao.findAllBranchsByZonaAndDistributor(2, idZona);
+
+                    Integer numBranches = branchsList.size();
+
+                    if (numBranches != null){
+                        row3.createCell(2).setCellValue(numBranches);
+                    }
+
+                    if (zonaAmer.getAmount() != null){
+                        row3.createCell(3).setCellValue(zonaAmer.getAmount().doubleValue());
+                        totalMontoZonaAmer += zonaAmer.getAmount().doubleValue();
+                    }
+
+                    if(zonaAmer.getTabulator() != null){
+                        row3.createCell(6).setCellValue(zonaAmer.getTabulator().doubleValue());
+                    }
+
+                    if (zonaAmer.getCommission() != null){
+                        row3.createCell(8).setCellValue(zonaAmer.getCommission().doubleValue());
+                        comissionMontoZonaAmer += zonaAmer.getCommission().doubleValue();
+                    }
+
+                    CommissionAmountGroup zonaAmerPemex = commissionAmountGroupDao.findZonaByBranchAndDistributorInGroupZonaP(2, idZona);
+
+                    if (zonaAmerPemex != null){
+
+                        if (zonaAmerPemex.getTabulator() != null){
+                            if (zonaAmerPemex.getAmount() != null) {
+                                row3.createCell(4).setCellValue(zonaAmerPemex.getAmount().doubleValue());
+                                totalMontoZonaAmer += zonaAmerPemex.getAmount().doubleValue();
+                            }
+
+                            if (zonaAmerPemex.getTabulator() != null) {
+                                row3.createCell(7).setCellValue(zonaAmerPemex.getTabulator().doubleValue());
+                            }
+
+                            if (zonaAmerPemex.getCommission() != null) {
+                                row3.createCell(9).setCellValue(zonaAmerPemex.getCommission().doubleValue());
+                                comissionMontoZonaAmer += zonaAmerPemex.getCommission().doubleValue();
+                            }
+                        }
+                    }
+
+                    row3.createCell(5).setCellValue(totalMontoZonaAmer);
+                    row3.createCell(10).setCellValue(comissionMontoZonaAmer);
+
+                    aux2++;
+                }
+
+                if (zonaAmermedia != null){
+                    row3 = hoja3.createRow(aux2);
+
+                    CDistributors distributor = cDistributorsDao.findById(zonaAmermedia.getIdDistributor());
+
+                    if (distributor != null){
+                        row3.createCell(0).setCellValue(distributor.getAcronyms());
+                    }
+
+                    CZonas zonas = cZonaDao.findById(zonaAmermedia.getIdZona());
+
+                    if (zonas != null){
+                        row3.createCell(1).setCellValue(zonas.getName());
+                    }
+
+                    List<CommissionAmountGroup> branchsList = commissionAmountGroupDao.findAllBranchsByZonaAndDistributor(3, idZona);
+
+                    Integer numBranches = branchsList.size();
+
+                    if (numBranches != null){
+                        row3.createCell(2).setCellValue(numBranches);
+                    }
+
+                    if (zonaAmermedia.getAmount() != null) {
+                        row3.createCell(3).setCellValue(zonaAmermedia.getAmount().doubleValue());
+                        totalMontoZonaAmermedia += zonaAmermedia.getAmount().doubleValue();
+                    }
+
+                    if (zonaAmermedia.getTabulator() != null) {
+                        row3.createCell(6).setCellValue(zonaAmermedia.getTabulator().doubleValue());
+                    }
+
+                    if (zonaAmermedia.getCommission() != null) {
+                        row3.createCell(8).setCellValue(zonaAmermedia.getCommission().doubleValue());
+                        comissionMontoZonaAmermedia += zonaAmermedia.getCommission().doubleValue();
+                    }
+
+                    CommissionAmountGroup zonaAmermediaPemex = commissionAmountGroupDao.findZonaByBranchAndDistributorInGroupZonaP(3, idZona);
+
+                    if (zonaAmermediaPemex != null){
+                        if (zonaAmermediaPemex.getTabulator() != null){
+                            if (zonaAmermediaPemex.getAmount() != null) {
+                                row3.createCell(4).setCellValue(zonaAmermediaPemex.getAmount().doubleValue());
+                                totalMontoZonaAmermedia += zonaAmermediaPemex.getAmount().doubleValue();
+                            }
+
+                            if (zonaAmermediaPemex.getTabulator() != null) {
+                                row3.createCell(7).setCellValue(zonaAmermediaPemex.getTabulator().doubleValue());
+                            }
+
+                            if (zonaAmermediaPemex.getCommission() != null) {
+                                row3.createCell(9).setCellValue(zonaAmermediaPemex.getCommission().doubleValue());
+                                comissionMontoZonaAmermedia += zonaAmermediaPemex.getCommission().doubleValue();
+                            }
+                        }
+                    }
+
+                    row3.createCell(5).setCellValue(totalMontoZonaAmermedia);
+                    row3.createCell(10).setCellValue(comissionMontoZonaAmermedia);
+
+                    aux2++;
+                }
             }
-
-            row3.createCell(1).setCellValue(zonal.getAmount().doubleValue());
-            if (zonal.getTabulator() != null){
-                row3.createCell(2).setCellValue(zonal.getTabulator().doubleValue());
-            }
-            row3.createCell(3).setCellValue(zonal.getCommission().doubleValue());
-
-            aux2++;
         }
+
+
+
+//        Sheet hoja3 = wb.createSheet("Gerente Zonal");
+//
+//        //Se crea la fila que contiene la cabecera
+//        Row row3 = hoja3.createRow(0);
+//
+////        row3.createCell(0).setCellValue("DISTRIBUIDOR");
+//        row3.createCell(0).setCellValue("ZONA");
+//        row3.createCell(1).setCellValue("MONTO");
+//        row3.createCell(2).setCellValue("TABULADOR");
+//        row3.createCell(3).setCellValue("COMISION");
+//
+//        //Implementacion del estilo
+//        for (Cell celda : row3) {
+//            celda.setCellStyle(style);
+//        }
+//
+//        List<CommissionAmountGroup> zonalList = commissionAmountGroupDao.findByGroupZonalAndZona();
+//
+//        int aux2 = 1;
+//
+//        for (CommissionAmountGroup zonal: zonalList){
+//            row3 = hoja3.createRow(aux2);
+//
+////            CDistributors distributors = cDistributorsDao.findById(zonal.getIdDistributor());
+////
+////            if (distributors != null){
+////                row3.createCell(0).setCellValue(distributors.getDistributorName());
+////            }
+//
+//            CZonas zonas = cZonaDao.findById(zonal.getIdZona());
+//
+//            if (zonas != null){
+//                row3.createCell(0).setCellValue(zonas.getName());
+//            }
+//
+//            row3.createCell(1).setCellValue(zonal.getAmount().doubleValue());
+//            if (zonal.getTabulator() != null){
+//                row3.createCell(2).setCellValue(zonal.getTabulator().doubleValue());
+//            }
+//            row3.createCell(3).setCellValue(zonal.getCommission().doubleValue());
+//
+//            aux2++;
+//        }
+
+
 
         Sheet hoja4 = wb.createSheet("Gerente Regional");
 
         //Se crea la fila que contiene la cabecera
         Row row4 = hoja4.createRow(0);
 
-//        row4.createCell(0).setCellValue("DISTRIBUCION");
-        row4.createCell(0).setCellValue("REGION");
-        row4.createCell(1).setCellValue("MONTO");
-        row4.createCell(2).setCellValue("TABULADOR");
-        row4.createCell(3).setCellValue("COMISION");
+        row4.createCell(0).setCellValue("EMPRESA");
+        row4.createCell(1).setCellValue("REGION");
+        row4.createCell(2).setCellValue("SUCURSALES");
+        row4.createCell(3).setCellValue("MONTO CONVENIOS");
+        row4.createCell(4).setCellValue("MONTO PEMEX");
+        row4.createCell(5).setCellValue("MONTO TOTAL");
+        row4.createCell(6).setCellValue("TABULADOR CONVENIOS");
+        row4.createCell(7).setCellValue("TABULADOR PEMEX");
+        row4.createCell(8).setCellValue("COMISION CONVENIOS");
+        row4.createCell(9).setCellValue("COMISION PEMEX");
+        row4.createCell(10).setCellValue("COMISION TOTAL");
 
         //Implementacion del estilo
         for (Cell celda : row4) {
             celda.setCellStyle(style);
         }
 
-        List<CommissionAmountGroup> regionList = commissionAmountGroupDao.findByGroupRegionslAndRegion();
+        List<Integer> idRegions = commissionAmountGroupDao.getOnlyIdsRegionsFromGroupRegion();
 
         int aux3 = 1;
 
-        for (CommissionAmountGroup region : regionList){
-            row4 = hoja4.createRow(aux3);
+        for (Integer idRegion : idRegions){
 
-//            CDistributors distributor = cDistributorsDao.findById(region.getIdDistributor());
-//
-//            if (distributor != null){
-//                row4.createCell(0).setCellValue(distributor.getDistributorName());
-//            }
+            if (idRegion != null){
+                CommissionAmountGroup regionAmer = commissionAmountGroupDao.findRegionByRegionAndDistributorInGroupRegionGT(2, idRegion);
+                Double totalMontoRegionAmer = 0.00;
+                Double comissionMontoRegionAmer = 0.00;
 
-            CRegions regions = cRegionsDao.findById(region.getIdRegion());
+                CommissionAmountGroup regionAmermedia = commissionAmountGroupDao.findRegionByRegionAndDistributorInGroupRegionGT(3, idRegion);
+                Double totalMontoRegionAmermendia = 0.00;
+                Double comissionMontoRegionAmermedia = 0.00;
 
-            if (regions != null){
-                row4.createCell(0).setCellValue(regions.getRegionName());
+                if (regionAmer != null){
+                    row4 = hoja4.createRow(aux3);
+
+                    CDistributors distributor = cDistributorsDao.findById(regionAmer.getIdDistributor());
+
+                    if (distributor != null){
+                        row4.createCell(0).setCellValue(distributor.getAcronyms());
+                    }
+
+                    CRegions region = cRegionsDao.findById(regionAmer.getIdRegion());
+
+                    if (region != null){
+                        row4.createCell(1).setCellValue(region.getRegionName());
+                    }
+
+                    List<CommissionAmountGroup> branchsList = commissionAmountGroupDao.findAllBranchsByRegionAndDistributor(2, idRegion);
+
+                    Integer numBranches = branchsList.size();
+
+                    if (numBranches != null){
+                        row4.createCell(2).setCellValue(numBranches);
+                    }
+
+                    if (regionAmer.getAmount() != null) {
+                        row4.createCell(3).setCellValue(regionAmer.getAmount().doubleValue());
+                        totalMontoRegionAmer += regionAmer.getAmount().doubleValue();
+                    }
+
+                    if (regionAmer.getTabulator() != null) {
+                        row4.createCell(6).setCellValue(regionAmer.getTabulator().doubleValue());
+                    }
+
+                    if (regionAmer.getCommission() != null) {
+                        row4.createCell(8).setCellValue(regionAmer.getCommission().doubleValue());
+                        comissionMontoRegionAmer += regionAmer.getCommission().doubleValue();
+                    }
+
+                    CommissionAmountGroup regionAmerPemex = commissionAmountGroupDao.findRegionByRegionAndDistributorInGroupRegionP(2, idRegion);
+
+                    if (regionAmerPemex != null){
+                        if (regionAmerPemex.getTabulator() != null) {
+                            if (regionAmerPemex.getAmount() != null) {
+                                row4.createCell(4).setCellValue(regionAmerPemex.getAmount().doubleValue());
+                                totalMontoRegionAmer += regionAmerPemex.getAmount().doubleValue();
+                            }
+
+                            if (regionAmerPemex.getTabulator() != null) {
+                                row4.createCell(7).setCellValue(regionAmerPemex.getTabulator().doubleValue());
+                            }
+
+                            if (regionAmerPemex.getCommission() != null) {
+                                row4.createCell(9).setCellValue(regionAmerPemex.getCommission().doubleValue());
+                                comissionMontoRegionAmer += regionAmerPemex.getCommission().doubleValue();
+                            }
+                        }
+                    }
+
+                    row4.createCell(5).setCellValue(totalMontoRegionAmer);
+                    row4.createCell(10).setCellValue(comissionMontoRegionAmer);
+
+                    aux3++;
+                }
+
+
+
+                if (regionAmermedia != null){
+                    row4 = hoja4.createRow(aux3);
+
+                    CDistributors distributor = cDistributorsDao.findById(regionAmermedia.getIdDistributor());
+
+                    if (distributor != null){
+                        row4.createCell(0).setCellValue(distributor.getAcronyms());
+                    }
+
+                    CRegions region = cRegionsDao.findById(regionAmermedia.getIdRegion());
+
+                    if (region != null){
+                        row4.createCell(1).setCellValue(region.getRegionName());
+                    }
+
+                    List<CommissionAmountGroup> branchsList = commissionAmountGroupDao.findAllBranchsByRegionAndDistributor(3, idRegion);
+
+                    Integer numBranches = branchsList.size();
+
+                    if (numBranches != null){
+                        row4.createCell(2).setCellValue(numBranches);
+                    }
+
+                    if (regionAmermedia.getAmount() != null) {
+                        row4.createCell(3).setCellValue(regionAmermedia.getAmount().doubleValue());
+                        totalMontoRegionAmermendia += regionAmermedia.getAmount().doubleValue();
+                    }
+
+                    if (regionAmermedia.getTabulator() != null) {
+                        row4.createCell(6).setCellValue(regionAmermedia.getTabulator().doubleValue());
+                    }
+
+                    if (regionAmermedia.getCommission() != null) {
+                        row4.createCell(8).setCellValue(regionAmermedia.getCommission().doubleValue());
+                        comissionMontoRegionAmermedia += regionAmermedia.getCommission().doubleValue();
+                    }
+
+                    CommissionAmountGroup regionAmermediaPemex = commissionAmountGroupDao.findRegionByRegionAndDistributorInGroupRegionP(3, idRegion);
+
+                    if (regionAmermediaPemex != null){
+                        if (regionAmermediaPemex.getTabulator() != null) {
+                            if (regionAmermediaPemex.getAmount() != null) {
+                                row4.createCell(4).setCellValue(regionAmermediaPemex.getAmount().doubleValue());
+                                totalMontoRegionAmermendia += regionAmermediaPemex.getAmount().doubleValue();
+                            }
+
+                            if (regionAmermediaPemex.getTabulator() != null) {
+                                row4.createCell(7).setCellValue(regionAmermediaPemex.getTabulator().doubleValue());
+                            }
+
+                            if (regionAmermediaPemex.getCommission() != null) {
+                                row4.createCell(9).setCellValue(regionAmermediaPemex.getCommission().doubleValue());
+                                comissionMontoRegionAmermedia += regionAmermediaPemex.getCommission().doubleValue();
+                            }
+                        }
+                    }
+
+                    row4.createCell(5).setCellValue(totalMontoRegionAmermendia);
+                    row4.createCell(10).setCellValue(comissionMontoRegionAmermedia);
+
+                    aux3++;
+                }
+
             }
-
-            row4.createCell(1).setCellValue(region.getAmount().doubleValue());
-            if (region.getTabulator() != null){
-                row4.createCell(2).setCellValue(region.getTabulator().doubleValue());
-            }
-            row4.createCell(3).setCellValue(region.getCommission().doubleValue());
-
-            aux3++;
         }
+
+
+
+
+//        Sheet hoja4 = wb.createSheet("Gerente Regional");
+//
+//        //Se crea la fila que contiene la cabecera
+//        Row row4 = hoja4.createRow(0);
+//
+////        row4.createCell(0).setCellValue("DISTRIBUCION");
+//        row4.createCell(0).setCellValue("REGION");
+//        row4.createCell(1).setCellValue("MONTO");
+//        row4.createCell(2).setCellValue("TABULADOR");
+//        row4.createCell(3).setCellValue("COMISION");
+//
+//        //Implementacion del estilo
+//        for (Cell celda : row4) {
+//            celda.setCellStyle(style);
+//        }
+//
+//        List<CommissionAmountGroup> regionList = commissionAmountGroupDao.findByGroupRegionslAndRegion();
+//
+//        int aux3 = 1;
+//
+//        for (CommissionAmountGroup region : regionList){
+//            row4 = hoja4.createRow(aux3);
+//
+////            CDistributors distributor = cDistributorsDao.findById(region.getIdDistributor());
+////
+////            if (distributor != null){
+////                row4.createCell(0).setCellValue(distributor.getDistributorName());
+////            }
+//
+//            CRegions regions = cRegionsDao.findById(region.getIdRegion());
+//
+//            if (regions != null){
+//                row4.createCell(0).setCellValue(regions.getRegionName());
+//            }
+//
+//            row4.createCell(1).setCellValue(region.getAmount().doubleValue());
+//            if (region.getTabulator() != null){
+//                row4.createCell(2).setCellValue(region.getTabulator().doubleValue());
+//            }
+//            row4.createCell(3).setCellValue(region.getCommission().doubleValue());
+//
+//            aux3++;
+//        }
 
         Sheet hoja5 = wb.createSheet("Gerente Comercial");
 
@@ -1404,8 +1850,9 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
         Row row5 = hoja5.createRow(0);
 
         row5.createCell(0).setCellValue("EMPRESA");
-        row5.createCell(1).setCellValue("MONTO");
-        row5.createCell(2).setCellValue("COMISION");
+        row5.createCell(1).setCellValue("TABULADOR");
+        row5.createCell(2).setCellValue("MONTO");
+        row5.createCell(3).setCellValue("COMISION");
 
         //Implementacion del estilo
         for (Cell celda : row5) {
@@ -1425,8 +1872,9 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
                 row5.createCell(0).setCellValue(distributor.getDistributorName());
             }
 
-            row5.createCell(1).setCellValue(comercial.getAmount().doubleValue());
-            row5.createCell(2).setCellValue(comercial.getCommission().doubleValue());
+            row5.createCell(1).setCellValue(comercial.getTabulator().doubleValue());
+            row5.createCell(2).setCellValue(comercial.getAmount().doubleValue());
+            row5.createCell(3).setCellValue(comercial.getCommission().doubleValue());
 
             aux4++;
         }
@@ -1717,5 +2165,10 @@ public class CommissionAmountGroupServiceImpl implements CommissionAmountGroupSe
         }
 
         return commissionAmountGroupDao.findAll();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> getBranchsWithScopeGoalAndTabulator() {
+        return commissionAmountGroupDao.getBranchsWithScopeGoalAndTabulator();
     }
 }

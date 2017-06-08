@@ -106,7 +106,7 @@
                     },
                     reportBPO: {
                         idReporte: 3,
-                        name: 'Reporte BPO'
+                        name: 'Reporte BID Group'
                     },
                     createReportUrl: '',
                     employeesUrl: null,

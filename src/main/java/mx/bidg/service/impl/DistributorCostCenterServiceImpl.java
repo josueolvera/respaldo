@@ -1,5 +1,6 @@
 package mx.bidg.service.impl;
 
+import java.util.ArrayList;
 import mx.bidg.dao.DistributorCostCenterDao;
 import mx.bidg.model.DistributorCostCenter;
 import mx.bidg.service.DistributorCostCenterService;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import mx.bidg.dao.AccountingAccountsDao;
+import mx.bidg.model.AccountingAccounts;
 
 /**
  * Created by Kevin Salvador on 16/03/2017.
@@ -18,6 +21,9 @@ public class DistributorCostCenterServiceImpl implements DistributorCostCenterSe
 
     @Autowired
     private DistributorCostCenterDao distributorCostCenterDao;
+
+    @Autowired
+    private AccountingAccountsDao accountingAccountsDao;
 
     @Override
     public List<DistributorCostCenter> findAll() {
@@ -80,7 +86,22 @@ public class DistributorCostCenterServiceImpl implements DistributorCostCenterSe
     }
 
     @Override
-    public List<Integer> getIdsAccountingAccountsByCostCenter(Integer idCostCenter){
-        return distributorCostCenterDao.getIdsAccountingAccountsByCostCenter(idCostCenter);
+    public List<AccountingAccounts> getIdsAccountingAccountsByCostCenter(Integer idCostCenter){
+
+        List<Integer> idAccountingAccounts = distributorCostCenterDao.getIdsAccountingAccountsByCostCenter(idCostCenter);
+
+
+        List<AccountingAccounts> accountingAccountsList = new ArrayList<>();
+
+        for (Integer idAccountingAccount : idAccountingAccounts){
+            AccountingAccounts accountingAccount = accountingAccountsDao.findById(idAccountingAccount);
+            if(accountingAccount.getIdBudgetSubcategory() != 0 && accountingAccount.getIdBudgetSubSubcategories() == 0){
+                if(!accountingAccountsList.contains(accountingAccount)){
+                    accountingAccountsList.add(accountingAccount);
+                }
+            }
+        }
+
+        return accountingAccountsList;
     }
 }

@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -75,9 +76,9 @@ public class Users implements Serializable, AccessLevelFilterable {
     @Column(name = "ID_DW_EMPLOYEE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idDwemployee;
-    
-    @JoinColumn(name = "ID_DW_EMPLOYEE", referencedColumnName = "ID_DW_EMPLOYEE")
+
     @OneToOne
+    @JoinColumn(name="ID_DW_EMPLOYEE", referencedColumnName = "ID_DW_EMPLOYEE", nullable=true, insertable=true, updatable=true)
     @JsonView(JsonViews.Embedded.class)
     private DwEmployees dwEmployee;
     

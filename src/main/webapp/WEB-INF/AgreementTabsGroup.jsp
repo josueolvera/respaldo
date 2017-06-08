@@ -126,7 +126,7 @@
                         newTab.idAg = this.idAgreementGroup;
                         newTab.idDateCalculation = this.idDateCalculation;
 
-                        if (ruleType == 1 || ruleType == 3 || ruleType == 4 || ruleType == 5 || ruleType == 7 || ruleType == 8 || ruleType == 9 || ruleType == 10) {
+                        if (ruleType == 1 || ruleType == 3 || ruleType == 4 || ruleType == 5 || ruleType == 7 || ruleType == 8 || ruleType == 9 || ruleType == 10 || ruleType == 12) {
                             newTab.amountMin = this.montoMinimo;
                             newTab.amountMax = this.montoMaximo;
 
@@ -144,17 +144,30 @@
                         newTab.tabulator = this.tabulator;
                         newTab.typeOperation = this.ruleType;
 
-                        if (this.montoMaximo !== '' && this.tabulator !== '') {
-                            this.$http.post(ROOT_URL + "/agreement-condition/save", JSON.stringify(newTab))
+                        if(ruleType != 11){
+                            if (this.montoMaximo !== '' && this.tabulator !== '') {
+                                this.$http.post(ROOT_URL + "/agreement-condition/save", JSON.stringify(newTab))
                                     .success(function (data) {
                                         showAlert("Registro Exitoso");
                                         this.getTabsOfGroup();
                                         this.clearFields();
                                     });
+                            } else {
+                                showAlert("Favor de llenar todos los campos");
+                            }
+                        }else {
+                            if (this.tabulator !== '') {
+                                this.$http.post(ROOT_URL + "/agreement-condition/save", JSON.stringify(newTab))
+                                    .success(function (data) {
+                                        showAlert("Registro Exitoso");
+                                        this.getTabsOfGroup();
+                                        this.clearFields();
+                                    });
+                            } else {
+                                showAlert("Favor de llenar todos los campos");
+                            }
                         }
-                        else {
-                            showAlert("Favor de llenar todos los campos");
-                        }
+
                     },
                     getRulesType: function () {
 
@@ -731,6 +744,89 @@
                 </div>
             </div>
 
+            <div class="row" v-if="ruleType == 11">
+
+                <div class="col-xs-3">
+                    <label>
+                        Tabulador
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">%</span>
+                        <input number type="text" class="form-control" v-model="tabulator"
+                               onkeypress="return isNumberKey(event,this)">
+                    </div>
+                </div>
+
+                <div class="col-xs-2">
+                    <label>
+                        Tipo de calculo
+                    </label>
+                    <select class="form-control" v-model="idDateCalculation">
+                        <option v-for="type in dateTypes" value="{{type.idDateCalculation}}">
+                            {{type.nameDate}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-xs-1 text-left" style="margin-top: 25px">
+                    <button class="btn btn-default" @click="saveTab(ruleType)" title="Almacenar regla">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="row" v-if="ruleType == 12">
+                <div class="col-xs-3">
+                    <label>
+                        Alcance mínimo
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">%</span>
+                        <input number type="text" class="form-control" v-model="montoMinimo"
+                               onkeypress="return isNumberKey(event,this)">
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <label>
+                        Alcance máximo
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">%</span>
+                        <input number type="text" class="form-control" v-model="montoMaximo"
+                               onkeypress="return isNumberKey(event,this)">
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <label>
+                        Tabulador
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-addon">%</span>
+                        <input number type="text" class="form-control" v-model="tabulator"
+                               onkeypress="return isNumberKey(event,this)">
+                    </div>
+                </div>
+
+                <div class="col-xs-2">
+                    <label>
+                        Tipo de calculo
+                    </label>
+                    <select class="form-control" v-model="idDateCalculation">
+                        <option v-for="type in dateTypes" value="{{type.idDateCalculation}}">
+                            {{type.nameDate}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-xs-1 text-left" style="margin-top: 25px">
+                    <button class="btn btn-default" @click="saveTab(ruleType)" title="Almacenar regla">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-xs-12">
                     <h3>Tabuladores Existentes</h3>
@@ -817,6 +913,12 @@
                                 </label>
                                 <label v-if="tab.typeOperation == 10">
                                     Alcance de meta de la sucursal por monto acumulado de la Sucursal
+                                </label>
+                                <label v-if="tab.typeOperation == 11">
+                                    Tabulador Gte. sucursal
+                                </label>
+                                <label v-if="tab.typeOperation == 12">
+                                    Alcance de meta por acumulado de la sucursal (T)
                                 </label>
                             </td>
                             <td>

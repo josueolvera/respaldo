@@ -14,10 +14,13 @@ import java.util.List;
  * @author sistemask
  */
 public interface RequestsDao extends InterfaceDao<Requests> {
-    
+
     Requests findByIdFetchBudgetMonthBranch(Integer idRequest);
     Requests findByIdFetchStatus(Integer idRequest);
     Requests findByIdFetchCategory(Integer idRequest);
     Requests findByFolio(String folio);
     List<Requests> findByRequestCategory(Integer idRequestCategory);
+    List<Requests> findByCategoryAndTypeByEmployee(Integer idRequestCategory, Integer idRequestType, Integer idEmployee);
+    List<Requests> findByCategoryAndTypeAndStatus(Integer idRequestCategory, Integer idRequestType);
+    List<Requests> findByCategoryAndType(Integer idRequestCategory, Integer idRequestType);
 }

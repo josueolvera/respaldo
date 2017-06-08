@@ -83,4 +83,18 @@ public class SISCOMController {
         model.setViewName("bondsManager");
         return model;
     }
+
+    @RequestMapping(value = "/authorization-sale", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ModelAndView authorizationSapSaleView() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("AuthorizationSapSale");
+        return model;
+    }
+
+    @RequestMapping(value = "/authorization-commission-view", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ModelAndView authorizationCommissionView() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("AuthorizationCommissionView");
+        return model;
+    }
 }

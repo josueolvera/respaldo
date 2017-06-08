@@ -10,6 +10,8 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import org.hibernate.criterion.LogicalExpression;
+import org.hibernate.sql.JoinType;
 
 /**
  * Created by Kevin Salvador on 16/03/2017.
@@ -175,13 +177,23 @@ public class DistributorCostCenterDaoImpl extends AbstractDao<Integer, Distribut
 
         Criteria criteria = createEntityCriteria();
 
+
+        LogicalExpression expression = Restrictions.or(Restrictions.eq("idModuleStatus",2), Restrictions.eq("idModuleStatus", 3));
+
         if (idCostCenter != null){
             criteria.add(Restrictions.eq("idCostCenter",idCostCenter));
         }
 
-        criteria.add(Restrictions.eq("idModuleStatus",2));
-        criteria.add(Restrictions.eq("idModuleStatus", 3));
+        criteria.add(expression);
 
         return criteria.setProjection(Projections.distinct(Projections.property("idAccountingAccount"))).list();
+    }
+
+    @Override
+    public DistributorCostCenter findByIdCostCenterAndAA(Integer idCostCenter, Integer idAccountingAccounts) {
+        return (DistributorCostCenter) createEntityCriteria()
+                .add(Restrictions.eq("idCostCenter", idCostCenter))
+                .add(Restrictions.eq("idAccountingAccount", idAccountingAccounts))
+                .uniqueResult();
     }
 }

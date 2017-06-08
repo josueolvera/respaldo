@@ -13,4 +13,5 @@ public interface CDateCalculationService {
     CDateCalculation findById(Integer idDateCalculation);
     List<CDateCalculation> findAll ();
     boolean delete (CDateCalculation cDateCalculation);
+    List<CDateCalculation> findByStatus(Integer status);
 }

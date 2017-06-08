@@ -43,4 +43,9 @@ public class CRequestCategoriesDaoImpl extends AbstractDao<Integer, CRequestsCat
     public boolean delete(CRequestsCategories entity) {
         throw new UnsupportedOperationException("Not implemented yet.");
     }
+
+    @Override
+    public CRequestsCategories getById(Integer id) {
+        return getByKey(id);
+    }
 }

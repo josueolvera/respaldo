@@ -5,6 +5,7 @@
  */
 package mx.bidg.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,14 +18,11 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import mx.bidg.config.JsonViews;
 import mx.bidg.events.requests.PriceEstimationAuthorizedEvent;
-import mx.bidg.events.requests.PriceEstimationCreatedEvent;
 import mx.bidg.exceptions.InvalidFileException;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.PriceEstimations;
-import mx.bidg.model.Requests;
 import mx.bidg.model.Users;
 import mx.bidg.service.PriceEstimationsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,10 +49,10 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/estimations")
 @PropertySource(value = {"classpath:application.properties"})
 public class PriceEstimationsController {
-    
+
     @Autowired
     private Environment env;
-    
+
     @Autowired
     private PriceEstimationsService estimationsService;
 
@@ -63,49 +61,49 @@ public class PriceEstimationsController {
 
     @Autowired
     private ObjectMapper mapper;
-    
+
     @RequestMapping(value = "/request/{idRequest}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public @ResponseBody ResponseEntity<String> save(@RequestBody String data, @PathVariable Integer idRequest,HttpSession session) throws Exception {
 
         Users user = (Users) session.getAttribute("user");
         PriceEstimations estimation = estimationsService.saveData(data, idRequest, user);
-        
+
         if(estimation == null) {
             return new ResponseEntity<>("Error al guardar la cotizacion", HttpStatus.CONFLICT);
         }
 
-        eventPublisher.publishEvent(new PriceEstimationCreatedEvent(estimation.getRequest()));
+//        eventPublisher.publishEvent(new PriceEstimationCreatedEvent(estimation.getRequest()));
         return new ResponseEntity<>(mapper.writeValueAsString(estimation),
                 HttpStatus.OK);
-        
+
     }
-    
-    
-    @RequestMapping(value = "/{idEstimation}/attachment", method = RequestMethod.POST, 
+
+
+    @RequestMapping(value = "/{idEstimation}/attachment", method = RequestMethod.POST,
             produces = "application/json; charset=UTF-8")
-    public @ResponseBody ResponseEntity<String> saveFile(@PathVariable int idEstimation, 
-            @RequestParam("file") MultipartFile filePart) throws Exception {
-        
+    public @ResponseBody ResponseEntity<String> saveFile(@PathVariable int idEstimation,
+                                                         @RequestParam("file") MultipartFile filePart) throws Exception {
+
         String SAVE_PATH = env.getRequiredProperty("estimations.documents_dir");
         String[] fileMediaTypes = env.getRequiredProperty("estimations.attachments.media_types").split(",");
         boolean isValidMediaType = false;
-        
+
         if(!filePart.isEmpty()) {
-            
+
             for (String mediaType : fileMediaTypes) {
                 if (filePart.getContentType().equals(mediaType)) {
                     isValidMediaType = true;
                     break;
                 }
             }
-            
+
             if (! isValidMediaType) {
                 throw new InvalidFileException("Tipo de archivo no admitido");
             }
-            
+
             String destDir = "/estimation_" + idEstimation;
             String destFile = destDir + "/Documento." + Calendar.getInstance().getTimeInMillis();
-            
+
             File dir = new File(SAVE_PATH + destDir);
             if (! dir.exists()) {
                 if(!dir.mkdir()) {
@@ -123,20 +121,20 @@ public class PriceEstimationsController {
             outputStream.flush();
             outputStream.close();
             inputStream.close();
-            
+
             PriceEstimations estimation = estimationsService.saveFileData(idEstimation, filePart.getOriginalFilename(),
                     destFile);
-            
-            return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(estimation), 
-                HttpStatus.OK);
-            
+
+            return new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(estimation),
+                    HttpStatus.OK);
+
         } else {
             return new ResponseEntity<>("El archivo se encuentra vacio", HttpStatus.NOT_ACCEPTABLE);
         }
-        
+
     }
-    
-    
+
+
     @RequestMapping(value = "/attachment/download/{idEstimation}", method = RequestMethod.GET)
     public void readFile(@PathVariable int idEstimation, HttpServletResponse response) throws IOException {
         String SAVE_PATH = env.getRequiredProperty("estimations.documents_dir");
@@ -213,5 +211,30 @@ public class PriceEstimationsController {
             throw new ValidationException("La operacion de eliminacion fallo", "Error al eliminar la cotizacion", HttpStatus.CONFLICT);
         }
     }
-    
+
+    @RequestMapping(value = "/authorize-estimation", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> modify(@RequestBody String data, HttpSession seesion) throws Exception {
+        Users user = (Users) seesion.getAttribute("user");
+
+        JsonNode node = mapper.readTree(data);
+
+        boolean outBudget = estimationsService.authorizePriceEstimations(node.get("idRequest").asInt(), node.get("idEstimation").asInt(), node.get("justify").asText(), user);
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(outBudget),
+                HttpStatus.OK
+        );
+    }
+
+    @RequestMapping(value = "/validate", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> valiadteAmount(@RequestBody String data) throws Exception {
+
+        JsonNode node = mapper.readTree(data);
+
+        boolean outBudget = estimationsService.validatePriceEstimations(node.get("idRequest").asInt(), node.get("idEstimation").asInt());
+        return new ResponseEntity<>(
+                mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(outBudget),
+                HttpStatus.OK
+        );
+    }
+
 }

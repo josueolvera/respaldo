@@ -191,7 +191,7 @@ public class EmployeesHistoryController {
         dwEmployees.setCreationDate(LocalDateTime.now());
         dwEmployees = dwEmployeesService.save(dwEmployees);
         CActionTypes cActionType = CActionTypes.REACTIVACION;
-        EmployeesHistory employeesHistories = employeesHistoryService.save(dwEmployees,cActionType,employeesAccounts.getAccount(),user);
+        EmployeesHistory employeesHistories = employeesHistoryService.save(dwEmployees,cActionType,employeesAccounts.getAccount(),user, null);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(employeesHistories),HttpStatus.OK);
     }
 

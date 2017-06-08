@@ -17,7 +17,7 @@ import mx.bidg.model.Users;
  * @author sistemask
  */
 public interface RequestsService {
-    
+
     HashMap<String, Object> getBudgetMonthProductType(String data) throws Exception;
 
     Requests saveData(String data, Users user) throws Exception;
@@ -35,4 +35,14 @@ public interface RequestsService {
     Requests changeActiveStatus(Integer idRequest);
 
     List<Requests> findByRequestCategory(Integer idRequestCategory);
+
+    List<Requests> findByCategoryAndTypeByEmployee(Integer idRequestCategory, Integer idRequestType, Integer idEmployee);
+
+    List<Requests> findByCategoryAndType(Integer idRequestCategory, Integer idRequestType);
+
+    boolean deleteRequest(Integer idRequest);
+
+    List<Requests> findByCategoryAndTypeAndStatus(Integer idRequestCategory, Integer idRequestType);
+
+    Requests rejectRequest(Integer idRequest, String rejectJustify, Users user);
 }

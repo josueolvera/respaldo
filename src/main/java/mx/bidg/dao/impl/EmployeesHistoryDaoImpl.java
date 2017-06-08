@@ -168,4 +168,12 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
                 .add(Restrictions.eq("idDistributor",idDistributor))
                 .add(Restrictions.eq("hStatus",1)).list();
     }
+
+    @Override
+    public EmployeesHistory findEmployeeByClaveSap(String claveSap) {
+        return (EmployeesHistory) createEntityCriteria()
+                .add(Restrictions.eq("claveSap",claveSap))
+                .add(Restrictions.eq("hStatus",1))
+                .uniqueResult();
+    }
 }

@@ -50,315 +50,79 @@
                 },
                 ready: function () {
                     this.getUserInSession();
-                    this.getCurrencies();
                 },
                 data: {
-                    <%--requestCategory: ${cat},--%>
-                    <%--idRequest: ${idRequest},--%>
-                    roleCostCenterList: [],
-                    costCenterList: [],
-                    budgetCategories: [],
-                    budgetSubcategories: [],
-                    products: [],
-                    providers: [],
-                    providerAccounts: [],
-                    currencies: [],
-                    requestProducts: [],
+                    requestInForce: [],
+                    requestRejected: [],
+                    requestFinished: [],
                     user: {},
-                    estimation: {
-                        amount: '',
-                        provider: '',
-                        account: '',
-                        currency: '',
-                        rate: '',
-                        file: ''
-                    },
-                    requestBody: {
-                        request: {
-                            description: '',
-                            purpose: '',
-                            userResponsible: '',
-                            idCostCenter: '',
-                            idBudgetCategory: '',
-                            idBudgetSubcategory: '',
-                            idRequestCategory: ''
-                        },
-                        products: []
-                    },
-                    estimations: [],
-                    selectProducts: {},
-                    selected: {
-                        costCenter: null,
-                        budgetCategory: null,
-                        budgetSubcategory: null,
-                        product: null
-                    },
-                    newEstimationFormActive: false
+                    detailUrl: ROOT_URL + "/siad/requests-detail?idRequest="
                 },
                 methods: {
-                    arrayObjectIndexOf: function (myArray, searchTerm, property) {
-                        for (var i = 0, len = myArray.length; i < len; i++) {
-                            if (myArray[i][property] === searchTerm) return i;
-                        }
-                        return -1;
-                    },
                     getUserInSession: function () {
                         this.$http.get(ROOT_URL + "/user")
                             .success(function (data) {
                                 this.user = data;
-                                this.getRolesCostCenter(this.user.dwEmployee.idRole);
+                                this.getRequestInForce();
+                                this.getRequestRejected();
+                                this.getRequestFinished();
                             })
                             .error(function (data) {
                                 showAlert("Ha habido un error al obtener al usuario en sesion", {type: 3});
                             });
                     },
-                    getRolesCostCenter: function (idRole) {
-                        this.$http.get(ROOT_URL + '/roles-cost-center/role/' + idRole)
-                            .success(function (data) {
-                                var self = this;
-                                var index;
-                                this.rolesCostCenter = data;
+                    getRequestInForce: function () {
+                        this.$http.get(ROOT_URL + "/requests/category/"+1+"/type/"+1+"/employee/"+this.user.dwEmployee.idEmployee).success(function (data) {
+                            var jsonObjectIndex = {};
 
-                                if (data.length < 2) {
-                                    this.selected.budgetNature = data[0].budgetNature;
+                            data.forEach(function (requests) {
+                                if (isNaN(requests.distributorCostCenter)) {
+                                    jsonObjectIndex[requests.distributorCostCenter._id] = requests.distributorCostCenter;
+                                } else {
+                                    requests.distributorCostCenter = jsonObjectIndex[requests.distributorCostCenter];
                                 }
-
-                                data.forEach(function (item) {
-                                    index = self.arrayObjectIndexOf(self.costCenterList, item.costCenter.idCostCenter, 'idCostCenter');
-                                    if (index == -1) self.costCenterList.push(item.costCenter);
-                                });
-
-                                this.selected.costCenter = data[0].costCenter;
-
-                                this.getBudgetCategories();
-
-                            })
-                            .error(function (data) {
-
                             });
-                    },
-                    onChangeCostCenter: function () {
-                        this.budgetCategories = [];
-                        this.budgetSubcategories = [];
-                        this.products = [];
-                        this.getBudgetCategories();
-                    },
-                    getBudgetCategories: function () {
-                        this.$http.get(
-                            ROOT_URL +
-                            '/budget-categories?cost_center=' +
-                            this.selected.costCenter.idCostCenter +
-                            '&request_category=1'
-                        ).success(function (data) {
-                            this.budgetCategories = data;
-                        });
-                    },
-                    getBudgetSubcategories: function () {
-                        this.$http.get(ROOT_URL + '/budget-subcategories/category/' + this.selected.budgetCategory.idBudgetCategory)
-                            .success(function (data) {
-                                this.budgetSubcategories = data;
-                            });
-                    },
-                    getProducts: function () {
-                        this.$http.get(ROOT_URL + '/products/subcategory/' + this.selected.budgetSubcategory.idBudgetSubcategory)
-                            .success(function (data) {
-                                this.products = data;
-                                this.selectProducts = this.createSelectForConcept(data);
-                            });
-                    },
-                    getProviders: function () {
-                        this.$http.get(ROOT_URL + '/providers/product-type/' + this.selected.budgetSubcategory.idBudgetSubcategory)
-                            .success(function (data) {
-                                this.providers = data;
-                            });
-                    },
-                    onChangeBudgetCategory: function () {
-                        this.budgetSubcategories = [];
-                        this.products = [];
-                        this.getBudgetSubcategories();
-                    },
-                    onChangeBudgetSubcategory: function () {
-                        this.products = [];
-                        this.getProducts();
-                        this.getProviders();
-                    },
-                    createSelectForConcept: function (products) {
-                        var self = this;
-                        return $('#select-products').selectize({
-                            maxItems: 1,
-                            valueField: 'idProduct',
-                            labelField: 'product',
-                            searchField: 'product',
-                            options: products,
-                            create: function (input, callback) {
-                                self.$http.post(ROOT_URL + '/products/subcategory/' + self.selected.budgetSubcategory.idBudgetSubcategory, {
-                                    product: input
-                                }).success(function (data) {
-                                    showAlert('Producto guardado');
-                                    self.getProducts();
-                                    callback(data);
-                                }).error(function () {
-                                    callback();
-                                });
-                            },
-                            render: {
-                                option_create: function (data, escape) {
-                                    return '<div data-selectable class="create">' +
-                                        'Agregar <strong>' + escape(data.input) + '</strong>' +
-                                        '</div>'
-                                }
-                            }
-                        });
-                    },
-                    addProduct: function () {
-                        var product = {};
-                        product.idProduct = this.selectProducts[0].selectize.getValue();
-                        product.product = this.selectProducts[0].selectize.getOption(product.idProduct).text();
 
-                        this.requestBody.products.push(product);
-                    },
-                    removeProduct: function (product) {
-                        this.requestBody.products.$remove(product);
-                    },
-                    clearRequest: function () {
-
-                        this.requestBody = {
-                            request: {
-                                description: '',
-                                purpose: '',
-                                userResponsible: '',
-                                idCostCenter: '',
-                                idBudgetCategory: '',
-                                idBudgetSubcategory: '',
-                                idRequestCategory: ''
-                            },
-                            products: []
-                        };
-
-                        this.estimations = [];
-                    },
-                    removeEstimation: function (estimation) {
-                        this.estimations.$remove(estimation);
-                    },
-                    sendRequest: function () {
-
-                        if (this.requestBody.products.length == 0 || this.selected.costCenter == null || this.selected.budgetCategory == null || this.selected.budgetSubcategory == null) {
-                            showAlert("Debes agregar un producto", {type: 3});
-                            return;
-                        } else if (this.estimations.length < 3) {
-                            showAlert("Debes agregar al menos tres cotizaciones", {type: 3});
-                            return;
-                        }
-
-                        this.requestBody.request.idCostCenter = this.selected.costCenter.idCostCenter;
-                        this.requestBody.request.idBudgetCategory = this.selected.budgetCategory.idBudgetCategory;
-                        this.requestBody.request.idBudgetSubcategory = this.selected.budgetSubcategory.idBudgetSubcategory;
-                        this.requestBody.request.idRequestCategory = 1;
-
-                        this.$http.post(ROOT_URL + '/requests', this.requestBody)
-                            .success(function (data) {
-                                USER_VM.fetchApp();
-                                this.saveEstimations(data);
-                                this.clearRequest();
-                            })
-                            .error(function (data) {
-                                showAlert("Error al generar la solicitud", {type: 3});
-                            });
-                    }
-                    ,
-                    saveEstimations: function (data) {
-                        var self = this;
-                        this.estimations.forEach(function (estimation) {
-                            self.saveEstimation(estimation, data);
-                        });
-                        showAlert("Solicitud enviada");
-                    },
-                    saveEstimation: function (estimation, data) {
-                        this.$http.post(ROOT_URL + '/estimations/request/' + data.idRequest, estimation).success(function (data) {
+                            this.requestInForce = data;
                         }).error(function () {
-                            showAlert("Error al agregar cotización", {type: 3});
-                        })
+                            showAlert("Error al obtener información de s. vigentes", {type: 3});
+                        });
                     },
-                    showModalSolicitud: function () {
-                        $('#modalSolicitud').modal('show');
-                    },
-                    showNewEstimationModal: function () {
-                        this.newEstimationFormActive = true;
-                        $('#newEstimationModal').modal('show');
-                    },
-                    hideNewEstimationModal: function () {
-                        this.clearEstimation();
-                        this.newEstimationFormActive = false;
-                        $('#newEstimationModal').modal('hide');
-                    },
-                    getProviderAccounts: function () {
-                        this.$http.get(ROOT_URL + '/providers-accounts/provider/' + this.estimation.provider.idProvider)
-                            .success(function (data) {
-                                this.providerAccounts = data;
-                            })
-                            .error(function (data) {
+                    getRequestRejected: function () {
+                        this.$http.get(ROOT_URL + "/requests/category/"+1+"/type/"+3+"/employee/"+this.user.dwEmployee.idEmployee).success(function (data) {
 
+                            var jsonObjectIndex = {};
+
+                            data.forEach(function (requests) {
+                                if (isNaN(requests.distributorCostCenter)) {
+                                    jsonObjectIndex[requests.distributorCostCenter._id] = requests.distributorCostCenter;
+                                } else {
+                                    requests.distributorCostCenter = jsonObjectIndex[requests.distributorCostCenter];
+                                }
                             });
-                    },
-                    getCurrencies: function () {
-                        this.$http.get(ROOT_URL + '/currencies')
-                            .success(function (data) {
-                                this.currencies = data;
-                            })
-                            .error(function (data) {
 
+                            this.requestRejected = data;
+                        }).error(function () {
+                            showAlert("Error al obtener información de s. rechazadas", {type: 3});
+                        });
+                    },
+                    getRequestFinished: function () {
+                        this.$http.get(ROOT_URL + "/requests/category/"+1+"/type/"+2+"/employee/"+this.user.dwEmployee.idEmployee).success(function (data) {
+
+                            var jsonObjectIndex = {};
+
+                            data.forEach(function (requests) {
+                                if (isNaN(requests.distributorCostCenter)) {
+                                    jsonObjectIndex[requests.distributorCostCenter._id] = requests.distributorCostCenter;
+                                } else {
+                                    requests.distributorCostCenter = jsonObjectIndex[requests.distributorCostCenter];
+                                }
                             });
-                    },
-                    onChangeCurrency: function () {
-                        this.estimation.rate = (this.estimation.currency.idCurrency == 1) ? 1 : '';
-                    },
-                    setFile: function (event) {
-                        var self = this;
-                        var file = event.target.files[0];
 
-                        if (this.validateFile(file)) {
-
-                            var reader = new FileReader();
-
-                            reader.onload = (function (theFile) {
-                                return function (e) {
-                                    self.estimation.file = {
-                                        name: theFile.name,
-                                        size: theFile.size,
-                                        type: theFile.type,
-                                        dataUrl: e.target.result
-                                    };
-                                };
-                            })(file);
-                            reader.readAsDataURL(file);
-                        }
-                    },
-                    validateFile: function (file) {
-                        if (file.type !== 'application/pdf') {
-                            event.target.value = null;
-                            showAlert("Tipo de archivo no admitido", {type: 3});
-                            return false;
-                        }
-
-                        return true;
-                    },
-                    clearEstimation: function () {
-                        this.estimation = {
-                            amount: '',
-                            provider: '',
-                            account: '',
-                            currency: '',
-                            rate: '',
-                            file: ''
-                        };
-                    },
-                    addEstimation: function () {
-                        var estimation = this.estimation;
-                        this.estimations.push(estimation);
-                        this.hideNewEstimationModal();
-                    },
-                    deleteEstimationFile: function (e) {
-                        this.estimation.file = '';
+                            this.requestFinished = data;
+                        }).error(function () {
+                            showAlert("Error al obtener información de s. finalizadas", {type: 3});
+                        });
                     }
                 },
                 filters: {
@@ -454,40 +218,40 @@
 
     <jsp:body>
         <div id="content">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="col-md-3">
-                        <h2>Compras</h2>
-                    </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-3">
+                    <h2>Compras</h2>
+                </div>
 
-                    <div class="col-md-2 text-right">
-                        <a href="../siad/capture-request-buy">
-                            <button class="btn btn-warning" style="margin-top: 25px">Capturar una solicitud</button>
-                        </a>
-                    </div>
-                    <div class="col-md-4">
-                        <form>
-                            <div class="col-md-8">
-                                <label>Búsqueda por folio</label>
-                                <input class="form-control" type="text" placeholder="folio" maxlength="30" required/>
-                            </div>
+                <div class="col-md-2 text-right">
+                    <a href="../siad/capture-request-buy">
+                        <button class="btn btn-warning" style="margin-top: 25px">Capturar una solicitud</button>
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <form>
+                        <div class="col-md-8">
+                            <label>Búsqueda por folio</label>
+                            <input class="form-control" type="text" placeholder="folio" maxlength="30" required/>
+                        </div>
 
-                        </form>
-                    </div>
-                    <div class="col-md-3 text-right" style="margin-top: 10px">
-                        <label>Solicitante</label>
-                        <p>
-                            <span class="label label-default">{{user.dwEmployee.employee.fullName}}</span>
-                        </p>
-                    </div>
+                    </form>
+                </div>
+                <div class="col-md-3 text-right" style="margin-top: 10px">
+                    <label>Solicitante</label>
+                    <p>
+                        <span class="label label-default">{{user.dwEmployee.employee.fullName}}</span>
+                    </p>
                 </div>
             </div>
-            <br>
-                <%-- vigentes--%>
-            <div id="accordion" role="tablist" aria-multiselectable="true">
-                <div class="panel panel-default">
-                    <div class="card">
-                        <div class="card-header" role="tab" id="headingThree">
+        </div>
+        <br>
+        <%-- vigentes--%>
+        <div id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="card">
+                    <div class="card-header" role="tab" id="headingThree">
                         <div class="panel-heading" style="background-color: #7AC5CD">
                             <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree"
                                aria-expanded="false" aria-controls="collapseThree">
@@ -500,126 +264,138 @@
                             </div>
                             <br>
                         </div>
-                      </div>
-                        <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree">
-                            <div class="card-block">
-                        <div class="panel-body">
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <table class="table table-striped">
-                                        <tr>
-                                            <td class="col-md-3 text-center"><b>Concepto de solicitud 1</b></td>
-                                            <td class="col-md-3 text-center"><b>Fecha de solicitud</b></td>
-                                            <td class="col-md-3 text-center"><b>Folio</b></td>
-                                            <td class="col-md-3 text-center"><b>Detalle</b></td>
-                                        </tr>
-                                        <tr>
-                                        <td class="col-md-3 text-center">Equipo de computo</td>
-                                        <td class="col-md-3 text-center">16-03-2017</td>
-                                        <td class="col-md-3 text-center">ABC123</td>
-                                        <td class="col-md-3 text-center">
-                                            <button class="glyphicon glyphicon-new-window"></button>
-                                        </td>
-                                    </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                      </div>
-                     </div>
-                   </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="card">
-                        <div class="card-header" role="tab" id="headingTwo">
-                            <div class="panel-heading" style="background-color: #7AC5CD">
-                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"
-                                   aria-expanded="false" aria-controls="collapseThree">
-                                    <div class="col-md-11 text-center">
-                                        <b style="color: black">Finalizadas</b>
-                                    </div>
-                                </a>
-                                <div class="col-md-1 text-right">
-                                    <label class="circlegre"></label>
-                                </div>
-                                <br>
-                            </div>
-                        </div>
-                        <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
-                            <div class="card-block">
-                                <div class="panel-body">
-                                    <div class="col-md-12">
-                                        <div class="row">
-                                            <table class="table table-striped">
-                                                <tr>
-                                                    <td class="col-md-3 text-center"><b>Concepto de solicitud 1</b></td>
-                                                    <td class="col-md-3 text-center"><b>Fecha de solicitud</b></td>
-                                                    <td class="col-md-3 text-center"><b>Folio</b></td>
-                                                    <td class="col-md-3 text-center"><b>Detalle</b></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-md-3 text-center">Equipo de computo</td>
-                                                    <td class="col-md-3 text-center">16-03-2017</td>
-                                                    <td class="col-md-3 text-center">ABC123</td>
-                                                    <td class="col-md-3 text-center">
-                                                        <button class="glyphicon glyphicon-new-window"></button>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </div>
+                    </div>
+                    <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree">
+                        <div class="card-block">
+                            <div class="panel-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <tr>
+                                                <td class="col-md-3 text-center"><b>Concepto de solicitud</b></td>
+                                                <td class="col-md-3 text-center"><b>Fecha de solicitud</b></td>
+                                                <td class="col-md-3 text-center"><b>Folio</b></td>
+                                                <td class="col-md-3 text-center"><b>Detalle</b></td>
+                                            </tr>
+                                            <tr v-for="request in requestInForce">
+                                                <td class="col-md-3 text-center">{{request.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</td>
+                                                <td class="col-md-3 text-center">{{request.creationDateFormats.dateNumber}}</td>
+                                                <td class="col-md-3 text-center">{{request.folio}}</td>
+                                                <td class="col-md-3 text-center">
+                                                    <a class="btn btn-default btn-sm"
+                                                       :href="detailUrl + request.idRequest"
+                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                        <span class="glyphicon glyphicon-new-window"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
-                 </div>
-
-                <div class="panel panel-default">
-                    <div class="card">
-                        <div class="card-header" role="tab" id="headingOne">
-                            <div class="panel-heading" style="background-color: #7AC5CD">
-                                <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
-                                   aria-expanded="false" aria-controls="collapseOne">
-                                    <div class="col-md-11 text-center">
-                                        <b style="color: black">Rechazadas</b>
-                                    </div>
-                                </a>
-                                <div class="col-md-1 text-right">
-                                    <label class="circlered"></label>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="card">
+                    <div class="card-header" role="tab" id="headingTwo">
+                        <div class="panel-heading" style="background-color: #7AC5CD">
+                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"
+                               aria-expanded="false" aria-controls="collapseThree">
+                                <div class="col-md-11 text-center">
+                                    <b style="color: black">Finalizadas</b>
                                 </div>
-                                <br>
+                            </a>
+                            <div class="col-md-1 text-right">
+                                <label class="circlegre"></label>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                    <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
+                        <div class="card-block">
+                            <div class="panel-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <tr>
+                                                <td class="col-md-3 text-center"><b>Concepto de solicitud 1</b></td>
+                                                <td class="col-md-3 text-center"><b>Fecha de solicitud</b></td>
+                                                <td class="col-md-3 text-center"><b>Folio</b></td>
+                                                <td class="col-md-3 text-center"><b>Detalle</b></td>
+                                            </tr>
+                                            <tr v-for="request in requestFinished">
+                                                <td class="col-md-3 text-center">{{request.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</td>
+                                                <td class="col-md-3 text-center">{{request.creationDateFormats.dateNumber}}</td>
+                                                <td class="col-md-3 text-center">{{request.folio}}</td>
+                                                <td class="col-md-3 text-center">
+                                                    <a class="btn btn-default btn-sm"
+                                                       :href="detailUrl + request.idRequest"
+                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                        <span class="glyphicon glyphicon-new-window"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-default">
+                <div class="card">
+                    <div class="card-header" role="tab" id="headingOne">
+                        <div class="panel-heading" style="background-color: #7AC5CD">
+                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
+                               aria-expanded="false" aria-controls="collapseOne">
+                                <div class="col-md-11 text-center">
+                                    <b style="color: black">Rechazadas</b>
+                                </div>
+                            </a>
+                            <div class="col-md-1 text-right">
+                                <label class="circlered"></label>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                    <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne">
+                        <div class="card-block">
+                            <div class="panel-body">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <table class="table table-striped">
+                                            <tr>
+                                                <td class="col-md-3 text-center"><b>Concepto de solicitud 1</b></td>
+                                                <td class="col-md-3 text-center"><b>Fecha de solicitud</b></td>
+                                                <td class="col-md-3 text-center"><b>Folio</b></td>
+                                                <td class="col-md-3 text-center"><b>Detalle</b></td>
+                                            </tr>
+                                            <tr v-for="request in requestRejected">
+                                                <td class="col-md-3 text-center">{{request.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</td>
+                                                <td class="col-md-3 text-center">{{request.creationDateFormats.dateNumber}}</td>
+                                                <td class="col-md-3 text-center">{{request.folio}}</td>
+                                                <td class="col-md-3 text-center">
+                                                    <a class="btn btn-default btn-sm"
+                                                       :href="detailUrl + request.idRequest"
+                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                        <span class="glyphicon glyphicon-new-window"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne">
-                            <div class="card-block">
-                                <div class="panel-body">
-                                    <div class="col-md-12">
-                                        <div class="row">
-                                            <table class="table table-striped">
-                                                <tr>
-                                                    <td class="col-md-3 text-center"><b>Concepto de solicitud 1</b></td>
-                                                    <td class="col-md-3 text-center"><b>Fecha de solicitud</b></td>
-                                                    <td class="col-md-3 text-center"><b>Folio</b></td>
-                                                    <td class="col-md-3 text-center"><b>Detalle</b></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="col-md-3 text-center">Equipo de computo</td>
-                                                    <td class="col-md-3 text-center">16-03-2017</td>
-                                                    <td class="col-md-3 text-center">ABC123</td>
-                                                    <td class="col-md-3 text-center">
-                                                        <button class="glyphicon glyphicon-new-window"></button>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                        </div>
-                  </div>
+                    </div>
+                </div>
             </div>
         </div>
-     </div>
         <%--termina archivos de cotizacion--%>
     </jsp:body>
 </t:template>

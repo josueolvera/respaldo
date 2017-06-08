@@ -135,7 +135,8 @@ public class CBranchsServiceImpl implements CBranchsService {
                     Accounts accounts = employeesAccounts.getAccount();
                     employee.setStatus(0);
                     employeesDao.update(employee);
-                    employeesHistoryService.save(dwEmployee, CActionTypes.BAJA, accounts, user);
+                    String reason = "Baja de sucursal";
+                    employeesHistoryService.save(dwEmployee, CActionTypes.BAJA, accounts, user, reason);
 
                     dwEmployeesDao.delete(dwEmployee);
 

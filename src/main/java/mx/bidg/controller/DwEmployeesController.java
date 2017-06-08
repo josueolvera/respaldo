@@ -137,11 +137,11 @@ public class DwEmployeesController {
     }
 
     @RequestMapping(value = "/change-employee-status", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> changeEmployeeStatus(@RequestBody Integer idDwEmployee, HttpSession session) throws IOException {
+    public ResponseEntity<String> changeEmployeeStatus(@RequestBody String data, HttpSession session) throws Exception {
 
         Users user = (Users) session.getAttribute("user");
 
-        dwEmployeesService.changeEmployeeStatus(idDwEmployee, user);
+        dwEmployeesService.changeEmployeeStatus(data, user);
 
         return new ResponseEntity<>("OK", HttpStatus.OK);
     }

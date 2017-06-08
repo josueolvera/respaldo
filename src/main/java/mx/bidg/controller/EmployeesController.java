@@ -240,7 +240,7 @@ public class EmployeesController {
         accounts = employeesAccounts.getAccount();
 
         CActionTypes cActionType = CActionTypes.ALTA;
-        employeesHistoryService.save(dwEmployees,cActionType, accounts, user);
+        employeesHistoryService.save(dwEmployees,cActionType, accounts, user, null);
 
         if(dwEmployees.getRole().getIdRole()== 63 || dwEmployees.getRole().getIdRole()==80){
             EmailTemplates emailTemplate = emailTemplatesService.findByName("employee_high_notification");
@@ -345,7 +345,7 @@ public class EmployeesController {
         accounts = employeesAccounts.getAccount();
 
         CActionTypes cActionType = CActionTypes.MODIFICAION;
-        employeesHistoryService.save(dwEmployees,cActionType, accounts, user);
+        employeesHistoryService.save(dwEmployees,cActionType, accounts, user, null);
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(employee), HttpStatus.OK);
     }

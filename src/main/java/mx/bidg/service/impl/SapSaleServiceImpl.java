@@ -51,6 +51,9 @@ public class SapSaleServiceImpl implements SapSaleService {
     @Autowired
     private DwEmployeesDao dwEmployeesDao;
 
+    @Autowired
+    private EmployeesHistoryDao employeesHistoryDao;
+
     @Override
     public List<SapSale> findAll() {
         return sapSaleDao.findAll();
@@ -695,5 +698,37 @@ public class SapSaleServiceImpl implements SapSaleService {
     public List findBySupervisorAndRleGroup(Integer idEmployee, Integer idAg, LocalDateTime fromDate, LocalDateTime toDate) {
         List<GroupsAgreements> groupsAgreementsList = groupsAgreementsDao.findGroupsAgreementsSelectedByAg(idAg);
         return sapSaleDao.findBySupervisorRoleAndGroup(idEmployee, groupsAgreementsList, fromDate, toDate);
+    }
+
+    @Override
+    public List<String> getAllSaleStatus() {
+        return sapSaleDao.getAllSaleStatus();
+    }
+
+    @Override
+    public List<SapSale> findAllSalesByStatusAndDates(List<String> status, String startDate, String endDate) throws Exception {
+        return sapSaleDao.findAllSalesByStatusAndDates(status, startDate, endDate);
+    }
+
+    @Override
+    public SapSale assignSaleToEmployee(String idSale, String claveSap) {
+
+        EmployeesHistory employee = employeesHistoryDao.findEmployeeByClaveSap(claveSap);
+
+        SapSale sapSale = null;
+        if (employee != null){
+            sapSale = sapSaleDao.findByIdSale(idSale);
+
+            if (!sapSale.getClaveSap().equals(employee.getClaveSap())){
+                sapSale.setClaveSap(employee.getClaveSap());
+            }
+
+            sapSale.setEmployee(new Employees(employee.getIdEmployee()));
+            sapSale.setRole(new CRoles(employee.getIdRole()));
+
+            sapSaleDao.update(sapSale);
+        }
+
+        return sapSale;
     }
 }

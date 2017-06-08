@@ -51,7 +51,7 @@ public class DwBranchsServiceImpl implements DwBranchsService {
         String[] headersToSkip = {
                 "ID SUCURSAL SISCOM", "INDICE REPROCESO","PRODUCTIVIDAD",
                 "PROMOTORES CON VENTA","PROMOTORES CON VENTA REAL",
-                "META"
+                "META","ALCANCE PROYECTADO"
         };
 
         for (int i = 0 ; i < 5 ;i++) {
@@ -69,6 +69,7 @@ public class DwBranchsServiceImpl implements DwBranchsService {
             Cell pttoPromVta = currentRow.getCell(3);
             Cell pttoPromReal = currentRow.getCell(4);
             Cell goalBranch = currentRow.getCell(5);
+            Cell scope = currentRow.getCell(6);
 
             if (branchName != null) {
                     String clearBranchName = StringUtils.stripAccents(branchName.getStringCellValue());
@@ -100,6 +101,10 @@ public class DwBranchsServiceImpl implements DwBranchsService {
                     if (goalBranch != null) {
                         BigDecimal goal = new BigDecimal(goalBranch.getNumericCellValue());
                         dwBranchs.setBranchGoal(goal);
+                    }
+                    if (scope != null){
+                        BigDecimal scopeP = new BigDecimal(scope.getNumericCellValue());
+                        dwBranchs.setScope(scopeP);
                     }
 
                     dwBranchs.setUploadedDate(LocalDateTime.now());
@@ -137,6 +142,10 @@ public class DwBranchsServiceImpl implements DwBranchsService {
                     if (goalBranch != null) {
                         BigDecimal goal = new BigDecimal(goalBranch.getNumericCellValue());
                         newDwBranchs.setBranchGoal(goal);
+                    }
+                    if (scope != null){
+                        BigDecimal scopeP = new BigDecimal(scope.getNumericCellValue());
+                        newDwBranchs.setScope(scopeP);
                     }
 
                     newDwBranchs.setUploadedDate(LocalDateTime.now());

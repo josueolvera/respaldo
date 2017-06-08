@@ -28,12 +28,13 @@ import java.time.LocalDateTime;
 public class CRequestStatus implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    public static final CRequestStatus PENDIENTE = new CRequestStatus(1);
-    public static final CRequestStatus COTIZADA = new CRequestStatus(2);
-    public static final CRequestStatus RECHAZADA = new CRequestStatus(3);
-    public static final CRequestStatus APROBADA = new CRequestStatus(4);
-    public static final CRequestStatus SIN_CONFIRMACION = new CRequestStatus(5);
-    public static final CRequestStatus CONFIRMADA = new CRequestStatus(6);
+    public static final CRequestStatus ENVIADA_PENDIENTE = new CRequestStatus(1);
+    public static final CRequestStatus EN_PROCESO_DE_COMPRA = new CRequestStatus(2);
+    public static final CRequestStatus EN_PROCESO_DE_PAGO = new CRequestStatus(3);
+    public static final CRequestStatus EN_PROCESO_DE_VALIDACION_POR_PLANEACION = new CRequestStatus(4);
+    public static final CRequestStatus EN_PROCESO_DE_VALIDACION = new CRequestStatus(5);
+    public static final CRequestStatus PAGADA = new CRequestStatus(6);
+    public static final CRequestStatus RECHAZADA = new CRequestStatus(7);
 
 
     @Id

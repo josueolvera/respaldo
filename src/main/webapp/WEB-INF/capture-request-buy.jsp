@@ -42,6 +42,19 @@
                 } else return o.selectionStart
             }
         </script>
+        <script>
+            Number.prototype.formatMoney = function (places, symbol, thousand, decimal) {
+                places = !isNaN(places = Math.abs(places)) ? places : 2;
+                symbol = symbol !== undefined ? symbol : "$";
+                thousand = thousand || ",";
+                decimal = decimal || ".";
+                var number = this,
+                    negative = number < 0 ? "-" : "",
+                    i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + "",
+                    j = (j = i.length) > 3 ? j % 3 : 0;
+                return symbol + negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
+            };
+        </script>
 
         <script type="text/javascript">
             var vm = new Vue({
@@ -169,22 +182,24 @@
                     },
                     addProduct: function () {
                         var self = this;
-                        console.log(this.selected.productBuy);
-                        var productQuantity = {
-                            productBuy: this.selected.productBuy,
-                            quantity: 1
-                        };
-                        var aux = this.requestBody.products.filter(function (product) {
-                            if(self.selected.productBuy.cProductsRequest.idProductRequest == product.productBuy.cProductsRequest.idProductRequest){
-                                return product;
-                            }
-                        });
+                        if(this.selected.costCenter != null && this.selected.concept != null && this.selected.productBuy != null){
+                            var productQuantity = {
+                                productBuy: this.selected.productBuy,
+                                quantity: 1
+                            };
+                            var aux = this.requestBody.products.filter(function (product) {
+                                if(self.selected.productBuy.cProductsRequest.idProductRequest == product.productBuy.cProductsRequest.idProductRequest){
+                                    return product;
+                                }
+                            });
 
-                        if (aux == 0){
-                            this.requestBody.products.push(productQuantity);
-                            this.requestCaptureProduct.$remove(this.selected.productBuy);
+                            if (aux == 0){
+                                this.requestBody.products.push(productQuantity);
+                                this.requestCaptureProduct.$remove(this.selected.productBuy);
+                            }
+                        }else{
+                            showAlert("Es necesario seleccionar un producto", {type:3});
                         }
-                        console.log(this.requestBody.products);
                     },
                     removeProduct: function (product) {
                         this.requestBody.products.$remove(product);
@@ -226,18 +241,21 @@
                         this.requestBody.request.idAccountingAccount = this.selected.concept.idAccountingAccount;
                         this.requestBody.request.userResponsible = this.user;
 
-                        console.log(this.requestBody);
+                        if(this.estimations.length == 3){
+                            this.$http.post(ROOT_URL + '/requests', this.requestBody)
+                                .success(function (data) {
+                                    USER_VM.fetchApp();
+                                    $("#modalSolicitud").modal("hide");
+                                    this.saveEstimations(data);
+                                    this.clearRequest();
+                                })
+                                .error(function (data) {
+                                    showAlert("Error al generar la solicitud", {type: 3});
+                                });
+                        }else {
+                            showAlert("Es necesario llenar todas las cotizaciones", {type: 3});
+                        }
 
-                        this.$http.post(ROOT_URL + '/requests', this.requestBody)
-                            .success(function (data) {
-                                USER_VM.fetchApp();
-                                $("#modalSolicitud").modal("hide");
-                                this.saveEstimations(data);
-                                this.clearRequest();
-                            })
-                            .error(function (data) {
-                                showAlert("Error al generar la solicitud", {type: 3});
-                            });
                     }
                     ,
                     saveEstimations: function (data) {
@@ -473,6 +491,15 @@
                     return false;
                 }
             }
+
+            function cleanFieldProduct(obj) {
+                var inicial = obj.value;
+                if (obj.value == '1') {
+                    obj.value = '';
+                } else {
+                    return false;
+                }
+            }
             function onlyNumbers(e) {
                 var key = window.Event ? e.which : e.keyCode
                 return (key >= 48 && key <= 57)
@@ -589,7 +616,7 @@
                         <tr v-for="product in requestBody.products">
                             <td class="col-md-3">{{product.productBuy.cProductsRequest.productRequestName}}</td>
                             <td class="col-md-1"><input class="form-control" maxlength="3" type="text"
-                                                        onclick="return cleanField(this)"
+                                                        onclick="return cleanFieldProduct(this)"
                                                         onkeypress="return validateFloatKeyPress(this,event)"
                                                         onInput="format(this)" onblur="ponerCeros(this)"
                                                         placeholder="0" v-model="product.quantity" required/></td>
@@ -619,9 +646,10 @@
                                     <td class="col-md-5"></td>
                                     <td class="col-md-3">Monto cotización sin IVA</td>
                                     <td class="col-md-2">
-                                        <input v-model="amount1" class="form-control" type="text" placeholder="$"
+                                        <input v-model="amount1 | currencyDisplay" class="form-control" type="text" placeholder="$"
                                                onclick="return cleanField(this)"
                                                onkeypress="return validateFloatKeyPress(this,event)"
+                                               oninput="format(this)" onblur="ponerCeros(this)"
                                                maxlength="14" :disabled="button1 == true" />
                                     </td>
                                 </tr>
@@ -642,9 +670,10 @@
                                     <td class="col-md-5"></td>
                                     <td class="col-md-3">Monto cotización sin IVA</td>
                                     <td class="col-md-2">
-                                        <input v-model="amount2" class="form-control" type="text" placeholder="$"
+                                        <input v-model="amount2 | currencyDisplay" class="form-control" type="text" placeholder="$"
                                                onclick="return cleanField(this)"
                                                onkeypress="return validateFloatKeyPress(this,event)"
+                                               oninput="format(this)" onblur="ponerCeros(this)"
                                                maxlength="14" :disabled="button2 == true"/></td>
                                 </tr>
                                 <tr class="col-md-12">
@@ -664,8 +693,10 @@
                                     <td class="col-md-5"></td>
                                     <td class="col-md-3">Monto cotización sin IVA</td>
                                     <td class="col-md-2">
-                                        <input v-model="amount3" class="form-control" type="text" placeholder="$"
+                                        <input v-model="amount3 | currencyDisplay" class="form-control" type="text" placeholder="$"
+                                               onclick="return cleanField(this)"
                                                onkeypress="return validateFloatKeyPress(this,event)"
+                                               oninput="format(this)" onblur="ponerCeros(this)"
                                                maxlength="14" :disabled="button3 == true"/></td>
                                 </tr>
                                 <tr class="col-md-12">

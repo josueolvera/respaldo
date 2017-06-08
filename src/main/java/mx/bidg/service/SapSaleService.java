@@ -23,4 +23,7 @@ public interface SapSaleService {
     List findByRegionGroup(Integer idAg, LocalDateTime fromDate, LocalDateTime toDate);
     List findByDistributorGroup(Integer idAg, LocalDateTime fromDate, LocalDateTime toDate);
     List findBySupervisorAndRleGroup(Integer idEmployee, Integer idAg, LocalDateTime fromDate, LocalDateTime toDate);
+    List<String> getAllSaleStatus();
+    List<SapSale> findAllSalesByStatusAndDates(List<String> status, String startDate, String endDate) throws Exception;
+    SapSale assignSaleToEmployee(String idSale, String claveSap);
 }

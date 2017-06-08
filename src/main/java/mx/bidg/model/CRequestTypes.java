@@ -28,11 +28,13 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicUpdate
 @Table(name = "C_REQUEST_TYPES")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
-public class CRequestTypes implements Serializable { 
-    
+public class CRequestTypes implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
-    public static final CRequestTypes GASTOS_DE_VIAJE = new CRequestTypes(68);
+    public static final CRequestTypes VIGENTES = new CRequestTypes(1);
+    public static final CRequestTypes FINALIZADA = new CRequestTypes(2);
+    public static final CRequestTypes RECHAZADA = new CRequestTypes(3);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -67,10 +69,6 @@ public class CRequestTypes implements Serializable {
 
     public CRequestTypes(Integer idRequestType) {
         this.idRequestType = idRequestType;
-    }
-
-    public static CRequestTypes getGastosDeViaje() {
-        return GASTOS_DE_VIAJE;
     }
 
     public Integer getIdRequestType() {

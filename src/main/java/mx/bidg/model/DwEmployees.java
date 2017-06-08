@@ -73,7 +73,7 @@ public class DwEmployees implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private CRoles role;    
     
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "dwEmployee")
+    @OneToOne(mappedBy = "dwEmployee")
     @JsonView(JsonViews.Embedded.class)
     private Users user;
 

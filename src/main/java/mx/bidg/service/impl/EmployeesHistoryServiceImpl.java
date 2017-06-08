@@ -39,7 +39,7 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
     }
 
     @Override
-    public EmployeesHistory save(DwEmployees dwEmployee, CActionTypes actionType, Accounts accounts, Users user) {
+    public EmployeesHistory save(DwEmployees dwEmployee, CActionTypes actionType, Accounts accounts, Users user,String reason) {
 
         if (dwEmployee != null) {
             EmployeesHistory employeesHistory = new EmployeesHistory();
@@ -146,6 +146,10 @@ public class EmployeesHistoryServiceImpl implements EmployeesHistoryService {
                 employeesHistory.setImss(employee.getImss());
                 employeesHistory.setInfonavitNumber(employee.getInfonavitNumber());
                 employeesHistory.setSistarh(employee.getSistarh());
+            }
+
+            if (reason != null){
+                employeesHistory.setReason(reason);
             }
 
             employeesHistory.setIdActionType(actionType.getIdActionType());

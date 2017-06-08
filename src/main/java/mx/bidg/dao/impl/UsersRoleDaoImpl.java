@@ -45,7 +45,8 @@ public class UsersRoleDaoImpl extends AbstractDao<Integer, UsersRole> implements
 
     @Override
     public UsersRole update(UsersRole entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        modify(entity);
+        return entity;
     }
 
     @Override

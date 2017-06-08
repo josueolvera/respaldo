@@ -3,6 +3,7 @@ package mx.bidg.service;
 import mx.bidg.model.DistributorCostCenter;
 
 import java.util.List;
+import mx.bidg.model.AccountingAccounts;
 
 /**
  * Created by Kevin Salvador on 16/03/2017.
@@ -21,5 +22,5 @@ public interface DistributorCostCenterService {
     List<DistributorCostCenter> getAllByBusinessLineDistributorCC(List<Integer> idsBussinessLines, List<Integer> idsDistributors, List<Integer> idsCC);
     List<Integer> getIdsCostCentersByBusinessLineDistributorCC(List<Integer> idsBussinessLines, List<Integer> idsDistributors, List<Integer> idsCC);
 
-    List<Integer> getIdsAccountingAccountsByCostCenter(Integer idCostCenter);
+    List<AccountingAccounts> getIdsAccountingAccountsByCostCenter(Integer idCostCenter);
 }

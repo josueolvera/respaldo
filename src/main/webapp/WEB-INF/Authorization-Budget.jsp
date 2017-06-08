@@ -1010,7 +1010,7 @@
 
                             </div>
                             <div class="col-md-12">
-                                <div id="{{index}}+{{bussinessLine.name}}" class="row"
+                                <div class="row"
                                      v-for="distributor in bussinessLine.distributorList"
                                      style="font-size: 11px; background: #333333; color: white"
                                      v-if="bussinessLine.show">
@@ -1914,7 +1914,7 @@
                                                 </div>
                                                 <div class="col-xs-1" style="margin-right: 50px; margin-left: 50px">
                                                     <button class="label btn-warning"
-                                                          v-if="costCenter.idCCostCenterStatus == 2" @click="getBudgetsReport(costCenter.costCenter,costCenter.year)">Sin autorizar</button>
+                                                            v-if="costCenter.idCCostCenterStatus == 2" @click="getBudgetsReport(costCenter.costCenter,costCenter.year)">Sin autorizar</button>
                                                 </div>
                                                 <div class="col-xs-1" style="margin-right: 50px; margin-left: 50px">
                                                     <button class="label btn-danger"

@@ -9,6 +9,8 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import org.hibernate.criterion.Order;
+import org.hibernate.sql.JoinType;
 
 /**
  * Created by g_on_ on 22/05/2017.
@@ -53,5 +55,14 @@ public class RoleProductRequestDaoImpl extends AbstractDao<Integer, RoleProductR
         }
 
         return criteria.setProjection(Projections.distinct(Projections.property("idProductRequest"))).list();
+    }
+
+    @Override
+    public List<RoleProductRequest> findByDistributorCostCenter(Integer idDistrbutorCostCenter) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idDistributorCostCenter", idDistrbutorCostCenter))
+                .createCriteria("cProductsRequest")
+                .addOrder(Order.asc("productRequestName"))
+                .list();
     }
 }

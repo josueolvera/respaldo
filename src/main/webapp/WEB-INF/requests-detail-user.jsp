@@ -45,12 +45,14 @@
                 ready: function () {
                     this.getUserInSession();
                     this.getRequestInformation();
+                    this.getRequestHistory();
                 },
                 data: {
                     idRequest: ${idRequest},
                     user: {},
                     icon: false,
-                    request:{},
+                    request: {},
+                    requestHistoy: [],
                     downloadUrl: ROOT_URL + '/estimations/attachment/download/'
                 },
                 methods: {
@@ -81,11 +83,78 @@
 
                             });
                     },
-                    downloadEstimationDocument: function (idEstimation) {
-                        this.$http.get(ROOT_URL)
+                    getRequestHistory: function () {
+                        this.$http.get(ROOT_URL + "/request-history/request/" + this.idRequest)
+                            .success(function (data) {
+
+                                var jsonObjectIndex = {};
+
+                                data.forEach(function (requests) {
+                                    if (isNaN(requests.employee)) {
+                                        jsonObjectIndex[requests.employee._id] = requests.employee;
+                                    } else {
+                                        requests.employee = jsonObjectIndex[requests.employee];
+                                    }
+                                });
+
+                                var jsonObjectIndex = {};
+
+                                data.forEach(function (requests) {
+                                    if (isNaN(requests.userRequest)) {
+                                        jsonObjectIndex[requests.userRequest._id] = requests.userRequest;
+                                    } else {
+                                        requests.userRequest = jsonObjectIndex[requests.userRequest];
+                                    }
+                                });
+
+                                var jsonObjectIndex = {};
+
+                                data.forEach(function (requests) {
+                                    if (isNaN(requests.userResponsible)) {
+                                        jsonObjectIndex[requests.userResponsible._id] = requests.userResponsible;
+                                    } else {
+                                        requests.userResponsible = jsonObjectIndex[requests.userResponsible];
+                                    }
+                                });
+
+                                var jsonObjectIndex = {};
+
+                                data.forEach(function (requests) {
+                                    if (isNaN(requests.creationDateFormats)) {
+                                        jsonObjectIndex[requests.creationDateFormats._id] = requests.creationDateFormats;
+                                    } else {
+                                        requests.creationDateFormats = jsonObjectIndex[requests.creationDateFormats];
+                                    }
+                                });
+
+                                var jsonObjectIndex = {};
+
+                                data.forEach(function (requests) {
+                                    if (isNaN(requests.request)) {
+                                        jsonObjectIndex[requests.request._id] = requests.request;
+                                    } else {
+                                        requests.request = jsonObjectIndex[requests.request];
+                                    }
+                                });
+
+                                this.requestHistoy = data;
+                            })
+                            .error(function (data) {
+
+                            });
+                    },
+                    deleteRequest: function () {
+                        this.$http.post(ROOT_URL + "/requests/delete/" + this.idRequest).success(function (data) {
+                            if(data == true){
+                                 showAlert("Solicitud cancelada exitosamente");
+                                window.history.back();
+
+                            }
+                        }).error(function () {
+                            showAlert("Error al generar la solicitud.", {type: 3});
+                        })
                     }
                 },
-
                 filters: {
                     separate: function (value) {
                         return value.replace(/:/g, ' ');
@@ -209,9 +278,19 @@
 
     <jsp:body>
         <div id="content">
+            <div class="loading" v-if="request.priceEstimationsList.length==0">
+            </div>
             <div class="row">
                 <div class="col-md-8">
-                    <h2>Detalle de solicitud/vigente <label class="circleyel"></label></h2>
+                    <h2 v-if="request.requestType.idRequestType == 1">Detalle de solicitud/Vigente
+                        <label class="circleyel" ></label>
+                    </h2>
+                    <h2 v-if="request.requestType.idRequestType == 2">Detalle de solicitud/Finalizada
+                        <label class="circlegre" ></label>
+                    </h2>
+                    <h2 v-if="request.requestType.idRequestType == 3">Detalle de solicitud/Rechazada
+                        <label class="circlered" ></label>
+                    </h2>
                 </div>
                 <div class="col-md-4 text-right" style="margin-top: 10px">
                     <label>Solicitante</label>
@@ -236,51 +315,55 @@
                     </div>
                 </div>
             </div>
+            <br>
                 <%--tabla de cotenido de productos--%>
-        <div class="panel panel-default">
-        <div class="panel-body">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-12">
-                    <table class="table table-striped">
-                        <tr>
-                        <th class="col-md-3">Lista de productos</th>
-                        <th class="col-md-1">Cantidad</th>
-                        <th class="col-md-2"></th>
-                        <th class="col-md-4">Justificación</th>
-                        </tr>
-                        <tbody>
-                        <tr>
-                            <td class="col-md-3"></td>
-                            <td class="col-md-1"></td>
-                            <td class="col-md-2"></td>
-                            <td class="col-md-2" rowspan="8">
-                                <div class="form-group">
+            <div class="panel panel-default">
+                <div class="panel-heading"></div>
+                <div class="panel-body">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table table-striped">
+                                    <tr>
+                                        <th class="col-md-3">Lista de productos</th>
+                                        <th class="col-md-1">Cantidad</th>
+                                        <th class="col-md-2"></th>
+                                        <th class="col-md-4">Justificación</th>
+                                    </tr>
+                                    <tbody>
+                                    <tr>
+                                        <td class="col-md-3"></td>
+                                        <td class="col-md-1"></td>
+                                        <td class="col-md-2"></td>
+                                        <td class="col-md-2" rowspan="8">
+                                            <div class="form-group">
                                     <textarea class="form-control" rows="4" v-model="request.reason" disabled>
                                     </textarea>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr v-for="productRequest in request.requestProductsList">
-                            <td class="col-md-3">{{productRequest.roleProductRequest.cProductsRequest.productRequestName}}</td>
-                            <td class="col-md-1">
-                                <input class="form-control" maxlength="3" type="text"
-                                       onclick="return cleanField(this)" disabled
-                                       onkeypress="return validateFloatKeyPress(this,event)"
-                                       onInput="format(this)" onblur="ponerCeros(this)"
-                                       placeholder="0" v-model="productRequest.quantity" required/>
-                            </td>
-                            <td class="col-md-2">
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr v-for="productRequest in request.requestProductsList">
+                                        <td class="col-md-3">
+                                            {{productRequest.roleProductRequest.cProductsRequest.productRequestName}}
+                                        </td>
+                                        <td class="col-md-1">
+                                            <input class="form-control" maxlength="3" type="text"
+                                                   onclick="return cleanField(this)" disabled
+                                                   onkeypress="return validateFloatKeyPress(this,event)"
+                                                   onInput="format(this)" onblur="ponerCeros(this)"
+                                                   placeholder="0" v-model="productRequest.quantity" required/>
+                                        </td>
+                                        <td class="col-md-2">
 
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-           </div>
-          </div>
-        </div>
                 <%--tabla de contenidos de productos--%>
             <br>
                 <%-- informacion del usuario--%>
@@ -293,37 +376,36 @@
                                 <tr>
                                     <td class="col-md-4"><b>Usuario</b></td>
                                     <td class="col-md-3"><b>Fecha</b></td>
-                                    <td class="col-md-1">
-                                    </td>
+                                    <td class="col-md-1"></td>
                                     <td class="col-md-4"><b>Estado</b></td>
                                 </tr>
-                                <tr>
-                                    <td class="col-md-4">{{request.employees.fullName}}</td>
-                                    <td class="col-md-3">{{request.creationDateFormats.dateNumber}}</td>
+                                <tr v-for="history in requestHistoy">
+                                    <td class="col-md-4">{{history.employee.fullName}}</td>
+                                    <td class="col-md-1">{{history.creationDateFormats.dateNumber}}</td>
                                     <td class="col-md-1">
                                         <span class="glyphicon glyphicon-triangle-bottom"
                                               style="color: #7A7A7A; font-size: 200%"
-                                              v-if="request.requestStatus == 1"></span>
+                                              v-if="history.cRequestStatus.idRequestStatus == 1"></span>
                                         <span class="glyphicon glyphicon-triangle-bottom"
                                               style="color: #DF9A1B; font-size: 200%"
-                                              v-if="request.requestStatus == 2"></span>
+                                              v-if="history.cRequestStatus.idRequestStatus == 2"></span>
                                         <span class="glyphicon glyphicon-triangle-bottom"
                                               style="color: #EE0909; font-size: 200%"
-                                              v-if="request.requestStatus == 3"></span>
+                                              v-if="history.cRequestStatus.idRequestStatus == 7"></span>
                                         <span class="glyphicon glyphicon-triangle-bottom"
                                               style="color: #457a1a; font-size: 200%"
-                                              v-if="request.requestStatus == 4"></span>
+                                              v-if="history.cRequestStatus.idRequestStatus == 4"></span>
                                         <span class="glyphicon glyphicon-triangle-bottom"
                                               style="color: #457a1a;  font-size: 200%"
-                                              v-if="request.requestStatus  == 5"></span>
+                                              v-if="history.cRequestStatus.idRequestStatus == 5"></span>
                                     </td>
-                                    <td class="col-md-4">{{request.requestStatus.requestStatus}}</td>
+                                    <td class="col-md-6">{{history.cRequestStatus.requestStatus}}</td>
                                 </tr>
                             </table>
 
                         </div>
                         <div style="margin-left: 80%">
-                            <button @click="showModalSolicitud()" class="btn btn-danger">Cancelar Solicitud</button>
+                            <button @click="showModalSolicitud()" class="btn btn-danger" v-if="request.requestStatus.idRequestStatus == 1">Cancelar Solicitud</button>
                             <a href="javascript:window.history.back();">
                                 <button type="button" class="btn btn-default">Salir</button>
                             </a>
@@ -333,14 +415,29 @@
                     </div>
                 </div>
             </div>
+            <div class="panel panel-default" style="background-color: #F2F2F2" v-if="request.requestStatus.idRequestStatus == 7">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="col-md-12" style="background-color: #BDBDBD">
+                            <h6><b>Justificacion</b></h6>
+                        </div>
+                        <br>
+                        <div class="col-md-12">
+                            <p>
+                                {{request.reasonResponsible}}
+                            </p>
+                        </div>
+                        <br>
+                    </div>
+                </div>
+            </div>
             <div id="accordion" role="tablist" aria-multiselectable="true">
                 <div class="card">
-                    <div class="card-header" role="tab" id="headingThree">
-                        <div style="margin-left: 45%">
+                    <div class="card-header" role="tab" id="headingThree" @click="icon = !icon">
+                        <div>
                             <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree"
-                               @click="icon = !icon"
                                aria-expanded="false" aria-controls="collapseThree">
-                                <div>
+                                <div style="margin-left: 50%">
                                     <b>Detalle</b><br>
                                     <span class="glyphicon glyphicon-chevron-down" v-if="icon == false"
                                           style="margin-left: 2.5%"></span>
@@ -360,20 +457,25 @@
                                             <table class="table table-striped">
                                                 <tr>
                                                     <td class="col-md-4" align="left"><b>Documento Cotización</b></td>
-                                                    <td class="col-md-4" align="center"><b>Monto cotización sin IVA</b></td>
+                                                    <td class="col-md-4" align="center"><b>Monto cotización sin IVA</b>
+                                                    </td>
                                                     <td class="col-md-4" align="right"><b>Descargar</b></td>
                                                 </tr>
                                                 <tr v-for="estimationsRequest in request.priceEstimationsList">
-                                                    <td class="col-md-4" align="left">{{estimationsRequest.fileName}}</td>
+                                                    <td class="col-md-4" align="left">{{estimationsRequest.fileName}}
+                                                    </td>
                                                     <td class="col-md-4" align="center">
                                                         <input class="form-control" type="text"
-                                                               placeholder="$" style="width: 40%" v-model="estimationsRequest.amount | currency"
-                                                               maxlength="14" disabled />
+                                                               placeholder="$" style="width: 40%"
+                                                               v-model="estimationsRequest.amount | currency"
+                                                               maxlength="14" disabled/>
                                                     </td>
                                                     <td class="col-md-4" align="right">
-                                                        <a class="btn btn-default" :href="downloadUrl + estimationsRequest.idPriceEstimation"
+                                                        <a class="btn btn-default"
+                                                           :href="downloadUrl + estimationsRequest.idPriceEstimation"
                                                            data-toggle="tooltip" data-placement="top" title="Descargar">
-                                                            <span style="margin-left: 20%" class="glyphicon glyphicon-download-alt"></span>
+                                                            <span style="margin-left: 20%"
+                                                                  class="glyphicon glyphicon-download-alt"></span>
                                                         </a>
                                                     </td>
 
@@ -405,13 +507,13 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <p align="center" style="font-size: 16px">Se cancelará la solicitud y se borrará<br>
-                                    el registro de la misma.</p>
+                                        el registro de la misma.</p>
                                 </div>
                             </div>
                         </div>
                         <br>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-success" @click="sendRequest()">Aceptar</button>
+                            <button type="button" class="btn btn-danger" @click="deleteRequest()">Aceptar</button>
                             <button type="button" class="btn btn-default" class="close" data-dismiss="modal"
                                     aria-hidden="true">Cancelar
                             </button>

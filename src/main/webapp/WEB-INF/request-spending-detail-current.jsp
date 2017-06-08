@@ -50,48 +50,21 @@
         },
         ready: function () {
             this.getUserInSession();
-            this.getCurrencies();
+            this.getRequestInformation();
         },
         data: {
-            roleCostCenterList: [],
-            costCenterList: [],
-            budgetCategories: [],
-            budgetSubcategories: [],
-            products: [],
-            providers: [],
-            providerAccounts: [],
-            currencies: [],
-            requestProducts: [],
             user: {},
-            estimation: {
-                amount: '',
-                provider: '',
-                account: '',
-                currency: '',
-                rate: '',
-                file: ''
+            idRequest: ${idRequest},
+            request: {},
+            downloadUrl: ROOT_URL + '/estimations/attachment/download/',
+            priceEstimations:{},
+            selectedEstimation:{
+                idEstimation:'',
+                idRequest:'',
+                justify: '',
+                rejectJustify: ''
             },
-            requestBody: {
-                request: {
-                    description: '',
-                    purpose: '',
-                    userResponsible: '',
-                    idCostCenter: '',
-                    idBudgetCategory: '',
-                    idBudgetSubcategory: '',
-                    idRequestCategory: ''
-                },
-                products: []
-            },
-            estimations: [],
-            selectProducts: {},
-            selected: {
-                costCenter: null,
-                budgetCategory: null,
-                budgetSubcategory: null,
-                product: null
-            },
-            newEstimationFormActive: false
+            requestBoxUrl: ROOT_URL + "/siad/buy"
         },
         methods: {
             arrayObjectIndexOf: function (myArray, searchTerm, property) {
@@ -104,273 +77,72 @@
                 this.$http.get(ROOT_URL + "/user")
                     .success(function (data) {
                         this.user = data;
-                        this.getRolesCostCenter(this.user.dwEmployee.idRole);
                     })
                     .error(function (data) {
                         showAlert("Ha habido un error al obtener al usuario en sesion", {type: 3});
                     });
             },
-            getRolesCostCenter: function (idRole) {
-                this.$http.get(ROOT_URL + '/roles-cost-center/role/' + idRole)
+            getRequestInformation: function () {
+                this.$http.get(ROOT_URL + "/requests/" + this.idRequest)
                     .success(function (data) {
-                        var self = this;
-                        var index;
-                        this.rolesCostCenter = data;
-
-                        if (data.length < 2) {
-                            this.selected.budgetNature = data[0].budgetNature;
-                        }
-
-                        data.forEach(function (item) {
-                            index = self.arrayObjectIndexOf(self.costCenterList, item.costCenter.idCostCenter, 'idCostCenter');
-                            if (index == -1) self.costCenterList.push(item.costCenter);
-                        });
-
-                        this.selected.costCenter = data[0].costCenter;
-
-                        this.getBudgetCategories();
-
+                        this.request = data;
                     })
                     .error(function (data) {
 
                     });
             },
-            onChangeCostCenter: function () {
-                this.budgetCategories = [];
-                this.budgetSubcategories = [];
-                this.products = [];
-                this.getBudgetCategories();
+            openModalSelectEstimation: function(estimation){
+                this.priceEstimations = JSON.parse(JSON.stringify(estimation));
+                this.selectedEstimation.idEstimation = estimation.idPriceEstimation;
+                this.selectedEstimation.idRequest = this.idRequest;
+                this.selectedEstimation.justify = '';
+                $("#modalSelectEstimation").modal("show");
             },
-            getBudgetCategories: function () {
-                this.$http.get(
-                    ROOT_URL +
-                    '/budget-categories?cost_center=' +
-                    this.selected.costCenter.idCostCenter +
-                    '&request_category=1'
-                ).success(function (data) {
-                    this.budgetCategories = data;
-                });
-            },
-            getBudgetSubcategories: function () {
-                this.$http.get(ROOT_URL + '/budget-subcategories/category/' + this.selected.budgetCategory.idBudgetCategory)
-                    .success(function (data) {
-                        this.budgetSubcategories = data;
-                    });
-            },
-            getProducts: function () {
-                this.$http.get(ROOT_URL + '/products/subcategory/' + this.selected.budgetSubcategory.idBudgetSubcategory)
-                    .success(function (data) {
-                        this.products = data;
-                        this.selectProducts = this.createSelectForConcept(data);
-                    });
-            },
-            getProviders: function () {
-                this.$http.get(ROOT_URL + '/providers/product-type/' + this.selected.budgetSubcategory.idBudgetSubcategory)
-                    .success(function (data) {
-                        this.providers = data;
-                    });
-            },
-            onChangeBudgetCategory: function () {
-                this.budgetSubcategories = [];
-                this.products = [];
-                this.getBudgetSubcategories();
-            },
-            onChangeBudgetSubcategory: function () {
-                this.products = [];
-                this.getProducts();
-                this.getProviders();
-            },
-            createSelectForConcept: function (products) {
-                var self = this;
-                return $('#select-products').selectize({
-                    maxItems: 1,
-                    valueField: 'idProduct',
-                    labelField: 'product',
-                    searchField: 'product',
-                    options: products,
-                    create: function (input, callback) {
-                        self.$http.post(ROOT_URL + '/products/subcategory/' + self.selected.budgetSubcategory.idBudgetSubcategory, {
-                            product: input
-                        }).success(function (data) {
-                            showAlert('Producto guardado');
-                            self.getProducts();
-                            callback(data);
-                        }).error(function () {
-                            callback();
-                        });
-                    },
-                    render: {
-                        option_create: function (data, escape) {
-                            return '<div data-selectable class="create">' +
-                                'Agregar <strong>' + escape(data.input) + '</strong>' +
-                                '</div>'
+            selectedEstimations: function () {
+                if (this.selectedEstimation.justify.length > 0){
+                    this.$http.post(ROOT_URL + "/estimations/validate", JSON.stringify(this.selectedEstimation)).success(function (data) {
+                        if(data == true){
+
+                            $("#modalSelectEstimation").modal("hide");
+                            $("#modalSendValidationFinantialPlaning").modal("show");
+
+                        }else{
+
+                            this.$http.post(ROOT_URL + "/estimations/authorize-estimation", JSON.stringify(this.selectedEstimation)).success(function (data) {
+                                showAlert("Solicitud autorizada");
+                                $("#modalSelectEstimation").modal("hide");
+                                this.getRequestInformation();
+                            }).error(function () {
+                                showAlert("Error al generar la solicitud", {type: 3});
+                            });
+
                         }
-                    }
-                });
-            },
-            addProduct: function () {
-                var product = {};
-                product.idProduct = this.selectProducts[0].selectize.getValue();
-                product.product = this.selectProducts[0].selectize.getOption(product.idProduct).text();
-
-                this.requestBody.products.push(product);
-            },
-            removeProduct: function (product) {
-                this.requestBody.products.$remove(product);
-            },
-            clearRequest: function () {
-
-                this.requestBody = {
-                    request: {
-                        description: '',
-                        purpose: '',
-                        userResponsible: '',
-                        idCostCenter: '',
-                        idBudgetCategory: '',
-                        idBudgetSubcategory: '',
-                        idRequestCategory: ''
-                    },
-                    products: []
-                };
-
-                this.estimations = [];
-            },
-            removeEstimation: function (estimation) {
-                this.estimations.$remove(estimation);
-            },
-            sendRequest: function () {
-
-                if (this.requestBody.products.length == 0 || this.selected.costCenter == null || this.selected.budgetCategory == null || this.selected.budgetSubcategory == null) {
-                    showAlert("Debes agregar un producto", {type: 3});
-                    return;
-                } else if (this.estimations.length < 3) {
-                    showAlert("Debes agregar al menos tres cotizaciones", {type: 3});
-                    return;
-                }
-
-                this.requestBody.request.idCostCenter = this.selected.costCenter.idCostCenter;
-                this.requestBody.request.idBudgetCategory = this.selected.budgetCategory.idBudgetCategory;
-                this.requestBody.request.idBudgetSubcategory = this.selected.budgetSubcategory.idBudgetSubcategory;
-                this.requestBody.request.idRequestCategory = 1;
-
-                this.$http.post(ROOT_URL + '/requests', this.requestBody)
-                    .success(function (data) {
-                        USER_VM.fetchApp();
-                        this.saveEstimations(data);
-                        this.clearRequest();
-                    })
-                    .error(function (data) {
+                    }).error(function () {
                         showAlert("Error al generar la solicitud", {type: 3});
-                    });
+                    })
+                }else {
+                    showAlert("Es necesario llenar una justificacion", {type:3});
+                }
+            },
+            rejectReuquestModal: function () {
+                this.selectedEstimation.idRequest = this.idRequest;
+                this.selectedEstimation.rejectJustify = '';
+                $("#justificarrechazo").modal("show");
+            },
+            rejectRequest: function () {
+                if(this.selectedEstimation.rejectJustify.length > 0){
+                    this.$http.post(ROOT_URL + "/requests/reject", JSON.stringify(this.selectedEstimation)).success(function (data) {
+                        $("#justificarrechazo").modal("hide");
+                        showAlert("Solicitud rechazada con exito");
+                        this.getRequestInformation();
+                    }).error(function () {
+                        showAlert("Error al generar la solicitud", {type: 3});
+                    })
+
+                }else {
+                    showAlert("Es necesario llenar la justificación del rechazo", {type: 3});
+                }
             }
-            ,
-            saveEstimations: function (data) {
-                var self = this;
-                this.estimations.forEach(function (estimation) {
-                    self.saveEstimation(estimation, data);
-                });
-                showAlert("Solicitud enviada");
-            },
-            saveEstimation: function (estimation, data) {
-                this.$http.post(ROOT_URL + '/estimations/request/' + data.idRequest, estimation).success(function (data) {
-                }).error(function () {
-                    showAlert("Error al agregar cotización", {type: 3});
-                })
-            },
-            showModalSolicitud: function () {
-                $('#modalSolicitud').modal('show');
-            },
-            showNewEstimationModal: function () {
-                this.newEstimationFormActive = true;
-                $('#newEstimationModal').modal('show');
-            },
-            hideNewEstimationModal: function () {
-                this.clearEstimation();
-                this.newEstimationFormActive = false;
-                $('#newEstimationModal').modal('hide');
-            },
-            getProviderAccounts: function () {
-                this.$http.get(ROOT_URL + '/providers-accounts/provider/' + this.estimation.provider.idProvider)
-                    .success(function (data) {
-                        this.providerAccounts = data;
-                    })
-                    .error(function (data) {
-
-                    });
-            },
-            getCurrencies: function () {
-                this.$http.get(ROOT_URL + '/currencies')
-                    .success(function (data) {
-                        this.currencies = data;
-                    })
-                    .error(function (data) {
-
-                    });
-            },
-            onChangeCurrency: function () {
-                this.estimation.rate = (this.estimation.currency.idCurrency == 1) ? 1 : '';
-            },
-            setFile: function (event) {
-                var self = this;
-                var file = event.target.files[0];
-
-                if (this.validateFile(file)) {
-
-                    var reader = new FileReader();
-
-                    reader.onload = (function (theFile) {
-                        return function (e) {
-                            self.estimation.file = {
-                                name: theFile.name,
-                                size: theFile.size,
-                                type: theFile.type,
-                                dataUrl: e.target.result
-                            };
-                        };
-                    })(file);
-                    reader.readAsDataURL(file);
-                }
-            },
-            validateFile: function (file) {
-                if (file.type == 'application/pdf') {
-                    return true;
-                } else if (file.type == 'text/xml') {
-                    return true;
-                } else {
-                    event.target.value = null;
-                    showAlert("Tipo de archivo no admitido", {type: 3});
-                    return false;
-                }
-            },
-            clearEstimation: function () {
-                this.estimation = {
-                    amount: '',
-                    provider: '',
-                    account: '',
-                    currency: '',
-                    rate: '',
-                    file: ''
-                };
-            },
-            addEstimation: function () {
-                var estimation = this.estimation;
-                this.estimations.push(estimation);
-                this.hideNewEstimationModal();
-            },
-            deleteEstimationFile: function (e) {
-                this.estimation.file = '';
-            },
-            addPassenger: function () {
-                if (this.requestBody.passengers.length < 100) {
-                    var passenger = {};
-                    this.requestBody.passengers.push(passenger);
-                }
-            },
-            removePassenger: function (passenger) {
-                if (this.requestBody.passengers.length > 1) {
-                    this.requestBody.passengers.$remove(passenger);
-                }
-            },
         },
         filters: {
             separate: function (value) {
@@ -517,6 +289,8 @@
         <!--INICIA PANTALLA DE SOLICITUD/VIGENTE PAGINA 25-->
 
         <div id="content">
+            <div class="loading" v-if="request.priceEstimationsList.length==0">
+            </div>
             <div class="row">
                 <div class="col-md-12">
                     <div class="col-md-6">
@@ -528,7 +302,7 @@
                         <p></p>
                         <label class="circleyel"></label>
                     </div>
-                    <div class="col-md-5 text-right" style="margin-top: 10px">
+                    <div class="col-md-5 text-right" style="margin-left: 60px;">
                         <label>Nombre de usuario</label>
                         <p>
                             <span class="label label-default">{{user.dwEmployee.employee.fullName}}</span>
@@ -550,9 +324,9 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class="col-md-3"><u>Gustavo Morales</u></td>
-                                    <td class="col-md-3"><u>Desarrollo</u></td>
-                                    <td class="col-md-3"><u>30/05/2017</u></td>
+                                    <td class="col-md-3"><u>{{request.employees.fullName}}</u></td>
+                                    <td class="col-md-3"><u>{{request.dwEmployees.dwEnterprise.area.areaName}}</u></td>
+                                    <td class="col-md-3"><u>{{request.creationDateFormats.simpleDate}}</u></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -573,26 +347,35 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class="col-md-3"><u>Adminsitracion</u></td>
-                                    <td class="col-md-1"><u>Adminsitracion</u></td>
+                                    <td class="col-md-3"><u>{{request.distributorCostCenter.costCenter.name}}</u></td>
+                                    <td class="col-md-1"><u>{{request.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</u>
+                                    </td>
                                     <td class="col-md-8"></td>
                                 </tr>
                                 </tbody>
+                            </table>
+                            <table class="table table-striped">
                                 <thead style="background-color: #BDBDBD">
-                                <th class="col-md-3">Lista de productos</th>
-                                <th class="col-md-1">Cantidad</th>
+                                <th class="col-md-4">
+                                    <div class="col-md-8 text-center">Lista de productos</div>
+                                    <div class="col-md-4 text-center">Cantidad</div>
+                                </th>
                                 <th class="col-md-8">Justificacion</th>
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class="col-md-4"></td>
-                                    <td class="col-md-2"></td>
-                                    <td class="col-md-6" rowspan="8">
-                                        <div class="form-group">
-                                    <textarea class="form-control" rows="4" v-model="requestBody.request.purpose"
-                                              readonly disabled>
-                                    </textarea>
+                                    <td class="col-md-4">
+                                        <div class="col-md-12" v-for="product in request.requestProductsList">
+                                            <div class="col-md-8 text-center">
+                                                {{product.roleProductRequest.cProductsRequest.productRequestName}}
+                                            </div>
+                                            <div class="col-md-4 text-center">{{product.quantity}}</div>
                                         </div>
+                                    </td>
+                                    <td class="col-md-8" rowspan="8">
+                                        <textarea class="form-control" rows="4" v-model="request.reason"
+                                                  readonly disabled>
+                                            </textarea>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -601,68 +384,111 @@
                     </div>
                 </div>
             </div>
+
             <br>
-            <div class="panel panel-default" style="background-color: #F2F2F2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-8"><br>
-                            <h5><b style="color: black">Cotizacion 1</b></h5>
-                        </div>
-                        <form><br>
-                            <div class="col-md-4">
-                                <label>Monto cotizado sin IVA</label>
-                                <input class="form-control" type="text" placeholder="$" value="1500" style="width: 40%"
-                                       v-model="estimationsRequest.amount | currency" maxlength="14" disabled/>
+
+            <div v-for="(index, estimation) in request.priceEstimationsList" v-if="estimation.idEstimationStatus != 3">
+                <div class="panel panel-default" style="background-color: #F2F2F2">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-8"><br>
+                                <h5><b style="color: black">Cotizacion {{index+1}}</b></h5>
                             </div>
-                        </form>
+                            <div class="col-md-2">
+                                <label style="margin-top: 30px">Monto cotizado sin IVA </label>
+                            </div>
+                            <div class="col-md-2">
+                                <input class="form-control" type="text" placeholder="$" style=" margin-top: 15px"
+                                       v-model="estimation.amount | currency" maxlength="14" disabled/>
+                            </div>
+                        </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-12" style="background-color: #BDBDBD">
+                                <h6><b>Documento</b></h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-3"><br>
+                                <h6>{{estimation.fileName}}</h6>
+                            </div>
+                            <div class="col-md-2"><br>
+                                <a class="btn btn-primary btn-sm"
+                                   :href="downloadUrl + estimation.idPriceEstimation"
+                                   data-toggle="tooltip" data-placement="top" title="Descargar">
+                                    Descargar
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <br>
+                            </div>
+                            <div class="col-md-1">
+                                <br>
+                                <button class="btn btn-success btn-sm" v-if="estimation.idEstimationStatus == 1 && request.idRequestStatus != 7" @click="openModalSelectEstimation(estimation)">
+                                    Elegir
+                                </button>
+                                <span id="detalleGreen" v-if="estimation.idEstimationStatus == 2" class="glyphicon glyphicon-ok" style="margin-left: 65%"></span>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                    <br>
                 </div>
+            </div>
+            <div class="panel panel-default" style="background-color: #F2F2F2" v-if="request.reasonResponsible.length > 0">
                 <div class="row">
                     <div class="col-md-12">
                         <div class="col-md-12" style="background-color: #BDBDBD">
-                            <h6><b>Documento</b></h6>
+                            <h6><b>Justificacion</b></h6>
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-2"><br>
-                            <h6>Nombre del archivo</h6>
-                        </div>
-                        <div class="col-md-7"><br>
-                            <a href="C:\Users\Leonardo\Downloads\facturandum.pdf" download="facturandum.pdf">
-                                <button class="btn btn-primary btn-sm">DESCARGAR</button>
-                            </a>
-                        </div>
-                        <div class="col-md-3"><br>
-                            <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#justificaruno">
-                                ELEGIR
-                            </button>
+                        <br>
+                        <div class="col-md-12">
+                            <p>
+                                {{request.reasonResponsible}}
+                            </p>
                         </div>
                         <br>
                     </div>
                 </div>
-                <br>
             </div>
 
             <div class="row">
                 <div class="col-md-12">
-                    <div class="col-md-11">
-                        <button type="button" class="btn btn-danger btn lg-active" data-toggle="modal"
-                                data-target="#justificarrechazo" style="margin-left: 1000px">Rechazar
+                    <div class="col-md-7"></div>
+                    <div class="col-md-2" >
+                        <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#ordendecompra" v-if="request.idRequestStatus == 2">
+                            Generar orden de compra
+                        </button>
+                    </div>
+                    <div class="col-md-1"  >
+                        <button type="button" class="btn btn-warning btn-sm" v-if="request.idRequestStatus == 3">
+                            Agregar Comprobante
+                        </button>
+                    </div>
+                    <div class="col-md-1"  >
+                        <button type="button" class="btn btn-danger btn lg-active" @click="rejectReuquestModal()" v-if="request.idRequestStatus == 1">Rechazar
                         </button>
                     </div>
                     <div class="col-md-1">
-                        <button type="button" class="btn btn-default">Cancelar</button>
+                        <a class="btn btn-default btn-sm"
+                           :href="requestBoxUrl"
+                           data-toggle="tooltip" data-placement="top" title="Detalle">
+                            Cancelar
+                        </a>
                     </div>
                 </div>
             </div>
-            <br><br>
+
+            <br>
+            <br>
 
             <!--TERMINA PANTALLA DE SOLICITUD/VIGENTE PAGINA 25-->
             <!--EMPIEZA MODAL 1 PARA LA OPCION ELEGIR DE LA PANTALLA DE SOLICITUD/VIGENTE PAGINA 26-->
 
-            <div class="modal fade" id="justificaruno" role="dialog">
+            <div class="modal fade" id="modalSelectEstimation" role="dialog">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -672,13 +498,13 @@
                         <div class="modal-body">
                             <form>
                                 <div class="form-group">
-                                    <textarea class="form-control" rows="3"></textarea>
+                                    <textarea class="form-control" rows="3" v-model="selectedEstimation.justify"></textarea>
                                 </div>
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-success" data-toggle="collapse"
-                                    data-target="#demo">Aceptar
+                            <button type="button" class="btn btn-success" data-toggle="collapse" @click="selectedEstimations()">
+                                Aceptar
                             </button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         </div>
@@ -686,160 +512,58 @@
                 </div>
             </div>
 
-            <!--TERMINA MODAL 1 PARA LA OPCION ELEGIR DE LA PANTALLA DE SOLICITUD/VIGENTE PAGINA 26-->
-                <%--<!--EMPIEZA MODAL 2 PARA LA OPCION ELEGIR DE LA PANTALLA DE SOLICITUD/VIGENTE PAGINA 26-->--%>
-
-                <%--<!--TERMINA MODAL 2 PARA LA OPCION ELEGIR DE LA PANTALLA DE SOLICITUD/VIGENTE PAGINA 26-->--%>
-
-                <%--<!--EMPIEZA MODAL 3 PARA LA OPCION ELEGIR DE LA PANTALLA DE SOLICITUD/VIGENTE PAGINA 26-->--%>
-
-                <%--<!--TERMINA MODAL 3 PARA LA OPCION ELEGIR DE LA PANTALLA DE SOLICITUD/VIGENTE PAGINA 26-->--%>
-
-            <!--EMPIEZA MODAL DE LA PAGINA 26 A LA PAGINA 27 AL PRESIONAR ACEPTAR-->
-                <%--<div id="demo" class="collapse">--%>
-            <div class="panel panel-default">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12">
-                            <h5><b style="color: black">Datos del solicitante</b></h5>
-                            <table class="table table-striped">
-                                <thead style="background-color: #BDBDBD">
-                                <th class="col-md-4">Nombre</th>
-                                <th class="col-md-4">Area</th>
-                                <th class="col-md-4">Fecha de solicitud</th>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td class="col-md-3"><u>Gustavo Morales</u></td>
-                                    <td class="col-md-3"><u>Desarrollo</u></td>
-                                    <td class="col-md-3"><u>30/05/2017</u></td>
-                                </tr>
-                                </tbody>
-                            </table>
+            <div class="modal fade" id="modalSendValidationFinantialPlaning" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Detalle de solicitud</h4>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel default" style="background-color: #F2F2F2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12">
-                            <h5><b style="color: black">Datos de solicitud</b></h5>
-                            <table class="table table-striped">
-                                <thead style="background-color: #BDBDBD">
-                                <th class="col-md-4">Centro de costos</th>
-                                <th class="col-md-4">Concepto</th>
-                                <th class="col-md-4"></th>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td class="col-md-4"><u>Administracion</u></td>
-                                    <td class="col-md-4"><u>Equipo de computo</u></td>
-                                    <td class="col-md-4"></td>
-                                </tr>
-                                </tbody>
-                                <thead style="background-color: #BDBDBD">
-                                <th class="col-md-4">Lista de productos</th>
-                                <th class="col-md-4">Cantidad</th>
-                                <th class="col-md-4">Justificacion</th>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td class="col-md-4"></td>
-                                    <td class="col-md-2"></td>
-                                    <td class="col-md-6" rowspan="8">
-                                        <div class="form-group">
-                                    <textarea class="form-control" rows="4" v-model="requestBody.request.purpose"
-                                              readonly disabled>
-                                    </textarea>
-                                        </div>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default" style="background-color: #F2F2F2">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-8"><br>
-                            <h5><b style="color: black">Cotizacion 1</b></h5>
-                        </div>
-                        <form><br>
-                            <div class="col-md-4">
-                                <label>Monto cotizado sin IVA</label>
-                                <input class="form-control" type="text" placeholder="$" value="1500" style="width: 40%"
-                                       v-model="estimationsRequest.amount | currency" maxlength="14" disabled/>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Solicitud fuera de presupuesto</label>
+                                </div>
                             </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12" style="background-color: #BDBDBD">
-                            <h6><b>Documento</b></h6>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <p>Se enviará a planeación financiera para su validación</p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-2"><br>
-                            <h6>Nombre del archivo</h6>
-                        </div>
-                        <div class="col-md-7"><br>
-                            <a href="C:\Users\Leonardo\Downloads\facturandum.pdf" download="facturandum.pdf">
-                                <button class="btn btn-primary btn-sm">DESCARGAR</button>
-                            </a>
-                        </div>
-                        <div class="col-md-3"><br>
-                            <span id="detalleGreen" class="glyphicon glyphicon-ok" style="margin-left: 65%"></span>
-                        </div>
-                        <br>
-                    </div>
-                </div>
-                <br>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-12" style="background-color: #BDBDBD">
-                            <h6><b>Justificacion</b></h6>
-                        </div>
-                        <br>
-                        <div class="col-md-12"><br>
-                            <h6>
-                                sjfhaskjldfhkjlsfhgsfkjgdfsasdkjagsfkjghjgfhjdgshjdgsfjhdgsfjhdgsfjsdgfjdfsgjf
-                            </h6>
-                        </div>
-                        <br><br><br>
-                    </div>
-                </div>
-                <br>
-            </div>
-            <div class="modal-footer">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="col-md-9" style="margin-right: -3%">
-                            <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#ordendecompra">
-                                Generar
-                                orden de compra
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" data-toggle="collapse" @click="selectedEstimations()">
+                                Aceptar
                             </button>
-                        </div>
-                        <div class="col-md-2" style="margin-right: -1%">
-                            <button type="button" class="btn btn-warning btn-sm">
-                                Agregar Comprobante
-                            </button>
-                        </div>
-                        <div class="col-md-1">
-                            <button type="button" class="btn btn-default btn-sm"
-                                    onclick="parent.location='http://localhost:8080/BIDGroupLines/siad/request-spending-detail-current'">
-                                Cancelar
-                            </button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <!--TERMINA MODAL DE LA PAGINA 26 A LA PAGINA 27 AL PRESIONAR ACEPTAR-->
+
+            <div class="modal fade" id="justificarrechazo" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Justificar rechazo</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form>
+                                <div class="form-group">
+                                <textarea class="form-control" rows="4"
+                                          v-model="selectedEstimation.rejectJustify"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" @click="rejectRequest()">Aceptar
+                            </button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!--EMPIEZA MODAL DE LA PAGINA 27 A LA 28 ORDEN DE COMPRA-->
 
@@ -1703,32 +1427,6 @@
         </div>
 
         <!--TERMINA MODAL PAGINA 32 DEL BOTON ENVIAR-->
-        <!--EMPIEZA MODAL PAGINA 33 DEL BOTON RECHAZAR-->
-
-        <div class="modal fade" id="justificarrechazo" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Justificar rechazo</h4>
-                    </div>
-                    <div class="modal-body">
-                        <form>
-                            <div class="form-group">
-                                <textarea class="form-control" rows="4"
-                                          v-model="requestBody.request.purpose"></textarea>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-success" data-dismiss="modal">Aceptar
-                        </button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--TERMINA MODAL PAGINA 33 DEL BOTON RECHAZAR-->
 
         <%--<div class="container">--%>
         <%--<h2>Simple Collapsible</h2>--%>

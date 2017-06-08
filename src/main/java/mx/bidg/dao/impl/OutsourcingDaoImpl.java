@@ -137,7 +137,18 @@ public class OutsourcingDaoImpl extends AbstractDao<Integer, Outsourcing> implem
         }
 
         criteria.add(disjunctionEmployees);
-        criteria.add(Restrictions.between("applicationDate",iniialDate,finalDate));
+        criteria.add(Restrictions.between("applicationDate",iniialDate,finalDate))
+                .add(Restrictions.eq("status",1));
         return criteria.list();
+    }
+
+    @Override
+    public List<Integer> getExtranjerosOnly() {
+        Criteria criteria = createEntityCriteria();
+        return criteria
+                .setProjection(Projections.distinct(Projections.property("idEmployee")))
+                .add(Restrictions.eq("type", 5))
+                .add(Restrictions.eq("status",1))
+                .list();
     }
 }

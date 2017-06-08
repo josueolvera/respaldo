@@ -9,18 +9,12 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
+import java.time.LocalDateTime;
+import javax.persistence.*;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -48,6 +42,20 @@ public class CDateCalculation implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String nameDate;
 
+    @Column(name = "STATUS")
+    @JsonView(JsonViews.Root.class)
+    private Integer status;
+
+    @Column(name = "USERNAME")
+    @JsonView(JsonViews.Root.class)
+    private String username;
+
+    @Column(name = "CREATION_DATE")
+    @JsonView(JsonViews.Root.class)
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime creationDate;
+
+
     public CDateCalculation() {
     }
 
@@ -71,29 +79,49 @@ public class CDateCalculation implements Serializable {
         this.nameDate = nameDate;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idDateCalculation != null ? idDateCalculation.hashCode() : 0);
-        return hash;
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
     }
 
     @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CDateCalculation)) {
-            return false;
-        }
-        CDateCalculation other = (CDateCalculation) object;
-        if ((this.idDateCalculation == null && other.idDateCalculation != null) || (this.idDateCalculation != null && !this.idDateCalculation.equals(other.idDateCalculation))) {
-            return false;
-        }
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CDateCalculation)) return false;
+
+        CDateCalculation that = (CDateCalculation) o;
+
+        return idDateCalculation != null ? idDateCalculation.equals(that.idDateCalculation) : that.idDateCalculation == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return idDateCalculation != null ? idDateCalculation.hashCode() : 0;
     }
 
     @Override
     public String toString() {
-        return "mx.bidg.model.CDateCalculation[ idDateCalculation=" + idDateCalculation + " ]";
+        return "CDateCalculation{" +
+                "idDateCalculation=" + idDateCalculation +
+                '}';
     }
-    
 }

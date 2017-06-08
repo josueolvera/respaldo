@@ -206,9 +206,9 @@ public class TravelExpensesServiceImpl implements TravelExpensesService {
             travelExpense.getRequest().setRequestStatus(cRequestStatus);
             travelExpense = travelExpensesDao.update(travelExpense);
 
-            if (travelExpense.getRequest().getRequestStatus().equals(CRequestStatus.APROBADA)) {
-                checksDao.save(new Checks(travelExpense, travelExpense.getEndDate().plusDays(3), travelExpense.getTotalAmount()));
-            }
+//            if (travelExpense.getRequest().getRequestStatus().equals(CRequestStatus.APROBADA)) {
+//                checksDao.save(new Checks(travelExpense, travelExpense.getEndDate().plusDays(3), travelExpense.getTotalAmount()));
+//            }
         }
 
         return travelExpense;

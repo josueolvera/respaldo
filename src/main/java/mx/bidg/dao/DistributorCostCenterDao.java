@@ -18,4 +18,5 @@ public interface DistributorCostCenterDao extends InterfaceDao<DistributorCostCe
     List<Integer> getIdsCostCentersByBusinessLineDistributorCC(List<Integer> idsBussinessLines, List<Integer> idsDistributors, List<Integer> idsCC);
 
     List<Integer> getIdsAccountingAccountsByCostCenter(Integer idCostCenter);
+    DistributorCostCenter findByIdCostCenterAndAA(Integer idCostCenter, Integer idAccountingAccounts);
 }

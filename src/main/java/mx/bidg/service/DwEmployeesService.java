@@ -34,7 +34,7 @@ public interface DwEmployeesService {
     List<DwEmployees> findAll();
     DwEmployees save(DwEmployees dwEmployees);
     void createReportDistributors(List<EmployeesHistory> employeesHistories, OutputStream outputStream) throws IOException;
-    void changeEmployeeStatus(Integer idDwEmployee, Users user);
+    void changeEmployeeStatus(String data, Users user) throws Exception;
     DwEmployees findByIdDw(Integer idDwEnterprise);
     DwEmployees update(String data, Users user) throws IOException;
     boolean delete (DwEmployees dwEmployees);

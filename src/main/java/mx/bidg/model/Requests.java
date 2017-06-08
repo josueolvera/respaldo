@@ -36,6 +36,7 @@ public class Requests implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
     @Column(name = "ID_REQUEST")
     @JsonView(JsonViews.Root.class)
     private Integer idRequest;
@@ -73,6 +74,11 @@ public class Requests implements Serializable {
     @Column(name = "REASON")
     @JsonView(JsonViews.Root.class)
     private String reason;
+
+    @Size(min = 1, max = 200)
+    @Column(name = "REASON_RESPOSINBLE")
+    @JsonView(JsonViews.Root.class)
+    private String reasonResponsible;
 
     @Column(name = "TOTAL_EXPENDED")
     @JsonView(JsonViews.Root.class)
@@ -129,6 +135,10 @@ public class Requests implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "request")
     @JsonView(JsonViews.Embedded.class)
     private List<RequestProducts> requestProductsList;
+
+    @Transient
+    @JsonView(JsonViews.Embedded.class)
+    private DwEmployees dwEmployees;
 
     public Integer getIdRequest() {
         return idRequest;
@@ -286,6 +296,22 @@ public class Requests implements Serializable {
         this.distributorCostCenter = distributorCostCenter;
     }
 
+    public DwEmployees getDwEmployees() {
+        return dwEmployees;
+    }
+
+    public void setDwEmployees(DwEmployees dwEmployees) {
+        this.dwEmployees = dwEmployees;
+    }
+
+    public String getReasonResponsible() {
+        return reasonResponsible;
+    }
+
+    public void setReasonResponsible(String reasonResponsible) {
+        this.reasonResponsible = reasonResponsible;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -293,46 +319,26 @@ public class Requests implements Serializable {
 
         Requests requests = (Requests) o;
 
-        if (getIdAccessLevel() != requests.getIdAccessLevel()) return false;
-        if (getUserName() != requests.getUserName()) return false;
-        if (!getIdRequest().equals(requests.getIdRequest())) return false;
-        if (getIdDistributorCostCenter() != null ? !getIdDistributorCostCenter().equals(requests.getIdDistributorCostCenter()) : requests.getIdDistributorCostCenter() != null)
+        if (idRequest != null ? !idRequest.equals(requests.idRequest) : requests.idRequest != null) return false;
+        if (idDistributorCostCenter != null ? !idDistributorCostCenter.equals(requests.idDistributorCostCenter) : requests.idDistributorCostCenter != null)
             return false;
-        if (getIdRequestStatus() != null ? !getIdRequestStatus().equals(requests.getIdRequestStatus()) : requests.getIdRequestStatus() != null)
+        if (idRequestStatus != null ? !idRequestStatus.equals(requests.idRequestStatus) : requests.idRequestStatus != null)
             return false;
-        if (getIdRequestCategory() != null ? !getIdRequestCategory().equals(requests.getIdRequestCategory()) : requests.getIdRequestCategory() != null)
+        if (idRequestCategory != null ? !idRequestCategory.equals(requests.idRequestCategory) : requests.idRequestCategory != null)
             return false;
-        if (getIdRequestType() != null ? !getIdRequestType().equals(requests.getIdRequestType()) : requests.getIdRequestType() != null)
+        if (idRequestType != null ? !idRequestType.equals(requests.idRequestType) : requests.idRequestType != null)
             return false;
-        if (getIdEmployee() != null ? !getIdEmployee().equals(requests.getIdEmployee()) : requests.getIdEmployee() != null)
-            return false;
-        if (getFolio() != null ? !getFolio().equals(requests.getFolio()) : requests.getFolio() != null) return false;
-        if (getReason() != null ? !getReason().equals(requests.getReason()) : requests.getReason() != null)
-            return false;
-        if (getTotalExpended() != null ? !getTotalExpended().equals(requests.getTotalExpended()) : requests.getTotalExpended() != null)
-            return false;
-        if (getCreationDate() != null ? !getCreationDate().equals(requests.getCreationDate()) : requests.getCreationDate() != null)
-            return false;
-        if (getPriceEstimationsList() != null ? !getPriceEstimationsList().equals(requests.getPriceEstimationsList()) : requests.getPriceEstimationsList() != null)
-            return false;
-        return getRequestProductsList() != null ? getRequestProductsList().equals(requests.getRequestProductsList()) : requests.getRequestProductsList() == null;
+        return folio != null ? folio.equals(requests.folio) : requests.folio == null;
     }
 
     @Override
     public int hashCode() {
-        int result = getIdRequest().hashCode();
-        result = 31 * result + (getIdDistributorCostCenter() != null ? getIdDistributorCostCenter().hashCode() : 0);
-        result = 31 * result + (getIdRequestStatus() != null ? getIdRequestStatus().hashCode() : 0);
-        result = 31 * result + (getIdRequestCategory() != null ? getIdRequestCategory().hashCode() : 0);
-        result = 31 * result + (getIdRequestType() != null ? getIdRequestType().hashCode() : 0);
-        result = 31 * result + (getIdEmployee() != null ? getIdEmployee().hashCode() : 0);
-        result = 31 * result + (getFolio() != null ? getFolio().hashCode() : 0);
-        result = 31 * result + (getReason() != null ? getReason().hashCode() : 0);
-        result = 31 * result + (getTotalExpended() != null ? getTotalExpended().hashCode() : 0);
-        result = 31 * result + getIdAccessLevel();
-        result = 31 * result + (getCreationDate() != null ? getCreationDate().hashCode() : 0);
-        result = 31 * result + (getPriceEstimationsList() != null ? getPriceEstimationsList().hashCode() : 0);
-        result = 31 * result + (getRequestProductsList() != null ? getRequestProductsList().hashCode() : 0);
+        int result = idRequest != null ? idRequest.hashCode() : 0;
+        result = 31 * result + (idDistributorCostCenter != null ? idDistributorCostCenter.hashCode() : 0);
+        result = 31 * result + (idRequestStatus != null ? idRequestStatus.hashCode() : 0);
+        result = 31 * result + (idRequestCategory != null ? idRequestCategory.hashCode() : 0);
+        result = 31 * result + (idRequestType != null ? idRequestType.hashCode() : 0);
+        result = 31 * result + (folio != null ? folio.hashCode() : 0);
         return result;
     }
 

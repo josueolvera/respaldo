@@ -9,8 +9,14 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.*;
 import org.springframework.stereotype.Repository;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
@@ -119,7 +125,7 @@ public class SapSaleDaoImpl extends AbstractDao<Integer, SapSale> implements Sap
         projList.add(Projections.distinct(Projections.groupProperty("idZonas")));
         projList.add(Projections.sum("comissionableAmount"));
         projList.add(Projections.count("idSale"));
-//        projList.add(Projections.groupProperty("idDistributor"));
+        projList.add(Projections.groupProperty("idDistributor"));
 
         for (GroupsAgreements groupsAgreements : groupsAgreementsList){
             disjuntionAgreement.add(Restrictions.eq("idAgreement", groupsAgreements.getIdAgreement()));
@@ -143,7 +149,7 @@ public class SapSaleDaoImpl extends AbstractDao<Integer, SapSale> implements Sap
         projList.add(Projections.distinct(Projections.groupProperty("idRegion")));
         projList.add(Projections.sum("comissionableAmount"));
         projList.add(Projections.count("idSale"));
-//        projList.add(Projections.groupProperty("idDistributor"));
+        projList.add(Projections.groupProperty("idDistributor"));
 
         for (GroupsAgreements groupsAgreements : groupsAgreementsList){
             disjuntionAgreement.add(Restrictions.eq("idAgreement", groupsAgreements.getIdAgreement()));
@@ -216,6 +222,45 @@ public class SapSaleDaoImpl extends AbstractDao<Integer, SapSale> implements Sap
                 .add(Restrictions.eq("idDistributor", idDistributor))
                 .add(Restrictions.between("purchaseDate", from,to))
                 .uniqueResult();
+    }
+
+    @Override
+    public List<String> getAllSaleStatus() {
+        Criteria criteria = createEntityCriteria();
+
+        return criteria
+                .setProjection(
+                        Projections.distinct(
+                                Projections.property("statusSale")))
+                .list();
+    }
+
+    @Override
+    public List<SapSale> findAllSalesByStatusAndDates(List<String> status, String startDate, String endDate) throws Exception{
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjunctionStatus = Restrictions.disjunction();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+        LocalDate fromDate = LocalDate.parse(startDate, formatter);
+        LocalDate toDate = LocalDate.parse(endDate, formatter);
+
+
+        Date initialDate = Date.from(fromDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date finalDate = Date.from(toDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        if (!status.isEmpty()){
+            for (String statusName : status){
+                disjunctionStatus.add(Restrictions.like("statusSale", statusName));
+            }
+        }
+
+        criteria.add(disjunctionStatus);
+
+        return criteria
+                .add(
+                        Restrictions.between("purchaseDate", initialDate, finalDate))
+                .list();
     }
 
     @Override

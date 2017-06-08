@@ -7,10 +7,13 @@ package mx.bidg.dao;
 
 import mx.bidg.model.RequestProducts;
 
+import java.util.List;
+
 /**
  *
  * @author sistemask
  */
 public interface RequestProductsDao extends InterfaceDao<RequestProducts> {
+    List<RequestProducts> findByIdRequest(Integer idRequest);
     
 }

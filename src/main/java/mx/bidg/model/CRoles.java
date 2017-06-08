@@ -63,6 +63,10 @@ public class CRoles implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String username;
 
+    @Column(name = "LEVEL")
+    @JsonView(JsonViews.Root.class)
+    private Integer level;
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "ROLE_ROOM",
@@ -130,8 +134,14 @@ public class CRoles implements Serializable {
     public void setRooms(Set<CRooms> rooms) {
         this.rooms = rooms;
     }
-    
-    
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
+    }
 
     @Override
     public int hashCode() {

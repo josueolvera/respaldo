@@ -504,6 +504,7 @@
                     },
                     onDeleteButton: function (dwEmployee) {
                         this.currentDwEmployee = dwEmployee;
+                        this.currentDwEmployee.reason = "";
                         $("#deleteModal").modal("show");
                         if(this.currentDwEmployee.rolesR.idRole == 64){
                             this.$http.get(ROOT_URL + "/multilevel-employee/find-employee/" + this.currentDwEmployee.idEmployee).success(function (data) {
@@ -518,15 +519,19 @@
                         }
                     },
                     changeEmployeeStatus: function () {
-                        this.$http.post(ROOT_URL + '/dw-employees/change-employee-status', this.currentDwEmployee.idDwEmployee)
+                        if(this.currentDwEmployee.reason.length > 0){
+                            this.$http.post(ROOT_URL + '/dw-employees/change-employee-status', this.currentDwEmployee)
                                 .success(function (data) {
                                     showAlert("Empleado dado de baja exitosamente");
                                     this.getDwEmployees();
                                     $("#deleteModal").modal("hide");
                                 })
                                 .error(function (date) {
-                                    showAlert("Ha habido un error con su solicitud intente nuevamente");
+                                    showAlert("Ha habido un error con su solicitud intente nuevamente", {type: 3});
                                 });
+                        }else {
+                            showAlert("Es necesario ingresar el motivo de baja.", {type: 3});
+                        }
                     },
                     getRoleEmployeeHistory: function (idEH) {
                         this.$http.get(ROOT_URL + '/roles/employee-history/' + idEH).success(function (data) {
@@ -1268,8 +1273,8 @@
 
             <!-- Modal Baja -->
             <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
+                <div class="modal-dialog" role="document" style="width: 40%;height: 40%;border-radius: 0;">
+                    <div class="modal-content" style="height: auto;min-height: 40%;">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                                     aria-hidden="true">&times;</span></button>
@@ -1277,10 +1282,18 @@
                         </div>
                         <div class="modal-body">
                             <br>
-                            <div class="form-inline">
-                                <div class="form-group">
-                                    El empleado con el nombre <label>{{currentDwEmployee.fullName}}</label> y el rfc
-                                    <label>{{currentDwEmployee.rfc}}</label> será dado de baja.
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <p style="text-align: justify">El empleado con el nombre <label>{{currentDwEmployee.fullName}}</label>
+                                    y con RFC <label>{{currentDwEmployee.rfc}}</label> será dado de baja.</p>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-xs-12" style="width: 100%">
+                                    <label>Motivo de baja</label>
+                                    <textarea v-model="currentDwEmployee.reason" cols="500" rows="3"
+                                              class="form-control"></textarea>
                                 </div>
                             </div>
                             <br>

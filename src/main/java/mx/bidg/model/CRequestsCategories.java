@@ -41,6 +41,7 @@ public class CRequestsCategories implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
     @Column(name = "ID_REQUEST_CATEGORY")
     @JsonView(JsonViews.Root.class)
     private Integer idRequestCategory;

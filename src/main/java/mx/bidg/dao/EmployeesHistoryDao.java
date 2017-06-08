@@ -29,4 +29,5 @@ public interface EmployeesHistoryDao  extends InterfaceDao<EmployeesHistory>  {
     EmployeesHistory findIdEmployee(Integer idEmployee);
     EmployeesHistory findIdDistributor(Integer idDistributor);
     List<EmployeesHistory> findIdEmployeeAndIdDistributor(Integer idEmployee,Integer idDistributor);
+    EmployeesHistory findEmployeeByClaveSap(String claveSap);
 }

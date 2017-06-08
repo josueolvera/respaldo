@@ -94,6 +94,12 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     @Autowired
     private MultilevelEmployeeDao multilevelEmployeeDao;
 
+    @Autowired
+    private UsersDao usersDao;
+
+    @Autowired
+    private SqlQueriesDao sqlQueriesDao;
+
     @Override
     public DwEmployees findById(Integer id) {
         return dwEmployeesDao.findById(id);
@@ -286,8 +292,10 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
     }
 
     @Override
-    public void changeEmployeeStatus(Integer idDwEmployee, Users user) {
-        DwEmployees dwEmployee = dwEmployeesDao.findById(idDwEmployee);
+    public void changeEmployeeStatus(String data, Users user) throws Exception {
+
+        JsonNode node = mapper.readTree(data);
+        DwEmployees dwEmployee = dwEmployeesDao.findById(node.get("idDwEmployee").asInt());
 
         if(dwEmployee.getRole() != null){
             if (dwEmployee.getRole().getIdRole() == 81){
@@ -309,15 +317,25 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
             }
         }
 
+        if (dwEmployee.getIdDwEmployee() != null){
+            Users users = usersDao.findByDwEmpployee(dwEmployee.getIdDwEmployee());
+            if (users != null){
+                SqlQueries query = sqlQueriesDao.findQuery(14);
+                sqlQueriesDao.lowDWEmployeeUser(query, users.getIdUser());
+            }
+        }
+
         Employees employee = dwEmployee.getEmployee();
         employee.setStatus(0);
         employeesDao.update(employee);
 
         EmployeesAccounts employeesAccounts = employeesAccountsService.findEmployeeAccountActive(employee.getIdEmployee());
 
+        String reason = node.get("reason").asText();
+
         CActionTypes actionType = CActionTypes.BAJA;
-        employeesHistoryService.save(dwEmployee, actionType, employeesAccounts.getAccount(), user);
-        DwEmployees dw=dwEmployee;
+        employeesHistoryService.save(dwEmployee, actionType, employeesAccounts.getAccount(), user, reason);
+        DwEmployees dw = dwEmployee;
         dwEmployeesDao.delete(dwEmployee);
 
         if(dw.getRole().getIdRole()==63 ||dw.getRole().getIdRole()==80) {
@@ -460,7 +478,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
             employeesAccountsDao.save(employeesAccount);
         }
 
-        employeesHistoryService.save(dwEmployee, CActionTypes.MODIFICAION, employeesAccount.getAccount(), user);
+        employeesHistoryService.save(dwEmployee, CActionTypes.MODIFICAION, employeesAccount.getAccount(), user, null);
 
         return dwEmployee;
     }
@@ -671,6 +689,7 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
         row.createCell(29).setCellValue("CORREO PERSONAL");
         row.createCell(30).setCellValue("FECHA DE BAJA");
         row.createCell(31).setCellValue("FECHA DE CAMBIO O PROMOCION");
+        row.createCell(32).setCellValue("NIVEL");
 
 
         //Implementacion del estilo
@@ -689,6 +708,10 @@ public class DwEmployeesServiceImpl implements DwEmployeesService {
                 CRoles role = cRolesDao.findById(eHistorys.getIdRole());
                 if (role != null){
                     row.createCell(9).setCellValue(role.getRoleName());
+
+                    if (role.getLevel() != null){
+                        row.createCell(32).setCellValue(role.getLevel());
+                    }
                 }
             }
 

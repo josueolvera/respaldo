@@ -2,8 +2,11 @@ package mx.bidg.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.config.JsonViews;
+import mx.bidg.model.CDateCalculation;
 import mx.bidg.model.CommissionAmountGroup;
 import mx.bidg.model.CommissionAmountGroupBackup;
+import mx.bidg.model.Users;
+import mx.bidg.service.CDateCalculationService;
 import mx.bidg.service.CommissionAmountGroupBackupService;
 import mx.bidg.service.CommissionAmountGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +14,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -33,14 +39,19 @@ public class CommissionAmountGroupBackupController {
     @Autowired
     ObjectMapper mapper;
 
+    @Autowired
+    CDateCalculationService cDateCalculationService;
+
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findAll() throws IOException{
         List<CommissionAmountGroupBackup> commissionAmountGroupBackupList = commissionAmountGroupBackupService.findAll();
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(commissionAmountGroupBackupList), HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> beginBackup() throws IOException{
+    @RequestMapping(value = "/save/{idDateCalculation}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> beginBackup(@PathVariable Integer idDateCalculation, HttpSession session) throws IOException{
+
+        Users user = (Users) session.getAttribute("user");
         List<CommissionAmountGroup> commissionAmountGroupList = commissionAmountGroupService.findAll();
 
         for(CommissionAmountGroup commissionAmountGroup : commissionAmountGroupList){
@@ -73,6 +84,14 @@ public class CommissionAmountGroupBackupController {
             commissionAmountGroupBackupService.save(commissionAmountGroupBackup);
         }
 
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(commissionAmountGroupBackupService.findAll()), HttpStatus.OK);
+        CDateCalculation cDateCalculation = cDateCalculationService.findById(idDateCalculation);
+
+        cDateCalculation.setUsername(user.getUsername());
+        cDateCalculation.setCreationDate(LocalDateTime.now());
+        cDateCalculation.setStatus(1);
+
+        cDateCalculationService.update(cDateCalculation);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(commissionAmountGroupService.findAll()), HttpStatus.OK);
     }
 }

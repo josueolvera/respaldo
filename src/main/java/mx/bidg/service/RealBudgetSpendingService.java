@@ -55,4 +55,6 @@ public interface RealBudgetSpendingService {
     RealBudgetSpending findByIdBudgetAndYear(Integer idBudget, Integer year);
 
     BigDecimal getTotalBudgetAmount (Integer idBudget, Integer year);
+
+    BigDecimal getAmountBudget(List<Budgets> budgets);
 }

@@ -32,4 +32,11 @@ public class SCOPAController {
         model.setViewName("aternaDrivers");
         return model;
     }
+
+    @RequestMapping(value = "/file-truck-driver", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView emiasegTruckdriver(){
+        ModelAndView model= new ModelAndView();
+        model.setViewName("emiaseg-info");
+        return model;
+    }
 }

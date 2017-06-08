@@ -68,6 +68,10 @@ public class DwBranchs implements Serializable {
     @JsonView(JsonViews.Root.class)
     private BigDecimal branchGoal;
 
+    @Column(name = "SCOPE")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal scope;
+
     public DwBranchs() {
     }
 
@@ -137,6 +141,14 @@ public class DwBranchs implements Serializable {
 
     public void setBranchGoal(BigDecimal branchGoal) {
         this.branchGoal = branchGoal;
+    }
+
+    public BigDecimal getScope() {
+        return scope;
+    }
+
+    public void setScope(BigDecimal scope) {
+        this.scope = scope;
     }
 
     @Override

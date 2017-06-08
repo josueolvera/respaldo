@@ -11,6 +11,8 @@ import mx.bidg.dao.RequestsDao;
 import mx.bidg.model.Requests;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -52,7 +54,8 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
 
     @Override
     public boolean delete(Requests entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        remove(entity);
+        return true;
     }
 
     @Override
@@ -78,7 +81,7 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
                 .setFetchMode("requestTypeProduct", FetchMode.JOIN)
                 .setFetchMode("requestTypeProduct.requestCategory", FetchMode.JOIN);
         return (Requests) criteria.uniqueResult();
-    }    
+    }
 
     @Override
     public List<Requests> findByRequestCategory(Integer idRequestCategory){
@@ -90,6 +93,45 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
         }
 
         return criteria.list();
+    }
+
+    @Override
+    public List<Requests> findByCategoryAndTypeByEmployee(Integer idRequestCategory, Integer idRequestType, Integer idEmployee) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idRequestCategory", idRequestCategory))
+                .add(Restrictions.eq("idRequestType", idRequestType))
+                .add(Restrictions.eq("idEmployee", idEmployee))
+                .list();
+    }
+
+    @Override
+    public List<Requests> findByCategoryAndTypeAndStatus(Integer idRequestCategory, Integer idRequestType) {
+
+        Criterion pendiante = Restrictions.eq("idRequestStatus", 1);
+        Criterion pCompra = Restrictions.eq("idRequestStatus", 2);
+        Criterion pPago = Restrictions.eq("idRequestStatus", 3);
+        Criterion vPlaneacion = Restrictions.eq("idRequestStatus", 4);
+        Criterion vNivel = Restrictions.eq("idRequestStatus", 5);
+
+        LogicalExpression expression = Restrictions.or(pendiante, pCompra);
+        LogicalExpression expression1 = Restrictions.or(expression, pPago);
+        LogicalExpression expression2 = Restrictions.or(expression1, vPlaneacion);
+        LogicalExpression expression3 = Restrictions.or(expression2, vNivel);
+
+
+        return createEntityCriteria()
+                .add(Restrictions.eq("idRequestCategory", idRequestCategory))
+                .add(Restrictions.eq("idRequestType", idRequestType))
+                .add(expression3)
+                .list();
+    }
+
+    @Override
+    public List<Requests> findByCategoryAndType(Integer idRequestCategory, Integer idRequestType) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idRequestCategory", idRequestCategory))
+                .add(Restrictions.eq("idRequestType", idRequestType))
+                .list();
     }
 
 }

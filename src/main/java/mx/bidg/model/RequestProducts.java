@@ -28,24 +28,25 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "REQUEST_PRODUCTS")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class RequestProducts implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
     @Column(name = "ID_REQUEST_PRODUCT")
     @JsonView(JsonViews.Root.class)
     private Integer idRequestProduct;
-    
+
     @Column(name = "ID_REQUEST", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idRequest;
-    
+
     @Column(name = "ID_ROLE_PRODUCT_REQUEST", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idRoleProductRequest;
 
-    @Column(name = "QUANTITY", insertable = false, updatable = false)
+    @Column(name = "QUANTITY")
     @JsonView(JsonViews.Root.class)
     private Integer quantity;
 
@@ -69,7 +70,7 @@ public class RequestProducts implements Serializable {
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
     private RoleProductRequest roleProductRequest;
-    
+
     @JoinColumn(name = "ID_REQUEST", referencedColumnName = "ID_REQUEST")
     @ManyToOne(optional = false)
     @JsonView(JsonViews.Embedded.class)
@@ -159,26 +160,17 @@ public class RequestProducts implements Serializable {
 
         RequestProducts that = (RequestProducts) o;
 
-        if (!getIdRequestProduct().equals(that.getIdRequestProduct())) return false;
-        if (!getIdRequest().equals(that.getIdRequest())) return false;
-        if (!getIdRoleProductRequest().equals(that.getIdRoleProductRequest())) return false;
-        if (!getQuantity().equals(that.getQuantity())) return false;
-        if (!getIdAccessLevel().equals(that.getIdAccessLevel())) return false;
-        if (!getCreationDate().equals(that.getCreationDate())) return false;
-        if (!getUsername().equals(that.getUsername())) return false;
-        return getRequest().equals(that.getRequest());
+        if (idRequestProduct != null ? !idRequestProduct.equals(that.idRequestProduct) : that.idRequestProduct != null)
+            return false;
+        if (idRequest != null ? !idRequest.equals(that.idRequest) : that.idRequest != null) return false;
+        return idRoleProductRequest != null ? idRoleProductRequest.equals(that.idRoleProductRequest) : that.idRoleProductRequest == null;
     }
 
     @Override
     public int hashCode() {
-        int result = getIdRequestProduct().hashCode();
-        result = 31 * result + getIdRequest().hashCode();
-        result = 31 * result + getIdRoleProductRequest().hashCode();
-        result = 31 * result + getQuantity().hashCode();
-        result = 31 * result + getIdAccessLevel().hashCode();
-        result = 31 * result + getCreationDate().hashCode();
-        result = 31 * result + getUsername().hashCode();
-        result = 31 * result + getRequest().hashCode();
+        int result = idRequestProduct != null ? idRequestProduct.hashCode() : 0;
+        result = 31 * result + (idRequest != null ? idRequest.hashCode() : 0);
+        result = 31 * result + (idRoleProductRequest != null ? idRoleProductRequest.hashCode() : 0);
         return result;
     }
 

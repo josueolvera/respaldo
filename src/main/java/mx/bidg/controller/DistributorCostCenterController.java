@@ -216,13 +216,9 @@ public class DistributorCostCenterController {
 
     @RequestMapping(value = "/category/{idCostCenter}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findIdsAccountingAccountsByCostCenter(@PathVariable Integer idCostCenter) throws IOException{
-        List<Integer> idsAccountingAccounts =  distributorCostCenterService.getIdsAccountingAccountsByCostCenter(idCostCenter);
-        List<AccountingAccounts> accountingAccountsList = new ArrayList<>();
-        for (Integer idAccountingAccount : idsAccountingAccounts){
-            AccountingAccounts accountingAccount = accountingAccountsService.findById(idAccountingAccount);
-            if(accountingAccount.getIdBudgetSubcategory() != 0 && accountingAccount.getIdBudgetSubSubcategories() == 0)
-                accountingAccountsList.add(accountingAccount);
-        }
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(accountingAccountsList), HttpStatus.OK);
+
+        List<AccountingAccounts> accountingAccounts =  distributorCostCenterService.getIdsAccountingAccountsByCostCenter(idCostCenter);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(accountingAccounts), HttpStatus.OK);
+
     }
 }

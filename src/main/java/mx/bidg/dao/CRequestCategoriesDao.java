@@ -7,4 +7,5 @@ import mx.bidg.model.CRequestsCategories;
  *         Created on 19/11/15.
  */
 public interface CRequestCategoriesDao extends InterfaceDao<CRequestsCategories> {
+    CRequestsCategories getById(Integer id);
 }

@@ -322,4 +322,479 @@ public class CommissionAmountGroupDaoImpl extends AbstractDao<Integer, Commissio
                         agreementsGroupCondition.getAmountMax()))
                 .list();
     }
+
+    @Override
+    public CommissionAmountGroup findSaleByBranchWithAmountPemex(Integer idBranch) {
+        return (CommissionAmountGroup) createEntityCriteria()
+                .add(Restrictions.eq("idAg", 21))
+                .add(Restrictions.eq("idBranch", idBranch))
+                .uniqueResult();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findBranchsWithTabulatorByZona(Integer idZona) {
+        return createEntityCriteria().add(Restrictions.eq("idAg", 20))
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .add(Restrictions.eq("idZona", idZona))
+                .list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findBranchsWithTabulatorByRegion(Integer idRegion) {
+        return createEntityCriteria().add(Restrictions.eq("idAg", 20))
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .add(Restrictions.eq("idRegion", idRegion))
+                .list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> getBranchWithTabulatorByGBranch() {
+        return createEntityCriteria().add(Restrictions.eq("idAg", 20))
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findBranchsWithTabulatorByDistributor(Integer idDistributor) {
+        return createEntityCriteria().add(Restrictions.eq("idAg", 20))
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .list();
+    }
+
+    @Override
+    public List<Integer> getOnlyIdsZonasFromGroupZona() {
+        Criteria criteria = createEntityCriteria();
+
+        return criteria.setProjection(
+                Projections.distinct(Projections.property("idZona")))
+                .add(Restrictions.eq("idAg", 23))
+                .list();
+    }
+
+    @Override
+    public List getSumAmountsAndNumOfBranchsByZona(Integer idZona) {
+        Criteria criteria = createEntityCriteria();
+        ProjectionList projectionList = Projections.projectionList();
+
+        projectionList.add(Projections.distinct(Projections.groupProperty("idZona")));
+        projectionList.add(Projections.sum("amount"));
+        projectionList.add(Projections.count("idBranch"));
+
+        return criteria.setProjection(projectionList)
+                .add(Restrictions.eq("idZona", idZona))
+                .add(Restrictions.eq("idAg", 20))
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .list();
+    }
+
+    @Override
+    public List getSumAmountsAndNumOfBranchsByDistributorAndZona(Integer idDistributor, Integer idZona) {
+        Criteria criteria = createEntityCriteria();
+        ProjectionList projectionList = Projections.projectionList();
+
+        projectionList.add(Projections.distinct(Projections.groupProperty("idDistributor")));
+        projectionList.add(Projections.sum("amount"));
+        projectionList.add(Projections.count("idBranch"));
+        projectionList.add(Projections.groupProperty("idZona"));
+
+        return criteria
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idZona", idZona))
+                .add(Restrictions.eq("idAg", 20))
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .setProjection(projectionList)
+                .list();
+    }
+
+    @Override
+    public List getSumAmountsAndNumOfBranchsByZonaPemex(Integer idZona) {
+        Criteria criteria = createEntityCriteria();
+        ProjectionList projectionList = Projections.projectionList();
+
+        projectionList.add(Projections.distinct(Projections.groupProperty("idZona")));
+        projectionList.add(Projections.sum("amount"));
+        projectionList.add(Projections.count("idBranch"));
+
+        return criteria.setProjection(projectionList)
+                .add(Restrictions.eq("idZona", idZona))
+                .add(Restrictions.eq("idAg", 21))
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .list();
+    }
+
+    @Override
+    public List getSumAmountsAndNumOfBranchsByDistributorAndZonaPemex(Integer idDistributor, Integer idZona) {
+        Criteria criteria = createEntityCriteria();
+        ProjectionList projectionList = Projections.projectionList();
+
+        projectionList.add(Projections.distinct(Projections.groupProperty("idDistributor")));
+        projectionList.add(Projections.sum("amount"));
+        projectionList.add(Projections.count("idBranch"));
+        projectionList.add(Projections.groupProperty("idZona"));
+
+        return criteria.setProjection(projectionList)
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idZona", idZona))
+                .add(Restrictions.eq("idAg", 21))
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .list();
+    }
+
+    @Override
+    public CommissionAmountGroup findZonaByBranchAndDistributorInGroupZona(Integer idDistributor, Integer idZona) {
+        return (CommissionAmountGroup) createEntityCriteria()
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idZona", idZona))
+                .add(Restrictions.eq("idAg", 23))
+                .uniqueResult();
+    }
+
+    @Override
+    public CommissionAmountGroup findZonaByBranchAndDistributorInGroupZonaP(Integer idDistributor, Integer idZona) {
+        return (CommissionAmountGroup) createEntityCriteria()
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idZona", idZona))
+                .add(Restrictions.eq("idAg", 31))
+                .uniqueResult();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findByGroupBranchAndTabulatorBranch() {
+        return createEntityCriteria().add(Restrictions.ne("idAg",18)).add(Restrictions.ne("idAg",21))
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .add(Restrictions.isNotNull("idBranch"))
+                .list();
+    }
+
+    @Override
+    public BigDecimal getSumAmountsByDistributorAndZona(Integer idDistributor, Integer idZona) {
+        Criteria criteria = createEntityCriteria();
+        ProjectionList projectionList = Projections.projectionList();
+
+        projectionList.add(Projections.distinct(Projections.groupProperty("idDistributor")));
+        projectionList.add(Projections.sum("amount"));
+        projectionList.add(Projections.count("idBranch"));
+        projectionList.add(Projections.groupProperty("idZona"));
+
+        return (BigDecimal) criteria
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idZona", idZona))
+                .add(Restrictions.eq("idAg", 20))
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .setProjection(Projections.sum("amount"))
+                .uniqueResult();
+    }
+
+    @Override
+    public Long getNumOfBranchsByDistributorAndZona(Integer idDistributor, Integer idZona) {
+        Criteria criteria = createEntityCriteria();
+
+        return (Long) criteria
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idZona", idZona))
+                .add(Restrictions.eq("idAg", 20))
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .setProjection(Projections.count("idBranch"))
+                .uniqueResult();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findAllBranchsByZonaAndDistributor(Integer idDistributor, Integer idZona) {
+        Criteria criteria = createEntityCriteria();
+
+        return  criteria
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idZona", idZona))
+                .add(Restrictions.eq("idAg", 20))
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .list();
+    }
+
+    @Override
+    public BigDecimal getSumAmountsByDistributorAndZonaP(Integer idDistributor, Integer idZona) {
+        Criteria criteria = createEntityCriteria();
+        ProjectionList projectionList = Projections.projectionList();
+
+        projectionList.add(Projections.distinct(Projections.groupProperty("idDistributor")));
+        projectionList.add(Projections.sum("amount"));
+        projectionList.add(Projections.count("idBranch"));
+        projectionList.add(Projections.groupProperty("idZona"));
+
+        return (BigDecimal) criteria
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idZona", idZona))
+                .add(Restrictions.eq("idAg", 21))
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .setProjection(Projections.sum("amount"))
+                .uniqueResult();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findAllBranchsPByZonaAndDistributor(Integer idDistributor, Integer idZona) {
+        return  createEntityCriteria()
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idZona", idZona))
+                .add(Restrictions.eq("idAg", 21))
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .list();
+    }
+
+    @Override
+    public List<Integer> getOnlyIdsRegionsFromGroupRegion() {
+        Criteria criteria = createEntityCriteria();
+
+        return criteria.setProjection(
+                Projections.distinct(Projections.property("idRegion")))
+                .add(Restrictions.eq("idAg", 24))
+                .list();
+    }
+
+    @Override
+    public List getSumAmountsAndNumOfBranchsByRegion(Integer idRegion) {
+        Criteria criteria = createEntityCriteria();
+        ProjectionList projectionList = Projections.projectionList();
+
+        projectionList.add(Projections.distinct(Projections.groupProperty("idRegion")));
+        projectionList.add(Projections.sum("amount"));
+        projectionList.add(Projections.count("idBranch"));
+
+        return criteria.setProjection(projectionList)
+                .add(Restrictions.eq("idRegion", idRegion))
+                .add(Restrictions.eq("idAg", 20))
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .list();
+    }
+
+    @Override
+    public List getSumAmountsAndNumOfBranchsByRegionPemex(Integer idRegion) {
+        Criteria criteria = createEntityCriteria();
+        ProjectionList projectionList = Projections.projectionList();
+
+        projectionList.add(Projections.distinct(Projections.groupProperty("idRegion")));
+        projectionList.add(Projections.sum("amount"));
+        projectionList.add(Projections.count("idBranch"));
+
+        return criteria.setProjection(projectionList)
+                .add(Restrictions.eq("idRegion", idRegion))
+                .add(Restrictions.eq("idAg", 21))
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .list();
+    }
+
+    @Override
+    public BigDecimal getSumAmountsByDistributorAndRegion(Integer idDistributor, Integer idRegion) {
+        Criteria criteria = createEntityCriteria();
+        ProjectionList projectionList = Projections.projectionList();
+
+        projectionList.add(Projections.distinct(Projections.groupProperty("idDistributor")));
+        projectionList.add(Projections.sum("amount"));
+        projectionList.add(Projections.count("idBranch"));
+        projectionList.add(Projections.groupProperty("idRegion"));
+
+        return (BigDecimal) criteria
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idRegion", idRegion))
+                .add(Restrictions.eq("idAg", 20))
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .setProjection(Projections.sum("amount"))
+                .uniqueResult();
+    }
+
+    @Override
+    public BigDecimal getSumAmountsByDistributorAndRegionP(Integer idDistributor, Integer idRegion) {
+        Criteria criteria = createEntityCriteria();
+        ProjectionList projectionList = Projections.projectionList();
+
+        projectionList.add(Projections.distinct(Projections.groupProperty("idDistributor")));
+        projectionList.add(Projections.sum("amount"));
+        projectionList.add(Projections.count("idBranch"));
+        projectionList.add(Projections.groupProperty("idRegion"));
+
+        return (BigDecimal) criteria
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idRegion", idRegion))
+                .add(Restrictions.eq("idAg", 21))
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .setProjection(Projections.sum("amount"))
+                .uniqueResult();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findAllBranchsByRegionAndDistributor(Integer idDistributor, Integer idRegion) {
+        Criteria criteria = createEntityCriteria();
+
+        return  criteria
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idRegion", idRegion))
+                .add(Restrictions.eq("idAg", 20))
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findAllBranchsPByRegionAndDistributor(Integer idDistributor, Integer idRegion) {
+        Criteria criteria = createEntityCriteria();
+
+        return  criteria
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idRegion", idRegion))
+                .add(Restrictions.eq("idAg", 21))
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .list();
+    }
+
+    @Override
+    public CommissionAmountGroup findRegionByRegionAndDistributorInGroupRegion(Integer idDistributor, Integer idRegion) {
+        return (CommissionAmountGroup) createEntityCriteria()
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idRegion", idRegion))
+                .add(Restrictions.eq("idAg", 24))
+                .uniqueResult();
+    }
+
+    @Override
+    public CommissionAmountGroup findRegionByRegionAndDistributorInGroupRegionP(Integer idDistributor, Integer idRegion) {
+        return (CommissionAmountGroup) createEntityCriteria()
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idRegion", idRegion))
+                .add(Restrictions.eq("idAg", 32))
+                .uniqueResult();
+    }
+
+    @Override
+    public List getSumAmountsAndNumOfBranchsByRegionAndCondition(Integer idRegion, AgreementsGroupCondition groupCondition) {
+        Criteria criteria = createEntityCriteria();
+        ProjectionList projectionList = Projections.projectionList();
+
+        projectionList.add(Projections.distinct(Projections.groupProperty("idRegion")));
+        projectionList.add(Projections.sum("amount"));
+        projectionList.add(Projections.count("idBranch"));
+
+        return criteria.setProjection(projectionList)
+                .add(Restrictions.eq("idRegion", idRegion))
+                .add(Restrictions.eq("idAg", 20))
+                .add(Restrictions.between("scope",groupCondition.getAmountMin(),
+                        groupCondition.getAmountMax()))
+                .list();
+    }
+
+    @Override
+    public BigDecimal getSumAmountsByDistributorAndRegionAndCondition(Integer idDistributor, Integer idRegion, AgreementsGroupCondition groupCondition) {
+        Criteria criteria = createEntityCriteria();
+
+        return (BigDecimal) criteria
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idRegion", idRegion))
+                .add(Restrictions.eq("idAg", 20))
+                .add(Restrictions.between("scope",groupCondition.getAmountMin(),
+                        groupCondition.getAmountMax()))
+                .setProjection(Projections.sum("amount"))
+                .uniqueResult();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findAllBranchsByRegionAndDistributorAndCondition(Integer idDistributor, Integer idRegion, AgreementsGroupCondition groupCondition) {
+        Criteria criteria = createEntityCriteria();
+
+        return  criteria
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idRegion", idRegion))
+                .add(Restrictions.eq("idAg", 20))
+                .add(Restrictions.between("scope",groupCondition.getAmountMin(),
+                        groupCondition.getAmountMax()))
+                .list();
+    }
+
+    @Override
+    public List getSumAmountsAndNumOfBranchsByZonaAndCondition(Integer idZona, AgreementsGroupCondition groupCondition) {
+        Criteria criteria = createEntityCriteria();
+        ProjectionList projectionList = Projections.projectionList();
+
+        projectionList.add(Projections.distinct(Projections.groupProperty("idZona")));
+        projectionList.add(Projections.sum("amount"));
+        projectionList.add(Projections.count("idBranch"));
+
+        return criteria.setProjection(projectionList)
+                .add(Restrictions.eq("idZona", idZona))
+                .add(Restrictions.eq("idAg", 20))
+                .add(Restrictions.between("scope",groupCondition.getAmountMin(),
+                        groupCondition.getAmountMax()))
+                .list();
+    }
+
+    @Override
+    public BigDecimal getSumAmountsByDistributorAndZonaAndCondition(Integer idDistributor, Integer idZona, AgreementsGroupCondition groupCondition) {
+        Criteria criteria = createEntityCriteria();
+
+        return (BigDecimal) criteria
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idZona", idZona))
+                .add(Restrictions.eq("idAg", 20))
+                .add(Restrictions.between("scope",groupCondition.getAmountMin(),
+                        groupCondition.getAmountMax()))
+                .setProjection(Projections.sum("amount"))
+                .uniqueResult();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findAllBranchsByZonaAndDistributorAndCondition(Integer idDistributor, Integer idZona, AgreementsGroupCondition groupCondition) {
+        Criteria criteria = createEntityCriteria();
+
+        return  criteria
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idZona", idZona))
+                .add(Restrictions.eq("idAg", 20))
+                .add(Restrictions.between("scope",groupCondition.getAmountMin(),
+                        groupCondition.getAmountMax()))
+                .list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> getBranchsWithScopeGoalAndTabulator() {
+        return createEntityCriteria().add(Restrictions.ne("idAg",18)).add(Restrictions.ne("idAg",21))
+                .add(Restrictions.isNotNull("idBranch")).add(Restrictions.ge("tabulator", new BigDecimal(0.00)))
+                .list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> getBranchWithTabulatorByGBranchAndGBP() {
+        LogicalExpression expression = Restrictions.or(Restrictions.eq("idAg", 20), Restrictions.eq("idAg", 21));
+        return createEntityCriteria().add(expression)
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .list();
+    }
+
+    @Override
+    public List<CommissionAmountGroup> findBranchsAndBPWithTabulatorByDistributor(Integer idDistributor) {
+        LogicalExpression expression = Restrictions.or(Restrictions.eq("idAg", 20), Restrictions.eq("idAg", 21));
+        return createEntityCriteria()
+                .add(expression)
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .list();
+    }
+
+    @Override
+    public CommissionAmountGroup findZonaByBranchAndDistributorInGroupZonaGT(Integer idDistributor, Integer idZona) {
+        LogicalExpression expression = Restrictions.and(Restrictions.gt("tabulator", new BigDecimal(0.00)), Restrictions.isNotNull("tabulator"));
+        return (CommissionAmountGroup) createEntityCriteria()
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idZona", idZona))
+                .add(Restrictions.eq("idAg", 23))
+                .add(expression)
+                .uniqueResult();
+    }
+
+    @Override
+    public CommissionAmountGroup findRegionByRegionAndDistributorInGroupRegionGT(Integer idDistributor, Integer idRegion) {
+        LogicalExpression expression = Restrictions.and(Restrictions.gt("tabulator", new BigDecimal(0.00)), Restrictions.isNotNull("tabulator"));
+        return (CommissionAmountGroup) createEntityCriteria()
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idRegion", idRegion))
+                .add(Restrictions.eq("idAg", 24))
+                .add(Restrictions.gt("tabulator", new BigDecimal(0.00)))
+                .add(expression)
+                .uniqueResult();
+    }
 }

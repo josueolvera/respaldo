@@ -9,6 +9,8 @@ import java.util.List;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.RequestProductsDao;
 import mx.bidg.model.RequestProducts;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -22,22 +24,32 @@ public class RequestProductsDaoImpl extends AbstractDao<Integer, RequestProducts
 
     @Override
     public RequestProducts findById(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return getByKey(id);
     }
 
     @Override
     public List<RequestProducts> findAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return  createEntityCriteria().list();
     }
 
     @Override
     public RequestProducts update(RequestProducts entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        modify(entity);
+        return entity;
     }
 
     @Override
     public boolean delete(RequestProducts entity) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        remove(entity);
+        return true;
     }
-    
+
+    @Override
+    public List<RequestProducts> findByIdRequest(Integer idRequest) {
+        return createEntityCriteria().add(Restrictions.eq("idRequest", idRequest))
+                .setFetchMode("request", FetchMode.JOIN)
+                .setFetchMode("roleProductRequest", FetchMode.JOIN)
+                .list()
+                ;
+    }
 }

@@ -44,4 +44,9 @@ public class CDateCalculationServiceImpl implements CDateCalculationService {
         cDateCalculationDao.delete(cDateCalculation);
         return true;
     }
+
+    @Override
+    public List<CDateCalculation> findByStatus(Integer status) {
+        return cDateCalculationDao.findByStatus(status);
+    }
 }

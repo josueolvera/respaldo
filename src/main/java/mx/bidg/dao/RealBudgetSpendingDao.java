@@ -31,4 +31,5 @@ public interface RealBudgetSpendingDao extends InterfaceDao<RealBudgetSpending> 
     List<RealBudgetSpending> findByBudgetAndYearAndNoAuthorized(Integer idBudget, Integer year, boolean authorized);
     RealBudgetSpending findByIdBudgetAndYear(Integer idBudget, Integer year);
     BigDecimal getTotalBudgetAmount(Integer idBuget, int year);
+    BigDecimal sumTotalBudgetByMonthAndYear(List<Budgets> budgets, int month, int year);
 }

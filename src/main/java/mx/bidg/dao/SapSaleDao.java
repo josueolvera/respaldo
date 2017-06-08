@@ -20,4 +20,6 @@ public interface SapSaleDao extends InterfaceDao<SapSale>  {
     List findByDistributorGroup(List<GroupsAgreements>groupsAgreementsList, LocalDateTime fromDate, LocalDateTime toDate);
     List findBySupervisorRoleAndGroup(Integer idEmployee,List<GroupsAgreements>groupsAgreementsList, LocalDateTime fromDate, LocalDateTime toDate);
     Object sumTotalAmuntBeteween(Integer idDistributor, LocalDateTime fromDate, LocalDateTime toDate);
+    List<String> getAllSaleStatus();
+    List<SapSale> findAllSalesByStatusAndDates(List<String> status, String startDate, String endDate)throws Exception;
 }

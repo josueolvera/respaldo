@@ -26,7 +26,7 @@ public interface EmployeesHistoryService {
             String endDate,
             Integer idEmployee
     );
-    EmployeesHistory save(DwEmployees dwEmployee, CActionTypes actionType, Accounts accounts, Users user);
+    EmployeesHistory save(DwEmployees dwEmployee, CActionTypes actionType, Accounts accounts, Users user,String reason);
     List<EmployeesHistory>findByIdDistributor(Integer idDistributor);
     EmployeesHistory findByIdEmployeeAndLastRegister(Integer idEmployee);
     EmployeesHistory findIdEmployee(Integer idEmployee);

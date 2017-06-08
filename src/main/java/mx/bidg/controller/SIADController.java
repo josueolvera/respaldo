@@ -262,8 +262,9 @@ public class SIADController {
     }
 
     @RequestMapping(value = "/request-spending-detail-current", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public ModelAndView siadRequestSpendingDetailCurrent() {
+    public ModelAndView siadRequestSpendingDetailCurrent(@RequestParam(name = "idRequest") Integer idRequest) {
         ModelAndView model = new ModelAndView();
+        model.addObject("idRequest", idRequest);
         model.setViewName("request-spending-detail-current");
         return model;
     }
@@ -325,7 +326,7 @@ public class SIADController {
     }
 
     @RequestMapping(value = "/requests-detail", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
-    public ModelAndView updateEmployee(@RequestParam(name = "idRequest") Integer idRequest) {
+    public ModelAndView requestDetailUser(@RequestParam(name = "idRequest") Integer idRequest) {
         ModelAndView model = new ModelAndView();
         model.addObject("idRequest", idRequest);
         model.setViewName("requests-detail-user");

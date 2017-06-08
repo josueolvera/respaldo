@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @DynamicUpdate
-@Table(name = "C_PRODUCTS_REQUEST")
+@Table(name = "ROLE_PRODUCT_REQUEST")
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class RoleProductRequest implements Serializable {
 	

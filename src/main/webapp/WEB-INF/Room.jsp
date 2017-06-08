@@ -107,9 +107,9 @@
                         var var1 = moment(this.startHour, 'HH:mm a').format('LT');
                         var var2 = moment(this.endHour, 'HH:mm a').format('LT');
                         var var3 = moment(actual).format('LT');
-                        var fecha = new Date(moment(this.selectedDay).format('YYYY-MM-DD'));
+                        var fecha = new Date(moment(this.selectedDay, 'YYYY-MM-DD').toDate());
                         var mesIn = fecha.getMonth()+1;
-                        var diaIn = fecha.getDate()+1;
+                        var diaIn = fecha.getDate();
                         var fechaIngresa = fecha.getFullYear()+"-"+mesIn+"-"+diaIn;
                         var fechaDeHoy = new Date();
                         //var horaActual = actual.getHours();

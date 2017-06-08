@@ -106,7 +106,7 @@
                         });
                     },
                     saveCalculation : function () {
-                        this.$http.get(ROOT_URL + "/backup-commission/save").success(function (data) {
+                        this.$http.get(ROOT_URL + "/backup-commission/save/"+ this.typeCalculation.idDateCalculation).success(function (data) {
                             this.commission = data;
                             showAlert("Calculo guardado con exito");
                             this.btn = true;
@@ -148,7 +148,7 @@
 //                        showAlert('No es posible generar debido a que no existen empleados asignados', {type:2});
                     },
                     obtainDateType: function () {
-                        this.$http.get(ROOT_URL + "/date-calculation").success(function (data) {
+                        this.$http.get(ROOT_URL + "/date-calculation/status/3").success(function (data) {
                             this.dateTypes = data;
                         }).error(function () {
                             showAlert("Error al generar la solicitud", {type: 3});

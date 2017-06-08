@@ -2,6 +2,8 @@ package mx.bidg.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,10 +12,7 @@ import java.util.List;
 import mx.bidg.dao.*;
 import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
-import mx.bidg.service.EmailDeliveryService;
-import mx.bidg.service.EmailTemplatesService;
-import mx.bidg.service.FoliosService;
-import mx.bidg.service.RequestsService;
+import mx.bidg.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -71,6 +70,12 @@ public class RequestsServiceImpl implements RequestsService {
     @Autowired
     private ObjectMapper mapper;
 
+    @Autowired
+    private DistributorCostCenterDao distributorCostCenterDao;
+
+    @Autowired
+    private RequestHistoryService requestHistoryService;
+
     @Override
     public HashMap<String, Object> getBudgetMonthProductType(String data) throws Exception {
 
@@ -127,43 +132,56 @@ public class RequestsServiceImpl implements RequestsService {
 
         JsonNode jsonRequest = mapper.readTree(data);
         Requests request = new Requests();
-//        request.setDescription(jsonRequest.get("request").get("description").asText());
-//        request.setPurpose(jsonRequest.get("request").get("purpose").asText());
+
+        String justify = (jsonRequest.get("request").get("purpose").asText());
         int idCostCenter = jsonRequest.get("request").get("idCostCenter").asInt();
-        int idBudgetCategory = jsonRequest.get("request").get("idBudgetCategory").asInt();
-        int idBudgetSubcategory = jsonRequest.get("request").get("idBudgetSubcategory").asInt();
-        int idRequestCategory = jsonRequest.get("request").get("idRequestCategory").asInt();
-        int year = LocalDateTime.now().getYear();
+        int idAccountingAccounts = jsonRequest.get("request").get("idAccountingAccount").asInt();
 
-        int idMonth =LocalDateTime.now().getMonth().getValue();
-        CMonths months=cMonthsDao.findById(idMonth);
-//        request.setcMonths(months);
 
-        AccountingAccounts accountingAccounts=accountingAccountsDao.findByCategoryAndSubcategory(idBudgetCategory,idBudgetSubcategory);
+        DistributorCostCenter distributorCostCenter = distributorCostCenterDao.findByIdCostCenterAndAA(idCostCenter, idAccountingAccounts);
+
 
         //51 es el id de Requests en CTables
         request.setFolio(foliosService.createNew(new CTables(51)));
-//        request.setUserRequest(user);
-        request.setRequestStatus(CRequestStatus.PENDIENTE);
-        //request.setBudgetYear(budgetYear);
-        //request.setUserResponsible(new Users(jsonRequest.get("request").get("idUserResponsible").asInt()));
-//        request.setUserResponsible(user);
+        request.setRequestStatus(CRequestStatus.ENVIADA_PENDIENTE);
+        request.setRequestCategory(CRequestsCategories.SOLICITUD);
+        request.setRequestType(CRequestTypes.VIGENTES);
+        request.setDistributorCostCenter(distributorCostCenter);
+        request.setIdAccessLevel(1);
+        request.setTotalExpended(new BigDecimal(0.00));
+        request.setReason(justify);
+
+        if (user != null){
+            request.setUserName(user.getUsername());
+            if (user.getDwEmployee() != null){
+                if (user.getDwEmployee().getEmployee() != null){
+                    request.setEmployees(user.getDwEmployee().getEmployee());
+                }
+            }
+        }
+
         request.setCreationDate(LocalDateTime.now());
-//        request.setApplyingDate(LocalDateTime.now());
         request.setIdAccessLevel(1);
         List<RequestProducts> requestProducts = new ArrayList<>();
 
         for(JsonNode jsonProducts : jsonRequest.get("products")) {
-            CProducts product = new CProducts(jsonProducts.get("idProduct").asInt());
+            RoleProductRequest roleProductRequest = new RoleProductRequest(jsonProducts.get("productBuy").get("idRoleProductRequest").asInt());
+
             RequestProducts requestProduct = new RequestProducts();
-           // requestProduct.setProduct(product);
+
+            requestProduct.setRoleProductRequest(roleProductRequest);
             requestProduct.setRequest(request);
             requestProduct.setIdAccessLevel(1);
+            requestProduct.setCreationDate(LocalDateTime.now());
+            requestProduct.setUsername(user.getUsername());
+            requestProduct.setQuantity(jsonProducts.get("quantity").asInt());
             requestProducts.add(requestProduct);
         }
 
         request.setRequestProductsList(requestProducts);
         request = requestsDao.save(request);
+
+        requestHistoryService.saveRequest(request, user);
 
         return request;
     }
@@ -176,10 +194,10 @@ public class RequestsServiceImpl implements RequestsService {
             throw new ValidationException("No existe el request", "No se encuentra la solicitud", HttpStatus.CONFLICT);
         }
 
-        if((request.getIdRequestStatus() != CRequestStatus.COTIZADA.getIdRequestStatus())
-                && request.getIdRequestStatus() != CRequestStatus.PENDIENTE.getIdRequestStatus()) {
-            throw new ValidationException("Estatus de la solicitud invalida", "Esta solicitud ya fue validada anteriormente", HttpStatus.CONFLICT);
-        }
+//        if((request.getIdRequestStatus() != CRequestStatus.COTIZADA.getIdRequestStatus())
+//                && request.getIdRequestStatus() != CRequestStatus.PENDIENTE.getIdRequestStatus()) {
+//            throw new ValidationException("Estatus de la solicitud invalida", "Esta solicitud ya fue validada anteriormente", HttpStatus.CONFLICT);
+//        }
 
         boolean estimationAccepted = false;
         List<PriceEstimations> estimations = priceEstimationsDao.findByIdRequest(idRequest);
@@ -219,7 +237,7 @@ public class RequestsServiceImpl implements RequestsService {
         if (periodicsPayment != null) {
             periodicsPayment.setPeriodicPaymentStatus(CPeriodicPaymentsStatus.ACTIVO);
         }
-        request.setRequestStatus(CRequestStatus.APROBADA);
+//        request.setRequestStatus(CRequestStatus.APROBADA);
         return requestsDao.update(request);
     }
 
@@ -274,5 +292,63 @@ public class RequestsServiceImpl implements RequestsService {
     @Override
     public List<Requests> findByRequestCategory(Integer idRequestCategory) {
         return requestsDao.findByRequestCategory(idRequestCategory);
+    }
+
+    @Override
+    public List<Requests> findByCategoryAndTypeByEmployee(Integer idRequestCategory, Integer idRequestType, Integer idEmployee) {
+        return requestsDao.findByCategoryAndTypeByEmployee(idRequestCategory, idRequestType, idEmployee);
+    }
+
+    @Override
+    public List<Requests> findByCategoryAndType(Integer idRequestCategory, Integer idRequestType) {
+        return requestsDao.findByCategoryAndType(idRequestCategory, idRequestType);
+    }
+
+    @Override
+    public boolean deleteRequest(Integer idRequest) {
+
+        Requests request = requestsDao.findById(idRequest);
+
+        boolean aux = false;
+        if (request != null){
+            List<PriceEstimations> priceEstimationsList = priceEstimationsDao.findByIdRequest(request.getIdRequest());
+
+            if (!priceEstimationsList.isEmpty()){
+                for (PriceEstimations priceEstimations : priceEstimationsList){
+                    priceEstimationsDao.delete(priceEstimations);
+                }
+            }
+
+            List<RequestProducts> requestProductsList = requestProductsDao.findByIdRequest(request.getIdRequest());
+
+            if (!requestProductsList.isEmpty()){
+                for (RequestProducts requestProducts : requestProductsList){
+                    requestProductsDao.delete(requestProducts);
+                }
+            }
+
+            aux = requestsDao.delete(request);
+        }
+        return aux;
+    }
+
+    @Override
+    public List<Requests> findByCategoryAndTypeAndStatus(Integer idRequestCategory, Integer idRequestType) {
+        return requestsDao.findByCategoryAndTypeAndStatus(idRequestCategory, idRequestType);
+    }
+
+    @Override
+    public Requests rejectRequest(Integer idRequest, String rejectJustify, Users user) {
+        Requests request = requestsDao.findById(idRequest);
+
+        if (request != null){
+            request.setRequestStatus(CRequestStatus.RECHAZADA);
+            request.setRequestType(CRequestTypes.RECHAZADA);
+            request.setReasonResponsible(rejectJustify);
+            request = requestsDao.update(request);
+
+            requestHistoryService.saveRequest(request, user);
+        }
+        return request;
     }
 }

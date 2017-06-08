@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
-import mx.bidg.model.PriceEstimations;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -29,16 +28,16 @@ public class RequestOrderDocuments implements Serializable {
     @JsonView(JsonViews.Root.class)
 	private Integer idRequestOrderDocument;
 	
-	@Column(name = "ID_PRICE_ESTIMATION", insertable = false, updatable = false)
+	@Column(name = "ID_PRICE_ESTIMATIONS", insertable = false, updatable = false)
 	@JsonView(JsonViews.Root.class)
 	private int idPriceEstimation;
 	
-	@Size(max = 45)
+	@Size(max = 150)
     @Column(name = "FILE_PATH")
     @JsonView(JsonViews.Root.class)
 	private String filePath;
 	
-	@Size(max = 45)
+	@Size(max = 100)
     @Column(name = "FILE_NAME")
     @JsonView(JsonViews.Root.class)
 	private String fileName;
@@ -57,7 +56,7 @@ public class RequestOrderDocuments implements Serializable {
 	
 	//Relaciones
 	@JoinColumn(name = "ID_PRICE_ESTIMATION", referencedColumnName = "ID_PRICE_ESTIMATION")
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JsonView(JsonViews.Embedded.class)
     private PriceEstimations priceEstimations;
 	

@@ -29,6 +29,10 @@
                     calculateDate: '',
                     datetimepickerCalculateDate: '',
                     layoutDownloadUrl: ROOT_URL + "/sap-file/layout/download/",
+                    range: {
+                        initial: '',
+                        final: ''
+                    }
                 },
                 methods: {
                     setUpTimePickerCalculateDate: function () {
@@ -265,6 +269,19 @@
                                     this.errorData = data;
                                     $('#errorModal').modal('show');
                                 });
+                    },
+                    sendToValidation: function () {
+                        this.$http.post(ROOT_URL + "/sap-sale/send-to-validation", JSON.stringify(this.range)).success(function (data) {
+                            $("#sendValidationModal").modal("hide");
+                            showAlert("Se a enviado a validación las ventas, la persona encargada sera notificada");
+                        }).error(function () {
+                            showAlert("Error al enviar correo de validación de datos", {type:3});
+                        });
+                    },
+                    openModalSendToValidation: function () {
+                        this.range.initial = "";
+                        this.range.final = "";
+                        $("#sendValidationModal").modal("show");
                     }
                 }
             });
@@ -296,30 +313,52 @@
                     <div class="panel-heading">{{typeFile.sapFileName}}</div>
                     <div class="panel-body">
                         <div class="row">
-                            <div class="col-md-3">
-                                <form id="fileForm" enctype="multipart/form-data" v-on:submit.prevent="saveFile">
-                                    <div class="form-group">
-                                        <input id="inputFile" type="file" name="file" required
-                                               accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
+                            <div class="col-md-12">
+                                <div class="col-md-5" style="margin-right: 100px">
+                                    <form id="fileForm" enctype="multipart/form-data" v-on:submit.prevent="saveFile">
+                                        <div class="form-group col-md-12">
+                                            <div class="col-md-12">
+                                                <div class="col-md-5">
+                                                    <input id="inputFile" type="file" name="file" required
+                                                           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,
                                                application/vnd.ms-excel">
-                                    </div>
-                                    <div class="form-group" v-if="typeFile.idSapFile > 8 || typeFile.idSapFile == 5" >
-                                        <label>
-                                            Fecha de calculo
-                                        </label>
-                                        <div class="input-group date" id="datetimepickerCalculateDate"
-                                             @click="setUpTimePickerCalculateDate()">
-                                            <input type='text' name="calculateDate" class="form-control" v-model="calculateDate" required>
-                                            <span class="input-group-addon">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-md-12" v-if="typeFile.idSapFile > 8 || typeFile.idSapFile == 5" >
+                                            <div class="col-md-12">
+                                                <div class="col-md-12">
+                                                    <label>
+                                                        Fecha de calculo
+                                                    </label>
+                                                    <div class="input-group date" id="datetimepickerCalculateDate"
+                                                         @click="setUpTimePickerCalculateDate()">
+                                                        <input type='text' name="calculateDate" class="form-control" v-model="calculateDate" required>
+                                                        <span class="input-group-addon">
                                                 <span class="glyphicon glyphicon-calendar"></span>
                                             </span>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <br>
-                                    <button class="btn btn-success" type="submit">
-                                        Subir archivo
-                                    </button>
-                                </form>
+                                        <br>
+                                        <br>
+                                        <div class="form-group col-md-12">
+                                            <div class="col-md-12">
+                                                <div class="col-md-2" style="margin-right: 92px">
+                                                    <button class="btn btn-success" type="submit">
+                                                        Subir archivo
+                                                    </button>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button class="btn btn-info" v-if="typeFile.idSapFile == 8" type="button" @click="openModalSendToValidation()">
+                                                        Enviar a validación
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -444,6 +483,49 @@
                                 <span class="sr-only">Error:</span>
                                 {{errorData.error.message}}
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="sendValidationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">
+                                Envio de notificación de validación de ventas
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <p>Introduce el rango de las ventas cargadas</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="col-md-1">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Fecha inicial</label>
+                                        <input class="form-control" v-model="range.initial" placeholder="DD/MM/YYYY">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <hr style="border-width: 2px; margin-top: 40px; border-style: solid;">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Fecha final</label>
+                                        <input class="form-control" v-model="range.final" placeholder="DD/MM/YYYY">
+                                    </div>
+                                    <div class="col-md-1">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" @click="sendToValidation()">Aceptar</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                         </div>
                     </div>
                 </div>

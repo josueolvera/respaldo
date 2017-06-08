@@ -188,4 +188,59 @@ public class RealBudgetSpendingDaoImpl extends AbstractDao<Integer, RealBudgetSp
                 .uniqueResult();
     }
 
+    @Override
+    public BigDecimal sumTotalBudgetByMonthAndYear(List<Budgets> budgets, int month, int year) {
+
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjunctionBudgets = Restrictions.disjunction();
+        ProjectionList projectionList = Projections.projectionList();
+
+        switch (month){
+            case 1:
+                projectionList.add(Projections.sum("januaryBudgetAmount"));
+                break;
+            case 2:
+                projectionList.add(Projections.sum("februaryBudgetAmount"));
+                break;
+            case 3:
+                projectionList.add(Projections.sum("marchBudgetAmount"));
+                break;
+            case 4:
+                projectionList.add(Projections.sum("aprilBudgetAmount"));
+                break;
+            case 5:
+                projectionList.add(Projections.sum("mayBudgetAmount"));
+                break;
+            case 6:
+                projectionList.add(Projections.sum("juneBudgetAmount"));
+                break;
+            case 7:
+                projectionList.add(Projections.sum("julyBudgetAmount"));
+                break;
+            case 8:
+                projectionList.add(Projections.sum("augustBudgetAmount"));
+                break;
+            case 9:
+                projectionList.add(Projections.sum("septemberBudgetAmount"));
+                break;
+            case 10:
+                projectionList.add(Projections.sum("octoberBudgetAmount"));
+                break;
+            case 11:
+                projectionList.add(Projections.sum("novemberBudgetAmount"));
+                break;
+            case 12:
+                projectionList.add(Projections.sum("decemberBudgetAmount"));
+                break;
+        }
+
+        if (!budgets.isEmpty()){
+            for (Budgets budget : budgets){
+                disjunctionBudgets.add(Restrictions.eq("idBudget", budget.getIdBudget()));
+            }
+        }
+
+        return (BigDecimal) criteria.setProjection(projectionList).add(Restrictions.eq("year", year)).add(disjunctionBudgets).uniqueResult();
+    }
+
 }

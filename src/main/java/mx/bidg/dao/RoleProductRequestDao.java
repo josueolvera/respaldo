@@ -9,4 +9,5 @@ import java.util.List;
  */
 public interface RoleProductRequestDao extends InterfaceDao<RoleProductRequest>{
     List<Integer> getIdsProductsRequestByDistributorCostCenter(Integer idCostCenter);
+    List<RoleProductRequest> findByDistributorCostCenter(Integer idDistrbutorCostCenter);
 }

@@ -258,6 +258,11 @@ public class EmployeesHistory implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String motherName;
 
+    @Size(max = 150)
+    @Column(name = "REASON", nullable=true)
+    @JsonView(JsonViews.Root.class)
+    private String reason;
+
     @Column(name = "USERNAME", nullable=true)
     @JsonView(JsonViews.Root.class)
     private String username;
@@ -814,6 +819,14 @@ public class EmployeesHistory implements Serializable {
 
     public void setTotal(BigDecimal total) {
         this.total = total;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
     @Override

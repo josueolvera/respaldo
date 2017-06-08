@@ -117,4 +117,11 @@ public class SqlQueriesDaoImpl extends AbstractDao<Integer, SqlQueries> implemen
                 .setParameter("fecha2",endDate);
         return sqlQuery.list();
     }
+
+    @Override
+    public List lowDWEmployeeUser(SqlQueries query, Integer idUser) {
+        SQLQuery sqlQuery = (SQLQuery) getSession().createSQLQuery(query.getSqlQuery())
+                .setParameter("idUser",idUser);
+        return sqlQuery.list();
+    }
 }

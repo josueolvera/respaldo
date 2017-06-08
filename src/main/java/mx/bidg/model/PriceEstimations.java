@@ -44,6 +44,7 @@ public class PriceEstimations implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)
     @Column(name = "ID_PRICE_ESTIMATION")
     @JsonView(JsonViews.Root.class)
     private Integer idPriceEstimation;
@@ -51,10 +52,6 @@ public class PriceEstimations implements Serializable {
     @Column(name = "ID_REQUEST", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idRequest;
-
-    @Column(name = "ID_ACCOUNT", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idAccount;
 
     @Column(name = "ID_ESTIMATION_STATUS", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
@@ -80,11 +77,6 @@ public class PriceEstimations implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String fileName;
 
-    @Column(name = "AUTHORIZATION_DATE")
-    @JsonView(JsonViews.Root.class)
-    @Convert(converter = DateTimeConverter.class)
-    private LocalDateTime authorizationDate;
-
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
@@ -109,18 +101,13 @@ public class PriceEstimations implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private Requests request;
 
-    @JoinColumn(name = "ID_ACCOUNT", referencedColumnName = "ID_ACCOUNT")
-    @ManyToOne
-    @JsonView(JsonViews.Embedded.class)
-    private Accounts accounts;
-
     @JoinColumn(name = "ID_ESTIMATION_STATUS", referencedColumnName = "ID_ESTIMATION_STATUS")
     @ManyToOne
     @JsonView(JsonViews.Embedded.class)
     private CEstimationStatus cEstimationStatus;
 
     @JoinColumn(name = "ID_CURRENCY", referencedColumnName = "ID_CURRENCY")
-    @ManyToOne
+    @ManyToOne(optional = true)
     @JsonView(JsonViews.Embedded.class)
     private CCurrencies currency;
 
@@ -184,20 +171,8 @@ public class PriceEstimations implements Serializable {
         this.creationDate = creationDate;
     }
 
-    public LocalDateTime getAuthorizationDate() {
-        return authorizationDate;
-    }
-
-    public void setAuthorizationDate(LocalDateTime authorizationDate) {
-        this.authorizationDate = authorizationDate;
-    }
-
     public DateFormatsPojo getCreationDateFormats() {
         return (creationDate == null) ? null : new DateFormatsPojo(creationDate);
-    }
-
-    public DateFormatsPojo getAuthorizationDateFormats() {
-        return (authorizationDate != null) ? new DateFormatsPojo(authorizationDate) : null;
     }
 
     public Integer getIdEstimationStatus() {
@@ -232,14 +207,6 @@ public class PriceEstimations implements Serializable {
         this.idRequest = idRequest;
     }
 
-    public Integer getIdAccount() {
-        return idAccount;
-    }
-
-    public void setIdAccount(Integer idAccount) {
-        this.idAccount = idAccount;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -256,14 +223,6 @@ public class PriceEstimations implements Serializable {
         this.cEstimationStatus = cEstimationStatus;
     }
 
-    public Accounts getAccounts() {
-        return accounts;
-    }
-
-    public void setAccounts(Accounts accounts) {
-        this.accounts = accounts;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -271,46 +230,39 @@ public class PriceEstimations implements Serializable {
 
         PriceEstimations that = (PriceEstimations) o;
 
-        if (getIdAccount() != that.getIdAccount()) return false;
-        if (getIdCurrency() != that.getIdCurrency()) return false;
-        if (getIdAccessLevel() != that.getIdAccessLevel()) return false;
-        if (!getIdPriceEstimation().equals(that.getIdPriceEstimation())) return false;
-        if (!getIdRequest().equals(that.getIdRequest())) return false;
-        if (!getIdEstimationStatus().equals(that.getIdEstimationStatus())) return false;
-        if (!getAmount().equals(that.getAmount())) return false;
-        if (!getFilePath().equals(that.getFilePath())) return false;
-        if (!getFileName().equals(that.getFileName())) return false;
-        if (!getAuthorizationDate().equals(that.getAuthorizationDate())) return false;
-        if (!getUsername().equals(that.getUsername())) return false;
-        if (!getCreationDate().equals(that.getCreationDate())) return false;
-        if (!getRequest().equals(that.getRequest())) return false;
-        if (!getcEstimationStatus().equals(that.getcEstimationStatus())) return false;
-        return getCurrency().equals(that.getCurrency());
+        if (idPriceEstimation != null ? !idPriceEstimation.equals(that.idPriceEstimation) : that.idPriceEstimation != null)
+            return false;
+        if (idRequest != null ? !idRequest.equals(that.idRequest) : that.idRequest != null) return false;
+        if (idEstimationStatus != null ? !idEstimationStatus.equals(that.idEstimationStatus) : that.idEstimationStatus != null)
+            return false;
+        return idCurrency != null ? idCurrency.equals(that.idCurrency) : that.idCurrency == null;
     }
 
     @Override
     public int hashCode() {
-        int result = getIdPriceEstimation().hashCode();
-        result = 31 * result + getIdRequest().hashCode();
-        result = 31 * result + getIdAccount();
-        result = 31 * result + getIdEstimationStatus().hashCode();
-        result = 31 * result + getIdCurrency();
-        result = 31 * result + getAmount().hashCode();
-        result = 31 * result + getFilePath().hashCode();
-        result = 31 * result + getFileName().hashCode();
-        result = 31 * result + getAuthorizationDate().hashCode();
-        result = 31 * result + getIdAccessLevel();
-        result = 31 * result + getUsername().hashCode();
-        result = 31 * result + getCreationDate().hashCode();
-        result = 31 * result + getRequest().hashCode();
-        result = 31 * result + getcEstimationStatus().hashCode();
-        result = 31 * result + getCurrency().hashCode();
+        int result = idPriceEstimation != null ? idPriceEstimation.hashCode() : 0;
+        result = 31 * result + (idRequest != null ? idRequest.hashCode() : 0);
+        result = 31 * result + (idEstimationStatus != null ? idEstimationStatus.hashCode() : 0);
+        result = 31 * result + (idCurrency != null ? idCurrency.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return "mx.bidg.config.PriceEstimations[ idEstimation=" + idPriceEstimation + " ]";
+        return "PriceEstimations{" +
+                "idPriceEstimation=" + idPriceEstimation +
+                ", idRequest=" + idRequest +
+                ", idEstimationStatus=" + idEstimationStatus +
+                ", idCurrency=" + idCurrency +
+                ", amount=" + amount +
+                ", filePath='" + filePath + '\'' +
+                ", fileName='" + fileName + '\'' +
+                ", idAccessLevel=" + idAccessLevel +
+                ", username='" + username + '\'' +
+                ", creationDate=" + creationDate +
+                ", request=" + request +
+                ", cEstimationStatus=" + cEstimationStatus +
+                ", currency=" + currency +
+                '}';
     }
-
 }

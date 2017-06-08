@@ -13,8 +13,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import mx.bidg.model.RealBudgetSpending;
@@ -336,6 +339,16 @@ public class RealBudgetSpendingServiceImpl implements RealBudgetSpendingService 
     @Override
     public BigDecimal getTotalBudgetAmount(Integer idBudget, Integer year) {
         return realBudgetSpendingDao.getTotalBudgetAmount(idBudget, year);
+    }
+
+    @Override
+    public BigDecimal getAmountBudget(List<Budgets> budgets) {
+        Calendar date = Calendar.getInstance();
+        int año = date.get(Calendar.YEAR);
+        int mes = date.get(Calendar.MONTH) + 1;
+
+
+        return realBudgetSpendingDao.sumTotalBudgetByMonthAndYear(budgets, mes, año);
     }
 
 }

@@ -16,6 +16,8 @@ import mx.bidg.exceptions.ValidationException;
 import mx.bidg.model.*;
 import mx.bidg.pojos.FilePojo;
 import mx.bidg.service.PriceEstimationsService;
+import mx.bidg.service.RealBudgetSpendingService;
+import mx.bidg.service.RequestHistoryService;
 import mx.bidg.utils.BudgetHelper;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +60,15 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
     @Autowired
     private Environment env;
 
+    @Autowired
+    private RealBudgetSpendingService realBudgetSpendingService;
+
+    @Autowired
+    private BudgetsDao budgetsDao;
+
+    @Autowired
+    private RequestHistoryService requestHistoryService;
+
     @Override
     public PriceEstimations saveData(String data, Integer idRequest, Users user) throws Exception {
 
@@ -66,19 +77,16 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 
         JsonNode node = mapper.readTree(data);
 
-        Requests request = requestsDao.findByIdFetchBudgetMonthBranch(idRequest);
+        Requests request = requestsDao.findById(idRequest);
 
         if (request != null) {
             PriceEstimations priceEstimation = new PriceEstimations();
 
             priceEstimation.setRequest(request);
-            priceEstimation.setAccounts(mapper.treeToValue(node.get("accounts"), Accounts.class));
-            priceEstimation.setcEstimationStatus(mapper.treeToValue(node.get("cEstimationsStatus"), CEstimationStatus.class));
-            priceEstimation.setCurrency(mapper.treeToValue(node.get("currency"), CCurrencies.class));
-            priceEstimation.setAmount(mapper.treeToValue(node.get("amount"), BigDecimal.class));
+            priceEstimation.setcEstimationStatus(CEstimationStatus.PENDIENTE);
+            priceEstimation.setAmount(new BigDecimal(node.get("amount").asText().replace(",","")));
             FilePojo file = mapper.treeToValue(node.get("file"), FilePojo.class);
             priceEstimation.setFileName(file.getName());
-            priceEstimation.setAuthorizationDate(LocalDateTime.now());
             priceEstimation.setIdAccessLevel(1);
             priceEstimation.setUsername(user.getUsername());
             priceEstimation.setCreationDate(LocalDateTime.now());
@@ -98,8 +106,8 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
                 throw new ValidationException("Tipo de archivo no admitido", "Tipo de archivo no admitido");
             }
 
-            String destDir = "/estimation_" + priceEstimation.getIdPriceEstimation();
-            String destFile = destDir + "/Documento." + priceEstimation.getCreationDate().toInstant(ZoneOffset.UTC).getEpochSecond();
+            String destDir = "/estimation_" + idRequest;
+            String destFile = destDir + "/Documento." + priceEstimation.getCreationDate().toInstant(ZoneOffset.UTC).getEpochSecond()+(int) (Math.random() * 30) + 1;
 
             priceEstimation.setFilePath(destFile);
 
@@ -134,24 +142,24 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         PriceEstimations estimation = priceEstimationsDao.findByIdFetchRequestStatus(idEstimation);
         JsonNode json = mapper.readTree(data);
 //        if(estimation.getEstimationStatus().getIdEstimationStatus().equals(CEstimationStatus.PENDIENTE)) {
-            Requests request = requestsDao.findByIdFetchBudgetMonthBranch(estimation.getIdRequest());
+        Requests request = requestsDao.findByIdFetchBudgetMonthBranch(estimation.getIdRequest());
 //            BigDecimal budgetAmount = request.getBudgetYearConcept().getAmount();
 //            BigDecimal expendedAmount = request.getBudgetYearConcept().getExpendedAmount();
 //            BigDecimal residualAmount = budgetAmount.subtract(expendedAmount);
-            BigDecimal rate = ((json.get("rate").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("rate").decimalValue() : BigDecimal.ONE;
-            BigDecimal amount = ((json.get("amount").decimalValue().compareTo(BigDecimal.ZERO)) == 1)?
-                    json.get("amount").decimalValue() : BigDecimal.ZERO;
-            BigDecimal tempAmount = amount.multiply(rate);
+        BigDecimal rate = ((json.get("rate").decimalValue().compareTo(BigDecimal.ZERO)) == 1)? json.get("rate").decimalValue() : BigDecimal.ONE;
+        BigDecimal amount = ((json.get("amount").decimalValue().compareTo(BigDecimal.ZERO)) == 1)?
+                json.get("amount").decimalValue() : BigDecimal.ZERO;
+        BigDecimal tempAmount = amount.multiply(rate);
 
 //            estimation.setAccount(new Accounts(json.get("idAccount").asInt()));
-            estimation.setAmount(amount);
-            estimation.setCurrency(new CCurrencies(json.get("idCurrency").asInt()));
+        estimation.setAmount(amount);
+//            estimation.setCurrency(new CCurrencies(json.get("idCurrency").asInt()));
 //            estimation.setRate(rate);
 //            estimation.setUserEstimation(user);
-            //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
+        //Si el Monto de Presupuesto es menor al de la cotizacion, OutOfBudget = true
 //            estimation.setOutOfBudget((residualAmount.compareTo(tempAmount) == -1)? 1 : 0);
 
-            return estimation;
+        return estimation;
 //        } else {
 //            throw new ValidationException("No se puede modificar una cotizacion ya autorizada",
 //                    "No se puede modificar una solicitud ya autorizada");
@@ -168,40 +176,40 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
         PriceEstimations estimation = priceEstimationsDao.findByIdFetchRequestStatus(idEstimation);
         Requests request = estimation.getRequest();
 
-        if (request.getIdRequestStatus().equals(CRequestStatus.APROBADA.getIdRequestStatus())
-                || request.getIdRequestStatus().equals(CRequestStatus.RECHAZADA.getIdRequestStatus())) {
-            throw new ValidationException("No es posible elegir una cotizacion de una Solicitud Aceptada o Rechazada",
-                    "No es posible elegir una cotizacion de una Solicitud Aceptada o Rechazada", HttpStatus.FORBIDDEN);
-        } else {
-            String folio = request.getFolio();
-            PeriodicsPayments periodicPayment = periodicPaymentsDao.findByFolio(folio);
-            if ((periodicPayment != null) &&
-                    (periodicPayment.getIdPeriodicPaymentStatus().equals(CPeriodicPaymentsStatus.INACTIVO))) {
-                if(!periodicPaymentsDao.delete(periodicPayment))
-                    throw new ValidationException("No se pudo eliminar el PeriodicPayment: " + periodicPayment);
-            }
-
-            List<AccountsPayable> accountsPayable = accountsPayableDao.findByFolio(folio);
-            for(AccountsPayable account : accountsPayable) {
-                if(account.getAccountPayableStatus().getIdAccountPayableStatus().equals(CAccountsPayableStatus.INACTIVA)) {
-                    if(!accountsPayableDao.delete(account))
-                        throw new ValidationException("No se pudo eliminar el AccountPayable: " + account);
-                }
-            }
-
-            List<PriceEstimations> list = priceEstimationsDao.findByIdRequest(request.getIdRequest());
-
-            for (PriceEstimations e : list) {
-//                e.setUserAuthorization(user);
-                e.setAuthorizationDate(LocalDateTime.now());
-
-//                if (e.getIdEstimation().equals(idEstimation)) {
-//                    e.setEstimationStatus(CEstimationStatus.APROBADA);
-//                } else {
-//                    e.setEstimationStatus(CEstimationStatus.RECHAZADA);
+//        if (request.getIdRequestStatus().equals(CRequestStatus.APROBADA.getIdRequestStatus())
+//                || request.getIdRequestStatus().equals(CRequestStatus.RECHAZADA.getIdRequestStatus())) {
+//            throw new ValidationException("No es posible elegir una cotizacion de una Solicitud Aceptada o Rechazada",
+//                    "No es posible elegir una cotizacion de una Solicitud Aceptada o Rechazada", HttpStatus.FORBIDDEN);
+//        } else {
+//            String folio = request.getFolio();
+//            PeriodicsPayments periodicPayment = periodicPaymentsDao.findByFolio(folio);
+//            if ((periodicPayment != null) &&
+//                    (periodicPayment.getIdPeriodicPaymentStatus().equals(CPeriodicPaymentsStatus.INACTIVO))) {
+//                if(!periodicPaymentsDao.delete(periodicPayment))
+//                    throw new ValidationException("No se pudo eliminar el PeriodicPayment: " + periodicPayment);
+//            }
+//
+//            List<AccountsPayable> accountsPayable = accountsPayableDao.findByFolio(folio);
+//            for(AccountsPayable account : accountsPayable) {
+//                if(account.getAccountPayableStatus().getIdAccountPayableStatus().equals(CAccountsPayableStatus.INACTIVA)) {
+//                    if(!accountsPayableDao.delete(account))
+//                        throw new ValidationException("No se pudo eliminar el AccountPayable: " + account);
 //                }
-            }
-        }
+//            }
+//
+//            List<PriceEstimations> list = priceEstimationsDao.findByIdRequest(request.getIdRequest());
+//
+//            for (PriceEstimations e : list) {
+////                e.setUserAuthorization(user);
+//                e.setAuthorizationDate(LocalDateTime.now());
+//
+////                if (e.getIdEstimation().equals(idEstimation)) {
+////                    e.setEstimationStatus(CEstimationStatus.APROBADA);
+////                } else {
+////                    e.setEstimationStatus(CEstimationStatus.RECHAZADA);
+////                }
+//            }
+//        }
 
         return estimation;
     }
@@ -246,5 +254,86 @@ public class PriceEstimationsServiceImpl implements PriceEstimationsService {
 //        providers.add(providersAccounts);
 //        estimation.getAccount().setProvidersAccountsList(providers);
         return estimation;
+    }
+
+    @Override
+    public boolean authorizePriceEstimations(Integer idRequest, Integer idPriceEstimations, String reasonResponsible,  Users user) {
+        List<PriceEstimations> priceEstimations = priceEstimationsDao.findEstimationsNotSelectedByRequest(idRequest, idPriceEstimations);
+
+        PriceEstimations priceEstimation = priceEstimationsDao.findByIdFetchRequestStatus(idPriceEstimations);
+
+        Requests request = requestsDao.findByIdFetchStatus(idRequest);
+
+        boolean outBudget = false;
+
+        if (request != null){
+            if (request.getIdDistributorCostCenter() != null){
+                List<Budgets> budgetsList = budgetsDao.findByIdDistributor(request.getIdDistributorCostCenter());
+                if (!budgetsList.isEmpty()){
+                    BigDecimal budgetAmount = realBudgetSpendingService.getAmountBudget(budgetsList);
+                    if (budgetAmount != null){
+                        if (priceEstimation.getAmount().doubleValue() >= budgetAmount.doubleValue()){
+                            request.setRequestStatus(CRequestStatus.EN_PROCESO_DE_VALIDACION_POR_PLANEACION);
+                            request.setTotalExpended(priceEstimation.getAmount());
+                            request.setReasonResponsible(reasonResponsible);
+                            request = requestsDao.update(request);
+                            requestHistoryService.saveRequest(request, user);
+                            outBudget = true;
+
+                        }else {
+                            request.setRequestStatus(CRequestStatus.EN_PROCESO_DE_COMPRA);
+                            request.setTotalExpended(priceEstimation.getAmount());
+                            request.setReasonResponsible(reasonResponsible);
+                            request = requestsDao.update(request);
+                            requestHistoryService.saveRequest(request, user);
+                            outBudget = false;
+                        }
+
+                        if (!priceEstimations.isEmpty()){
+                            for (PriceEstimations estimation : priceEstimations){
+                                estimation.setcEstimationStatus(CEstimationStatus.RECHAZADA);
+                                priceEstimationsDao.update(estimation);
+                            }
+                        }
+
+                        if (priceEstimation != null){
+                            priceEstimation.setcEstimationStatus(CEstimationStatus.APROBADA);
+                            priceEstimationsDao.update(priceEstimation);
+                        }
+                    }
+                }
+            }
+        }
+
+        return outBudget;
+    }
+
+    @Override
+    public boolean validatePriceEstimations(Integer idRequest, Integer idPriceEstimations) {
+
+        PriceEstimations priceEstimation = priceEstimationsDao.findByIdFetchRequestStatus(idPriceEstimations);
+
+        Requests request = requestsDao.findByIdFetchStatus(idRequest);
+
+        boolean outBudget = false;
+
+        if (request != null){
+            if (request.getIdDistributorCostCenter() != null){
+                List<Budgets> budgetsList = budgetsDao.findByIdDistributor(request.getIdDistributorCostCenter());
+                if (!budgetsList.isEmpty()){
+                    BigDecimal budgetAmount = realBudgetSpendingService.getAmountBudget(budgetsList);
+                    if (budgetAmount != null){
+                        if (priceEstimation.getAmount().doubleValue() >= budgetAmount.doubleValue()){
+                            outBudget = true;
+
+                        }else {
+                            outBudget = false;
+                        }
+                    }
+                }
+            }
+        }
+
+        return outBudget;
     }
 }

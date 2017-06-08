@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import mx.bidg.model.RoleProductRequest;
 
 /**
  * Created by g_on_ on 23/05/2017.
@@ -34,14 +35,10 @@ public class RoleProductRequestController {
     @Autowired
     private ObjectMapper mapper;
 
-    @RequestMapping(value = "/product/{idDistributorCostCenter}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findIdsProductsRequestByDistributorCostCenter(@PathVariable Integer idDistributorCostCenter) throws IOException {
-        List<Integer> idsProductsRequest =  roleProductRequestService.getIdsProductsRequestByDistributorCostCenter(idDistributorCostCenter);
-        List<CProductsRequest> productsRequestsList = new ArrayList<>();
-        for (int idProductsRequest : idsProductsRequest){
-            CProductsRequest productsRequest = productsRequestService.findById(idProductsRequest);
-            productsRequestsList.add(productsRequest);
-        }
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(productsRequestsList), HttpStatus.OK);
+    @RequestMapping(value = "/product/{idCostCenter}/{idAccountingAccounts}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findIdsProductsRequestByDistributorCostCenter(@PathVariable Integer idCostCenter,@PathVariable Integer idAccountingAccounts) throws IOException {
+        List<RoleProductRequest> productsRequests =  roleProductRequestService.getProductsRequestByCostCenterAndAA(idCostCenter, idAccountingAccounts);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(productsRequests), HttpStatus.OK);
     }
 }
