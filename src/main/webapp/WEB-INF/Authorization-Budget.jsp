@@ -134,15 +134,15 @@
                     name: '',
                     selectAll: {
                         idBusinessLine: 0,
-                        name: "Seleccionar Todo"
+                        name: "Seleccionar todos"
                     },
                     selectAllEmpresa: {
                         idDistributor: 0,
-                        name: "Seleccionar Todo"
+                        name: "Seleccionar todos"
                     },
                     selectAllCC: {
                         idCostCenter: 0,
-                        name: "Seleccionar Todo"
+                        name: "Seleccionar todos"
                     },
                     costCenterAuthorized: {},
                     budgetTotals: {
@@ -388,8 +388,7 @@
                                     $('#authorizationBudget').modal('show');
                                 } else {
                                     showAlert("Es necesario que se llenen el comentario del centro de costos", {type: 3});
-                                }
-                                ;
+                                };
                                 break;
                             case 3:
                                 this.authorizeOrDenieCostCenters = [];
@@ -441,12 +440,7 @@
                     selectBussinessLine: function (bussineLine) {
                         var object = {};
                         var self = this;
-
                         if (bussineLine.idBusinessLine == 0) {
-                            this.selectedOptions.bussinessLinesSelected = [];
-                            this.selectedOptions.distributorsSelected = [];
-                            this.selectedOptions.costCenterSelected = [];
-
                             this.bussinessLines.forEach(function (bussinessLines) {
                                 object = JSON.parse(JSON.stringify(bussinessLines));
                                 var aux = self.selectedOptions.bussinessLinesSelected.filter(function (element) {
@@ -477,7 +471,7 @@
                                         showAlert("Error al generar la solicitud", {type: 3});
                                     });
                                     self.selectedOptions.bussinessLinesSelected.push(object);
-                                    self.bussinessLines.$remove(bussineLine);
+                                    self.bussinessLines = [];
                                 }
                             });
 
@@ -520,10 +514,7 @@
                         var object = {};
                         var self = this;
                         if (distributor.idDistributor == 0) {
-                            this.getBussinessLines();
-
                             this.distributors.forEach(function (distributors) {
-
                                 object = JSON.parse(JSON.stringify(distributors));
                                 var aux = self.selectedOptions.distributorsSelected.filter(function (element) {
                                     if (element.idDistributor == distributors.idDistributor) {
@@ -553,7 +544,8 @@
                                         showAlert("Error al generar la solicitud", {type: 3});
                                     });
                                     self.selectedOptions.distributorsSelected.push(object);
-                                    self.distributors.$remove(distributor);
+                                    self.distributors = [];
+                                    self.bussinessLines = [];
                                 }
                             });
                         } else {
@@ -594,8 +586,6 @@
                         var object = {};
                         var self = this;
                         if (costCenter.idCostCenter == 0) {
-                            this.getBussinessLines();
-
                             this.costCenters.forEach(function (costCenters) {
                                 object = JSON.parse(JSON.stringify(costCenters));
                                 var aux = self.selectedOptions.costCenterSelected.filter(function (element) {
@@ -605,7 +595,7 @@
                                 });
                                 if (aux == 0) {
                                     self.selectedOptions.costCenterSelected.push(object);
-                                    self.costCenters.$remove(costCenter);
+                                    self.costCenters = [];
                                 }
                             });
                         } else {
@@ -828,8 +818,8 @@
             <div class="row">
                 <div class="col-md-2">
                     <label>Línea de negocio</label>
-                    <select class="form-control" v-model="bussinessLine"
-                            @change="selectBussinessLine(bussinessLine)">
+                    <select v-model="bussinessLine" class="form-control" @change="selectBussinessLine(bussinessLine)"
+                            :disabled="bussinessLines.length == 0" required>
                         <option :value="selectAll">{{selectAll.name}}</option>
                         <option v-for="bussinessLine in bussinessLines" :value="bussinessLine">
                             {{bussinessLine.acronym}}
