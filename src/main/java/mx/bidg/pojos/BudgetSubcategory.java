@@ -63,24 +63,30 @@ public class BudgetSubcategory {
 
     public BigDecimal getJanuarySubcategoryAmount() {
         double zero = 0;
-        if (!getRealBudgetSpendings().isEmpty()){
-            for(RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()){
-                if (realBudgetSpending != null){
-                    if (realBudgetSpending.getJanuaryBudgetAmount() != null){
-                        zero += realBudgetSpending.getJanuaryBudgetAmount().doubleValue();
+        if (getRealBudgetSpendings() != null){
+            if (!getRealBudgetSpendings().isEmpty()){
+                for(RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()){
+                    if (realBudgetSpending != null){
+                        if (realBudgetSpending.getJanuaryBudgetAmount() != null){
+                            zero += realBudgetSpending.getJanuaryBudgetAmount().doubleValue();
+                        }
                     }
                 }
             }
         }
-        if (!getBudgetSubSubCategories().isEmpty()){
-            for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()){
-                if (budgetSubSubCategory != null){
-                    if (budgetSubSubCategory.getJanuarySubSubcategoryAmount() != null){
-                        zero += budgetSubSubCategory.getJanuarySubSubcategoryAmount().doubleValue();
+
+        if (getBudgetSubSubCategories() != null){
+            if (!getBudgetSubSubCategories().isEmpty()){
+                for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()){
+                    if (budgetSubSubCategory != null){
+                        if (budgetSubSubCategory.getJanuarySubSubcategoryAmount() != null){
+                            zero += budgetSubSubCategory.getJanuarySubSubcategoryAmount().doubleValue();
+                        }
                     }
                 }
             }
         }
+
         this.januarySubcategoryAmount = new BigDecimal(zero);
         return januarySubcategoryAmount;
     }
@@ -91,21 +97,25 @@ public class BudgetSubcategory {
 
     public BigDecimal getFebruarySubcategoryAmount() {
         double zero = 0;
-        if (!getRealBudgetSpendings().isEmpty()) {
-            for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
-                if (realBudgetSpending != null) {
-                    if (realBudgetSpending.getFebruaryBudgetAmount() != null){
-                        zero += realBudgetSpending.getFebruaryBudgetAmount().doubleValue();
+        if (getRealBudgetSpendings() != null) {
+            if (!getRealBudgetSpendings().isEmpty()) {
+                for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
+                    if (realBudgetSpending != null) {
+                        if (realBudgetSpending.getFebruaryBudgetAmount() != null) {
+                            zero += realBudgetSpending.getFebruaryBudgetAmount().doubleValue();
+                        }
                     }
                 }
             }
         }
 
-        if (!getBudgetSubSubCategories().isEmpty()){
-            for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()){
-                if (budgetSubSubCategory != null) {
-                    if (budgetSubSubCategory.getFebruarySubSubcategoryAmount() != null){
-                        zero += budgetSubSubCategory.getFebruarySubSubcategoryAmount().doubleValue();
+        if (getBudgetSubSubCategories() != null) {
+            if (!getBudgetSubSubCategories().isEmpty()) {
+                for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()) {
+                    if (budgetSubSubCategory != null) {
+                        if (budgetSubSubCategory.getFebruarySubSubcategoryAmount() != null) {
+                            zero += budgetSubSubCategory.getFebruarySubSubcategoryAmount().doubleValue();
+                        }
                     }
                 }
             }
@@ -120,21 +130,25 @@ public class BudgetSubcategory {
 
     public BigDecimal getMarchSubcategoryAmount() {
         double zero = 0;
-        if (!getRealBudgetSpendings().isEmpty()) {
-            for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
-                if (realBudgetSpending != null) {
-                    if (realBudgetSpending.getMarchBudgetAmount() != null){
-                        zero += realBudgetSpending.getMarchBudgetAmount().doubleValue();
+        if (getRealBudgetSpendings() != null) {
+            if (!getRealBudgetSpendings().isEmpty()) {
+                for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
+                    if (realBudgetSpending != null) {
+                        if (realBudgetSpending.getMarchBudgetAmount() != null) {
+                            zero += realBudgetSpending.getMarchBudgetAmount().doubleValue();
+                        }
                     }
                 }
             }
         }
 
-        if (!getBudgetSubSubCategories().isEmpty()){
-            for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()){
-                if (budgetSubSubCategory != null) {
-                    if (budgetSubSubCategory.getMarchSubSubcategoryAmount() != null){
-                        zero += budgetSubSubCategory.getMarchSubSubcategoryAmount().doubleValue();
+        if (getBudgetSubSubCategories() != null) {
+            if (!getBudgetSubSubCategories().isEmpty()) {
+                for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()) {
+                    if (budgetSubSubCategory != null) {
+                        if (budgetSubSubCategory.getMarchSubSubcategoryAmount() != null) {
+                            zero += budgetSubSubCategory.getMarchSubSubcategoryAmount().doubleValue();
+                        }
                     }
                 }
             }
@@ -149,21 +163,25 @@ public class BudgetSubcategory {
 
     public BigDecimal getAprilSubcategoryAmount() {
         double zero = 0;
-        if (!getRealBudgetSpendings().isEmpty()) {
-            for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
-                if (realBudgetSpending != null) {
-                    if (realBudgetSpending.getAprilBudgetAmount() != null){
-                        zero += realBudgetSpending.getAprilBudgetAmount().doubleValue();
+        if (getRealBudgetSpendings() != null) {
+            if (!getRealBudgetSpendings().isEmpty()) {
+                for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
+                    if (realBudgetSpending != null) {
+                        if (realBudgetSpending.getAprilBudgetAmount() != null) {
+                            zero += realBudgetSpending.getAprilBudgetAmount().doubleValue();
+                        }
                     }
                 }
             }
         }
 
-        if (!getBudgetSubSubCategories().isEmpty()){
-            for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()){
-                if (budgetSubSubCategory != null) {
-                    if (budgetSubSubCategory.getAprilSubSubcategoryAmount() != null){
-                        zero += budgetSubSubCategory.getAprilSubSubcategoryAmount().doubleValue();
+        if (getBudgetSubSubCategories() != null) {
+            if (!getBudgetSubSubCategories().isEmpty()) {
+                for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()) {
+                    if (budgetSubSubCategory != null) {
+                        if (budgetSubSubCategory.getAprilSubSubcategoryAmount() != null) {
+                            zero += budgetSubSubCategory.getAprilSubSubcategoryAmount().doubleValue();
+                        }
                     }
                 }
             }
@@ -178,21 +196,25 @@ public class BudgetSubcategory {
 
     public BigDecimal getMaySubcategoryAmount() {
         double zero = 0;
-        if (!getRealBudgetSpendings().isEmpty()) {
-            for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
-                if (realBudgetSpending != null) {
-                    if (realBudgetSpending.getMayBudgetAmount() != null){
-                        zero += realBudgetSpending.getMayBudgetAmount().doubleValue();
+        if (getRealBudgetSpendings() != null) {
+            if (!getRealBudgetSpendings().isEmpty()) {
+                for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
+                    if (realBudgetSpending != null) {
+                        if (realBudgetSpending.getMayBudgetAmount() != null) {
+                            zero += realBudgetSpending.getMayBudgetAmount().doubleValue();
+                        }
                     }
                 }
             }
         }
 
-        if (!getBudgetSubSubCategories().isEmpty()){
-            for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()){
-                if (budgetSubSubCategory != null) {
-                    if (budgetSubSubCategory.getMaySubSubcategoryAmount() != null){
-                        zero += budgetSubSubCategory.getMaySubSubcategoryAmount().doubleValue();
+        if (getBudgetSubSubCategories() != null) {
+            if (!getBudgetSubSubCategories().isEmpty()) {
+                for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()) {
+                    if (budgetSubSubCategory != null) {
+                        if (budgetSubSubCategory.getMaySubSubcategoryAmount() != null) {
+                            zero += budgetSubSubCategory.getMaySubSubcategoryAmount().doubleValue();
+                        }
                     }
                 }
             }
@@ -207,21 +229,25 @@ public class BudgetSubcategory {
 
     public BigDecimal getJuneSubcategoryAmount() {
         double zero = 0;
-        if (!getRealBudgetSpendings().isEmpty()) {
-            for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
-                if (realBudgetSpending != null) {
-                    if (realBudgetSpending.getJuneBudgetAmount() != null){
-                        zero += realBudgetSpending.getJuneBudgetAmount().doubleValue();
+        if (getRealBudgetSpendings() != null) {
+            if (!getRealBudgetSpendings().isEmpty()) {
+                for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
+                    if (realBudgetSpending != null) {
+                        if (realBudgetSpending.getJuneBudgetAmount() != null) {
+                            zero += realBudgetSpending.getJuneBudgetAmount().doubleValue();
+                        }
                     }
                 }
             }
         }
 
-        if (!getBudgetSubSubCategories().isEmpty()){
-            for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()){
-                if (budgetSubSubCategory != null) {
-                    if (budgetSubSubCategory.getJuneSubSubcategoryAmount() != null){
-                        zero += budgetSubSubCategory.getJuneSubSubcategoryAmount().doubleValue();
+        if (getBudgetSubSubCategories() != null) {
+            if (!getBudgetSubSubCategories().isEmpty()) {
+                for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()) {
+                    if (budgetSubSubCategory != null) {
+                        if (budgetSubSubCategory.getJuneSubSubcategoryAmount() != null) {
+                            zero += budgetSubSubCategory.getJuneSubSubcategoryAmount().doubleValue();
+                        }
                     }
                 }
             }
@@ -236,21 +262,25 @@ public class BudgetSubcategory {
 
     public BigDecimal getJulySubcategoryAmount() {
         double zero = 0;
-        if (!getRealBudgetSpendings().isEmpty()) {
-            for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
-                if (realBudgetSpending != null) {
-                    if (realBudgetSpending.getJulyBudgetAmount() != null){
-                        zero += realBudgetSpending.getJulyBudgetAmount().doubleValue();
+        if (getRealBudgetSpendings() != null) {
+            if (!getRealBudgetSpendings().isEmpty()) {
+                for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
+                    if (realBudgetSpending != null) {
+                        if (realBudgetSpending.getJulyBudgetAmount() != null) {
+                            zero += realBudgetSpending.getJulyBudgetAmount().doubleValue();
+                        }
                     }
                 }
             }
         }
 
-        if (!getBudgetSubSubCategories().isEmpty()){
-            for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()){
-                if (budgetSubSubCategory != null) {
-                    if (budgetSubSubCategory.getJulySubSubcategoryAmount() != null){
-                        zero += budgetSubSubCategory.getJulySubSubcategoryAmount().doubleValue();
+        if (getBudgetSubSubCategories() != null) {
+            if (!getBudgetSubSubCategories().isEmpty()) {
+                for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()) {
+                    if (budgetSubSubCategory != null) {
+                        if (budgetSubSubCategory.getJulySubSubcategoryAmount() != null) {
+                            zero += budgetSubSubCategory.getJulySubSubcategoryAmount().doubleValue();
+                        }
                     }
                 }
             }
@@ -265,21 +295,25 @@ public class BudgetSubcategory {
 
     public BigDecimal getAugustSubcategoryAmount() {
         double zero = 0;
-        if (!getRealBudgetSpendings().isEmpty()) {
-            for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
-                if (realBudgetSpending != null) {
-                    if (realBudgetSpending.getAugustBudgetAmount() != null) {
-                        zero += realBudgetSpending.getAugustBudgetAmount().doubleValue();
+        if (getRealBudgetSpendings() != null) {
+            if (!getRealBudgetSpendings().isEmpty()) {
+                for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
+                    if (realBudgetSpending != null) {
+                        if (realBudgetSpending.getAugustBudgetAmount() != null) {
+                            zero += realBudgetSpending.getAugustBudgetAmount().doubleValue();
+                        }
                     }
                 }
             }
         }
 
-        if (!getBudgetSubSubCategories().isEmpty()){
-            for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()){
-                if (budgetSubSubCategory != null) {
-                    if (budgetSubSubCategory.getAugustSubSubcategoryAmount() != null) {
-                        zero += budgetSubSubCategory.getAugustSubSubcategoryAmount().doubleValue();
+        if (getBudgetSubSubCategories() != null) {
+            if (!getBudgetSubSubCategories().isEmpty()) {
+                for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()) {
+                    if (budgetSubSubCategory != null) {
+                        if (budgetSubSubCategory.getAugustSubSubcategoryAmount() != null) {
+                            zero += budgetSubSubCategory.getAugustSubSubcategoryAmount().doubleValue();
+                        }
                     }
                 }
             }
@@ -294,21 +328,25 @@ public class BudgetSubcategory {
 
     public BigDecimal getSeptemberSubcategoryAmount() {
         double zero = 0;
-        if (!getRealBudgetSpendings().isEmpty()) {
-            for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
-                if (realBudgetSpending != null) {
-                    if (realBudgetSpending.getSeptemberBudgetAmount() != null) {
-                        zero += realBudgetSpending.getSeptemberBudgetAmount().doubleValue();
+        if (getRealBudgetSpendings() != null) {
+            if (!getRealBudgetSpendings().isEmpty()) {
+                for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
+                    if (realBudgetSpending != null) {
+                        if (realBudgetSpending.getSeptemberBudgetAmount() != null) {
+                            zero += realBudgetSpending.getSeptemberBudgetAmount().doubleValue();
+                        }
                     }
                 }
             }
         }
 
-        if (!getBudgetSubSubCategories().isEmpty()){
-            for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()){
-                if (budgetSubSubCategory != null) {
-                    if (budgetSubSubCategory.getSeptemberSubSubcategoryAmount() != null) {
-                        zero += budgetSubSubCategory.getSeptemberSubSubcategoryAmount().doubleValue();
+        if (getBudgetSubSubCategories() != null) {
+            if (!getBudgetSubSubCategories().isEmpty()) {
+                for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()) {
+                    if (budgetSubSubCategory != null) {
+                        if (budgetSubSubCategory.getSeptemberSubSubcategoryAmount() != null) {
+                            zero += budgetSubSubCategory.getSeptemberSubSubcategoryAmount().doubleValue();
+                        }
                     }
                 }
             }
@@ -323,21 +361,25 @@ public class BudgetSubcategory {
 
     public BigDecimal getOctoberSubcategoryAmount() {
         double zero = 0;
-        if (!getRealBudgetSpendings().isEmpty()) {
-            for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
-                if (realBudgetSpending != null) {
-                    if (realBudgetSpending.getOctoberBudgetAmount() != null){
-                        zero += realBudgetSpending.getOctoberBudgetAmount().doubleValue();
+        if (getRealBudgetSpendings() != null) {
+            if (!getRealBudgetSpendings().isEmpty()) {
+                for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
+                    if (realBudgetSpending != null) {
+                        if (realBudgetSpending.getOctoberBudgetAmount() != null) {
+                            zero += realBudgetSpending.getOctoberBudgetAmount().doubleValue();
+                        }
                     }
                 }
             }
         }
 
-        if (!getBudgetSubSubCategories().isEmpty()){
-            for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()){
-                if (budgetSubSubCategory != null) {
-                    if (budgetSubSubCategory.getOctoberSubSubcategoryAmount() != null) {
-                        zero += budgetSubSubCategory.getOctoberSubSubcategoryAmount().doubleValue();
+        if (getBudgetSubSubCategories() != null) {
+            if (!getBudgetSubSubCategories().isEmpty()) {
+                for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()) {
+                    if (budgetSubSubCategory != null) {
+                        if (budgetSubSubCategory.getOctoberSubSubcategoryAmount() != null) {
+                            zero += budgetSubSubCategory.getOctoberSubSubcategoryAmount().doubleValue();
+                        }
                     }
                 }
             }
@@ -352,21 +394,25 @@ public class BudgetSubcategory {
 
     public BigDecimal getNovemberSubcategoryAmount() {
         double zero = 0;
-        if (!getRealBudgetSpendings().isEmpty()) {
-            for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
-                if (realBudgetSpending != null) {
-                    if(realBudgetSpending.getNovemberBudgetAmount() != null) {
-                        zero += realBudgetSpending.getNovemberBudgetAmount().doubleValue();
+        if (getRealBudgetSpendings() != null) {
+            if (!getRealBudgetSpendings().isEmpty()) {
+                for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
+                    if (realBudgetSpending != null) {
+                        if (realBudgetSpending.getNovemberBudgetAmount() != null) {
+                            zero += realBudgetSpending.getNovemberBudgetAmount().doubleValue();
+                        }
                     }
                 }
             }
         }
 
-        if (!getBudgetSubSubCategories().isEmpty()){
-            for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()){
-                if (budgetSubSubCategory != null) {
-                    if (budgetSubSubCategory.getNovemberSubSubcategoryAmount() != null) {
-                        zero += budgetSubSubCategory.getNovemberSubSubcategoryAmount().doubleValue();
+        if (getBudgetSubSubCategories() != null) {
+            if (!getBudgetSubSubCategories().isEmpty()) {
+                for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()) {
+                    if (budgetSubSubCategory != null) {
+                        if (budgetSubSubCategory.getNovemberSubSubcategoryAmount() != null) {
+                            zero += budgetSubSubCategory.getNovemberSubSubcategoryAmount().doubleValue();
+                        }
                     }
                 }
             }
@@ -381,21 +427,25 @@ public class BudgetSubcategory {
 
     public BigDecimal getDecemberSubcategoryAmount() {
         double zero = 0;
-        if (!getRealBudgetSpendings().isEmpty()) {
-            for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
-                if (realBudgetSpending != null) {
-                    if (realBudgetSpending.getDecemberBudgetAmount() != null) {
-                        zero += realBudgetSpending.getDecemberBudgetAmount().doubleValue();
+        if (getRealBudgetSpendings() != null) {
+            if (!getRealBudgetSpendings().isEmpty()) {
+                for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
+                    if (realBudgetSpending != null) {
+                        if (realBudgetSpending.getDecemberBudgetAmount() != null) {
+                            zero += realBudgetSpending.getDecemberBudgetAmount().doubleValue();
+                        }
                     }
                 }
             }
         }
 
-        if (!getBudgetSubSubCategories().isEmpty()){
-            for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()){
-                if (budgetSubSubCategory != null) {
-                    if (budgetSubSubCategory.getDecemberSubSubcategoryAmount() != null) {
-                        zero += budgetSubSubCategory.getDecemberSubSubcategoryAmount().doubleValue();
+        if (getBudgetSubSubCategories() != null) {
+            if (!getBudgetSubSubCategories().isEmpty()) {
+                for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()) {
+                    if (budgetSubSubCategory != null) {
+                        if (budgetSubSubCategory.getDecemberSubSubcategoryAmount() != null) {
+                            zero += budgetSubSubCategory.getDecemberSubSubcategoryAmount().doubleValue();
+                        }
                     }
                 }
             }
@@ -411,22 +461,26 @@ public class BudgetSubcategory {
     public BigDecimal getTotalSubcategoryAmount() {
         double zero = 0;
         if (getRealBudgetSpendings() != null) {
-            if (!getRealBudgetSpendings().isEmpty()) {
-                for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
-                    if (realBudgetSpending != null) {
-                        if (realBudgetSpending.getTotalBudgetAmount() != null) {
-                            zero += realBudgetSpending.getTotalBudgetAmount().doubleValue();
+            if (getRealBudgetSpendings() != null) {
+                if (!getRealBudgetSpendings().isEmpty()) {
+                    for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
+                        if (realBudgetSpending != null) {
+                            if (realBudgetSpending.getTotalBudgetAmount() != null) {
+                                zero += realBudgetSpending.getTotalBudgetAmount().doubleValue();
+                            }
                         }
                     }
                 }
             }
         }
 
-        if (!getBudgetSubSubCategories().isEmpty()){
-            for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()){
-                if (budgetSubSubCategory != null) {
-                    if (budgetSubSubCategory.getTotalSubSubcategoryAmount() != null) {
-                        zero += budgetSubSubCategory.getTotalSubSubcategoryAmount().doubleValue();
+        if (getBudgetSubSubCategories() != null) {
+            if (!getBudgetSubSubCategories().isEmpty()) {
+                for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()) {
+                    if (budgetSubSubCategory != null) {
+                        if (budgetSubSubCategory.getTotalSubSubcategoryAmount() != null) {
+                            zero += budgetSubSubCategory.getTotalSubSubcategoryAmount().doubleValue();
+                        }
                     }
                 }
             }
@@ -441,21 +495,25 @@ public class BudgetSubcategory {
 
     public BigDecimal getTotalBudgetAmountLastYear() {
         double zero = 0;
-        if (!getRealBudgetSpendings().isEmpty()) {
-            for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
-                if (realBudgetSpending != null) {
-                    if (realBudgetSpending.getTotalLastYearAmount() != null){
-                        zero += realBudgetSpending.getTotalLastYearAmount().doubleValue();
+        if (getRealBudgetSpendings() != null) {
+            if (!getRealBudgetSpendings().isEmpty()) {
+                for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
+                    if (realBudgetSpending != null) {
+                        if (realBudgetSpending.getTotalLastYearAmount() != null) {
+                            zero += realBudgetSpending.getTotalLastYearAmount().doubleValue();
+                        }
                     }
                 }
             }
         }
 
-        if (!getBudgetSubSubCategories().isEmpty()){
-            for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()){
-                if (budgetSubSubCategory != null) {
-                    if (budgetSubSubCategory.getTotalBudgetAmountLastYear() != null){
-                        zero += budgetSubSubCategory.getTotalBudgetAmountLastYear().doubleValue();
+        if (getBudgetSubSubCategories() != null) {
+            if (!getBudgetSubSubCategories().isEmpty()) {
+                for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()) {
+                    if (budgetSubSubCategory != null) {
+                        if (budgetSubSubCategory.getTotalBudgetAmountLastYear() != null) {
+                            zero += budgetSubSubCategory.getTotalBudgetAmountLastYear().doubleValue();
+                        }
                     }
                 }
             }
@@ -495,21 +553,25 @@ public class BudgetSubcategory {
     public BigDecimal getRealTotalBudgetAmount() {
         double zero = 0;
 
-        if (!getRealBudgetSpendings().isEmpty()) {
-            for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
-                if (realBudgetSpending != null) {
-                    if (realBudgetSpending.getRealTotalBudgetAmount() != null){
-                        zero += realBudgetSpending.getRealTotalBudgetAmount().doubleValue();
+        if (getRealBudgetSpendings() != null) {
+            if (!getRealBudgetSpendings().isEmpty()) {
+                for (RealBudgetSpending realBudgetSpending : getRealBudgetSpendings()) {
+                    if (realBudgetSpending != null) {
+                        if (realBudgetSpending.getRealTotalBudgetAmount() != null) {
+                            zero += realBudgetSpending.getRealTotalBudgetAmount().doubleValue();
+                        }
                     }
                 }
             }
         }
 
-        if (!getBudgetSubSubCategories().isEmpty()){
-            for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()){
-                if (budgetSubSubCategory != null) {
-                    if (budgetSubSubCategory.getRealTotalBudgetAmount() != null){
-                        zero += budgetSubSubCategory.getRealTotalBudgetAmount().doubleValue();
+        if (getBudgetSubSubCategories() != null) {
+            if (!getBudgetSubSubCategories().isEmpty()) {
+                for (BudgetSubSubCategory budgetSubSubCategory : getBudgetSubSubCategories()) {
+                    if (budgetSubSubCategory != null) {
+                        if (budgetSubSubCategory.getRealTotalBudgetAmount() != null) {
+                            zero += budgetSubSubCategory.getRealTotalBudgetAmount().doubleValue();
+                        }
                     }
                 }
             }
