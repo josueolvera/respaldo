@@ -784,20 +784,17 @@
                 .container-scroll {
                     overflow-x: auto;
                 }
-
                 .container-scroll > .row {
                     width: 1900px;
                 }
-
                 .col-md-1.authorization-budget {
                     width: 7.6%;
                 }
-
                 .col-md-1.authorization-budgetboton {
                     width: 4%;
                 }
-
             }
+
         </style>
 
     </jsp:attribute>
@@ -1996,7 +1993,8 @@
                                 <span aria-hidden="true">&times;</span></button>
                         </div>
                         <div class="modal-body">
-                            <div class="container-fluid container-scroll" style="font-size: 11px;">
+                            <div class="container-fluid container-scroll"
+                                 style="font-size: 11px; height:70%; overflow-y:auto;">
                                 <div class="row table-header col-md-12">
                                     <div class="col-md-12">
                                         <div class="col-md-3"><b>Centro de costos: {{costCenter.name}}</b>

@@ -1081,7 +1081,8 @@
                                     <span aria-hidden="true">&times;</span></button>
                             </div>
                             <div class="modal-body">
-                                <div class="container-fluid container-scroll" style="font-size: 11px;">
+                                <div class="container-fluid container-scroll"
+                                     style="font-size: 11px; height:70%; overflow-y:auto;">
                                     <div class="row table-header col-md-12" v-if="flag == true">
                                         <div class="col-md-12">
                                             <div class="col-md-3"><b>Centro de costos: {{selected.costCenter.name}}</b>
