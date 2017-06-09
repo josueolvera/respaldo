@@ -1,0 +1,696 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: jcesar
+  Date: 08/06/2017
+  Time: 12:27 PM
+  To change this template use File | Settings | File Templates.
+--%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<jsp:useBean id="user" scope="session" class="mx.bidg.model.Users"/>
+
+<t:template pageTitle="BID Group: Bandeja de entrada solicitante">
+    <jsp:attribute name="scripts">
+        <script type="text/javascript">
+            function validateFloatKeyPress(el, evt) {
+                var charCode = (evt.which) ? evt.which : event.keyCode;
+                var number = el.value.split('.');
+                if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+                    return false;
+                }
+                //just one dot
+                if (number.length > 1 && charCode == 46) {
+                    return false;
+                }
+                //get the carat position
+                var caratPos = getSelectionStart(el);
+                var dotPos = el.value.indexOf(".");
+                if (caratPos > dotPos && dotPos > -1 && (number[1].length > 1)) {
+                    return false;
+                }
+                return true;
+            }
+
+            function getSelectionStart(o) {
+                if (o.createTextRange) {
+                    var r = document.selection.createRange().duplicate();
+                    r.moveEnd('character', o.value.length);
+                    if (r.text == '') return o.value.length;
+                    return o.value.lastIndexOf(r.text)
+                } else return o.selectionStart
+            }
+        </script>
+
+        <script type="text/javascript">
+            var vm = new Vue({
+                el: '#content',
+                created: function () {
+
+                },
+                ready: function () {
+                    this.getUserInSession();
+                    this.getCurrencies();
+                },
+                data: {
+                    <%--requestCategory: ${cat},--%>
+                    <%--idRequest: ${idRequest},--%>
+                    roleCostCenterList: [],
+                    costCenterList: [],
+                    budgetCategories: [],
+                    budgetSubcategories: [],
+                    products: [],
+                    providers: [],
+                    providerAccounts: [],
+                    currencies: [],
+                    requestProducts: [],
+                    user: {},
+                    icon1: false,
+                    icon2: false,
+                    icon3: false,
+                    icon4: false,
+                    icon5: false,
+                    icon6: false,
+                    icon7: false,
+                    icon8: false,
+                    icon9: false,
+                    icon10: false,
+                    icon11: false,
+                    icon12: false,
+                    icon13: false,
+                    icon14: false,
+                    icon15: false,
+                    estimation: {
+                        amount: '',
+                        provider: '',
+                        account: '',
+                        currency: '',
+                        rate: '',
+                        file: ''
+                    },
+                    requestBody: {
+                        request: {
+                            description: '',
+                            purpose: '',
+                            userResponsible: '',
+                            idCostCenter: '',
+                            idBudgetCategory: '',
+                            idBudgetSubcategory: '',
+                            idRequestCategory: ''
+                        },
+                        products: []
+                    },
+                    estimations: [],
+                    selectProducts: {},
+                    selected: {
+                        costCenter: null,
+                        budgetCategory: null,
+                        budgetSubcategory: null,
+                        product: null
+                    },
+                    newEstimationFormActive: false
+                },
+                methods: {
+                    arrayObjectIndexOf: function (myArray, searchTerm, property) {
+                        for (var i = 0, len = myArray.length; i < len; i++) {
+                            if (myArray[i][property] === searchTerm) return i;
+                        }
+                        return -1;
+                    },
+                    proFecha: function () {
+                        var fecha = new Date();
+                        var fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth() + 1) + "-" + fecha.getDate();
+                        this.timePickerDe = $('#proFecha').datetimepicker({
+                            locale: 'es',
+                            format: 'DD-MM-YYYY',
+                            defaultDate: fecha_actual
+                        }).data();
+                    },
+                    getUserInSession: function () {
+                        this.$http.get(ROOT_URL + "/user")
+                            .success(function (data) {
+                                this.user = data;
+                                this.getRolesCostCenter(this.user.dwEmployee.idRole);
+                            })
+                            .error(function (data) {
+                                showAlert("Ha habido un error al obtener al usuario en sesion", {type: 3});
+                            });
+                    },
+                    getRolesCostCenter: function (idRole) {
+                        this.$http.get(ROOT_URL + '/roles-cost-center/role/' + idRole)
+                            .success(function (data) {
+                                var self = this;
+                                var index;
+                                this.rolesCostCenter = data;
+
+                                if (data.length < 2) {
+                                    this.selected.budgetNature = data[0].budgetNature;
+                                }
+
+                                data.forEach(function (item) {
+                                    index = self.arrayObjectIndexOf(self.costCenterList, item.costCenter.idCostCenter, 'idCostCenter');
+                                    if (index == -1) self.costCenterList.push(item.costCenter);
+                                });
+
+                                this.selected.costCenter = data[0].costCenter;
+
+                                this.getBudgetCategories();
+
+                            })
+                            .error(function (data) {
+
+                            });
+                    },
+                    onChangeCostCenter: function () {
+                        this.budgetCategories = [];
+                        this.budgetSubcategories = [];
+                        this.products = [];
+                        this.getBudgetCategories();
+                    },
+                    getBudgetCategories: function () {
+                        this.$http.get(
+                            ROOT_URL +
+                            '/budget-categories?cost_center=' +
+                            this.selected.costCenter.idCostCenter +
+                            '&request_category=1'
+                        ).success(function (data) {
+                            this.budgetCategories = data;
+                        });
+                    },
+                    getBudgetSubcategories: function () {
+                        this.$http.get(ROOT_URL + '/budget-subcategories/category/' + this.selected.budgetCategory.idBudgetCategory)
+                            .success(function (data) {
+                                this.budgetSubcategories = data;
+                            });
+                    },
+                    getProducts: function () {
+                        this.$http.get(ROOT_URL + '/products/subcategory/' + this.selected.budgetSubcategory.idBudgetSubcategory)
+                            .success(function (data) {
+                                this.products = data;
+                                this.selectProducts = this.createSelectForConcept(data);
+                            });
+                    },
+                    getProviders: function () {
+                        this.$http.get(ROOT_URL + '/providers/product-type/' + this.selected.budgetSubcategory.idBudgetSubcategory)
+                            .success(function (data) {
+                                this.providers = data;
+                            });
+                    },
+                    onChangeBudgetCategory: function () {
+                        this.budgetSubcategories = [];
+                        this.products = [];
+                        this.getBudgetSubcategories();
+                    },
+                    onChangeBudgetSubcategory: function () {
+                        this.products = [];
+                        this.getProducts();
+                        this.getProviders();
+                    },
+                    createSelectForConcept: function (products) {
+                        var self = this;
+                        return $('#select-products').selectize({
+                            maxItems: 1,
+                            valueField: 'idProduct',
+                            labelField: 'product',
+                            searchField: 'product',
+                            options: products,
+                            create: function (input, callback) {
+                                self.$http.post(ROOT_URL + '/products/subcategory/' + self.selected.budgetSubcategory.idBudgetSubcategory, {
+                                    product: input
+                                }).success(function (data) {
+                                    showAlert('Producto guardado');
+                                    self.getProducts();
+                                    callback(data);
+                                }).error(function () {
+                                    callback();
+                                });
+                            },
+                            render: {
+                                option_create: function (data, escape) {
+                                    return '<div data-selectable class="create">' +
+                                        'Agregar <strong>' + escape(data.input) + '</strong>' +
+                                        '</div>'
+                                }
+                            }
+                        });
+                    },
+                    addProduct: function () {
+                        var product = {};
+                        product.idProduct = this.selectProducts[0].selectize.getValue();
+                        product.product = this.selectProducts[0].selectize.getOption(product.idProduct).text();
+
+                        this.requestBody.products.push(product);
+                    },
+                    removeProduct: function (product) {
+                        this.requestBody.products.$remove(product);
+                    },
+                    clearRequest: function () {
+
+                        this.requestBody = {
+                            request: {
+                                description: '',
+                                purpose: '',
+                                userResponsible: '',
+                                idCostCenter: '',
+                                idBudgetCategory: '',
+                                idBudgetSubcategory: '',
+                                idRequestCategory: ''
+                            },
+                            products: []
+                        };
+
+                        this.estimations = [];
+                    },
+                    removeEstimation: function (estimation) {
+                        this.estimations.$remove(estimation);
+                    },
+                    sendRequest: function () {
+
+                        if (this.requestBody.products.length == 0 || this.selected.costCenter == null || this.selected.budgetCategory == null || this.selected.budgetSubcategory == null) {
+                            showAlert("Debes agregar un producto", {type: 3});
+                            return;
+                        } else if (this.estimations.length < 3) {
+                            showAlert("Debes agregar al menos tres cotizaciones", {type: 3});
+                            return;
+                        }
+
+                        this.requestBody.request.idCostCenter = this.selected.costCenter.idCostCenter;
+                        this.requestBody.request.idBudgetCategory = this.selected.budgetCategory.idBudgetCategory;
+                        this.requestBody.request.idBudgetSubcategory = this.selected.budgetSubcategory.idBudgetSubcategory;
+                        this.requestBody.request.idRequestCategory = 1;
+
+                        this.$http.post(ROOT_URL + '/requests', this.requestBody)
+                            .success(function (data) {
+                                USER_VM.fetchApp();
+                                this.saveEstimations(data);
+                                this.clearRequest();
+                            })
+                            .error(function (data) {
+                                showAlert("Error al generar la solicitud", {type: 3});
+                            });
+                    }
+                    ,
+                    saveEstimations: function (data) {
+                        var self = this;
+                        this.estimations.forEach(function (estimation) {
+                            self.saveEstimation(estimation, data);
+                        });
+                        showAlert("Solicitud enviada");
+                    },
+                    saveEstimation: function (estimation, data) {
+                        this.$http.post(ROOT_URL + '/estimations/request/' + data.idRequest, estimation).success(function (data) {
+                        }).error(function () {
+                            showAlert("Error al agregar cotización", {type: 3});
+                        })
+                    },
+                    showModalSolicitud: function () {
+                        $('#modalSolicitud').modal('show');
+                    },
+                    sendTreasuryRequestModal: function () {
+                        $('#modalTreasuryR').modal('show');
+                    },
+                    hideSendTreasuryRequestModal: function () {
+                        $('#modalTreasuryR').modal('hide');
+                    },
+                    showNewEstimationModal: function () {
+                        this.newEstimationFormActive = true;
+                        $('#newEstimationModal').modal('show');
+                    },
+                    hideNewEstimationModal: function () {
+                        this.clearEstimation();
+                        this.newEstimationFormActive = false;
+                        $('#newEstimationModal').modal('hide');
+                    },
+                    getProviderAccounts: function () {
+                        this.$http.get(ROOT_URL + '/providers-accounts/provider/' + this.estimation.provider.idProvider)
+                            .success(function (data) {
+                                this.providerAccounts = data;
+                            })
+                            .error(function (data) {
+
+                            });
+                    },
+                    getCurrencies: function () {
+                        this.$http.get(ROOT_URL + '/currencies')
+                            .success(function (data) {
+                                this.currencies = data;
+                            })
+                            .error(function (data) {
+
+                            });
+                    },
+                    onChangeCurrency: function () {
+                        this.estimation.rate = (this.estimation.currency.idCurrency == 1) ? 1 : '';
+                    },
+                    setFile: function (event) {
+                        var self = this;
+                        var file = event.target.files[0];
+
+                        if (this.validateFile(file)) {
+
+                            var reader = new FileReader();
+
+                            reader.onload = (function (theFile) {
+                                return function (e) {
+                                    self.estimation.file = {
+                                        name: theFile.name,
+                                        size: theFile.size,
+                                        type: theFile.type,
+                                        dataUrl: e.target.result
+                                    };
+                                };
+                            })(file);
+                            reader.readAsDataURL(file);
+                        }
+                    },
+                    validateFile: function (file) {
+                        if (file.type !== 'application/pdf') {
+                            event.target.value = null;
+                            showAlert("Tipo de archivo no admitido", {type: 3});
+                            return false;
+                        }
+
+                        return true;
+                    },
+                    clearEstimation: function () {
+                        this.estimation = {
+                            amount: '',
+                            provider: '',
+                            account: '',
+                            currency: '',
+                            rate: '',
+                            file: ''
+                        };
+                    },
+                    addEstimation: function () {
+                        var estimation = this.estimation;
+                        this.estimations.push(estimation);
+                        this.hideNewEstimationModal();
+                    },
+                    deleteEstimationFile: function (e) {
+                        this.estimation.file = '';
+                    }
+                },
+                filters: {
+                    separate: function (value) {
+                        return value.replace(/:/g, ' ');
+                    },
+                    currencyDisplay: {
+                        read: function (val) {
+                            if (typeof val == 'number') {
+                                return val.formatMoney(2, '');
+                            }
+                        },
+                        write: function (val, oldVal) {
+                            var number = +val.replace(/[^\d.]/g, '');
+                            return isNaN(number) ? 0 : parseFloat(number.toFixed(2));
+                        }
+                    }
+                }
+            });
+
+        </script>
+        <script type="text/javascript">
+            function format(input) {
+                var num = input.value.replace(/\,/g, '');
+                if (!isNaN(num)) {
+                    num = num.toString().split('').reverse().join('').replace(/(?=\d*\.?)(\d{3})/g, '$1,');
+                    num = num.split('').reverse().join('').replace(/^[\,]/, '');
+                    num = num.split('').join('').replace(/^[\,]/, '');
+                    var inicio = num.substring(0, 1);
+                    if (inicio == '0') {
+                        showAlert("Corregir cantidad", {type: 3});
+                        input.value = '';
+                    } else {
+                        input.value = num.split('').join('').replace(/^[\,]/, '');
+                    }
+                }
+
+                else {
+                    showAlert("Solo se permiten números", {type: 3});
+                    input.value = '';
+                }
+            }
+
+            function cleanField(obj) {
+                var inicial = obj.value;
+                if (obj.value == '0' || obj.value == '0.00') {
+                    obj.value = '';
+                } else {
+                    return false;
+                }
+            }
+            function onlyNumbers(e) {
+                var key = window.Event ? e.which : e.keyCode
+                return (key >= 48 && key <= 57)
+            }
+        </script>
+    </jsp:attribute>
+
+    <jsp:attribute name="styles">
+        <style>
+            textarea {
+                resize: none;
+            }
+
+            label.circlered {
+                width: 20px;
+                height: 20px;
+                -moz-border-radius: 50%;
+                -webkit-border-radius: 50%;
+                border-radius: 50%;
+                background: #FF0000;
+            }
+
+            label.circleyel {
+                width: 20px;
+                height: 20px;
+                -moz-border-radius: 50%;
+                -webkit-border-radius: 50%;
+                border-radius: 50%;
+                background: #FFFF06;
+            }
+
+            label.circlegre {
+                width: 20px;
+                height: 20px;
+                -moz-border-radius: 50%;
+                -webkit-border-radius: 50%;
+                border-radius: 50%;
+                background: #00FF00;
+            }
+            .btn-hover {
+                font-weight: normal;
+                color: #333333;
+                cursor: pointer;
+                background-color: inherit;
+                border-color: transparent;
+            }
+            .btn-circle {
+                width: 40px;
+                height: 38px;
+                text-align: center;
+                padding: 6px 0;
+                font-size: 14px;
+                line-height: 1.828571429;
+                border-radius: 19px;
+            }
+
+        </style>
+    </jsp:attribute>
+    <jsp:body>
+        <div id="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-3">
+                    <h2>Cuentas por pagar</h2>
+                </div>
+                <div class="col-md-2 text-right">
+                </div>
+                <div class="col-md-4">
+
+                </div>
+                <div class="col-md-3 text-right" style="margin-top: 10px">
+                    <label>Nombre de usuario</label>
+                    <p>
+                        <span class="label label-default">{{user.dwEmployee.employee.fullName}}</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>Información de proveedor</b></div>
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <div class="row">
+                        <table class="table table-striped">
+                            <tr>
+                                <td class="col-md-3"><b>Nombre o razón social</b></td>
+                                <td class="col-md-3"><b>RFC</b></td>
+                                <td class="col-md-3"><b>Días de crédito</b></td>
+                                <td class="col-md-3"><b>Fecha de corte</b></td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-3">JCSA</td>
+                                <td class="col-md-3">SAAJ921116PQA</td>
+                                <td class="col-md-3">40</td>
+                                <td class="col-md-3">10-11-2017</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-3"><b>Nombre del contacto</b></td>
+                                <td class="col-md-3"><b>Puesto</b></td>
+                                <td class="col-md-3"><b>Teléfono</b></td>
+                                <td class="col-md-3"><b>Correo</b></td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-3">JCSA</td>
+                                <td class="col-md-3">Gerente</td>
+                                <td class="col-md-3">55 167 71711</td>
+                                <td class="col-md-3">1g.jcsa@gmail.com</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>Información de pago</b></div>
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <div class="row">
+                        <table class="table table-striped">
+                            <tr>
+                                <td class="col-md-2"><b>Banco</b></td>
+                                <td class="col-md-3"><b>Cuenta bancaria</b></td>
+                                <td class="col-md-3"><b>Monto total</b></td>
+                                <td class="col-md-2"><b>PDF</b></td>
+                                <td class="col-md-2"><b>XML</b></td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-2">Santander</td>
+                                <td class="col-md-3">1210121222</td>
+                                <td class="col-md-3">$ 10,010.99</td>
+                                <td class="col-md-2">
+                                    <a class="btn btn-md btn-hover btn-circle btn-danger"
+                                       data-toggle="tooltip" data-placement="top" title="Descargar">
+                                        <span class="glyphicon glyphicon-download-alt"></span>
+                                    </a>
+                                </td>
+                                <td class="col-md-2">
+                                    <a class="btn btn-md btn-hover btn-circle btn-success"
+                                       data-toggle="tooltip" data-placement="top" title="Descargar">
+                                        <span class="glyphicon glyphicon-download-alt"></span>
+                                    </a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>Información de solicitante</b></div>
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <div class="row">
+                        <table class="table table-striped">
+                            <tr>
+                                <td class="col-md-3"><b>Nombre</b></td>
+                                <td class="col-md-3"><b>Puesto</b></td>
+                                <td class="col-md-3"><b>Empresa</b></td>
+                                <td class="col-md-3"><b>Región</b></td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-3">Juan de Dios Ibarra</td>
+                                <td class="col-md-3">Administrador</td>
+                                <td class="col-md-3">BIDBG</td>
+                                <td class="col-md-3">CDMX</td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-3"><b>Sucursal</b></td>
+                                <td class="col-md-3"><b>Área</b></td>
+                                <td class="col-md-3"><b>Centro de costos</b></td>
+                                <td class="col-md-3"><b></b></td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-3">Polanco</td>
+                                <td class="col-md-3">Gerente</td>
+                                <td class="col-md-3">501</td>
+                                <td class="col-md-3"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading"><b>Información de solicitud</b></div>
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <div class="row">
+                        <table class="table table-striped">
+                            <tr>
+                                <td class="col-md-2"><b>Concepto</b></td>
+                                <td class="col-md-3"><b>Fecha de solicitud</b></td>
+                                <td class="col-md-3"><b>Fecha límite de pago</b></td>
+                                <td class="col-md-2"><b>Programar fecha de pago</b></td>
+                            </tr>
+                            <tr>
+                                <td class="col-md-3">Ejempl concepto</td>
+                                <td class="col-md-3">10-07-2017</td>
+                                <td class="col-md-3">15-07-2017</td>
+                                <td class="col-md-3">
+                                    <div class='input-group date' id='proFecha'>
+                                        <input type='text' class="form-control" placeholder="dd-mm-aaaa" required>
+                                        <span class="input-group-addon" @click="proFecha()">
+                                       <span class="glyphicon glyphicon-calendar"></span>
+                                   </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <button class="btn btn-success" @click="sendTreasuryRequestModal">Guardar</button> &nbsp;&nbsp;
+                    <a href="javascript:window.history.back();">
+                        <button class="btn btn-default">Cancelar</button>
+                    </a>
+                </div>
+            </div>
+        </div><br>
+        <%--modal enviar solicitud a tesoreria--%>
+        <div class="modal fade" id="modalTreasuryR" tabindex="-1" role="dialog" aria-labelledby=""
+             aria-hidden="true">
+            <div class="modal-dialog modal-ms">
+                <div class="modal-content modal-ms">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <div class="alert">
+                            <h4 class="modal-title" id=""><label>Enviar solicitud</label>
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p align="center" style="font-size: 16px">La solicitud será enviada a tesorería<br>
+                                    para realizar el pago.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" @click="sendRequest()">Aceptar</button>
+                        <button type="button" class="btn btn-default" class="close" data-dismiss="modal"
+                                aria-hidden="true">Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </jsp:body>
+</t:template>
+
