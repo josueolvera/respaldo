@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -11,7 +12,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @DynamicUpdate
@@ -28,9 +31,21 @@ public class RequestOrderDocuments implements Serializable {
     @JsonView(JsonViews.Root.class)
 	private Integer idRequestOrderDocument;
 	
-	@Column(name = "ID_PRICE_ESTIMATIONS", insertable = false, updatable = false)
+	@Column(name = "ID_PRICE_ESTIMATION", insertable = false, updatable = false)
 	@JsonView(JsonViews.Root.class)
 	private int idPriceEstimation;
+
+	@Column(name = "ID_PROVIDER", insertable = false, updatable = false)
+	@JsonView(JsonViews.Root.class)
+	private int idProvider;
+
+	@Column(name = "ID_REQUEST", insertable = false, updatable = false)
+	@JsonView(JsonViews.Root.class)
+	private int idRequest;
+
+	@Column(name = "ID_DISTRIBUTOR", insertable = false, updatable = false)
+	@JsonView(JsonViews.Root.class)
+	private int idDistributor;
 	
 	@Size(max = 150)
     @Column(name = "FILE_PATH")
@@ -41,6 +56,33 @@ public class RequestOrderDocuments implements Serializable {
     @Column(name = "FILE_NAME")
     @JsonView(JsonViews.Root.class)
 	private String fileName;
+
+	@Size(max = 100)
+	@Column(name = "CONTACT_NAME_TRANSMITTER")
+	@JsonView(JsonViews.Root.class)
+	private String contactNameTransmitter;
+
+	@Size(max = 100)
+	@Column(name = "CONTACT_ROLE_TRANSMITTER")
+	@JsonView(JsonViews.Root.class)
+	private String contactRoleTransmitter;
+
+	@Size(max = 100)
+	@Column(name = "CONTACT_TEL_TRANSMITTER")
+	@JsonView(JsonViews.Root.class)
+	private String contactTelTransmitter;
+
+	@Column(name = "AMOUNT")
+	@JsonView(JsonViews.Root.class)
+	private BigDecimal amount;
+
+	@Column(name = "IVA")
+	@JsonView(JsonViews.Root.class)
+	private BigDecimal iva;
+
+	@Column(name = "TOTAL_AMOUNT")
+	@JsonView(JsonViews.Root.class)
+	private BigDecimal totalAmount;
 	
 	@Size(max = 30)
     @Column(name = "USERNAME")
@@ -59,6 +101,25 @@ public class RequestOrderDocuments implements Serializable {
     @ManyToOne(optional = true)
     @JsonView(JsonViews.Embedded.class)
     private PriceEstimations priceEstimations;
+
+	@JoinColumn(name = "ID_PROVIDER", referencedColumnName = "ID_PROVIDER")
+	@ManyToOne(optional = true)
+	@JsonView(JsonViews.Embedded.class)
+	private Providers provider;
+
+	@JoinColumn(name = "ID_REQUEST", referencedColumnName = "ID_REQUEST")
+	@ManyToOne(optional = true)
+	@JsonView(JsonViews.Embedded.class)
+	private Requests request;
+
+	@JoinColumn(name = "ID_DISTRIBUTOR", referencedColumnName = "ID_DISTRIBUTOR")
+	@ManyToOne(optional = true)
+	@JsonView(JsonViews.Embedded.class)
+	private CDistributors cDistributor;
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "requestOrderDocuments")
+	@JsonView(JsonViews.Embedded.class)
+	private List<RequestOrderDetail> requestOrderDetails;
 	
 	//Constructores
 	public RequestOrderDocuments(){
@@ -125,31 +186,135 @@ public class RequestOrderDocuments implements Serializable {
 		this.priceEstimations = priceEstimations;
 	}
 
+	public int getIdProvider() {
+		return idProvider;
+	}
+
+	public void setIdProvider(int idProvider) {
+		this.idProvider = idProvider;
+	}
+
+	public int getIdRequest() {
+		return idRequest;
+	}
+
+	public void setIdRequest(int idRequest) {
+		this.idRequest = idRequest;
+	}
+
+	public int getIdDistributor() {
+		return idDistributor;
+	}
+
+	public void setIdDistributor(int idDistributor) {
+		this.idDistributor = idDistributor;
+	}
+
+	public Providers getProvider() {
+		return provider;
+	}
+
+	public void setProvider(Providers provider) {
+		this.provider = provider;
+	}
+
+	public Requests getRequest() {
+		return request;
+	}
+
+	public void setRequest(Requests request) {
+		this.request = request;
+	}
+
+	public CDistributors getcDistributor() {
+		return cDistributor;
+	}
+
+	public void setcDistributor(CDistributors cDistributor) {
+		this.cDistributor = cDistributor;
+	}
+
+	public String getContactNameTransmitter() {
+		return contactNameTransmitter;
+	}
+
+	public void setContactNameTransmitter(String contactNameTransmitter) {
+		this.contactNameTransmitter = contactNameTransmitter;
+	}
+
+	public String getContactRoleTransmitter() {
+		return contactRoleTransmitter;
+	}
+
+	public void setContactRoleTransmitter(String contactRoleTransmitter) {
+		this.contactRoleTransmitter = contactRoleTransmitter;
+	}
+
+	public String getContactTelTransmitter() {
+		return contactTelTransmitter;
+	}
+
+	public void setContactTelTransmitter(String contactTelTransmitter) {
+		this.contactTelTransmitter = contactTelTransmitter;
+	}
+
+	public BigDecimal getAmount() {
+		return amount;
+	}
+
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+	}
+
+	public BigDecimal getIva() {
+		return iva;
+	}
+
+	public void setIva(BigDecimal iva) {
+		this.iva = iva;
+	}
+
+	public BigDecimal getTotalAmount() {
+		return totalAmount;
+	}
+
+	public void setTotalAmount(BigDecimal totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+
+	public List<RequestOrderDetail> getRequestOrderDetails() {
+		return requestOrderDetails;
+	}
+
+	public void setRequestOrderDetails(List<RequestOrderDetail> requestOrderDetails) {
+		this.requestOrderDetails = requestOrderDetails;
+	}
+
+	public DateFormatsPojo getCreationDateFormats() {
+		return (creationDate == null) ? null : new DateFormatsPojo(creationDate);
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (!(o instanceof RequestOrderDocuments)) return false;
 
 		RequestOrderDocuments that = (RequestOrderDocuments) o;
 
 		if (idPriceEstimation != that.idPriceEstimation) return false;
-		if (!idRequestOrderDocument.equals(that.idRequestOrderDocument)) return false;
-		if (filePath != null ? !filePath.equals(that.filePath) : that.filePath != null) return false;
-		if (fileName != null ? !fileName.equals(that.fileName) : that.fileName != null) return false;
-		if (username != null ? !username.equals(that.username) : that.username != null) return false;
-		if (creationDate != null ? !creationDate.equals(that.creationDate) : that.creationDate != null) return false;
-		return priceEstimations != null ? priceEstimations.equals(that.priceEstimations) : that.priceEstimations == null;
+		if (idProvider != that.idProvider) return false;
+		if (idRequest != that.idRequest) return false;
+		if (idDistributor != that.idDistributor) return false;
+		return idRequestOrderDocument != null ? idRequestOrderDocument.equals(that.idRequestOrderDocument) : that.idRequestOrderDocument == null;
 	}
 
 	@Override
 	public int hashCode() {
-		int result = idRequestOrderDocument.hashCode();
+		int result = idRequestOrderDocument != null ? idRequestOrderDocument.hashCode() : 0;
 		result = 31 * result + idPriceEstimation;
-		result = 31 * result + (filePath != null ? filePath.hashCode() : 0);
-		result = 31 * result + (fileName != null ? fileName.hashCode() : 0);
-		result = 31 * result + (username != null ? username.hashCode() : 0);
-		result = 31 * result + (creationDate != null ? creationDate.hashCode() : 0);
-		result = 31 * result + (priceEstimations != null ? priceEstimations.hashCode() : 0);
+		result = 31 * result + idProvider;
+		result = 31 * result + idRequest;
+		result = 31 * result + idDistributor;
 		return result;
 	}
 
@@ -158,11 +323,23 @@ public class RequestOrderDocuments implements Serializable {
 		return "RequestOrderDocuments{" +
 				"idRequestOrderDocument=" + idRequestOrderDocument +
 				", idPriceEstimation=" + idPriceEstimation +
+				", idProvider=" + idProvider +
+				", idRequest=" + idRequest +
+				", idDistributor=" + idDistributor +
 				", filePath='" + filePath + '\'' +
 				", fileName='" + fileName + '\'' +
+				", contactNameTransmitter='" + contactNameTransmitter + '\'' +
+				", contactRoleTransmitter='" + contactRoleTransmitter + '\'' +
+				", contactTelTransmitter='" + contactTelTransmitter + '\'' +
+				", amount=" + amount +
+				", iva=" + iva +
+				", totalAmount=" + totalAmount +
 				", username='" + username + '\'' +
 				", creationDate=" + creationDate +
 				", priceEstimations=" + priceEstimations +
+				", provider=" + provider +
+				", request=" + request +
+				", cDistributor=" + cDistributor +
 				'}';
 	}
 }
