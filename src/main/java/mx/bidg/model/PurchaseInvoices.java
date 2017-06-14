@@ -265,4 +265,34 @@ public class PurchaseInvoices implements Serializable {
     public void setAccount(Accounts account) {
         this.account = account;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PurchaseInvoices)) return false;
+
+        PurchaseInvoices that = (PurchaseInvoices) o;
+
+        if (idPurchaseInvoices != null ? !idPurchaseInvoices.equals(that.idPurchaseInvoices) : that.idPurchaseInvoices != null)
+            return false;
+        if (idProvider != null ? !idProvider.equals(that.idProvider) : that.idProvider != null) return false;
+        if (idRequest != null ? !idRequest.equals(that.idRequest) : that.idRequest != null) return false;
+        if (idAccount != null ? !idAccount.equals(that.idAccount) : that.idAccount != null) return false;
+        return folio != null ? folio.equals(that.folio) : that.folio == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = idPurchaseInvoices != null ? idPurchaseInvoices.hashCode() : 0;
+        result = 31 * result + (idProvider != null ? idProvider.hashCode() : 0);
+        result = 31 * result + (idRequest != null ? idRequest.hashCode() : 0);
+        result = 31 * result + (idAccount != null ? idAccount.hashCode() : 0);
+        result = 31 * result + (folio != null ? folio.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "PurchaseInvoices{}";
+    }
 }
