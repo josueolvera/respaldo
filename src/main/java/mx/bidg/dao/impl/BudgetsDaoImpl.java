@@ -28,6 +28,11 @@ import org.springframework.stereotype.Repository;
 public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements BudgetsDao {
 
     @Override
+    public List<Budgets> findAll() {
+        return createEntityCriteria().add(Restrictions.ne("idBudget", 0)).list();
+    }
+
+    @Override
     public Budgets save(Budgets entity) {
         persist(entity);
         return entity;
@@ -36,11 +41,6 @@ public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements Bud
     @Override
     public Budgets findById(int id) {
         return getByKey(id);
-    }
-
-    @Override
-    public List<Budgets> findAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override

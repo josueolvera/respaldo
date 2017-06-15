@@ -9,11 +9,14 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  *
@@ -33,6 +36,14 @@ public class Budgets implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idBudget;
 
+    @Column(name = "ID_DISTRIBUTOR_COST_CENTER", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idDistributorCostCenter;
+
+    @Column(name = "ID_CONCEPT_BUDGET", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idConceptBudget;
+
     @Column(name = "ID_BUDGET_NATURE", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetNature;
@@ -41,23 +52,27 @@ public class Budgets implements Serializable {
     @JsonView(JsonViews.Root.class)
     private Integer idBudgetType;
 
+    @Column(name = "ID_REQUEST_CATEGORY", insertable = false, updatable = false)
+    @JsonView(JsonViews.Root.class)
+    private Integer idRequestCategory;
+
     @Basic(optional = false)
     @NotNull
     @Column(name = "ID_ACCESS_LEVEL")
     @JsonView(JsonViews.Root.class)
     private int idAccessLevel;
 
-    @Column(name = "ID_REQUEST_CATEGORY", insertable = false, updatable = false)
+    @Size(max = 50)
+    @Column(name = "USERNAME")
     @JsonView(JsonViews.Root.class)
-    private Integer idRequestCategory;
+    private String username;
 
-    @Column(name = "ID_DISTRIBUTOR_COST_CENTER", insertable = false, updatable = false)
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "CREATION_DATE")
+    @Convert(converter = DateTimeConverter.class)
     @JsonView(JsonViews.Root.class)
-    private Integer idDistributorCostCenter;
-
-    @Column(name = "ID_CONCEPT_BUDGET", insertable = false, updatable = false)
-    @JsonView(JsonViews.Root.class)
-    private Integer idConceptBudget;
+    private LocalDateTime creationDate;
 
     @JoinColumn(name = "ID_BUDGET_NATURE", referencedColumnName = "ID_BUDGET_NATURE")
     @ManyToOne
@@ -186,6 +201,22 @@ public class Budgets implements Serializable {
 
     public void setDistributorCostCenter(DistributorCostCenter distributorCostCenter) {
         this.distributorCostCenter = distributorCostCenter;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public LocalDateTime getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(LocalDateTime creationDate) {
+        this.creationDate = creationDate;
     }
 
     public CConceptBudget getConceptBudget() {

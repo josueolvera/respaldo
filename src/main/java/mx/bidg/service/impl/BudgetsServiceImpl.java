@@ -37,6 +37,11 @@ public class BudgetsServiceImpl implements BudgetsService {
     }
 
     @Override
+    public List<Budgets> findAll() {
+        return budgetsDao.findAll();
+    }
+
+    @Override
     public Budgets findById(Integer idBudget) {
         return budgetsDao.findById(idBudget);
     }
