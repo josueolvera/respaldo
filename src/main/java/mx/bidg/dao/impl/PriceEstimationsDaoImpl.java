@@ -70,7 +70,7 @@ public class PriceEstimationsDaoImpl extends AbstractDao<Integer, PriceEstimatio
     public PriceEstimations findAuthorized(Integer idRequest) {
         return (PriceEstimations) createEntityCriteria()
                 .add(Restrictions.eq("idRequest", idRequest))
-                .add(Restrictions.eq("idEstimationStatus", CEstimationStatus.APROBADA))
+                .add(Restrictions.eq("cEstimationStatus", CEstimationStatus.APROBADA))
                 .uniqueResult();
     }
 
