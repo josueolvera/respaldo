@@ -1072,7 +1072,6 @@ public class PayrollServiceImpl implements PayrollService {
         Double rhmasAsimilados = 0.00;
         if(!idsEmployeesE.isEmpty()){
             for(Integer idEmployee : idsEmployeesE){
-                if (idEmployee != 2580) {
                 EmployeesHistory eH = employeesHistoryDao.findByIdEmployeeAndLastRegister(idEmployee);
                 if(eH.getSalary() != null){
                     Outsourcing o = outsourcingDao.finfByidEmployee(idEmployee, applicationDateEnd);
@@ -1081,9 +1080,9 @@ public class PayrollServiceImpl implements PayrollService {
                     BigDecimal percentage = new BigDecimal(0.1);
                     BigDecimal commission = totalAmount.multiply(percentage).setScale(2, BigDecimal.ROUND_HALF_UP);
                     BigDecimal total = totalAmount.add(commission);
+                    BigDecimal totalT = total.add(o.getTotal()).setScale(2, BigDecimal.ROUND_HALF_UP);
                     
-                    rhmasAsimilados += total.doubleValue();
-                }
+                    rhmasAsimilados += totalT.doubleValue();
                 }
             }
         }
@@ -1131,28 +1130,26 @@ public class PayrollServiceImpl implements PayrollService {
             rowRhmas.createCell(1).setCellValue("RHMAS MVO");
             rowRhmas.createCell(2).setCellValue(rhmasMBO.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
         }
-        if (grupoBaal != null) {
-            totalDeTotales += grupoBaal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+        if (rhmasAsimilados != null) {
+            totalDeTotales += new BigDecimal(rhmasAsimilados).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
             Row rowRhmas = hoja4.createRow(8);
 
             rowRhmas.createCell(1).setCellValue("NOMINA IMSS EXTRANJEROS");
-            rowRhmas.createCell(2).setCellValue(grupoBaal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+            rowRhmas.createCell(2).setCellValue(new BigDecimal(rhmasAsimilados).doubleValue());
         }
-        if (backOfficeT != null && rhmasAsimilados != null) {
+        if (backOfficeT != null) {
             if (backOfficeT.getSalary() != null) {
                 BigDecimal salary = backOfficeT.getSalary().divide(new BigDecimal(2), 2, BigDecimal.ROUND_HALF_UP);
                 BigDecimal percentage = new BigDecimal(0.1);
                 BigDecimal commission = salary.multiply(percentage).setScale(2, BigDecimal.ROUND_HALF_UP);
                 BigDecimal total = salary.add(commission);
-                
-                BigDecimal sumRhMasA = total.add(new BigDecimal(rhmasAsimilados));
 
-                totalDeTotales += sumRhMasA.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                totalDeTotales += total.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
 
                 Row rowBackOffice = hoja4.createRow(10);
 
                 rowBackOffice.createCell(1).setCellValue("RHMAS ASIMILABLE");
-                rowBackOffice.createCell(2).setCellValue(sumRhMasA.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                rowBackOffice.createCell(2).setCellValue(total.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
             }
         }
 
