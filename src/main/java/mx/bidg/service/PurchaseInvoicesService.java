@@ -13,4 +13,5 @@ public interface PurchaseInvoicesService {
     PurchaseInvoices findById(Integer idPurchaseInvoices);
     List<PurchaseInvoices> findAll();
     boolean delete(PurchaseInvoices purchaseInvoices);
+    PurchaseInvoices findByIdRequest(Integer idRequest);
 }

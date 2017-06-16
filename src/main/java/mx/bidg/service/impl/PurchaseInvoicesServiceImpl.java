@@ -43,4 +43,9 @@ public class PurchaseInvoicesServiceImpl implements PurchaseInvoicesService {
     public boolean delete(PurchaseInvoices purchaseInvoices) {
         return purchaseInvoicesDao.delete(purchaseInvoices);
     }
+
+    @Override
+    public PurchaseInvoices findByIdRequest(Integer idRequest) {
+        return purchaseInvoicesDao.findByIdRequest(idRequest);
+    }
 }
