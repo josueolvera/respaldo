@@ -3,6 +3,7 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.PurchaseInvoicesDao;
 import mx.bidg.model.PurchaseInvoices;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -39,5 +40,10 @@ public class PurchaseInvoicesDaoImpl extends AbstractDao<Integer, PurchaseInvoic
     public boolean delete(PurchaseInvoices entity) {
         remove(entity);
         return true;
+    }
+
+    @Override
+    public PurchaseInvoices findByIdRequest(Integer idRequest) {
+        return (PurchaseInvoices) createEntityCriteria().add(Restrictions.eq("idRequest", idRequest)).uniqueResult();
     }
 }
