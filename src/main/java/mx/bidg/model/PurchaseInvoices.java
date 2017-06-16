@@ -14,6 +14,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Created by desarrollador on 31/05/17.
@@ -83,16 +84,6 @@ public class PurchaseInvoices implements Serializable {
     @JsonView(JsonViews.Root.class)
     private String username;
 
-    @Size(min = 1, max = 150)
-    @Column(name = "FILE_PATH")
-    @JsonView(JsonViews.Root.class)
-    private String filePath;
-
-    @Size(min = 1, max = 100)
-    @Column(name = "FILE_NAME")
-    @JsonView(JsonViews.Root.class)
-    private String fileName;
-
     @Basic
     @NotNull
     @Column(name = "CREATION_DATE")
@@ -114,6 +105,10 @@ public class PurchaseInvoices implements Serializable {
     @ManyToOne(optional = true)
     @JsonView(JsonViews.Embedded.class)
     private  Accounts account;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "purchaseInvoices")
+    @JsonView(JsonViews.Embedded.class)
+    private List<PurchaseInvoicesFiles> purchaseInvoicesFiles;
 
     public PurchaseInvoices() {
     }
@@ -218,22 +213,6 @@ public class PurchaseInvoices implements Serializable {
         this.username = username;
     }
 
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
     public LocalDateTime getCreationDate() {
         return creationDate;
     }
@@ -264,6 +243,14 @@ public class PurchaseInvoices implements Serializable {
 
     public void setAccount(Accounts account) {
         this.account = account;
+    }
+
+    public List<PurchaseInvoicesFiles> getPurchaseInvoicesFiles() {
+        return purchaseInvoicesFiles;
+    }
+
+    public void setPurchaseInvoicesFiles(List<PurchaseInvoicesFiles> purchaseInvoicesFiles) {
+        this.purchaseInvoicesFiles = purchaseInvoicesFiles;
     }
 
     @Override
