@@ -45,4 +45,6 @@ public interface RequestsService {
     List<Requests> findByCategoryAndTypeAndStatus(Integer idRequestCategory, Integer idRequestType);
 
     Requests rejectRequest(Integer idRequest, String rejectJustify, Users user);
+    Requests update(Requests request);
+
 }

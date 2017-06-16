@@ -76,6 +76,12 @@ public class RequestsServiceImpl implements RequestsService {
     @Autowired
     private RequestHistoryService requestHistoryService;
 
+    @Autowired
+    private RequestOrderDocumentsDao requestOrderDocumentsDao;
+
+    @Autowired
+    private RequestOrderDetailDao requestOrderDetailDao;
+
     @Override
     public HashMap<String, Object> getBudgetMonthProductType(String data) throws Exception {
 
@@ -327,6 +333,22 @@ public class RequestsServiceImpl implements RequestsService {
                 }
             }
 
+            RequestOrderDocuments requestOrderDocuments = requestOrderDocumentsDao.findByIdRequest(request.getIdRequest());
+
+            if (requestOrderDocuments != null){
+
+
+                List<RequestOrderDetail> requestOrderDetails = requestOrderDetailDao.findByidReqOrderDocument(requestOrderDocuments.getIdRequestOrderDocument());
+
+                if (!requestOrderDetails.isEmpty()){
+                    for (RequestOrderDetail requestOrderDetail : requestOrderDetails){
+                        requestOrderDetailDao.delete(requestOrderDetail);
+                    }
+                }
+
+                requestOrderDocumentsDao.delete(requestOrderDocuments);
+            }
+
             aux = requestsDao.delete(request);
         }
         return aux;
@@ -350,5 +372,10 @@ public class RequestsServiceImpl implements RequestsService {
             requestHistoryService.saveRequest(request, user);
         }
         return request;
+    }
+
+    @Override
+    public Requests update(Requests request) {
+        return requestsDao.update(request);
     }
 }
