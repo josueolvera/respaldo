@@ -21,6 +21,10 @@ public class Comprobante implements Serializable {
 
     private Complemento complemento;
 
+    private Float tipoCambio;
+
+    private String moneda;
+
     public Float getTotal() {
         return total;
     }
@@ -75,6 +79,22 @@ public class Comprobante implements Serializable {
 
     public void setComplemento(Complemento complemento) {
         this.complemento = complemento;
+    }
+
+    public Float getTipoCambio() {
+        return tipoCambio;
+    }
+
+    public void setTipoCambio(Float tipoCambio) {
+        this.tipoCambio = tipoCambio;
+    }
+
+    public String getMoneda() {
+        return moneda;
+    }
+
+    public void setMoneda(String moneda) {
+        this.moneda = moneda;
     }
 
     @Override

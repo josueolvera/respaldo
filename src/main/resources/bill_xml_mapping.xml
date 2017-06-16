@@ -2,6 +2,16 @@
     <class name="mx.bidg.pojos.xml_bill.Comprobante" auto-complete="true">
         <map-to xml="Comprobante" />
 
+        <field name="tipoCambio"
+               type="java.lang.Float">
+            <bind-xml name="TipoCambio" node="attribute"/>
+        </field>
+
+        <field name="moneda"
+               type="java.lang.String">
+            <bind-xml name="Moneda" node="attribute"/>
+        </field>
+
         <field name="total"
                type="java.lang.Float">
             <bind-xml name="total" node="attribute"/>
