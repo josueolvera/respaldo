@@ -13,5 +13,6 @@ public interface RequestOrderDocumentsService {
     RequestOrderDocuments save(RequestOrderDocuments rod);
     RequestOrderDocuments update(RequestOrderDocuments rod);
     boolean delete(RequestOrderDocuments rod);
+    RequestOrderDocuments findByIdRequest(Integer idRequest);
 
 }

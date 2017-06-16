@@ -44,4 +44,9 @@ public class RequestOrderDocumentsServiceImpl implements RequestOrderDocumentsSe
         return requestOrderDocumentsDao.delete(rod);
     }
 
+    @Override
+    public RequestOrderDocuments findByIdRequest(Integer idRequest) {
+        return requestOrderDocumentsDao.findByIdRequest(idRequest);
+    }
+
 }
