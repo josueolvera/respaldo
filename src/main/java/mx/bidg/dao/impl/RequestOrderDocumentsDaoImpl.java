@@ -3,6 +3,7 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.RequestOrderDocumentsDao;
 import mx.bidg.model.RequestOrderDocuments;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -40,5 +41,12 @@ public class RequestOrderDocumentsDaoImpl extends AbstractDao<Integer, RequestOr
     @Override
     public List<RequestOrderDocuments> findAll() {
         return (List<RequestOrderDocuments>) createEntityCriteria().list();
+    }
+
+    @Override
+    public RequestOrderDocuments findByIdRequest(Integer idRequest) {
+        return (RequestOrderDocuments) createEntityCriteria()
+                .add(Restrictions.eq("idRequest", idRequest))
+                .uniqueResult();
     }
 }
