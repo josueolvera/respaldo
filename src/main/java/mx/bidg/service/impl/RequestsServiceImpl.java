@@ -62,6 +62,9 @@ public class RequestsServiceImpl implements RequestsService {
     AccountsPayableDao accountsPayableDao;
 
     @Autowired
+    CRequestStatusDao cRequestStatusDao;
+
+    @Autowired
     private EmailDeliveryService emailDeliveryService;
 
     @Autowired
@@ -377,5 +380,33 @@ public class RequestsServiceImpl implements RequestsService {
     @Override
     public Requests update(Requests request) {
         return requestsDao.update(request);
+    }
+
+    @Override
+    public List<Requests> findByDCC(List<Integer> idDCCs){
+        return requestsDao.findByDCC(idDCCs);
+    }
+
+    @Override
+    public List<Requests> findAll(){
+        return requestsDao.findAll();
+    }
+
+    @Override
+    public Requests payRequest(Integer idRequest) {
+        Requests request = requestsDao.findById(idRequest);
+        CRequestStatus cRequestStatus = cRequestStatusDao.findById(6);
+
+        if (request != null) {
+            request.setRequestStatus(cRequestStatus);
+            request = requestsDao.update(request);
+        }
+
+        return request;
+    }
+
+    @Override
+    public List<Requests> findListByFolio(String folio){
+        return requestsDao.findListByFolio(folio);
     }
 }

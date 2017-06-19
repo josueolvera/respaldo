@@ -3,6 +3,7 @@ package mx.bidg.service.impl;
 import mx.bidg.dao.RequestsDatesDao;
 import mx.bidg.model.RequestsDates;
 import mx.bidg.service.RequestsDatesService;
+import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,5 +42,10 @@ public class RequestsDatesServiceImpl implements RequestsDatesService {
     @Override
     public boolean delete(RequestsDates requestsDates) {
         return requestsDatesDao.delete(requestsDates);
+    }
+
+    @Override
+    public RequestsDates getByRequest(Integer idRequest){
+       return requestsDatesDao.getByRequest(idRequest);
     }
 }

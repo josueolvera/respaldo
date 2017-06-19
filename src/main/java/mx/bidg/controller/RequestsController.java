@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +31,9 @@ public class RequestsController {
 
     @Autowired
     private RequestsService requestsService;
+
+    @Autowired
+    private DistributorCostCenterService distributorCostCenterService;
 
     @Autowired
     private AccountsPayableService accountsPayableService;
@@ -63,6 +67,15 @@ public class RequestsController {
 
     @Autowired
     private DwEmployeesService dwEmployeesService;
+
+    @Autowired
+    private PurchaseInvoicesService purchaseInvoicesService;
+
+    @Autowired
+    private RequestsDatesService requestsDatesService;
+
+    @Autowired
+    private DistributorsDetailBanksService distributorsDetailBanksService;
 
     @RequestMapping(method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> saveRequest(@RequestBody String data, HttpSession session)
@@ -131,9 +144,7 @@ public class RequestsController {
     @RequestMapping(value = "/folio", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findByFolio(@RequestParam(name = "folio", required = true) String folio) throws IOException{
         Requests requests = requestsService.findByFolio(folio);
-        return new ResponseEntity<>(
-                mapper.writerWithView(JsonViews.Embedded.class)
-                        .writeValueAsString(requests),HttpStatus.OK
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requests),HttpStatus.OK
         );
     }
 
@@ -186,4 +197,37 @@ public class RequestsController {
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(request), HttpStatus.OK);
     }
 
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findAll() throws IOException{
+        List<Requests> requestsList = requestsService.findAll();
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestsList), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/distributor/{idDistributor}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findByDistributor(@PathVariable Integer idDistributor) throws IOException{
+        List<Integer> idsDistributorsCostCenter = distributorCostCenterService.getIdsDCCByDistributor(idDistributor);
+        List<Requests> requestsList = requestsService.findByDCC(idsDistributorsCostCenter);
+
+        for (Requests request : requestsList){
+            request.setPurchaseInvoices(purchaseInvoicesService.findByIdRequest(request.getIdRequest()));
+            request.setRequestsDates(requestsDatesService.getByRequest(request.getIdRequest()));
+        }
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestsList), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/pay-selected", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> payRequests(@RequestBody String data) throws IOException{
+        JsonNode node = mapper.readTree(data);
+        List<Requests> requestsList = new ArrayList<>();
+        for(JsonNode jsonNode : node.get("requestsSelected")){
+            requestsList.add(requestsService.payRequest(jsonNode.get("idRequest").asInt()));
+        }
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestsList), HttpStatus.OK);
+    }
+
+    @RequestMapping(value =  "/folios", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findListByFolio(@RequestParam(name = "folio", required = false) String folio) throws IOException{
+        List<Requests> requestsList = requestsService.findListByFolio(folio);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestsList), HttpStatus.OK);
+    }
 }

@@ -33,7 +33,7 @@ public class DistributorsDetailBanksController {
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findAll() throws Exception {
         List<DistributorsDetailBanks> distributorsDetailBanksList = distributorsDetailBanksService.findAll();
-        return  new ResponseEntity<>(mapper.writerWithView(JsonViews.Root.class).writeValueAsString(distributorsDetailBanksList), HttpStatus.OK);
+        return  new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(distributorsDetailBanksList), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/distributor/{idDistributor}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

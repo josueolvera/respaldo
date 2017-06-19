@@ -23,4 +23,8 @@ public interface RequestsDao extends InterfaceDao<Requests> {
     List<Requests> findByCategoryAndTypeByEmployee(Integer idRequestCategory, Integer idRequestType, Integer idEmployee);
     List<Requests> findByCategoryAndTypeAndStatus(Integer idRequestCategory, Integer idRequestType);
     List<Requests> findByCategoryAndType(Integer idRequestCategory, Integer idRequestType);
+
+    List<Requests> findByDCC (List<Integer> idDCCs);
+    List<Requests> findAll();
+    List<Requests> findListByFolio(String folio);
 }

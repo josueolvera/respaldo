@@ -11,9 +11,7 @@ import mx.bidg.dao.RequestsDao;
 import mx.bidg.model.Requests;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.LogicalExpression;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -43,7 +41,8 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
 
     @Override
     public List<Requests> findAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return createEntityCriteria().list();
     }
 
     @Override
@@ -134,4 +133,23 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
                 .list();
     }
 
+    @Override
+    public  List<Requests> findByDCC (List<Integer> idDCCs){
+        Criteria criteria = createEntityCriteria();
+        Disjunction disjunction = Restrictions.disjunction();
+
+        if (!idDCCs.isEmpty()){
+            for (Integer idDCC : idDCCs){
+                disjunction.add(Restrictions.eq("idDistributorCostCenter", idDCC));
+            }
+        }
+
+        return  criteria.add(disjunction).add(Restrictions.eq("idRequestStatus", 3)).list();
+    }
+
+    @Override
+    public List<Requests> findListByFolio(String folio) {
+        Criteria criteria = createEntityCriteria();
+        return criteria.add(Restrictions.ilike("folio", folio, MatchMode.ANYWHERE)).list();
+    }
 }

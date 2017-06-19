@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import mx.bidg.config.JsonViews;
+import mx.bidg.pojos.DateFormatsPojo;
 import mx.bidg.utils.DateTimeConverter;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.text.DateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
 
@@ -34,7 +34,7 @@ public class RequestsDates implements Serializable {
     @Column(name = "ID_REQUEST", insertable=false, updatable=false)
     @NotNull
     @JsonView(JsonViews.Root.class)
-    private int idRequests;
+    private int idRequest;
 
     @Basic
     @Column(name = "PAYDAY_LIMIT")
@@ -79,11 +79,11 @@ public class RequestsDates implements Serializable {
     }
 
     public int getIdRequests() {
-        return idRequests;
+        return idRequest;
     }
 
     public void setIdRequests(int idRequests) {
-        this.idRequests = idRequests;
+        this.idRequest = idRequests;
     }
 
     public LocalDateTime getPaydayLimit() {
@@ -100,6 +100,13 @@ public class RequestsDates implements Serializable {
 
     public void setScheduiedDate(LocalDateTime scheduiedDate) {
         this.scheduiedDate = scheduiedDate;
+    }
+
+    public DateFormatsPojo getScheduiedDateFormats() {
+        if (scheduiedDate == null) {
+            return null;
+        }
+        return new DateFormatsPojo(scheduiedDate);
     }
 
     public Integer getCountUpdate() {
@@ -173,7 +180,7 @@ public class RequestsDates implements Serializable {
     public String toString() {
         return "RequestsDates{" +
                 "idRequestsDates=" + idRequestsDates +
-                ", idRequests=" + idRequests +
+                ", idRequest=" + idRequest +
                 ", paydayLimit=" + paydayLimit +
                 ", scheduiedDate=" + scheduiedDate +
                 ", countUpdate=" + countUpdate +

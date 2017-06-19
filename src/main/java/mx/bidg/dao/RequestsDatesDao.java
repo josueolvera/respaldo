@@ -10,4 +10,5 @@ import java.util.List;
 public interface RequestsDatesDao extends InterfaceDao<RequestsDates> {
     RequestsDates findByIdRequestsDates(Integer idResquestDates);
     List<RequestsDates> findAll();
+    RequestsDates getByRequest(Integer id);
 }

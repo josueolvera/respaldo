@@ -339,4 +339,11 @@ public class SIADController {
         model.setViewName("request-pending-autorization");
         return model;
     }
+
+    @RequestMapping(value = "/inbox-treasury", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView siadInboxTreasury() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("inbox-treasury");
+        return model;
+    }
 }

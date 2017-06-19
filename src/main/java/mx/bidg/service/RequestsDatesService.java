@@ -13,4 +13,5 @@ public interface RequestsDatesService {
     RequestsDates findById(Integer idRequestsDates);
     List<RequestsDates> findAll();
     boolean delete(RequestsDates requestsDates);
+    RequestsDates getByRequest(Integer idRequest);
 }

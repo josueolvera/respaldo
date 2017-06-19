@@ -47,4 +47,9 @@ public interface RequestsService {
     Requests rejectRequest(Integer idRequest, String rejectJustify, Users user);
     Requests update(Requests request);
 
+
+    List<Requests> findByDCC(List<Integer> idDCCs);
+    List<Requests> findAll();
+    Requests payRequest(Integer idRequest);
+    List<Requests> findListByFolio(String folio);
 }

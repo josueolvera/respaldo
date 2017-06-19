@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.text.DateFormat;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -45,6 +47,28 @@ public class RequestsDatesController {
         return mapper.writerWithView(JsonViews.Root.class).writeValueAsString(requestsDatesService.findById(id));
     }
 
+    @RequestMapping(value = "/request/{idRequest}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findByRequest(@PathVariable Integer idRequest) throws IOException{
+        RequestsDates requestsDates = requestsDatesService.getByRequest(idRequest);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestsDates), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/reschedule/{idRequest}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> reschedulePD(@PathVariable Integer idRequest, @RequestBody String data) throws IOException{
+
+        JsonNode node = mapper.readTree(data);
+
+        LocalDateTime scheduiedDate = (node.get("applicationDate") == null || node.findValue("applicationDate").asText().equals("")) ? null :
+                LocalDateTime.parse(node.get("applicationDate").asText(), DateTimeFormatter.ISO_DATE_TIME);
+
+        RequestsDates requestsDates = requestsDatesService.getByRequest(idRequest);
+
+        requestsDates.setScheduiedDate(scheduiedDate);
+
+        requestsDates = requestsDatesService.update(requestsDates);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestsDatesService.findAll()),HttpStatus.OK);
+    }
     @RequestMapping(value = "/save-requestDates", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> save(@RequestBody String data, HttpSession session)throws IOException{
         Users user = (Users) session.getAttribute("user");

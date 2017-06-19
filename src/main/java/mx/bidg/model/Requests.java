@@ -140,6 +140,14 @@ public class Requests implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private DwEmployees dwEmployees;
 
+    @Transient
+    @JsonView(JsonViews.Embedded.class)
+    private PurchaseInvoices purchaseInvoices;
+
+    @Transient
+    @JsonView(JsonViews.Embedded.class)
+    private RequestsDates requestsDates;
+
     public Integer getIdRequest() {
         return idRequest;
     }
@@ -302,6 +310,22 @@ public class Requests implements Serializable {
 
     public void setDwEmployees(DwEmployees dwEmployees) {
         this.dwEmployees = dwEmployees;
+    }
+
+    public PurchaseInvoices getPurchaseInvoices() {
+        return purchaseInvoices;
+    }
+
+    public void setPurchaseInvoices(PurchaseInvoices purchaseInvoices) {
+        this.purchaseInvoices = purchaseInvoices;
+    }
+
+    public RequestsDates getRequestsDates() {
+        return requestsDates;
+    }
+
+    public void setRequestsDates(RequestsDates requestsDates) {
+        this.requestsDates = requestsDates;
     }
 
     public String getReasonResponsible() {

@@ -3,6 +3,7 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.RequestsDatesDao;
 import mx.bidg.model.RequestsDates;
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -46,5 +47,14 @@ public class RequestsDatesDaoImpl extends AbstractDao<Integer, RequestsDates> im
     public boolean delete(RequestsDates entity) {
         delete(entity);
         return true;
+    }
+
+    @Override
+    public RequestsDates getByRequest(Integer idRequest){
+        Criteria criteria = createEntityCriteria();
+        if (idRequest != null){
+            criteria.add(Restrictions.eq("idRequest", idRequest));
+        }
+        return (RequestsDates) criteria.uniqueResult();
     }
 }
