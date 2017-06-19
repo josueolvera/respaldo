@@ -1,5 +1,9 @@
 package mx.bidg.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -8,7 +12,9 @@ import java.io.Serializable;
  * @author rafael
  */
 @Entity
+@DynamicUpdate
 @Table(name = "TRANSACTIONS_PROOFS")
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "_id")
 public class TransactionsProofs implements Serializable {
     private static final long serialVersionUID = 1L;
 

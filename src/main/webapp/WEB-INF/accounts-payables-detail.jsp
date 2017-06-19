@@ -5,13 +5,11 @@
   Time: 12:27 PM
   To change this template use File | Settings | File Templates.
 --%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users"/>
-
-<t:template pageTitle="BID Group: Bandeja de entrada solicitante">
+<t:template pageTitle="BID Group: Detalle de cuentas por pagar">
     <jsp:attribute name="scripts">
         <script type="text/javascript">
             function validateFloatKeyPress(el, evt) {
@@ -42,7 +40,6 @@
                 } else return o.selectionStart
             }
         </script>
-
         <script type="text/javascript">
             var vm = new Vue({
                 el: '#content',
@@ -52,10 +49,18 @@
                 ready: function () {
                     this.getUserInSession();
                     this.getCurrencies();
+                    this.getRequestsDateProgrammerOne();
+                    this.getRequestsDateProgrammer();
+                    this.getProContact();
+                    this.getProvidersReque();
+                    this.getPurchaseInvoice();
+                    this.getdwEmpleados();
+                    this.getRedocuments();
                 },
                 data: {
-                    <%--requestCategory: ${cat},--%>
-                    <%--idRequest: ${idRequest},--%>
+                    idRequ: ${idRequest},
+                    idProv: ${idProvider},
+                    idPurcha: ${idPurchaseInvoices},
                     roleCostCenterList: [],
                     costCenterList: [],
                     budgetCategories: [],
@@ -81,35 +86,14 @@
                     icon13: false,
                     icon14: false,
                     icon15: false,
-                    estimation: {
-                        amount: '',
-                        provider: '',
-                        account: '',
-                        currency: '',
-                        rate: '',
-                        file: ''
-                    },
-                    requestBody: {
-                        request: {
-                            description: '',
-                            purpose: '',
-                            userResponsible: '',
-                            idCostCenter: '',
-                            idBudgetCategory: '',
-                            idBudgetSubcategory: '',
-                            idRequestCategory: ''
-                        },
-                        products: []
-                    },
-                    estimations: [],
-                    selectProducts: {},
-                    selected: {
-                        costCenter: null,
-                        budgetCategory: null,
-                        budgetSubcategory: null,
-                        product: null
-                    },
-                    newEstimationFormActive: false
+                    requestsDateProg: [],
+                    requestsDateProgrammer: [],
+                    proveContact: [],
+                    providersReq: [],
+                    requestInformation: [],
+                    purchaseInvoicex: [],
+                    dwEmpleado: [],
+                    reqDocuments: []
                 },
                 methods: {
                     arrayObjectIndexOf: function (myArray, searchTerm, property) {
@@ -162,6 +146,42 @@
 
                             });
                     },
+                    //requests dates
+                    getPurchaseInvoice: function () {
+                        this.$http.get(ROOT_URL + '/purchase-invoice').success(function (data) {
+                            this.purchaseInvoicex = data;
+                        });
+                    },
+                    getRequestsDateProgrammerOne: function() {
+                        this.$http.get(ROOT_URL + '/accounts-payables-dates/' + this.idRequestsDat).success( function (data) {
+                            this.requestsDateProg = data;
+                        });
+                    },
+                    getRequestsDateProgrammer: function () {
+                        this.$http.get(ROOT_URL + '/accounts-payables-dates').success(function (data) {
+                            this.requestsDateProgrammer = data;
+                        });
+                    },
+                    getProContact: function () {
+                        this.$http.get(ROOT_URL + '/provider-contact').success(function (data) {
+                            this.proveContact = data;
+                        });
+                    },
+                    getProvidersReque: function () {
+                        this.$http.get(ROOT_URL + '/providers').success(function (data) {
+                            this.providersReq = data;
+                        });
+                    },
+                    getdwEmpleados: function () {
+                        this.$http.get(ROOT_URL + '/dw-employees').success(function (data) {
+                            this.dwEmpleado = data;
+                        });
+                    },
+                    getRedocuments: function () {
+                        this.$http.get(ROOT_URL + '/order-documents-request').success(function (data) {
+                            this.reqDocuments = data;
+                        });
+                    },
                     onChangeCostCenter: function () {
                         this.budgetCategories = [];
                         this.budgetSubcategories = [];
@@ -207,44 +227,6 @@
                         this.getProducts();
                         this.getProviders();
                     },
-                    createSelectForConcept: function (products) {
-                        var self = this;
-                        return $('#select-products').selectize({
-                            maxItems: 1,
-                            valueField: 'idProduct',
-                            labelField: 'product',
-                            searchField: 'product',
-                            options: products,
-                            create: function (input, callback) {
-                                self.$http.post(ROOT_URL + '/products/subcategory/' + self.selected.budgetSubcategory.idBudgetSubcategory, {
-                                    product: input
-                                }).success(function (data) {
-                                    showAlert('Producto guardado');
-                                    self.getProducts();
-                                    callback(data);
-                                }).error(function () {
-                                    callback();
-                                });
-                            },
-                            render: {
-                                option_create: function (data, escape) {
-                                    return '<div data-selectable class="create">' +
-                                        'Agregar <strong>' + escape(data.input) + '</strong>' +
-                                        '</div>'
-                                }
-                            }
-                        });
-                    },
-                    addProduct: function () {
-                        var product = {};
-                        product.idProduct = this.selectProducts[0].selectize.getValue();
-                        product.product = this.selectProducts[0].selectize.getOption(product.idProduct).text();
-
-                        this.requestBody.products.push(product);
-                    },
-                    removeProduct: function (product) {
-                        this.requestBody.products.$remove(product);
-                    },
                     clearRequest: function () {
 
                         this.requestBody = {
@@ -262,56 +244,8 @@
 
                         this.estimations = [];
                     },
-                    removeEstimation: function (estimation) {
-                        this.estimations.$remove(estimation);
-                    },
-                    sendRequest: function () {
-
-                        if (this.requestBody.products.length == 0 || this.selected.costCenter == null || this.selected.budgetCategory == null || this.selected.budgetSubcategory == null) {
-                            showAlert("Debes agregar un producto", {type: 3});
-                            return;
-                        } else if (this.estimations.length < 3) {
-                            showAlert("Debes agregar al menos tres cotizaciones", {type: 3});
-                            return;
-                        }
-
-                        this.requestBody.request.idCostCenter = this.selected.costCenter.idCostCenter;
-                        this.requestBody.request.idBudgetCategory = this.selected.budgetCategory.idBudgetCategory;
-                        this.requestBody.request.idBudgetSubcategory = this.selected.budgetSubcategory.idBudgetSubcategory;
-                        this.requestBody.request.idRequestCategory = 1;
-
-                        this.$http.post(ROOT_URL + '/requests', this.requestBody)
-                            .success(function (data) {
-                                USER_VM.fetchApp();
-                                this.saveEstimations(data);
-                                this.clearRequest();
-                            })
-                            .error(function (data) {
-                                showAlert("Error al generar la solicitud", {type: 3});
-                            });
-                    }
-                    ,
-                    saveEstimations: function (data) {
-                        var self = this;
-                        this.estimations.forEach(function (estimation) {
-                            self.saveEstimation(estimation, data);
-                        });
-                        showAlert("Solicitud enviada");
-                    },
-                    saveEstimation: function (estimation, data) {
-                        this.$http.post(ROOT_URL + '/estimations/request/' + data.idRequest, estimation).success(function (data) {
-                        }).error(function () {
-                            showAlert("Error al agregar cotización", {type: 3});
-                        })
-                    },
                     showModalSolicitud: function () {
                         $('#modalSolicitud').modal('show');
-                    },
-                    sendTreasuryRequestModal: function () {
-                        $('#modalTreasuryR').modal('show');
-                    },
-                    hideSendTreasuryRequestModal: function () {
-                        $('#modalTreasuryR').modal('hide');
                     },
                     showNewEstimationModal: function () {
                         this.newEstimationFormActive = true;
@@ -321,15 +255,6 @@
                         this.clearEstimation();
                         this.newEstimationFormActive = false;
                         $('#newEstimationModal').modal('hide');
-                    },
-                    getProviderAccounts: function () {
-                        this.$http.get(ROOT_URL + '/providers-accounts/provider/' + this.estimation.provider.idProvider)
-                            .success(function (data) {
-                                this.providerAccounts = data;
-                            })
-                            .error(function (data) {
-
-                            });
                     },
                     getCurrencies: function () {
                         this.$http.get(ROOT_URL + '/currencies')
@@ -411,6 +336,7 @@
             });
 
         </script>
+
         <script type="text/javascript">
             function format(input) {
                 var num = input.value.replace(/\,/g, '');
@@ -503,12 +429,12 @@
         <div id="content">
         <div class="row">
             <div class="col-md-12">
-                <div class="col-md-3">
-                    <h2>Cuentas por pagar</h2>
+                <div class="col-md-5">
+                    <h2>Detalle de cuentas por pagar</h2>
                 </div>
                 <div class="col-md-2 text-right">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-2">
 
                 </div>
                 <div class="col-md-3 text-right" style="margin-top: 10px">
@@ -532,11 +458,11 @@
                                 <td class="col-md-3"><b>Días de crédito</b></td>
                                 <td class="col-md-3"><b>Fecha de corte</b></td>
                             </tr>
-                            <tr>
-                                <td class="col-md-3">JCSA</td>
-                                <td class="col-md-3">SAAJ921116PQA</td>
-                                <td class="col-md-3">40</td>
-                                <td class="col-md-3">10-11-2017</td>
+                            <tr v-for="provider in providersReq" v-if="this.idProv == provider.idProvider">
+                                <td class="col-md-3">{{provider.providerName}}</td>
+                                <td class="col-md-3">{{provider.rfc}}</td>
+                                <td class="col-md-3">{{provider.creditDays}}</td>
+                                <td class="col-md-3">{{provider.cuttingDate}}</td>
                             </tr>
                             <tr>
                                 <td class="col-md-3"><b>Nombre del contacto</b></td>
@@ -544,11 +470,11 @@
                                 <td class="col-md-3"><b>Teléfono</b></td>
                                 <td class="col-md-3"><b>Correo</b></td>
                             </tr>
-                            <tr>
-                                <td class="col-md-3">JCSA</td>
-                                <td class="col-md-3">Gerente</td>
-                                <td class="col-md-3">55 167 71711</td>
-                                <td class="col-md-3">1g.jcsa@gmail.com</td>
+                            <tr v-for="pcontact in proveContact" v-if="this.idProv == pcontact.idProvider">
+                                <td class="col-md-3">{{pcontact.name}}</td>
+                                <td class="col-md-3">{{pcontact.post}}</td>
+                                <td class="col-md-3">{{pcontact.phoneNumber}}</td>
+                                <td class="col-md-3">{{pcontact.email}}</td>
                             </tr>
                         </table>
                     </div>
@@ -568,10 +494,10 @@
                                 <td class="col-md-2"><b>PDF</b></td>
                                 <td class="col-md-2"><b>XML</b></td>
                             </tr>
-                            <tr>
-                                <td class="col-md-2">Santander</td>
-                                <td class="col-md-3">1210121222</td>
-                                <td class="col-md-3">$ 10,010.99</td>
+                            <tr v-for="purch in purchaseInvoicex" v-if="this.idPurcha == purch.idPurchaseInvoices">
+                                <td class="col-md-2">{{purch.account.bank.acronyms}}</td>
+                                <td class="col-md-3">{{purch.account.accountNumber}}</td>
+                                <td class="col-md-3">{{purch.request.totalExpended | currency}}</td>
                                 <td class="col-md-2">
                                     <a class="btn btn-md btn-hover btn-circle btn-danger"
                                        data-toggle="tooltip" data-placement="top" title="Descargar">
@@ -594,8 +520,9 @@
             <div class="panel-heading"><b>Información de solicitante</b></div>
             <div class="panel-body">
                 <div class="col-md-12">
-                    <div class="row">
-                        <table class="table table-striped">
+                    <div class="row" v-for="purchasex in purchaseInvoicex" v-if="this.idPurcha == purchasex.idPurchaseInvoices">
+                        <table class="table table-striped" v-for="demple in dwEmpleado"
+                               v-if="purchasex.request.employees.idEmployee == demple.employee.idEmployee">
                             <tr>
                                 <td class="col-md-3"><b>Nombre</b></td>
                                 <td class="col-md-3"><b>Puesto</b></td>
@@ -603,21 +530,35 @@
                                 <td class="col-md-3"><b>Región</b></td>
                             </tr>
                             <tr>
-                                <td class="col-md-3">Juan de Dios Ibarra</td>
-                                <td class="col-md-3">Administrador</td>
-                                <td class="col-md-3">BIDBG</td>
-                                <td class="col-md-3">CDMX</td>
+                                <td class="col-md-3">
+                                    {{purchasex.request.employees.fullName}}
+                                </td>
+                                <td class="col-md-3">
+                                    {{demple.role.roleName}}
+                                </td>
+                                <td class="col-md-3">
+                                    {{purchasex.request.distributorCostCenter.distributors.acronyms}}
+                                </td>
+                                <td class="col-md-3">
+                                    {{demple.dwEnterprise.region.regionName}}
+                                </td>
                             </tr>
                             <tr>
                                 <td class="col-md-3"><b>Sucursal</b></td>
                                 <td class="col-md-3"><b>Área</b></td>
                                 <td class="col-md-3"><b>Centro de costos</b></td>
-                                <td class="col-md-3"><b></b></td>
+                                <td class="col-md-3"></td>
                             </tr>
                             <tr>
-                                <td class="col-md-3">Polanco</td>
-                                <td class="col-md-3">Gerente</td>
-                                <td class="col-md-3">501</td>
+                                <td class="col-md-3">
+                                    {{demple.dwEnterprise.branch.branchName}}
+                                </td>
+                                <td class="col-md-3">
+                                    {{demple.dwEnterprise.area.areaName}}
+                                </td>
+                                <td class="col-md-3">
+                                    {{purchasex.request.distributorCostCenter.costCenter.name}}
+                                </td>
                                 <td class="col-md-3"></td>
                             </tr>
                         </table>
@@ -637,10 +578,10 @@
                                 <td class="col-md-3"><b>Fecha límite de pago</b></td>
                                 <td class="col-md-2"><b>Programar fecha de pago</b></td>
                             </tr>
-                            <tr>
-                                <td class="col-md-3">Ejempl concepto</td>
-                                <td class="col-md-3">10-07-2017</td>
-                                <td class="col-md-3">15-07-2017</td>
+                            <tr v-for="purchasex in purchaseInvoicex" v-if="this.idPurcha == purchasex.idPurchaseInvoices">
+                                <td class="col-md-3"></td>
+                                <td class="col-md-3">{{purchasex.request.creationDateFormats.dateNumber}}</td>
+                                <td class="col-md-3"></td>
                                 <td class="col-md-3">
                                     <div class='input-group date' id='proFecha'>
                                         <input type='text' class="form-control" placeholder="dd-mm-aaaa" required>

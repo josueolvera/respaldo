@@ -9,8 +9,7 @@
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users"/>
-
-<t:template pageTitle="BID Group: Bandeja de entrada solicitante">
+<t:template pageTitle="BID Group: Cuentas por pagar">
     <jsp:attribute name="scripts">
         <script type="text/javascript">
             function validateFloatKeyPress(el, evt) {
@@ -51,10 +50,9 @@
                 ready: function () {
                     this.getUserInSession();
                     this.getCurrencies();
+                    this.getPurchaseInvoice();
                 },
                 data: {
-                    <%--requestCategory: ${cat},--%>
-                    <%--idRequest: ${idRequest},--%>
                     roleCostCenterList: [],
                     costCenterList: [],
                     budgetCategories: [],
@@ -80,35 +78,10 @@
                     icon13: false,
                     icon14: false,
                     icon15: false,
-                    estimation: {
-                        amount: '',
-                        provider: '',
-                        account: '',
-                        currency: '',
-                        rate: '',
-                        file: ''
-                    },
-                    requestBody: {
-                        request: {
-                            description: '',
-                            purpose: '',
-                            userResponsible: '',
-                            idCostCenter: '',
-                            idBudgetCategory: '',
-                            idBudgetSubcategory: '',
-                            idRequestCategory: ''
-                        },
-                        products: []
-                    },
-                    estimations: [],
-                    selectProducts: {},
-                    selected: {
-                        costCenter: null,
-                        budgetCategory: null,
-                        budgetSubcategory: null,
-                        product: null
-                    },
-                    newEstimationFormActive: false
+                    purchaseInvoice: [],
+                    detailUrl: ROOT_URL + "/siad/accounts-payables-detail?idRequest=" ,
+                    detailTwoUrl: "&idProvider=" ,
+                    detailThreeUrl: "&idPurchaseInvoices="
                 },
                 methods: {
                     arrayObjectIndexOf: function (myArray, searchTerm, property) {
@@ -168,6 +141,12 @@
 
                             });
                     },
+                    //requests dates
+                    getPurchaseInvoice: function () {
+                        this.$http.get(ROOT_URL + '/purchase-invoice').success(function (data) {
+                                this.purchaseInvoice = data;
+                            });
+                    },
                     onChangeCostCenter: function () {
                         this.budgetCategories = [];
                         this.budgetSubcategories = [];
@@ -213,44 +192,6 @@
                         this.getProducts();
                         this.getProviders();
                     },
-                    createSelectForConcept: function (products) {
-                        var self = this;
-                        return $('#select-products').selectize({
-                            maxItems: 1,
-                            valueField: 'idProduct',
-                            labelField: 'product',
-                            searchField: 'product',
-                            options: products,
-                            create: function (input, callback) {
-                                self.$http.post(ROOT_URL + '/products/subcategory/' + self.selected.budgetSubcategory.idBudgetSubcategory, {
-                                    product: input
-                                }).success(function (data) {
-                                    showAlert('Producto guardado');
-                                    self.getProducts();
-                                    callback(data);
-                                }).error(function () {
-                                    callback();
-                                });
-                            },
-                            render: {
-                                option_create: function (data, escape) {
-                                    return '<div data-selectable class="create">' +
-                                        'Agregar <strong>' + escape(data.input) + '</strong>' +
-                                        '</div>'
-                                }
-                            }
-                        });
-                    },
-                    addProduct: function () {
-                        var product = {};
-                        product.idProduct = this.selectProducts[0].selectize.getValue();
-                        product.product = this.selectProducts[0].selectize.getOption(product.idProduct).text();
-
-                        this.requestBody.products.push(product);
-                    },
-                    removeProduct: function (product) {
-                        this.requestBody.products.$remove(product);
-                    },
                     clearRequest: function () {
 
                         this.requestBody = {
@@ -268,48 +209,6 @@
 
                         this.estimations = [];
                     },
-                    removeEstimation: function (estimation) {
-                        this.estimations.$remove(estimation);
-                    },
-                    sendRequest: function () {
-
-                        if (this.requestBody.products.length == 0 || this.selected.costCenter == null || this.selected.budgetCategory == null || this.selected.budgetSubcategory == null) {
-                            showAlert("Debes agregar un producto", {type: 3});
-                            return;
-                        } else if (this.estimations.length < 3) {
-                            showAlert("Debes agregar al menos tres cotizaciones", {type: 3});
-                            return;
-                        }
-
-                        this.requestBody.request.idCostCenter = this.selected.costCenter.idCostCenter;
-                        this.requestBody.request.idBudgetCategory = this.selected.budgetCategory.idBudgetCategory;
-                        this.requestBody.request.idBudgetSubcategory = this.selected.budgetSubcategory.idBudgetSubcategory;
-                        this.requestBody.request.idRequestCategory = 1;
-
-                        this.$http.post(ROOT_URL + '/requests', this.requestBody)
-                            .success(function (data) {
-                                USER_VM.fetchApp();
-                                this.saveEstimations(data);
-                                this.clearRequest();
-                            })
-                            .error(function (data) {
-                                showAlert("Error al generar la solicitud", {type: 3});
-                            });
-                    }
-                    ,
-                    saveEstimations: function (data) {
-                        var self = this;
-                        this.estimations.forEach(function (estimation) {
-                            self.saveEstimation(estimation, data);
-                        });
-                        showAlert("Solicitud enviada");
-                    },
-                    saveEstimation: function (estimation, data) {
-                        this.$http.post(ROOT_URL + '/estimations/request/' + data.idRequest, estimation).success(function (data) {
-                        }).error(function () {
-                            showAlert("Error al agregar cotización", {type: 3});
-                        })
-                    },
                     showModalSolicitud: function () {
                         $('#modalSolicitud').modal('show');
                     },
@@ -321,15 +220,6 @@
                         this.clearEstimation();
                         this.newEstimationFormActive = false;
                         $('#newEstimationModal').modal('hide');
-                    },
-                    getProviderAccounts: function () {
-                        this.$http.get(ROOT_URL + '/providers-accounts/provider/' + this.estimation.provider.idProvider)
-                            .success(function (data) {
-                                this.providerAccounts = data;
-                            })
-                            .error(function (data) {
-
-                            });
                     },
                     getCurrencies: function () {
                         this.$http.get(ROOT_URL + '/currencies')
@@ -591,14 +481,29 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td class="col-md-1 text-center">Compra</td>
-                                                <td class="col-md-3 text-center">16-03-2017</td>
-                                                <td class="col-md-3 text-center">30-05-2017</td>
-                                                <td class="col-md-2 text-center">ABC123</td>
-                                                <td class="col-md-2 text-center">$ 300.00</td>
+                                            <tr v-for="purchose in purchaseInvoice"
+                                                v-if="purchose.request.requestCategory.idRequestCategory == 1
+                                                        && purchose.request.requestType.idRequestType == 1">
                                                 <td class="col-md-1 text-center">
-                                                    <button class="glyphicon glyphicon-new-window"></button>
+                                                    {{purchose.request.requestCategory.requestCategoryName}}
+                                                </td>
+                                                <td class="col-md-3 text-center">
+                                                    {{purchose.request.creationDateFormats.dateNumber}}
+                                                </td>
+                                                <td class="col-md-3 text-center">
+                                                    {{}}
+                                                </td>
+                                                <td class="col-md-2 text-center">{{purchose.request.folio}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.totalExpended | currency}}
+                                                </td>
+                                                <td class="col-md-1 text-center">
+                                                    <a class="glyphicon glyphicon-new-window"
+                                                       :href="detailUrl + purchose.idRequest +
+                                                              detailTwoUrl + purchose.idProvider +
+                                                              detailThreeUrl + purchose.idPurchaseInvoices"
+                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                    </a>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -645,16 +550,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td class="col-md-1 text-center">Compra</td>
-                                                <td class="col-md-3 text-center">16-03-2017</td>
-                                                <td class="col-md-3 text-center">30-05-2017</td>
-                                                <td class="col-md-2 text-center">ABC123</td>
-                                                <td class="col-md-2 text-center">$ 300.00</td>
-                                                <td class="col-md-1 text-center">
-                                                    <button class="glyphicon glyphicon-new-window"></button>
-                                                </td>
-                                            </tr>
+
                                             </tbody>
                                         </table>
                                     </div>
@@ -699,14 +595,29 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td class="col-md-1 text-center">Compra</td>
-                                                <td class="col-md-3 text-center">16-03-2017</td>
-                                                <td class="col-md-3 text-center">30-05-2017</td>
-                                                <td class="col-md-2 text-center">ABC123</td>
-                                                <td class="col-md-2 text-center">$ 300.00</td>
+                                            <tr v-for="purchose in purchaseInvoice"
+                                                v-if="purchose.request.requestCategory.idRequestCategory == 2
+                                                        && purchose.request.requestType.idRequestType == 1">
                                                 <td class="col-md-1 text-center">
-                                                    <button class="glyphicon glyphicon-new-window"></button>
+                                                    {{purchose.request.requestCategory.requestCategoryName}}
+                                                </td>
+                                                <td class="col-md-3 text-center">
+                                                    {{purchose.request.creationDateFormats.dateNumber}}
+                                                </td>
+                                                <td class="col-md-3 text-center">
+                                                    {{}}
+                                                </td>
+                                                <td class="col-md-2 text-center">{{purchose.request.folio}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.totalExpended | currency}}
+                                                </td>
+                                                <td class="col-md-1 text-center">
+                                                    <a class="glyphicon glyphicon-new-window"
+                                                       :href="detailUrl + purchose.idRequest +
+                                                              detailTwoUrl + purchose.idProvider +
+                                                              detailThreeUrl + purchose.idPurchaseInvoices"
+                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                    </a>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -753,14 +664,29 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td class="col-md-1 text-center">Compra</td>
-                                                <td class="col-md-3 text-center">16-03-2017</td>
-                                                <td class="col-md-3 text-center">30-05-2017</td>
-                                                <td class="col-md-2 text-center">ABC123</td>
-                                                <td class="col-md-2 text-center">$ 300.00</td>
+                                            <tr v-for="purchose in purchaseInvoice"
+                                                v-if="purchose.request.requestCategory.idRequestCategory == 3
+                                                        && purchose.request.requestType.idRequestType == 1">
                                                 <td class="col-md-1 text-center">
-                                                    <button class="glyphicon glyphicon-new-window"></button>
+                                                    {{purchose.request.requestCategory.requestCategoryName}}
+                                                </td>
+                                                <td class="col-md-3 text-center">
+                                                    {{purchose.request.creationDateFormats.dateNumber}}
+                                                </td>
+                                                <td class="col-md-3 text-center">
+                                                    {{}}
+                                                </td>
+                                                <td class="col-md-2 text-center">{{purchose.request.folio}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.totalExpended | currency}}
+                                                </td>
+                                                <td class="col-md-1 text-center">
+                                                    <a class="glyphicon glyphicon-new-window"
+                                                       :href="detailUrl + purchose.idRequest +
+                                                              detailTwoUrl + purchose.idProvider +
+                                                              detailThreeUrl + purchose.idPurchaseInvoices"
+                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                    </a>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -807,14 +733,29 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td class="col-md-1 text-center">Compra</td>
-                                                <td class="col-md-3 text-center">16-03-2017</td>
-                                                <td class="col-md-3 text-center">30-05-2017</td>
-                                                <td class="col-md-2 text-center">ABC123</td>
-                                                <td class="col-md-2 text-center">$ 300.00</td>
+                                            <tr v-for="purchose in purchaseInvoice"
+                                                v-if="purchose.request.requestCategory.idRequestCategory == 5
+                                                        && purchose.request.requestType.idRequestType == 1">
                                                 <td class="col-md-1 text-center">
-                                                    <button class="glyphicon glyphicon-new-window"></button>
+                                                    {{purchose.request.requestCategory.requestCategoryName}}
+                                                </td>
+                                                <td class="col-md-3 text-center">
+                                                    {{purchose.request.creationDateFormats.dateNumber}}
+                                                </td>
+                                                <td class="col-md-3 text-center">
+                                                    {{}}
+                                                </td>
+                                                <td class="col-md-2 text-center">{{purchose.request.folio}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.totalExpended | currency}}
+                                                </td>
+                                                <td class="col-md-1 text-center">
+                                                    <a class="glyphicon glyphicon-new-window"
+                                                       :href="detailUrl + purchose.idRequest +
+                                                              detailTwoUrl + purchose.idProvider +
+                                                              detailThreeUrl + purchose.idPurchaseInvoices"
+                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                    </a>
                                                 </td>
                                             </tr>
                                             </tbody>

@@ -39,12 +39,14 @@ public class RequestsDates implements Serializable {
     @Basic
     @Column(name = "PAYDAY_LIMIT")
     @JsonView(JsonViews.Root.class)
-    private Date paydayLimit;
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime paydayLimit;
 
     @Basic
     @Column(name = "SCHEDUIED_DATE")
     @JsonView(JsonViews.Root.class)
-    private Date scheduiedDate;
+    @Convert(converter = DateTimeConverter.class)
+    private LocalDateTime scheduiedDate;
 
     @Basic(optional = true)
     @Column(name = "COUNT_UPDATE")
@@ -84,19 +86,19 @@ public class RequestsDates implements Serializable {
         this.idRequests = idRequests;
     }
 
-    public Date getPaydayLimit() {
+    public LocalDateTime getPaydayLimit() {
         return paydayLimit;
     }
 
-    public void setPaydayLimit(Date paydayLimit) {
+    public void setPaydayLimit(LocalDateTime paydayLimit) {
         this.paydayLimit = paydayLimit;
     }
 
-    public Date getScheduiedDate() {
+    public LocalDateTime getScheduiedDate() {
         return scheduiedDate;
     }
 
-    public void setScheduiedDate(Date scheduiedDate) {
+    public void setScheduiedDate(LocalDateTime scheduiedDate) {
         this.scheduiedDate = scheduiedDate;
     }
 

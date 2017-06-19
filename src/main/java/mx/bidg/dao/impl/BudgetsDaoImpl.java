@@ -24,12 +24,11 @@ import org.springframework.stereotype.Repository;
  * @author sistemask
  */
 @Repository
-@SuppressWarnings("unchecked")
 public class BudgetsDaoImpl extends AbstractDao<Integer, Budgets> implements BudgetsDao {
 
     @Override
     public List<Budgets> findAll() {
-        return createEntityCriteria().add(Restrictions.ne("idBudget", 0)).list();
+        return createEntityCriteria().add(Restrictions.ne("idBudget",0)).list();
     }
 
     @Override
