@@ -42,11 +42,10 @@ public class RequestsDates implements Serializable {
     @Convert(converter = DateTimeConverter.class)
     private LocalDateTime paydayLimit;
 
-    @Basic
-    @Column(name = "SCHEDUIED_DATE")
+    @Column(name = "SCHEDULED_DATE")
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
-    private LocalDateTime scheduiedDate;
+    private LocalDateTime scheduledDate;
 
     @Basic(optional = true)
     @Column(name = "COUNT_UPDATE")
@@ -95,18 +94,18 @@ public class RequestsDates implements Serializable {
     }
 
     public LocalDateTime getScheduiedDate() {
-        return scheduiedDate;
+        return scheduledDate;
     }
 
-    public void setScheduiedDate(LocalDateTime scheduiedDate) {
-        this.scheduiedDate = scheduiedDate;
+    public void setScheduledDate(LocalDateTime scheduledDate) {
+        this.scheduledDate = scheduledDate;
     }
 
-    public DateFormatsPojo getScheduiedDateFormats() {
-        if (scheduiedDate == null) {
+    public DateFormatsPojo getScheduledDateFormats() {
+        if (scheduledDate == null) {
             return null;
         }
-        return new DateFormatsPojo(scheduiedDate);
+        return new DateFormatsPojo(scheduledDate);
     }
 
     public Integer getCountUpdate() {
@@ -182,7 +181,7 @@ public class RequestsDates implements Serializable {
                 "idRequestsDates=" + idRequestsDates +
                 ", idRequest=" + idRequest +
                 ", paydayLimit=" + paydayLimit +
-                ", scheduiedDate=" + scheduiedDate +
+                ", scheduiedDate=" + scheduledDate +
                 ", countUpdate=" + countUpdate +
                 ", userName='" + userName + '\'' +
                 ", creationDate=" + creationDate +

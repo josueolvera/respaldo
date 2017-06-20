@@ -74,7 +74,6 @@
                 detailBanks: [],
                 requestsDates: [],
                 banks:[],
-                purchases: [],
                 pD: {
                     employeesSelected: []
                 },
@@ -157,6 +156,17 @@
                         });
 
                     });
+                },
+                confirmSelection: function () {
+                    if(this.pD2.requestsSelected == ''){
+                        showAlert("Debes seleccionar algo para pagar", {type: 3});
+                    }else
+                    this.pD2.requestsSelected.forEach(element){
+                        showAlert("Debes seleccionar un banco para pagar", {type: 3});
+                    }
+                    else{
+                      $("#modalPagar").modal("show");
+                  }
                 },
                 getUserInSession: function () {
                     this.$http.get(ROOT_URL + "/user")
@@ -427,7 +437,7 @@
                 <div class="panel panel-default">
                     <div class="card">
                         <div class="card-header" role="tab" id="headingONE-{{index}}">
-                            <div class="panel-heading" style="background-color: #aaaaaa" @click="obtainCurrentRequests(bussinessLine.idDistributor)">
+                            <div class="panel-heading" style="background-color: #aaaaaa" @click="obtainCurrentRequests(index)">
                                 <a class="collapsed" data-toggle="collapse" data-parent="#accordion-{{index}}"
                                    href="#collapseONE-{{index}}"
                                    aria-expanded="false" aria-controls="collapseONE-{{index}}">
@@ -472,7 +482,7 @@
                                                 <div class="col-xs-1 text-center">{{pd.purchaseInvoices.provider.providerName}}</div>
                                                 <div class="col-xs-1 text-center">{{pd.purchaseInvoices.idPurchaseInvoices}}</div>
                                                 <div class="col-xs-1 text-center">{{pd.purchaseInvoices.amountWithIva | currency}}</div>
-                                                <div class="col-xs-1 text-center">{{pd.requestsDates.scheduiedDateFormats.dateNumber}}
+                                                <div class="col-xs-1 text-center">{{pd.requestsDates.scheduledDateFormats.dateNumber}}
                                                 </div>
                                                 <div class="col-xs-2 text-center">
                                                     <select v-model="pd.bank" class="form-control" id="{{index2}}" required>
@@ -495,8 +505,8 @@
                                         </div>
                                     </div>
                                     <div class="text-right">
-                                        <button type="button" class="btn btn-success text-right" name="button"
-                                                style="margin-top: 25px" data-toggle="modal" data-target="#modalPagar">Pagar
+                                        <button type="button" class="btn btn-success text-right" name="button" @click="confirmSelection()"
+                                                style="margin-top: 25px" data-toggle="modal">Pagar
                                         </button>
                                     </div>
                                 </div>
@@ -549,43 +559,41 @@
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         <h4 class="modal-title">Comprobante de pago de solicitudes</h4>
                     </div>
-                    <div class="modal-body">
-                        <div class="col-md-12">
-                            <div class="row">
-                                <div>
-                                    <div class="row table-header">
-                                        <div class="col-xs-1 text-center"><b>Folio</b></div>
-                                        <div class="col-xs-1 text-center"><b>Centro de Costos</b></div>
-                                        <div class="col-xs-1 text-center"><b>Tipo de Solicitud</b></div>
-                                        <div class="col-xs-1 text-center"><b>Beneficiario</b></div>
-                                        <div class="col-xs-1 text-center"><b>Banco</b></div>
-                                        <div class="col-xs-1 text-center"><b>Cuenta</b></div>
-                                        <div class="col-xs-1 text-center"><b>CLABE</b></div>
-                                        <div class="col-xs-1 text-center"><b>Núm. Factura</b></div>
-                                        <div class="col-xs-1 text-center"><b>Monto con IVA</b></div>
-                                        <div class="col-xs-2 text-center"><b>Fecha de pago</b></div>
-                                        <div class="col-xs-1 text-center"><b>Banco</b></div>
-                                    </div>
-                                </div>
-                            </div>
-                            <br>
-                            <div class="table-body flex-row flex-content-{{index}}">
-                                <div class="row table-row" v-for="(index2, pd) in requestsPD">
-                                    <div class="col-xs-1 text-center">{{pd.folio}}</div>
-                                    <div class="col-xs-1 text-center">{{pd.distributorCostCenter.distributors.acronyms}}</div>
-                                    <div class="col-xs-1 text-center">{{pd.requestCategory.requestCategoryName}}</div>
-                                    <div class="col-xs-1 text-center">{{pd.purchaseInvoices.provider.providerName}}</div>
-                                    <div class="col-xs-1 text-center">{{pd.purchaseInvoices.account.bank.acronyms}}</div>
-                                    <div class="col-xs-1 text-center">{{pd.purchaseInvoices.account.accountNumber}}</div>
-                                    <div class="col-xs-1 text-center">{{pd.purchaseInvoices.account.accountClabe}}</div>
-                                    <div class="col-xs-2 text-center">{{pd.purchaseInvoices.idPurchaseInvoices}}</div>
-                                    <div class="col-xs-1 text-center">{{pd.purchaseInvoices.amountWithIva}}</div>
-                                    <div class="col-xs-1 text-center">{{pd.requestsDates.scheduiedDateFormats.dateNumber}}</div>
-                                    <div class="col-xs-1 text-center">{{pd.bank.banks.acronyms}}</div>
-                                </div>
+                    <div class="modal-body" style="overflow:scroll;">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table table-striped">
+                                    <thead>
+                                    <th class="col-xs-1 text-center"><b>Folio</b></th>
+                                    <th class="col-xs-1 text-center"><b>Centro de Costos</b></th>
+                                    <th class="col-xs-1 text-center"><b>Tipo de Solicitud</b></th>
+                                    <th class="col-xs-1 text-center"><b>Beneficiario</b></th>
+                                    <th class="col-xs-1 text-center"><b>Banco</b></th>
+                                    <th class="col-xs-1 text-center"><b>Cuenta</b></th>
+                                    <th class="col-xs-1 text-center"><b>CLABE</b></th>
+                                    <th class="col-xs-1 text-center"><b>Núm. Factura</b></th>
+                                    <th class="col-xs-1 text-center"><b>Monto con IVA</b></th>
+                                    <th class="col-xs-2 text-center"><b>Fecha de pago</b></th>
+                                    <th class="col-xs-1 text-center"><b>Banco</b></th>
+                                    </thead>
+                                    <tbody>
+                                    <tr v-for="pd in pD2.requestsSelected">
+                                        <td class="col-xs-1 text-center">{{pd.folio}}</td>
+                                        <td class="col-xs-1 text-center">{{pd.distributorCostCenter.distributors.acronyms}}</td>
+                                        <td class="col-xs-1 text-center">{{pd.requestCategory.requestCategoryName}}</td>
+                                        <td class="col-xs-1 text-center">{{pd.purchaseInvoices.provider.providerName}}</td>
+                                        <td class="col-xs-1 text-center">{{pd.purchaseInvoices.account.bank.acronyms}}</td>
+                                        <td class="col-xs-1 text-center">{{pd.purchaseInvoices.account.accountNumber}}</td>
+                                        <td class="col-xs-1 text-center">{{pd.purchaseInvoices.account.accountClabe}}</td>
+                                        <td class="col-xs-1 text-center">{{pd.purchaseInvoices.idPurchaseInvoices}}</td>
+                                        <td class="col-xs-1 text-center">{{pd.purchaseInvoices.amountWithIva}}</td>
+                                        <td class="col-xs-2 text-center">{{pd.requestsDates.scheduledDateFormats.dateNumber}}</td>
+                                        <td class="col-xs-1 text-center">{{pd.bank.banks.acronyms}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                        <br>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>

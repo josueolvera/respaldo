@@ -6,8 +6,9 @@ import mx.bidg.service.RequestsDatesService;
 import org.hibernate.Criteria;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
+
 import java.util.List;
 
 /**
@@ -21,12 +22,12 @@ public class RequestsDatesServiceImpl implements RequestsDatesService {
 
     @Override
     public RequestsDates save(RequestsDates requestsDates) {
-        return save(requestsDatesDao.save(requestsDates));
+        return requestsDatesDao.save(requestsDates);
     }
 
     @Override
     public RequestsDates update(RequestsDates requestsDates) {
-        return update(requestsDatesDao.update(requestsDates));
+        return requestsDatesDao.update(requestsDates);
     }
 
     @Override
