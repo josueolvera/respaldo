@@ -52,4 +52,5 @@ public interface RequestsService {
     List<Requests> findAll();
     Requests payRequest(Integer idRequest);
     List<Requests> findListByFolio(String folio);
+    List<Requests> findByStatus(Integer idRequestStatus);
 }

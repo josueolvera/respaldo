@@ -6,6 +6,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * Created by gerardo8 on 15/08/16.
@@ -39,6 +40,14 @@ public class DistributorAreaRol implements Serializable {
     @Column(name = "ID_SUBAREA", insertable = false, updatable = false)
     @JsonView(JsonViews.Root.class)
     private Integer idSubarea;
+
+    @Column(name = "LEVEL_REQUEST")
+    @JsonView(JsonViews.Root.class)
+    private Integer levelRequest;
+
+    @Column(name = "AMOUNT_REQUEST")
+    @JsonView(JsonViews.Root.class)
+    private BigDecimal amountRequest;
 
     @JoinColumn(name = "ID_DISTRIBUTOR", referencedColumnName = "ID_DISTRIBUTOR")
     @ManyToOne(optional = false)
@@ -146,6 +155,22 @@ public class DistributorAreaRol implements Serializable {
 
     public void setcSubareas(CSubareas cSubareas) {
         this.cSubareas = cSubareas;
+    }
+
+    public Integer getLevelRequest() {
+        return levelRequest;
+    }
+
+    public void setLevelRequest(Integer levelRequest) {
+        this.levelRequest = levelRequest;
+    }
+
+    public BigDecimal getAmountRequest() {
+        return amountRequest;
+    }
+
+    public void setAmountRequest(BigDecimal amountRequest) {
+        this.amountRequest = amountRequest;
     }
 
     @Override

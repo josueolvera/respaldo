@@ -197,6 +197,28 @@ public class RequestsController {
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(request), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/send-to-paymanagement", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> sendToPaymanagement(@RequestParam(name = "idRequest") Integer idRequest, HttpSession session)throws IOException{
+        Users user = (Users) session.getAttribute("user");
+
+        Requests request = requestsService.findById(idRequest);
+        if (request != null){
+            request.setRequestStatus(CRequestStatus.EN_PROCESO_DE_PAGO);
+            request = requestsService.update(request);
+
+            RequestHistory requestHistory = requestHistoryService.saveRequest(request, user);
+        }
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(request), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/by-status/{idRequestStatus}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> findByStatus(@PathVariable Integer idRequestStatus)throws IOException{
+        List<Requests> requests = requestsService.findByStatus(idRequestStatus);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requests), HttpStatus.OK);
+
+    }
+
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findAll() throws IOException{
         List<Requests> requestsList = requestsService.findAll();

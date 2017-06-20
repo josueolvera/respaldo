@@ -409,4 +409,9 @@ public class RequestsServiceImpl implements RequestsService {
     public List<Requests> findListByFolio(String folio){
         return requestsDao.findListByFolio(folio);
     }
+
+    @Override
+    public List<Requests> findByStatus(Integer idRequestStatus) {
+        return requestsDao.findByStatus(idRequestStatus);
+    }
 }

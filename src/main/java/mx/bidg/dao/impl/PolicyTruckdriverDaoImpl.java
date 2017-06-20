@@ -21,7 +21,7 @@ import java.util.List;
 public class PolicyTruckdriverDaoImpl extends AbstractDao<Integer, PolicyTruckdriver> implements PolicyTruckdriverDao {
     @Override
     public PolicyTruckdriver save(PolicyTruckdriver entity) {
-        persist(entity);
+        getSession().persist(entity);
         return entity;
     }
 

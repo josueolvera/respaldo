@@ -336,7 +336,15 @@ public class SIADController {
     @RequestMapping(value = "/request-pending-autorization", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public ModelAndView siadRequestPendingAutorization() {
         ModelAndView model = new ModelAndView();
-        model.setViewName("request-pending-autorization");
+        model.setViewName("request-autorization");
+        return model;
+    }
+
+    @RequestMapping(value = "/requests-off-budget", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView requestOffBudget(@RequestParam(name = "idRequest") Integer idRequest) {
+        ModelAndView model = new ModelAndView();
+        model.addObject("idRequest", idRequest);
+        model.setViewName("off-budget-request");
         return model;
     }
 

@@ -58,4 +58,20 @@ public class DistributorAreaRolDaoImpl extends AbstractDao<Integer, DistributorA
                 .add(Restrictions.eq("idArea",idArea))
                 .list();
     }
+
+    @Override
+    public DistributorAreaRol findByCombination(Integer idDistributor, Integer idArea, Integer idRole) {
+        return (DistributorAreaRol) createEntityCriteria()
+                .add(Restrictions.eq("idDistributor",idDistributor))
+                .add(Restrictions.eq("idArea",idArea))
+                .add(Restrictions.eq("idRole",idRole))
+                .uniqueResult();
+    }
+
+    @Override
+    public DistributorAreaRol findByLevel(Integer levelRequest) {
+        return (DistributorAreaRol) createEntityCriteria()
+                .add(Restrictions.eq("levelRequest",levelRequest))
+                .uniqueResult();
+    }
 }

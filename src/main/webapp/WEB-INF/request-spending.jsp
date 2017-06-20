@@ -56,7 +56,9 @@
                     requestRejected: [],
                     requestFinished: [],
                     user: {},
-                    detailUrl: ROOT_URL + "/siad/requests-detail?idRequest="
+                    detailUrl: ROOT_URL + "/siad/requests-detail?idRequest=",
+                    folio: '',
+                    request: null
                 },
                 methods: {
                     getUserInSession: function () {
@@ -123,6 +125,20 @@
                         }).error(function () {
                             showAlert("Error al obtener información de s. finalizadas", {type: 3});
                         });
+                    },
+                    findByFolio: function () {
+                        if(this.folio.length > 0){
+                            this.$http.get(ROOT_URL + "/requests/folio?folio=" + this.folio).success(function (data) {
+                                this.request = data;
+                            }).error(function () {
+                                showAlert("Error al generar la solicitud", {type: 3});
+                            })
+                        }
+                    },
+                    openModalFindByFolio: function () {
+                        $("#modalFolio").modal("show");
+                        this.folio = "";
+                        this.request = null;
                     }
                 },
                 filters: {
@@ -230,13 +246,9 @@
                     </a>
                 </div>
                 <div class="col-md-4">
-                    <form>
                         <div class="col-md-8">
-                            <label>Búsqueda por folio</label>
-                            <input class="form-control" type="text" placeholder="folio" maxlength="30" required/>
+                            <button class="btn btn-info" @click="openModalFindByFolio()" style="margin-top: 25px">Buscar por folio</button>
                         </div>
-
-                    </form>
                 </div>
                 <div class="col-md-3 text-right" style="margin-top: 10px">
                     <label>Solicitante</label>
@@ -395,6 +407,62 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+
+
+
+            <div class="modal fade" id="modalFolio" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Buscar por folio</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="col-md-3">
+                                        <label>Ingresa un folio</label>
+                                        <input class="form-group" v-model="folio" @input="findByFolio()">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" v-if="request != null">
+                                <div class="col-md-12">
+                                    <div class="col-md-12">
+                                        <table class="table table-striped">
+                                            <thead>
+                                                <th class="col-md-3 text-center"><b>Concepto de solicitud</b></th>
+                                                <th class="col-md-3 text-center"><b>Fecha de solicitud</b></th>
+                                                <th class="col-md-3 text-center"><b>Folio</b></th>
+                                                <th class="col-md-3 text-center"><b>Detalle</b></th>
+                                            </thead>
+                                            <tr>
+                                                <td class="col-md-3 text-center">{{request.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</td>
+                                                <td class="col-md-3 text-center">{{request.creationDateFormats.dateNumber}}</td>
+                                                <td class="col-md-3 text-center">{{request.folio}}</td>
+                                                <td class="col-md-3 text-center">
+                                                    <a class="btn btn-default btn-sm"
+                                                       :href="detailUrl + request.idRequest"
+                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                        <span class="glyphicon glyphicon-new-window"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Salir</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
         <%--termina archivos de cotizacion--%>
     </jsp:body>

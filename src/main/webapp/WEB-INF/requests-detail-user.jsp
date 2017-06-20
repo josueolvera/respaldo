@@ -398,6 +398,9 @@
                                         <span class="glyphicon glyphicon-triangle-bottom"
                                               style="color: #457a1a;  font-size: 200%"
                                               v-if="history.cRequestStatus.idRequestStatus == 5"></span>
+                                        <span class="glyphicon glyphicon-triangle-bottom"
+                                              style="color: #66afe9;  font-size: 200%"
+                                              v-if="history.cRequestStatus.idRequestStatus == 3"></span>
                                     </td>
                                     <td class="col-md-6">{{history.cRequestStatus.requestStatus}}</td>
                                 </tr>
@@ -461,7 +464,7 @@
                                                     </td>
                                                     <td class="col-md-4" align="right"><b>Descargar</b></td>
                                                 </tr>
-                                                <tr v-for="estimationsRequest in request.priceEstimationsList">
+                                                <tr v-for="estimationsRequest in request.priceEstimationsList" v-if="estimationsRequest.idEstimationStatus != 3">
                                                     <td class="col-md-4" align="left">{{estimationsRequest.fileName}}
                                                     </td>
                                                     <td class="col-md-4" align="center">

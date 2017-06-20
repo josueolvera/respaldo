@@ -44,7 +44,7 @@ public class CAmountsSecureDaoImpl extends AbstractDao<Integer,CAmountsSecure> i
 
     @Override
     public CAmountsSecure findByRode(BigDecimal rode) {
-        return (CAmountsSecure) createEntityCriteria()
+        return (CAmountsSecure) createEntityCriteriaNoAccessLevel()
                 .add(Restrictions.eq("rode",rode))
                 .uniqueResult();
     }

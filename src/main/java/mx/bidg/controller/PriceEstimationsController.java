@@ -230,7 +230,7 @@ public class PriceEstimationsController {
 
         JsonNode node = mapper.readTree(data);
 
-        boolean outBudget = estimationsService.validatePriceEstimations(node.get("idRequest").asInt(), node.get("idEstimation").asInt());
+        int outBudget = estimationsService.validatePriceEstimations(node.get("idRequest").asInt(), node.get("idEstimation").asInt());
         return new ResponseEntity<>(
                 mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(outBudget),
                 HttpStatus.OK

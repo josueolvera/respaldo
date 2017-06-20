@@ -18,6 +18,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -37,19 +39,19 @@ import java.util.List;
 public class PolicyTruckdriverServiceImpl implements PolicyTruckdriverService {
 
     @Autowired
-    PolicyTruckdriverDao policyTruckdriverDao;
+    private PolicyTruckdriverDao policyTruckdriverDao;
 
     @Autowired
     private Environment env;
 
     @Autowired
-    CTypeSecureDao cTypeSecureDao;
+    private CTypeSecureDao cTypeSecureDao;
 
     @Autowired
-    CAmountsSecureDao cAmountsSecureDao;
+    private CAmountsSecureDao cAmountsSecureDao;
 
     @Autowired
-    InsurancePremiumDao insurancePremiumDao;
+    private InsurancePremiumDao insurancePremiumDao;
 
     @Override
     public PolicyTruckdriver save(PolicyTruckdriver policyTruckdriver) {
@@ -85,7 +87,7 @@ public class PolicyTruckdriverServiceImpl implements PolicyTruckdriverService {
     @Override
     public void readCsvPolicya(String fileName) {
 
-        String [] FILE_HEADER_MAPPING = {"Placas","Folio","Hora","Inicio","Fin","Suma Asegurada","Usuario","Edad","Email","Beneficiario","Edad Beneficiario","Dias","Pago Id","No. Autorizacion"};
+        String [] FILE_HEADER_MAPPING = {"Placas","Folio","Hora","Inicio","Fin","Suma Asegurada","Usuario","Edad","Email","Beneficiario","Edad Beneficiario","Dias","Pago Id","Gateway Pago"};
 
         String READ_PATH = env.getRequiredProperty("policy_truckDriver.documents_dir");
 
@@ -130,7 +132,7 @@ public class PolicyTruckdriverServiceImpl implements PolicyTruckdriverService {
                         }
                     }
                     policyTruckdriver.setPagoId(record.get("Pago Id"));
-                    policyTruckdriver.setAuthorizationNumber(record.get("No. Autorizacion"));
+                    policyTruckdriver.setAuthorizationNumber(record.get("Gateway Pago"));
                     policyTruckdriver.setCreationDate(LocalDateTime.now());
                     policyTruckdriverDao.save(policyTruckdriver);
                 }

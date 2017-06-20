@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,7 +47,7 @@ public class PolicyTruckdriverController {
         return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(policyTruckdriverService.findAll()));
     }
 
-//    @Scheduled(cron = "0 15 0 * * ?")
+//    @Scheduled(cron = "0 30 0 * * ?")
     @RequestMapping(value = "/csv", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public void readCSV()throws IOException{
         Calendar fecha = Calendar.getInstance();
@@ -69,10 +70,12 @@ public class PolicyTruckdriverController {
         File file = new File(env.getRequiredProperty("policy_truckDriver.documents_dir")+name);
         if (file.exists()){
             policyTruckdriverService.readCsvPolicya(name);
+        }else {
+            System.out.println("No existio el archivo");
         }
     }
 
-    //    @Scheduled(cron = "0 15 0 * * ?")
+//    @Scheduled(cron = "0 10 0 * * ?")
     @RequestMapping(value = "/ftp-download", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public void ftpDownload() throws Exception{
         Calendar fecha = Calendar.getInstance();
@@ -102,5 +105,21 @@ public class PolicyTruckdriverController {
         }else {
             System.out.println("ya existe");
         }
+    }
+
+    @RequestMapping(value = "/get-by-dates", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> getByDate(@RequestParam(name = "startDate", required = true) String startDate,
+                                            @RequestParam(name = "endDate", required = true) String endDate) throws Exception{
+
+        LocalDate startVigencyDate = (startDate == null || startDate.equals("")) ? null :
+                LocalDate.parse(startDate, DateTimeFormatter.ISO_LOCAL_DATE);
+
+        LocalDate endVigencyDate = (endDate == null || endDate.equals("")) ? null :
+                LocalDate.parse(endDate, DateTimeFormatter.ISO_LOCAL_DATE);
+
+
+        List<PolicyTruckdriver> policyTruckdriverList = policyTruckdriverService.findDStartValidityBetween(startVigencyDate, endVigencyDate);
+
+        return ResponseEntity.ok(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(policyTruckdriverList));
     }
 }

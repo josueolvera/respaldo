@@ -5,9 +5,7 @@ import mx.bidg.dao.EmployeesHistoryDao;
 import mx.bidg.model.CDistributors;
 import mx.bidg.model.EmployeesHistory;
 import org.hibernate.Criteria;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.*;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -15,7 +13,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.FetchMode;
-import org.hibernate.criterion.Disjunction;
 
 /**
  * Created by gerardo8 on 24/06/16.
@@ -173,6 +170,26 @@ public class EmployeesHistoryDaoImpl extends AbstractDao<Integer, EmployeesHisto
     public EmployeesHistory findEmployeeByClaveSap(String claveSap) {
         return (EmployeesHistory) createEntityCriteria()
                 .add(Restrictions.eq("claveSap",claveSap))
+                .add(Restrictions.eq("hStatus",1))
+                .uniqueResult();
+    }
+
+    @Override
+    public EmployeesHistory findByDistributorAreaRolLastRegister(Integer idDistributor, Integer idArea, Integer idRole) {
+        Criteria criteria = createEntityCriteria();
+        Criterion activo = Restrictions.eq("idActionType", 1);
+        Criterion modificacion = Restrictions.eq("idActionType", 3);
+        Criterion reactivacion = Restrictions.eq("idActionType", 4);
+
+        LogicalExpression expression = Restrictions.or(activo, modificacion);
+        LogicalExpression expression2 = Restrictions.or(reactivacion, expression);
+
+
+        return (EmployeesHistory) criteria
+                .add(expression2)
+                .add(Restrictions.eq("idDistributor", idDistributor))
+                .add(Restrictions.eq("idArea", idArea))
+                .add(Restrictions.eq("idRole", idRole))
                 .add(Restrictions.eq("hStatus",1))
                 .uniqueResult();
     }

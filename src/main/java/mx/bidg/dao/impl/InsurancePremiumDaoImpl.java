@@ -44,7 +44,7 @@ public class InsurancePremiumDaoImpl extends AbstractDao<Integer,InsurancePremiu
 
     @Override
     public InsurancePremium findByTypeSecureAndAmountSecure(Integer idTypeSecure, Integer idAmountsSecure) {
-        Criteria criteria = createEntityCriteria();
+        Criteria criteria = createEntityCriteriaNoAccessLevel();
 
         return (InsurancePremium) criteria
                 .add(Restrictions.eq("idAmountsSecure",idAmountsSecure))

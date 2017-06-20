@@ -1,9 +1,17 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: jcesar
+  Date: 01/06/2017
+  Time: 11:46 AM
+  To change this template use File | Settings | File Templates.
+--%>
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:useBean id="user" scope="session" class="mx.bidg.model.Users"/>
-<t:template pageTitle="BID Group: Bandeja de entrada solicitante">
-      <jsp:attribute name="scripts">
+
+<t:template pageTitle="BID Group: Solicitud">
+    <jsp:attribute name="scripts">
         <script type="text/javascript">
             function validateFloatKeyPress(el, evt) {
                 var charCode = (evt.which) ? evt.which : event.keyCode;
@@ -45,10 +53,8 @@
                 },
                 data: {
                     requestInForce: [],
-                    requestRejected: [],
-                    requestFinished: [],
                     user: {},
-                    detailUrl: ROOT_URL + "/siad/request-spending-detail-current?idRequest=",
+                    detailUrl: ROOT_URL + "/siad/requests-off-budget?idRequest=",
                     folio: '',
                     request: null
                 },
@@ -64,15 +70,13 @@
                             .success(function (data) {
                                 this.user = data;
                                 this.getRequestInForce();
-                                this.getRequestRejected();
-                                this.getRequestFinished();
                             })
                             .error(function (data) {
                                 showAlert("Ha habido un error al obtener al usuario en sesion", {type: 3});
                             });
                     },
                     getRequestInForce: function () {
-                        this.$http.get(ROOT_URL + "/requests/status/category/"+1+"/type/"+1).success(function (data) {
+                        this.$http.get(ROOT_URL + "/requests/by-status/" + 4).success(function (data) {
                             var jsonObjectIndex = {};
 
                             data.forEach(function (requests) {
@@ -88,44 +92,8 @@
                             showAlert("Error al obtener información de s. vigentes", {type: 3});
                         });
                     },
-                    getRequestRejected: function () {
-                        this.$http.get(ROOT_URL + "/requests/category/"+1+"/type/"+3).success(function (data) {
-
-                            var jsonObjectIndex = {};
-
-                            data.forEach(function (requests) {
-                                if (isNaN(requests.distributorCostCenter)) {
-                                    jsonObjectIndex[requests.distributorCostCenter._id] = requests.distributorCostCenter;
-                                } else {
-                                    requests.distributorCostCenter = jsonObjectIndex[requests.distributorCostCenter];
-                                }
-                            });
-
-                            this.requestRejected = data;
-                        }).error(function () {
-                            showAlert("Error al obtener información de s. rechazadas", {type: 3});
-                        });
-                    },
-                    getRequestFinished: function () {
-                        this.$http.get(ROOT_URL + "/requests/category/"+1+"/type/"+2).success(function (data) {
-
-                            var jsonObjectIndex = {};
-
-                            data.forEach(function (requests) {
-                                if (isNaN(requests.distributorCostCenter)) {
-                                    jsonObjectIndex[requests.distributorCostCenter._id] = requests.distributorCostCenter;
-                                } else {
-                                    requests.distributorCostCenter = jsonObjectIndex[requests.distributorCostCenter];
-                                }
-                            });
-
-                            this.requestFinished = data;
-                        }).error(function () {
-                            showAlert("Error al obtener información de s. finalizadas", {type: 3});
-                        });
-                    },
                     findByFolio: function () {
-                        if(this.folio.length > 0){
+                        if (this.folio.length > 0) {
                             this.$http.get(ROOT_URL + "/requests/folio?folio=" + this.folio).success(function (data) {
                                 this.request = data;
                             }).error(function () {
@@ -139,6 +107,7 @@
                         this.request = null;
                     }
                 },
+
                 filters: {
                     separate: function (value) {
                         return value.replace(/:/g, ' ');
@@ -192,10 +161,40 @@
                 var key = window.Event ? e.which : e.keyCode
                 return (key >= 48 && key <= 57)
             }
+            function backHistory() {
+                history.back();
+            }
+            function ponerCeros(obj) {
+                var contar = obj.value;
+                var min = contar.length - 3;
+                var max = contar.length;
+
+                if (obj.value == "" || obj.value == null) {
+                    obj.value = "";
+                } else {
+                    if (max >= 1 && max < 40) {
+                        var extraer = contar.substring(min, max);
+                        if (extraer == '.00') {
+                            contar = contar.replace('.,', ',');
+                            contar = contar.replace(',.', ',');
+                            format(input);
+                        } else {
+                            contar = contar.replace('.,', ',');
+                            contar = contar.replace(',.', ',');
+                            format(input);
+                        }
+                    }
+                }
+            }
         </script>
     </jsp:attribute>
 
     <jsp:attribute name="styles">
+        <style>
+            textarea {
+                resize: none;
+            }
+        </style>
         <style>
             textarea {
                 resize: none;
@@ -227,38 +226,28 @@
                 border-radius: 50%;
                 background: #00FF00;
             }
-
         </style>
     </jsp:attribute>
 
     <jsp:body>
         <div id="content">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="col-md-3">
-                    <h2>COMPRAS</h2>
+            <div class="row">
+                <div class="col-md-5" style="margin-top: 20px">
+                    <h2>Validación de solicitud</h2>
                 </div>
-
-                <div class="col-md-2 text-right">
-
+                <div class="col-md-3" style="margin-top: 35px">
+                    <button class="btn btn-info" @click="openModalFindByFolio()">Buscar por folio</button>
                 </div>
-                <div class="col-md-4">
-                        <div class="col-md-8">
-                            <button class="btn btn-info" @click="openModalFindByFolio()" style="margin-top: 25px">Buscar por folio</button>
-                        </div>
-                </div>
-                <div class="col-md-3 text-right" style="margin-top: 10px">
-                    <label>Nombre de usuario</label>
+                <div class="col-md-4 text-right" style="margin-top: 20px">
+                    <label>Solicitante</label>
                     <p>
                         <span class="label label-default">{{user.dwEmployee.employee.fullName}}</span>
                     </p>
                 </div>
             </div>
-        </div>
-        <br>
-        <%-- vigentes--%>
-        <div id="accordion" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
+            <br>
+            <br>
+            <div id="accordion" role="tablist" aria-multiselectable="true">
                 <div class="card">
                     <div class="card-header" role="tab" id="headingThree">
                         <div class="panel-heading" style="background-color: #7AC5CD">
@@ -269,36 +258,42 @@
                                 </div>
                             </a>
                             <div class="col-md-1 text-right">
-                                <label class="circleyel"></label>
                             </div>
                             <br>
                         </div>
                     </div>
                     <div id="collapseThree" class="collapse" role="tabpanel" aria-labelledby="headingThree">
                         <div class="card-block">
-                            <div class="panel-body">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <table class="table table-striped">
-                                            <tr>
-                                                <td class="col-md-3 text-center"><b>Concepto de solicitud</b></td>
-                                                <td class="col-md-3 text-center"><b>Fecha de solicitud</b></td>
-                                                <td class="col-md-3 text-center"><b>Folio</b></td>
-                                                <td class="col-md-3 text-center"><b>Detalle</b></td>
-                                            </tr>
-                                            <tr v-for="request in requestInForce">
-                                                <td class="col-md-3 text-center">{{request.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</td>
-                                                <td class="col-md-3 text-center">{{request.creationDateFormats.dateNumber}}</td>
-                                                <td class="col-md-3 text-center">{{request.folio}}</td>
-                                                <td class="col-md-3 text-center">
-                                                    <a class="btn btn-default btn-sm"
-                                                       :href="detailUrl + request.idRequest"
-                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
-                                                        <span class="glyphicon glyphicon-new-window"></span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </table>
+                                <%-- subir arhivos de cotizacion--%>
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <table class="table table-striped">
+                                                <tr>
+                                                    <td class="col-md-3 text-center"><b>Concepto de solicitud</b></td>
+                                                    <td class="col-md-3 text-center"><b>Fecha de solicitud</b></td>
+                                                    <td class="col-md-3 text-center"><b>Folio</b></td>
+                                                    <td class="col-md-3 text-center"><b>Detalle</b></td>
+                                                </tr>
+                                                <tr v-for="request in requestInForce">
+                                                    <td class="col-md-3 text-center">
+                                                        {{request.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}
+                                                    </td>
+                                                    <td class="col-md-3 text-center">
+                                                        {{request.creationDateFormats.dateNumber}}
+                                                    </td>
+                                                    <td class="col-md-3 text-center">{{request.folio}}</td>
+                                                    <td class="col-md-3 text-center">
+                                                        <a class="btn btn-default btn-sm"
+                                                           :href="detailUrl + request.idRequest"
+                                                           data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                            <span class="glyphicon glyphicon-new-window"></span>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -306,105 +301,6 @@
                     </div>
                 </div>
             </div>
-            <div class="panel panel-default">
-                <div class="card">
-                    <div class="card-header" role="tab" id="headingTwo">
-                        <div class="panel-heading" style="background-color: #7AC5CD">
-                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"
-                               aria-expanded="false" aria-controls="collapseThree">
-                                <div class="col-md-11 text-center">
-                                    <b style="color: black">FINALIZADAS</b>
-                                </div>
-                            </a>
-                            <div class="col-md-1 text-right">
-                                <label class="circlegre"></label>
-                            </div>
-                            <br>
-                        </div>
-                    </div>
-                    <div id="collapseTwo" class="collapse" role="tabpanel" aria-labelledby="headingTwo">
-                        <div class="card-block">
-                            <div class="panel-body">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <table class="table table-striped">
-                                            <tr>
-                                                <td class="col-md-3 text-center"><b>Concepto de solicitud</b></td>
-                                                <td class="col-md-2 text-center"><b>Fecha de solicitud</b></td>
-                                                <td class="col-md-2 text-center"><b>Folio</b></td>
-                                                <td class="col-md-2 text-center"><b>Monto</b></td>
-                                                <td class="col-md-3 text-center"><b>Detalle</b></td>
-                                            </tr>
-                                            <tr v-for="request in requestFinished">
-                                                <td class="col-md-3 text-center">{{request.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</td>
-                                                <td class="col-md-3 text-center">{{request.creationDateFormats.dateNumber}}</td>
-                                                <td class="col-md-3 text-center">{{request.folio}}</td>
-                                                <td class="col-md-3 text-center">
-                                                    <a class="btn btn-default btn-sm"
-                                                       :href="detailUrl + request.idRequest"
-                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
-                                                        <span class="glyphicon glyphicon-new-window"></span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="panel panel-default">
-                <div class="card">
-                    <div class="card-header" role="tab" id="headingOne">
-                        <div class="panel-heading" style="background-color: #7AC5CD">
-                            <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"
-                               aria-expanded="false" aria-controls="collapseOne">
-                                <div class="col-md-11 text-center">
-                                    <b style="color: black">RECHAZADAS</b>
-                                </div>
-                            </a>
-                            <div class="col-md-1 text-right">
-                                <label class="circlered"></label>
-                            </div>
-                            <br>
-                        </div>
-                    </div>
-                    <div id="collapseOne" class="collapse" role="tabpanel" aria-labelledby="headingOne">
-                        <div class="card-block">
-                            <div class="panel-body">
-                                <div class="col-md-12">
-                                    <div class="row">
-                                        <table class="table table-striped">
-                                            <tr>
-                                                <td class="col-md-3 text-center"><b>Concepto de solicitud</b></td>
-                                                <td class="col-md-3 text-center"><b>Fecha de solicitud</b></td>
-                                                <td class="col-md-3 text-center"><b>Folio</b></td>
-                                                <td class="col-md-3 text-center"><b>Detalle</b></td>
-                                            </tr>
-                                            <tr v-for="request in requestRejected">
-                                                <td class="col-md-3 text-center">{{request.distributorCostCenter.accountingAccounts.budgetSubcategory.budgetSubcategory}}</td>
-                                                <td class="col-md-3 text-center">{{request.creationDateFormats.dateNumber}}</td>
-                                                <td class="col-md-3 text-center">{{request.folio}}</td>
-                                                <td class="col-md-3 text-center">
-                                                    <a class="btn btn-default btn-sm"
-                                                       :href="detailUrl + request.idRequest"
-                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
-                                                        <span class="glyphicon glyphicon-new-window"></span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
             <div class="modal fade" id="modalFolio" role="dialog">
                 <div class="modal-dialog">
@@ -457,6 +353,7 @@
                 </div>
             </div>
         </div>
-        <%--termina archivos de cotizacion--%>
+
     </jsp:body>
 </t:template>
+

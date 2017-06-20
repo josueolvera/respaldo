@@ -27,4 +27,5 @@ public interface RequestsDao extends InterfaceDao<Requests> {
     List<Requests> findByDCC (List<Integer> idDCCs);
     List<Requests> findAll();
     List<Requests> findListByFolio(String folio);
+    List<Requests> findByStatus(Integer idRequestStatus);
 }

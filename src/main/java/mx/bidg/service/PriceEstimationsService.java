@@ -34,6 +34,6 @@ public interface PriceEstimationsService {
     PriceEstimations findAuthorized(Integer idRequest);
 
     boolean authorizePriceEstimations(Integer idRequest, Integer idPriceEstimations, String reasonResponsible, Users user);
-    boolean validatePriceEstimations(Integer idRequest, Integer idPriceEstimations);
+    int validatePriceEstimations(Integer idRequest, Integer idPriceEstimations);
 
 }

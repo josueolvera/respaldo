@@ -152,4 +152,13 @@ public class RequestsDaoImpl extends AbstractDao<Integer, Requests> implements R
         Criteria criteria = createEntityCriteria();
         return criteria.add(Restrictions.ilike("folio", folio, MatchMode.ANYWHERE)).list();
     }
+    @Override
+    public List<Requests> findByStatus(Integer idRequestStatus) {
+        return createEntityCriteria()
+                .add(Restrictions.eq("idRequestStatus", idRequestStatus))
+                .add(Restrictions.eq("idRequestCategory", 1))
+                .add(Restrictions.eq("idRequestType", 1))
+                .list();
+    }
+
 }
