@@ -206,11 +206,13 @@ public class RequestsController {
     @RequestMapping(value = "/distributor/{idDistributor}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findByDistributor(@PathVariable Integer idDistributor) throws IOException{
         List<Integer> idsDistributorsCostCenter = distributorCostCenterService.getIdsDCCByDistributor(idDistributor);
-        List<Requests> requestsList = requestsService.findByDCC(idsDistributorsCostCenter);
-
-        for (Requests request : requestsList){
-            request.setPurchaseInvoices(purchaseInvoicesService.findByIdRequest(request.getIdRequest()));
-            request.setRequestsDates(requestsDatesService.getByRequest(request.getIdRequest()));
+        List<Requests> requestsList = new ArrayList<>();
+        if (idsDistributorsCostCenter != null) {
+            requestsList = requestsService.findByDCC(idsDistributorsCostCenter);
+            for (Requests request : requestsList) {
+                request.setPurchaseInvoices(purchaseInvoicesService.findByIdRequest(request.getIdRequest()));
+                request.setRequestsDates(requestsDatesService.getByRequest(request.getIdRequest()));
+            }
         }
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestsList), HttpStatus.OK);
     }

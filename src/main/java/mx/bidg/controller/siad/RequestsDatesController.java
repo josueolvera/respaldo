@@ -58,17 +58,18 @@ public class RequestsDatesController {
 
         JsonNode node = mapper.readTree(data);
 
-        LocalDateTime scheduiedDate = (node.get("applicationDate") == null || node.findValue("applicationDate").asText().equals("")) ? null :
+        LocalDateTime scheduledDate = (node.get("applicationDate") == null || node.findValue("applicationDate").asText().equals("")) ? null :
                 LocalDateTime.parse(node.get("applicationDate").asText(), DateTimeFormatter.ISO_DATE_TIME);
 
         RequestsDates requestsDates = requestsDatesService.getByRequest(idRequest);
 
-        requestsDates.setScheduiedDate(scheduiedDate);
+        requestsDates.setScheduledDate(scheduledDate);
 
         requestsDates = requestsDatesService.update(requestsDates);
 
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestsDatesService.findAll()),HttpStatus.OK);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestsDates),HttpStatus.OK);
     }
+
     @RequestMapping(value = "/save-requestDates", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> save(@RequestBody String data, HttpSession session)throws IOException{
         Users user = (Users) session.getAttribute("user");
