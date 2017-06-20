@@ -196,4 +196,15 @@ public class DistributorCostCenterDaoImpl extends AbstractDao<Integer, Distribut
                 .add(Restrictions.eq("idAccountingAccount", idAccountingAccounts))
                 .uniqueResult();
     }
+
+    @Override
+    public List<Integer> getIdsDCCByDistributor(Integer idDistributor){
+        Criteria criteria = createEntityCriteria();
+        if(idDistributor != null){
+            criteria.add(Restrictions.eq("idDistributor", idDistributor));
+        }
+        return criteria.setProjection(Projections.distinct(Projections.property("idDistributorCostCenter")))
+                .list();
+
+    }
 }

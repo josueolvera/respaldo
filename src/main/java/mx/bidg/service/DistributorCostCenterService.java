@@ -23,4 +23,5 @@ public interface DistributorCostCenterService {
     List<Integer> getIdsCostCentersByBusinessLineDistributorCC(List<Integer> idsBussinessLines, List<Integer> idsDistributors, List<Integer> idsCC);
 
     List<AccountingAccounts> getIdsAccountingAccountsByCostCenter(Integer idCostCenter);
+    List<Integer> getIdsDCCByDistributor(Integer idDistributor);
 }
