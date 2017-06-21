@@ -61,6 +61,7 @@
                 startDate: '',
                 endDate: '',
                 total: 0.00,
+                totalParcial: 0,
                 userInSession: {},
                 userActive: '',
                 distributors: [],
@@ -93,7 +94,8 @@
                   bank: {
                       idBank: 0
                   }
-                }
+                },
+                objectBanks: []
             },
             methods: {
                 getDistributors: function () {
@@ -132,6 +134,7 @@
                   });
                 },
                 payRequestsSelected: function () {
+                    this.requestsPD = [];
                   this.$http.post(ROOT_URL + "/requests/pay-selected", JSON.stringify(this.pD2)).success(function (data) {
                       this.arregloPd = data;
                       var self = this;
@@ -141,7 +144,9 @@
                       });*/
                       showAlert("Se pagaron con exito las solicitudes!");
                       $("#modalPagar").modal("hide");
-                      //this.obtainCurrentRequests(this.distributors.idDistributor);
+                      this.obtainCurrentRequests(this.distributors.idDistributor);
+                      this.total = 0;
+                      this.obtainDetailBanks();
                   }).error(function () {
                       showAlert("Error en la solicitud, vuelva a intentarlo", {type: 3});
                   });
@@ -154,18 +159,35 @@
                         this.detailBanks.forEach(function (element) {
                             self.total += element.amount;
                         });
-
+                    });
+                },
+                obtainTotalParcial: function () {
+                    var self = this;
+                    self.totalParcial = 0;
+                    this.pD2.requestsSelected.forEach(function (element) {
+                        self.totalParcial += element.purchaseInvoices.amountWithIva
                     });
                 },
                 confirmSelection: function () {
+                    var self = this;
+
                     if(this.pD2.requestsSelected == ''){
                         showAlert("Debes seleccionar algo para pagar", {type: 3});
-                    }else
-                    this.pD2.requestsSelected.forEach(element){
-                        showAlert("Debes seleccionar un banco para pagar", {type: 3});
                     }
                     else{
-                      $("#modalPagar").modal("show");
+                        this.objectBanks = [];
+                        this.pD2.requestsSelected.forEach(function (element) {
+                            if(element.bank != null && element.bank != ''){
+                                self.objectBanks.push(element);
+                            }
+                        });
+
+                        if(this.pD2.requestsSelected.length == this.objectBanks.length){
+                            $("#modalPagar").modal("show");
+                        }else {
+                            showAlert("Debes seleccionar un banco por cada solicitud", {type: 3});
+                        }
+
                   }
                 },
                 getUserInSession: function () {
@@ -252,6 +274,7 @@
                     $("#modalReprogramar").modal("show");
                 },
                 reschedulePD: function () {
+                    this.requestsPD = [];
                     if (this.application != '') {
                         this.reschedule.applicationDate = this.timePickerApplicationDate.DateTimePicker.date().toISOString().slice(0, -1);
                         this.$http.post(ROOT_URL + "/accounts-payables-dates/reschedule/" + this.request.idRequest, JSON.stringify(this.reschedule)).success(function (data) {
@@ -340,7 +363,7 @@
                 <div class="col-md-3 text-right" style="margin-top: 10px">
                     <label>Solicitante</label>
                     <p>
-                        <input class="form-control" type="text" name="name" value="" disabled="true" v-model="userActive">
+                        <span class="label label-default">{{userActive}}</span>
                     </p>
                 </div>
             </div>
@@ -441,14 +464,17 @@
                                 <a class="collapsed" data-toggle="collapse" data-parent="#accordion-{{index}}"
                                    href="#collapseONE-{{index}}"
                                    aria-expanded="false" aria-controls="collapseONE-{{index}}">
-                                    <div class="col-md-10">
+                                    <div class="col-md-4">
                                         <p><b style="color: black">{{bussinessLine.acronyms}}</b></p>
                                     </div>
+                                    <div class="col-md-4 text-right">
+                                        <label style="color: darkgreen">Saldo en cuenta: </label>
+                                    </div>
+                                    <div class="col-md-4 text-right">
+                                        <label style="color: darkred">Total a pagar: {{totalParcial | currency}}</label>
+                                    </div>
+                                    <br>
                                 </a>
-                                <div class="col-md-2 text-right">
-                                    <label style="color: black">{{bussinessLine.amount}}</label>
-                                </div>
-                                <br>
                             </div>
                         </div>
                         <div id="collapseONE-{{index}}" class="collapse" role="tabpanel"
@@ -474,7 +500,7 @@
                                         </div>
                                         <br>
                                         <div class="table-body flex-row flex-content-{{index}}">
-                                            <div class="row table-row" v-for="(index2, pd) in requestsPD">
+                                            <div class="row table-row" v-for="(index2, pd) in requestsPD | orderBy 'requestsDates.scheduledDateFormats'">
 
                                                 <div class="col-xs-1">{{pd.folio}}</div>
                                                 <div class="col-xs-2">{{pd.distributorCostCenter.distributors.acronyms}}</div>
@@ -492,7 +518,7 @@
                                                         </option>
                                                     </select>
                                                 </div>
-                                                <div class="col-xs-1 text-center"><input type="checkbox" :value="pd" v-model="pD2.requestsSelected"></div>
+                                                <div class="col-xs-1 text-center"><input type="checkbox" :value="pd" v-model="pD2.requestsSelected" @change="obtainTotalParcial()"></div>
                                                 <div class="col-xs-1 text-center">
                                                     <button class="btn btn-default btn-sm"
                                                             data-toggle="tooltip" data-placement="top" title="Reprogramar"
@@ -586,7 +612,7 @@
                                         <td class="col-xs-1 text-center">{{pd.purchaseInvoices.account.accountNumber}}</td>
                                         <td class="col-xs-1 text-center">{{pd.purchaseInvoices.account.accountClabe}}</td>
                                         <td class="col-xs-1 text-center">{{pd.purchaseInvoices.idPurchaseInvoices}}</td>
-                                        <td class="col-xs-1 text-center">{{pd.purchaseInvoices.amountWithIva}}</td>
+                                        <td class="col-xs-1 text-center">{{pd.purchaseInvoices.amountWithIva | currency}}</td>
                                         <td class="col-xs-2 text-center">{{pd.requestsDates.scheduledDateFormats.dateNumber}}</td>
                                         <td class="col-xs-1 text-center">{{pd.bank.banks.acronyms}}</td>
                                     </tr>

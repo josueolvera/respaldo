@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -245,6 +246,10 @@ public class RequestsController {
         List<Requests> requestsList = new ArrayList<>();
         for(JsonNode jsonNode : node.get("requestsSelected")){
             requestsList.add(requestsService.payRequest(jsonNode.get("idRequest").asInt()));
+            DistributorsDetailBanks distributorsDetailBanks = distributorsDetailBanksService.findById(jsonNode.get("bank").get("idDistributorDetailBank").asInt());
+            BigDecimal resta = distributorsDetailBanks.getAmount().subtract(jsonNode.get("purchaseInvoices").get("amountWithIva").decimalValue());
+            distributorsDetailBanks.setAmount(resta);
+            distributorsDetailBanks = distributorsDetailBanksService.update(distributorsDetailBanks);
         }
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestsList), HttpStatus.OK);
     }
