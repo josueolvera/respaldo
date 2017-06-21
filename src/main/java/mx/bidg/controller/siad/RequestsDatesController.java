@@ -4,9 +4,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.config.JsonViews;
 
+import mx.bidg.model.CRequestStatus;
+import mx.bidg.model.Requests;
 import mx.bidg.model.RequestsDates;
 import mx.bidg.model.Users;
+import mx.bidg.service.CRequestStatusService;
 import mx.bidg.service.RequestsDatesService;
+import mx.bidg.service.RequestsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,6 +38,12 @@ public class RequestsDatesController {
 
     @Autowired
     RequestsDatesService requestsDatesService;
+
+    @Autowired
+    RequestsService requestsService;
+
+    @Autowired
+    CRequestStatusService cRequestStatusService;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findAll() throws IOException {
@@ -70,21 +80,48 @@ public class RequestsDatesController {
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(requestsDates),HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/save-requestDates", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> save(@RequestBody String data, HttpSession session)throws IOException{
+    @RequestMapping(value = "/save-requestdates", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> save(@RequestBody String data, HttpSession session)throws IOException {
         Users user = (Users) session.getAttribute("user");
         JsonNode node = mapper.readTree(data);
+        LocalDateTime datePay = (node.get("payLimit") == null || node.findValue("datePay").asText().equals("")) ? null :
+                LocalDateTime.parse(node.get("datePay").asText(), DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime scheDates = (node.get("scheDate") == null || node.findValue("scheDate").asText().equals("")) ? null :
+                LocalDateTime.parse(node.get("scheDate").asText(), DateTimeFormatter.ISO_DATE_TIME);
+
         RequestsDates requestsDates = new RequestsDates();
-        requestsDates.setIdRequests(node.get("idRequest").asInt());
-//        requestsDates.setPaydayLimit(node.get("payLimit").asText());
-//        requestsDates.setScheduiedDate(node.get("scheDate").);
-        requestsDates.setCountUpdate(node.get("countUp").asInt());
+        CRequestStatus cRequestStatus = cRequestStatusService.findById(8);
+        Requests requests = requestsService.findById(node.get("requestId").asInt());
+
+        requestsDates.setRequests(requests);
+        requestsDates.setCountUpdate(1);
+        requestsDates.setScheduledDate(scheDates);
         requestsDates.setCreationDate(LocalDateTime.now());
         requestsDates.setUserName(user.getUsername());
-        requestsDatesService.save(requestsDates);
+        requests.setRequestStatus(cRequestStatus);
 
+        requests = requestsService.update(requests);
+        requestsDates = requestsDatesService.save(requestsDates);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).
-                writeValueAsString(requestsDatesService.findAll()), HttpStatus.OK);
+                writeValueAsString(requestsDates), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/update-rdates", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> update(@RequestBody String data, HttpSession session)throws IOException {
+        Users user = (Users) session.getAttribute("user");
+        JsonNode node = mapper.readTree(data);
+        LocalDateTime scheDates = (node.get("scheDate") == null || node.findValue("scheDate").asText().equals("")) ? null :
+                LocalDateTime.parse(node.get("scheDate").asText(), DateTimeFormatter.ISO_DATE_TIME);
+        RequestsDates updateRD = requestsDatesService.getByRequest(node.get("requestId").asInt());
+        int agregar = (node.get("countUpdate").asInt());
+
+        updateRD.setCountUpdate(agregar + 1);
+        updateRD.setScheduledDate(scheDates);
+        updateRD.setUserName(user.getUsername());
+        updateRD.setCreationDate(LocalDateTime.now());
+        updateRD = requestsDatesService.update(updateRD);
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).
+                writeValueAsString(updateRD), HttpStatus.OK);
     }
 
 }

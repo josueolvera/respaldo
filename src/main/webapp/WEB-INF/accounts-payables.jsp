@@ -51,6 +51,7 @@
                     this.getUserInSession();
                     this.getCurrencies();
                     this.getPurchaseInvoice();
+                    this.getRequestsDatesPro();
                 },
                 data: {
                     roleCostCenterList: [],
@@ -79,9 +80,11 @@
                     icon14: false,
                     icon15: false,
                     purchaseInvoice: [],
+                    requestsDatesList: [],
                     detailUrl: ROOT_URL + "/siad/accounts-payables-detail?idRequest=" ,
                     detailTwoUrl: "&idProvider=" ,
-                    detailThreeUrl: "&idPurchaseInvoices="
+                    detailThreeUrl: "&idPurchaseInvoices=" ,
+                    detailFourUrl: "&idEmployee="
                 },
                 methods: {
                     arrayObjectIndexOf: function (myArray, searchTerm, property) {
@@ -146,6 +149,11 @@
                         this.$http.get(ROOT_URL + '/purchase-invoice').success(function (data) {
                                 this.purchaseInvoice = data;
                             });
+                    },
+                    getRequestsDatesPro: function () {
+                        this.$http.get(ROOT_URL + '/accounts-payables-dates').success(function (data) {
+                            this.requestsDatesList = data;
+                        });
                     },
                     onChangeCostCenter: function () {
                         this.budgetCategories = [];
@@ -469,7 +477,11 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped"
+                                               v-for="purchose in purchaseInvoice"
+                                               v-if="purchose.request.requestCategory.idRequestCategory == 1
+                                                        && purchose.request.requestType.idRequestType == 1
+                                                        && purchose.request.idRequestStatus == 3">
                                             <thead>
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
@@ -481,9 +493,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr v-for="purchose in purchaseInvoice"
-                                                v-if="purchose.request.requestCategory.idRequestCategory == 1
-                                                        && purchose.request.requestType.idRequestType == 1">
+                                            <tr>
                                                 <td class="col-md-1 text-center">
                                                     {{purchose.request.requestCategory.requestCategoryName}}
                                                 </td>
@@ -501,7 +511,8 @@
                                                     <a class="glyphicon glyphicon-new-window"
                                                        :href="detailUrl + purchose.idRequest +
                                                               detailTwoUrl + purchose.idProvider +
-                                                              detailThreeUrl + purchose.idPurchaseInvoices"
+                                                              detailThreeUrl + purchose.idPurchaseInvoices +
+                                                              detailFourUrl + purchose.request.idEmployee"
                                                        data-toggle="tooltip" data-placement="top" title="Detalle">
                                                     </a>
                                                 </td>
@@ -583,7 +594,11 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped"
+                                               v-for="purchose in purchaseInvoice"
+                                               v-if="purchose.request.requestCategory.idRequestCategory == 2
+                                                        && purchose.request.requestType.idRequestType == 1
+                                                        && purchose.request.idRequestStatus == 3">
                                             <thead>
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
@@ -595,9 +610,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr v-for="purchose in purchaseInvoice"
-                                                v-if="purchose.request.requestCategory.idRequestCategory == 2
-                                                        && purchose.request.requestType.idRequestType == 1">
+                                            <tr>
                                                 <td class="col-md-1 text-center">
                                                     {{purchose.request.requestCategory.requestCategoryName}}
                                                 </td>
@@ -615,7 +628,8 @@
                                                     <a class="glyphicon glyphicon-new-window"
                                                        :href="detailUrl + purchose.idRequest +
                                                               detailTwoUrl + purchose.idProvider +
-                                                              detailThreeUrl + purchose.idPurchaseInvoices"
+                                                              detailThreeUrl + purchose.idPurchaseInvoices +
+                                                              detailFourUrl + purchose.request.idEmployee"
                                                        data-toggle="tooltip" data-placement="top" title="Detalle">
                                                     </a>
                                                 </td>
@@ -652,7 +666,11 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped"
+                                               v-for="purchose in purchaseInvoice"
+                                               v-if="purchose.request.requestCategory.idRequestCategory == 3
+                                                        && purchose.request.requestType.idRequestType == 1
+                                                        && purchose.request.idRequestStatus == 3">
                                             <thead>
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
@@ -664,9 +682,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr v-for="purchose in purchaseInvoice"
-                                                v-if="purchose.request.requestCategory.idRequestCategory == 3
-                                                        && purchose.request.requestType.idRequestType == 1">
+                                            <tr>
                                                 <td class="col-md-1 text-center">
                                                     {{purchose.request.requestCategory.requestCategoryName}}
                                                 </td>
@@ -684,7 +700,8 @@
                                                     <a class="glyphicon glyphicon-new-window"
                                                        :href="detailUrl + purchose.idRequest +
                                                               detailTwoUrl + purchose.idProvider +
-                                                              detailThreeUrl + purchose.idPurchaseInvoices"
+                                                              detailThreeUrl + purchose.idPurchaseInvoices +
+                                                              detailFourUrl + purchose.request.idEmployee"
                                                        data-toggle="tooltip" data-placement="top" title="Detalle">
                                                     </a>
                                                 </td>
@@ -721,7 +738,11 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped"
+                                               v-for="purchose in purchaseInvoice"
+                                               v-if="purchose.request.requestCategory.idRequestCategory == 5
+                                                        && purchose.request.requestType.idRequestType == 1
+                                                        && purchose.request.idRequestStatus == 3">
                                             <thead>
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
@@ -733,9 +754,7 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr v-for="purchose in purchaseInvoice"
-                                                v-if="purchose.request.requestCategory.idRequestCategory == 5
-                                                        && purchose.request.requestType.idRequestType == 1">
+                                            <tr>
                                                 <td class="col-md-1 text-center">
                                                     {{purchose.request.requestCategory.requestCategoryName}}
                                                 </td>
@@ -753,7 +772,8 @@
                                                     <a class="glyphicon glyphicon-new-window"
                                                        :href="detailUrl + purchose.idRequest +
                                                               detailTwoUrl + purchose.idProvider +
-                                                              detailThreeUrl + purchose.idPurchaseInvoices"
+                                                              detailThreeUrl + purchose.idPurchaseInvoices +
+                                                              detailFourUrl + purchose.request.idEmployee"
                                                        data-toggle="tooltip" data-placement="top" title="Detalle">
                                                     </a>
                                                 </td>
@@ -800,7 +820,11 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped"
+                                               v-for="purchose in purchaseInvoice"
+                                               v-if="purchose.request.requestCategory.idRequestCategory == 1
+                                                        && purchose.request.requestType.idRequestType == 1
+                                                        && purchose.request.idRequestStatus == 8">
                                             <thead>
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
@@ -813,15 +837,28 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td class="col-md-1 text-center">Compra</td>
-                                                <td class="col-md-2 text-center">16-03-2017</td>
-                                                <td class="col-md-2 text-center">30-05-2017</td>
-                                                <td class="col-md-2 text-center">05-06-2017</td>
-                                                <td class="col-md-2 text-center">ABC123</td>
-                                                <td class="col-md-2 text-center">$ 300.00</td>
+                                            <tr v-for="rdp in requestsDatesList"
+                                                v-if="rdp.idRequest == purchose.idRequest && rdp.countUpdate > 1">
                                                 <td class="col-md-1 text-center">
-                                                    <button class="glyphicon glyphicon-new-window"></button>
+                                                    {{purchose.request.requestCategory.requestCategoryName}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.creationDateFormats.dateNumber}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{rdp.paydayLimit}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{rdp.scheduledDate}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.folio}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.totalExpended | currency}}</td>
+                                                <td class="col-md-1 text-center">
+                                                    <a class="glyphicon glyphicon-new-window"
+                                                       :href="detailUrl + purchose.idRequest +
+                                                              detailTwoUrl + purchose.idProvider +
+                                                              detailThreeUrl + purchose.idPurchaseInvoices +
+                                                              detailFourUrl + purchose.request.idEmployee"
+                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                    </a>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -856,7 +893,11 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped"
+                                               v-for="purchose in purchaseInvoice"
+                                               v-if="purchose.request.requestCategory.idRequestCategory == 1
+                                                        && purchose.request.requestType.idRequestType == 1
+                                                        && purchose.request.idRequestStatus == 8">
                                             <thead>
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
@@ -869,15 +910,28 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td class="col-md-1 text-center">Compra</td>
-                                                <td class="col-md-2 text-center">16-03-2017</td>
-                                                <td class="col-md-2 text-center">30-05-2017</td>
-                                                <td class="col-md-2 text-center">05-06-2017</td>
-                                                <td class="col-md-2 text-center">ABC123</td>
-                                                <td class="col-md-2 text-center">$ 300.00</td>
+                                            <tr v-for="rdp in requestsDatesList"
+                                                v-if="rdp.idRequest == purchose.idRequest && rdp.countUpdate > 1">
                                                 <td class="col-md-1 text-center">
-                                                    <button class="glyphicon glyphicon-new-window"></button>
+                                                    {{purchose.request.requestCategory.requestCategoryName}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.creationDateFormats.dateNumber}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{rdp.paydayLimit}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{rdp.scheduledDate}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.folio}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.totalExpended | currency}}</td>
+                                                <td class="col-md-1 text-center">
+                                                    <a class="glyphicon glyphicon-new-window"
+                                                       :href="detailUrl + purchose.idRequest +
+                                                              detailTwoUrl + purchose.idProvider +
+                                                              detailThreeUrl + purchose.idPurchaseInvoices +
+                                                              detailFourUrl + purchose.request.idEmployee"
+                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                    </a>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -912,7 +966,11 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped"
+                                               v-for="purchose in purchaseInvoice"
+                                               v-if="purchose.request.requestCategory.idRequestCategory == 2
+                                                        && purchose.request.requestType.idRequestType == 1
+                                                        && purchose.request.idRequestStatus == 8">
                                             <thead>
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
@@ -925,15 +983,28 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td class="col-md-1 text-center">Compra</td>
-                                                <td class="col-md-2 text-center">16-03-2017</td>
-                                                <td class="col-md-2 text-center">30-05-2017</td>
-                                                <td class="col-md-2 text-center">05-06-2017</td>
-                                                <td class="col-md-2 text-center">ABC123</td>
-                                                <td class="col-md-2 text-center">$ 300.00</td>
+                                            <tr v-for="rdp in requestsDatesList"
+                                                v-if="rdp.idRequest == purchose.idRequest && rdp.countUpdate > 1">
                                                 <td class="col-md-1 text-center">
-                                                    <button class="glyphicon glyphicon-new-window"></button>
+                                                    {{purchose.request.requestCategory.requestCategoryName}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.creationDateFormats.dateNumber}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{rdp.paydayLimit}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{rdp.scheduledDate}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.folio}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.totalExpended | currency}}</td>
+                                                <td class="col-md-1 text-center">
+                                                    <a class="glyphicon glyphicon-new-window"
+                                                       :href="detailUrl + purchose.idRequest +
+                                                              detailTwoUrl + purchose.idProvider +
+                                                              detailThreeUrl + purchose.idPurchaseInvoices +
+                                                              detailFourUrl + purchose.request.idEmployee"
+                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                    </a>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -968,7 +1039,11 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped"
+                                               v-for="purchose in purchaseInvoice"
+                                               v-if="purchose.request.requestCategory.idRequestCategory == 3
+                                                        && purchose.request.requestType.idRequestType == 1
+                                                        && purchose.request.idRequestStatus == 8">
                                             <thead>
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
@@ -981,15 +1056,28 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td class="col-md-1 text-center">Compra</td>
-                                                <td class="col-md-2 text-center">16-03-2017</td>
-                                                <td class="col-md-2 text-center">30-05-2017</td>
-                                                <td class="col-md-2 text-center">05-06-2017</td>
-                                                <td class="col-md-2 text-center">ABC123</td>
-                                                <td class="col-md-2 text-center">$ 300.00</td>
+                                            <tr v-for="rdp in requestsDatesList"
+                                                v-if="rdp.idRequest == purchose.idRequest && rdp.countUpdate > 1">
                                                 <td class="col-md-1 text-center">
-                                                    <button class="glyphicon glyphicon-new-window"></button>
+                                                    {{purchose.request.requestCategory.requestCategoryName}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.creationDateFormats.dateNumber}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{rdp.paydayLimit}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{rdp.scheduledDate}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.folio}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.totalExpended | currency}}</td>
+                                                <td class="col-md-1 text-center">
+                                                    <a class="glyphicon glyphicon-new-window"
+                                                       :href="detailUrl + purchose.idRequest +
+                                                              detailTwoUrl + purchose.idProvider +
+                                                              detailThreeUrl + purchose.idPurchaseInvoices +
+                                                              detailFourUrl + purchose.request.idEmployee"
+                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                    </a>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -1024,7 +1112,11 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped"
+                                               v-for="purchose in purchaseInvoice"
+                                               v-if="purchose.request.requestCategory.idRequestCategory == 5
+                                                        && purchose.request.requestType.idRequestType == 1
+                                                        && purchose.request.idRequestStatus == 8">
                                             <thead>
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
@@ -1037,15 +1129,28 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td class="col-md-1 text-center">Compra</td>
-                                                <td class="col-md-2 text-center">16-03-2017</td>
-                                                <td class="col-md-2 text-center">30-05-2017</td>
-                                                <td class="col-md-2 text-center">05-06-2017</td>
-                                                <td class="col-md-2 text-center">ABC123</td>
-                                                <td class="col-md-2 text-center">$ 300.00</td>
+                                            <tr v-for="rdp in requestsDatesList"
+                                                v-if="rdp.idRequest == purchose.idRequest && rdp.countUpdate > 1">
                                                 <td class="col-md-1 text-center">
-                                                    <button class="glyphicon glyphicon-new-window"></button>
+                                                    {{purchose.request.requestCategory.requestCategoryName}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.creationDateFormats.dateNumber}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{rdp.paydayLimit}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{rdp.scheduledDate}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.folio}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.totalExpended | currency}}</td>
+                                                <td class="col-md-1 text-center">
+                                                    <a class="glyphicon glyphicon-new-window"
+                                                       :href="detailUrl + purchose.idRequest +
+                                                              detailTwoUrl + purchose.idProvider +
+                                                              detailThreeUrl + purchose.idPurchaseInvoices +
+                                                              detailFourUrl + purchose.request.idEmployee"
+                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                    </a>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -1090,7 +1195,11 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped"
+                                               v-for="purchose in purchaseInvoice"
+                                               v-if="purchose.request.requestCategory.idRequestCategory == 1
+                                                        && purchose.request.requestType.idRequestType == 1
+                                                        && purchose.request.idRequestStatus == 8">
                                             <thead>
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
@@ -1103,15 +1212,28 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td class="col-md-1 text-center">Compra</td>
-                                                <td class="col-md-2 text-center">16-03-2017</td>
-                                                <td class="col-md-2 text-center">30-05-2017</td>
-                                                <td class="col-md-2 text-center">05-06-2017</td>
-                                                <td class="col-md-2 text-center">ABC123</td>
-                                                <td class="col-md-2 text-center">$ 300.00</td>
+                                            <tr v-for="rdp in requestsDatesList"
+                                                v-if="rdp.idRequest == purchose.idRequest && rdp.countUpdate == 1">
                                                 <td class="col-md-1 text-center">
-                                                    <button class="glyphicon glyphicon-new-window"></button>
+                                                    {{purchose.request.requestCategory.requestCategoryName}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.creationDateFormats.dateNumber}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{rdp.paydayLimit}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{rdp.scheduledDate}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.folio}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.totalExpended | currency}}</td>
+                                                <td class="col-md-1 text-center">
+                                                    <a class="glyphicon glyphicon-new-window"
+                                                       :href="detailUrl + purchose.idRequest +
+                                                              detailTwoUrl + purchose.idProvider +
+                                                              detailThreeUrl + purchose.idPurchaseInvoices +
+                                                              detailFourUrl + purchose.request.idEmployee"
+                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                    </a>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -1146,7 +1268,11 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped"
+                                               v-for="purchose in purchaseInvoice"
+                                               v-if="purchose.request.requestCategory.idRequestCategory == 1
+                                                        && purchose.request.requestType.idRequestType == 1
+                                                        && purchose.request.idRequestStatus == 8">
                                             <thead>
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
@@ -1159,15 +1285,28 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td class="col-md-1 text-center">Compra</td>
-                                                <td class="col-md-2 text-center">16-03-2017</td>
-                                                <td class="col-md-2 text-center">30-05-2017</td>
-                                                <td class="col-md-2 text-center">05-06-2017</td>
-                                                <td class="col-md-2 text-center">ABC123</td>
-                                                <td class="col-md-2 text-center">$ 300.00</td>
+                                            <tr v-for="rdp in requestsDatesList"
+                                                v-if="rdp.idRequest == purchose.idRequest && rdp.countUpdate == 1">
                                                 <td class="col-md-1 text-center">
-                                                    <button class="glyphicon glyphicon-new-window"></button>
+                                                    {{purchose.request.requestCategory.requestCategoryName}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.creationDateFormats.dateNumber}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{rdp.paydayLimit}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{rdp.scheduledDate}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.folio}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.totalExpended | currency}}</td>
+                                                <td class="col-md-1 text-center">
+                                                    <a class="glyphicon glyphicon-new-window"
+                                                       :href="detailUrl + purchose.idRequest +
+                                                              detailTwoUrl + purchose.idProvider +
+                                                              detailThreeUrl + purchose.idPurchaseInvoices +
+                                                              detailFourUrl + purchose.request.idEmployee"
+                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                    </a>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -1202,7 +1341,11 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped"
+                                               v-for="purchose in purchaseInvoice"
+                                               v-if="purchose.request.requestCategory.idRequestCategory == 2
+                                                        && purchose.request.requestType.idRequestType == 1
+                                                        && purchose.request.idRequestStatus == 8">
                                             <thead>
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
@@ -1215,15 +1358,28 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td class="col-md-1 text-center">Compra</td>
-                                                <td class="col-md-2 text-center">16-03-2017</td>
-                                                <td class="col-md-2 text-center">30-05-2017</td>
-                                                <td class="col-md-2 text-center">05-06-2017</td>
-                                                <td class="col-md-2 text-center">ABC123</td>
-                                                <td class="col-md-2 text-center">$ 300.00</td>
+                                            <tr v-for="rdp in requestsDatesList"
+                                                v-if="rdp.idRequest == purchose.idRequest && rdp.countUpdate == 1">
                                                 <td class="col-md-1 text-center">
-                                                    <button class="glyphicon glyphicon-new-window"></button>
+                                                    {{purchose.request.requestCategory.requestCategoryName}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.creationDateFormats.dateNumber}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{rdp.paydayLimit}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{rdp.scheduledDate}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.folio}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.totalExpended | currency}}</td>
+                                                <td class="col-md-1 text-center">
+                                                    <a class="glyphicon glyphicon-new-window"
+                                                       :href="detailUrl + purchose.idRequest +
+                                                              detailTwoUrl + purchose.idProvider +
+                                                              detailThreeUrl + purchose.idPurchaseInvoices +
+                                                              detailFourUrl + purchose.request.idEmployee"
+                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                    </a>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -1258,7 +1414,11 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped"
+                                               v-for="purchose in purchaseInvoice"
+                                               v-if="purchose.request.requestCategory.idRequestCategory == 3
+                                                        && purchose.request.requestType.idRequestType == 1
+                                                        && purchose.request.idRequestStatus == 8">
                                             <thead>
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
@@ -1271,15 +1431,28 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td class="col-md-1 text-center">Compra</td>
-                                                <td class="col-md-2 text-center">16-03-2017</td>
-                                                <td class="col-md-2 text-center">30-05-2017</td>
-                                                <td class="col-md-2 text-center">05-06-2017</td>
-                                                <td class="col-md-2 text-center">ABC123</td>
-                                                <td class="col-md-2 text-center">$ 300.00</td>
+                                            <tr v-for="rdp in requestsDatesList"
+                                                v-if="rdp.idRequest == purchose.idRequest && rdp.countUpdate == 1">
                                                 <td class="col-md-1 text-center">
-                                                    <button class="glyphicon glyphicon-new-window"></button>
+                                                    {{purchose.request.requestCategory.requestCategoryName}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.creationDateFormats.dateNumber}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{rdp.paydayLimit}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{rdp.scheduledDate}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.folio}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.totalExpended | currency}}</td>
+                                                <td class="col-md-1 text-center">
+                                                    <a class="glyphicon glyphicon-new-window"
+                                                       :href="detailUrl + purchose.idRequest +
+                                                              detailTwoUrl + purchose.idProvider +
+                                                              detailThreeUrl + purchose.idPurchaseInvoices +
+                                                              detailFourUrl + purchose.request.idEmployee"
+                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                    </a>
                                                 </td>
                                             </tr>
                                             </tbody>
@@ -1314,7 +1487,11 @@
                             <div class="panel-body">
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped"
+                                               v-for="purchose in purchaseInvoice"
+                                               v-if="purchose.request.requestCategory.idRequestCategory == 5
+                                                        && purchose.request.requestType.idRequestType == 1
+                                                        && purchose.request.idRequestStatus == 8">
                                             <thead>
                                             <tr>
                                                 <td class="col-md-1 text-center"><b>Solicitud</b></td>
@@ -1327,15 +1504,28 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <tr>
-                                                <td class="col-md-1 text-center">Compra</td>
-                                                <td class="col-md-2 text-center">16-03-2017</td>
-                                                <td class="col-md-2 text-center">30-05-2017</td>
-                                                <td class="col-md-2 text-center">05-06-2017</td>
-                                                <td class="col-md-2 text-center">ABC123</td>
-                                                <td class="col-md-2 text-center">$ 300.00</td>
+                                            <tr v-for="rdp in requestsDatesList"
+                                                v-if="rdp.idRequest == purchose.idRequest && rdp.countUpdate == 1">
                                                 <td class="col-md-1 text-center">
-                                                    <button class="glyphicon glyphicon-new-window"></button>
+                                                    {{purchose.request.requestCategory.requestCategoryName}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.creationDateFormats.dateNumber}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{rdp.paydayLimit}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{rdp.scheduledDate}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.folio}}</td>
+                                                <td class="col-md-2 text-center">
+                                                    {{purchose.request.totalExpended | currency}}</td>
+                                                <td class="col-md-1 text-center">
+                                                    <a class="glyphicon glyphicon-new-window"
+                                                       :href="detailUrl + purchose.idRequest +
+                                                              detailTwoUrl + purchose.idProvider +
+                                                              detailThreeUrl + purchose.idPurchaseInvoices +
+                                                              detailFourUrl + purchose.request.idEmployee"
+                                                       data-toggle="tooltip" data-placement="top" title="Detalle">
+                                                    </a>
                                                 </td>
                                             </tr>
                                             </tbody>

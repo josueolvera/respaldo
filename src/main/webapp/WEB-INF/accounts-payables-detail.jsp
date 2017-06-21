@@ -61,6 +61,7 @@
                     idRequ: ${idRequest},
                     idProv: ${idProvider},
                     idPurcha: ${idPurchaseInvoices},
+                    idEmp: ${idEmployee},
                     roleCostCenterList: [],
                     costCenterList: [],
                     budgetCategories: [],
@@ -93,7 +94,13 @@
                     requestInformation: [],
                     purchaseInvoicex: [],
                     dwEmpleado: [],
-                    reqDocuments: []
+                    reqDocuments: [],
+                    payables: [],
+                    payable: {
+                        scheDate: '',
+                        requestId: '',
+                        countUpdate: ''
+                    }
                 },
                 methods: {
                     arrayObjectIndexOf: function (myArray, searchTerm, property) {
@@ -244,8 +251,36 @@
 
                         this.estimations = [];
                     },
-                    showModalSolicitud: function () {
-                        $('#modalSolicitud').modal('show');
+                    //guardar payables ***
+                    showModalReprogram: function () {
+                        $("#modalRepro").modal("show");
+                    },
+                    savePayables: function () {
+                        if(this.payable.countUpdate >= 1){
+                            this.payable.scheDate =  this.timePickerDe.DateTimePicker.date().toISOString().slice(0, -1);
+                            this.payable.requestId = this.idRequ;
+                            console.log(this.payable.scheDate);
+                            this.$http.post(ROOT_URL + "/accounts-payables-dates/update-rdates", JSON.stringify(this.payable)).success(function (data) {
+                                this.payables = [];
+                                this.payables = data;
+                                $("#modalRepro").modal("hide");
+                                showAlert("Reprogramación exitosa");
+                            }).error(function () {
+                                showAlert("Fecha invalida, intenta mas tarde.", {type: 3});
+                            })
+                        }else{
+                            this.payable.scheDate =  this.timePickerDe.DateTimePicker.date().toISOString().slice(0, -1);
+                            console.log(this.payable.scheDate);
+                            this.payable.requestId = this.idRequ;
+                            this.$http.post(ROOT_URL + "/accounts-payables-dates/save-requestdates", JSON.stringify(this.payable)).success(function (data) {
+                                this.payables = [];
+                                this.payables = data;
+                                $("#modalRepro").modal("hide");
+                                showAlert("Programación exitosa");
+                            }).error(function () {
+                                showAlert("Fecha invalida", {type: 3});
+                            })
+                        }
                     },
                     showNewEstimationModal: function () {
                         this.newEstimationFormActive = true;
@@ -427,6 +462,8 @@
     </jsp:attribute>
     <jsp:body>
         <div id="content">
+        <div class="loading" v-if="dwEmpleado.length==0">
+        </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="col-md-5">
@@ -520,16 +557,17 @@
             <div class="panel-heading"><b>Información de solicitante</b></div>
             <div class="panel-body">
                 <div class="col-md-12">
-                    <div class="row" v-for="purchasex in purchaseInvoicex" v-if="this.idPurcha == purchasex.idPurchaseInvoices">
-                        <table class="table table-striped" v-for="demple in dwEmpleado"
-                               v-if="purchasex.request.employees.idEmployee == demple.employee.idEmployee">
+                    <div class="row">
+                        <table class="table table-striped"
+                               v-for="purchasex in purchaseInvoicex" v-if="this.idPurcha == purchasex.idPurchaseInvoices">
                             <tr>
                                 <td class="col-md-3"><b>Nombre</b></td>
                                 <td class="col-md-3"><b>Puesto</b></td>
                                 <td class="col-md-3"><b>Empresa</b></td>
                                 <td class="col-md-3"><b>Región</b></td>
                             </tr>
-                            <tr>
+                            <tr v-for="demple in dwEmpleado"
+                                v-if="this.idEmp == demple.idEmployee">
                                 <td class="col-md-3">
                                     {{purchasex.request.employees.fullName}}
                                 </td>
@@ -539,7 +577,8 @@
                                 <td class="col-md-3">
                                     {{purchasex.request.distributorCostCenter.distributors.acronyms}}
                                 </td>
-                                <td class="col-md-3">
+                                <td class="col-md-3" v-for="demple in dwEmpleado"
+                                    v-if="this.idEmp == demple.idEmployee">
                                     {{demple.dwEnterprise.region.regionName}}
                                 </td>
                             </tr>
@@ -549,8 +588,9 @@
                                 <td class="col-md-3"><b>Centro de costos</b></td>
                                 <td class="col-md-3"></td>
                             </tr>
-                            <tr>
-                                <td class="col-md-3">
+                            <tr v-for="demple in dwEmpleado"
+                                v-if="this.idEmp == demple.employee.idEmployee">
+                                <td class="col-md-3" >
                                     {{demple.dwEnterprise.branch.branchName}}
                                 </td>
                                 <td class="col-md-3">
@@ -579,23 +619,29 @@
                                 <td class="col-md-2"><b>Programar fecha de pago</b></td>
                             </tr>
                             <tr v-for="purchasex in purchaseInvoicex" v-if="this.idPurcha == purchasex.idPurchaseInvoices">
-                                <td class="col-md-3"></td>
+                                <td class="col-md-3">{{purchasex.conceptName}}</td>
                                 <td class="col-md-3">{{purchasex.request.creationDateFormats.dateNumber}}</td>
-                                <td class="col-md-3"></td>
+                                <td class="col-md-3">{{}}</td>
                                 <td class="col-md-3">
                                     <div class='input-group date' id='proFecha'>
-                                        <input type='text' class="form-control" placeholder="dd-mm-aaaa" required>
+                                        <input type="text" id="fechaPayable" v-model="payable.scheDate" class="form-control"
+                                               placeholder="dd-mm-aaaa" required>
                                         <span class="input-group-addon" @click="proFecha()">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
                                     </div>
+                                    <input type="text" style="display: none" disabled
+                                           :value="idRequ" v-model="payable.requestId" />
+                                    <input type="text" style="display: none" disabled
+                                            v-for="rdp in requestsDateProgrammer" v-if="rdp.idRequest == purchasex.idRequest"
+                                           :value="rdp.countUpdate" v-model="payable.countUpdate"/>
                                 </td>
                             </tr>
                         </table>
                     </div>
                 </div>
                 <div class="text-right">
-                    <button class="btn btn-success" @click="sendTreasuryRequestModal">Guardar</button> &nbsp;&nbsp;
+                    <button class="btn btn-success" @click="showModalReprogram()">Guardar</button> &nbsp;&nbsp;
                     <a href="javascript:window.history.back();">
                         <button class="btn btn-default">Cancelar</button>
                     </a>
@@ -603,7 +649,7 @@
             </div>
         </div><br>
         <%--modal enviar solicitud a tesoreria--%>
-        <div class="modal fade" id="modalTreasuryR" tabindex="-1" role="dialog" aria-labelledby=""
+        <div class="modal fade" id="modalRepro" tabindex="-1" role="dialog" aria-labelledby=""
              aria-hidden="true">
             <div class="modal-dialog modal-ms">
                 <div class="modal-content modal-ms">
@@ -624,7 +670,7 @@
                     </div>
                     <br>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-success" @click="sendRequest()">Aceptar</button>
+                        <button type="button" class="btn btn-success" @click="savePayables()">Aceptar</button>
                         <button type="button" class="btn btn-default" class="close" data-dismiss="modal"
                                 aria-hidden="true">Cancelar
                         </button>
