@@ -146,7 +146,8 @@ public class CBrachsController {
     }
 
     @RequestMapping(value = "/create-report", method = RequestMethod.GET)
-    public ResponseEntity<String> createReport(@RequestParam(required = true, name = "file_name") String fileName, HttpServletResponse response) throws IOException {
+    public ResponseEntity<String> createReport(@RequestParam(required = true, name = "file_name") String fileName,
+                                               HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
         response.setHeader("Content-Disposition", "attachment; filename=\""+ fileName +".xls\"");
 

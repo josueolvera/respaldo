@@ -99,7 +99,8 @@
                     payable: {
                         scheDate: '',
                         requestId: '',
-                        countUpdate: ''
+                        countUpdate: '',
+                        limit: ''
                     }
                 },
                 methods: {
@@ -115,7 +116,8 @@
                         this.timePickerDe = $('#proFecha').datetimepicker({
                             locale: 'es',
                             format: 'DD-MM-YYYY',
-                            defaultDate: fecha_actual
+                            defaultDate: fecha_actual,
+                            minDate: fecha_actual
                         }).data();
                     },
                     getUserInSession: function () {
@@ -264,19 +266,18 @@
                                 this.payables = [];
                                 this.payables = data;
                                 $("#modalRepro").modal("hide");
-                                showAlert("Reprogramación exitosa");
+                                $("#modalBandeja").modal("show");
                             }).error(function () {
-                                showAlert("Fecha invalida, intenta mas tarde.", {type: 3});
+                                showAlert("Fecha invalida.", {type: 3});
                             })
                         }else{
                             this.payable.scheDate =  this.timePickerDe.DateTimePicker.date().toISOString().slice(0, -1);
-                            console.log(this.payable.scheDate);
                             this.payable.requestId = this.idRequ;
                             this.$http.post(ROOT_URL + "/accounts-payables-dates/save-requestdates", JSON.stringify(this.payable)).success(function (data) {
                                 this.payables = [];
                                 this.payables = data;
                                 $("#modalRepro").modal("hide");
-                                showAlert("Programación exitosa");
+                                $("#modalBandeja").modal("show");
                             }).error(function () {
                                 showAlert("Fecha invalida", {type: 3});
                             })
@@ -621,20 +622,22 @@
                             <tr v-for="purchasex in purchaseInvoicex" v-if="this.idPurcha == purchasex.idPurchaseInvoices">
                                 <td class="col-md-3">{{purchasex.conceptName}}</td>
                                 <td class="col-md-3">{{purchasex.request.creationDateFormats.dateNumber}}</td>
-                                <td class="col-md-3">{{}}</td>
+                                <td class="col-md-3">{{purchasex.paydayLimitFormats.dateNumber}}</td>
                                 <td class="col-md-3">
-                                    <div class='input-group date' id='proFecha'>
-                                        <input type="text" id="fechaPayable" v-model="payable.scheDate" class="form-control"
-                                               placeholder="dd-mm-aaaa" required>
-                                        <span class="input-group-addon" @click="proFecha()">
+                                <div class='input-group date' id='proFecha'>
+                                    <input type="text" id="fechaPayable" v-model="payable.scheDate" class="form-control"
+                                           placeholder="dd-mm-aaaa" required>
+                                    <span class="input-group-addon" @click="proFecha()">
                                        <span class="glyphicon glyphicon-calendar"></span>
                                    </span>
-                                    </div>
+                                </div>
                                     <input type="text" style="display: none" disabled
                                            :value="idRequ" v-model="payable.requestId" />
                                     <input type="text" style="display: none" disabled
                                             v-for="rdp in requestsDateProgrammer" v-if="rdp.idRequest == purchasex.idRequest"
-                                           :value="rdp.countUpdate" v-model="payable.countUpdate"/>
+                                           :value="rdp.countUpdate" v-model="payable.countUpdate" />
+                                    <input type="text" style="display: block" disabled
+                                           :value="purchasex.paydayLimitFormats.dateNumber" v-model="payable.limit" />
                                 </td>
                             </tr>
                         </table>
@@ -674,6 +677,30 @@
                         <button type="button" class="btn btn-default" class="close" data-dismiss="modal"
                                 aria-hidden="true">Cancelar
                         </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%--modal regresar--%>
+        <div class="modal fade" id="modalBandeja" tabindex="-1" role="dialog" aria-labelledby=""
+             aria-hidden="true">
+            <div class="modal-dialog modal-xs">
+                <div class="modal-content modal-xs">
+                    <div class="modal-header">
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p align="center" style="font-size: 16px">El registro se guardo correctamente<br></p>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="modal-footer">
+                        <a href="../siad/accounts-payables">
+                            <button type="button" class="btn btn-success">Aceptar</button>
+                        </a>
+
                     </div>
                 </div>
             </div>

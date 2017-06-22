@@ -103,6 +103,13 @@ public class RequestsDates implements Serializable {
         this.scheduledDate = scheduledDate;
     }
 
+    public DateFormatsPojo getPaydayLimitFormats() {
+        if (paydayLimit == null) {
+            return null;
+        }
+        return new DateFormatsPojo(paydayLimit);
+    }
+
     public DateFormatsPojo getScheduledDateFormats() {
         if (scheduledDate == null) {
             return null;

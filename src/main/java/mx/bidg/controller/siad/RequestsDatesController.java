@@ -113,9 +113,9 @@ public class RequestsDatesController {
         LocalDateTime scheDates = (node.get("scheDate") == null || node.findValue("scheDate").asText().equals("")) ? null :
                 LocalDateTime.parse(node.get("scheDate").asText(), DateTimeFormatter.ISO_DATE_TIME);
         RequestsDates updateRD = requestsDatesService.getByRequest(node.get("requestId").asInt());
-        int agregar = (node.get("countUpdate").asInt());
+        int addCount = (node.get("countUpdate").asInt());
 
-        updateRD.setCountUpdate(agregar + 1);
+        updateRD.setCountUpdate(addCount + 1);
         updateRD.setScheduledDate(scheDates);
         updateRD.setUserName(user.getUsername());
         updateRD.setCreationDate(LocalDateTime.now());

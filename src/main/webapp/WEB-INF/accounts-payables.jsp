@@ -501,7 +501,7 @@
                                                     {{purchose.request.creationDateFormats.dateNumber}}
                                                 </td>
                                                 <td class="col-md-3 text-center">
-                                                    {{}}
+                                                    {{purchose.paydayLimitFormats.dateNumber}}
                                                 </td>
                                                 <td class="col-md-2 text-center">{{purchose.request.folio}}</td>
                                                 <td class="col-md-2 text-center">
@@ -618,7 +618,7 @@
                                                     {{purchose.request.creationDateFormats.dateNumber}}
                                                 </td>
                                                 <td class="col-md-3 text-center">
-                                                    {{}}
+                                                    {{purchose.paydayLimitFormats.dateNumber}}
                                                 </td>
                                                 <td class="col-md-2 text-center">{{purchose.request.folio}}</td>
                                                 <td class="col-md-2 text-center">
@@ -690,7 +690,7 @@
                                                     {{purchose.request.creationDateFormats.dateNumber}}
                                                 </td>
                                                 <td class="col-md-3 text-center">
-                                                    {{}}
+                                                    {{purchose.paydayLimitFormats.dateNumber}}
                                                 </td>
                                                 <td class="col-md-2 text-center">{{purchose.request.folio}}</td>
                                                 <td class="col-md-2 text-center">
@@ -762,7 +762,7 @@
                                                     {{purchose.request.creationDateFormats.dateNumber}}
                                                 </td>
                                                 <td class="col-md-3 text-center">
-                                                    {{}}
+                                                    {{purchose.paydayLimitFormats.dateNumber}}
                                                 </td>
                                                 <td class="col-md-2 text-center">{{purchose.request.folio}}</td>
                                                 <td class="col-md-2 text-center">
@@ -844,9 +844,9 @@
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.creationDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
-                                                    {{rdp.paydayLimit}}</td>
+                                                    {{purchose.paydayLimitFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
-                                                    {{rdp.scheduledDate}}</td>
+                                                    {{rdp.scheduledDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.folio}}</td>
                                                 <td class="col-md-2 text-center">
@@ -917,9 +917,9 @@
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.creationDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
-                                                    {{rdp.paydayLimit}}</td>
+                                                    {{purchose.paydayLimitFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
-                                                    {{rdp.scheduledDate}}</td>
+                                                    {{rdp.scheduledDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.folio}}</td>
                                                 <td class="col-md-2 text-center">
@@ -990,9 +990,9 @@
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.creationDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
-                                                    {{rdp.paydayLimit}}</td>
+                                                    {{purchose.paydayLimitFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
-                                                    {{rdp.scheduledDate}}</td>
+                                                    {{rdp.scheduledDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.folio}}</td>
                                                 <td class="col-md-2 text-center">
@@ -1063,9 +1063,9 @@
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.creationDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
-                                                    {{rdp.paydayLimit}}</td>
+                                                    {{purchose.paydayLimitFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
-                                                    {{rdp.scheduledDate}}</td>
+                                                    {{rdp.scheduledDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.folio}}</td>
                                                 <td class="col-md-2 text-center">
@@ -1136,9 +1136,9 @@
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.creationDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
-                                                    {{rdp.paydayLimit}}</td>
+                                                    {{purchose.paydayLimitFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
-                                                    {{rdp.scheduledDate}}</td>
+                                                    {{rdp.scheduledDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.folio}}</td>
                                                 <td class="col-md-2 text-center">
@@ -1219,9 +1219,9 @@
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.creationDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
-                                                    {{rdp.paydayLimit}}</td>
+                                                    {{purchose.paydayLimitFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
-                                                    {{rdp.scheduledDate}}</td>
+                                                    {{rdp.scheduledDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.folio}}</td>
                                                 <td class="col-md-2 text-center">
@@ -1292,9 +1292,9 @@
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.creationDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
-                                                    {{rdp.paydayLimit}}</td>
+                                                    {{purchose.paydayLimitFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
-                                                    {{rdp.scheduledDate}}</td>
+                                                    {{rdp.scheduledDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.folio}}</td>
                                                 <td class="col-md-2 text-center">
@@ -1365,9 +1365,9 @@
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.creationDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
-                                                    {{rdp.paydayLimit}}</td>
+                                                    {{purchose.paydayLimitFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
-                                                    {{rdp.scheduledDate}}</td>
+                                                    {{rdp.scheduledDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.folio}}</td>
                                                 <td class="col-md-2 text-center">
@@ -1438,9 +1438,9 @@
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.creationDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
-                                                    {{rdp.paydayLimit}}</td>
+                                                    {{purchose.paydayLimitFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
-                                                    {{rdp.scheduledDate}}</td>
+                                                    {{rdp.scheduledDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.folio}}</td>
                                                 <td class="col-md-2 text-center">
@@ -1511,9 +1511,9 @@
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.creationDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
-                                                    {{rdp.paydayLimit}}</td>
+                                                    {{purchose.paydayLimitFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
-                                                    {{rdp.scheduledDate}}</td>
+                                                    {{rdp.scheduledDateFormats.dateNumber}}</td>
                                                 <td class="col-md-2 text-center">
                                                     {{purchose.request.folio}}</td>
                                                 <td class="col-md-2 text-center">

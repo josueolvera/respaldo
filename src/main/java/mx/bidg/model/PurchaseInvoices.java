@@ -110,6 +110,10 @@ public class PurchaseInvoices implements Serializable {
     @JsonView(JsonViews.Embedded.class)
     private List<PurchaseInvoicesFiles> purchaseInvoicesFiles;
 
+    @Transient
+    @JsonView(JsonViews.Root.class)
+    private LocalDateTime limitDay;
+
     public PurchaseInvoices() {
     }
 
@@ -251,6 +255,21 @@ public class PurchaseInvoices implements Serializable {
 
     public void setPurchaseInvoicesFiles(List<PurchaseInvoicesFiles> purchaseInvoicesFiles) {
         this.purchaseInvoicesFiles = purchaseInvoicesFiles;
+    }
+
+    public LocalDateTime getLimitDay() {
+        return limitDay;
+    }
+
+    public void setLimitDay(LocalDateTime limitDay) {
+        this.limitDay = limitDay;
+    }
+
+    public DateFormatsPojo getPaydayLimitFormats() {
+        if (limitDay == null) {
+            return null;
+        }
+        return new DateFormatsPojo(limitDay);
     }
 
     @Override

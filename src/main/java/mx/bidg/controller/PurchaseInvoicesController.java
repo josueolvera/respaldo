@@ -1,5 +1,6 @@
 package mx.bidg.controller;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.config.JsonViews;
@@ -27,6 +28,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,8 +62,22 @@ public class PurchaseInvoicesController {
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<String> findAll()throws IOException{
+
         List<PurchaseInvoices> purchaseInvoices = purchaseInvoicesService.findAll();
-        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(purchaseInvoices), HttpStatus.OK);
+        List<PurchaseInvoices> invoicesList = new ArrayList<>();
+        JsonNode node = mapper.readTree(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(purchaseInvoices));
+        for (JsonNode jsonNode : node){
+            PurchaseInvoices purchase = purchaseInvoicesService.findById(jsonNode.get("idPurchaseInvoices").asInt());
+            Integer limitDay = jsonNode.get("provider").get("creditDays").asInt();
+            LocalDateTime requestDate = LocalDateTime.parse(jsonNode.get("request").get("creationDateFormats").get("iso").asText(),
+                    DateTimeFormatter.ISO_DATE_TIME);
+            LocalDateTime limit = (requestDate.plusDays(limitDay)) ;
+            purchase.setLimitDay(limit);
+            invoicesList.add(purchase);
+        }
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(invoicesList),
+                HttpStatus.OK);
     }
 
     @RequestMapping(value = "/request/file", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)

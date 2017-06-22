@@ -354,4 +354,29 @@ public class SIADController {
         model.setViewName("inbox-treasury");
         return model;
     }
+
+    @RequestMapping(value = "/off-budget-request", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView siadOffBudgetRequest() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("off-budget-request");
+        return model;
+    }
+
+    @RequestMapping(value = "/accounts-payables-detail", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView siadAccountsPayablesDetail(@RequestParam(name = "idRequest") Integer idRequest,
+                                                   @RequestParam(name = "idProvider") Integer idProvider,
+                                                   @RequestParam(name = "idPurchaseInvoices") Integer idPurchaseInvoices,
+                                                   @RequestParam(name = "idEmployee") Integer idEmployee){
+        ModelAndView model = new ModelAndView();
+        model.addObject("idRequest", idRequest);
+        model.addObject("idProvider", idProvider);
+        model.addObject("idPurchaseInvoices", idPurchaseInvoices);
+        model.addObject("idEmployee", idEmployee);
+        model.setViewName("accounts-payables-detail");
+        return model;
+    }
 }
+
+
+
+
