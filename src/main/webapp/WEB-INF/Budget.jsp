@@ -696,7 +696,7 @@
                     <form v-on:submit.prevent="getBudgets">
                         <div class="row">
                             <div class="col-md-3">
-                                <label>Centro de costos</label>
+                                <label>Centro de beneficios/Centro de costos</label>
                                 <select v-model="selected.costCenter" class="form-control" @change="onChangeFilter"
                                         data-live-search="true" required>
                                     <option v-for="costCenter in costCenterList" :value="costCenter">
