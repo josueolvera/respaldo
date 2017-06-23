@@ -2,7 +2,9 @@ package mx.bidg.service;
 
 
 import mx.bidg.model.CAccountBanksType;
+import mx.bidg.model.Users;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -16,4 +18,6 @@ public interface CAccountBanksTypeService {
     CAccountBanksType save (CAccountBanksType cAccountBanksType);
     CAccountBanksType update (CAccountBanksType cAccountBanksType);
     boolean delete(CAccountBanksType cAccountBanksType);
+
+    CAccountBanksType save(String data, Users user) throws IOException;
 }

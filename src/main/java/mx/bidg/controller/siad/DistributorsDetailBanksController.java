@@ -4,8 +4,7 @@ package mx.bidg.controller.siad;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.bidg.config.JsonViews;
-import mx.bidg.model.DistributorsDetailBanks;
-import mx.bidg.model.Users;
+import mx.bidg.model.*;
 import mx.bidg.service.DistributorsDetailBanksService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -31,7 +32,8 @@ public class DistributorsDetailBanksController {
     private ObjectMapper mapper;
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<String> findAll() throws Exception {
+    public
+    ResponseEntity<String> findAll() throws Exception {
         List<DistributorsDetailBanks> distributorsDetailBanksList = distributorsDetailBanksService.findAll();
         return  new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(distributorsDetailBanksList), HttpStatus.OK);
     }
@@ -40,6 +42,27 @@ public class DistributorsDetailBanksController {
     public ResponseEntity<String> findByDistributor(@PathVariable Integer idDistributor) throws Exception{
         List<DistributorsDetailBanks> distributorsDetailBanksList = distributorsDetailBanksService.getByDistributor(idDistributor);
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(distributorsDetailBanksList), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> save(@RequestBody String data, HttpSession session) throws IOException{
+        Users user = (Users) session.getAttribute("user");
+        JsonNode node = mapper.readTree(data);
+        DistributorsDetailBanks distributorsDetailBanks = new DistributorsDetailBanks();
+        distributorsDetailBanks.setBanks(new CBanks(node.get("idBank").asInt()));
+        distributorsDetailBanks.setCurrencies(new CCurrencies(node.get("idCurrency").asInt()));
+        distributorsDetailBanks.setDistributors(new CDistributors(node.get("idDistributor").asInt()));
+        distributorsDetailBanks.setAccountBanksType(new CAccountBanksType(node.get("idaccountbanktype").asInt()));
+        distributorsDetailBanks.setAccountNumber(node.get("accountnumber").asText());
+        distributorsDetailBanks.setAccountclabe(node.get("accountclabe").asText());
+        distributorsDetailBanks.setAmount(node.get("amount").decimalValue());
+        distributorsDetailBanks.setCreationDate(LocalDateTime.now());
+        distributorsDetailBanks.setUsername(user.getUsername());
+
+        distributorsDetailBanksService.save(distributorsDetailBanks);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class)
+                .writeValueAsString(distributorsDetailBanksService.findAll()),HttpStatus.OK);
     }
 
 }

@@ -52,6 +52,10 @@ public class CAccountBanksType implements Serializable  {
     public CAccountBanksType() {
     }
 
+    public CAccountBanksType(Integer idAccountBankType) {
+        this.idAccountBankType = idAccountBankType;
+    }
+
     public Integer getIdAccountBankType() {
         return idAccountBankType;
     }

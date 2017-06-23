@@ -56,9 +56,9 @@ public class DistributorsDetailBanks implements Serializable {
     private String accountNumber;
 
     @Size(max = 20)
-    @Column(name = "ACCOUNT_CLAVE")
+    @Column(name = "ACCOUNT_CLABE")
     @JsonView(JsonViews.Root.class)
-    private String accountClave;
+    private String accountclabe;
 
     @Basic(optional = false)
     @NotNull
@@ -164,12 +164,12 @@ public class DistributorsDetailBanks implements Serializable {
         this.accountNumber = accountNumber;
     }
 
-    public String getAccountClave() {
-        return accountClave;
+    public String getAccountclabe() {
+        return accountclabe;
     }
 
-    public void setAccountClave(String accountClave) {
-        this.accountClave = accountClave;
+    public void setAccountclabe(String accountclabe) {
+        this.accountclabe = accountclabe;
     }
 
     public BigDecimal getAmount() {
@@ -259,7 +259,7 @@ public class DistributorsDetailBanks implements Serializable {
                 ", idDistributor=" + idDistributor +
                 ", idAccountBankType=" + idAccountBankType +
                 ", accountNumber='" + accountNumber + '\'' +
-                ", accountClave='" + accountClave + '\'' +
+                ", accountclabe='" + accountclabe + '\'' +
                 ", amount=" + amount +
                 ", creationDate=" + creationDate +
                 ", username='" + username + '\'' +

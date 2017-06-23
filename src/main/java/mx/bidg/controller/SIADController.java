@@ -3,7 +3,6 @@ package mx.bidg.controller;
 import mx.bidg.model.CRequestsCategories;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -333,6 +332,22 @@ public class SIADController {
         model.setViewName("requests-detail-user");
         return model;
     }
+
+
+    @RequestMapping(value = "/banks-flow-cash", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView siadBanksFlowCash() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("banks-flow-cash");
+        return model;
+    }
+
+    @RequestMapping(value = "/pruebasleon", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+    public ModelAndView siadPruebasLeon() {
+        ModelAndView model = new ModelAndView();
+        model.setViewName("pruebasleon");
+        return model;
+    }
+
 
     @RequestMapping(value = "/request-pending-autorization", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
     public ModelAndView siadRequestPendingAutorization() {
