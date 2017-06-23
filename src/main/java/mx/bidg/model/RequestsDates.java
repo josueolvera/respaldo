@@ -36,11 +36,6 @@ public class RequestsDates implements Serializable {
     @JsonView(JsonViews.Root.class)
     private int idRequest;
 
-    @Column(name = "PAYDAY_LIMIT")
-    @JsonView(JsonViews.Root.class)
-    @Convert(converter = DateTimeConverter.class)
-    private LocalDateTime paydayLimit;
-
     @Column(name = "SCHEDULED_DATE")
     @JsonView(JsonViews.Root.class)
     @Convert(converter = DateTimeConverter.class)
@@ -87,27 +82,12 @@ public class RequestsDates implements Serializable {
         this.idRequest = idRequests;
     }
 
-    public LocalDateTime getPaydayLimit() {
-        return paydayLimit;
-    }
-
-    public void setPaydayLimit(LocalDateTime paydayLimit) {
-        this.paydayLimit = paydayLimit;
-    }
-
     public LocalDateTime getScheduledDate() {
         return scheduledDate;
     }
 
     public void setScheduledDate(LocalDateTime scheduledDate) {
         this.scheduledDate = scheduledDate;
-    }
-
-    public DateFormatsPojo getPaydayLimitFormats() {
-        if (paydayLimit == null) {
-            return null;
-        }
-        return new DateFormatsPojo(paydayLimit);
     }
 
     public DateFormatsPojo getScheduledDateFormats() {
@@ -159,8 +139,6 @@ public class RequestsDates implements Serializable {
         if (getIdRequests() != that.getIdRequests()) return false;
         if (getIdRequestsDates() != null ? !getIdRequestsDates().equals(that.getIdRequestsDates()) : that.getIdRequestsDates() != null)
             return false;
-        if (getPaydayLimit() != null ? !getPaydayLimit().equals(that.getPaydayLimit()) : that.getPaydayLimit() != null)
-            return false;
         if (getScheduledDate() != null ? !getScheduledDate().equals(that.getScheduledDate()) : that.getScheduledDate() != null)
             return false;
         if (getUserName() != null ? !getUserName().equals(that.getUserName()) : that.getUserName() != null)
@@ -174,7 +152,6 @@ public class RequestsDates implements Serializable {
     public int hashCode() {
         int result = getIdRequestsDates() != null ? getIdRequestsDates().hashCode() : 0;
         result = 31 * result + getIdRequests();
-        result = 31 * result + (getPaydayLimit() != null ? getPaydayLimit().hashCode() : 0);
         result = 31 * result + (getScheduledDate() != null ? getScheduledDate().hashCode() : 0);
         result = 31 * result + (getUserName() != null ? getUserName().hashCode() : 0);
         result = 31 * result + (getCreationDate() != null ? getCreationDate().hashCode() : 0);
@@ -187,7 +164,6 @@ public class RequestsDates implements Serializable {
         return "RequestsDates{" +
                 "idRequestsDates=" + idRequestsDates +
                 ", idRequest=" + idRequest +
-                ", paydayLimit=" + paydayLimit +
                 ", scheduiedDate=" + scheduledDate +
                 ", userName='" + userName + '\'' +
                 ", creationDate=" + creationDate +

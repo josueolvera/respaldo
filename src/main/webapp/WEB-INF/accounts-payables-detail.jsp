@@ -99,8 +99,7 @@
                     payable: {
                         scheDate: '',
                         requestId: '',
-                        countUpdate: '',
-                        limit: ''
+                        countUpdate: ''
                     }
                 },
                 methods: {
@@ -112,6 +111,8 @@
                     },
                     proFecha: function () {
                         var fecha = new Date();
+//                        var fechaLimit = new Date(limite);
+//                        var fecha_limite = fechaLimit.getFullYear() + "-" + (fechaLimit.getMonth() + 1) + "-" + fechaLimit.getDate();
                         var fecha_actual = fecha.getFullYear() + "-" + (fecha.getMonth() + 1) + "-" + fecha.getDate();
                         this.timePickerDe = $('#proFecha').datetimepicker({
                             locale: 'es',
@@ -636,8 +637,6 @@
                                     <input type="text" style="display: none" disabled
                                             v-for="rdp in requestsDateProgrammer" v-if="rdp.idRequest == purchasex.idRequest"
                                            :value="rdp.countUpdate" v-model="payable.countUpdate" />
-                                    <input type="text" style="display: block" disabled
-                                           :value="purchasex.paydayLimitFormats.dateNumber" v-model="payable.limit" />
                                 </td>
                             </tr>
                         </table>
