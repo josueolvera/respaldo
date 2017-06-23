@@ -11,4 +11,5 @@ import java.util.List;
 public interface DistributorsDetailBanksDao extends InterfaceDao<DistributorsDetailBanks> {
     List<DistributorsDetailBanks> findAll();
     List<DistributorsDetailBanks> getByDistributor(int id);
+    DistributorsDetailBanks findByAccountNumber(String accountNumber);
 }

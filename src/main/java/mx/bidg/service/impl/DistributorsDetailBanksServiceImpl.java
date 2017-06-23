@@ -38,4 +38,9 @@ public class DistributorsDetailBanksServiceImpl implements DistributorsDetailBan
     public List<DistributorsDetailBanks> getByDistributor(int id){
         return distributorsDetailBanksDao.getByDistributor(id);
     }
+
+    @Override
+    public DistributorsDetailBanks findByAccountNumber(String accountNumber){
+        return distributorsDetailBanksDao.findByAccountNumber(accountNumber);
+    }
 }

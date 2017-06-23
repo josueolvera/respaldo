@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -52,9 +53,7 @@ public class DistributorsDetailBanksController {
         distributorsDetailBanks.setBanks(new CBanks(node.get("idBank").asInt()));
         distributorsDetailBanks.setCurrencies(new CCurrencies(node.get("idCurrency").asInt()));
         distributorsDetailBanks.setDistributors(new CDistributors(node.get("idDistributor").asInt()));
-        distributorsDetailBanks.setAccountBanksType(new CAccountBanksType(node.get("idaccountbanktype").asInt()));
         distributorsDetailBanks.setAccountNumber(node.get("accountnumber").asText());
-        distributorsDetailBanks.setAccountclabe(node.get("accountclabe").asText());
         distributorsDetailBanks.setAmount(node.get("amount").decimalValue());
         distributorsDetailBanks.setCreationDate(LocalDateTime.now());
         distributorsDetailBanks.setUsername(user.getUsername());
@@ -63,6 +62,17 @@ public class DistributorsDetailBanksController {
 
         return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class)
                 .writeValueAsString(distributorsDetailBanksService.findAll()),HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/account-number", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<String> updateAmount(@RequestBody String  data) throws IOException{
+        JsonNode node = mapper.readTree(data);
+        DistributorsDetailBanks distributorsDetailBanks = distributorsDetailBanksService.findByAccountNumber(node.get("accountNumber").asText());
+        BigDecimal newAmount = distributorsDetailBanks.getAmount().add(node.get("amount").decimalValue());
+        distributorsDetailBanks.setAmount(newAmount);
+        distributorsDetailBanks = distributorsDetailBanksService.update(distributorsDetailBanks);
+
+        return new ResponseEntity<>(mapper.writerWithView(JsonViews.Embedded.class).writeValueAsString(distributorsDetailBanks), HttpStatus.OK);
     }
 
 }

@@ -3,6 +3,7 @@ package mx.bidg.dao.impl;
 import mx.bidg.dao.AbstractDao;
 import mx.bidg.dao.DistributorsDetailBanksDao;
 import mx.bidg.model.DistributorsDetailBanks;
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -43,6 +44,14 @@ public class DistributorsDetailBanksDaoImpl extends AbstractDao<Integer, Distrib
     @Override
     public List<DistributorsDetailBanks> getByDistributor(int idDistributor){
         return  createEntityCriteria().add(Restrictions.eq("idDistributor", idDistributor)).list();
+    }
+
+    @Override
+    public DistributorsDetailBanks findByAccountNumber(String accountNumber){
+        Criteria criteria = createEntityCriteria();
+        criteria.add(Restrictions.eq("accountNumber",accountNumber));
+
+        return (DistributorsDetailBanks) criteria.uniqueResult();
     }
 
 }
